@@ -108,86 +108,112 @@ function cityLabel(city: string) {
   return city.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
 }
 
+// ── Category accent colors ──
+
+const CATEGORY_ACCENT: Record<string, { color: string; bg: string; label: string; emoji: string }> = {
+  music:     { color: "#7C3AED", bg: "#F5F3FF", label: "Music",     emoji: "🎵" },
+  arts:      { color: "#0E7490", bg: "#ECFEFF", label: "Arts",      emoji: "🎨" },
+  family:    { color: "#C2410C", bg: "#FFF7ED", label: "Family",    emoji: "👨‍👩‍👦" },
+  education: { color: "#1D4ED8", bg: "#EFF6FF", label: "Education", emoji: "📚" },
+  community: { color: "#475569", bg: "#F8FAFC", label: "Community", emoji: "🤝" },
+  market:    { color: "#15803D", bg: "#F0FDF4", label: "Market",    emoji: "🌽" },
+  food:      { color: "#B45309", bg: "#FFFBEB", label: "Food",      emoji: "🍜" },
+  outdoor:   { color: "#166534", bg: "#F0FDF4", label: "Outdoor",   emoji: "🌿" },
+  sports:    { color: "#1E3A8A", bg: "#EFF6FF", label: "Sports",    emoji: "🏟️" },
+};
+
 // ── Upcoming Event Card ──
 
 function UpcomingEventCard({ event }: { event: UpcomingEvent }) {
   const badge = costBadge(event.cost);
-  // Community events (government meetings, commission hearings) are always free — badge adds no info
   const showBadge = !(event.cost === "free" && event.category === "community");
+  const accent = CATEGORY_ACCENT[event.category] ?? CATEGORY_ACCENT.community;
+
   return (
     <div
       style={{
         background: "#fff",
-        border: "1.5px solid var(--sb-border-light)",
         borderRadius: "var(--sb-radius-lg, 6px)",
-        padding: "12px 14px",
+        border: "1.5px solid var(--sb-border-light)",
+        borderLeft: `4px solid ${accent.color}`,
+        padding: "11px 14px",
+        display: "flex",
+        gap: 12,
         transition: "box-shadow 0.15s",
       }}
       onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--sb-shadow-hover)")}
       onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 4 }}>
-        <div>
-          <span style={{ fontSize: 14, fontWeight: 700, color: "var(--sb-ink)", lineHeight: 1.3, display: "block" }}>
-            {event.url ? (
-              <a
-                href={event.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "inherit", textDecoration: "none" }}
-                onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-                onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
-              >
-                {event.title}
-              </a>
-            ) : event.title}
+      {/* Category emoji column */}
+      <div style={{
+        width: 32, height: 32, borderRadius: 6, flexShrink: 0,
+        background: accent.bg, display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 16, marginTop: 1,
+      }}>
+        {accent.emoji}
+      </div>
+
+      <div style={{ flex: 1, minWidth: 0 }}>
+        {/* Category label + cost badge row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
+          <span style={{
+            fontSize: 9, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+            letterSpacing: "0.1em", textTransform: "uppercase", color: accent.color,
+          }}>
+            {accent.label}
           </span>
+          {showBadge && (
+            <span style={{
+              fontSize: 9, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+              letterSpacing: "0.04em", padding: "1px 5px", borderRadius: 3,
+              background: badge.bg, color: badge.fg, border: `1px solid ${badge.border}`,
+            }}>
+              {badge.label}
+            </span>
+          )}
+          {event.kidFriendly && (
+            <span style={{ fontSize: 9, color: "var(--sb-muted)" }}>👶</span>
+          )}
         </div>
-        {showBadge && (
-          <span
-            style={{
-              flexShrink: 0,
-              fontSize: 10,
-              fontWeight: 700,
-              fontFamily: "'Space Mono', monospace",
-              letterSpacing: "0.04em",
-              padding: "2px 7px",
-              borderRadius: 3,
-              background: badge.bg,
-              color: badge.fg,
-              border: `1px solid ${badge.border}`,
-            }}
-          >
-            {badge.label}
-          </span>
+
+        {/* Title */}
+        <div style={{ fontSize: 14, fontWeight: 700, color: "var(--sb-ink)", lineHeight: 1.3, marginBottom: 4 }}>
+          {event.url ? (
+            <a
+              href={event.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "inherit", textDecoration: "none" }}
+              onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+              onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+            >
+              {event.title}
+            </a>
+          ) : event.title}
+        </div>
+
+        {/* Meta row */}
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 8px", fontSize: 11, color: "var(--sb-muted)" }}>
+          {event.time && (
+            <span style={{ fontWeight: 600, color: "var(--sb-ink)", fontSize: 11 }}>
+              {formatTimeRange(event.time, event.endTime, event.category === "sports")}
+            </span>
+          )}
+          {event.time && (event.venue || event.city) && <span style={{ color: "var(--sb-border)" }}>·</span>}
+          {event.venue
+            ? <span>{event.venue}</span>
+            : <span>{cityLabel(event.city)}</span>
+          }
+          {event.venue && <span style={{ color: "var(--sb-border)" }}>·</span>}
+          {event.venue && <span>{cityLabel(event.city)}</span>}
+        </div>
+
+        {/* Description */}
+        {event.description && (
+          <p style={{ margin: "5px 0 0", fontSize: 11, lineHeight: 1.5, color: "var(--sb-muted)" }}>
+            {event.description}
+          </p>
         )}
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "4px 10px",
-          fontSize: 11,
-          color: "var(--sb-muted)",
-          marginBottom: 5,
-        }}
-      >
-        <span style={{ fontWeight: 600, color: "var(--sb-accent)" }}>📅 {event.displayDate}</span>
-        {event.time && <span>🕐 {formatTimeRange(event.time, event.endTime, event.category === "sports")}</span>}
-        <span>📍 {cityLabel(event.city)}</span>
-        {event.venue && <span>· {event.venue}</span>}
-        {event.kidFriendly && <span>👶 Kid-friendly</span>}
-      </div>
-
-      {event.description && (
-        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: "var(--sb-muted)" }}>
-          {event.description}
-        </p>
-      )}
-
-      <div style={{ marginTop: 4, fontSize: 10, color: "var(--sb-light)", fontFamily: "'Space Mono', monospace" }}>
-        via {event.source}
       </div>
     </div>
   );
@@ -199,49 +225,74 @@ function RecurringEventCard({ event }: { event: SBEvent }) {
   const badge = costBadge(event.cost);
   const now = new Date();
   const activeToday = isEventActiveToday(event, now);
+  const accent = CATEGORY_ACCENT[event.category] ?? CATEGORY_ACCENT.community;
 
   return (
     <div
       style={{
         background: "#fff",
         border: "1.5px solid var(--sb-border-light)",
+        borderLeft: `4px solid ${accent.color}`,
         borderRadius: "var(--sb-radius-lg, 6px)",
-        padding: "12px 14px",
+        padding: "11px 14px",
+        display: "flex",
+        gap: 12,
         transition: "box-shadow 0.15s",
       }}
       onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--sb-shadow-hover)")}
       onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 4 }}>
-        <span style={{ fontSize: 14, fontWeight: 700, color: "var(--sb-ink)", lineHeight: 1.3 }}>
-          {event.emoji} {event.url ? (
+      <div style={{
+        width: 32, height: 32, borderRadius: 6, flexShrink: 0,
+        background: accent.bg, display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 16, marginTop: 1,
+      }}>
+        {event.emoji}
+      </div>
+
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
+          <span style={{
+            fontSize: 9, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+            letterSpacing: "0.1em", textTransform: "uppercase", color: accent.color,
+          }}>
+            {accent.label}
+          </span>
+          <span style={{
+            flexShrink: 0, fontSize: 9, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+            letterSpacing: "0.04em", padding: "1px 5px", borderRadius: 3,
+            background: badge.bg, color: badge.fg, border: `1px solid ${badge.border}`,
+          }}>
+            {badge.label}
+          </span>
+          {activeToday && (
+            <span style={{ fontSize: 9, fontWeight: 700, color: "#16803C", fontFamily: "'Space Mono', monospace" }}>
+              ✓ TODAY
+            </span>
+          )}
+        </div>
+
+        <div style={{ fontSize: 14, fontWeight: 700, color: "var(--sb-ink)", lineHeight: 1.3, marginBottom: 4 }}>
+          {event.url ? (
             <a href={event.url} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "none" }}
               onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
               onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
             >{event.title}</a>
           ) : event.title}
-        </span>
-        <span
-          style={{
-            flexShrink: 0, fontSize: 10, fontWeight: 700,
-            fontFamily: "'Space Mono', monospace", letterSpacing: "0.04em",
-            padding: "2px 7px", borderRadius: 3,
-            background: badge.bg, color: badge.fg, border: `1px solid ${badge.border}`,
-          }}
-        >
-          {badge.label}
-        </span>
+        </div>
+
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 8px", fontSize: 11, color: "var(--sb-muted)", marginBottom: 4 }}>
+          <span style={{ fontWeight: 600 }}>{recurrenceLabel(event)}</span>
+          {event.time && <><span style={{ color: "var(--sb-border)" }}>·</span><span>{event.time}</span></>}
+          <span style={{ color: "var(--sb-border)" }}>·</span>
+          <span>{cityLabel(event.city)}</span>
+          {event.kidFriendly && <><span style={{ color: "var(--sb-border)" }}>·</span><span>👶 Kid-friendly</span></>}
+        </div>
+
+        <p style={{ margin: 0, fontSize: 11, lineHeight: 1.5, color: "var(--sb-muted)" }}>
+          {event.description}
+        </p>
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 10px", fontSize: 11, color: "var(--sb-muted)", marginBottom: 5 }}>
-        <span>📍 {cityLabel(event.city)}</span>
-        <span>📅 {recurrenceLabel(event)}</span>
-        {event.time && <span>🕐 {event.time}</span>}
-        {event.kidFriendly && <span>👶 Kid-friendly</span>}
-        {activeToday && <span style={{ color: "#16803C", fontWeight: 600 }}>✓ Today</span>}
-      </div>
-      <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: "var(--sb-muted)" }}>
-        {event.description}
-      </p>
     </div>
   );
 }
@@ -478,39 +529,29 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
             const isLater = label === "Later";
             const visible = isLater && !showAllLater ? events.slice(0, 50) : events;
             return (
-              <div key={label} style={{ marginBottom: 20 }}>
+              <div key={label} style={{ marginBottom: 24 }}>
                 {/* Date group header */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    marginBottom: 10,
-                    paddingBottom: 6,
-                    borderBottom: "2px solid var(--sb-border)",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 700,
-                      fontFamily: "'Space Mono', monospace",
-                      letterSpacing: "0.08em",
-                      textTransform: "uppercase",
-                      color: label === "Today" ? "var(--sb-accent)" : "var(--sb-muted)",
-                    }}
-                  >
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                  <span style={{
+                    fontSize: label === "Today" || label === "Tomorrow" ? 13 : 11,
+                    fontWeight: 800,
+                    fontFamily: "'Space Mono', monospace",
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    color: label === "Today" ? "var(--sb-accent)" : "var(--sb-ink)",
+                    ...(label === "Today" ? {
+                      background: "var(--sb-accent)",
+                      color: "#fff",
+                      padding: "2px 8px",
+                      borderRadius: 4,
+                    } : {}),
+                  }}>
                     {label}
                   </span>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      color: "var(--sb-light)",
-                      fontFamily: "'Space Mono', monospace",
-                    }}
-                  >
+                  <span style={{ fontSize: 10, color: "var(--sb-light)", fontFamily: "'Space Mono', monospace" }}>
                     {events.length} event{events.length !== 1 ? "s" : ""}
                   </span>
+                  <div style={{ flex: 1, height: 1, background: "var(--sb-border-light)" }} />
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {visible.map((event) => (

@@ -387,23 +387,6 @@ export const SOUTH_BAY_EVENTS: SBEvent[] = [
     emoji: "⛸️",
   },
   {
-    id: "great-america",
-    title: "Paramount's Great America",
-    city: "santa-clara",
-    venue: "Great America Theme Park",
-    address: "4701 Great America Pkwy, Santa Clara",
-    category: "family",
-    recurrence: "seasonal",
-    months: [3, 4, 5, 6, 7, 8, 9, 10],
-    cost: "paid",
-    costNote: "~$49+ general admission; season passes available",
-    kidFriendly: true,
-    description:
-      "The South Bay's major theme park with 40+ rides, a water park, and seasonal events. Open spring through fall.",
-    url: "https://www.cagreatamerica.com",
-    emoji: "🎡",
-  },
-  {
     id: "viva-calle-sj",
     title: "Viva CalleSJ",
     city: "san-jose",
