@@ -42,49 +42,28 @@ export const SOUTH_BAY_TEAMS: SouthBayTeam[] = [
     textColor: "#FF8844",
     primary: true,
   },
-  // College — football + basketball
   {
-    key: "stanford-fb",
-    name: "Stanford Cardinal",
-    shortName: "Stanford",
-    league: "ncaaf",
-    espnPath: "football/college-football",
-    abbreviation: "STAN",
-    color: "#8C1515",
-    textColor: "#CC4444",
+    key: "bay-fc",
+    name: "Bay FC",
+    shortName: "Bay FC",
+    league: "nwsl",
+    espnPath: "soccer/usa.nwsl",
+    abbreviation: "BAYFC",
+    displayNameMatch: "bay fc",
+    color: "#C4003C",
+    textColor: "#F5B014",
     primary: true,
   },
   {
-    key: "stanford-mbb",
-    name: "Stanford Cardinal",
-    shortName: "Stanford",
-    league: "ncaam",
-    espnPath: "basketball/mens-college-basketball",
-    abbreviation: "STAN",
-    color: "#8C1515",
-    textColor: "#CC4444",
-    primary: true,
-  },
-  {
-    key: "sjsu-fb",
-    name: "San Jose State Spartans",
-    shortName: "SJSU",
-    league: "ncaaf",
-    espnPath: "football/college-football",
-    abbreviation: "SJSU",
-    color: "#0055A2",
-    textColor: "#3388DD",
-    primary: true,
-  },
-  {
-    key: "sjsu-mbb",
-    name: "San Jose State Spartans",
-    shortName: "SJSU",
-    league: "ncaam",
-    espnPath: "basketball/mens-college-basketball",
-    abbreviation: "SJSU",
-    color: "#0055A2",
-    textColor: "#3388DD",
+    key: "sj-barracuda",
+    name: "San Jose Barracuda",
+    shortName: "Barracuda",
+    league: "ahl",
+    espnPath: "hockey/ahl",
+    abbreviation: "SJB",
+    displayNameMatch: "barracuda",
+    color: "#006D75",
+    textColor: "#00AAB5",
     primary: true,
   },
 
@@ -141,15 +120,15 @@ interface LeagueMeta {
 }
 
 export const LEAGUE_META: Record<string, LeagueMeta> = {
-  nhl: { key: "nhl", label: "NHL", espnPath: "hockey/nhl", order: 1 },
-  nba: { key: "nba", label: "NBA", espnPath: "basketball/nba", order: 2 },
-  wnba: { key: "wnba", label: "WNBA", espnPath: "basketball/wnba", order: 3 },
-  mlb: { key: "mlb", label: "MLB", espnPath: "baseball/mlb", order: 4 },
-  milb: { key: "milb", label: "MiLB", espnPath: "", order: 5 },
-  mls: { key: "mls", label: "MLS", espnPath: "soccer/usa.1", order: 6 },
-  nfl: { key: "nfl", label: "NFL", espnPath: "football/nfl", order: 7 },
-  ncaaf: { key: "ncaaf", label: "College FB", espnPath: "football/college-football", order: 8 },
-  ncaam: { key: "ncaam", label: "College BBall", espnPath: "basketball/mens-college-basketball", order: 9 },
+  nhl:  { key: "nhl",  label: "NHL",  espnPath: "hockey/nhl",                       order: 1 },
+  ahl:  { key: "ahl",  label: "AHL",  espnPath: "hockey/ahl",                       order: 2 },
+  nba:  { key: "nba",  label: "NBA",  espnPath: "basketball/nba",                   order: 3 },
+  wnba: { key: "wnba", label: "WNBA", espnPath: "basketball/wnba",                  order: 4 },
+  mlb:  { key: "mlb",  label: "MLB",  espnPath: "baseball/mlb",                     order: 5 },
+  milb: { key: "milb", label: "MiLB", espnPath: "",                                 order: 6 },
+  mls:  { key: "mls",  label: "MLS",  espnPath: "soccer/usa.1",                     order: 7 },
+  nwsl: { key: "nwsl", label: "NWSL", espnPath: "soccer/usa.nwsl",                  order: 8 },
+  nfl:  { key: "nfl",  label: "NFL",  espnPath: "football/nfl",                     order: 9 },
 };
 
 // ── ESPN helpers ──
@@ -160,22 +139,22 @@ const ESPN_BASE = "https://site.api.espn.com/apis/site/v2/sports";
 const LEAGUE_ACTIVE_MONTHS: Partial<Record<LeagueKey, number[]>> = {
   // NFL: Sep(9) – Feb(2)
   nfl: [1, 2, 9, 10, 11, 12],
-  // NCAAF: Sep(9) – Jan(1) + bowl games through Jan
-  ncaaf: [1, 9, 10, 11, 12],
   // MLB: Mar(3) – Oct(10) (spring training through postseason)
   mlb: [3, 4, 5, 6, 7, 8, 9, 10],
   // MiLB: Apr(4) – Sep(9)
   milb: [4, 5, 6, 7, 8, 9],
   // MLS: Feb(2) – Nov(11)
   mls: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+  // NWSL: Mar(3) – Oct(10)
+  nwsl: [3, 4, 5, 6, 7, 8, 9, 10],
   // NHL: Oct(10) – Jun(6)
   nhl: [1, 2, 3, 4, 5, 6, 10, 11, 12],
+  // AHL: Oct(10) – Jun(6)
+  ahl: [1, 2, 3, 4, 5, 6, 10, 11, 12],
   // NBA: Oct(10) – Jun(6)
   nba: [1, 2, 3, 4, 5, 6, 10, 11, 12],
   // WNBA: May(5) – Sep(9)
   wnba: [5, 6, 7, 8, 9],
-  // NCAAM basketball: Nov(11) – Apr(4) (includes March Madness)
-  ncaam: [1, 2, 3, 4, 11, 12],
 };
 
 /** Get unique ESPN paths we need to fetch, filtered to active seasons. */
@@ -196,6 +175,19 @@ export function espnScoreboardUrl(leaguePath: string): string {
   return `${ESPN_BASE}/${leaguePath}/scoreboard`;
 }
 
+function fmtDate(d: Date): string {
+  return d.toISOString().split("T")[0].replace(/-/g, "");
+}
+
+export function espnScoreboardRangeUrl(leaguePath: string, daysBack = 7, daysForward = 14): string {
+  const now = new Date();
+  const from = new Date(now);
+  from.setDate(from.getDate() - daysBack);
+  const to = new Date(now);
+  to.setDate(to.getDate() + daysForward);
+  return `${ESPN_BASE}/${leaguePath}/scoreboard?dates=${fmtDate(from)}-${fmtDate(to)}&limit=100`;
+}
+
 // ── MiLB Stats API helpers (for San Jose Giants) ──
 
 const MILB_STATS_BASE = "https://statsapi.mlb.com/api/v1";
@@ -205,6 +197,17 @@ const SJ_GIANTS_TEAM_ID = 476; // Verified via statsapi.mlb.com
 export function milbScheduleUrl(teamId: number = SJ_GIANTS_TEAM_ID): string {
   const today = new Date().toISOString().split("T")[0];
   return `${MILB_STATS_BASE}/schedule?sportId=14&teamId=${teamId}&date=${today}`;
+}
+
+export function milbScheduleRangeUrl(teamId: number = SJ_GIANTS_TEAM_ID, daysBack = 7, daysForward = 14): string {
+  const now = new Date();
+  const from = new Date(now);
+  from.setDate(from.getDate() - daysBack);
+  const to = new Date(now);
+  to.setDate(to.getDate() + daysForward);
+  const startDate = from.toISOString().split("T")[0];
+  const endDate = to.toISOString().split("T")[0];
+  return `${MILB_STATS_BASE}/schedule?sportId=14&teamId=${teamId}&startDate=${startDate}&endDate=${endDate}`;
 }
 
 // ── Abbreviation lookup for matching ESPN data ──
@@ -219,24 +222,17 @@ for (const team of SOUTH_BAY_TEAMS) {
 export function findSouthBayTeam(
   espnPath: string,
   abbreviation: string,
+  displayName?: string,
 ): SouthBayTeam | undefined {
-  return ABBR_TO_TEAM.get(`${espnPath}:${abbreviation}`);
-}
-
-/** College teams need special matching — ESPN uses different abbreviations. */
-const COLLEGE_ALIASES: Record<string, string> = {
-  STAN: "STAN",
-  SJSU: "SJSU",
-  SJS: "SJSU",
-};
-
-export function findCollegeTeam(abbreviation: string): SouthBayTeam | undefined {
-  const normalized = COLLEGE_ALIASES[abbreviation] ?? abbreviation;
-  return SOUTH_BAY_TEAMS.find(
-    (t) =>
-      (t.league === "ncaaf" || t.league === "ncaam") &&
-      t.abbreviation === normalized,
-  );
+  const byAbbr = ABBR_TO_TEAM.get(`${espnPath}:${abbreviation}`);
+  if (byAbbr) return byAbbr;
+  if (displayName) {
+    const dl = displayName.toLowerCase();
+    return SOUTH_BAY_TEAMS.find(
+      (t) => t.espnPath === espnPath && t.displayNameMatch && dl.includes(t.displayNameMatch.toLowerCase()),
+    );
+  }
+  return undefined;
 }
 
 export { REFRESH_MS, TIMEZONE };

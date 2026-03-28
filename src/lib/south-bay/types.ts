@@ -39,14 +39,16 @@ export const TABS: TabDef[] = [
 
 export type LeagueKey =
   | "nhl"
+  | "ahl"
   | "nba"
-  | "mlb"
-  | "nfl"
-  | "mls"
   | "wnba"
+  | "mlb"
+  | "milb"
+  | "mls"
+  | "nwsl"
+  | "nfl"
   | "ncaaf"
-  | "ncaam"
-  | "milb";
+  | "ncaam";
 
 export interface SouthBayTeam {
   key: string;
@@ -55,6 +57,7 @@ export interface SouthBayTeam {
   league: LeagueKey;
   espnPath: string; // e.g. "hockey/nhl"
   abbreviation: string; // ESPN abbreviation to match against
+  displayNameMatch?: string; // fallback matching against ESPN displayName
   color: string;
   textColor: string;
   primary?: boolean; // true = San Jose / local team

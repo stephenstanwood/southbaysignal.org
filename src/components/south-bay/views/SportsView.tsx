@@ -4,13 +4,12 @@ import {
   SOUTH_BAY_TEAMS,
   LEAGUE_META,
   getEspnPaths,
-  espnScoreboardUrl,
+  espnScoreboardRangeUrl,
   findSouthBayTeam,
-  findCollegeTeam,
-  milbScheduleUrl,
+  milbScheduleRangeUrl,
   REFRESH_MS,
 } from "../../../lib/south-bay/teams";
-import GameCard from "../cards/GameCard";
+import type { SouthBayTeam } from "../../../lib/south-bay/types";
 
 // ── ESPN data parsing ──
 
@@ -53,20 +52,15 @@ function parseEspnGames(espnPath: string, data: unknown): ParsedGame[] {
 
     const homeAbbr = home.team?.abbreviation ?? "";
     const awayAbbr = away.team?.abbreviation ?? "";
+    const homeDisplay = home.team?.displayName ?? "";
+    const awayDisplay = away.team?.displayName ?? "";
 
-    // Check if either team is a South Bay team
-    const isCollege =
-      espnPath.includes("college-football") ||
-      espnPath.includes("college-basketball");
+    const sbTeam =
+      findSouthBayTeam(espnPath, homeAbbr, homeDisplay) ??
+      findSouthBayTeam(espnPath, awayAbbr, awayDisplay);
 
-    let sbTeam = isCollege
-      ? findCollegeTeam(homeAbbr) ?? findCollegeTeam(awayAbbr)
-      : findSouthBayTeam(espnPath, homeAbbr) ??
-        findSouthBayTeam(espnPath, awayAbbr);
+    if (!sbTeam) continue;
 
-    if (!sbTeam) continue; // skip games without a south bay team
-
-    // Determine league key from the team
     const leagueKey = sbTeam.league;
     const meta = LEAGUE_META[leagueKey];
 
@@ -77,7 +71,7 @@ function parseEspnGames(espnPath: string, data: unknown): ParsedGame[] {
       .filter(Boolean) as string[];
 
     const isSBHome =
-      (isCollege ? findCollegeTeam(homeAbbr) : findSouthBayTeam(espnPath, homeAbbr)) != null;
+      findSouthBayTeam(espnPath, homeAbbr, homeDisplay) != null;
 
     games.push({
       id: e.id ?? `${homeAbbr}-${awayAbbr}`,
@@ -116,8 +110,7 @@ function parseMilbGames(data: unknown): ParsedGame[] {
   if (!sjTeam) return games;
 
   for (const dateEntry of dates) {
-    const dayGames =
-      (dateEntry as { games?: unknown[] })?.games ?? [];
+    const dayGames = (dateEntry as { games?: unknown[] })?.games ?? [];
     for (const g of dayGames) {
       const game = g as {
         gamePk?: number;
@@ -143,17 +136,12 @@ function parseMilbGames(data: unknown): ParsedGame[] {
 
       const abstractState = game.status?.abstractGameState ?? "Preview";
       const status: "pre" | "in" | "post" =
-        abstractState === "Live"
-          ? "in"
-          : abstractState === "Final"
-            ? "post"
-            : "pre";
+        abstractState === "Live" ? "in" : abstractState === "Final" ? "post" : "pre";
 
       const homeRec = home.leagueRecord;
       const awayRec = away.leagueRecord;
       const isHome =
-        home.team.abbreviation === "SJ" ||
-        (home.team.name?.includes("San Jose") ?? false);
+        home.team.abbreviation === "SJ" || (home.team.name?.includes("San Jose") ?? false);
 
       games.push({
         id: `milb-${game.gamePk ?? Math.random()}`,
@@ -165,10 +153,8 @@ function parseMilbGames(data: unknown): ParsedGame[] {
         awayAbbr: away.team.abbreviation ?? "",
         homeScore: home.score,
         awayScore: away.score,
-        homeRecord:
-          homeRec ? `${homeRec.wins}-${homeRec.losses}` : undefined,
-        awayRecord:
-          awayRec ? `${awayRec.wins}-${awayRec.losses}` : undefined,
+        homeRecord: homeRec ? `${homeRec.wins}-${homeRec.losses}` : undefined,
+        awayRecord: awayRec ? `${awayRec.wins}-${awayRec.losses}` : undefined,
         homeColor: isHome ? sjTeam.color : "#888",
         awayColor: !isHome ? sjTeam.color : "#888",
         status,
@@ -184,10 +170,132 @@ function parseMilbGames(data: unknown): ParsedGame[] {
   return games;
 }
 
-// ── Component ──
+// ── Mini game row (compact schedule style) ──
+
+function formatShortDate(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString("en-US", {
+      month: "short", day: "numeric", timeZone: "America/Los_Angeles",
+    });
+  } catch { return ""; }
+}
+
+function formatGameTime(iso: string): string {
+  try {
+    return new Date(iso).toLocaleTimeString("en-US", {
+      hour: "numeric", minute: "2-digit", hour12: true, timeZone: "America/Los_Angeles",
+    });
+  } catch { return ""; }
+}
+
+function MiniGameRow({ game }: { game: ParsedGame }) {
+  const isLive = game.status === "in";
+  const isFinal = game.status === "post";
+  const sbHome = game.isSouthBayHome;
+
+  const prefix = sbHome ? "vs" : "@";
+  const oppAbbr = sbHome ? game.awayAbbr : game.homeAbbr;
+  const opponent = `${prefix} ${oppAbbr}`;
+
+  let result: React.ReactNode;
+  if (isLive) {
+    result = (
+      <span style={{ color: "#ef4444", fontWeight: 700, fontSize: 11 }}>
+        ● {game.statusDetail}
+      </span>
+    );
+  } else if (isFinal) {
+    const sbScore = sbHome ? game.homeScore : game.awayScore;
+    const oppScore = sbHome ? game.awayScore : game.homeScore;
+    const won = (sbScore ?? 0) > (oppScore ?? 0);
+    result = (
+      <span style={{ color: won ? "#16a34a" : "#dc2626", fontWeight: 700, fontSize: 11, fontFamily: "'Space Mono', monospace" }}>
+        {won ? "W" : "L"} {sbScore}–{oppScore}
+      </span>
+    );
+  } else {
+    result = (
+      <span style={{ color: "var(--sb-muted)", fontSize: 11, fontFamily: "'Space Mono', monospace" }}>
+        {formatGameTime(game.startTime)}
+      </span>
+    );
+  }
+
+  return (
+    <div style={{
+      display: "flex", alignItems: "center", gap: 8,
+      padding: "5px 0",
+      borderBottom: "1px solid var(--sb-border-light)",
+      opacity: isFinal ? 0.72 : 1,
+    }}>
+      <span style={{ fontSize: 10, color: "var(--sb-muted)", minWidth: 46, flexShrink: 0, fontFamily: "'Space Mono', monospace" }}>
+        {formatShortDate(game.startTime)}
+      </span>
+      <span style={{ flex: 1, fontSize: 12, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "var(--sb-ink)" }}>
+        {opponent}
+      </span>
+      <span>{result}</span>
+    </div>
+  );
+}
+
+// ── Team schedule card ──
+
+function TeamScheduleCard({ team, games }: { team: SouthBayTeam; games: ParsedGame[] }) {
+  const todayMs = new Date().setHours(0, 0, 0, 0);
+
+  // Split into past / live / future
+  const live = games.filter((g) => g.status === "in");
+  const past = games
+    .filter((g) => g.status === "post" || (g.status !== "in" && new Date(g.startTime).getTime() < todayMs))
+    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+    .slice(-2); // last 2 results
+  const upcoming = games
+    .filter((g) => g.status === "pre" && new Date(g.startTime).getTime() >= todayMs)
+    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+    .slice(0, 2); // next 2 games
+
+  const displayed = [...past, ...live, ...upcoming];
+  const leagueLabel = LEAGUE_META[team.league]?.label ?? team.league.toUpperCase();
+
+  return (
+    <div style={{
+      background: "var(--sb-card)",
+      border: "1px solid var(--sb-border-light)",
+      borderRadius: "var(--sb-radius)",
+      padding: "12px 14px",
+      display: "flex",
+      flexDirection: "column",
+    }}>
+      {/* Team header */}
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        marginBottom: 8, paddingBottom: 7,
+        borderBottom: `2px solid ${team.color}20`,
+      }}>
+        <span style={{ fontWeight: 700, fontSize: 13, color: team.color, letterSpacing: "0.02em" }}>
+          {team.shortName}
+        </span>
+        <span style={{ fontSize: 10, fontFamily: "'Space Mono', monospace", color: "var(--sb-muted)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          {leagueLabel}
+        </span>
+      </div>
+
+      {displayed.length > 0 ? (
+        displayed.map((g) => <MiniGameRow key={g.id} game={g} />)
+      ) : (
+        <div style={{ fontSize: 11, color: "var(--sb-muted)", fontStyle: "italic", padding: "6px 0" }}>
+          No games in this window
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Main component ──
 
 export default function SportsView() {
-  const [games, setGames] = useState<ParsedGame[]>([]);
+  const [gamesByTeam, setGamesByTeam] = useState<Map<string, ParsedGame[]>>(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -197,46 +305,34 @@ export default function SportsView() {
       const paths = getEspnPaths();
       const results = await Promise.allSettled(
         paths.map(async (path) => {
-          const res = await fetch(espnScoreboardUrl(path));
+          const res = await fetch(espnScoreboardRangeUrl(path, 7, 14));
           if (!res.ok) throw new Error(`ESPN ${path}: ${res.status}`);
           const data = await res.json();
           return parseEspnGames(path, data);
         }),
       );
 
-      // Also fetch MiLB (San Jose Giants) from MLB Stats API
+      // MiLB (San Jose Giants) — date range
       let milbGames: ParsedGame[] = [];
       try {
-        const milbRes = await fetch(milbScheduleUrl());
-        if (milbRes.ok) {
-          const milbData = await milbRes.json();
-          milbGames = parseMilbGames(milbData);
-        }
-      } catch {
-        // MiLB fetch is best-effort — don't block on failure
-      }
+        const milbRes = await fetch(milbScheduleRangeUrl());
+        if (milbRes.ok) milbGames = parseMilbGames(await milbRes.json());
+      } catch { /* best-effort */ }
 
       const allGames: ParsedGame[] = [...milbGames];
       for (const result of results) {
-        if (result.status === "fulfilled") {
-          allGames.push(...result.value);
-        }
+        if (result.status === "fulfilled") allGames.push(...result.value);
       }
 
-      // Sort: live first, then upcoming, then final
-      const statusOrder: Record<string, number> = { in: 0, pre: 1, post: 2 };
-      allGames.sort((a, b) => {
-        const sa = statusOrder[a.status] ?? 1;
-        const sb = statusOrder[b.status] ?? 1;
-        if (sa !== sb) return sa - sb;
-        // Within same status, sort by league order, then time
-        const la = LEAGUE_META[a.league]?.order ?? 99;
-        const lb = LEAGUE_META[b.league]?.order ?? 99;
-        if (la !== lb) return la - lb;
-        return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
-      });
+      // Group by south bay team key
+      const byTeam = new Map<string, ParsedGame[]>();
+      for (const g of allGames) {
+        const list = byTeam.get(g.southBayTeamKey) ?? [];
+        list.push(g);
+        byTeam.set(g.southBayTeamKey, list);
+      }
 
-      setGames(allGames);
+      setGamesByTeam(byTeam);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load scores");
@@ -270,21 +366,8 @@ export default function SportsView() {
         <div className="sb-empty-title">Could not load scores</div>
         <div className="sb-empty-sub">{error}</div>
         <button
-          onClick={() => {
-            setLoading(true);
-            fetchAllScores();
-          }}
-          style={{
-            marginTop: 12,
-            padding: "8px 16px",
-            background: "var(--sb-primary)",
-            color: "white",
-            border: "none",
-            borderRadius: 6,
-            cursor: "pointer",
-            fontWeight: 600,
-            fontSize: 13,
-          }}
+          onClick={() => { setLoading(true); fetchAllScores(); }}
+          style={{ marginTop: 12, padding: "8px 16px", background: "var(--sb-primary)", color: "white", border: "none", borderRadius: 6, cursor: "pointer", fontWeight: 600, fontSize: 13 }}
         >
           Retry
         </button>
@@ -292,32 +375,11 @@ export default function SportsView() {
     );
   }
 
-  if (games.length === 0) {
-    return (
-      <div className="sb-empty">
-        <div className="sb-empty-title">No games today</div>
-        <div className="sb-empty-sub">
-          Check back when your teams are playing
-        </div>
-      </div>
-    );
-  }
+  // Split teams into South Bay local and broader Bay Area
+  const localTeams = SOUTH_BAY_TEAMS.filter((t) => t.primary);
+  const bayAreaTeams = SOUTH_BAY_TEAMS.filter((t) => !t.primary);
 
-  // Group games by league
-  const grouped = new Map<LeagueKey, ParsedGame[]>();
-  for (const game of games) {
-    const list = grouped.get(game.league) ?? [];
-    list.push(game);
-    grouped.set(game.league, list);
-  }
-
-  // Sort league groups by LEAGUE_META order
-  const sortedLeagues = [...grouped.entries()].sort(
-    ([a], [b]) =>
-      (LEAGUE_META[a]?.order ?? 99) - (LEAGUE_META[b]?.order ?? 99),
-  );
-
-  const liveCount = games.filter((g) => g.status === "in").length;
+  const liveCount = [...gamesByTeam.values()].flat().filter((g) => g.status === "in").length;
 
   return (
     <>
@@ -333,18 +395,37 @@ export default function SportsView() {
         <div className="sb-section-line" />
       </div>
 
-      {sortedLeagues.map(([league, leagueGames]) => (
-        <div key={league} className="sb-league-group">
-          <div className="sb-league-label">
-            {LEAGUE_META[league]?.label ?? league}
-          </div>
-          <div className="sb-games-grid">
-            {leagueGames.map((game) => (
-              <GameCard key={game.id} game={game} />
-            ))}
-          </div>
+      {/* South Bay local teams */}
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, fontFamily: "'Space Mono', monospace", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--sb-muted)", marginBottom: 10 }}>
+          South Bay
         </div>
-      ))}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
+          {localTeams.map((team) => (
+            <TeamScheduleCard
+              key={team.key}
+              team={team}
+              games={gamesByTeam.get(team.key) ?? []}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Bay Area teams */}
+      <div style={{ marginBottom: 8, marginTop: 20 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, fontFamily: "'Space Mono', monospace", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--sb-muted)", marginBottom: 10 }}>
+          Bay Area
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
+          {bayAreaTeams.map((team) => (
+            <TeamScheduleCard
+              key={team.key}
+              team={team}
+              games={gamesByTeam.get(team.key) ?? []}
+            />
+          ))}
+        </div>
+      </div>
     </>
   );
 }

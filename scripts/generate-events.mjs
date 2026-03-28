@@ -225,13 +225,12 @@ function inferCity(location, address) {
   return null;
 }
 
-function inferCategory(title, desc, type) {
-  const t = `${title} ${desc} ${type}`.toLowerCase();
+function inferCategory(title, desc, type, venue = "") {
+  const t = `${title} ${desc} ${type} ${venue}`.toLowerCase();
   if (t.includes("story time") || t.includes("storytime") || t.includes("toddler") || t.includes("baby") || t.includes("preschool") || t.includes("kids") || t.includes("children")) return "family";
   if (t.includes("concert") || t.includes("music") || t.includes("jazz") || t.includes("symphony") || t.includes("band") || t.includes("orchestra") || t.includes("choir")) return "music";
-  // sports before arts to avoid false positives (e.g. "golf" → "community" not "arts")
-  if (t.includes("game") || t.includes("sport") || t.includes("athletic") || t.includes("golf") || t.includes("tennis") || t.includes("soccer") || t.includes("basketball") || t.includes("baseball") || t.includes("softball") || t.includes("volleyball") || t.includes("swimming") || t.includes("swim meet") || t.includes("track") || t.includes("cross country") || t.includes("lacrosse") || t.includes("football") || t.includes("gymnastics") || t.includes("wrestling") || t.includes("water polo") || t.includes("polo") || t.includes("hockey") || t.includes("rugby") || t.includes("rowing") || t.includes("crew") || t.includes("diving") || t.includes("fencing") || t.includes("skiing") || t.includes("snowboard") || t.includes("cycling") || t.includes("equestrian") || t.includes("vs.") || t.includes("vs ") || t.includes("run") || t.includes("race") || t.includes("marathon") || t.includes("5k") || t.includes("triathlon")) return "sports";
   if (t.includes("exhibit") || t.includes("gallery") || t.includes("theater") || t.includes("theatre") || t.includes("film") || t.includes("cinema") || t.includes("dance") || t.includes("performance") || t.includes("museum") || (t.includes("art") && !t.includes("martial art") && !t.includes("start"))) return "arts";
+  if (t.includes("game") || t.includes("sport") || t.includes("athletic") || t.includes("golf") || t.includes("tennis") || t.includes("soccer") || t.includes("basketball") || t.includes("baseball") || t.includes("softball") || t.includes("volleyball") || t.includes("swimming") || t.includes("swim meet") || t.includes("track") || t.includes("cross country") || t.includes("lacrosse") || t.includes("football") || t.includes("gymnastics") || t.includes("wrestling") || t.includes("water polo") || t.includes("polo") || t.includes("hockey") || t.includes("rugby") || /\browing\b/.test(t) || t.includes("crew") || t.includes("diving") || t.includes("fencing") || t.includes("skiing") || t.includes("snowboard") || t.includes("cycling") || t.includes("equestrian") || t.includes("vs.") || t.includes("vs ") || t.includes("run") || t.includes("race") || t.includes("marathon") || t.includes("5k") || t.includes("triathlon")) return "sports";
   if (t.includes("market") || t.includes("fair") || t.includes("vendor") || t.includes("craft")) return "market";
   if (t.includes("hike") || t.includes("hiking") || t.includes("outdoor") || t.includes("garden") || t.includes("nature") || t.includes("trail") || t.includes("park")) return "outdoor";
   if (t.includes("book") || t.includes("reading") || t.includes("lecture") || t.includes("workshop") || t.includes("class") || t.includes("learn") || t.includes("seminar") || t.includes("talk") || t.includes("stem") || t.includes("science") || t.includes("coding") || t.includes("tech")) return "education";
@@ -512,7 +511,7 @@ async function fetchChmEvents() {
         venue: "Computer History Museum",
         address: "1401 N Shoreline Blvd, Mountain View",
         city: "mountain-view",
-        category: inferCategory(item.title, item.description, ""),
+        category: inferCategory(item.title, item.description, "", "Computer History Museum"),
         cost: "paid",
         description: truncate(stripHtml(item.description || item.content)),
         url: item.link,
