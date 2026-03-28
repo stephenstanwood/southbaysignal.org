@@ -14,6 +14,9 @@ export default defineConfig({
   vite: {
     // @ts-ignore - tailwindcss/vite type mismatch with astro's bundled vite
     plugins: [tailwindcss()],
+    esbuild: {
+      jsxInject: `import React from 'react'`,
+    },
     server: {
       fs: {
         allow: ['..']
