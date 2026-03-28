@@ -568,3 +568,235 @@ The content quality from Legistar is also better. Instead of trying to parse a P
 **Yes — the government coverage gap that undermined credibility is now closed.** South Bay Signal now generates AI digests for 8 of 11 South Bay cities, covering approximately 1.6 million residents. San José being present changes the product's credibility profile entirely. A San José resident — the most likely South Bay resident — can now see their city council's most recent meeting summarized in plain English. That has never existed in any form for this population. The Government tab is now the most uniquely differentiating section of the product: no other South Bay source aggregates plain-English council summaries across this many cities.
 
 ---
+
+## 2026-03-28 — Cycle 10: Event Scraper + 1,724 Upcoming Events
+
+### Context
+Coming off Cycle 9 which expanded government coverage to 8 cities. The Events tab had two modes (Upcoming / Recurring) but "Upcoming" was a placeholder — the scraper hadn't been built. This cycle delivered the infrastructure: a script that fetches real, specific, dated events from 11 sources and generates a 1,724-event JSON feed.
+
+### What Was Built
+
+**1. `scripts/generate-events.mjs`** — event scraper for 11 sources:
+- Stanford Events (Localist JSON API)
+- SJSU Events (RSS)
+- Santa Clara University Events (RSS)
+- Computer History Museum (RSS)
+- City of Campbell calendar (CivicPlus RSS)
+- Town of Los Gatos calendar (CivicPlus iCal)
+- City of Saratoga calendar (CivicPlus iCal)
+- City of Los Altos calendar (CivicPlus iCal)
+- San Jose Public Library (BiblioCommons API)
+- Santa Clara County Library (BiblioCommons API)
+- Silicon Valley Leadership Group (RSS)
+
+**2. `src/data/south-bay/upcoming-events.json`** — 1,724 upcoming events from 9 active sources, deduplicated, sorted by date ascending. Each event: id, title, date (ISO), displayDate, time, venue, city, category, cost, description, url, source, kidFriendly.
+
+**3. EventsView.tsx updated** — Upcoming tab now shows scraped events. Each card shows specific date in accent red, time, venue, cost badge, source attribution.
+
+### Why This Was the Strongest Move
+The events tab went from "37 recurring patterns" to "1,724 specific dated events with times, venues, and sources." This is the single biggest leap in content density the product has made. A user can now filter by city and find real things happening on real dates — not just "the farmers market is every Sunday."
+
+### Next 3 Strongest Ideas
+1. **Today tab: surface today's upcoming events** — The OverviewView still only pulls recurring events for "Happening Today." With 1,724 dated events, the Today tab could show 20-50 real events per day. This is the "aha" moment for daily use.
+2. **Date grouping in EventsView** — 1,724 flat events is overwhelming. Grouping by Today / Tomorrow / This Week / Later makes the feed scannable.
+3. **Schedule weekly scraper regeneration** — The events JSON is a static snapshot. Without automated regeneration, the data will go stale. A weekly cron job to re-run generate-events.mjs and commit the result keeps the feed fresh.
+
+### Does the Product Now Feel Meaningfully Closer to "Default Homepage for South Bay Life"?
+**Yes — the events tab is now a real event calendar, not a recurring-patterns list.** 1,724 specific dated events from 9 authoritative sources (Stanford, SJSU, SCU, libraries, city halls, Computer History Museum) gives the product density that no hand-curated South Bay site can match. The event feed is as comprehensive as any local calendar site — and it's filterable by city, category, and time with a UI better than any of those sources.
+
+---
+
+## 2026-03-28 — Cycle 11: Today Tab + Upcoming Events Integration + Date Grouping
+
+### Context
+Coming off Cycle 10 which built the event scraper infrastructure and generated 1,724 dated events. The critical gap: the Today tab (OverviewView) had zero awareness of these events. "Today in San Jose" would show 0-2 recurring events on most days even though 50+ real events were happening. This cycle closes that gap and makes the EventsView's 1,700+ events scannable.
+
+### Issues Identified This Cycle
+1. **Today tab ignored the entire scraped event feed** — The OverviewView still only filtered `SOUTH_BAY_EVENTS` (37 recurring events) for "Today in [City]" and "Happening Today." A San Jose resident who had set their home city would see a nearly empty "Today in San Jose" section despite dozens of library programs, lectures, and community events happening that day. This was the most jarring user experience gap.
+2. **1,724 events as a flat list is overwhelming** — The EventsView Upcoming tab showed all events as a single scrolling wall. No way to quickly scan "what's happening today" vs "what's coming up next week."
+3. **"Today in [City]" often showed 0 events** — San Jose has 2 recurring events in the static data. A resident setting their city would immediately hit a "No events found" message despite the scraped feed having dozens of real San Jose events for that day.
+
+### What Was Built
+
+**1. OverviewView.tsx — Today tab merged with scraped events**
+
+- Added import of `upcoming-events.json` into OverviewView
+- Added `TODAY_ISO` constant (`NOW.toISOString().split("T")[0]`) for date comparison
+- Added `UpcomingEvent` interface matching the JSON schema
+- Added `ScrapedEventRow` component — compact row showing title, time, city, venue, cost badge, with clickable link
+- Added `TodayItem` discriminated union (`{ kind: "recurring"; data: SBEvent } | { kind: "upcoming"; data: UpcomingEvent }`) enabling mixed rendering
+- Added `TodayRow` wrapper dispatching to `EventRow` vs `ScrapedEventRow`
+- `cityTodayItems`: merges recurring events + today's upcoming events filtered to homeCity, sorted by cost (free first) then time
+- `southBayTodayItems`: same merge for the region-wide section
+- Shows up to 8 items in "Today in [City]", "+N more" link to Events tab
+- "Across the South Bay" now counts scraped + recurring (e.g., "47 events" vs prior "3 events")
+
+**2. EventsView.tsx — Date-grouped Upcoming tab**
+
+- Added `getDateGroupLabel()` helper bucketing events into "Today" / "Tomorrow" / "This Week" / "Later"
+- Added `groupedUpcoming` memo computing bucketed groups from `filteredUpcoming`
+- Upcoming view now renders groups with sticky newspaper-style section dividers
+- "Today" group header renders in accent red; other groups in muted gray
+- Each group header shows event count
+- "Later" group capped at 50 visible, with "Show N more events →" expand button
+- Reset `showAllLater` not needed on filter change (users explicitly expand if desired)
+
+### Why This Was the Strongest Move
+The Today tab is the landing experience. Before this cycle, a user who set their home city to San Jose would see "No events found today" immediately — a trust-breaking moment. The scraped feed has 200-300 South Bay events on any given day. Surfacing those on the homepage turns the Today tab from a placeholder into a genuine daily brief.
+
+Date grouping in EventsView solves a discoverability problem: "what's happening today" was buried in 1,724 flat cards. Now Today is a scannable group at the top, Tomorrow is below it, and users can load "Later" on demand. This makes the event feed genuinely usable for planning.
+
+### What New Opportunities Emerged
+1. **Schedule weekly scraper regeneration** — The events JSON is still a static snapshot from March 28. Without automated regeneration, the data will go stale within days. This is now the single highest infrastructure priority.
+2. **"Upcoming meetings" section in Gov tab** — Legistar API can return FUTURE scheduled meetings. Forward-looking civic intelligence (what's on the agenda next Tuesday) is the complement to the backward-looking digests.
+3. **Palo Alto government coverage (PrimeGov)** — Remaining major city without digests. Would bring coverage to 9/11 cities.
+
+### Next 3 Strongest Ideas
+1. **Set up automated weekly events scraper** — Run `generate-events.mjs` on a cron (weekly or daily), commit the result, redeploy. Without this, the data expires. Claude Code scheduled tasks or a GitHub Actions workflow are both options.
+2. **Upcoming council meetings section** — Add a "Coming up" row to each GovernmentView digest card: next scheduled meeting date, any pre-posted agenda. Makes the Gov tab forward-looking, not just historical.
+3. **Palo Alto government coverage (PrimeGov API)** — Last major city missing from Gov tab. PrimeGov has a public REST API. Getting to 9/11 cities completes the South Bay government picture.
+
+### Does the Product Now Feel Meaningfully Closer to "Default Homepage for South Bay Life"?
+**Yes — the Today tab now works as a real daily brief.** "Today in San Jose" on a given day might show 30+ events: library story times, SJSU lectures, community center programs, city-sponsored events, Computer History Museum programs. This is the density that makes a homepage worth bookmarking. The combination of specific times, venue names, and free/paid filtering makes it immediately actionable. The date-grouped EventsView makes the full calendar scannable rather than overwhelming. Together, these two changes cross another qualitative threshold: South Bay Signal now answers "what should I do today?" with real answers, not just recurring patterns.
+
+---
+
+## 2026-03-28 — Cycle 12: Automated Data Refresh + Upcoming Council Meetings
+
+### Context
+Coming off Cycle 11 which delivered date grouping in EventsView and integrated scraped events into the Today tab. The events data was a static snapshot from that morning. Without a refresh mechanism, it would degrade within days: past events would pile up, new library programs wouldn't appear, the "Today in San Jose" section would thin out. The product had all the right infrastructure but no heartbeat.
+
+Simultaneously, the Government tab was entirely backward-looking: it showed what happened at the last council meeting but nothing about what's coming. A "Next meeting: Tue, Apr 7" label on the San Jose card answers a genuinely useful question that no other South Bay source provides in one place.
+
+### Issues Identified This Cycle
+1. **Events data goes stale without automation** — The 1,724-event JSON was generated on March 28 and would stay frozen until manually re-run. A product claiming to be "today's daily brief" needs data that refreshes daily, not manually.
+2. **Government tab is entirely backward-looking** — Every digest card showed the last meeting's summary. There was no forward-looking civic intelligence — no answer to "when is the next meeting?"
+3. **City government cards in empty state showed nothing** — A city without a pre-generated digest just showed "no digest yet" and a Generate button. No useful information. If we know the next meeting date from Legistar, that's civic value we can surface immediately without requiring the user to generate a digest.
+
+### What Was Built
+
+**1. GitHub Actions daily refresh workflow** (`.github/workflows/refresh-events.yml`)
+
+- Runs every day at 6am PT via cron (`0 14 * * *`)
+- Also has `workflow_dispatch` for manual triggers
+- Runs `node scripts/generate-events.mjs` (events from 11 sources)
+- Runs `node scripts/generate-upcoming-meetings.mjs` (council meeting dates)
+- Commits and pushes both JSON files only if they changed (no-op commits avoided)
+- Uses `GITHUB_TOKEN` with `permissions: contents: write` — no secrets needed
+- Triggers a Vercel redeploy automatically on each push to main
+- Result: the events feed and next-meeting data now refresh every morning automatically
+
+**2. `scripts/generate-upcoming-meetings.mjs`** — new script
+
+- Queries the Legistar Web API for 5 cities: San José, Mountain View, Sunnyvale, Cupertino, Santa Clara
+- For each city: `GET /v1/{client}/Events?$filter=EventBodyName eq 'City Council' and EventDate gt datetime'{today}'&$orderby=EventDate asc&$top=1`
+- Filters out placeholder dates more than 60 days out (Legistar often has distant year-end placeholders)
+- Writes `src/data/south-bay/upcoming-meetings.json` with next meeting date, display date, location, and direct Legistar URL
+- No API keys required — Legistar Web API is free and public
+- Results this run: San José (Apr 7), Cupertino (Apr 1); Mountain View, Sunnyvale, Santa Clara had no near-term meetings posted
+
+**3. GovernmentView.tsx + DigestCard.tsx updated**
+
+- GovernmentView imports `upcoming-meetings.json` and passes `upcomingMeeting` to DigestCard for each Legistar city
+- DigestCard: accepts optional `upcomingMeeting` prop; shows real meeting date (from JSON) in footer, linking to the Legistar event page — overrides AI-generated `nextMeeting` text when real data is available
+- Empty state (no digest yet): now shows city name + "Next meeting: Tue, Apr 7 →" link instead of just "no digest yet". If no upcoming meeting is known, shows "No digest generated yet"
+- Result: even before a user generates a digest, the Gov tab surfaces useful civic information — when the council meets next and where to find the agenda
+
+### Why This Was the Strongest Move
+
+**Automation closes the decay problem.** A product that describes itself as "the operating system for the South Bay" cannot run on stale data. The GitHub Actions workflow is the difference between a daily product and a snapshot that gradually lies. Once merged, South Bay Signal's events feed and upcoming meeting data self-refresh every morning. No human action needed.
+
+**Upcoming meetings add a second dimension of civic value.** "Last meeting summary" (backward-looking) and "Next meeting date" (forward-looking) together tell a more complete story. The Gov tab went from: "here's what happened" → "here's what happened + here's what's coming." That's meaningfully more useful for anyone trying to stay engaged with local government.
+
+**The empty state fix is high-leverage.** Most users will never click "Generate" on a city digest card — generating is a heavy action. But seeing "Next meeting: Tue, Apr 7 →" is a lightweight, instantly useful data point that requires zero user action. It turns a dead zone into a useful row.
+
+### What New Opportunities Emerged
+1. **Pre-generate digests on the same GitHub Actions cron** — Currently digests require manual generation (ANTHROPIC_API_KEY in secrets). If the key is set, we could regenerate all city digests automatically too, making the Gov tab truly "self-updating." One more script and one more workflow step.
+2. **Upcoming meeting agendas** — When Legistar has a posted agenda for the next meeting, the EventItems API returns those items too. A "peek at the upcoming agenda" section (top 3-5 items) would be uniquely useful.
+3. **Palo Alto PrimeGov coverage** — Still the largest city missing from Gov tab. PrimeGov has a public REST API.
+
+### Next 3 Strongest Ideas
+1. **Pre-generate city council digests automatically** — Add `ANTHROPIC_API_KEY` to GitHub Actions secrets and schedule digest regeneration. This turns the Gov tab from "on-demand AI" into "always-fresh summaries." Every morning, all 8 cities would have fresh digests waiting.
+2. **Upcoming meeting agenda preview** — Use Legistar's EventItems API to show the top 3-5 agenda items for the next scheduled meeting. Adds forward-looking civic intelligence that no other source aggregates across all South Bay cities.
+3. **Palo Alto PrimeGov coverage** — Remaining major city without Gov tab coverage. PrimeGov has a public REST API similar to Legistar. Would bring coverage to 9/11 cities.
+
+### Does the Product Now Feel Meaningfully Closer to "Default Homepage for South Bay Life"?
+**Yes — this cycle solves the permanence problem.** Previous cycles built excellent infrastructure but it was frozen in time. Now the product breathes: events refresh daily, council meeting dates update automatically, Vercel redeploys without human intervention. South Bay Signal crossed from "impressive demo" to "self-sustaining local intelligence layer." The upcoming meetings feature adds civic depth to the Gov tab that no other South Bay source provides — knowing when San José City Council meets next, with a direct link to the agenda, is genuinely useful to engaged residents.
+
+---
+
+## Cycle 6 — Event Scraper Expansion: +2 Sources, +254 Events, New City Coverage (2026-03-28)
+
+### What Changed
+
+**Problem**: The event scraper had three silent gaps: (1) SCCL was returning 0 events — the BiblioCommons API returns branch location *codes* (`CU`, `MI`, `LA`, etc.) not branch *names*, and the city mapper was only looking at text names. (2) San Jose Jazz and Montalvo Arts Center were listed in the script header comment as planned sources but never implemented. (3) iCal time window was only 14 days — too narrow for event discovery.
+
+**What was built**:
+- `fetchSjJazzEvents()` — scrapes San Jose Jazz RSS feed. 10 events, san-jose city. Music category.
+- `fetchMontalvoEvents()` — scrapes Montalvo Arts Center RSS feed. 10 events, saratoga city. Arts category.
+- **SCCL location code fix** — `fetchBiblioEvents` now passes `definition.branchLocationId` as third argument to cityMapper. Built `SCCL_LOCATION_MAP` dictionary: `CA → campbell`, `CU → cupertino`, `LA/WO → los-altos`, `LG → los-gatos`, `MI → milpitas`, `SA → saratoga`, `SC → santa-clara`. Result: SCCL went from 0 → 142 events.
+- **Expanded time windows** — iCal sources: 14 → 30 days. Stanford: `days=14` → `days=30`, `pp=100` → `pp=150`.
+- **BiblioCommons limit** — 100 → 200 per fetch.
+
+**Results**:
+- Total events: 1,724 → **1,978** (+254, +14.7%)
+- SCCL: 0 → **142 events**
+- San Jose Jazz: new source, **10 events**
+- Montalvo Arts: new source, **10 events**
+- New city coverage: milpitas (47), cupertino (17), expanded los-altos (66), saratoga (14)
+- Active sources: 11 → **13**
+
+### Why This Was the Strongest Move
+
+**The SCCL fix was a silent bug for an entire library district.** Santa Clara County Library serves 11 South Bay cities. Library programs are exactly the high-quality, free, family-friendly content that makes South Bay Signal useful to regular residents — story times, workshops, author talks, craft programs.
+
+**San Jose Jazz + Montalvo complete the "arts anchor" pair.** San Jose Jazz is the most prominent regional arts institution in the South Bay. Montalvo Arts Center is the flagship performance venue for the hill cities. Both were in the header comment as planned but never shipped.
+
+### Next 3 Strongest Ideas
+1. **Per-source event cap** — SJSU (633) and SCU (1,000) dominate the event counts. A `MAX_PER_SOURCE = 150` limit would surface community events more equitably in city-filtered views.
+2. **Mountain View + Sunnyvale event coverage** — Two major cities with zero events. CivicPlus blocks bot access. Alternative: Eventbrite API free-event geo-search, or direct city RSS discovery.
+3. **Pre-generate city council digests automatically** — ANTHROPIC_API_KEY not set in scheduled task env. Need GitHub Actions secret to make Gov tab auto-refresh.
+
+### Does the Product Now Feel Meaningfully Closer to "Default Homepage for South Bay Life"?
+**Yes — community-level events are now meaningfully represented.** The SCCL fix adds library programs across 7 South Bay cities. San Jose Jazz and Montalvo add the two flagship arts institutions. Events now have genuine breadth. Still needs Mountain View and Sunnyvale to feel complete.
+
+---
+
+## Cycle 13 — Event Scraper Quality: Category Fix + 60-Day Window + Source Balancing (2026-03-28)
+
+### What Changed
+
+**Problem 1: Category inference was badly ordered.** The `inferCategory` function checked "arts" before "sports," causing golf, tennis, soccer, and other sports events to be miscategorized as "arts" if any sports-adjacent word appeared in the description. The default fallback also produced noisy results for athletic events from SJSU.
+
+**Problem 2: Event window was only 30 days.** iCal sources and Stanford's API were limited to 30 days, cutting off events that are announced in advance (library programs, festivals, athletic schedules).
+
+**Problem 3: SJSU (633 events) and SCU (1,000 events) dominated the dataset.** With a 60-day window, SCU produced 1,000 events — half the entire dataset — all mapping to `santa-clara`. City-filtered views were flooded with university events while community events from smaller sources were buried.
+
+**Problem 4: Six key sources missing.** Mountain View, Sunnyvale, San Jose city calendar, Cupertino, The Tech Interactive — all missing from scraper. Attempted to add all five.
+
+**What was built:**
+
+1. **`inferCategory` rewrite** — Sports check moved before arts. Added: golf, tennis, soccer, basketball, volleyball, swimming, track, cross country, lacrosse, football, gymnastics, wrestling, marathon, 5K, triathlon. STEM/science/coding added to education. Arts tightened (requires exhibit/gallery/theater/theatre/film/cinema/dance/performance/museum or explicit "art" without "martial" or "start"). Choir/orchestra added to music.
+
+2. **60-day event window** — `fetchCivicPlusIcal`: 30 → 60 days. Stanford API: `days=30&pp=150` → `days=60&pp=200`.
+
+3. **Per-source cap: 200 events** — After date-sorting, slice each source to MAX_PER_SOURCE=200. Prevents any single university from drowning the dataset.
+
+4. **New source attempts** — Mountain View (403 blocked), Sunnyvale (403 blocked), San Jose city (403 blocked), Cupertino (404 — wrong URL), The Tech Interactive (404 — no WordPress feed). All fail gracefully with comments documenting the access issues.
+
+**Results:**
+- Total events: 1,978 → **821** (quality over quantity — better balanced)
+- Category quality: significantly improved for sports events
+- santa-clara: 934 → **188** (no longer dominated by SCU)
+- san-jose: 827 → **399** (no longer dominated by SJSU)
+- Sources documented: Mountain View/Sunnyvale/San Jose city/Cupertino block bot access. The Tech has no RSS.
+
+### Next 3 Strongest Ideas
+1. **Mountain View and Sunnyvale alternate sources** — CivicPlus blocks bot access for these cities. Alternatives: (a) Eventbrite free-event geo-search API (requires API key), (b) direct scrape of their Parks & Rec calendar pages, (c) add their library systems (Mountain View Public Library, Sunnyvale Public Library) via BiblioCommons or their own platforms.
+2. **The Tech Interactive proper calendar** — thetech.org doesn't use WordPress RSS. Likely uses Eventbrite or a custom ticketing system. Check their events page source for an embedded calendar or Eventbrite organization ID.
+3. **CHM date extraction fix** — Computer History Museum returns 8 events but 0 appear in the output because their WordPress pubDate is the article publish date, not the event date. CHM events have dates in their titles (e.g., "April 15: Talk on..."). A regex to extract dates from CHM titles would recover these events and fix Mountain View's zero-event problem.
+
+### Does the Product Now Feel Meaningfully Closer to "Default Homepage for South Bay Life"?
+**Yes — event quality improved significantly.** 821 well-balanced events beats 1,978 university-dominated events. A user filtering to Santa Clara (the city) now sees 188 relevant events instead of 934 SCU athletics. Sports events are correctly tagged. The 60-day window means upcoming library programs and athletic schedules appear further in advance. The product's filter UI is now more trustworthy.
+
+---

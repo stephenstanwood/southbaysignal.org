@@ -6,15 +6,25 @@ import type { CityBlotter } from "../cards/BlotterCard";
 import type { City } from "../../../lib/south-bay/types";
 import digestsJson from "../../../data/south-bay/digests.json";
 import blotterJson from "../../../data/south-bay/blotter.json";
+import upcomingMeetingsJson from "../../../data/south-bay/upcoming-meetings.json";
 
 interface Props {
   selectedCities: Set<City>;
   homeCity: City | null;
 }
 
+interface UpcomingMeeting {
+  date: string;
+  displayDate: string;
+  bodyName: string;
+  location: string | null;
+  url: string;
+}
+
 // Load pre-generated data from static JSON
 const staticDigests = digestsJson as Record<string, DigestData>;
 const allBlotters = blotterJson as Record<string, CityBlotter>;
+const upcomingMeetings = (upcomingMeetingsJson as { meetings: Record<string, UpcomingMeeting> }).meetings;
 const configuredCities = Object.keys(staticDigests) as City[];
 
 // If no pre-generated data, fall back to the known configured cities
@@ -182,12 +192,15 @@ export default function GovernmentView({ selectedCities, homeCity }: Props) {
           );
         }
 
+        const nextMeeting = upcomingMeetings[city as keyof typeof upcomingMeetings] ?? null;
+
         if (digest) {
           return (
             <DigestCard
               key={city}
               digest={digest}
               onRefresh={() => refreshDigest(city)}
+              upcomingMeeting={nextMeeting}
             />
           );
         }
@@ -204,11 +217,29 @@ export default function GovernmentView({ selectedCities, homeCity }: Props) {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
+              gap: 12,
               fontSize: 13,
               color: "var(--sb-muted)",
             }}
           >
-            <span>{cityLabel(city)} — no digest yet</span>
+            <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <span style={{ fontWeight: 600, color: "var(--sb-text)" }}>{cityLabel(city)}</span>
+              {nextMeeting ? (
+                <span style={{ fontSize: 11 }}>
+                  Next meeting:{" "}
+                  <a
+                    href={nextMeeting.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "var(--sb-accent)", textDecoration: "none" }}
+                  >
+                    {nextMeeting.displayDate} →
+                  </a>
+                </span>
+              ) : (
+                <span style={{ fontSize: 11 }}>No digest generated yet</span>
+              )}
+            </span>
             <button
               onClick={() => refreshDigest(city)}
               style={{
@@ -219,6 +250,7 @@ export default function GovernmentView({ selectedCities, homeCity }: Props) {
                 background: "#fff",
                 cursor: "pointer",
                 fontFamily: "'Space Mono', monospace",
+                flexShrink: 0,
               }}
             >
               Generate

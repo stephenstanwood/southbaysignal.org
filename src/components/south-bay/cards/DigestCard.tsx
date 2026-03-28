@@ -12,12 +12,25 @@ interface DigestData {
   generatedAt?: string;
 }
 
+interface UpcomingMeetingInfo {
+  date: string;
+  displayDate: string;
+  url: string;
+  location?: string | null;
+}
+
 interface Props {
   digest: DigestData;
   onRefresh?: () => void;
+  upcomingMeeting?: UpcomingMeetingInfo | null;
 }
 
-export default function DigestCard({ digest, onRefresh }: Props) {
+export default function DigestCard({ digest, onRefresh, upcomingMeeting }: Props) {
+  // Prefer real upcoming meeting data over AI-generated text
+  const nextLabel = upcomingMeeting
+    ? upcomingMeeting.displayDate
+    : digest.nextMeeting || null;
+  const nextUrl = upcomingMeeting?.url ?? null;
   return (
     <div className="sb-digest-card">
       <div className="sb-digest-header">
@@ -34,9 +47,14 @@ export default function DigestCard({ digest, onRefresh }: Props) {
         </ul>
       )}
       <div className="sb-digest-footer">
-        {digest.nextMeeting && (
+        {nextLabel && (
           <span className="sb-digest-next">
-            Next meeting: {digest.nextMeeting}
+            Next meeting:{" "}
+            {nextUrl ? (
+              <a href={nextUrl} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
+                {nextLabel}
+              </a>
+            ) : nextLabel}
           </span>
         )}
         <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
