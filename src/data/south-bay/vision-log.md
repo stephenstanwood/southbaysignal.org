@@ -1025,3 +1025,90 @@ That's a homepage. Not a feed, not a dashboard. A homepage.
 **Yes — the Today tab now has a front page.** The Signal Briefing transforms the first impression from "a feed" to "a publication." Three newspaper-style lead stories — one from events, one from government, one from development — synthesize the product's full intelligence into a scannable above-the-fold section. The police blotter adds the one element a morning daily-use product uniquely needs: local public safety context that changes every night. A resident can now open South Bay Signal, scan the briefing in 10 seconds, check the blotter, and understand what's happening in their city before they finish their coffee. That is what the default homepage promise requires.
 
 ---
+
+---
+
+## 2026-03-28 — Cycle 17: Weekend Spotlight + Signal Briefing Government Story Upgrade
+
+### Context
+Coming off Cycle 16 which delivered the Signal Briefing newspaper hero + police blotter strip. Today is Saturday March 28 — an ideal cycle to ship a weekend-specific feature, since the product is live and the weekend is actively happening. The last 3 strongest ideas from Cycle 16:
+1. Automated daily digest pre-generation (requires ANTHROPIC_API_KEY in GitHub Actions — not available this cycle)
+2. Signal Briefing event card URL fix (already wired correctly in code)
+3. "What's Free This Weekend" persistent card
+
+### Issues Identified This Cycle
+1. **Signal Briefing government card used stale digest.json for most cities** — The existing `pickCityHallStory()` had noise filtering, but many cities' "best" topics were still generic. More critically: `around-town.json` (continuously updated from Stoa's live council meeting tracking, last updated March 25-26) was being displayed separately in AroundTownSection but completely ignored by the Signal Briefing — the most prominent feature on the page. The San Jose digest had ALL noisy topics (meeting logistics). The Briefing was falling through to Sunnyvale's "Federal grant funding" headline regardless of home city.
+2. **No weekend-specific view** — The Today tab has great daily intelligence but no distinct weekend mode. On a Saturday morning, the product should answer "what should I do this weekend?" — not just "what's on the calendar today." The existing "Today in [City]" answers today, but not Sunday's events. The "This Week" section gives a forward view but isn't curated or highlighted.
+3. **Government story had no city attribution** — Users couldn't tell which city the government briefing story was about from the Signal Briefing card alone.
+
+### What Was Built
+
+**1. Signal Briefing government story upgrade** (`pickCityHallStory` in OverviewView.tsx)
+
+- Now checks `aroundTownJson.items` first (Stoa-sourced, continuously updated council highlights)
+- City-matched: if homeCity is set, filters to that city's items first; falls back to most recent item from any city
+- Lede now prefixed with city name: "Mountain View · The City Council approved a development agreement..."
+- Story URL set to `aroundItem.sourceUrl` (city's Legistar/meetings page) — clicking the government card now links to the actual source
+- Falls back to digest-based logic if around-town.json has no items
+- Effect: a user on Saturday morning sees "Mixed-use housing development approved at 490 East Middlefield Road" (Mountain View, March 24) instead of vague meeting logistics
+
+**2. Weekend Spotlight section** (new `WeekendSpotlight` component, `IS_WEEKEND_MODE` constants)
+
+Module-level additions:
+- `IS_WEEKEND_MODE`: true on Friday (DAY_IDX=5), Saturday (6), Sunday (0)
+- `TOMORROW_DAY_NAME`: day-of-week name for tomorrow, used to filter static recurring events
+- `TOMORROW_MONTH_NUM`: month number for tomorrow
+- `TOMORROW_ISO_STR`, `TOMORROW_LABEL_STR`: from NEXT_DAYS[0]
+
+New `isActiveTomorrow(e: SBEvent)` helper: mirrors `isActiveToday` but checks tomorrow's day name and month.
+
+`WeekendSpotlight` component:
+- Only renders when `IS_WEEKEND_MODE` is true
+- Pools events from 4 sources: static recurring (today), scraped upcoming (today), static recurring (tomorrow), scraped upcoming (tomorrow)
+- Deduplicates by title+day (prevents same farmers market appearing twice)
+- Scores each event: free (+40), market (+25), family/outdoor (+10), kidFriendly (+15), sports (-50), homeCity (+20), has-time (+5)
+- Returns top 4 today picks + top 3 tomorrow picks
+- Renders in two groups with day headers ("Today · Saturday" and "Sun, Mar 29")
+- Reuses existing `EventRow` and `UpcomingRow` components for consistent design
+- "See all weekend events →" link navigates to Events tab
+- Header: "This Weekend in [City]" (if home city set) or "This Weekend"
+- Placed between AroundTownSection and Today in [City] — after the news context, before the full daily list
+
+### Ideas Considered
+
+**1. Weekend Spotlight** ← BUILT
+Directly answers "what should I do this weekend?" — the most common weekend question a resident has. Surfaces Saturday farmers markets, free community events, arts, and family activities from both recurring and scraped sources. Today being Saturday made it immediately testable and visible.
+
+**2. Signal Briefing government story quality upgrade** ← BUILT
+The government card is the second panel of the most prominent section. Using around-town.json makes it consistently fresh and high-quality (real council decisions vs. meeting logistics). City attribution in the lede solves the "which city is this?" UX gap.
+
+**3. Automated digest pre-generation via GitHub Actions**
+Still the highest-infrastructure idea. Would require ANTHROPIC_API_KEY in repo secrets. Not available in the scheduled task environment. Deferred.
+
+**4. Pre-generate fresh digests locally**
+The ANTHROPIC_API_KEY was not set in the local shell environment. Could not run generate-digests.mjs.
+
+**5. Development tracker data refresh**
+The development-data.ts static projects haven't been audited in several cycles. Would require research into current project statuses. Good candidate for a future cycle.
+
+### Why This Was the Highest-Leverage Move
+
+**Weekend Spotlight solves a visible gap** for the most important use case: weekend planning. Saturday morning is when people are most likely to open a local discovery product. Before this cycle, the Today tab on Saturday showed today's events (including farmers markets from the static layer) but nothing about Sunday. A San Jose resident could see "Today in San Jose" with a few events, but had to click to the Events tab and manually filter to find Sunday's activities. The Weekend Spotlight surfaces Saturday + Sunday in one curated view with the best free/family picks ranked by quality — without requiring any tab switching.
+
+**Signal Briefing quality lift is immediate and universal.** Every user who opens the Today tab now sees a real, recent council decision with a city attribution in the government briefing card — instead of possibly empty noise ("live translation available in 50 languages") or stale February content. Using around-town.json as the primary source means the quality improves automatically whenever Stoa pushes new council meeting data (which happens after every council meeting).
+
+**Both changes improve the first impression.** Signal Briefing is the very first section after weather. Weekend Spotlight is the first new section after the news context. Together they make the Saturday morning experience significantly more useful.
+
+### Effect on Real Users
+- **Saturday morning visitor**: Opens page → sees Signal Briefing with real Mountain View housing decision → scrolls past sports/blotter/news → hits "This Weekend in [City]" with today's farmers markets, free arts events, and Sunday highlights → feels like the page "gets it"
+- **Sunday afternoon visitor**: Sees "Today · Sunday" with the best remaining Sunday activities → still useful even mid-day
+- **User without home city**: Weekend Spotlight shows region-wide top picks, still curated and ranked
+
+### Next 3 Strongest Ideas
+1. **Automated digest pre-generation in GitHub Actions** — Add ANTHROPIC_API_KEY as a repository secret, run generate-digests.mjs in the daily 6am cron. This makes the Gov tab always-fresh without manual generation. The Signal Briefing government card quality is already improved via around-town.json, but full digest regeneration would update the Government tab's per-city digest cards daily.
+2. **Development tracker data audit + refresh** — development-data.ts has projects like "BART Silicon Valley Phase II" and "Google Downtown West" added in early cycles. Their status/timeline descriptions may be stale. An audit + update to reflect current construction status would improve the Development tab and Signal Briefing development card accuracy.
+3. **Sunnyvale events coverage** — Sunnyvale remains the major coverage gap (city CivicPlus 403-blocked, library platforms failing). One untried path: Sunnyvale Center for the Performing Arts event calendar, or the City of Sunnyvale's Recreation & Community Services direct page.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — the Saturday experience is materially better.** A resident who opens South Bay Signal on a Saturday morning now gets: a government briefing story that names a real council decision with its source city, a dedicated "This Weekend" section surfacing the best free and family-friendly picks across both weekend days, and all the existing depth underneath. The page now answers the weekend's primary question ("what should I do?") without requiring any navigation. That's what a default homepage does.
+
