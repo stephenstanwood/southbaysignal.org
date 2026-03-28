@@ -911,3 +911,117 @@ The combination: more data (Campbell fixed) + better UI (forward view) = meaning
 **Yes — the Today tab now answers "what's happening this week?" not just "what's happening today?"** The combination of "Today in [City]" → "This Week in [City]" → "This Month" creates a temporal sequence that covers the immediate (today), the near-term (this week), and the seasonal (this month). A San Jose resident can open the page on a quiet Monday and still get a useful picture of the week ahead. That's the behavior of a daily-use homepage. Campbell being back in coverage means a resident of that city can actually set their home city and get relevant results instead of a nearly-empty list.
 
 ---
+
+## 2026-03-28 — Cycle 16: Signal Briefing — Newspaper Front Page Hero + Police Blotter Strip
+
+### Context
+Coming off Cycle 15 which fixed Campbell events and added the "This Week" section. Stephen explicitly flagged this as "nowhere near ambitious enough" — the cycle was incremental when the goal demanded transformation. The product had strong data depth across all tabs but the Today tab — the landing experience — still looked and felt like a list. Nothing about it said "this is the homepage for South Bay life." The first impression was functional but not viscerally different from any generic regional news aggregator.
+
+### Issues Identified This Cycle
+1. **No editorial voice on Today tab** — the tab had weather, events, sports. But no single moment that synthesized the most important information into a lead. Real newspapers have front pages. South Bay Signal had a feed.
+2. **Data depth not visible on the surface** — the product covers government across 8 cities, 16 development projects, 821 curated events, transit infrastructure. None of this was visible the moment someone landed. You had to click around to discover the product's intelligence.
+3. **Police blotter existed in the data but was buried** — `blotter.json` had real SJPD call data with types, times, and locations. It was rendered only in GovernmentView. It's the kind of data that creates a "check it every morning" habit — and it was invisible from the Today tab.
+4. **No reason to screenshot and share the page** — for a product to spread word of mouth, it needs a moment that makes people say "look at this." A list of events doesn't do that. A newspaper front page does.
+
+### What Was Built
+
+**Signal Briefing** (`src/components/south-bay/views/OverviewView.tsx`)
+
+A 3-column newspaper-style hero section rendered at the top of the Today tab, above everything else. Dynamically generated from live data on every page load.
+
+**Three lead story cards**, each with:
+- Category label in accent color + emoji (EVENTS · GOVERNMENT · DEVELOPMENT)
+- Bold Playfair Display headline (3-line clamp)
+- 2-line lede text
+- "Go to [tab] →" action link
+
+**Story generation logic:**
+
+1. `pickTopEvent()` — scores every today-active scraped event by: free (30pts), has time (10pts), has URL (5pts), venue match against prestige list (Stanford, CHM, Tech Interactive, Bing Concert Hall, etc. = 20pts). Returns the highest-scoring non-sports event with its details formatted as a lede.
+
+2. `pickCityHallStory()` — uses the home city's (or San José's) digest: shows the first key topic as the headline, summary as the lede. Falls back to a generic "AI council summaries" teaser when no digest exists. City-aware — a Campbell resident sees Campbell's last council topic, a San José resident sees San José's.
+
+3. `pickDevelopmentStory()` — picks the featured under-construction or opening-soon development project (BART Phase II, Google Downtown West, etc.) with status badge, city, scale, and timeline as the lede.
+
+**Styling (`.sb-briefing-card`, `.sb-briefing-grid`):**
+- 3-column grid separated by 1px vertical rules — newspaper column format
+- Card hover: light background wash with no border change (clean, editorial feel)
+- Each card `min-height: 160px` to ensure visual balance across varying headline lengths
+- Mobile: stacks to 1 column with horizontal rules between cards
+
+**Section label:**
+- "Signal Briefing" centered with em-rules on both sides — the horizontal rule treatment from newspaper section headers. Space Mono, small caps, letterSpaced.
+
+**Police Blotter Strip** (`src/components/south-bay/views/OverviewView.tsx`)
+
+Surfaced on the Today tab for the home city when blotter data is available (currently SJPD / San José).
+
+- Shows top 5 most recent calls from `blotter.json`
+- Per-row: monospace time, type badge (color-coded by priority), location in Space Mono
+- Section header with city name, call date, and direct link to source
+- "Full blotter in Gov tab →" link for residents who want more
+
+**Import additions:**
+- `blotterJson` from `data/south-bay/blotter.json`
+- `STATUS_CONFIG` from `development-data.ts` (for status label rendering in dev story)
+
+**CSS additions (`src/pages/index.astro`):**
+- `.sb-briefing-grid` — 3-col grid, border, no gap
+- `.sb-briefing-card` — flex column, border-right, min-height, hover transition
+- Mobile overrides: single column, border-bottom between cards
+
+### Ideas Considered
+
+**1. Signal Briefing (newspaper front page hero)** ← BUILT
+3-column synthesized lead stories from live data. The "screenshot and share" moment. Transforms the Today tab from a list to a publication.
+
+**2. Police Blotter on Today Tab** ← BUILT
+The habit-forming morning check feature. Real call data, monospace times, location. Exists in the data — was buried in Gov. Surfaced it.
+
+**3. "Morning vs. Evening" mode for the Today tab**
+Would reorganize the event display based on time of day: morning view shows upcoming events, evening view shows what's happening tonight. Interesting but incremental vs. the briefing approach.
+
+**4. City-specific "Signal Brief" — a full paragraph synthesis for your home city**
+A Claude-generated single paragraph: "Here's what's happening in San Jose today — [event], [council note], [development note]." Would require API call on page load, adds latency, and depends on ANTHROPIC_API_KEY being available in client env. Not the right cycle for that.
+
+**5. Side-by-side "morning edition" layout**
+2-column newspaper grid for the entire Today tab — events on the left, government/development on the right. Interesting visual but would require major restructuring and might hurt mobile. The briefing header achieves similar visual impact with less disruption.
+
+**6. "What's Free This Weekend" callout card**
+A persistent feature highlighting the top 3 free events for the coming weekend. High utility but overlaps with Plan My Day. Could be a future addition as a persistent card below the briefing.
+
+### Why This Was the Highest-Leverage Move
+
+The Signal Briefing solves the most fundamental problem with the Today tab: **it had no voice.** It was a collection of sections — weather, city events, this week, this month, sports — but no single editorial moment that answered "here's what matters most right now."
+
+The briefing creates that moment. A user opening the page sees three things simultaneously: (1) the most compelling event happening today, scored for quality and accessibility; (2) the last thing the city council discussed; (3) the biggest infrastructure project currently under construction. That's a South Bay intelligence brief, not a feed.
+
+The 3-column newspaper format is visually distinct from everything else on the page. It looks like a front page, not a dashboard. That's by design — the goal is to make the first impression say "this is a publication" not "this is an app."
+
+The blotter strip is the habit-creation feature. Real newspaper readers check the police blotter. It's local, it's specific, it changes daily, and it creates mild urgency. A San José resident who checks the blotter and sees a disturbance on Lincoln Ave near their neighborhood will come back tomorrow. That's the repeat-visit mechanic.
+
+**Combined effect:** A user who opens South Bay Signal on a Tuesday morning now sees:
+1. Signal Briefing — three lead stories, newspaper format, one click to go deeper
+2. Police blotter — last night's calls in their city, times + locations
+3. Sports callout (if game day)
+4. City at a glance (government, projects)
+5. Today's events, time-bucketed
+6. This week's events, grouped by day
+...
+
+That's a homepage. Not a feed, not a dashboard. A homepage.
+
+### Effect on Real Users
+- **First-time visitor**: Sees the Signal Briefing and immediately understands the scope of the product — it covers events, government, and development. Three headline stories make the value proposition legible in 5 seconds.
+- **Daily user**: Opens the page, scans the three briefing cards for anything notable, checks the blotter for last night, then scrolls to today's events. Entire flow takes under 60 seconds.
+- **Share behavior**: A resident who sees "BART Silicon Valley Phase II · Under Construction · 6 miles, 2 new stations · Expected mid-2030s" in the development card — formatted like a real editorial brief — is more likely to share the page than someone who sees a flat list.
+
+### Next 3 Strongest Ideas
+1. **Automated daily digest pre-generation** — Add ANTHROPIC_API_KEY to GitHub Actions secrets, schedule digest regeneration on the 6am cron that already refreshes events. This turns the Gov tab from "on-demand AI" into "always-fresh council summaries every morning." The Signal Briefing's government card would then be updated daily without any user action.
+2. **Signal Briefing: event card links to event detail** — Currently the top event card navigates to the Events tab. If the event has a URL, it should open directly. (This is partially implemented — needs the `url` prop wired through to the button action, which is ready in the code.)
+3. **"What's Free This Weekend" persistent card** — Below the Signal Briefing, a compact 3-event highlight showing the best free events for Saturday and Sunday. This answers the single most common question a resident has ("what can I do this weekend for free?") at first glance, without requiring a tab switch.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — the Today tab now has a front page.** The Signal Briefing transforms the first impression from "a feed" to "a publication." Three newspaper-style lead stories — one from events, one from government, one from development — synthesize the product's full intelligence into a scannable above-the-fold section. The police blotter adds the one element a morning daily-use product uniquely needs: local public safety context that changes every night. A resident can now open South Bay Signal, scan the briefing in 10 seconds, check the blotter, and understand what's happening in their city before they finish their coffee. That is what the default homepage promise requires.
+
+---
