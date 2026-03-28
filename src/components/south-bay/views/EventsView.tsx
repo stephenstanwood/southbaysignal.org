@@ -43,6 +43,17 @@ const upcomingSources = (upcomingJson as { sources: string[] }).sources || [];
 
 // ── Time helpers ──
 
+function formatTimeRange(time: string | null, endTime: string | null, isSports = false): string | null {
+  if (!time) return null;
+  if (!endTime || isSports) return time;
+  const startPeriod = time.match(/(am|pm)$/i)?.[1]?.toUpperCase();
+  const endPeriod = endTime.match(/(am|pm)$/i)?.[1]?.toUpperCase();
+  if (startPeriod && endPeriod && startPeriod === endPeriod) {
+    return `${time.replace(/\s*(am|pm)$/i, "")}–${endTime}`;
+  }
+  return `${time}–${endTime}`;
+}
+
 function parseTimeToMinutes(t: string): number | null {
   const m = t.trim().match(/^(\d+)(?::(\d+))?\s*(am|pm)$/i);
   if (!m) return null;
@@ -163,7 +174,7 @@ function UpcomingEventCard({ event }: { event: UpcomingEvent }) {
         }}
       >
         <span style={{ fontWeight: 600, color: "var(--sb-accent)" }}>📅 {event.displayDate}</span>
-        {event.time && <span>🕐 {event.time}{event.endTime ? ` – ${event.endTime}` : ""}</span>}
+        {event.time && <span>🕐 {formatTimeRange(event.time, event.endTime, event.category === "sports")}</span>}
         <span>📍 {cityLabel(event.city)}</span>
         {event.venue && <span>· {event.venue}</span>}
         {event.kidFriendly && <span>👶 Kid-friendly</span>}

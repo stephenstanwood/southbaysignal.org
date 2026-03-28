@@ -84,6 +84,17 @@ function startMinutes(timeStr: string | undefined | null): number {
   return parseMinutes(timeStr, false) ?? 999;
 }
 
+function formatTimeRange(time: string | undefined | null, endTime: string | undefined | null, isSports = false): string | null {
+  if (!time) return null;
+  if (!endTime || isSports) return time;
+  const startPeriod = time.match(/(am|pm)$/i)?.[1]?.toUpperCase();
+  const endPeriod = endTime.match(/(am|pm)$/i)?.[1]?.toUpperCase();
+  if (startPeriod && endPeriod && startPeriod === endPeriod) {
+    return `${time.replace(/\s*(am|pm)$/i, "")}–${endTime}`;
+  }
+  return `${time}–${endTime}`;
+}
+
 function isNotEnded(timeStr: string | undefined | null): boolean {
   if (!timeStr) return true;
   const endMin = parseMinutes(timeStr, true);
@@ -301,7 +312,7 @@ function UpcomingRow({ event, showCity = true, highlight = false }: { event: Upc
           {event.time && (
             <>
               {showCity && <span style={{ color: "var(--sb-border)" }}>·</span>}
-              <span>{event.time}</span>
+              <span>{formatTimeRange(event.time, event.endTime, event.category === "sports")}</span>
             </>
           )}
           {event.venue && (
@@ -514,7 +525,7 @@ function pickTopEvent(
 
   const e = top.e;
   const costLabel = e.cost === "free" ? "Free · " : e.cost === "low" ? "Low cost · " : "";
-  const timeLabel = e.time ? `${e.time} · ` : "";
+  const timeLabel = e.time ? `${formatTimeRange(e.time, e.endTime, e.category === "sports")} · ` : "";
   const ledeBase = `${costLabel}${timeLabel}${e.venue ?? e.city}`.replace(/^· /, "").trim();
   const lede = ledeBase || (e.description?.slice(0, 100) ?? "");
 
