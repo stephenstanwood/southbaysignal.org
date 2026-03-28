@@ -5,7 +5,7 @@
  * Scrapes upcoming events from all available South Bay feeds and writes
  * them to src/data/south-bay/upcoming-events.json.
  *
- * Sources (18 active):
+ * Sources (22 active):
  *   - Stanford Events (Localist JSON API) — 60-day window
  *   - SJSU Events (RSS)
  *   - Santa Clara University Events (RSS)
@@ -20,12 +20,17 @@
  *   - The Tech Interactive (RSS) — 404 as of 2026-03 (no /feed/ endpoint)
  *   - San Jose Public Library (BiblioCommons API)
  *   - Santa Clara County Library (BiblioCommons API)
- *   - Computer History Museum Events (RSS)
+ *   - Mountain View Public Library (BiblioCommons API)
+ *   - Sunnyvale Public Library (BiblioCommons API)
+ *   - Palo Alto City Library (BiblioCommons API)
+ *   - Computer History Museum Events (RSS + title-based date extraction)
  *   - Montalvo Arts Center (RSS)
  *   - San Jose Jazz (RSS)
  *   - Silicon Valley Leadership Group (RSS)
+ *   - Happy Hollow Park & Zoo (RSS)
  *
- * NOTE: Mountain View, Sunnyvale, San Jose city, and Cupertino return 403/404.
+ * NOTE: Mountain View/Sunnyvale/SJ city/Cupertino CivicPlus iCal feeds return 403/404.
+ * Those cities' library systems are covered via BiblioCommons instead.
  * The Tech Interactive has no standard RSS feed — needs Eventbrite or direct calendar.
  *
  * Usage:
@@ -55,10 +60,10 @@ async function fetchJson(url) {
   return res.json();
 }
 
-async function fetchText(url) {
+async function fetchText(url, timeout = 20_000) {
   const res = await fetch(url, {
     headers: { "User-Agent": UA },
-    signal: AbortSignal.timeout(15_000),
+    signal: AbortSignal.timeout(timeout),
   });
   if (!res.ok) throw new Error(`${res.status}`);
   return res.text();
@@ -225,7 +230,7 @@ function inferCategory(title, desc, type) {
   if (t.includes("story time") || t.includes("storytime") || t.includes("toddler") || t.includes("baby") || t.includes("preschool") || t.includes("kids") || t.includes("children")) return "family";
   if (t.includes("concert") || t.includes("music") || t.includes("jazz") || t.includes("symphony") || t.includes("band") || t.includes("orchestra") || t.includes("choir")) return "music";
   // sports before arts to avoid false positives (e.g. "golf" → "community" not "arts")
-  if (t.includes("game") || t.includes("sport") || t.includes("athletic") || t.includes("golf") || t.includes("tennis") || t.includes("soccer") || t.includes("basketball") || t.includes("baseball") || t.includes("softball") || t.includes("volleyball") || t.includes("swimming") || t.includes("swim meet") || t.includes("track") || t.includes("cross country") || t.includes("lacrosse") || t.includes("football") || t.includes("gymnastics") || t.includes("wrestling") || t.includes("run") || t.includes("race") || t.includes("marathon") || t.includes("5k") || t.includes("triathlon")) return "sports";
+  if (t.includes("game") || t.includes("sport") || t.includes("athletic") || t.includes("golf") || t.includes("tennis") || t.includes("soccer") || t.includes("basketball") || t.includes("baseball") || t.includes("softball") || t.includes("volleyball") || t.includes("swimming") || t.includes("swim meet") || t.includes("track") || t.includes("cross country") || t.includes("lacrosse") || t.includes("football") || t.includes("gymnastics") || t.includes("wrestling") || t.includes("water polo") || t.includes("polo") || t.includes("hockey") || t.includes("rugby") || t.includes("rowing") || t.includes("crew") || t.includes("diving") || t.includes("fencing") || t.includes("skiing") || t.includes("snowboard") || t.includes("cycling") || t.includes("equestrian") || t.includes("vs.") || t.includes("vs ") || t.includes("run") || t.includes("race") || t.includes("marathon") || t.includes("5k") || t.includes("triathlon")) return "sports";
   if (t.includes("exhibit") || t.includes("gallery") || t.includes("theater") || t.includes("theatre") || t.includes("film") || t.includes("cinema") || t.includes("dance") || t.includes("performance") || t.includes("museum") || (t.includes("art") && !t.includes("martial art") && !t.includes("start"))) return "arts";
   if (t.includes("market") || t.includes("fair") || t.includes("vendor") || t.includes("craft")) return "market";
   if (t.includes("hike") || t.includes("hiking") || t.includes("outdoor") || t.includes("garden") || t.includes("nature") || t.includes("trail") || t.includes("park")) return "outdoor";
@@ -353,7 +358,7 @@ async function fetchStanfordEvents() {
 async function fetchSjsuEvents() {
   console.log("  ⏳ SJSU Events...");
   try {
-    const xml = await fetchText("https://events.sjsu.edu/calendar.xml");
+    const xml = await fetchText("https://events.sjsu.edu/calendar.xml", 45_000); // large feed ~1.4MB
     const items = parseRssItems(xml);
     const events = items.map((item) => {
       const start = parseDate(item.pubDate);
@@ -418,20 +423,44 @@ async function fetchScuEvents() {
   }
 }
 
+// ── CHM-specific date extraction ──
+// CHM's WordPress feed uses pubDate = article publish date, not event date.
+// Event dates are embedded in the title, e.g. "April 15: Maker Camp" or "Sat, April 12 — Talk".
+function parseChmDate(title, pubDateStr) {
+  const MONTH = "(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)";
+  const m = title.match(new RegExp(`(${MONTH})\\s+(\\d{1,2})(?:,?\\s+(\\d{4}))?`, "i"));
+  if (m) {
+    const year = m[3] || String(new Date().getFullYear());
+    const base = new Date(`${m[1]} ${m[2]}, ${year}`);
+    if (!isNaN(base.getTime())) {
+      // If no explicit year and date is in the past, roll to next year
+      if (!m[3] && base < new Date()) base.setFullYear(base.getFullYear() + 1);
+      return base;
+    }
+  }
+  return parseDate(pubDateStr);
+}
+
 async function fetchChmEvents() {
   console.log("  ⏳ Computer History Museum...");
   try {
     const xml = await fetchText("https://computerhistory.org/events/feed/");
     const items = parseRssItems(xml);
+    const now = new Date();
+    // CHM titles don't embed dates. pubDate = article publish date (not event date).
+    // Their RSS is an exhibit/event announcement feed; items published in the last
+    // 6 months are likely still running. We use today as the event date so they
+    // appear in "happening now" sections and are refreshed on each scrape.
+    const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
     const events = items.map((item) => {
-      const start = parseDate(item.pubDate);
-      if (!start) return null;
+      const pubDt = parseDate(item.pubDate);
+      if (!pubDt || pubDt < sixMonthsAgo) return null; // skip very stale items
       return {
         id: h("chm", item.link || item.title, item.pubDate),
         title: item.title,
-        date: isoDate(start),
-        displayDate: displayDate(start),
-        time: displayTime(start),
+        date: isoDate(now), // exhibit running today
+        displayDate: displayDate(now),
+        time: null, // all-day exhibit
         endTime: null,
         venue: "Computer History Museum",
         address: "1401 N Shoreline Blvd, Mountain View",
@@ -983,6 +1012,206 @@ async function fetchTicketmasterEvents() {
   }
 }
 
+// ── NHL: San Jose Sharks ──
+
+async function fetchSharksSchedule() {
+  console.log("  ⏳ Sharks (NHL API)...");
+  try {
+    const res = await fetch("https://api-web.nhle.com/v1/club-schedule-season/SJS/now", {
+      headers: { "User-Agent": UA }, signal: AbortSignal.timeout(15_000),
+    });
+    if (!res.ok) throw new Error(`${res.status}`);
+    const data = await res.json();
+    const today = new Date().toISOString().split("T")[0];
+    const events = (data.games || [])
+      .filter((g) => g.gameType === 2) // regular season only
+      .map((g) => {
+        const dateStr = g.gameDate; // YYYY-MM-DD in local time
+        if (!dateStr || dateStr < today) return null;
+        const isHome = g.homeTeam?.abbrev === "SJS";
+        if (!isHome) return null; // away games excluded
+        const opponent = g.awayTeam?.commonName?.default || g.awayTeam?.abbrev || "Opponent";
+        const timeUtc = g.startTimeUTC ? new Date(g.startTimeUTC) : null;
+        return {
+          id: h("sharks", String(g.id)),
+          title: `Sharks vs. ${opponent}`,
+          date: dateStr,
+          displayDate: displayDate(new Date(dateStr + "T12:00:00")),
+          time: timeUtc ? displayTime(timeUtc) : "7:00 PM",
+          endTime: null,
+          venue: "SAP Center",
+          address: "525 W Santa Clara St, San Jose",
+          city: "san-jose",
+          category: "sports",
+          cost: "paid",
+          costNote: "From $30",
+          description: `San Jose Sharks home game vs. ${opponent} at SAP Center.`,
+          url: `https://www.nhl.com/sharks/schedule`,
+          source: "NHL",
+          kidFriendly: true,
+        };
+      }).filter(Boolean);
+    console.log(`  ✅ Sharks: ${events.length} home games`);
+    return events;
+  } catch (err) {
+    console.log(`  ⚠️  Sharks: ${err.message}`);
+    return [];
+  }
+}
+
+// ── MLS: San Jose Earthquakes ──
+
+async function fetchEarthquakesSchedule() {
+  console.log("  ⏳ Earthquakes (ESPN API)...");
+  try {
+    const res = await fetch(
+      "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/teams/17/schedule",
+      { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(15_000) },
+    );
+    if (!res.ok) throw new Error(`${res.status}`);
+    const data = await res.json();
+    const today = new Date().toISOString().split("T")[0];
+    const events = (data.events || []).map((e) => {
+      const comp = e.competitions?.[0];
+      if (!comp) return null;
+      const dateStr = e.date?.split("T")[0];
+      if (!dateStr || dateStr < today) return null;
+      const homeTeam = comp.competitors?.find((c) => c.homeAway === "home");
+      if (homeTeam?.team?.abbreviation !== "SJ") return null; // home only
+      const awayTeam = comp.competitors?.find((c) => c.homeAway === "away");
+      const opponent = awayTeam?.team?.displayName || "Opponent";
+      const start = new Date(e.date);
+      return {
+        id: h("earthquakes", String(e.id)),
+        title: `San Jose Earthquakes vs. ${opponent}`,
+        date: dateStr,
+        displayDate: displayDate(start),
+        time: displayTime(start),
+        endTime: null,
+        venue: "PayPal Park",
+        address: "1123 Coleman Ave, San Jose",
+        city: "san-jose",
+        category: "sports",
+        cost: "paid",
+        costNote: "From $20",
+        description: `San Jose Earthquakes home game vs. ${opponent} at PayPal Park.`,
+        url: `https://www.sjearthquakes.com/schedule`,
+        source: "MLS",
+        kidFriendly: true,
+      };
+    }).filter(Boolean);
+    console.log(`  ✅ Earthquakes: ${events.length} home games`);
+    return events;
+  } catch (err) {
+    console.log(`  ⚠️  Earthquakes: ${err.message}`);
+    return [];
+  }
+}
+
+// ── NWSL: Bay FC ──
+
+async function fetchBayFCSchedule() {
+  console.log("  ⏳ Bay FC (ESPN API)...");
+  try {
+    const res = await fetch(
+      "https://site.api.espn.com/apis/site/v2/sports/soccer/nwsl.1/teams/bay-fc/schedule",
+      { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(15_000) },
+    );
+    if (!res.ok) throw new Error(`${res.status}`);
+    const data = await res.json();
+    const today = new Date().toISOString().split("T")[0];
+    const events = (data.events || []).map((e) => {
+      const comp = e.competitions?.[0];
+      if (!comp) return null;
+      const dateStr = e.date?.split("T")[0];
+      if (!dateStr || dateStr < today) return null;
+      const homeTeam = comp.competitors?.find((c) => c.homeAway === "home");
+      if (!homeTeam?.team?.displayName?.toLowerCase().includes("bay")) return null;
+      const awayTeam = comp.competitors?.find((c) => c.homeAway === "away");
+      const opponent = awayTeam?.team?.displayName || "Opponent";
+      const start = new Date(e.date);
+      return {
+        id: h("bayfc", String(e.id)),
+        title: `Bay FC vs. ${opponent}`,
+        date: dateStr,
+        displayDate: displayDate(start),
+        time: displayTime(start),
+        endTime: null,
+        venue: "PayPal Park",
+        address: "1123 Coleman Ave, San Jose",
+        city: "san-jose",
+        category: "sports",
+        cost: "paid",
+        costNote: "From $20",
+        description: `Bay FC home game vs. ${opponent} at PayPal Park.`,
+        url: `https://www.bayfc.com/schedule`,
+        source: "NWSL",
+        kidFriendly: true,
+      };
+    }).filter(Boolean);
+    console.log(`  ✅ Bay FC: ${events.length} home games`);
+    return events;
+  } catch (err) {
+    console.log(`  ⚠️  Bay FC: ${err.message}`);
+    return [];
+  }
+}
+
+// ── City-specific BiblioCommons libraries ──
+// Mountain View, Sunnyvale, and Palo Alto each have independent city library systems
+// (not part of SCCL) that are likely on the BiblioCommons platform.
+
+async function fetchMvplEvents() {
+  return fetchBiblioEvents("mountainview", "Mountain View Public Library", () => "mountain-view");
+}
+
+async function fetchSunnyvaleLibraryEvents() {
+  return fetchBiblioEvents("sunnyvale", "Sunnyvale Public Library", () => "sunnyvale");
+}
+
+async function fetchPaloAltoLibraryEvents() {
+  return fetchBiblioEvents("paloalto", "Palo Alto City Library", () => "palo-alto");
+}
+
+// ── Happy Hollow Park & Zoo ──
+
+async function fetchHappyHollowEvents() {
+  console.log("  ⏳ Happy Hollow Park & Zoo...");
+  try {
+    const xml = await fetchText("https://www.happyhollow.org/events/feed/");
+    const items = parseRssItems(xml);
+    const now = new Date();
+    const events = items
+      .map((item) => {
+        const start = parseDate(item.startDate || item.pubDate);
+        if (!start || start < now) return null;
+        return {
+          id: h("happyhollow", item.link || item.title, item.pubDate),
+          title: item.title,
+          date: isoDate(start),
+          displayDate: displayDate(start),
+          time: displayTime(start),
+          endTime: null,
+          venue: "Happy Hollow Park & Zoo",
+          address: "748 Story Rd, San Jose",
+          city: "san-jose",
+          category: inferCategory(item.title, item.description || "", ""),
+          cost: "paid",
+          description: truncate(stripHtml(item.description || item.content)),
+          url: item.link,
+          source: "Happy Hollow Park & Zoo",
+          kidFriendly: true,
+        };
+      })
+      .filter(Boolean);
+    console.log(`  ✅ Happy Hollow: ${events.length} events`);
+    return events;
+  } catch (err) {
+    console.log(`  ⚠️  Happy Hollow Park & Zoo: ${err.message}`);
+    return [];
+  }
+}
+
 // ── Main ──
 
 async function main() {
@@ -1007,8 +1236,15 @@ async function main() {
     fetchSvlgEvents,
     fetchSjJazzEvents,
     fetchMontalvoEvents,
-    fetchEventbriteEvents,
+    // fetchEventbriteEvents, — deprecated: /v3/events/search/ removed by Eventbrite
+    // fetchEarthquakesSchedule, — ESPN MLS API has no 2026 schedule data yet; Ticketmaster covers PayPal Park
+    // fetchBayFCSchedule, — ESPN NWSL has no Bay FC data; Ticketmaster covers PayPal Park
     fetchTicketmasterEvents,
+    fetchSharksSchedule,
+    fetchMvplEvents,
+    fetchSunnyvaleLibraryEvents,
+    fetchPaloAltoLibraryEvents,
+    fetchHappyHollowEvents,
   ];
 
   const results = await Promise.allSettled(sources.map((fn) => fn()));

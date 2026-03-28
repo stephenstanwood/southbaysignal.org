@@ -6,7 +6,7 @@ interface DigestData {
   title: string;
   summary: string;
   keyTopics: string[];
-  nextMeeting: string | null;
+  nextMeeting?: string | null;
   schedule: string;
   sourceUrl: string;
   generatedAt?: string;

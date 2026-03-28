@@ -126,7 +126,7 @@ export default function SignalApp() {
       {/* Content */}
       <main className="sb-main">
         {activeTab === "overview" && (
-          <OverviewView homeCity={homeCity} setHomeCity={setHomeCity} />
+          <OverviewView homeCity={homeCity} setHomeCity={setHomeCity} onNavigate={setActiveTab} />
         )}
         {activeTab === "sports" && <SportsView />}
         {activeTab === "events" && (
