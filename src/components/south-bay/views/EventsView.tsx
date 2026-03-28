@@ -54,6 +54,18 @@ function formatTimeRange(time: string | null, endTime: string | null, isSports =
   return `${time}–${endTime}`;
 }
 
+const NOW_MINUTES = (() => {
+  const n = new Date();
+  return n.getHours() * 60 + n.getMinutes();
+})();
+
+function hasNotStarted(time: string | null): boolean {
+  if (!time) return true;
+  const mins = parseTimeToMinutes(time);
+  if (mins === null) return true;
+  return mins > NOW_MINUTES;
+}
+
 function parseTimeToMinutes(t: string): number | null {
   const m = t.trim().match(/^(\d+)(?::(\d+))?\s*(am|pm)$/i);
   if (!m) return null;
@@ -332,6 +344,8 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
       if (!allCities && !selectedCities.has(e.city as City)) return false;
       if (category !== "all" && e.category !== category) return false;
       if (showKidsOnly && !e.kidFriendly) return false;
+      // Hide today's events once they've started
+      if (e.date === todayIso && !hasNotStarted(e.time)) return false;
       if (search) {
         const q = search.toLowerCase();
         if (!e.title.toLowerCase().includes(q) && !e.description.toLowerCase().includes(q) &&
