@@ -341,9 +341,11 @@ async function fetchStanfordEvents() {
       // Many recurring events started weeks ago but are still ongoing.
       // Use today as the event date for ongoing events (started in past, ends in future).
       let eventDate = start;
+      let isOngoing = false;
       if (start < now) {
         if (end && end >= now) {
           eventDate = now; // currently running → anchor to today
+          isOngoing = true; // multi-day exhibit/series — show in Ongoing section, not Today
         } else {
           return null; // fully in the past
         }
@@ -353,8 +355,9 @@ async function fetchStanfordEvents() {
         title: ev.title,
         date: isoDate(eventDate),
         displayDate: displayDate(eventDate),
-        time: displayTime(start),
-        endTime: end ? displayTime(end) : null,
+        time: isOngoing ? null : displayTime(start),   // no time for ongoing exhibits
+        endTime: isOngoing ? null : (end ? displayTime(end) : null),
+        ongoing: isOngoing,
         venue: ev.location_name || "Stanford University",
         address: ev.address || "",
         city: "palo-alto",

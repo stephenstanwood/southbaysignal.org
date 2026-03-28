@@ -1100,25 +1100,11 @@ const title = "South Bay Signal";
       }
 
       /* Projects list */
-      .dev-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-        border: 1px solid var(--sb-border-light);
+      .dev-section-grid {
+        /* defined inline per section */
       }
-      .dev-card {
-        background: var(--sb-card);
-        padding: 20px 24px;
-        border-bottom: 1px solid var(--sb-border-light);
-        transition: box-shadow 0.15s ease;
-      }
-      .dev-card:last-child {
-        border-bottom: none;
-      }
-      .dev-card:hover {
+      .dev-project-card:hover {
         box-shadow: var(--sb-shadow-hover);
-        position: relative;
-        z-index: 1;
       }
 
       /* Card meta row */

@@ -119,7 +119,7 @@ export const DEV_PROJECTS: DevProject[] = [
     city: "Milpitas",
     cityId: "milpitas",
     category: "housing",
-    status: "under-construction",
+    status: "opening-soon",
     description:
       "Transit-oriented development projects surrounding the Milpitas and Berryessa BART stations are actively under construction, bringing new mixed-income housing, retail, and community amenities to the area. Several apartment complexes have recently opened or are nearing completion.",
     scale: "Multiple complexes, thousands of units",
