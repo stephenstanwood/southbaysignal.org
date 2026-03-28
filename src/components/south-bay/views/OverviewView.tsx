@@ -102,6 +102,14 @@ function isNotEnded(timeStr: string | undefined | null): boolean {
   return endMin > NOW_MINUTES;
 }
 
+// Hide an event once its start time has passed — user can't go if it's already started
+function hasNotStarted(timeStr: string | undefined | null): boolean {
+  if (!timeStr) return true; // no time = all-day, always show
+  const startMin = parseMinutes(timeStr, false);
+  if (startMin === null) return true; // unparseable, keep
+  return startMin > NOW_MINUTES;
+}
+
 // Time bucket: now / morning / afternoon / evening / none
 type TimeBucket = "now" | "morning" | "afternoon" | "evening" | "none";
 
@@ -161,7 +169,7 @@ function isActiveToday(e: SBEvent): boolean {
   if (e.months && !e.months.includes(MONTH)) return false;
   if (!e.days) return e.recurrence !== "seasonal";
   if (!e.days.includes(DAY_NAME as DayOfWeek)) return false;
-  return isNotEnded(e.time);
+  return hasNotStarted(e.time);
 }
 
 function isActiveTomorrow(e: SBEvent): boolean {
@@ -1062,7 +1070,7 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
   const cityTodayUpcoming = homeCity
     ? todayUpcoming
         .filter((e) => e.city === homeCity)
-        .filter((e) => isNotEnded(e.time))
+        .filter((e) => hasNotStarted(e.time))
         .sort((a, b) => startMinutes(a.time) - startMinutes(b.time))
     : [];
 
