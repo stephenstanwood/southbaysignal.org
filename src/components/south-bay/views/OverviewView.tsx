@@ -5,11 +5,12 @@ import {
   type SBEvent,
   type DayOfWeek,
 } from "../../../data/south-bay/events-data";
-import { DEV_PROJECTS } from "../../../data/south-bay/development-data";
+import { DEV_PROJECTS, STATUS_CONFIG } from "../../../data/south-bay/development-data";
 import { CITIES, getCityName } from "../../../lib/south-bay/cities";
 import type { City, Tab } from "../../../lib/south-bay/types";
 import upcomingJson from "../../../data/south-bay/upcoming-events.json";
 import digestsJson from "../../../data/south-bay/digests.json";
+import blotterJson from "../../../data/south-bay/blotter.json";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -425,6 +426,354 @@ function CityPicker({ homeCity, onSelect, onClose }: { homeCity: City | null; on
   );
 }
 
+// ── Blotter type (matches blotter.json) ──────────────────────────────────────
+
+interface BlotterEntry {
+  date: string;
+  time: string;
+  type: string;
+  location: string;
+  priority?: number | string;
+}
+
+interface CityBlotter {
+  city: string;
+  cityName: string;
+  entries: BlotterEntry[];
+  source: string;
+  sourceUrl: string;
+  generatedAt?: string;
+}
+
+// ── Signal Briefing ───────────────────────────────────────────────────────────
+// Newspaper front-page hero: 3 lead stories generated from live data
+
+interface BriefingStory {
+  category: string;
+  headline: string;
+  lede: string;
+  tab: Tab;
+  emoji: string;
+  accentColor: string;
+  url?: string;
+}
+
+function pickTopEvent(
+  todayUpcoming: UpcomingEvent[],
+  todayStatic: SBEvent[],
+): BriefingStory | null {
+  // Prefer: free + specific venue > free > any today event
+  const VENUE_PRIORITY = [
+    "stanford", "sjsu", "san jose state", "computer history",
+    "tech interactive", "children's discovery", "cantor",
+    "bing concert", "hammer theatre", "montalvo",
+  ];
+  const scorable = [...todayUpcoming]
+    .filter((e) => e.category !== "sports")
+    .map((e) => {
+      let score = 0;
+      if (e.cost === "free") score += 30;
+      if (e.time) score += 10;
+      if (e.url) score += 5;
+      const vl = (e.venue ?? "").toLowerCase();
+      const tl = (e.title ?? "").toLowerCase();
+      for (const kw of VENUE_PRIORITY) {
+        if (vl.includes(kw) || tl.includes(kw)) { score += 20; break; }
+      }
+      return { e, score };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  const top = scorable[0];
+  if (!top) {
+    // Fallback to static recurring events
+    const se = todayStatic.find((e) => e.category !== "sports");
+    if (!se) return null;
+    return {
+      category: "Events",
+      headline: se.title,
+      lede: se.description?.slice(0, 120) ?? `${se.recurrence === "ongoing" ? "Always open" : "Happening today"} · ${se.venue}`,
+      tab: "events",
+      emoji: CATEGORY_EMOJI[se.category] ?? "📅",
+      accentColor: "#16a34a",
+      url: se.url,
+    };
+  }
+
+  const e = top.e;
+  const costLabel = e.cost === "free" ? "Free · " : e.cost === "low" ? "Low cost · " : "";
+  const timeLabel = e.time ? `${e.time} · ` : "";
+  const ledeBase = `${costLabel}${timeLabel}${e.venue ?? e.city}`.replace(/^· /, "").trim();
+  const lede = ledeBase || (e.description?.slice(0, 100) ?? "");
+
+  return {
+    category: "Events",
+    headline: e.title,
+    lede,
+    tab: "events",
+    emoji: CATEGORY_EMOJI[e.category] ?? "📅",
+    accentColor: "#16a34a",
+    url: e.url ?? undefined,
+  };
+}
+
+function pickCityHallStory(
+  homeCity: City | null,
+  digests: Record<string, { summary?: string; keyTopics?: string[]; meetingDate?: string; schedule?: string }>,
+): BriefingStory | null {
+  const city = homeCity ?? "san-jose";
+  const digest = digests[city];
+  if (!digest) {
+    // Generic story: show next meeting hint
+    return {
+      category: "Government",
+      headline: "City Hall Digest",
+      lede: "AI-generated plain-English summaries of city council meetings across 8 South Bay cities.",
+      tab: "government",
+      emoji: "🏛️",
+      accentColor: "#1d4ed8",
+    };
+  }
+  const headline = digest.keyTopics?.[0] ?? `${homeCity ? getCityName(homeCity) : "South Bay"} City Council`;
+  const lede = digest.summary?.slice(0, 130) ?? `Meeting of ${digest.meetingDate ?? "recent date"}.`;
+  return {
+    category: "Government",
+    headline,
+    lede: lede.length > 130 ? lede.slice(0, 127) + "…" : lede,
+    tab: "government",
+    emoji: "🏛️",
+    accentColor: "#1d4ed8",
+  };
+}
+
+function pickDevelopmentStory(): BriefingStory | null {
+  const active = DEV_PROJECTS.filter(
+    (p) => p.status === "under-construction" || p.status === "opening-soon",
+  );
+  if (!active.length) return null;
+  // Prefer featured
+  const p = active.find((p) => p.featured) ?? active[0];
+  const statusLabel = STATUS_CONFIG[p.status]?.label ?? p.status;
+  const lede = `${statusLabel} · ${p.city}${p.scale ? ` · ${p.scale}` : ""}${p.timeline ? ` · ${p.timeline}` : ""}`;
+  return {
+    category: "Development",
+    headline: p.name,
+    lede,
+    tab: "development",
+    emoji: "🏗️",
+    accentColor: "#b45309",
+  };
+}
+
+function SignalBriefing({
+  homeCity,
+  todayUpcoming,
+  todayStatic,
+  onNavigate,
+}: {
+  homeCity: City | null;
+  todayUpcoming: UpcomingEvent[];
+  todayStatic: SBEvent[];
+  onNavigate: (tab: Tab) => void;
+}) {
+  const digests = digestsJson as Record<string, { summary?: string; keyTopics?: string[]; meetingDate?: string; schedule?: string }>;
+
+  const stories: BriefingStory[] = [
+    pickTopEvent(todayUpcoming, todayStatic),
+    pickCityHallStory(homeCity, digests),
+    pickDevelopmentStory(),
+  ].filter((s): s is BriefingStory => s !== null);
+
+  if (!stories.length) return null;
+
+  return (
+    <div style={{ marginBottom: 32 }}>
+      {/* Section label */}
+      <div style={{
+        display: "flex", alignItems: "center", gap: 10, marginBottom: 14,
+      }}>
+        <div style={{
+          height: 1, flex: 1,
+          background: "var(--sb-border-light)",
+        }} />
+        <span style={{
+          fontSize: 10, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+          letterSpacing: "0.14em", textTransform: "uppercase",
+          color: "var(--sb-muted)", flexShrink: 0,
+        }}>
+          Signal Briefing
+        </span>
+        <div style={{
+          height: 1, flex: 1,
+          background: "var(--sb-border-light)",
+        }} />
+      </div>
+
+      {/* 3-column newspaper grid */}
+      <div className="sb-briefing-grid">
+        {stories.map((story, i) => (
+          <button
+            key={i}
+            className="sb-briefing-card"
+            onClick={() => {
+              if (story.url) window.open(story.url, "_blank", "noopener");
+              else onNavigate(story.tab);
+            }}
+          >
+            {/* Category label */}
+            <div style={{
+              fontSize: 9, fontWeight: 700, letterSpacing: "0.12em",
+              textTransform: "uppercase", color: story.accentColor,
+              fontFamily: "'Space Mono', monospace",
+              marginBottom: 6,
+            }}>
+              {story.emoji} {story.category}
+            </div>
+
+            {/* Headline */}
+            <div style={{
+              fontFamily: "var(--sb-serif)",
+              fontWeight: 700,
+              fontSize: 15,
+              lineHeight: 1.35,
+              color: "var(--sb-ink)",
+              marginBottom: 8,
+              display: "-webkit-box",
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}>
+              {story.headline}
+            </div>
+
+            {/* Lede */}
+            <div style={{
+              fontSize: 12,
+              color: "var(--sb-muted)",
+              lineHeight: 1.55,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              flex: 1,
+            }}>
+              {story.lede}
+            </div>
+
+            {/* Read more */}
+            <div style={{
+              marginTop: 10,
+              fontSize: 11,
+              fontWeight: 600,
+              color: story.accentColor,
+              display: "flex",
+              alignItems: "center",
+              gap: 3,
+            }}>
+              {story.url ? "Read more" : `Go to ${story.category} →`}
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Blotter strip ─────────────────────────────────────────────────────────────
+
+const BLOTTER_PRIORITY_LABELS: Record<number, { label: string; bg: string; color: string }> = {
+  1: { label: "Priority 1", bg: "#FEF2F2", color: "#991B1B" },
+  2: { label: "Priority 2", bg: "#FFF7ED", color: "#92400E" },
+  3: { label: "Priority 3", bg: "#FEF9C3", color: "#854D0E" },
+};
+
+function BlotterStrip({
+  homeCity,
+  onNavigate,
+}: {
+  homeCity: City | null;
+  onNavigate: (tab: Tab) => void;
+}) {
+  const blotters = blotterJson as Record<string, CityBlotter>;
+  const city = homeCity;
+  if (!city) return null;
+  const blotter = blotters[city];
+  if (!blotter || !blotter.entries?.length) return null;
+
+  // Show most recent 5 entries
+  const entries = blotter.entries.slice(0, 5);
+
+  const callDate = entries[0]?.date ?? "";
+
+  return (
+    <div style={{ marginBottom: 32 }}>
+      <div className="sb-section-header" style={{ marginBottom: 10 }}>
+        <span className="sb-section-title" style={{ fontSize: 13 }}>
+          🚨 Police Blotter
+        </span>
+        <span style={{ fontSize: 11, color: "var(--sb-muted)", fontFamily: "'Space Mono', monospace" }}>
+          {callDate} · {getCityName(city)}
+        </span>
+        <a
+          href={blotter.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ marginLeft: "auto", fontSize: 11, color: "var(--sb-accent)", textDecoration: "none" }}
+        >
+          {blotter.source} →
+        </a>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {entries.map((entry, i) => {
+          const pri = typeof entry.priority === "number" ? entry.priority : parseInt(entry.priority as string ?? "9", 10);
+          const priStyle = BLOTTER_PRIORITY_LABELS[pri] ?? { label: "", bg: "#F3F4F6", color: "#374151" };
+          return (
+            <div key={i} style={{
+              display: "flex", alignItems: "center", gap: 10,
+              padding: "8px 0",
+              borderBottom: i < entries.length - 1 ? "1px solid var(--sb-border-light)" : "none",
+            }}>
+              <span style={{
+                fontFamily: "'Space Mono', monospace", fontSize: 10,
+                color: "var(--sb-muted)", flexShrink: 0, minWidth: 38,
+              }}>
+                {entry.time}
+              </span>
+              <span style={{
+                fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 3,
+                background: priStyle.bg, color: priStyle.color,
+                whiteSpace: "nowrap", flexShrink: 0, letterSpacing: "0.02em",
+                maxWidth: 130, overflow: "hidden", textOverflow: "ellipsis",
+              }}>
+                {entry.type}
+              </span>
+              <span style={{
+                fontSize: 11, color: "var(--sb-muted)",
+                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                fontFamily: "'Space Mono', monospace",
+              }}>
+                {entry.location}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      <button
+        onClick={() => onNavigate("government")}
+        style={{
+          marginTop: 8, background: "none", border: "none", padding: 0,
+          fontSize: 12, color: "var(--sb-muted)", cursor: "pointer",
+          textDecoration: "underline", textUnderlineOffset: 3,
+        }}
+      >
+        Full blotter in Gov tab →
+      </button>
+    </div>
+  );
+}
+
 // ── Bucketed event list ───────────────────────────────────────────────────────
 
 type AnyEvent = { _type: "static"; event: SBEvent } | { _type: "upcoming"; event: UpcomingEvent };
@@ -599,6 +948,16 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
         </div>
       )}
 
+      {/* ── Signal Briefing (newspaper front page hero) ── */}
+      {!changingCity && (
+        <SignalBriefing
+          homeCity={homeCity}
+          todayUpcoming={todayUpcoming.filter((e) => e.category !== "sports")}
+          todayStatic={SOUTH_BAY_EVENTS.filter((e) => isActiveToday(e) && e.category !== "sports")}
+          onNavigate={onNavigate}
+        />
+      )}
+
       {/* ── City at a glance ── */}
       {homeCity && !changingCity && (
         <CityGlance city={homeCity} onNavigate={onNavigate} />
@@ -607,6 +966,11 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
       {/* ── Sports callout ── */}
       {todaySportsEvents.length > 0 && (
         <SportsCallout events={todaySportsEvents} />
+      )}
+
+      {/* ── Police blotter for home city ── */}
+      {homeCity && !changingCity && (
+        <BlotterStrip homeCity={homeCity} onNavigate={onNavigate} />
       )}
 
       {/* ── Your City Today (or expanded regional if sparse) ── */}

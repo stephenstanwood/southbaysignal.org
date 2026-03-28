@@ -1727,6 +1727,34 @@ const title = "South Bay Signal";
       .sb-footer a:hover { text-decoration: underline; }
 
       /* ── Responsive ── */
+      /* ── Signal Briefing ── */
+      .sb-briefing-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+        border: 1px solid var(--sb-border-light);
+      }
+      .sb-briefing-card {
+        background: var(--sb-card);
+        border: none;
+        border-right: 1px solid var(--sb-border-light);
+        padding: 18px 18px 16px;
+        text-align: left;
+        font-family: inherit;
+        cursor: pointer;
+        transition: background 0.12s;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        min-height: 160px;
+      }
+      .sb-briefing-card:last-child {
+        border-right: none;
+      }
+      .sb-briefing-card:hover {
+        background: var(--sb-primary-light);
+      }
+
       @media (max-width: 640px) {
         .sb-header { padding: 20px 16px 0; }
         .sb-brand-name { font-size: 26px; }
@@ -1740,6 +1768,9 @@ const title = "South Bay Signal";
         .sb-overview-grid { grid-template-columns: 1fr; }
         .sb-today-grid { grid-template-columns: 1fr !important; }
         .sb-city-glance { flex-direction: column; }
+        .sb-briefing-grid { grid-template-columns: 1fr; }
+        .sb-briefing-card { border-right: none; border-bottom: 1px solid var(--sb-border-light); min-height: auto; }
+        .sb-briefing-card:last-child { border-bottom: none; }
 
         /* Tech section mobile */
         .tech-header-title { font-size: 28px; }
