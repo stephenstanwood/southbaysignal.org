@@ -324,16 +324,28 @@ async function fetchStanfordEvents() {
   console.log("  ⏳ Stanford Events...");
   try {
     const data = await fetchJson("https://events.stanford.edu/api/2/events?days=60&pp=200");
+    const now = new Date();
     const events = (data.events || []).map((e) => {
       const ev = e.event;
       const start = parseDate(ev.first_date);
       const end = parseDate(ev.last_date);
       if (!start) return null;
+      // Stanford Localist returns series events: first_date = series start, last_date = series end.
+      // Many recurring events started weeks ago but are still ongoing.
+      // Use today as the event date for ongoing events (started in past, ends in future).
+      let eventDate = start;
+      if (start < now) {
+        if (end && end >= now) {
+          eventDate = now; // currently running → anchor to today
+        } else {
+          return null; // fully in the past
+        }
+      }
       return {
         id: `stanford-${ev.id}`,
         title: ev.title,
-        date: isoDate(start),
-        displayDate: displayDate(start),
+        date: isoDate(eventDate),
+        displayDate: displayDate(eventDate),
         time: displayTime(start),
         endTime: end ? displayTime(end) : null,
         venue: ev.location_name || "Stanford University",
