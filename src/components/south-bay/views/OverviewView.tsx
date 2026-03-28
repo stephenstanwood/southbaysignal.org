@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import SportsView from "./SportsView";
+import OutagesCard from "../cards/OutagesCard";
 import {
   SOUTH_BAY_EVENTS,
   type SBEvent,
@@ -1275,6 +1276,9 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
         />
       ) : null}
 
+      {/* ── Power outage alert (only shown when active outages exist) ── */}
+      <OutagesCard />
+
       {/* ── Weather strip ── */}
       {weather && (
         <div style={{ background: "var(--sb-primary-light)", border: "1px solid var(--sb-border-light)", borderRadius: "var(--sb-radius)", padding: "10px 16px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
@@ -1486,67 +1490,6 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
 
       {/* ── Around the South Bay ── */}
       {!changingCity && <AroundTownSection />}
-
-      {/* ── On Stage Tonight / This Week ── */}
-      {!changingCity && (
-        <OnStageSection allUpcoming={allUpcoming} onNavigate={onNavigate} />
-      )}
-
-      {/* ── This Week: home city upcoming ── */}
-      {homeCity && thisWeekByDay.length > 0 && (
-        <div style={{ marginBottom: 32 }}>
-          <div className="sb-section-header" style={{ marginBottom: 12 }}>
-            <span className="sb-section-title">This Week in {getCityName(homeCity)}</span>
-            <span style={{ fontSize: 12, fontWeight: 500, color: "var(--sb-muted)" }}>
-              {(() => { const n = thisWeekByDay.reduce((acc, d) => acc + d.events.length, 0); return `${n} ${n === 1 ? "event" : "events"}`; })()}
-            </span>
-          </div>
-          {thisWeekByDay.map(({ iso, label, events }) => (
-            <div key={iso} style={{ marginBottom: 12 }}>
-              <div style={{
-                fontSize: 10, fontWeight: 700, fontFamily: "'Space Mono', monospace",
-                letterSpacing: "0.08em", textTransform: "uppercase",
-                color: "var(--sb-muted)", paddingTop: 8, paddingBottom: 2,
-                borderBottom: "1px solid var(--sb-border-light)", marginBottom: 0,
-              }}>
-                {label}
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0 32px" }}
-                className="sb-today-grid">
-                {events.map((e) => (
-                  <UpcomingRow key={e.id} event={e} showCity={false} />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* ── This Month in the South Bay ── */}
-      {showThisMonth && (
-        <div style={{ marginBottom: 32 }}>
-          <div className="sb-section-header" style={{ marginBottom: 16 }}>
-            <span className="sb-section-title">This Month</span>
-            <span style={{ fontSize: 12, fontWeight: 600, color: "var(--sb-accent)", textTransform: "uppercase", letterSpacing: "0.06em" }}>{MONTH_NAME}</span>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
-            {thisMonthEvents.map((e) => <MonthCard key={e.id} event={e} />)}
-          </div>
-        </div>
-      )}
-
-      {/* ── Coming Up Next Month ── */}
-      {nextMonthPreview.length > 0 && (
-        <div style={{ marginBottom: 32 }}>
-          <div className="sb-section-header" style={{ marginBottom: 16 }}>
-            <span className="sb-section-title">Coming Up</span>
-            <span style={{ fontSize: 12, fontWeight: 600, color: "var(--sb-muted)", textTransform: "uppercase", letterSpacing: "0.06em" }}>{NEXT_MONTH_NAME}</span>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
-            {nextMonthPreview.map((e) => <MonthCard key={e.id} event={e} isUpcoming />)}
-          </div>
-        </div>
-      )}
 
       {/* ── Sports scoreboard ── */}
       <SportsView />

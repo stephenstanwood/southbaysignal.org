@@ -13,6 +13,7 @@
     "generate-upcoming-meetings": "node scripts/generate-upcoming-meetings.mjs",
     "generate-around-town": "node scripts/generate-around-town.mjs",
     "generate-health-scores": "node scripts/generate-health-scores.mjs",
+    "generate-outages": "node scripts/generate-outages.mjs",
     "generate-weekend-picks": "node scripts/generate-weekend-picks.mjs"
   },
   "dependencies": {
