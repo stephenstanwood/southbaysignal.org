@@ -44,7 +44,7 @@ function ChartTooltip({ active, payload }: { active?: boolean; payload?: Tooltip
     >
       <div style={{ fontWeight: 600, marginBottom: 4 }}>{d.name}</div>
       <div style={{ color: trendColor, fontWeight: 500 }}>
-        ~{d.headcount.toLocaleString()}K SCC employees (est.)
+        {d.headcount.toLocaleString()}K SCC employees (est.)
       </div>
     </div>
   );
@@ -84,7 +84,7 @@ function CompanyCard({ company }: { company: TechCompany }) {
         <span className="tech-card-dot">·</span>
         <span className="tech-card-category">{CATEGORY_LABELS[company.category]}</span>
         <span className="tech-card-dot">·</span>
-        <span className="tech-card-headcount">~{company.sccEmployeesK.toLocaleString()}K SCC jobs</span>
+        <span className="tech-card-headcount">{company.sccEmployeesK.toLocaleString()}K SCC jobs (est.)</span>
       </div>
 
       <p className="tech-card-desc">{company.description}</p>
@@ -115,7 +115,15 @@ function SpotlightCard({ company }: { company: SccTechSpotlight }) {
       style={{ borderTop: `3px solid ${company.color}` }}
     >
       <div className="tech-spotlight-top">
-        <span className="tech-spotlight-name">{company.name}</span>
+        <a
+          href={company.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="tech-spotlight-name"
+          style={{ color: "inherit", textDecoration: "none" }}
+        >
+          {company.name} ↗
+        </a>
         <span
           className="tech-spotlight-stage"
           style={{
@@ -126,7 +134,11 @@ function SpotlightCard({ company }: { company: SccTechSpotlight }) {
           {STAGE_LABELS[company.stage]}
         </span>
       </div>
-      <div className="tech-spotlight-city">{company.city}</div>
+      <div className="tech-spotlight-city" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <span>{company.city}</span>
+        <span style={{ color: "var(--sb-border)" }}>·</span>
+        <span style={{ fontSize: 11, color: "var(--sb-muted)" }}>{company.employeesNote}</span>
+      </div>
       <p className="tech-spotlight-tagline">{company.tagline}</p>
     </div>
   );
@@ -237,8 +249,8 @@ export default function TechnologyView() {
       {/* ── Spotlight: Startups & More ── */}
       <div className="tech-section">
         <div className="tech-section-head">
-          <h3 className="tech-section-title">Startups & Rising Companies</h3>
-          <span className="tech-section-note">Notable SCC tech beyond the marquee names</span>
+          <h3 className="tech-section-title">More South Bay Tech</h3>
+          <span className="tech-section-note">Notable SCC companies beyond the top employers</span>
         </div>
         <div className="tech-spotlight-grid">
           {SCC_SPOTLIGHT.map((company) => (
