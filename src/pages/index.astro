@@ -171,25 +171,26 @@ const title = "South Bay Signal";
         margin-right: 4px;
       }
       .sb-city-pill {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 500;
-        padding: 4px 10px;
+        padding: 3px 9px;
         border-radius: 100px;
         border: 1px solid var(--sb-border);
-        background: var(--sb-card);
+        background: transparent;
         color: var(--sb-muted);
         cursor: pointer;
         transition: all 0.15s;
         white-space: nowrap;
       }
       .sb-city-pill:hover {
-        border-color: var(--sb-primary);
-        color: var(--sb-primary);
+        border-color: var(--sb-ink);
+        color: var(--sb-ink);
       }
       .sb-city-pill--active {
-        background: var(--sb-primary);
-        border-color: var(--sb-primary);
-        color: white;
+        border-color: var(--sb-ink);
+        color: var(--sb-ink);
+        font-weight: 600;
+        background: transparent;
       }
       .sb-city-pill--all {
         font-weight: 600;
