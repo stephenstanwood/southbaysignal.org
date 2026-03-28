@@ -510,7 +510,7 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
         <strong style={{ color: "var(--sb-muted)" }}>
           {upcomingEvents.length} upcoming events from {upcomingSources.length} sources.
         </strong>{" "}
-        Scraped from: {upcomingSources.join(", ")}.
+        Via {upcomingSources.join(", ")}.
         {" "}Plus {SOUTH_BAY_EVENTS.length} recurring events across the South Bay.
       </div>
     </>

@@ -103,8 +103,69 @@ function stripHtml(html) {
     .replace(/<[^>]+>/g, " ")
     .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+    .replace(/&#x2019;/gi, "\u2019").replace(/&#x2018;/gi, "\u2018")
+    .replace(/&#x201C;/gi, "\u201C").replace(/&#x201D;/gi, "\u201D")
+    .replace(/&#x2013;/gi, "\u2013").replace(/&#x2014;/gi, "\u2014")
     .replace(/&#\d+;/g, "").replace(/&\w+;/g, "")
     .replace(/\s+/g, " ").trim();
+}
+
+// Skip internal university admin events that aren't open to the general public
+const INTERNAL_EVENT_PATTERNS = [
+  /\bregistration\b/i,
+  /\badd\s*[&\/]\s*drop\b/i,
+  /\broom\s+closed\b/i,
+  /\bclosed\b.*\b(day|holiday|weekend)\b/i,
+  /\bdeadline\b/i,
+  /\bno\s+class(es)?\b/i,
+  /\bfinals?\s+(week|exam)\b/i,
+  /\bspring\s+break\b/i,
+  /\bwinter\s+break\b/i,
+  /\bfall\s+break\b/i,
+  /\borientation\b/i,
+  /\bcommencement\b/i,
+  /\bconvocation\b/i,
+  /\bfaculty\s+(meeting|senate|assembly)\b/i,
+  /\bstaff\s+(meeting|development|recognition)\b/i,
+  /\bacademic\s+calendar\b/i,
+  /\bconferral\s+of\s+degrees?\b/i,
+  /\binstruction\s+begins?\b/i,
+  /\binstruction\s+ends?\b/i,
+  /\blast\s+day\s+of\s+instruction\b/i,
+  /\breading\s+period\b/i,
+  /\bgrades?\s+due\b/i,
+  /\bquarter\s*:\s*(gsb|instruction|exams?|begins?|ends?)\b/i,
+  /\b(spring|fall|winter|summer)\s+quarter\s*:/i,
+  /\bgsb\s+instruction\b/i,
+  /\bholiday\s+observance\b/i,
+  /\buniversity\s+holiday\b/i,
+  /\bhousing\s+move[\s-]?in\b/i,
+  /\bhousing\s+move[\s-]?out\b/i,
+  /\bhousing\s+opens?\b/i,
+  /\bresidential?\s+(check[\s-]?in|check[\s-]?out)\b/i,
+  /\bdorm(itory)?\s+(open|close|move)\b/i,
+  /\btuition\s+(due|payment|deadline)\b/i,
+];
+
+function isPublicEvent(title, source) {
+  const uniSources = ["Santa Clara University", "SJSU Events", "Stanford Events"];
+  if (uniSources.includes(source)) {
+    for (const pat of INTERNAL_EVENT_PATTERNS) {
+      if (pat.test(title)) return false;
+    }
+  }
+  return true;
+}
+
+// Strip calendar-artifact date prefixes like "Apr 1, 2026: " or "March 28: "
+function cleanTitle(title) {
+  if (!title) return title;
+  return title
+    .replace(
+      /^(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s*\d{4})?\s*:\s*/i,
+      "",
+    )
+    .trim();
 }
 
 function truncate(text, len = 200) {
@@ -777,10 +838,22 @@ async function main() {
     }
   }
 
-  // Filter: must have date and city and title, must be today or future
+  // Clean titles: strip calendar-artifact date prefixes, apply to all events
+  allEvents.forEach((e) => { e.title = cleanTitle(e.title); });
+
+  // Filter: must have date and city and title, must be today or future, must be public, not cancelled
+  // Also skip zero-duration university calendar markers (e.g. "5:00 PM – 5:00 PM")
+  const uniSources = new Set(["Stanford Events", "Santa Clara University", "SJSU Events"]);
   const today = new Date().toISOString().split("T")[0];
   const valid = allEvents.filter(
-    (e) => e.date && e.date >= today && e.city && e.title,
+    (e) =>
+      e.date &&
+      e.date >= today &&
+      e.city &&
+      e.title &&
+      !/^cancell?ed/i.test(e.title) &&
+      !(uniSources.has(e.source) && e.time && e.endTime && e.time === e.endTime) &&
+      isPublicEvent(e.title, e.source),
   );
 
   // Sort by date ascending
@@ -803,19 +876,45 @@ async function main() {
     return true;
   });
 
+  // Detect multi-day events (same title on 3+ distinct dates = ongoing exhibit/show)
+  // Collapse to first occurrence only; mark ongoing: true so the UI can separate them
+  const titleDates = {};
+  deduped.forEach((e) => {
+    const key = e.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim().substring(0, 50);
+    if (!titleDates[key]) titleDates[key] = new Set();
+    titleDates[key].add(e.date);
+  });
+  const multiDayKeys = new Set(
+    Object.entries(titleDates)
+      .filter(([, dates]) => dates.size >= 3)
+      .map(([key]) => key),
+  );
+  const seenMultiDay = new Set();
+  const finalEvents = deduped.filter((e) => {
+    const key = e.title.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim().substring(0, 50);
+    if (multiDayKeys.has(key)) {
+      if (seenMultiDay.has(key)) return false;
+      seenMultiDay.add(key);
+      e.ongoing = true; // flag for UI — show in "Ongoing" section, not day-by-day feed
+    }
+    return true;
+  });
+
+  const ongoingCount = finalEvents.filter((e) => e.ongoing).length;
+
   const output = {
     generatedAt: new Date().toISOString(),
-    eventCount: deduped.length,
+    eventCount: finalEvents.length,
     sources: sourceNames,
-    events: deduped,
+    events: finalEvents,
   };
 
   writeFileSync(OUT_PATH, JSON.stringify(output, null, 2) + "\n");
-  console.log(`\n✅ Done — ${deduped.length} events from ${sourceNames.length} sources → ${OUT_PATH}`);
+  console.log(`\n✅ Done — ${finalEvents.length} events (${ongoingCount} ongoing) from ${sourceNames.length} sources → ${OUT_PATH}`);
 
   // Summary by city
   const byCity = {};
-  deduped.forEach((e) => { byCity[e.city] = (byCity[e.city] || 0) + 1; });
+  finalEvents.forEach((e) => { byCity[e.city] = (byCity[e.city] || 0) + 1; });
   console.log("\nBy city:", byCity);
 }
 

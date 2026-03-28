@@ -163,7 +163,7 @@ function isActiveToday(e: SBEvent): boolean {
   ][dayIdx] as DayOfWeek;
 
   if (e.months && !e.months.includes(month)) return false;
-  if (!e.days) return true; // ongoing
+  if (!e.days) return e.recurrence !== "seasonal"; // seasonal without days = whole-season, not "today"
   return e.days.includes(dayName);
 }
 
@@ -250,7 +250,8 @@ function scoreCandidate(
   slot: TimeSlot,
   input: PlanInput,
   weather: WeatherInfo,
-  used: Set<string>
+  used: Set<string>,
+  usedCategories: Set<string>,
 ): number {
   if (used.has(c.id)) return -9999;
 
@@ -319,6 +320,9 @@ function scoreCandidate(
     else if (c.cost === "low") s += 5;
   }
 
+  // Category diversity — strongly penalize reusing the same category
+  if (usedCategories.has(c.category)) s -= 30;
+
   // Today bonus — this is happening right now
   if (c.isTodaySpecial) s += 20;
 
@@ -348,9 +352,6 @@ function buildHeadline(input: PlanInput, stops: PlanStop[]): string {
 
   if (input.who === "family-young") return "A perfect day for the little ones";
   if (input.who === "family-kids") return "A family day in the South Bay";
-  if (hasToday && freeCount >= Math.ceil(stops.length / 2)) {
-    return "A free day built around what's happening today";
-  }
   if (hasToday) return "Your day, built around what's happening right now";
   if (freeCount === stops.length) return "A completely free day in the South Bay";
   if (input.vibe === "outdoors") return "A South Bay day built for the outdoors";
@@ -367,17 +368,19 @@ export function buildDayPlan(input: PlanInput, weatherRaw: string): DayPlan {
   const slots = getSlotsForDuration(input.duration);
   const candidates = buildCandidates();
   const used = new Set<string>();
+  const usedCategories = new Set<string>();
   const stops: PlanStop[] = [];
 
   for (const slot of slots) {
     const scored = candidates
-      .map((c) => ({ c, score: scoreCandidate(c, slot, input, weather, used) }))
+      .map((c) => ({ c, score: scoreCandidate(c, slot, input, weather, used, usedCategories) }))
       .sort((a, b) => b.score - a.score);
 
     const winner = scored[0]?.c;
     if (!winner || scored[0].score < -100) continue;
 
     used.add(winner.id);
+    usedCategories.add(winner.category);
     const meta = SLOT_META[slot];
 
     stops.push({
