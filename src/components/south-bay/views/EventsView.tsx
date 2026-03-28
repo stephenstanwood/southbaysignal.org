@@ -101,6 +101,8 @@ function cityLabel(city: string) {
 
 function UpcomingEventCard({ event }: { event: UpcomingEvent }) {
   const badge = costBadge(event.cost);
+  // Community events (government meetings, commission hearings) are always free — badge adds no info
+  const showBadge = !(event.cost === "free" && event.category === "community");
   return (
     <div
       style={{
@@ -130,22 +132,24 @@ function UpcomingEventCard({ event }: { event: UpcomingEvent }) {
             ) : event.title}
           </span>
         </div>
-        <span
-          style={{
-            flexShrink: 0,
-            fontSize: 10,
-            fontWeight: 700,
-            fontFamily: "'Space Mono', monospace",
-            letterSpacing: "0.04em",
-            padding: "2px 7px",
-            borderRadius: 3,
-            background: badge.bg,
-            color: badge.fg,
-            border: `1px solid ${badge.border}`,
-          }}
-        >
-          {badge.label}
-        </span>
+        {showBadge && (
+          <span
+            style={{
+              flexShrink: 0,
+              fontSize: 10,
+              fontWeight: 700,
+              fontFamily: "'Space Mono', monospace",
+              letterSpacing: "0.04em",
+              padding: "2px 7px",
+              borderRadius: 3,
+              background: badge.bg,
+              color: badge.fg,
+              border: `1px solid ${badge.border}`,
+            }}
+          >
+            {badge.label}
+          </span>
+        )}
       </div>
 
       <div

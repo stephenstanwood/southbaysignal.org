@@ -256,6 +256,7 @@ function EventRow({ event, showCity = true }: { event: SBEvent; showCity?: boole
 
 function UpcomingRow({ event, showCity = true, highlight = false }: { event: UpcomingEvent; showCity?: boolean; highlight?: boolean }) {
   const badge = costBadge(event.cost);
+  const showBadge = !(event.cost === "free" && event.category === "community");
   const emoji = CATEGORY_EMOJI[event.category] ?? "📅";
   return (
     <div style={{
@@ -275,9 +276,11 @@ function UpcomingRow({ event, showCity = true, highlight = false }: { event: Upc
               </a>
             ) : event.title}
           </span>
-          <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: badge.bg, color: badge.color, letterSpacing: "0.04em", flexShrink: 0 }}>
-            {badge.label}
-          </span>
+          {showBadge && (
+            <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: badge.bg, color: badge.color, letterSpacing: "0.04em", flexShrink: 0 }}>
+              {badge.label}
+            </span>
+          )}
         </div>
         <div style={{ fontSize: 12, color: "var(--sb-muted)", marginTop: 2, display: "flex", gap: 8, flexWrap: "wrap" }}>
           {showCity && <span>{cityLabel(event.city)}</span>}

@@ -150,6 +150,12 @@ const INTERNAL_EVENT_PATTERNS = [
   /\bresidential?\s+(check[\s-]?in|check[\s-]?out)\b/i,
   /\bdorm(itory)?\s+(open|close|move)\b/i,
   /\btuition\s+(due|payment|deadline)\b/i,
+  // Medical research recruitment (not community events)
+  /\bclinical\s+(research|study|trial)\b/i,
+  /\bresearch\s+study\s+program\b/i,
+  /\bparticipants?\s+needed\b/i,
+  /\beligibility\s+criteria\b/i,
+  /\b(MDD|ADHD|PTSD)\s+study\b/i,
 ];
 
 // Detect away games: "[School] at [Away Opponent/Location]"
@@ -513,6 +519,7 @@ async function fetchChmEvents() {
         city: "mountain-view",
         category: inferCategory(item.title, item.description, "", "Computer History Museum"),
         cost: "paid",
+        ongoing: true, // CHM items are running exhibits, not time-specific events
         description: truncate(stripHtml(item.description || item.content)),
         url: item.link,
         source: "Computer History Museum",

@@ -258,25 +258,47 @@ function TeamScheduleCard({ team, games }: { team: SouthBayTeam; games: ParsedGa
   const displayed = [...past, ...live, ...upcoming];
   const leagueLabel = LEAGUE_META[team.league]?.label ?? team.league.toUpperCase();
 
+  // Extract the SB team's logo from any available game
+  const sbLogo =
+    games.find((g) => g.isSouthBayHome)?.homeLogo ??
+    games.find((g) => !g.isSouthBayHome)?.awayLogo;
+
+  // SB team's W-L record (from most recent game)
+  const latestGame = [...games].sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())[0];
+  const record = latestGame
+    ? (latestGame.isSouthBayHome ? latestGame.homeRecord : latestGame.awayRecord)
+    : undefined;
+
+  const hasLive = live.length > 0;
+
   return (
     <div style={{
       background: "var(--sb-card)",
-      border: "1px solid var(--sb-border-light)",
+      border: `1px solid ${hasLive ? team.color + "60" : "var(--sb-border-light)"}`,
       borderRadius: "var(--sb-radius)",
       padding: "12px 14px",
       display: "flex",
       flexDirection: "column",
+      boxShadow: hasLive ? `0 0 0 2px ${team.color}20` : "none",
     }}>
       {/* Team header */}
       <div style={{
-        display: "flex", alignItems: "center", justifyContent: "space-between",
+        display: "flex", alignItems: "center", gap: 8,
         marginBottom: 8, paddingBottom: 7,
-        borderBottom: `2px solid ${team.color}20`,
+        borderBottom: `1px solid ${team.color}25`,
       }}>
-        <span style={{ fontWeight: 700, fontSize: 13, color: team.color, letterSpacing: "0.02em" }}>
+        {sbLogo && (
+          <img src={sbLogo} alt="" width={24} height={24} style={{ objectFit: "contain", flexShrink: 0 }} loading="lazy" />
+        )}
+        <span style={{ fontWeight: 700, fontSize: 13, color: "var(--sb-ink)", flex: 1 }}>
           {team.shortName}
         </span>
-        <span style={{ fontSize: 10, fontFamily: "'Space Mono', monospace", color: "var(--sb-muted)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+        {record && (
+          <span style={{ fontSize: 10, color: "var(--sb-muted)", fontFamily: "'Space Mono', monospace" }}>
+            {record}
+          </span>
+        )}
+        <span style={{ fontSize: 10, fontFamily: "'Space Mono', monospace", color: team.color, letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700 }}>
           {leagueLabel}
         </span>
       </div>
