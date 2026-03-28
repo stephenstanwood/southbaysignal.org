@@ -1204,3 +1204,55 @@ The TypeScript bug fix (pickTopEvent call signature) was a bonus — the Signal 
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — entertainment discovery is now a first-class product feature.** South Bay Signal now does something no other South Bay source does: presents major local entertainment venues with their upcoming show listings in a browsable, organized format. The Venues tab + On Stage section makes the product useful for a completely new use case — "what's on in San Jose this week?" — that 98 Ticketmaster events were sitting on but not delivering. A resident can now open South Bay Signal and know, at a glance, that Beetlejuice is touring at SJ Center for the Performing Arts and David Byrne is coming to Frost Amphitheater. That's the kind of local intelligence that makes a site worth bookmarking.
+
+---
+
+## Cycle 19 — Government Tab: Upcoming Agenda Preview (2026-03-28)
+
+### What Was Built
+
+**Upcoming council meeting agenda preview on the Government tab** — before each city's next council meeting, the Government tab now shows the top 5 substantive agenda items pulled live from the Legistar API. Residents can see exactly what's coming up at city hall without having to dig through PDFs.
+
+**1. Legistar EventItems integration** (`scripts/generate-upcoming-meetings.mjs`)
+
+- New `fetchAgendaItems(client, eventId)` fetches `/Events/{id}/EventItems` from the Legistar Web API (free, no auth)
+- Multi-pass filter removes boilerplate: skip exact procedural phrases (Roll Call, Pledge of Allegiance, Open Forum), skip all-caps section headers (CONSENT CALENDAR, STRATEGIC SUPPORT), skip long instructional paragraphs, skip URLs and phone numbers
+- Takes first line only for titles with embedded addresses (Cupertino appends address info via `\r\n`)
+- Returns up to 5 substantive items sorted by agenda sequence
+
+**2. Agenda preview UI in DigestCard and GovernmentView**
+
+- Shown below the digest summary on cities with digest data
+- Also shown on the "no digest yet" fallback card
+- "On the agenda · [Date]" label in small-caps monospace, items in left-bordered list
+- Hidden when no substantive items found (e.g. Cupertino Apr 1 is a closed-session litigation meeting)
+
+### Sample output — San Jose, April 7
+- Establishment of the GovAI Coalition as a Nonprofit Corporation
+- Willow Rock Long Duration Energy Storage Agreement
+- San Diego Community Power Resource Adequacy Trade
+- Establishment of the Story Road Business Improvement District
+- Actions Related to the VTA Capitol Station Affordable Housing Development
+
+### Ideas Considered
+
+1. **Upcoming agenda preview on Gov tab** ← BUILT
+2. **Live Caltrain service status** — 511 API key not available in this env. Deferred.
+3. **Development data audit** — Static data, can be done in any env. Good next candidate.
+
+### Why This Was the Highest-Leverage Move
+
+The Government tab previously only looked backward — past meeting digests. Now it also looks forward. A resident heading to Tuesday's San Jose council meeting can open South Bay Signal and see in 2 seconds that the GovAI Coalition and Willow Rock energy storage are on the docket. No PDF required. This closes a real gap in civic information access and makes the Government tab useful twice per meeting cycle instead of once.
+
+### Effect on Real Users
+- **Civically engaged resident**: Opens Gov tab, sees San Jose's April 7 meeting includes a vote on the GovAI Coalition — decides to attend and comment
+- **Property owner**: Sees "Story Road Business Improvement District" on the agenda — now knows there may be new assessments coming
+- **Housing advocate**: Sees VTA Capitol Station affordable housing loan on the docket — mobilizes to weigh in
+
+### Next 3 Strongest Ideas
+1. **Live Caltrain service status** — 511 API key needed. Daily-urgency commuter feature.
+2. **Development data audit + refresh** — Static projects need status/timeline updates for 2026.
+3. **School district calendar integration** — FUHSD, SJUSD, PAUSD key dates (enrollment, breaks, holidays). High resident relevance.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — civic intelligence is now forward-looking.** The Government tab has become a two-way civic companion: backward-looking digests tell you what was decided, and the new agenda preview tells you what's coming. South Bay Signal is the only place a resident can open one tab and see both the last San Jose council meeting summary AND the five biggest items on next week's agenda. That's genuinely useful for the ~20% of residents who follow local government.
