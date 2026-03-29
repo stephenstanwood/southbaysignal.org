@@ -71,8 +71,6 @@ export default function SignalApp() {
         <div className="sb-header-inner">
           <a href="/" className="sb-brand">
             <span className="sb-logo">
-              <span className="sb-logo-rule-thick" />
-              <span className="sb-logo-rule-thin" />
               <span className="sb-logo-main-row">
                 <span className="sb-logo-the">the</span>
                 <span className="sb-logo-south-bay">South Bay</span>
@@ -85,11 +83,11 @@ export default function SignalApp() {
             </span>
           </a>
           <div className="sb-date">
-            {TODAY}
+            <div>{TODAY}</div>
             {homeCity && (
-              <span style={{ marginLeft: 8, color: "var(--sb-accent)", fontWeight: 600 }}>
-                · {getCityName(homeCity)}
-              </span>
+              <div style={{ color: "var(--sb-muted)", fontWeight: 600, marginTop: 2 }}>
+                {getCityName(homeCity).toUpperCase()}
+              </div>
             )}
           </div>
         </div>

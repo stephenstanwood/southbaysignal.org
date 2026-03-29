@@ -106,7 +106,7 @@ export const DEV_PROJECTS: DevProject[] = [
     category: "mixed-use",
     status: "under-construction",
     description:
-      "Google's landmark mixed-use development adjacent to Diridon Station — potentially the largest urban campus project in US history. Approved by San Jose City Council in 2021, the project encompasses office space, thousands of housing units, retail, parks, and community amenities across multiple city blocks near the transit hub.",
+      "Google's landmark mixed-use development adjacent to Diridon Station. Approved by San Jose City Council in 2021, the project encompasses office space, thousands of housing units, retail, parks, and community amenities across multiple city blocks near the transit hub.",
     scale: "7.3M sq ft, 4,000+ housing units",
     developer: "Google / Lendlease",
     timeline: "Multiple phases through 2030s",
@@ -176,21 +176,6 @@ export const DEV_PROJECTS: DevProject[] = [
   // ── APPROVED ────────────────────────────────────────────────────────────
 
   {
-    id: "490-e-middlefield-mv",
-    name: "490 East Middlefield Mixed-Use",
-    city: "Mountain View",
-    cityId: "mountain-view",
-    category: "mixed-use",
-    status: "approved",
-    description:
-      "Mountain View City Council approved a development agreement for new mixed-use residential at 490 East Middlefield Road in a second reading in March 2026. The project adds new housing along this transit-connected corridor.",
-    scale: "Mixed-use residential",
-    developer: "Private",
-    timeline: "Approved March 2026",
-    featured: false,
-  },
-
-  {
     id: "berryessa-bart-transit-village",
     name: "Berryessa BART Transit Village",
     city: "San Jose",
@@ -232,20 +217,6 @@ export const DEV_PROJECTS: DevProject[] = [
     scale: "Multiple small parcels",
     developer: "Various",
     timeline: "Active development",
-    featured: false,
-  },
-
-  {
-    id: "el-camino-retail-palo-alto",
-    name: "El Camino Real Retail Preservation Zone",
-    city: "Palo Alto",
-    cityId: "palo-alto",
-    category: "retail",
-    status: "approved",
-    description:
-      "Palo Alto updated its El Camino Real retail preservation rules in March 2026, expanding floor area bonuses for historic buildings and enabling development rights transfers. The changes aim to incentivize preservation and renovation of the corridor's commercial buildings.",
-    scale: "Corridor-wide policy",
-    timeline: "Adopted March 2026",
     featured: false,
   },
 

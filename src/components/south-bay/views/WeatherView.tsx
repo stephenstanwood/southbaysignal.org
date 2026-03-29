@@ -1,3 +1,4 @@
+import ForecastCard from "../cards/ForecastCard";
 import AirQualityCard from "../cards/AirQualityCard";
 import QuakeWatchCard from "../cards/QuakeWatchCard";
 import WaterWatchCard from "../cards/WaterWatchCard";
@@ -10,6 +11,7 @@ interface Props {
 export default function WeatherView({ homeCity }: Props) {
   return (
     <>
+      <ForecastCard homeCity={homeCity} />
       <AirQualityCard homeCity={homeCity} />
       <QuakeWatchCard />
       <WaterWatchCard />

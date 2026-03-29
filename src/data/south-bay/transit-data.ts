@@ -79,13 +79,6 @@ export const TRANSIT_AGENCIES: TransitAgency[] = [
         detail: "Caltrain completed its electrification project, replacing diesel locomotives with Swiss-built electric multiple unit (EMU) trains. Quieter, faster acceleration, zero direct emissions.",
         startDate: "October 2024",
       },
-      {
-        id: "caltrain-2",
-        summary: "Free Clipper upgrade through March 31",
-        detail: "Caltrain is offering discounted Clipper card top-ups for new and lapsed riders through the end of March. Load $20, ride for the price of $15.",
-        endDate: "March 31, 2026",
-        affectedRoutes: "All routes",
-      },
     ],
   },
   {
@@ -107,13 +100,6 @@ export const TRANSIT_AGENCIES: TransitAgency[] = [
         detail: "Track maintenance near Downtown San Jose is causing minor delays during peak hours. Crews are working weekday evenings through April 15.",
         affectedRoutes: "Line 901",
         endDate: "April 15, 2026",
-      },
-      {
-        id: "vta-2",
-        summary: "Route 22 frequency reduced on weekends",
-        detail: "The 22 (El Camino Real) is running every 20 minutes on weekends instead of every 12, due to driver shortages. VTA expects to restore full frequency in May.",
-        affectedRoutes: "Route 22",
-        endDate: "May 2026",
       },
     ],
   },
@@ -301,9 +287,9 @@ export const QUICK_LINKS = [
 
 export const TRANSIT_PULSE = [
   {
-    value: "175M",
+    value: "17M+",
     label: "Annual Caltrain Riders",
-    note: "Projected after electrification",
+    note: "Pre-electrification (2023)",
   },
   {
     value: "77mi",
