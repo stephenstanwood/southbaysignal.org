@@ -2,6 +2,8 @@ import { useState, useCallback } from "react";
 import DigestCard from "../cards/DigestCard";
 import type { DigestData } from "../cards/DigestCard";
 import HealthScoresCard from "../cards/HealthScoresCard";
+import BudgetCard from "../cards/BudgetCard";
+import MinutesSearchCard from "../cards/MinutesSearchCard";
 import type { City } from "../../../lib/south-bay/types";
 import digestsJson from "../../../data/south-bay/digests.json";
 import upcomingMeetingsJson from "../../../data/south-bay/upcoming-meetings.json";
@@ -105,6 +107,9 @@ export default function GovernmentView({ selectedCities, homeCity }: Props) {
 
   return (
     <>
+      {/* ── Budget Snapshot ── */}
+      <BudgetCard cityId={homeCity} />
+
       {/* ── Section header ── */}
       <div className="sb-section-header" style={{ marginBottom: 4 }}>
         <span className="sb-section-title">Council Digests</span>
@@ -287,6 +292,9 @@ export default function GovernmentView({ selectedCities, homeCity }: Props) {
           </p>
         </div>
       )}
+
+      {/* ── Council Records Search ── */}
+      <MinutesSearchCard homeCity={homeCity} selectedCities={selectedCities} />
 
       {/* ── Food Safety Watch ── */}
       <HealthScoresCard />

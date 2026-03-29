@@ -1,0 +1,193 @@
+[
+  {
+    "cityId": "campbell",
+    "cityName": "Campbell",
+    "fiscalYear": "FY 2025-26",
+    "population": 43281,
+    "totalBudget": 106.7,
+    "generalFund": 69.0,
+    "perCapitaGF": 1594,
+    "departments": [
+      { "name": "Public Safety", "amount": 34.5 },
+      { "name": "Public Works", "amount": 8.3 },
+      { "name": "Parks & Recreation", "amount": 5.5 },
+      { "name": "Community Development", "amount": 4.8 },
+      { "name": "General Government", "amount": 6.9 }
+    ],
+    "notes": "Faced $3.75M deficit from sales tax dips. Contracts with Santa Clara County Fire. Measure K half-cent sales tax generates ~$7M/yr.",
+    "source": "campbellca.gov/151/Budget"
+  },
+  {
+    "cityId": "los-gatos",
+    "cityName": "Los Gatos",
+    "fiscalYear": "FY 2024-25",
+    "population": 33355,
+    "totalBudget": 78.0,
+    "generalFund": 52.5,
+    "perCapitaGF": 1574,
+    "departments": [
+      { "name": "Public Safety", "amount": 26.3 },
+      { "name": "Public Works", "amount": 6.3 },
+      { "name": "Parks & Recreation", "amount": 4.2 },
+      { "name": "Community Development", "amount": 3.7 },
+      { "name": "General Government", "amount": 5.3 }
+    ],
+    "notes": "Capital improvement budget $10.1M in new funding. Contracts with Santa Clara County for some services.",
+    "source": "losgatosca.gov"
+  },
+  {
+    "cityId": "saratoga",
+    "cityName": "Saratoga",
+    "fiscalYear": "FY 2024-25",
+    "population": 31110,
+    "totalBudget": null,
+    "generalFund": null,
+    "perCapitaGF": null,
+    "departments": [],
+    "notes": "Contract city — contracts with SC County Sheriff. ARPA funding $7.2M for infrastructure. Full budget data pending — PDF only.",
+    "source": "saratoga.ca.us/181/Budget"
+  },
+  {
+    "cityId": "cupertino",
+    "cityName": "Cupertino",
+    "fiscalYear": "FY 2024-25",
+    "population": 59831,
+    "totalBudget": 146.6,
+    "generalFund": 89.9,
+    "perCapitaGF": 1502,
+    "departments": [
+      { "name": "Public Safety", "amount": 44.1 },
+      { "name": "Public Works", "amount": 11.7 },
+      { "name": "Parks & Recreation", "amount": 7.2 },
+      { "name": "Community Development", "amount": 6.3 },
+      { "name": "General Government", "amount": 9.9 }
+    ],
+    "notes": "Faced $10.1M deficit from loss of Apple sales taxes. Closed with investment earnings and service cuts.",
+    "source": "cupertino.org budget page"
+  },
+  {
+    "cityId": "sunnyvale",
+    "cityName": "Sunnyvale",
+    "fiscalYear": "FY 2024-25",
+    "population": 159673,
+    "totalBudget": 731.0,
+    "generalFund": 270.0,
+    "perCapitaGF": 1690,
+    "departments": [
+      { "name": "Public Safety (DPS)", "amount": 148.5 },
+      { "name": "Public Works", "amount": 32.4 },
+      { "name": "Parks & Recreation", "amount": 21.6 },
+      { "name": "Community Development", "amount": 18.9 },
+      { "name": "General Government", "amount": 27.0 }
+    ],
+    "notes": "Unique combined Dept of Public Safety (cross-trained police/fire/EMT). Operations $362.1M, Capital $296.6M, Debt/pension $72.3M.",
+    "source": "sunnyvale.ca.gov budget page"
+  },
+  {
+    "cityId": "mountain-view",
+    "cityName": "Mountain View",
+    "fiscalYear": "FY 2024-25",
+    "population": 86513,
+    "totalBudget": 541.6,
+    "generalFund": 185.2,
+    "perCapitaGF": 2141,
+    "departments": [
+      { "name": "Public Safety", "amount": 92.6 },
+      { "name": "Public Works", "amount": 22.2 },
+      { "name": "Parks & Recreation", "amount": 14.8 },
+      { "name": "Community Development", "amount": 13.0 },
+      { "name": "General Government", "amount": 20.4 }
+    ],
+    "notes": "Total revenues $452.5M all funds. Property Tax $74.3M, Sales Tax $25.9M (FY 2023-24 actuals). YoY change +6.6%.",
+    "source": "mountainview.gov budget page"
+  },
+  {
+    "cityId": "san-jose",
+    "cityName": "San Jose",
+    "fiscalYear": "FY 2024-25",
+    "population": 1013240,
+    "totalBudget": 5100.0,
+    "generalFund": 1650.0,
+    "perCapitaGF": 1629,
+    "departments": [
+      { "name": "Public Safety", "amount": 840.0 },
+      { "name": "Public Works", "amount": 165.0 },
+      { "name": "Parks & Recreation", "amount": 100.0 },
+      { "name": "General Government", "amount": 165.0 }
+    ],
+    "notes": "Largest city in the Bay Area. Total budget includes enterprise funds (airport, water, sewer). Police and Fire together account for ~51% of General Fund.",
+    "source": "sanjoseca.gov/budget"
+  },
+  {
+    "cityId": "santa-clara",
+    "cityName": "Santa Clara",
+    "fiscalYear": "FY 2024-25",
+    "population": 127647,
+    "totalBudget": 812.0,
+    "generalFund": 213.0,
+    "perCapitaGF": 1669,
+    "departments": [
+      { "name": "Public Safety", "amount": 106.5 },
+      { "name": "Public Works", "amount": 25.6 },
+      { "name": "Parks & Recreation", "amount": 17.0 },
+      { "name": "Community Development", "amount": 14.9 },
+      { "name": "General Government", "amount": 23.4 }
+    ],
+    "notes": "Home to Levi's Stadium and major tech employers. Total includes Silicon Valley Power (municipal utility), which significantly inflates total vs. general fund.",
+    "source": "santaclaraca.gov/budget"
+  },
+  {
+    "cityId": "palo-alto",
+    "cityName": "Palo Alto",
+    "fiscalYear": "FY 2024-25",
+    "population": 68572,
+    "totalBudget": 1010.0,
+    "generalFund": 243.0,
+    "perCapitaGF": 3544,
+    "departments": [
+      { "name": "Public Safety", "amount": 97.2 },
+      { "name": "Public Works", "amount": 29.2 },
+      { "name": "Parks & Recreation", "amount": 19.4 },
+      { "name": "Community Development", "amount": 17.0 },
+      { "name": "General Government", "amount": 26.7 }
+    ],
+    "notes": "Highest per-capita general fund spending in the region. Total budget includes Utilities (electric, gas, water, fiber) enterprise funds.",
+    "source": "cityofpaloalto.org/budget"
+  },
+  {
+    "cityId": "milpitas",
+    "cityName": "Milpitas",
+    "fiscalYear": "FY 2024-25",
+    "population": 84803,
+    "totalBudget": 262.0,
+    "generalFund": 108.0,
+    "perCapitaGF": 1274,
+    "departments": [
+      { "name": "Public Safety", "amount": 54.0 },
+      { "name": "Public Works", "amount": 13.0 },
+      { "name": "Parks & Recreation", "amount": 8.6 },
+      { "name": "Community Development", "amount": 7.6 },
+      { "name": "General Government", "amount": 11.9 }
+    ],
+    "notes": "Fast-growing city anchored by tech and logistics. BART Milpitas station opened 2020, driving new transit-oriented development.",
+    "source": "ci.milpitas.ca.gov/budget"
+  },
+  {
+    "cityId": "los-altos",
+    "cityName": "Los Altos",
+    "fiscalYear": "FY 2024-25",
+    "population": 31392,
+    "totalBudget": 52.0,
+    "generalFund": 43.0,
+    "perCapitaGF": 1370,
+    "departments": [
+      { "name": "Public Safety", "amount": 21.5 },
+      { "name": "Public Works", "amount": 5.2 },
+      { "name": "Parks & Recreation", "amount": 3.4 },
+      { "name": "Community Development", "amount": 3.0 },
+      { "name": "General Government", "amount": 4.7 }
+    ],
+    "notes": "Small residential city with high property values. Contracts with Santa Clara County Sheriff for law enforcement.",
+    "source": "losaltosca.gov/budget"
+  }
+]
