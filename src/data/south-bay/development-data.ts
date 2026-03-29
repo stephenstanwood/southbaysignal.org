@@ -91,10 +91,10 @@ export const DEV_PROJECTS: DevProject[] = [
     category: "transit",
     status: "under-construction",
     description:
-      "Extension of BART service from Berryessa Station through downtown San Jose — including a 4-mile bored tunnel — to a new terminus at Santa Clara Station near Levi's Stadium. Tunneling is underway as of 2026. Two new underground stations will serve downtown San José and Santa Clara, connecting the South Bay to the Bay Area BART network.",
-    scale: "6 miles, 2 new stations",
+      "Extension of BART service from Berryessa Station through downtown San Jose — including a 4-mile bored tunnel — to a new terminus at Santa Clara Station near Levi's Stadium. Tunneling is underway as of 2026. Four new underground stations will serve Alum Rock/28th St, Downtown San José, Diridon, and Santa Clara, connecting the South Bay to the Bay Area BART network.",
+    scale: "6 miles, 4 new stations",
     developer: "Santa Clara Valley Transportation Authority (VTA)",
-    timeline: "Expected 2030–2032",
+    timeline: "Expected mid-2030s",
     featured: true,
   },
 
