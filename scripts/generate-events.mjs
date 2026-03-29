@@ -405,6 +405,23 @@ function truncate(text, len = 200) {
   return text.substring(0, len).replace(/\s+\S*$/, "") + "…";
 }
 
+/**
+ * Clean a raw iCal LOCATION field into a display-friendly venue name.
+ * iCal LOCATION blobs often contain "- Venue Name  City CA 95000" or similar.
+ * Strips leading dashes, trailing city/state/zip, and HTML tags.
+ */
+function cleanVenue(raw) {
+  if (!raw) return raw;
+  let v = raw.replace(/<[^>]+>/g, "").trim();
+  // Remove leading "- " dash artifact from CivicPlus iCal
+  v = v.replace(/^-\s+/, "");
+  // Remove trailing "  City ST zip" pattern (double-space before city)
+  v = v.replace(/\s{2,}[A-Za-z][A-Za-z\s]+[A-Z]{2}\s+\d{5}.*$/, "");
+  // Remove trailing " City CA 9xxxx" pattern (single space)
+  v = v.replace(/\s+[A-Za-z][a-zA-Z\s]+CA\s+9\d{4}.*$/, "");
+  return v.trim();
+}
+
 function inferCity(location, address) {
   const text = `${location} ${address}`.toLowerCase();
   if (text.includes("campbell")) return "campbell";
@@ -425,6 +442,7 @@ function inferCategory(title, desc, type, venue = "") {
   const t = `${title} ${desc} ${type} ${venue}`.toLowerCase();
   if (t.includes("story time") || t.includes("storytime") || t.includes("toddler") || t.includes("baby") || t.includes("preschool") || t.includes("kids") || t.includes("children")) return "family";
   if (t.includes("concert") || t.includes("music") || t.includes("jazz") || t.includes("symphony") || t.includes("band") || t.includes("orchestra") || t.includes("choir")) return "music";
+  if (t.includes("comedy") || t.includes("stand-up") || t.includes("standup") || t.includes("improv show") || t.includes("comedian")) return "arts";
   if (t.includes("exhibit") || t.includes("gallery") || t.includes("theater") || t.includes("theatre") || t.includes("film") || t.includes("cinema") || t.includes("dance") || t.includes("performance") || t.includes("museum") || (t.includes("art") && !t.includes("martial art") && !t.includes("start"))) return "arts";
   if (t.includes("game") || t.includes("sport") || t.includes("athletic") || t.includes("golf") || t.includes("tennis") || t.includes("soccer") || t.includes("basketball") || t.includes("baseball") || t.includes("softball") || t.includes("volleyball") || t.includes("swimming") || t.includes("swim meet") || t.includes("track") || t.includes("cross country") || t.includes("lacrosse") || t.includes("football") || t.includes("gymnastics") || t.includes("wrestling") || t.includes("water polo") || t.includes("polo") || t.includes("hockey") || t.includes("rugby") || /\browing\b/.test(t) || t.includes("crew") || t.includes("diving") || t.includes("fencing") || t.includes("skiing") || t.includes("snowboard") || t.includes("cycling") || t.includes("equestrian") || t.includes("vs.") || t.includes("vs ") || /\b(fun run|road run|trail run|color run)\b/.test(t) || /\b(5k|10k|half marathon|marathon|triathlon)\b/.test(t) || t.includes("race")) return "sports";
   if (t.includes("market") || t.includes("fair") || t.includes("vendor") || t.includes("craft")) return "market";
@@ -552,7 +570,7 @@ async function fetchStanfordEvents() {
         address: ev.address || "",
         city: "palo-alto",
         category: inferCategory(ev.title, ev.description_text || "", ""),
-        cost: ev.free ? "free" : "paid",
+        cost: (ev.free || /\balcoholics anonymous\b/i.test(ev.title)) ? "free" : "paid",
         description: truncate(stripHtml(ev.description_text || ev.description || "")),
         url: ev.localist_url || `https://events.stanford.edu/event/${ev.id}`,
         source: "Stanford Events",
@@ -861,7 +879,7 @@ async function fetchCivicPlusIcal(name, url, defaultCity) {
           displayDate: displayDate(start),
           time: displayTime(start),
           endTime: end ? displayTime(end) : null,
-          venue: (ev.location || name).replace(/\\,/g, ","),
+          venue: cleanVenue((ev.location || name).replace(/\\,/g, ",")),
           address: "",
           city,
           category: inferCategory(ev.summary, ev.description || "", ""),
