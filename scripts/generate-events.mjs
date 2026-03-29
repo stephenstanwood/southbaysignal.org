@@ -417,8 +417,14 @@ function cleanVenue(raw) {
   v = v.replace(/^-\s+/, "");
   // Remove trailing "  City ST zip" pattern (double-space before city)
   v = v.replace(/\s{2,}[A-Za-z][A-Za-z\s]+[A-Z]{2}\s+\d{5}.*$/, "");
-  // Remove trailing " City CA 9xxxx" pattern (single space)
-  v = v.replace(/\s+[A-Za-z][a-zA-Z\s]+CA\s+9\d{4}.*$/, "");
+  // Remove trailing ", City, CA 9xxxx" or " City CA 9xxxx" pattern (handles commas too)
+  v = v.replace(/[,\s]+[A-Za-z][a-zA-Z\s,]+CA[,\s]+9\d{4}.*$/, "");
+  // Remove inline address blob: "Name  123 Street..." or "Name 123 Street..." with double-space
+  v = v.replace(/\s{2,}\d+\s+.*$/, "");
+  // Strip trailing " - " or lone dash at end
+  v = v.replace(/\s*-\s*$/, "");
+  // If the entire string is just a raw address (starts with a number), return empty so caller can use fallback
+  if (/^\d+\s/.test(v)) return "";
   return v.trim();
 }
 
@@ -444,6 +450,8 @@ function inferCategory(title, desc, type, venue = "") {
   if (t.includes("concert") || t.includes("music") || t.includes("jazz") || t.includes("symphony") || t.includes("band") || t.includes("orchestra") || t.includes("choir")) return "music";
   if (t.includes("comedy") || t.includes("stand-up") || t.includes("standup") || t.includes("improv show") || t.includes("comedian")) return "arts";
   if (t.includes("exhibit") || t.includes("gallery") || t.includes("theater") || t.includes("theatre") || t.includes("film") || t.includes("cinema") || t.includes("dance") || t.includes("performance") || t.includes("museum") || (t.includes("art") && !t.includes("martial art") && !t.includes("start"))) return "arts";
+  // Volunteering (farm, park, trail) is community, not sports — check before sports rules
+  if (/\b(volunteer|volunteering)\b/.test(t) && /\b(farm|garden|trail|park|nature)\b/.test(t)) return "community";
   if (t.includes("game") || t.includes("sport") || t.includes("athletic") || t.includes("golf") || t.includes("tennis") || t.includes("soccer") || t.includes("basketball") || t.includes("baseball") || t.includes("softball") || t.includes("volleyball") || t.includes("swimming") || t.includes("swim meet") || t.includes("track") || t.includes("cross country") || t.includes("lacrosse") || t.includes("football") || t.includes("gymnastics") || t.includes("wrestling") || t.includes("water polo") || t.includes("polo") || t.includes("hockey") || t.includes("rugby") || /\browing\b/.test(t) || t.includes("crew") || t.includes("diving") || t.includes("fencing") || t.includes("skiing") || t.includes("snowboard") || t.includes("cycling") || t.includes("equestrian") || t.includes("vs.") || t.includes("vs ") || /\b(fun run|road run|trail run|color run)\b/.test(t) || /\b(5k|10k|half marathon|marathon|triathlon)\b/.test(t) || t.includes("race")) return "sports";
   if (t.includes("market") || t.includes("fair") || t.includes("vendor") || t.includes("craft")) return "market";
   if (t.includes("hike") || t.includes("hiking") || t.includes("outdoor") || t.includes("garden") || t.includes("nature") || t.includes("trail") || t.includes("park")) return "outdoor";
@@ -877,6 +885,15 @@ async function fetchCivicPlusIcal(name, url, defaultCity) {
         if (!start || start < now || start > thirtyDaysOut) return null;
         const end = parseIcalDate(ev.dtend);
         const city = inferCity(ev.location, "") || defaultCity;
+        const rawDesc = (ev.description || "").replace(/\\n/g, "\n").replace(/\\,/g, ",");
+        const descText = truncate(stripHtml(rawDesc));
+        // If the DESCRIPTION field is just a URL, use it as the event URL instead
+        const descIsUrl = /^https?:\/\/\S+$/.test(descText.trim());
+        // Relative iCal feed URLs (e.g. /common/modules/iCalendar/...) are not useful links
+        const rawUrl = ev.url || null;
+        const urlIsRelativeIcal = rawUrl && rawUrl.startsWith("/common/modules/iCalendar/");
+        const eventUrl = descIsUrl ? descText.trim() : (!urlIsRelativeIcal ? rawUrl : null);
+        const cleanedVenue = cleanVenue((ev.location || name).replace(/\\,/g, ","));
         return {
           id: h(defaultCity, ev.uid || ev.summary, ev.dtstart),
           title: ev.summary.replace(/\\,/g, ",").replace(/\\n/g, " "),
@@ -884,13 +901,13 @@ async function fetchCivicPlusIcal(name, url, defaultCity) {
           displayDate: displayDate(start),
           time: displayTime(start),
           endTime: end ? displayTime(end) : null,
-          venue: cleanVenue((ev.location || name).replace(/\\,/g, ",")),
+          venue: cleanedVenue || name,
           address: "",
           city,
           category: inferCategory(ev.summary, ev.description || "", ""),
           cost: "free",
-          description: truncate(stripHtml((ev.description || "").replace(/\\n/g, "\n").replace(/\\,/g, ","))),
-          url: ev.url || null,
+          description: descIsUrl ? "" : descText,
+          url: eventUrl,
           source: name,
           kidFriendly: ev.summary.toLowerCase().includes("kid") || ev.summary.toLowerCase().includes("family"),
         };
