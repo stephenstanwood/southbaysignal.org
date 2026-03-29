@@ -727,6 +727,110 @@ export const SCC_SPOTLIGHT: SccTechSpotlight[] = [
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Recently funded South Bay startups — verified Q4 2025 / Q1 2026
+// ---------------------------------------------------------------------------
+
+export interface RecentlyFunded {
+  id: string;
+  name: string;
+  city: string;
+  category: TechCategory | "medtech" | "eda";
+  round: string;
+  amount: string;
+  date: string; // ISO date YYYY-MM-DD (use YYYY-MM-01 for month-only known dates)
+  tagline: string;
+  color: string;
+  url: string;
+}
+
+export const RECENTLY_FUNDED: RecentlyFunded[] = [
+  {
+    id: "deccan-ai",
+    name: "Deccan AI",
+    city: "Mountain View",
+    category: "software",
+    round: "Series A",
+    amount: "$25M",
+    date: "2026-03-27",
+    tagline: "AI post-training data and evaluation platform — helps companies make their models more accurate. Google DeepMind and Snowflake are customers. Founded October 2024.",
+    color: "#0d9488",
+    url: "https://deccan.ai",
+  },
+  {
+    id: "epic-microsystems",
+    name: "EPIC Microsystems",
+    city: "San Jose",
+    category: "chip",
+    round: "Series A",
+    amount: "$21M",
+    date: "2026-03-25",
+    tagline: "Vertical power delivery chips for AI data centers. Founded by engineers who pioneered switched-capacitor power in mobile chips.",
+    color: "#1e3a5f",
+    url: "https://epicmicrosystems.com",
+  },
+  {
+    id: "cylake",
+    name: "Cylake",
+    city: "Sunnyvale",
+    category: "security",
+    round: "Seed",
+    amount: "$45M",
+    date: "2026-03-05",
+    tagline: "On-premises AI-native cybersecurity for regulated industries — no public cloud required. Founded by Nir Zuk (Palo Alto Networks) and Udi Shamir (SentinelOne).",
+    color: "#dc2626",
+    url: "https://cylake.com",
+  },
+  {
+    id: "crafting",
+    name: "Crafting",
+    city: "Palo Alto",
+    category: "software",
+    round: "Seed",
+    amount: "$5.5M",
+    date: "2026-03-10",
+    tagline: "Engineering infrastructure for AI agents and human engineers to write and ship code inside production-like environments. Customers include Brex, Faire, and Webflow.",
+    color: "#475569",
+    url: "https://crafting.dev",
+  },
+  {
+    id: "chipagents",
+    name: "ChipAgents",
+    city: "Santa Clara",
+    category: "chip",
+    round: "Series A1",
+    amount: "$74M total",
+    date: "2026-02-17",
+    tagline: "Agentic AI platform for semiconductor design and verification. Autonomous AI agents woven into production chip design workflows at 80+ leading chip companies.",
+    color: "#7c3aed",
+    url: "https://chipagents.ai",
+  },
+  {
+    id: "mojo-vision",
+    name: "Mojo Vision",
+    city: "Cupertino",
+    category: "hardware",
+    round: "Strategic",
+    amount: "$17.5M",
+    date: "2026-03-01",
+    tagline: "Micro-LED display and optical interconnect tech. Pivoting to AI data center optical I/O in partnership with Marvell Technology, alongside XR/AR displays.",
+    color: "#2563eb",
+    url: "https://mojovision.com",
+  },
+  {
+    id: "dazzle-ai",
+    name: "Dazzle AI",
+    city: "Palo Alto",
+    category: "software",
+    round: "Seed",
+    amount: "$8M",
+    date: "2025-12-23",
+    tagline: "Personal AI assistant platform founded by Marissa Mayer (ex-Google, ex-Yahoo). Closing the gap between what people want to do and what they can actually do with AI.",
+    color: "#d97706",
+    url: "https://dazzle.ai",
+  },
+];
+
 // Pulse stats for the header strip
 export const TECH_PULSE = [
   {

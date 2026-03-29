@@ -15,9 +15,11 @@ import {
   CATEGORY_LABELS,
   CHART_DATA,
   SCC_SPOTLIGHT,
+  RECENTLY_FUNDED,
   type TechCompany,
   type TechTrend,
   type SccTechSpotlight,
+  type RecentlyFunded,
 } from "../../../data/south-bay/tech-companies";
 
 // ── Tooltip for chart ──────────────────────────────────────────────────────
@@ -420,6 +422,162 @@ function TechEventsSection() {
   );
 }
 
+// ── Recently Funded ────────────────────────────────────────────────────────
+
+const ROUND_COLORS: Record<string, { bg: string; color: string; border: string }> = {
+  "Seed":      { bg: "#fef3c7", color: "#92400e", border: "#fcd34d" },
+  "Pre-Seed":  { bg: "#fef3c7", color: "#92400e", border: "#fcd34d" },
+  "Series A":  { bg: "#dbeafe", color: "#1e40af", border: "#93c5fd" },
+  "Series A1": { bg: "#dbeafe", color: "#1e40af", border: "#93c5fd" },
+  "Series B":  { bg: "#f3e8ff", color: "#6b21a8", border: "#c4b5fd" },
+  "Strategic": { bg: "#f0fdf4", color: "#166534", border: "#86efac" },
+};
+
+function RoundBadge({ round }: { round: string }) {
+  const style = ROUND_COLORS[round] ?? { bg: "#f3f4f6", color: "#374151", border: "#d1d5db" };
+  return (
+    <span
+      style={{
+        fontSize: 10,
+        fontWeight: 700,
+        fontFamily: "'Space Mono', monospace",
+        letterSpacing: "0.04em",
+        background: style.bg,
+        color: style.color,
+        border: `1px solid ${style.border}`,
+        borderRadius: 3,
+        padding: "2px 6px",
+        whiteSpace: "nowrap",
+        flexShrink: 0,
+      }}
+    >
+      {round}
+    </span>
+  );
+}
+
+function RecentlyFundedCard({ company }: { company: RecentlyFunded }) {
+  const d = new Date(company.date + "T12:00:00");
+  const dateLabel = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+
+  return (
+    <div
+      style={{
+        padding: "14px 0",
+        borderBottom: "1px solid var(--sb-border-light)",
+        display: "flex",
+        gap: 12,
+        alignItems: "flex-start",
+      }}
+    >
+      {/* Color bar */}
+      <div
+        style={{
+          width: 3,
+          alignSelf: "stretch",
+          background: company.color,
+          borderRadius: 2,
+          flexShrink: 0,
+          minHeight: 40,
+        }}
+      />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            flexWrap: "wrap",
+            marginBottom: 4,
+          }}
+        >
+          <a
+            href={company.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontWeight: 700,
+              fontSize: 14,
+              color: "var(--sb-ink)",
+              textDecoration: "none",
+              fontFamily: "var(--sb-sans)",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+            onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+          >
+            {company.name} ↗
+          </a>
+          <RoundBadge round={company.round} />
+          <span
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              color: "#16a34a",
+              fontFamily: "var(--sb-sans)",
+            }}
+          >
+            {company.amount}
+          </span>
+        </div>
+        <div
+          style={{
+            fontSize: 11,
+            color: "var(--sb-muted)",
+            marginBottom: 5,
+            display: "flex",
+            gap: 8,
+            flexWrap: "wrap",
+          }}
+        >
+          <span>{company.city}</span>
+          <span style={{ color: "var(--sb-border)" }}>·</span>
+          <span>{CATEGORY_LABELS[company.category as keyof typeof CATEGORY_LABELS] ?? company.category}</span>
+          <span style={{ color: "var(--sb-border)" }}>·</span>
+          <span>{dateLabel}</span>
+        </div>
+        <p
+          style={{
+            margin: 0,
+            fontSize: 12,
+            color: "#374151",
+            lineHeight: 1.5,
+            fontFamily: "var(--sb-sans)",
+          }}
+        >
+          {company.tagline}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function RecentlyFundedSection() {
+  const sorted = [...RECENTLY_FUNDED].sort((a, b) => b.date.localeCompare(a.date));
+  return (
+    <div className="tech-section">
+      <div className="tech-section-head">
+        <h3 className="tech-section-title">Recently Funded</h3>
+        <span className="tech-section-note">South Bay startups · Q4 2025 – Q1 2026</span>
+      </div>
+      <div>
+        {sorted.map((company) => (
+          <RecentlyFundedCard key={company.id} company={company} />
+        ))}
+      </div>
+      <div
+        style={{
+          marginTop: 10,
+          fontSize: 11,
+          color: "var(--sb-muted)",
+          fontStyle: "italic",
+        }}
+      >
+        Verified from public announcements and news coverage. Not investment advice.
+      </div>
+    </div>
+  );
+}
+
 // ── Main view ──────────────────────────────────────────────────────────────
 
 export default function TechnologyView() {
@@ -532,6 +690,9 @@ export default function TechnologyView() {
           Career links go to each company's official jobs page.
         </div>
       </div>
+
+      {/* ── Recently Funded ── */}
+      <RecentlyFundedSection />
 
       {/* ── Top Employers Chart ── */}
       <div className="tech-section">
