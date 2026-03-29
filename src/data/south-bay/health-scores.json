@@ -1,6 +1,28 @@
 {
   "flags": [
     {
+      "business_id": "PR0445530",
+      "name": "Casa Juana",
+      "city": "San Jose",
+      "address": "581 W Alma Av # 581",
+      "date": "2026-03-28",
+      "score": 80,
+      "result": "R",
+      "type": "ROUTINE INSPECTION",
+      "summary": "**FACILITY CLOSED**"
+    },
+    {
+      "business_id": "PR0305057",
+      "name": "Pizza My Heart",
+      "city": "Santa Clara",
+      "address": "700 Bellomy St",
+      "date": "2026-03-27",
+      "score": null,
+      "result": "R",
+      "type": "FOLLOW-UP INSPECTION",
+      "summary": "This is the first follow up inspection and shall be charged at the approved hourly rate"
+    },
+    {
       "business_id": "PR0300367",
       "name": "Swaraj India",
       "city": "Santa Clara",
@@ -27,22 +49,22 @@
       "name": "Pizza My Heart",
       "city": "Santa Clara",
       "address": "700 Bellomy St",
-      "date": "2026-03-27",
-      "score": null,
-      "result": "R",
-      "type": "FOLLOW-UP INSPECTION",
-      "summary": "This is the first follow up inspection and shall be charged at the approved hourly rate"
-    },
-    {
-      "business_id": "PR0305057",
-      "name": "Pizza My Heart",
-      "city": "Santa Clara",
-      "address": "700 Bellomy St",
       "date": "2026-03-26",
       "score": 90,
       "result": "R",
       "type": "ROUTINE INSPECTION",
       "summary": "The facility is hereby CLOSED by this department due to evidence of vermin infestation (see violation K23)"
+    },
+    {
+      "business_id": "PR0386663",
+      "name": "Almaden Market",
+      "city": "San Jose",
+      "address": "5965 Almaden Ex",
+      "date": "2026-03-26",
+      "score": null,
+      "result": "Y",
+      "type": "ROUTINE INSPECTION",
+      "summary": "The change of ownership inspection was not completed today due to no hot water"
     },
     {
       "business_id": "PR0433784",
@@ -78,15 +100,15 @@
       "summary": "Limited inspection conducted for change of ownership"
     },
     {
-      "business_id": "PR0386663",
-      "name": "Almaden Market",
-      "city": "San Jose",
-      "address": "5965 Almaden Ex",
-      "date": "2026-03-26",
-      "score": null,
+      "business_id": "PR0300384",
+      "name": "Maiwand Market Of Santa Clara",
+      "city": "Santa Clara",
+      "address": "2915 El Camino Real",
+      "date": "2026-03-25",
+      "score": 70,
       "result": "Y",
       "type": "ROUTINE INSPECTION",
-      "summary": "The change of ownership inspection was not completed today due to no hot water"
+      "summary": "Routine inspection conducted in conjunction with CO0159216"
     },
     {
       "business_id": "PR0303345",
@@ -97,18 +119,7 @@
       "score": 55,
       "result": "Y",
       "type": "ROUTINE INSPECTION",
-      "summary": "Proper hot and cold holding temperatures"
-    },
-    {
-      "business_id": "PR0373103",
-      "name": "Panaderia Mi Tierra Colombian Bakery",
-      "city": "San Jose",
-      "address": "3054 Alum Rock Av # C",
-      "date": "2026-03-25",
-      "score": 66,
-      "result": "Y",
-      "type": "ROUTINE INSPECTION",
-      "summary": "Note: Food safety manager certificate: Diego Trujillo - 12/31/2029"
+      "summary": "Proper cooling methods"
     },
     {
       "business_id": "PR0350121",
@@ -120,17 +131,6 @@
       "result": "R",
       "type": "FOLLOW-UP INSPECTION",
       "summary": "Onsite for the 1st follow up inspection after the routine inspection"
-    },
-    {
-      "business_id": "PR0301407",
-      "name": "Bombay To Goa",
-      "city": "Sunnyvale",
-      "address": "727 S Wolfe Rd",
-      "date": "2026-03-25",
-      "score": 45,
-      "result": "R",
-      "type": "ROUTINE INSPECTION",
-      "summary": "Facility is hereby closed due to evidence of rodent droppings"
     },
     {
       "business_id": "PR0424122",
@@ -155,26 +155,26 @@
       "summary": "No rodents, insects, birds, or animals"
     },
     {
-      "business_id": "PR0300384",
-      "name": "Maiwand Market Of Santa Clara",
-      "city": "Santa Clara",
-      "address": "2915 El Camino Real",
+      "business_id": "PR0373103",
+      "name": "Panaderia Mi Tierra Colombian Bakery",
+      "city": "San Jose",
+      "address": "3054 Alum Rock Av # C",
       "date": "2026-03-25",
-      "score": 70,
+      "score": 66,
       "result": "Y",
       "type": "ROUTINE INSPECTION",
-      "summary": "Routine inspection conducted in conjunction with CO0159216"
+      "summary": "Note: Food safety manager certificate: Diego Trujillo - 12/31/2029"
     },
     {
-      "business_id": "PR0402621",
-      "name": "Acha Coffee & Tea",
-      "city": "San Jose",
-      "address": "3245 Sierra Rd # B",
-      "date": "2026-03-24",
-      "score": 68,
-      "result": "Y",
+      "business_id": "PR0301407",
+      "name": "Bombay To Goa",
+      "city": "Sunnyvale",
+      "address": "727 S Wolfe Rd",
+      "date": "2026-03-25",
+      "score": 45,
+      "result": "R",
       "type": "ROUTINE INSPECTION",
-      "summary": "Note: Food safety manager certificate: Jenny Nguyen - 3/15/2029"
+      "summary": "Facility is hereby closed due to evidence of rodent droppings"
     },
     {
       "business_id": "PR0430298",
@@ -199,17 +199,6 @@
       "summary": "A complaint investigation was conducted on this date"
     },
     {
-      "business_id": "PR0300350",
-      "name": "Hong Kong Restaurant",
-      "city": "Palo Alto",
-      "address": "3691 El Camino Real",
-      "date": "2026-03-24",
-      "score": 59,
-      "result": "Y",
-      "type": "ROUTINE INSPECTION",
-      "summary": "*Note: Observed peking roast duck hanging in the kitchen area between 140F - 147F at ambient temperature"
-    },
-    {
       "business_id": "PR0300367",
       "name": "Swaraj India",
       "city": "Santa Clara",
@@ -221,15 +210,26 @@
       "summary": "The facility is hereby CLOSED by this department due to evidence of vermin infestation (see violation K23)"
     },
     {
-      "business_id": "PR0416921",
-      "name": "Blue Monkey Cafe & Restaurant",
-      "city": "San Jose",
-      "address": "989 Story Rd # 8054",
-      "date": "2026-03-23",
-      "score": 63,
+      "business_id": "PR0300350",
+      "name": "Hong Kong Restaurant",
+      "city": "Palo Alto",
+      "address": "3691 El Camino Real",
+      "date": "2026-03-24",
+      "score": 59,
       "result": "Y",
       "type": "ROUTINE INSPECTION",
-      "summary": "- Two or more major violations were observed during the routine inspection"
+      "summary": "*Note: Observed peking roast duck hanging in the kitchen area between 140F - 147F at ambient temperature"
+    },
+    {
+      "business_id": "PR0402621",
+      "name": "Acha Coffee & Tea",
+      "city": "San Jose",
+      "address": "3245 Sierra Rd # B",
+      "date": "2026-03-24",
+      "score": 68,
+      "result": "Y",
+      "type": "ROUTINE INSPECTION",
+      "summary": "Note: Food safety manager certificate: Jenny Nguyen - 3/15/2029"
     },
     {
       "business_id": "PR0423728",
@@ -254,6 +254,17 @@
       "summary": "A follow-up inspection will be conducted on 3/25/2026 to verily compliance with all of the cited major violations and to conduct a change of ownership inspec…"
     },
     {
+      "business_id": "PR0416921",
+      "name": "Blue Monkey Cafe & Restaurant",
+      "city": "San Jose",
+      "address": "989 Story Rd # 8054",
+      "date": "2026-03-23",
+      "score": 63,
+      "result": "Y",
+      "type": "ROUTINE INSPECTION",
+      "summary": "- Two or more major violations were observed during the routine inspection"
+    },
+    {
       "business_id": "PR0307613",
       "name": "El Cielo Bar & Grill",
       "city": "San Jose",
@@ -276,6 +287,17 @@
       "summary": "No rodents, insects, birds, or animals"
     },
     {
+      "business_id": "PR0382543",
+      "name": "The Counter",
+      "city": "San Jose",
+      "address": "3055 Olin Av # 1035",
+      "date": "2026-03-20",
+      "score": null,
+      "result": "R",
+      "type": "FOLLOW-UP INSPECTION",
+      "summary": "On site for 2nd follow up inspection"
+    },
+    {
       "business_id": "PR0302689",
       "name": "Mariscos Costa Alegre 2",
       "city": "San Jose",
@@ -284,7 +306,7 @@
       "score": 60,
       "result": "Y",
       "type": "ROUTINE INSPECTION",
-      "summary": "Adequate handwash facilities supplied, accessible"
+      "summary": "Hands clean, properly washed; gloves used properly"
     },
     {
       "business_id": "PR0305950",
@@ -298,28 +320,6 @@
       "summary": "No rodents, insects, birds, or animals"
     },
     {
-      "business_id": "PR0382543",
-      "name": "The Counter",
-      "city": "San Jose",
-      "address": "3055 Olin Av # 1035",
-      "date": "2026-03-20",
-      "score": null,
-      "result": "R",
-      "type": "FOLLOW-UP INSPECTION",
-      "summary": "On site for 2nd follow up inspection"
-    },
-    {
-      "business_id": "PR0340479",
-      "name": "Santa Fe Taqueria",
-      "city": "San Jose",
-      "address": "2687 Story Rd",
-      "date": "2026-03-19",
-      "score": 70,
-      "result": "Y",
-      "type": "ROUTINE INSPECTION",
-      "summary": "Sewage and wastewater properly disposed"
-    },
-    {
       "business_id": "PR0305999",
       "name": "Urban Grill Indian Cuisine",
       "city": "Sunnyvale",
@@ -331,7 +331,7 @@
       "summary": "Limited inspection conducted in conjunction with CO0159176"
     }
   ],
-  "generatedAt": "2026-03-28T22:58:39.903Z",
+  "generatedAt": "2026-03-29T11:05:06.217Z",
   "source": "Santa Clara County Department of Environmental Health",
   "sourceUrl": "https://data.sccgov.org/stories/s/SCC-DEH-Food-Facility-Inspections-Data/8ptb-6646/"
 }
