@@ -1916,3 +1916,40 @@ The root cause was architectural: Ticketmaster returns results sorted by date, w
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — Mountain View is now properly covered.** The events feed went from 8 to 27 events for Mountain View, finally representing the city's actual cultural life. Shoreline Amphitheatre — one of the South Bay's most recognizable landmarks — is now part of the signal. A Mountain View resident who visits the Events tab will see their summer: concerts, tech museum exhibits, and the broader calendar of the city they actually live in.
+
+---
+
+## 2026-03-29 — Cycle 34: Tech Tab — 4 New Small South Bay Companies
+
+### Context
+The Tech tab's stated differentiator is covering small and emerging South Bay companies that no one else covers. After Cycle 33's events work, this cycle turned to the HIGH PRIORITY tech tab gap: the SCC Spotlight only had ~18 companies, all of them large or well-known. Four newly funded South Bay startups with verified real addresses and recent news were found and added.
+
+### What Was Built
+
+**4 new companies added to SCC Spotlight in tech-companies.ts:**
+
+1. **Eridu** (Saratoga) — AI data center networking startup. Redesigns the 3-tier data center network into one high-radix switch layer for AI workloads. Emerged from stealth March 2026 with $200M+ Series A led by Socratic Partners and John Doerr. ~100 employees.
+
+2. **Sunday** (Mountain View) — Household robotics. Building Memo, a wheeled humanoid robot for dishes, laundry, and tidying. $165M Series B at $1.15B valuation (March 2026, Coatue). ~70 employees, doubling headcount. Beta launches late 2026 with 3,000+ on waitlist.
+
+3. **Lyte** (Mountain View) — Robotic vision/perception. Ex-Apple Face ID engineers building integrated 4D perception systems as the "visual brain" for humanoid robots. Emerged from stealth January 2026 with $107M, CES 2026 Best of Innovation. ~20 employees.
+
+4. **Axiado** (San Jose) — AI data center security chips. Hardware-anchored security and AI monitoring embedded in data center control hardware. $100M Series C+ in December 2025 (Maverick Silicon). ~128 employees, grew 38% YoY.
+
+**All data pipelines refreshed:** events (499), around-town, upcoming-meetings, weekend-picks, health-scores, digests, city-briefings.
+
+### Why This Was the Strongest Move
+
+The Tech tab was skewed toward well-known giants (Google, Apple, NVIDIA) and known growth companies (Glean, Rubrik). The companies added this cycle are the exact kind of signal SBS should provide: a robotics company building household robots in Mountain View, a networking startup hiding in Saratoga that just raised $200M, and a security chip startup in San Jose growing 38%/year. These are companies a South Bay resident might drive past every day without knowing they're becoming the next wave of South Bay tech. No other local news outlet covers these.
+
+**Attempted this cycle but blocked:**
+- Caltrans D4 API: still returning 500 (persistent infrastructure issue on their end)
+- Permit expansion to Mountain View: no open API (ArcGIS portal, no documented endpoint); Palo Alto requires Junar API key registration
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data. Would give daily commuters VTA/Caltrain real-time data.
+2. **Permit expansion** — Palo Alto Junar API key required (data.cityofpaloalto.org/developers/). Mountain View: check ArcGIS feature service endpoint at data-mountainview.opendata.arcgis.com.
+3. **High school sports scores** — MaxPreps or prep sports APIs. Would surface Saratoga, Los Gatos, Monta Vista, Paly game results.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — the Tech tab now has genuine edge.** A Saratoga resident learning Eridu exists in their own city, or a Mountain View parent knowing Sunday's household robot startup is two miles away — that's the kind of local tech signal SBS is supposed to provide. The tab went from "things you already know" to "things you should know about."
