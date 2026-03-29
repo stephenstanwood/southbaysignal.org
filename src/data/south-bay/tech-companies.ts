@@ -547,6 +547,28 @@ export const SCC_SPOTLIGHT: SccTechSpotlight[] = [
     url: "https://www.rivos.com",
     employeesNote: "400 employees",
   },
+  {
+    id: "sambanova",
+    name: "SambaNova Systems",
+    city: "Palo Alto",
+    category: "chip",
+    stage: "growth",
+    tagline: "Full-stack AI inference: custom wafer-scale chip plus a software layer tuned for large models. Co-founded by Stanford CS professors.",
+    color: "#E85D04",
+    url: "https://sambanova.ai",
+    employeesNote: "~300 employees",
+  },
+  {
+    id: "nile",
+    name: "Nile",
+    city: "San Jose",
+    category: "network",
+    stage: "growth",
+    tagline: "Campus networking delivered as a subscription service — the WiFi and wired infrastructure for your building, managed end-to-end. Founded by ex-Cisco and Juniper veterans.",
+    color: "#0EA5E9",
+    url: "https://www.nilesecure.com",
+    employeesNote: "~200 employees",
+  },
 ];
 
 // Pulse stats for the header strip

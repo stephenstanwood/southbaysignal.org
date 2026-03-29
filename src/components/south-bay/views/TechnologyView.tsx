@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+import upcomingJson from "../../../data/south-bay/upcoming-events.json";
 import {
   TECH_COMPANIES,
   TECH_PULSE,
@@ -222,6 +223,202 @@ function HiringRow({ company }: { company: TechCompany }) {
   );
 }
 
+// ── Tech Events Near You ────────────────────────────────────────────────────
+
+interface UpcomingEvent {
+  id: string;
+  title: string;
+  date: string;
+  time?: string | null;
+  venue?: string;
+  city?: string;
+  url?: string;
+  cost?: string;
+  ongoing?: boolean;
+}
+
+const TECH_EVENT_KEYWORDS = /\b(ai|robot|silicon|tech|chip|algorithm|startup|venture|humanoid|digital|software|computer|hardware|machine learning|neural|innovation)\b/i;
+
+function isTechEvent(e: UpcomingEvent): boolean {
+  const isChm = !!e.venue?.toLowerCase().includes("computer history");
+  const isTechTitle = TECH_EVENT_KEYWORDS.test(e.title);
+  return isChm || isTechTitle;
+}
+
+function getTechEvents(): UpcomingEvent[] {
+  const today = new Date().toISOString().slice(0, 10);
+  const cutoff = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const events = (upcomingJson as { events: UpcomingEvent[] }).events;
+
+  // CHM ongoing exhibits (deduplicate by venue, pick the best ones)
+  const chmExhibits = events
+    .filter((e) => e.venue?.toLowerCase().includes("computer history") && e.ongoing)
+    .filter((e) => !["2026 Fellow Awards Ceremony", "Read Me", "To Infinity and Beyond"].includes(e.title));
+
+  // Upcoming dated tech events
+  const upcoming = events
+    .filter((e) => !e.ongoing && e.date >= today && e.date <= cutoff && isTechEvent(e))
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  return [...chmExhibits.slice(0, 5), ...upcoming.slice(0, 5)];
+}
+
+function TechEventsSection() {
+  const events = getTechEvents();
+  if (events.length === 0) return null;
+
+  const chmEvents = events.filter((e) => e.venue?.toLowerCase().includes("computer history"));
+  const upcomingEvents = events.filter((e) => !e.venue?.toLowerCase().includes("computer history"));
+
+  return (
+    <div className="tech-section">
+      <div className="tech-section-head">
+        <h3 className="tech-section-title">Tech Events Near You</h3>
+        <span className="tech-section-note">South Bay · Computer History Museum · upcoming talks</span>
+      </div>
+
+      {chmEvents.length > 0 && (
+        <>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              fontFamily: "'Space Mono', monospace",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "#6b7280",
+              marginBottom: 10,
+              paddingBottom: 6,
+              borderBottom: "2px solid var(--sb-border-light)",
+            }}
+          >
+            Computer History Museum · Mountain View · Ongoing Exhibits
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: 10,
+              marginBottom: upcomingEvents.length > 0 ? 20 : 0,
+            }}
+          >
+            {chmEvents.map((e) => (
+              <a
+                key={e.id}
+                href={e.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "block",
+                  padding: "10px 12px",
+                  border: "1px solid var(--sb-border-light)",
+                  borderLeft: "3px solid #b45309",
+                  borderRadius: 4,
+                  textDecoration: "none",
+                  color: "inherit",
+                  background: "#fffbf5",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: "var(--sb-sans)",
+                  lineHeight: 1.3,
+                  transition: "border-color 0.15s",
+                }}
+                onMouseEnter={(el) => (el.currentTarget.style.borderLeftColor = "#92400e")}
+                onMouseLeave={(el) => (el.currentTarget.style.borderLeftColor = "#b45309")}
+              >
+                {e.title}
+                <div style={{ fontSize: 11, color: "var(--sb-muted)", fontWeight: 400, marginTop: 3 }}>
+                  Ongoing exhibit · {e.cost === "paid" ? "Admission required" : "Free"}
+                </div>
+              </a>
+            ))}
+          </div>
+        </>
+      )}
+
+      {upcomingEvents.length > 0 && (
+        <>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              fontFamily: "'Space Mono', monospace",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "#6b7280",
+              marginBottom: 8,
+              paddingBottom: 6,
+              borderBottom: "2px solid var(--sb-border-light)",
+            }}
+          >
+            Upcoming Tech Events
+          </div>
+          {upcomingEvents.map((e) => (
+            <a
+              key={e.id}
+              href={e.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 12,
+                padding: "9px 0",
+                borderBottom: "1px solid var(--sb-border-light)",
+                textDecoration: "none",
+                color: "inherit",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "var(--sb-muted)",
+                  fontFamily: "'Space Mono', monospace",
+                  whiteSpace: "nowrap",
+                  minWidth: 72,
+                  paddingTop: 1,
+                }}
+              >
+                {new Date(e.date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                {e.time ? <><br />{e.time}</> : null}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, fontFamily: "var(--sb-sans)", lineHeight: 1.3 }}>
+                  {e.title} ↗
+                </div>
+                {e.venue && (
+                  <div style={{ fontSize: 11, color: "var(--sb-muted)", marginTop: 2 }}>
+                    {e.venue}
+                    {e.city && ` · ${e.city.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}`}
+                  </div>
+                )}
+              </div>
+              {e.cost === "free" && (
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: "#166534",
+                    background: "#dcfce7",
+                    border: "1px solid #bbf7d0",
+                    borderRadius: 3,
+                    padding: "2px 6px",
+                    flexShrink: 0,
+                    alignSelf: "center",
+                    fontFamily: "'Space Mono', monospace",
+                  }}
+                >
+                  FREE
+                </span>
+              )}
+            </a>
+          ))}
+        </>
+      )}
+    </div>
+  );
+}
+
 // ── Main view ──────────────────────────────────────────────────────────────
 
 export default function TechnologyView() {
@@ -416,6 +613,9 @@ export default function TechnologyView() {
           ))}
         </div>
       </div>
+
+      {/* ── Tech Events Near You ── */}
+      <TechEventsSection />
 
       {/* ── Footer note ── */}
       <div className="tech-footer-note">
