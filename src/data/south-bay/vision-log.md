@@ -1256,3 +1256,59 @@ The Government tab previously only looked backward — past meeting digests. Now
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — civic intelligence is now forward-looking.** The Government tab has become a two-way civic companion: backward-looking digests tell you what was decided, and the new agenda preview tells you what's coming. South Bay Signal is the only place a resident can open one tab and see both the last San Jose council meeting summary AND the five biggest items on next week's agenda. That's genuinely useful for the ~20% of residents who follow local government.
+
+
+---
+
+## Cycle 20 — School Calendar Card: SJUSD, PAUSD, FUHSD Key Dates (2026-03-28)
+
+### What Was Built
+
+**School Calendar card on the Today tab** — A new section between "Around the South Bay" and "Housing Market" that surfaces upcoming key school dates for the three major South Bay school districts. Pulled from official district calendar PDFs (2025-26 school year).
+
+**Data: `src/data/south-bay/school-calendar.json`**
+
+Key dates included:
+- **SJUSD**: Good Friday (Apr 3), Spring Break (Apr 6-10), Memorial Day (May 25), Graduation (May 27-28), Last Day (May 29)
+- **PAUSD**: Spring Break (Apr 6-10), May 1 Local Holiday, Memorial Day (May 25), Last Day (Jun 4)
+- **FUHSD**: Spring Break (Apr 13-17), Memorial Day (May 25), Graduation (Jun 4-5), Last Day (Jun 4)
+
+**`SchoolCalendarCard` component (inline in OverviewView)**
+
+- 90-day lookahead window from today
+- Events grouped by shared date range — Memorial Day shows once with 3 district badges (SJUSD, PAUSD, FUHSD) rather than 3 separate rows
+- District badges color-coded: SJUSD blue, PAUSD green, FUHSD amber
+- Section subtitle shows spring break countdown ("spring break in X days") when upcoming
+- "NOW" highlight for any currently-active event (e.g. if you open this during spring break)
+- Type icons: 🏖️ break, 🗓️ holiday, 🎓 graduation, 🔔 last day
+- Footer line: "SJUSD · PAUSD · FUHSD — 2025–26"
+
+**Also refreshed events data** — 576 events from 15 sources (576 total, 107 ongoing).
+
+### Ideas Considered
+
+**1. School district calendar integration** ← BUILT
+Official district calendar data, parsed from PDFs by a subagent. High resident relevance — parents need to know when school is out, and this data is scattered across three district websites.
+
+**2. Live Caltrain service status** — 511 API key not available in this environment. Deferred.
+
+**3. Development data audit + refresh** — Static project descriptions may be stale. Good for a future cycle with research time.
+
+### Why This Was the Highest-Leverage Move
+
+School calendar is **high-frequency resident information** that no local aggregator currently surfaces in one place. FUHSD's spring break (Apr 13-17) is one week later than SJUSD and PAUSD (Apr 6-10) — this is exactly the kind of local nuance that families need to know when coordinating. A parent in Sunnyvale (FUHSD) and their sibling in San Jose (SJUSD) would plan different weeks off if they checked here first. That's the kind of hyperlocal intelligence that makes South Bay Signal worth bookmarking.
+
+The grouping logic (showing Memorial Day as one row with three badges instead of three identical rows) keeps the card compact while still indicating which districts it applies to.
+
+### Effect on Real Users
+- **Parent planning spring vacation**: Opens Today tab, sees "Spring Break in 9 days" in header, scans the card to confirm their district's dates — done in 2 seconds
+- **Multi-district family**: Has kids in SJUSD and PAUSD — one card tells them both districts are on the same week (Apr 6-10)
+- **High school parent in Sunnyvale**: Immediately sees FUHSD spring break is Apr 13-17, a week later — adjusts travel plans accordingly
+
+### Next 3 Strongest Ideas
+1. **Live Caltrain service status** — 511 API key needed. Daily-urgency commuter feature. Register at 511.org/open-data.
+2. **Development data audit + refresh** — development-data.ts projects need status/timeline updates for 2026. BART Phase II milestones, Google Downtown West progress.
+3. **"This week in [City]" digest** — An AI-generated weekly briefing that summarizes the top 3-5 things happening in a resident's home city that week: top event, key council item, notable development update. Generated via ANTHROPIC_API_KEY (available in .env.local) and cached as static JSON.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — families are now a first-class audience.** Before this cycle, South Bay Signal had depth in civic intelligence, sports, entertainment, and real estate — but nothing for the large share of South Bay residents whose daily life is organized around the school calendar. A parent who opens the page now sees spring break countdowns, district-specific dates, graduation timing, and last day of school — all without hunting across three district websites. The card is compact and fast, but it answers a genuinely frequent question for one of the South Bay's most engaged resident groups.
