@@ -68,7 +68,19 @@ export default function SignalApp() {
       <header className="sb-header">
         <div className="sb-header-inner">
           <a href="/" className="sb-brand">
-            <span className="sb-brand-name">The South Bay Signal</span>
+            <span className="sb-logo">
+              <span className="sb-logo-rule-thick" />
+              <span className="sb-logo-rule-thin" />
+              <span className="sb-logo-main-row">
+                <span className="sb-logo-the">the</span>
+                <span className="sb-logo-south-bay">South Bay</span>
+              </span>
+              <span className="sb-logo-signal-row">
+                <span className="sb-logo-signal-rule" />
+                <span className="sb-logo-signal-word">Signal</span>
+                <span className="sb-logo-signal-rule" />
+              </span>
+            </span>
           </a>
           <div className="sb-date">
             {TODAY}
