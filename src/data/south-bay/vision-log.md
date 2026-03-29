@@ -1543,3 +1543,52 @@ Midterm 2026 has significant South Bay stakes: open Governor's seat (Newsom term
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — civic engagement dimension now complete.** SBS now covers seven dimensions of local life: sports, events, government/council, real estate, environment (weather + AQI + quakes + permits), health/food safety, and now elections. A resident who opens the page today gets not just what's happening in their city, but what's on the ballot in two months and how to act on it. That's the full homepage for South Bay life.
+
+---
+
+## Cycle 27 — Transit Status Bar: Commute Pulse on Overview (2026-03-29)
+
+### What Was Built
+
+**TransitStatusBar component** (inline in OverviewView.tsx):
+- Shows Caltrain + VTA service status directly on the Overview tab — no need to navigate to Transit
+- Always visible (compact 2-row bar) after the 5-day ForecastStrip
+- Status badge per agency: ● Normal Service / ⚠ Minor Delays / 🔴 Major Disruption
+- Active alerts surfaced inline — currently showing:
+  - VTA: "Mountain View–Winchester light rail: 5–10 min delays · thru April 15, 2026"
+  - Caltrain: "Free Clipper upgrade through March 31" (expires tomorrow)
+- "Full info →" button navigates to Transit tab
+- Alert visibility logic: endDate-based (show if endDate hasn't passed), plus statusNote for non-normal agencies
+
+**Data refreshed this cycle:**
+- upcoming-events.json: 315 events, 83 ongoing, 14 sources (Los Altos timed out)
+- digests.json: 6 cities (SJ, MV, Sunnyvale, Cupertino, Santa Clara, Palo Alto)
+- around-town.json: 5 items (MV housing approval, MV housing grants, Sunnyvale safe parking, Santa Clara HUD input, Santa Clara station area)
+- upcoming-meetings.json: San Jose (Apr 7), Cupertino (Apr 1)
+- weekend-picks.json: SCU Baseball vs LMU, Nate Jackson Comedy Tour
+
+### Why This Was the Highest-Leverage Move
+
+VTA has active light rail delays through April 15 and Route 22 frequency is reduced on weekends. The Caltrain Clipper discount expires tomorrow (March 31). Both of these are time-sensitive pieces of information that a daily commuter needs to know — and previously they were buried in the Transit tab where most residents never go.
+
+The transit status bar solves the "I use the Overview tab but I take VTA to work" problem. A resident opening SBS on a Monday morning now sees — right below the forecast — "VTA: ⚠ Minor Delays · Mountain View–Winchester light rail: 5–10 min delays · thru April 15, 2026" and can immediately decide whether to leave earlier, take a different route, or check the full Transit tab.
+
+### Effect on Real Users
+- **VTA commuter**: Sees delay alert instantly without tab switching — can adjust morning commute plan
+- **Caltrain rider**: Sees "Free Clipper upgrade ends tomorrow" — takes action before the deal expires
+- **General resident**: Sees "● Normal Service" for both — quick confirmation everything is fine, takes 1 second
+- **Weekend resident**: Sees Route 22 frequency reduction — knows to plan around it
+
+### Technical Notes
+- Uses existing `TRANSIT_AGENCIES` and `STATUS_CONFIG` from transit-data.ts — no new data files
+- `TRANSIT_STATUS_CONFIG` aliased to avoid name conflict with development-data's `STATUS_CONFIG`
+- Alert date parsing handles natural language dates ("March 31, 2026", "April 15, 2026")
+- Only Caltrain + VTA shown (most-used South Bay services); BART/ACE on full Transit tab
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511 API key needed. Register at 511.org/open-data for GTFS-RT feeds.
+2. **Development data audit** — verify current status of "opening-soon" projects (Central Place at Levi's Stadium, Milpitas BART TOD) and any "approved" → "under-construction" transitions.
+3. **Local job board** — South Bay tech hiring pulse. LinkedIn/Indeed/Greenhouse public APIs or static snapshot approach.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — commute dimension now on the Overview.** A resident's morning routine now flows: check weather (ForecastStrip) → check commute (TransitStatusBar) → check today's events → read briefing. That's the core daily check loop, all on one tab. South Bay Signal is increasingly the kind of page you open first, not fourth.
