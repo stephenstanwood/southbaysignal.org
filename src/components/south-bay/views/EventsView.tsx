@@ -377,6 +377,12 @@ const DATE_GROUP_ORDER = ["Today", "Tomorrow", "This Week", "Later"];
 
 // ── Main View ──
 
+// ── Spring Break constants ──────────────────────────────────────────────────
+const SB_BANNER_START = "2026-03-29"; // show banner from now through end of break
+const SB_BREAK_START  = "2026-04-03"; // Easter weekend / first district break starts
+const SB_BREAK_WK1    = "2026-04-10"; // end of first break window
+const SB_BREAK_END    = "2026-04-17"; // end of second break window
+
 export default function EventsView({ selectedCities, homeCity }: Props) {
   const [viewMode, setViewMode] = useState<ViewMode>("upcoming");
   const [category, setCategory] = useState<EventCategory | "all">("all");
@@ -384,6 +390,7 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
   const [showKidsOnly, setShowKidsOnly] = useState(false);
   const [showAllLater, setShowAllLater] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<string | null>(null);
+  const [springBreakMode, setSpringBreakMode] = useState(false);
 
   const now = new Date();
   const currentMonth = now.getMonth() + 1;
@@ -392,6 +399,10 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
   const todayIso = now.toISOString().split("T")[0];
   const tomorrowIso = new Date(now.getTime() + 86400000).toISOString().split("T")[0];
   const weekEndIso = new Date(now.getTime() + 7 * 86400000).toISOString().split("T")[0];
+
+  const showSpringBreakBanner = todayIso >= SB_BANNER_START && todayIso <= SB_BREAK_END;
+  const daysUntilBreak = Math.ceil((new Date(SB_BREAK_START).getTime() - now.getTime()) / 86400000);
+  const breakInProgress = todayIso >= SB_BREAK_START && todayIso <= SB_BREAK_END;
 
   // ── Upcoming events (scraped, specific dates) ──
   const filteredUpcoming = useMemo(() => {
@@ -402,6 +413,8 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
       if (showKidsOnly && !e.kidFriendly) return false;
       // Hide today's events once they've started
       if (e.date === todayIso && !hasNotStarted(e.time)) return false;
+      // Spring break mode: show only Apr 3-17 events
+      if (springBreakMode && (e.date < SB_BREAK_START || e.date > SB_BREAK_END)) return false;
       if (search) {
         const q = search.toLowerCase();
         if (!e.title.toLowerCase().includes(q) && !e.description.toLowerCase().includes(q) &&
@@ -431,7 +444,7 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
       // 4. Same date+time: boost under-represented sources
       return (srcCounts[a.source] || 0) - (srcCounts[b.source] || 0);
     });
-  }, [selectedCities, category, showKidsOnly, search, primary]);
+  }, [selectedCities, category, showKidsOnly, search, primary, springBreakMode, todayIso]);
 
   // ── Recurring events (static, weekly/monthly/seasonal) ──
   const filteredRecurring = useMemo(() => {
@@ -514,6 +527,25 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
 
   // Group upcoming events by date bucket
   const groupedUpcoming = useMemo(() => {
+    if (springBreakMode) {
+      // Spring break: group by week, with Easter weekend as its own group if present
+      const groups: Record<string, UpcomingEvent[]> = {};
+      for (const e of filteredUpcoming) {
+        let label: string;
+        if (e.date < SB_BREAK_START) {
+          label = "Easter Weekend";
+        } else if (e.date <= SB_BREAK_WK1) {
+          label = "Spring Break · Wk 1 (Apr 3–10)";
+        } else {
+          label = "Spring Break · Wk 2 (Apr 13–17)";
+        }
+        if (!groups[label]) groups[label] = [];
+        groups[label].push(e);
+      }
+      const order = ["Easter Weekend", "Spring Break · Wk 1 (Apr 3–10)", "Spring Break · Wk 2 (Apr 13–17)"];
+      return order.filter((g) => groups[g]?.length > 0).map((label) => ({ label, events: groups[label] }));
+    }
+
     const groups: Record<string, UpcomingEvent[]> = {};
     for (const e of filteredUpcoming) {
       const label = getDateGroupLabel(e.date || "", todayIso, tomorrowIso, weekEndIso);
@@ -524,7 +556,7 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
       label,
       events: groups[label],
     }));
-  }, [filteredUpcoming, todayIso, tomorrowIso, weekEndIso]);
+  }, [filteredUpcoming, todayIso, tomorrowIso, weekEndIso, springBreakMode]);
 
   return (
     <>
@@ -623,6 +655,53 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
           </span>
         )}
       </div>
+
+      {/* Spring Break banner */}
+      {showSpringBreakBanner && viewMode === "upcoming" && (
+        <div
+          style={{
+            marginBottom: 14,
+            padding: "10px 14px",
+            background: springBreakMode ? "#fdf4ff" : "#fff8f0",
+            border: `1.5px solid ${springBreakMode ? "#d8b4fe" : "#fdba74"}`,
+            borderRadius: 8,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            flexWrap: "wrap",
+          }}
+        >
+          <span style={{ fontSize: 18, lineHeight: 1 }}>🌸</span>
+          <div style={{ flex: 1, minWidth: 180 }}>
+            <div style={{ fontWeight: 700, fontSize: 13, color: "var(--sb-ink)", fontFamily: "var(--sb-sans)" }}>
+              {breakInProgress ? "Spring Break is here!" : `Spring Break in ${daysUntilBreak} day${daysUntilBreak === 1 ? "" : "s"}`}
+            </div>
+            <div style={{ fontSize: 11, color: "var(--sb-muted)", marginTop: 1 }}>
+              SJUSD, PAUSD, MVWSD Apr 3–10 · FUHSD, Cupertino USD, Campbell USD Apr 13–17
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              setSpringBreakMode(!springBreakMode);
+              if (!springBreakMode) setViewMode("upcoming");
+            }}
+            style={{
+              padding: "5px 12px",
+              background: springBreakMode ? "#a855f7" : "#f97316",
+              color: "#fff",
+              border: "none",
+              borderRadius: 6,
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: "pointer",
+              fontFamily: "var(--sb-sans)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {springBreakMode ? "← Show all dates" : "Show spring break events"}
+          </button>
+        </div>
+      )}
 
       {/* Event cards */}
       {viewMode === "venues" ? (
