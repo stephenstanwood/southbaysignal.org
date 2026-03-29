@@ -1699,3 +1699,76 @@ No other local aggregator shows this. It sits naturally alongside Quake Watch an
 1. **Transit real-time** — 511 API key needed. Register at 511.org/open-data.
 2. **High school sports scores** — MaxPreps or CIF section scraper. Hyperlocal.
 3. **Crime pulse** — once San Jose open data is accessible; SJPD has public crime report data.
+
+---
+
+## 2026-03-29 — Cycle 30: NWS Weather Alerts + School Calendar Completion
+
+### What Was Built
+
+**1. WeatherAlertBanner component** (inline in OverviewView.tsx)
+
+Live NWS weather alert feed for the Santa Clara Valley. Fetches `api.weather.gov/alerts/active?zone=CAZ511` on page load. Only renders when active alerts exist — disappears completely when sky is clear (like OutagesCard). Positioned between the 5-day ForecastStrip and the TransitStatusBar.
+
+- Color coding: red (Extreme/Warning), amber (Severe/Watch), blue (Advisory/Statement)
+- Shows alert event name, until-date, and stripped headline
+- Silent fail if NWS API unreachable
+- User-Agent header identifies SouthBaySignal to the public API
+- CAZ511 = Santa Clara Valley inland zone — covers San Jose, Mountain View, Sunnyvale, Cupertino, Campbell, Los Gatos, Saratoga, Los Altos
+
+**2. School calendar: testing events + finals**
+
+Added 18 new entries to school-calendar.json:
+- **AP Exams (May 4–15)**: SJUSD, PAUSD, FUHSD, LGSUHSD, MVLA — all high school districts
+- **CAASPP State Testing (Apr 14–May 15)**: all 8 districts — the California standardized testing window
+- **Finals Week**: FUHSD (May 28–Jun 1), LGSUHSD/MVLA/PAUSD (May 28–Jun 3), SJUSD (May 22–28)
+- New TYPE_ICON entries: testing → 📝, finals → 📋
+
+**3. Data refresh (all scripts)**
+- upcoming-events.json: 342 events, 86 ongoing, 15 sources
+- digests.json: 6 cities (SJ, MV, Sunnyvale, Cupertino, Santa Clara, Palo Alto; Milpitas failed)
+- around-town.json: 6 items
+- upcoming-meetings.json: San Jose (Apr 7), Cupertino (Apr 1)
+- weekend-picks.json: 3 picks for Mar 27–29
+
+### APIs Investigated This Cycle
+- **MaxPreps** — robots.txt blocks most content including team/school scores; cannot scrape
+- **CIF Central Coast Section (cifccs.org)** — 403 blocked; no public data access
+- **Palo Alto Online** — blocks AI crawlers (Claude-based agents listed in robots.txt)
+- **NWS/NOAA api.weather.gov** ✅ — fully public, no auth, GeoJSON format, CAZ511 covers South Bay
+
+### Why This Was the Highest-Leverage Move
+
+**The WeatherAlertBanner fills the gap between ambient weather and urgent alerts.** The ForecastStrip tells you it'll be 68°F on Thursday. It does NOT tell you if there's an Excessive Heat Warning, Red Flag Warning for wildfire weather, or Flash Flood Watch in effect. For South Bay residents, this distinction matters:
+- A Red Flag Warning means elevated wildfire risk — residents in Saratoga and Los Gatos hills need this immediately
+- An Excessive Heat Warning means vulnerable residents and outdoor workers need to adjust plans
+- A Flash Flood Watch means check the Guadalupe River and Coyote Creek (which now have live USGS gauges on the same page)
+
+The NWS API is perfectly complementary to the existing weather + water + air quality stack. The Overview tab now covers the full environmental picture: forecast (what's coming), air quality (what you're breathing), stream levels (flood risk), and official NWS alerts (government-issued warnings). This is a more complete environmental dashboard than any other South Bay source.
+
+**The school calendar now answers the end-of-year questions every parent has.** AP exams (May 4–15), CAASPP testing (Apr 14–May 15), and finals weeks are the highest-anxiety dates on the school calendar — and they were completely missing. A parent checking SBS in late April can now see "AP Exams: May 4–15 · PAUSD" in the same School Calendar section that already told them about spring break. This is the difference between "useful reminder" and "genuinely useful reference."
+
+### Effect on Real Users
+
+**Summer wildfire season (June–October)**:
+- Parent in Saratoga opens SBS on a hot, dry morning: sees "🔴 Red Flag Warning · until Sat, Jun 14 · 8pm — Strong winds and low humidity will create dangerous wildfire conditions"
+- This is actionable (don't do yard work, be ready to evacuate) in a way that a weather app never makes explicit
+
+**Heat wave (July–August)**:
+- Elderly resident's caregiver opens SBS: immediately sees "⚠ Excessive Heat Warning" without having to check a separate weather app
+- Connects naturally to the Air Quality section below (smoke/ozone often accompanies heat)
+
+**Flood event (rainy season)**:
+- After heavy rain, resident sees "⚠ Flash Flood Watch" alongside the Water Watch card showing "Guadalupe River: 420 cfs, Elevated ▲ rising"
+- Two live data sources telling the same story
+
+**School calendar (AP exams)**:
+- PAUSD junior's parent: opens SBS in late April, sees "📝 AP Exams · May 4–15 · PAUSD, MVLA, FUHSD, LGSUHSD, SJUSD" — immediately reminds them the school-stress period is starting
+
+### Next 3 Strongest Ideas
+1. **High school sports scores** — MaxPreps blocked. Alternative: direct CIF/SCVAL/WCAL league websites or a community-contributed static snapshot. Parents notice this more than almost anything.
+2. **Transit real-time** — 511 API key needed. Register at 511.org/open-data. Daily commuter urgency.
+3. **NWS alert test / winter storm coverage** — Currently covering CAZ511 (valley). Could expand to CAZ512 (Santa Cruz Mountains) to catch mountain snow events that affect commuters on Hwy 17 and 35.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — emergency intelligence layer complete.** South Bay Signal now covers the full safety picture: NWS weather alerts, USGS stream gauges, air quality, seismic activity, and PG&E/SCE outages. A resident checking SBS during any South Bay hazard event — wildfire smoke, heat wave, flood watch, earthquake, power outage — gets all the relevant information in one place. No other local source aggregates all five of these. For residents in the hills (Saratoga, Los Gatos) who face elevated wildfire and flood risk, this combination is genuinely unique.
