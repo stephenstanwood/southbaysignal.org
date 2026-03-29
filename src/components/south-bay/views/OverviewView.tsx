@@ -3,6 +3,7 @@ import SportsView from "./SportsView";
 import OutagesCard from "../cards/OutagesCard";
 import RealEstateCard from "../cards/RealEstateCard";
 import PermitPulseCard from "../cards/PermitPulseCard";
+import AirQualityCard from "../cards/AirQualityCard";
 import {
   SOUTH_BAY_EVENTS,
   type SBEvent,
@@ -1914,6 +1915,9 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
 
       {/* ── Permit Pulse ── */}
       {!changingCity && <PermitPulseCard />}
+
+      {/* ── Air Quality ── */}
+      {!changingCity && <AirQualityCard homeCity={homeCity} />}
 
       {/* ── Sports scoreboard ── */}
       <SportsView />

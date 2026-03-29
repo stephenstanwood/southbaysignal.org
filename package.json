@@ -17,7 +17,8 @@
     "generate-real-estate": "node scripts/generate-real-estate.mjs",
     "generate-weekend-picks": "node scripts/generate-weekend-picks.mjs",
     "generate-city-briefings": "node scripts/generate-city-briefings.mjs",
-    "generate-permits": "node scripts/generate-permits.mjs"
+    "generate-permits": "node scripts/generate-permits.mjs",
+    "generate-air-quality": "node scripts/generate-air-quality.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",
