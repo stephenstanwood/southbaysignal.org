@@ -1312,3 +1312,65 @@ The grouping logic (showing Memorial Day as one row with three badges instead of
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — families are now a first-class audience.** Before this cycle, South Bay Signal had depth in civic intelligence, sports, entertainment, and real estate — but nothing for the large share of South Bay residents whose daily life is organized around the school calendar. A parent who opens the page now sees spring break countdowns, district-specific dates, graduation timing, and last day of school — all without hunting across three district websites. The card is compact and fast, but it answers a genuinely frequent question for one of the South Bay's most engaged resident groups.
+
+---
+
+## Cycle 22 — This Week in [City]: AI City Briefings (2026-03-29)
+
+### What Was Built
+
+**"This Week in [City]" card on the Today tab** — A new personalized section showing after the CityGlance tiles. It displays an AI-generated one-sentence editorial lead specific to the resident's home city, plus 2-3 linked highlights (top events + council agenda item).
+
+**`scripts/generate-city-briefings.mjs`** — New script that runs Claude Haiku across all 11 cities:
+- Filters upcoming-events.json to non-ongoing events in the next 7 days for that city
+- Pulls around-town headlines from around-town.json per city
+- Pulls upcoming meeting agenda items from upcoming-meetings.json
+- Prompts Claude Haiku to write a 20-30 word editorial sentence: "like a smart friend texting you what's going on in your city"
+- Assembles 2-3 highlights for display
+- Skips cities with no data (Los Altos, Milpitas had none this week)
+
+**`src/data/south-bay/city-briefings.json`** — Static output; 9 cities with briefings generated on first run:
+- Campbell: Parks and Recreation Commission meeting tonight
+- Cupertino: Business license amnesty program + retail incentives
+- Los Gatos: Union Middle School 5K Fun Run at Balzer Field
+- Mountain View: Mixed-use housing project approved on East Middlefield
+- Saratoga: Mayor's farmers market office hours at West Valley College
+- Sunnyvale: Community meeting on safe parking program
+- San Jose: Council votes on GovAI Coalition + free library workshops
+- Santa Clara: Public comment on federal housing funds
+- Palo Alto: Stanford Cardinal Classic II softball weekend
+
+**`CityWeeklyBriefing` component** (inline in OverviewView.tsx):
+- Soft yellow background (`#FEFCE8`, amber border) to distinguish from other cards
+- Italic AI editorial lead with actual local specifics
+- Highlight rows with category emoji, linked title, when/venue in monospace
+- Only renders when data exists for homeCity
+
+**`generate-city-briefings` added to package.json scripts**
+
+### Sample outputs
+- San Jose: "San Jose City Council tackles AI governance and renewable energy deals Tuesday while free creative workshops hit the library this weekend."
+- Cupertino: "Cupertino's new amnesty program lets unlicensed businesses get legit without penalties, while fresh incentives aim to revive struggling retail."
+- Saratoga: "Saratoga's mayor holds office hours at the farmers market this Saturday, bringing City Hall directly to residents at West Valley College."
+
+### Ideas Considered
+
+1. **"This Week in [City]" AI briefings** ← BUILT
+2. **Development data audit** — Static project descriptions from early cycles may be stale. Good next candidate.
+3. **Live Caltrain status** — 511 API key still not available. Deferred again.
+
+### Why This Was the Highest-Leverage Move
+
+No prior feature on South Bay Signal was personalized to the resident's city. The weather, events, and sports were all South Bay-wide. CityGlance added meeting dates and project counts, but nothing editorial. This week's briefing gives a resident who lives in Saratoga a reason to open the page that's fundamentally different from a San Jose resident — and both get something specific to their city that they wouldn't find anywhere else in a single sentence.
+
+The AI editorial voice matters: "Saratoga's mayor holds office hours at the farmers market this Saturday, bringing City Hall directly to residents at West Valley College" is something a local newspaper would write. It's not a data dump; it's a local intelligence service.
+
+### Effect on Real Users
+- **Saratoga resident Saturday morning**: Opens Today tab, sees "Saratoga's mayor holds office hours at the farmers market" — might actually go
+- **San Jose civic watcher**: Sees "AI governance and renewable energy deals Tuesday" in plain English before having to dig through Legistar
+- **Cupertino small business owner**: Sees business license amnesty program — might act before the window closes
+
+### Next 3 Strongest Ideas
+1. **Development data audit + refresh** — Static project descriptions and statuses from early cycles need 2026 updates. BART Phase II progress, Google Downtown West current status.
+2. **Live Caltrain service status** — 511 API key needed. Register at 511.org/open-data. Daily-urgency commuter feature.
+3. **Permit Pulse** — Santa Clara County publishes building permit data via open data portal. Show what's being built this week near the resident's city.
