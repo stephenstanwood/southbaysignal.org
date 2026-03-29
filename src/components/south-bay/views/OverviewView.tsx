@@ -51,7 +51,7 @@ type UpcomingEvent = {
 
 const NOW = new Date();
 const NOW_MINUTES = NOW.getHours() * 60 + NOW.getMinutes();
-const TODAY_ISO = NOW.toISOString().split("T")[0];
+const TODAY_ISO = NOW.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
 const MONTH = NOW.getMonth() + 1;
 const NEXT_MONTH = MONTH === 12 ? 1 : MONTH + 1;
 const DAY_IDX = NOW.getDay();
@@ -1007,7 +1007,8 @@ function WeekendPicksCard() {
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function ForecastStrip({ forecast }: { forecast: ForecastDay[] }) {
-  const todayISO = new Date().toISOString().split("T")[0];
+  // Use Pacific time (not UTC) so "Today" label stays correct on Saturday evenings
+  const todayISO = new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
   return (
     <div style={{ marginBottom: 24 }}>
       <div style={{
@@ -1175,7 +1176,9 @@ function OnStageSection({
         e.category !== "sports" &&
         !e.ongoing &&
         e.date >= TODAY_ISO &&
-        e.date <= sevenDaysOut,
+        e.date <= sevenDaysOut &&
+        // filter out past events on today (already started)
+        (e.date !== TODAY_ISO || hasNotStarted(e.time)),
     )
     .sort((a, b) => {
       const dateCmp = (a.date || "").localeCompare(b.date || "");
@@ -1186,8 +1189,7 @@ function OnStageSection({
 
   if (!shows.length) return null;
 
-  const hasTonight = shows.some((e) => e.date === TODAY_ISO);
-  const title = hasTonight ? "On Stage Tonight" : "On Stage This Week";
+  const title = "On Stage";
 
   return (
     <div style={{ marginBottom: 32 }}>
@@ -1243,7 +1245,7 @@ function OnStageSection({
                   lineHeight: 1.5,
                 }}
               >
-                {isToday ? "Tonight" : shortDate}
+                {shortDate}
               </span>
 
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -1472,7 +1474,7 @@ function SchoolCalendarCard() {
       </div>
 
       <div style={{ marginTop: 8, fontSize: 11, color: "var(--sb-muted)", fontFamily: "'Space Mono', monospace" }}>
-        SJUSD · PAUSD · FUHSD — 2025–26
+        SJUSD · PAUSD · FUHSD · MVWSD · Cupertino USD · Campbell USD · LGSUHSD · MVLA — 2025–26
       </div>
     </div>
   );
@@ -1707,11 +1709,6 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
       {/* ── 5-day forecast ── */}
       {forecast && forecast.length > 0 && !changingCity && (
         <ForecastStrip forecast={forecast} />
-      )}
-
-      {/* ── City glance (next meeting + active projects) ── */}
-      {homeCity && !changingCity && (
-        <CityGlance city={homeCity} onNavigate={onNavigate} />
       )}
 
       {/* ── This Week in [City] briefing ── */}

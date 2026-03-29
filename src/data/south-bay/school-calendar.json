@@ -25,6 +25,46 @@
       "color": "#b45309",
       "bg": "#fffbeb",
       "cities": ["sunnyvale", "cupertino", "santa-clara", "campbell"]
+    },
+    {
+      "id": "mvwsd",
+      "name": "MVWSD",
+      "fullName": "Mt. View Whisman (K-8)",
+      "color": "#7c3aed",
+      "bg": "#f5f3ff",
+      "cities": ["mountain-view"]
+    },
+    {
+      "id": "cusd",
+      "name": "Cupertino USD",
+      "fullName": "Cupertino Union (K-8)",
+      "color": "#0369a1",
+      "bg": "#f0f9ff",
+      "cities": ["cupertino", "sunnyvale"]
+    },
+    {
+      "id": "campbell-usd",
+      "name": "Campbell USD",
+      "fullName": "Campbell Union (K-8)",
+      "color": "#be123c",
+      "bg": "#fff1f2",
+      "cities": ["campbell"]
+    },
+    {
+      "id": "lgsuhsd",
+      "name": "LGSUHSD",
+      "fullName": "Los Gatos-Saratoga JUHSD",
+      "color": "#065f46",
+      "bg": "#ecfdf5",
+      "cities": ["los-gatos", "saratoga"]
+    },
+    {
+      "id": "mvla",
+      "name": "MVLA",
+      "fullName": "Mountain View–Los Altos UHSD",
+      "color": "#0f766e",
+      "bg": "#f0fdfa",
+      "cities": ["mountain-view", "los-altos"]
     }
   ],
   "events": [
@@ -53,8 +93,48 @@
       "endDate": "2026-04-10"
     },
     {
+      "id": "mvwsd-spring-break-2026",
+      "districtId": "mvwsd",
+      "label": "Spring Break",
+      "type": "break",
+      "startDate": "2026-04-06",
+      "endDate": "2026-04-10"
+    },
+    {
+      "id": "lgsuhsd-spring-break-2026",
+      "districtId": "lgsuhsd",
+      "label": "Spring Break",
+      "type": "break",
+      "startDate": "2026-04-06",
+      "endDate": "2026-04-10"
+    },
+    {
+      "id": "mvla-spring-break-2026",
+      "districtId": "mvla",
+      "label": "Spring Break",
+      "type": "break",
+      "startDate": "2026-04-06",
+      "endDate": "2026-04-10"
+    },
+    {
       "id": "fuhsd-spring-break-2026",
       "districtId": "fuhsd",
+      "label": "Spring Break",
+      "type": "break",
+      "startDate": "2026-04-13",
+      "endDate": "2026-04-17"
+    },
+    {
+      "id": "cusd-spring-break-2026",
+      "districtId": "cusd",
+      "label": "Spring Break",
+      "type": "break",
+      "startDate": "2026-04-13",
+      "endDate": "2026-04-17"
+    },
+    {
+      "id": "campbell-usd-spring-break-2026",
+      "districtId": "campbell-usd",
       "label": "Spring Break",
       "type": "break",
       "startDate": "2026-04-13",
@@ -93,6 +173,46 @@
       "endDate": "2026-05-25"
     },
     {
+      "id": "mvwsd-memorial-day-2026",
+      "districtId": "mvwsd",
+      "label": "Memorial Day — No School",
+      "type": "holiday",
+      "startDate": "2026-05-25",
+      "endDate": "2026-05-25"
+    },
+    {
+      "id": "cusd-memorial-day-2026",
+      "districtId": "cusd",
+      "label": "Memorial Day — No School",
+      "type": "holiday",
+      "startDate": "2026-05-25",
+      "endDate": "2026-05-25"
+    },
+    {
+      "id": "campbell-usd-memorial-day-2026",
+      "districtId": "campbell-usd",
+      "label": "Memorial Day — No School",
+      "type": "holiday",
+      "startDate": "2026-05-25",
+      "endDate": "2026-05-25"
+    },
+    {
+      "id": "lgsuhsd-memorial-day-2026",
+      "districtId": "lgsuhsd",
+      "label": "Memorial Day — No School",
+      "type": "holiday",
+      "startDate": "2026-05-25",
+      "endDate": "2026-05-25"
+    },
+    {
+      "id": "mvla-memorial-day-2026",
+      "districtId": "mvla",
+      "label": "Memorial Day — No School",
+      "type": "holiday",
+      "startDate": "2026-05-25",
+      "endDate": "2026-05-25"
+    },
+    {
       "id": "sjusd-graduation-2026",
       "districtId": "sjusd",
       "label": "High School Graduations",
@@ -107,6 +227,30 @@
       "type": "lastday",
       "startDate": "2026-05-29",
       "endDate": "2026-05-29"
+    },
+    {
+      "id": "mvwsd-last-day-2026",
+      "districtId": "mvwsd",
+      "label": "Last Day of School",
+      "type": "lastday",
+      "startDate": "2026-06-05",
+      "endDate": "2026-06-05"
+    },
+    {
+      "id": "lgsuhsd-last-day-2026",
+      "districtId": "lgsuhsd",
+      "label": "Last Day of School",
+      "type": "lastday",
+      "startDate": "2026-06-04",
+      "endDate": "2026-06-04"
+    },
+    {
+      "id": "lgsuhsd-graduation-2026",
+      "districtId": "lgsuhsd",
+      "label": "Graduations",
+      "type": "graduation",
+      "startDate": "2026-06-04",
+      "endDate": "2026-06-05"
     },
     {
       "id": "fuhsd-graduation-2026",
@@ -131,6 +275,38 @@
       "type": "lastday",
       "startDate": "2026-06-04",
       "endDate": "2026-06-04"
+    },
+    {
+      "id": "cusd-last-day-2026",
+      "districtId": "cusd",
+      "label": "Last Day of School",
+      "type": "lastday",
+      "startDate": "2026-06-05",
+      "endDate": "2026-06-05"
+    },
+    {
+      "id": "mvla-graduation-2026",
+      "districtId": "mvla",
+      "label": "Graduations",
+      "type": "graduation",
+      "startDate": "2026-06-05",
+      "endDate": "2026-06-05"
+    },
+    {
+      "id": "mvla-last-day-2026",
+      "districtId": "mvla",
+      "label": "Last Day of School",
+      "type": "lastday",
+      "startDate": "2026-06-05",
+      "endDate": "2026-06-05"
+    },
+    {
+      "id": "campbell-usd-last-day-2026",
+      "districtId": "campbell-usd",
+      "label": "Last Day of School",
+      "type": "lastday",
+      "startDate": "2026-06-11",
+      "endDate": "2026-06-11"
     }
   ]
 }
