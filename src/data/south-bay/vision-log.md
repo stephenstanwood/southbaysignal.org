@@ -1592,3 +1592,52 @@ The transit status bar solves the "I use the Overview tab but I take VTA to work
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — commute dimension now on the Overview.** A resident's morning routine now flows: check weather (ForecastStrip) → check commute (TransitStatusBar) → check today's events → read briefing. That's the core daily check loop, all on one tab. South Bay Signal is increasingly the kind of page you open first, not fourth.
+
+---
+
+## Cycle 28 — Tech Hiring Pulse: Who's Hiring in Silicon Valley (2026-03-29)
+
+### What Was Built
+
+**Hiring Pulse section on the Technology tab** — a new section at the top of TechnologyView that groups all 16 major South Bay tech companies by current hiring status with direct career page links.
+
+**`src/components/south-bay/views/TechnologyView.tsx`** — added before the Top Employers chart:
+- Three columns: "Actively Hiring" (▲), "Selective Hiring" (→), "Reduced Hiring" (▼)
+- Each column has a status label, italic context note, and a list of companies
+- Each company row shows: colored status dot, company name (linked to careers page), city, trendNote (e.g. "7K at Santa Clara HQ; growing with AI GPU demand"), and a status badge
+- Career links open the official jobs/careers page for each company
+- Disclaimer: "Based on public filings, layoff announcements, and job board activity as of Q1 2026."
+
+**`src/data/south-bay/tech-companies.ts`** — added `careersUrl` optional field to `TechCompany` interface and populated for all 16 companies:
+- Actively hiring (trend: up): NVIDIA, AMD, ServiceNow, Palo Alto Networks, Meta
+- Selective (trend: flat): Google, Apple, Cisco, Adobe, LinkedIn, Juniper/HPE, Western Digital, eBay, Zoom
+- Reduced (trend: down): Intel, PayPal
+
+**Data refreshed this cycle:**
+- upcoming-events.json: 342 events, 86 ongoing, 15 sources
+- digests.json: 7 cities
+- around-town.json: 4 items (MV housing project, MV prohousing funding, Sunnyvale safe parking, Santa Clara station area)
+- upcoming-meetings.json: San Jose (Apr 7), Cupertino (Apr 1)
+- weekend-picks.json: 3 picks for March 27–29
+
+### Why This Was the Highest-Leverage Move
+
+Silicon Valley has gone through the most significant tech layoff cycle in a decade (2023–2025), with Intel cutting 15K+ jobs, PayPal cutting 2,500, and smaller cuts across Google, Adobe, and others. At the same time, AI has created a counter-wave of hiring at NVIDIA, AMD, ServiceNow, Palo Alto Networks, and Meta. Thousands of South Bay tech workers are actively job searching right now — and the Technology tab was giving them rich context about the local companies but no actionable next step.
+
+The Hiring Pulse section converts the existing trend data into direct action: a tech worker can open the Technology tab, see which of their neighbors are growing vs. cutting, and click directly to the careers page without searching. That's the difference between a read-only informational page and a tool you actually use.
+
+The feature also deepens SBS's identity as a genuine local homepage. No other South Bay aggregator shows hiring status for local companies alongside everything else (events, council meetings, weather, sports). The Technology tab now feels like a real resource for the most common life concern of Silicon Valley residents: employment.
+
+### Effect on Real Users
+- **Laid-off Intel engineer**: Opens Tech tab, immediately sees Intel is "▼ Reduced" and NVIDIA/AMD/ServiceNow are "▲ Actively Hiring" — clicks careers links without leaving the page
+- **Software engineer considering a move**: "Oh ServiceNow is growing 20%+ — never thought about them, let me check"
+- **Parent/spouse of a tech worker**: Gets a lay-of-the-land without reading tech news — "Google is stable, NVIDIA is booming"
+- **General resident**: Understands why the South Bay economy feels the way it does right now in one glance
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511 API key needed. Register at 511.org/open-data. Daily commuter urgency.
+2. **Development data audit** — verify current status of "opening-soon" projects (Central Place at Levi's Stadium, Milpitas BART TOD).
+3. **High school sports scores** — live scores via MaxPreps or CIF section API. Hyperlocal and resident-engaging.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — employment dimension now complete.** South Bay Signal covers the full lifecycle of South Bay life: what's happening today (events), what your city is doing (government/council), what's being built (development), what the air is like (AQI, weather), what's shaking (quakes), what's on (sports, shows), and now — who's hiring. A resident who opens SBS after a layoff, or who's just thinking about their career, gets a genuine local picture of the job market they can act on immediately.
