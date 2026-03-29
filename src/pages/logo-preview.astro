@@ -1,0 +1,261 @@
+---
+// Logo preview — round 3: font diversity
+// Visit: localhost:4323/logo-preview
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SBS Logo — Round 3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Barlow+Condensed:wght@400;600;700;800&family=Bebas+Neue&family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=DM+Serif+Display:ital@0;1&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Righteous&family=Space+Mono:wght@400;700&family=Inter:wght@700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #f8f4ef; font-family: 'Inter', sans-serif; padding: 48px 32px 80px; }
+    h1 { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #999; margin-bottom: 8px; }
+    .note { font-family: 'Space Mono', monospace; font-size: 10px; color: #bbb; margin-bottom: 40px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 32px; }
+    .card { background: #fff; border: 1px solid #e0dbd4; border-radius: 8px; padding: 36px 28px 24px; display: flex; flex-direction: column; gap: 20px; }
+    .label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #ccc; }
+    .stage { display: flex; align-items: center; min-height: 90px; }
+
+    /* ── REFERENCE: I ── */
+    .vI { display: inline-block; user-select: none; }
+    .vI .rule-thick { height: 5px; background: #111; margin-bottom: 2px; }
+    .vI .rule-thin { height: 1px; background: #111; margin-bottom: 8px; }
+    .vI .main-row { display: flex; align-items: baseline; gap: 6px; }
+    .vI .the { font-family: 'Playfair Display', serif; font-weight: 400; font-style: italic; font-size: 18px; color: #111; }
+    .vI .south-bay { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 40px; line-height: 1; color: #111; letter-spacing: -0.01em; }
+    .vI .signal-row { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+    .vI .signal-rule { flex: 1; height: 1px; background: #111; }
+    .vI .signal-word { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: #111; }
+
+    /* ── K: Abril Fatface — very bold display ── */
+    .vK { display: inline-block; user-select: none; border-top: 4px solid #111; padding-top: 8px; }
+    .vK .the { display: block; font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: #aaa; margin-bottom: 2px; }
+    .vK .south-bay { display: block; font-family: 'Abril Fatface', serif; font-size: 42px; line-height: 1; color: #111; }
+    .vK .signal { display: block; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.35em; text-transform: uppercase; color: #111; margin-top: 5px; }
+
+    /* ── L: DM Serif Display — refined, editorial ── */
+    .vL { display: inline-block; user-select: none; }
+    .vL .the { display: block; font-family: 'DM Serif Display', serif; font-style: italic; font-size: 16px; color: #aaa; line-height: 1; margin-bottom: 0; }
+    .vL .south-bay { display: block; font-family: 'DM Serif Display', serif; font-size: 40px; line-height: 1; color: #111; letter-spacing: -0.01em; }
+    .vL .rule { height: 2px; background: #111; margin: 6px 0; }
+    .vL .signal { display: block; font-family: 'DM Serif Display', serif; font-style: italic; font-size: 20px; color: #555; letter-spacing: 0.04em; }
+
+    /* ── M: Bebas Neue — maximum impact ── */
+    .vM { display: inline-block; user-select: none; }
+    .vM .the { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 0.5em; color: #999; line-height: 1; }
+    .vM .south-bay { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 56px; line-height: 0.9; color: #111; letter-spacing: 0.03em; }
+    .vM .signal { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.4em; color: #111; line-height: 1; border-top: 2px solid #111; padding-top: 4px; margin-top: 4px; }
+
+    /* ── N: Cormorant Garamond — fashion/editorial ── */
+    .vN { display: inline-block; user-select: none; }
+    .vN .the { display: block; font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300; font-size: 18px; color: #aaa; line-height: 1; }
+    .vN .south-bay { display: block; font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 52px; line-height: 0.95; color: #111; letter-spacing: -0.02em; }
+    .vN .signal { display: block; font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: 28px; color: #555; letter-spacing: 0.08em; margin-top: 2px; }
+
+    /* ── O: Oswald — authoritative condensed sans ── */
+    .vO { display: inline-block; user-select: none; }
+    .vO .rule { height: 4px; background: #111; margin-bottom: 6px; }
+    .vO .the { display: block; font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13px; letter-spacing: 0.25em; text-transform: uppercase; color: #888; }
+    .vO .south-bay { display: block; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 42px; line-height: 0.95; color: #111; letter-spacing: -0.01em; text-transform: uppercase; }
+    .vO .signal { display: block; font-family: 'Playfair Display', serif; font-style: italic; font-size: 20px; color: #555; margin-top: 2px; }
+
+    /* ── P: IM Fell English — authentic old newspaper ── */
+    .vP { display: inline-block; user-select: none; border-top: 3px double #111; border-bottom: 1px solid #111; padding: 8px 0; }
+    .vP .the { display: block; font-family: 'IM Fell English', serif; font-style: italic; font-size: 15px; color: #666; text-align: center; }
+    .vP .south-bay { display: block; font-family: 'IM Fell English', serif; font-size: 44px; line-height: 1; color: #111; text-align: center; letter-spacing: 0.01em; }
+    .vP .signal { display: block; font-family: 'IM Fell English', serif; font-style: italic; font-size: 18px; color: #555; text-align: center; margin-top: 2px; letter-spacing: 0.08em; }
+
+    /* ── Q: Barlow Condensed — clean modern editorial ── */
+    .vQ { display: inline-block; user-select: none; }
+    .vQ .the { display: block; font-family: 'Barlow Condensed', sans-serif; font-weight: 400; font-size: 13px; letter-spacing: 0.3em; text-transform: uppercase; color: #999; }
+    .vQ .south-bay { display: block; font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 50px; line-height: 0.9; color: #111; text-transform: uppercase; letter-spacing: -0.01em; }
+    .vQ .rule { height: 2px; background: #111; margin: 5px 0; }
+    .vQ .signal { display: block; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: 0.25em; text-transform: uppercase; color: #555; }
+
+    /* ── R: Cinzel — Roman classical ── */
+    .vR { display: inline-block; user-select: none; text-align: center; }
+    .vR .rule { height: 1px; background: #111; margin: 6px 0; }
+    .vR .the { display: block; font-family: 'Cinzel', serif; font-weight: 400; font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: #888; }
+    .vR .south-bay { display: block; font-family: 'Cinzel', serif; font-weight: 900; font-size: 36px; line-height: 1; color: #111; letter-spacing: 0.05em; }
+    .vR .signal { display: block; font-family: 'Cinzel', serif; font-weight: 400; font-size: 16px; letter-spacing: 0.35em; color: #555; margin-top: 2px; }
+
+    /* ── S: Libre Baskerville — NYT-esque ── */
+    .vS { display: inline-block; user-select: none; }
+    .vS .rule-top { height: 3px; background: #111; margin-bottom: 8px; }
+    .vS .main { display: block; font-family: 'Libre Baskerville', serif; font-weight: 700; font-style: italic; font-size: 36px; line-height: 1; color: #111; }
+    .vS .sub-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+    .vS .sub-rule { flex: 1; height: 1px; background: #bbb; }
+    .vS .signal { font-family: 'Libre Baskerville', serif; font-weight: 400; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #555; }
+
+    /* ── T: Righteous — retro zine ── */
+    .vT { display: inline-block; user-select: none; }
+    .vT .the { display: block; font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #aaa; margin-bottom: 2px; }
+    .vT .south-bay { display: block; font-family: 'Righteous', sans-serif; font-size: 40px; line-height: 1; color: #111; letter-spacing: 0.01em; }
+    .vT .rule { height: 3px; background: #111; margin: 4px 0; }
+    .vT .signal { display: block; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 12px; letter-spacing: 0.35em; text-transform: uppercase; color: #111; }
+  </style>
+</head>
+<body>
+  <h1>The South Bay Signal — Round 3</h1>
+  <p class="note">Reference: I (prev. winner). 10 new with different fonts.</p>
+
+  <div class="grid">
+
+    <!-- Reference: I -->
+    <div class="card">
+      <div class="label">I — Classic nameplate (ref)</div>
+      <div class="stage">
+        <div class="vI">
+          <div class="rule-thick"></div>
+          <div class="rule-thin"></div>
+          <div class="main-row">
+            <span class="the">The</span>
+            <span class="south-bay">South Bay</span>
+          </div>
+          <div class="signal-row">
+            <div class="signal-rule"></div>
+            <span class="signal-word">Signal</span>
+            <div class="signal-rule"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- K: Abril Fatface -->
+    <div class="card">
+      <div class="label">K — Abril Fatface</div>
+      <div class="stage">
+        <div class="vK">
+          <span class="the">The</span>
+          <span class="south-bay">South Bay</span>
+          <span class="signal">Signal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- L: DM Serif Display -->
+    <div class="card">
+      <div class="label">L — DM Serif Display</div>
+      <div class="stage">
+        <div class="vL">
+          <span class="the">The</span>
+          <span class="south-bay">South Bay</span>
+          <div class="rule"></div>
+          <span class="signal">Signal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- M: Bebas Neue -->
+    <div class="card">
+      <div class="label">M — Bebas Neue</div>
+      <div class="stage">
+        <div class="vM">
+          <span class="the">The</span>
+          <span class="south-bay">South Bay</span>
+          <span class="signal">Signal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- N: Cormorant Garamond -->
+    <div class="card">
+      <div class="label">N — Cormorant Garamond</div>
+      <div class="stage">
+        <div class="vN">
+          <span class="the">The</span>
+          <span class="south-bay">South Bay</span>
+          <span class="signal">Signal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- O: Oswald + Playfair -->
+    <div class="card">
+      <div class="label">O — Oswald + Playfair italic</div>
+      <div class="stage">
+        <div class="vO">
+          <div class="rule"></div>
+          <span class="the">The</span>
+          <span class="south-bay">South Bay</span>
+          <span class="signal">Signal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- P: IM Fell English -->
+    <div class="card">
+      <div class="label">P — IM Fell English (old press)</div>
+      <div class="stage">
+        <div class="vP">
+          <span class="the">The</span>
+          <span class="south-bay">South Bay</span>
+          <span class="signal">Signal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q: Barlow Condensed -->
+    <div class="card">
+      <div class="label">Q — Barlow Condensed</div>
+      <div class="stage">
+        <div class="vQ">
+          <span class="the">The</span>
+          <span class="south-bay">South Bay</span>
+          <div class="rule"></div>
+          <span class="signal">Signal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- R: Cinzel -->
+    <div class="card">
+      <div class="label">R — Cinzel (Roman)</div>
+      <div class="stage">
+        <div class="vR">
+          <div class="rule"></div>
+          <span class="the">The</span>
+          <span class="south-bay">South Bay</span>
+          <span class="signal">Signal</span>
+          <div class="rule"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S: Libre Baskerville -->
+    <div class="card">
+      <div class="label">S — Libre Baskerville</div>
+      <div class="stage">
+        <div class="vS">
+          <div class="rule-top"></div>
+          <span class="main">The South Bay</span>
+          <div class="sub-row">
+            <div class="sub-rule"></div>
+            <span class="signal">Signal</span>
+            <div class="sub-rule"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- T: Righteous -->
+    <div class="card">
+      <div class="label">T — Righteous (retro)</div>
+      <div class="stage">
+        <div class="vT">
+          <span class="the">The</span>
+          <span class="south-bay">South Bay</span>
+          <div class="rule"></div>
+          <span class="signal">Signal</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

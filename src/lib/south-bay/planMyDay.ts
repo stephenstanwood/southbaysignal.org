@@ -79,6 +79,7 @@ interface Candidate {
   url?: string;
   isEvent: boolean;
   isTodaySpecial: boolean;
+  hasDayRestriction: boolean; // event has specific days[] — only show when active
   indoorOutdoor: "indoor" | "outdoor" | "both";
   category: string;
   bestSlots: TimeSlot[];
@@ -215,6 +216,7 @@ function buildCandidates(date: Date): Candidate[] {
       url: e.url,
       isEvent: true,
       isTodaySpecial: isActiveOnDate(e, date),
+      hasDayRestriction: !!(e.days && e.days.length > 0),
       indoorOutdoor: eventIndoorOutdoor(e),
       category: e.category,
       bestSlots: eventBestSlots(e),
@@ -235,6 +237,7 @@ function buildCandidates(date: Date): Candidate[] {
       url: p.url,
       isEvent: false,
       isTodaySpecial: false,
+      hasDayRestriction: false,
       indoorOutdoor: p.indoorOutdoor,
       category: p.category,
       bestSlots: p.bestSlots,
@@ -326,6 +329,9 @@ function scoreCandidate(
 
   // Today bonus — this is happening right now
   if (c.isTodaySpecial) s += 20;
+
+  // Day-restricted events not active today: exclude them entirely
+  if (c.hasDayRestriction && !c.isTodaySpecial) return -9999;
 
   // Featured events
   if (c.isEvent && (c as Candidate & { featured?: boolean }).featured) s += 5;

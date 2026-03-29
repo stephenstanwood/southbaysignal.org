@@ -117,19 +117,6 @@ export default function GovernmentView({ selectedCities, homeCity }: Props) {
       {/* ── Section header ── */}
       <div className="sb-section-header" style={{ marginBottom: 4 }}>
         <span className="sb-section-title">Council Digests</span>
-        <span
-          style={{
-            fontSize: 12,
-            fontWeight: 600,
-            color: "var(--sb-accent)",
-            background: "#FEF2F2",
-            padding: "2px 8px",
-            borderRadius: 3,
-            letterSpacing: "0.03em",
-          }}
-        >
-          {allConfigured.length} of {totalCities} cities
-        </span>
       </div>
 
       {/* ── Explainer ── */}
@@ -301,7 +288,7 @@ export default function GovernmentView({ selectedCities, homeCity }: Props) {
       <MinutesSearchCard homeCity={homeCity} selectedCities={selectedCities} />
 
       {/* ── Food Safety Watch ── */}
-      <HealthScoresCard />
+      {/* Health scores moved to Food tab */}
     </>
   );
 }

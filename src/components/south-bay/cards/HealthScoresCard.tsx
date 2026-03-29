@@ -56,9 +56,9 @@ export default function HealthScoresCard() {
           <div style={{
             fontSize: 9, fontWeight: 700, fontFamily: "'Space Mono', monospace",
             letterSpacing: "0.1em", textTransform: "uppercase",
-            color: "#B91C1C", marginBottom: 6,
+            color: "var(--sb-muted)", marginBottom: 6,
           }}>
-            ⛔ Temporarily Closed ({reds.length})
+            Temporarily Closed ({reds.length})
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {reds.map((f) => (
@@ -74,9 +74,9 @@ export default function HealthScoresCard() {
           <div style={{
             fontSize: 9, fontWeight: 700, fontFamily: "'Space Mono', monospace",
             letterSpacing: "0.1em", textTransform: "uppercase",
-            color: "#92400E", marginBottom: 6,
+            color: "var(--sb-muted)", marginBottom: 6,
           }}>
-            ⚠️ Warning Issued ({yellows.length})
+            Warning Issued ({yellows.length})
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {yellows.map((f) => (
@@ -112,15 +112,15 @@ function FlagRow({ flag }: { flag: HealthFlag }) {
       gap: 10,
       padding: "8px 10px",
       borderRadius: 6,
-      background: isRed ? "#FEF2F2" : "#FFFBEB",
-      border: `1px solid ${isRed ? "#FECACA" : "#FDE68A"}`,
+      background: "var(--sb-card)",
+      border: `1px solid ${isRed ? "#E5C4C4" : "#E5D9B5"}`,
     }}>
       {/* Score badge */}
       <div style={{
         flexShrink: 0,
         width: 34, height: 34,
         borderRadius: 6,
-        background: isRed ? "#FEE2E2" : "#FEF3C7",
+        background: isRed ? "#F5E8E8" : "#F5F0DC",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -129,10 +129,10 @@ function FlagRow({ flag }: { flag: HealthFlag }) {
       }}>
         {flag.score != null ? (
           <>
-            <span style={{ fontSize: 14, fontWeight: 800, color: isRed ? "#991B1B" : "#78350F" }}>
+            <span style={{ fontSize: 14, fontWeight: 800, color: isRed ? "#8B3B3B" : "#7A6020" }}>
               {flag.score}
             </span>
-            <span style={{ fontSize: 7, color: isRed ? "#B91C1C" : "#92400E", fontWeight: 600 }}>
+            <span style={{ fontSize: 7, color: isRed ? "#8B3B3B" : "#7A6020", fontWeight: 600 }}>
               {flag.result === "R" ? "CLOSED" : "WARN"}
             </span>
           </>

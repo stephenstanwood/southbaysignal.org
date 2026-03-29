@@ -1,4 +1,5 @@
 import permitPulseJson from "../../../data/south-bay/permit-pulse.json";
+import type { City } from "../../../lib/south-bay/types";
 
 interface Permit {
   id: string;
@@ -29,7 +30,7 @@ interface PermitPulseData {
   permits: Permit[];
 }
 
-const data = permitPulseJson as PermitPulseData;
+const allData = (permitPulseJson as { cities: Record<string, PermitPulseData> }).cities;
 
 const CATEGORY_ICON: Record<string, string> = {
   "multi-family-new": "🏘️",
@@ -46,9 +47,12 @@ function formatMoney(n: number): string {
   return `$${n.toLocaleString()}`;
 }
 
-export default function PermitPulseCard() {
-  const { stats, permits, dateRange, city, sourceUrl } = data;
-  if (!permits || permits.length === 0) return null;
+export default function PermitPulseCard({ homeCity }: { homeCity: City | null }) {
+  if (!homeCity) return null;
+  const data = allData[homeCity];
+  if (!data || !data.permits || data.permits.length === 0) return null;
+
+  const { stats, permits, dateRange, city, sourceUrl, source } = data;
 
   return (
     <section
@@ -118,15 +122,7 @@ export default function PermitPulseCard() {
         }}
       >
         <div style={{ textAlign: "center" }}>
-          <div
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 22,
-              fontWeight: 700,
-              color: "#1A1A1A",
-              lineHeight: 1,
-            }}
-          >
+          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: "#1A1A1A", lineHeight: 1 }}>
             {stats.total}
           </div>
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, color: "#6B7280", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.04em" }}>
@@ -134,15 +130,7 @@ export default function PermitPulseCard() {
           </div>
         </div>
         <div style={{ textAlign: "center", borderLeft: "1px solid #E5E7EB", borderRight: "1px solid #E5E7EB" }}>
-          <div
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 22,
-              fontWeight: 700,
-              color: "#1A1A1A",
-              lineHeight: 1,
-            }}
-          >
+          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: "#1A1A1A", lineHeight: 1 }}>
             {stats.newUnits}
           </div>
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, color: "#6B7280", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.04em" }}>
@@ -150,15 +138,7 @@ export default function PermitPulseCard() {
           </div>
         </div>
         <div style={{ textAlign: "center" }}>
-          <div
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 22,
-              fontWeight: 700,
-              color: "#1A1A1A",
-              lineHeight: 1,
-            }}
-          >
+          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: "#1A1A1A", lineHeight: 1 }}>
             {formatMoney(stats.totalValuation)}
           </div>
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, color: "#6B7280", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.04em" }}>
@@ -180,7 +160,6 @@ export default function PermitPulseCard() {
               borderTop: i === 0 ? "none" : "1px solid #F3F4F6",
             }}
           >
-            {/* Category icon */}
             <div
               style={{
                 flexShrink: 0,
@@ -198,7 +177,6 @@ export default function PermitPulseCard() {
               {CATEGORY_ICON[permit.category] ?? "📋"}
             </div>
 
-            {/* Content */}
             <div style={{ flex: 1, minWidth: 0 }}>
               <div
                 style={{
@@ -230,7 +208,6 @@ export default function PermitPulseCard() {
               </div>
             </div>
 
-            {/* Right: category label + value */}
             <div style={{ flexShrink: 0, textAlign: "right" }}>
               <div
                 style={{
@@ -251,14 +228,7 @@ export default function PermitPulseCard() {
                 {permit.categoryLabel}
               </div>
               {permit.valuation > 0 && (
-                <div
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: 11,
-                    color: "#374151",
-                    fontWeight: 500,
-                  }}
-                >
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: "#374151", fontWeight: 500 }}>
                   {formatMoney(permit.valuation)}
                 </div>
               )}
@@ -267,7 +237,6 @@ export default function PermitPulseCard() {
         ))}
       </div>
 
-      {/* Footer */}
       <div
         style={{
           marginTop: 10,
@@ -281,8 +250,7 @@ export default function PermitPulseCard() {
           alignItems: "center",
         }}
       >
-        <span>San Jose only · More cities coming</span>
-        <span>Source: data.sanjoseca.gov</span>
+        <span>Source: {source}</span>
       </div>
     </section>
   );

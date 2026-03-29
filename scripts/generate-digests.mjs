@@ -57,16 +57,26 @@ const CITIES = [
 
 // ── Fetch Stoa data ──
 
-async function fetchStoaMeetings() {
-  console.log("Fetching from stoa.works/api/council-meetings...");
-  const res = await fetch("https://stoa.works/api/council-meetings", {
+async function fetchStoaMeetingsForCity(stoaCity) {
+  const url = `https://stoa.works/api/council-meetings?city=${encodeURIComponent(stoaCity)}&type=City+Council&limit=10`;
+  const res = await fetch(url, {
     headers: { "User-Agent": "SouthBaySignal/1.0 (stanwood.dev; internal data sharing)" },
     signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok) throw new Error(`Stoa API error: ${res.status}`);
   const data = await res.json();
-  console.log(`  Got ${data.count} records\n`);
-  return data.records; // MeetingRecord[]
+  return data.records ?? [];
+}
+
+async function fetchStoaMeetings() {
+  console.log("Fetching from stoa.works/api/council-meetings (per-city)...");
+  const allRecords = [];
+  for (const config of CITIES) {
+    const records = await fetchStoaMeetingsForCity(config.stoaCity);
+    allRecords.push(...records);
+  }
+  console.log(`  Got ${allRecords.length} records total\n`);
+  return allRecords;
 }
 
 // ── Claude summarization ──

@@ -19,6 +19,7 @@ import upcomingJson from "../../../data/south-bay/upcoming-events.json";
 import digestsJson from "../../../data/south-bay/digests.json";
 import aroundTownJson from "../../../data/south-bay/around-town.json";
 import weekendPicksJson from "../../../data/south-bay/weekend-picks.json";
+import springBreakJson from "../../../data/south-bay/spring-break-picks.json";
 import healthScoresJson from "../../../data/south-bay/health-scores.json";
 import schoolCalJson from "../../../data/south-bay/school-calendar.json";
 import cityBriefingsJson from "../../../data/south-bay/city-briefings.json";
@@ -1050,6 +1051,128 @@ function WeekendPicksCard() {
   );
 }
 
+// ── Spring Break Guide ────────────────────────────────────────────────────────
+
+interface SpringBreakPick {
+  id: string;
+  title: string;
+  date: string;
+  displayDate: string;
+  time: string | null;
+  ongoing: boolean;
+  city: string;
+  venue: string;
+  cost: string;
+  url?: string | null;
+  category: string;
+  why: string;
+}
+
+function SpringBreakCard() {
+  const data = springBreakJson as {
+    label?: string;
+    subtitle?: string;
+    breakStart?: string;
+    breakEnd?: string;
+    picks?: SpringBreakPick[];
+  };
+  const picks = data.picks ?? [];
+  if (!picks.length) return null;
+
+  // Show from one week before break through end of break
+  const today = new Date().toISOString().split("T")[0];
+  const showAfter = "2026-03-28"; // one week before Easter weekend
+  const showUntil = data.breakEnd ?? "2026-04-17";
+  if (today < showAfter || today > showUntil) return null;
+
+  return (
+    <div style={{ marginBottom: 32 }}>
+      <div className="sb-section-header" style={{ marginBottom: 12 }}>
+        <span className="sb-section-title" style={{ fontSize: 15 }}>
+          🌸 Spring Break Guide
+        </span>
+        {data.subtitle && (
+          <span style={{ fontSize: 11, color: "var(--sb-muted)", fontWeight: 500 }}>
+            {data.subtitle}
+          </span>
+        )}
+        <div className="sb-section-line" />
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {picks.map((pick) => {
+          const emoji = CATEGORY_EMOJI[pick.category] ?? "📅";
+          const cityName = pick.city
+            .split("-")
+            .map((w: string) => w[0].toUpperCase() + w.slice(1))
+            .join(" ");
+
+          return (
+            <div
+              key={pick.id}
+              style={{
+                border: "1.5px solid var(--sb-border-light)",
+                borderRadius: 8,
+                padding: "12px 14px",
+                background: "#fff",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                <span style={{ fontSize: 20, flexShrink: 0, marginTop: 1 }}>{emoji}</span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 3 }}>
+                    {pick.url ? (
+                      <a
+                        href={pick.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          fontSize: 14, fontWeight: 700, color: "var(--sb-ink)",
+                          textDecoration: "none",
+                        }}
+                      >
+                        {pick.title}
+                      </a>
+                    ) : (
+                      <span style={{ fontSize: 14, fontWeight: 700, color: "var(--sb-ink)" }}>
+                        {pick.title}
+                      </span>
+                    )}
+                    <span style={{
+                      fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 3,
+                      background: pick.cost === "free" ? "#DCFCE7" : "#F3F4F6",
+                      color: pick.cost === "free" ? "#15803D" : "var(--sb-muted)",
+                      flexShrink: 0,
+                    }}>
+                      {pick.cost === "free" ? "FREE" : "PAID"}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 12, color: "var(--sb-muted)", marginBottom: 5, lineHeight: 1.45 }}>
+                    {pick.why}
+                  </div>
+                  <div style={{
+                    fontSize: 11, color: "var(--sb-light)",
+                    fontFamily: "'Space Mono', monospace",
+                    display: "flex", gap: 8, flexWrap: "wrap",
+                  }}>
+                    {pick.ongoing ? (
+                      <span>Ongoing exhibit</span>
+                    ) : (
+                      <span>{pick.displayDate}{pick.time ? ` · ${pick.time}` : ""}</span>
+                    )}
+                    <span>·</span>
+                    <span>{pick.venue || cityName}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ── 5-day forecast strip ──────────────────────────────────────────────────────
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -1698,7 +1821,7 @@ function SchoolCalendarCard() {
         </span>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 0, maxHeight: 220, overflowY: "auto", overflowX: "hidden" }}>
         {grouped.map((entry, i) => {
           const dateStr = formatDateRange(entry.startDate, entry.endDate);
           const icon = TYPE_ICON[entry.type] ?? "📅";
@@ -2005,9 +2128,6 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
       {/* ── NWS weather alerts (live, shows only when active) ── */}
       {!changingCity && <WeatherAlertBanner />}
 
-      {/* ── Transit status bar ── */}
-      {!changingCity && <TransitStatusBar onNavigate={onNavigate} />}
-
       {/* ── Today in [City] / This Weekend in [City] ── */}
       {!changingCity && (homeCity || !homeCity) && (
         <div style={{ marginBottom: 32 }}>
@@ -2179,19 +2299,11 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
         <SportsCallout events={todaySportsEvents} />
       )}
 
-      {/* ── Signal Briefing (newspaper front page hero) ── */}
-      {!changingCity && (
-        <SignalBriefing
-          homeCity={homeCity}
-          todayUpcoming={todayUpcoming.filter((e) => e.category !== "sports")}
-          todayStatic={SOUTH_BAY_EVENTS.filter((e) => isActiveToday(e) && e.category !== "sports")}
-          onNavigate={onNavigate}
-        />
-      )}
-
-
       {/* ── Our Picks (weekends only) ── */}
       {IS_WEEKEND_MODE && !changingCity && <WeekendPicksCard />}
+
+      {/* ── Spring Break Guide (shown Mar 28 – Apr 17) ── */}
+      {!changingCity && <SpringBreakCard />}
 
       {/* ── On Stage this week (Ticketmaster) ── */}
       {!changingCity && <OnStageSection allUpcoming={allUpcoming} onNavigate={onNavigate} />}
@@ -2209,16 +2321,7 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
       {!changingCity && <RealEstateCard homeCity={homeCity} />}
 
       {/* ── Permit Pulse ── */}
-      {!changingCity && <PermitPulseCard />}
-
-      {/* ── Air Quality ── */}
-      {!changingCity && <AirQualityCard homeCity={homeCity} />}
-
-      {/* ── Quake Watch ── */}
-      {!changingCity && <QuakeWatchCard />}
-
-      {/* ── Stream Watch ── */}
-      {!changingCity && <WaterWatchCard />}
+      {!changingCity && <PermitPulseCard homeCity={homeCity} />}
 
       {/* ── Sports scoreboard ── */}
       <SportsView />

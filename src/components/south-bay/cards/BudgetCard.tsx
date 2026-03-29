@@ -90,11 +90,12 @@ export default function BudgetCard({ cityId }: Props) {
           style={{
             fontSize: 11,
             fontWeight: 600,
-            color: "var(--sb-accent)",
-            background: "#FEF2F2",
+            color: "var(--sb-muted)",
+            background: "var(--sb-border-light)",
             padding: "2px 7px",
             borderRadius: 3,
             letterSpacing: "0.02em",
+            fontFamily: "'Space Mono', monospace",
             flexShrink: 0,
           }}
         >
@@ -189,8 +190,9 @@ export default function BudgetCard({ cityId }: Props) {
                       style={{
                         height: "100%",
                         width: `${pct}%`,
-                        background: "var(--sb-accent)",
+                        background: "var(--sb-ink)",
                         borderRadius: 2,
+                        opacity: 0.7,
                       }}
                     />
                   </div>
@@ -240,7 +242,7 @@ function StatChip({ label, value }: { label: string; value: string }) {
         display: "flex",
         flexDirection: "column",
         gap: 1,
-        background: "var(--sb-light, #f8f8f5)",
+        background: "var(--sb-border-light)",
         border: "1px solid var(--sb-border)",
         borderRadius: 4,
         padding: "5px 9px",

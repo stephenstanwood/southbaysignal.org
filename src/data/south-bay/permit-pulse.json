@@ -1,136 +1,140 @@
 {
-  "generatedAt": "2026-03-29T03:19:48.695Z",
-  "city": "San Jose",
-  "source": "data.sanjoseca.gov",
-  "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
-  "windowDays": 7,
-  "dateRange": "Mar 21 – Mar 28",
-  "stats": {
-    "total": 239,
-    "notable": 20,
-    "newUnits": 5,
-    "totalValuation": 78955246
-  },
-  "permits": [
-    {
-      "id": "2025-131976-RS",
-      "address": "1143 Pembridge Dr #2",
-      "category": "residential-new",
-      "categoryLabel": "New Home",
-      "workType": "New Construction",
-      "description": "Detached adu",
-      "valuation": 202908,
-      "units": 1,
-      "issueDate": "2026-03-24",
-      "subtype": "2nd Unit Added"
-    },
-    {
-      "id": "2025-104958-RS",
-      "address": "3171 Mabury Rd #2",
-      "category": "residential-new",
-      "categoryLabel": "New Home",
-      "workType": "New Construction",
-      "description": "New Detached adu",
-      "valuation": 143727,
-      "units": 1,
-      "issueDate": "2026-03-24",
-      "subtype": "2nd Unit Added"
-    },
-    {
-      "id": "2025-114928-RS",
-      "address": "692 Santee River Ct #2",
-      "category": "residential-new",
-      "categoryLabel": "New Home",
-      "workType": "New Construction",
-      "description": "New Detached adu (Not Part of Code Case)",
-      "valuation": 126648,
-      "units": 1,
-      "issueDate": "2026-03-24",
-      "subtype": "2nd Unit Added"
-    },
-    {
-      "id": "2025-102660-RS",
-      "address": "7203 Shea Ct #2",
-      "category": "residential-new",
-      "categoryLabel": "New Home",
-      "workType": "New Construction",
-      "description": "New Detached Manufactured adu",
-      "valuation": 125634,
-      "units": 1,
-      "issueDate": "2026-03-24",
-      "subtype": "2nd Unit Added"
-    },
-    {
-      "id": "2025-116374-RS",
-      "address": "2760 Longford Dr #2",
-      "category": "residential-new",
-      "categoryLabel": "New Home",
-      "workType": "New Construction",
-      "description": "New Detached adu 450 Sq Ft",
-      "valuation": 76091,
-      "units": 1,
-      "issueDate": "2026-03-23",
-      "subtype": "2nd Unit Added"
-    },
-    {
-      "id": "2026-108610-CI",
-      "address": "2333 Samaritan Dr",
-      "category": "new-construction",
-      "categoryLabel": "New Construction",
-      "workType": "New Construction",
-      "description": "Good Samaritan (Bemp 20%) Foundation Only Parking Garage",
-      "valuation": 170000,
-      "units": 0,
-      "issueDate": "2026-03-23",
-      "subtype": "Open Public Parking Garage"
-    },
-    {
-      "id": "2026-108908-CI",
-      "address": "688 E Brokaw Rd",
-      "category": "commercial-large",
-      "categoryLabel": "Commercial Project",
-      "workType": "New Construction",
-      "description": "Balance to Complete Supermicro New Warm Shell Bldg",
-      "valuation": 72000000,
-      "units": 0,
-      "issueDate": "2026-03-23",
-      "subtype": "Manufacturing"
-    },
-    {
-      "id": "2026-109466-CI",
-      "address": "2161 Monterey Rd",
-      "category": "commercial-large",
-      "categoryLabel": "Commercial Project",
-      "workType": "ReRoof",
-      "description": "Retail",
-      "valuation": 1913940,
-      "units": 0,
-      "issueDate": "2026-03-24",
-      "subtype": "Retail"
-    },
-    {
-      "id": "2026-108638-CI",
-      "address": "2590 N 1st St",
-      "category": "commercial-large",
-      "categoryLabel": "Commercial Project",
-      "workType": "Tenant Improvement",
-      "description": "Ste 200, 210, 220 & 230 - Market Ready Office ti",
-      "valuation": 1089288,
-      "units": 0,
-      "issueDate": "2026-03-24",
-      "subtype": "Office"
-    },
-    {
-      "id": "2026-106391-CI",
-      "address": "5353 Almaden Ex J",
-      "category": "commercial-large",
-      "categoryLabel": "Commercial Project",
-      "workType": "Tenant Improvement",
-      "description": "Trader Joe'S ti",
-      "valuation": 500000,
-      "units": 0,
-      "issueDate": "2026-03-23",
-      "subtype": "Retail"
+  "cities": {
+    "san-jose": {
+      "generatedAt": "2026-03-29T03:19:48.695Z",
+      "city": "San Jose",
+      "source": "data.sanjoseca.gov",
+      "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
+      "windowDays": 7,
+      "dateRange": "Mar 21 \u2013 Mar 28",
+      "stats": {
+        "total": 239,
+        "notable": 20,
+        "newUnits": 5,
+        "totalValuation": 78955246
+      },
+      "permits": [
+        {
+          "id": "2025-131976-RS",
+          "address": "1143 Pembridge Dr #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Detached adu",
+          "valuation": 202908,
+          "units": 1,
+          "issueDate": "2026-03-24",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-104958-RS",
+          "address": "3171 Mabury Rd #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached adu",
+          "valuation": 143727,
+          "units": 1,
+          "issueDate": "2026-03-24",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-114928-RS",
+          "address": "692 Santee River Ct #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached adu (Not Part of Code Case)",
+          "valuation": 126648,
+          "units": 1,
+          "issueDate": "2026-03-24",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-102660-RS",
+          "address": "7203 Shea Ct #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached Manufactured adu",
+          "valuation": 125634,
+          "units": 1,
+          "issueDate": "2026-03-24",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-116374-RS",
+          "address": "2760 Longford Dr #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached adu 450 Sq Ft",
+          "valuation": 76091,
+          "units": 1,
+          "issueDate": "2026-03-23",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2026-108610-CI",
+          "address": "2333 Samaritan Dr",
+          "category": "new-construction",
+          "categoryLabel": "New Construction",
+          "workType": "New Construction",
+          "description": "Good Samaritan (Bemp 20%) Foundation Only Parking Garage",
+          "valuation": 170000,
+          "units": 0,
+          "issueDate": "2026-03-23",
+          "subtype": "Open Public Parking Garage"
+        },
+        {
+          "id": "2026-108908-CI",
+          "address": "688 E Brokaw Rd",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "New Construction",
+          "description": "Balance to Complete Supermicro New Warm Shell Bldg",
+          "valuation": 72000000,
+          "units": 0,
+          "issueDate": "2026-03-23",
+          "subtype": "Manufacturing"
+        },
+        {
+          "id": "2026-109466-CI",
+          "address": "2161 Monterey Rd",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "ReRoof",
+          "description": "Retail",
+          "valuation": 1913940,
+          "units": 0,
+          "issueDate": "2026-03-24",
+          "subtype": "Retail"
+        },
+        {
+          "id": "2026-108638-CI",
+          "address": "2590 N 1st St",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Ste 200, 210, 220 & 230 - Market Ready Office ti",
+          "valuation": 1089288,
+          "units": 0,
+          "issueDate": "2026-03-24",
+          "subtype": "Office"
+        },
+        {
+          "id": "2026-106391-CI",
+          "address": "5353 Almaden Ex J",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Trader Joe'S ti",
+          "valuation": 500000,
+          "units": 0,
+          "issueDate": "2026-03-23",
+          "subtype": "Retail"
+        }
+      ]
     }
-  ]
+  }
 }

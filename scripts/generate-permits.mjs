@@ -4,7 +4,7 @@
  * Outputs permit-pulse.json for the PermitPulseCard component.
  */
 
-import { writeFileSync } from "fs";
+import { writeFileSync, readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
@@ -225,7 +225,7 @@ async function main() {
 
   const top = notable.slice(0, 10);
 
-  const output = {
+  const cityEntry = {
     generatedAt: now.toISOString(),
     city: "San Jose",
     source: "data.sanjoseca.gov",
@@ -240,6 +240,13 @@ async function main() {
     },
     permits: top,
   };
+
+  // Load existing data to preserve other cities, then upsert san-jose
+  let existing = { cities: {} };
+  try {
+    existing = JSON.parse(readFileSync(OUTPUT_PATH, "utf-8"));
+  } catch {}
+  const output = { cities: { ...existing.cities, "san-jose": cityEntry } };
 
   writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
   console.log(
