@@ -11,6 +11,7 @@ import {
   type DayOfWeek,
 } from "../../../data/south-bay/events-data";
 import { DEV_PROJECTS, STATUS_CONFIG } from "../../../data/south-bay/development-data";
+import { TRANSIT_AGENCIES, STATUS_CONFIG as TRANSIT_STATUS_CONFIG } from "../../../data/south-bay/transit-data";
 import { CITIES, getCityName } from "../../../lib/south-bay/cities";
 import type { City, Tab } from "../../../lib/south-bay/types";
 import upcomingJson from "../../../data/south-bay/upcoming-events.json";
@@ -1052,6 +1053,143 @@ function WeekendPicksCard() {
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+// ── Transit Status Bar ────────────────────────────────────────────────────────
+// Shows on Overview when any South Bay agency has non-normal status or active alerts.
+// Always shows Caltrain + VTA (the primary South Bay commuter services).
+
+function TransitStatusBar({ onNavigate }: { onNavigate: (tab: Tab) => void }) {
+  // Focus on the two primary South Bay commuter agencies
+  const SHOWN_IDS = ["caltrain", "vta"];
+  const agencies = TRANSIT_AGENCIES.filter((a) => SHOWN_IDS.includes(a.id));
+
+  // Parse date like "March 31, 2026" or "April 15, 2026"
+  function parseAlertDate(s: string | undefined): Date | null {
+    if (!s) return null;
+    const d = new Date(s);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  // Active alerts: those without an endDate or whose endDate hasn't passed yet
+  // Exclude permanent informational ones (no endDate + not about a disruption)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  function activeAlerts(agency: typeof TRANSIT_AGENCIES[0]) {
+    return agency.alerts.filter((a) => {
+      const end = parseAlertDate(a.endDate);
+      // If there's an endDate, keep if it's today or future
+      if (end) return end >= today;
+      // No endDate — only show if the agency has a non-normal status (operational alert)
+      return agency.status !== "normal";
+    });
+  }
+
+  const hasAnyAlerts = agencies.some(
+    (a) => a.status !== "normal" || activeAlerts(a).length > 0
+  );
+
+  // Always render the bar — it gives residents a quick daily check
+  // But keep it very compact
+
+  return (
+    <div style={{
+      marginBottom: 16,
+      border: "1px solid var(--sb-border-light)",
+      borderRadius: 8,
+      overflow: "hidden",
+      background: "#FAFAFA",
+    }}>
+      {/* Header */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "7px 12px",
+        borderBottom: "1px solid var(--sb-border-light)",
+        background: hasAnyAlerts ? "#FFFBEB" : "#F9FAFB",
+      }}>
+        <span style={{ fontSize: 13 }}>🚉</span>
+        <span style={{
+          fontSize: 11, fontWeight: 700, letterSpacing: "0.06em",
+          textTransform: "uppercase", fontFamily: "'Space Mono', monospace",
+          color: hasAnyAlerts ? "#92400E" : "var(--sb-muted)",
+        }}>
+          Transit Status
+        </span>
+        <button
+          onClick={() => onNavigate("transit")}
+          style={{
+            marginLeft: "auto", background: "none", border: "none",
+            fontSize: 11, color: "var(--sb-primary)", cursor: "pointer",
+            padding: 0, fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 2,
+          }}
+        >
+          Full info →
+        </button>
+      </div>
+
+      {/* Agency rows */}
+      <div style={{ padding: "6px 0" }}>
+        {agencies.map((agency, i) => {
+          const cfg = TRANSIT_STATUS_CONFIG[agency.status];
+          const alerts = activeAlerts(agency);
+          return (
+            <div
+              key={agency.id}
+              style={{
+                padding: "5px 12px",
+                borderBottom: i < agencies.length - 1 ? "1px solid var(--sb-border-light)" : "none",
+              }}
+            >
+              {/* Agency name + status badge */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                <span style={{ fontSize: 13 }}>{agency.emoji}</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: "var(--sb-ink)" }}>
+                  {agency.shortName}
+                </span>
+                <span style={{
+                  display: "inline-flex", alignItems: "center", gap: 4,
+                  fontSize: 10, fontWeight: 600, padding: "1px 7px",
+                  borderRadius: 100, color: cfg.color, background: cfg.bg,
+                }}>
+                  <span style={{
+                    width: 6, height: 6, borderRadius: "50%",
+                    background: cfg.dot, flexShrink: 0, display: "inline-block",
+                  }} />
+                  {cfg.label}
+                </span>
+                {agency.status !== "normal" && (
+                  <span style={{ fontSize: 11, color: "#92400E" }}>{agency.statusNote}</span>
+                )}
+              </div>
+
+              {/* Active alerts for this agency */}
+              {alerts.map((alert) => (
+                <div key={alert.id} style={{
+                  marginTop: 3,
+                  paddingLeft: 22,
+                  fontSize: 11,
+                  color: "var(--sb-muted)",
+                  lineHeight: 1.4,
+                }}>
+                  <span style={{ color: alert.endDate ? "#92400E" : "var(--sb-muted)" }}>
+                    {alert.summary}
+                  </span>
+                  {alert.endDate && (
+                    <span style={{ color: "var(--sb-muted)", marginLeft: 4 }}>
+                      · thru {alert.endDate}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function ForecastStrip({ forecast }: { forecast: ForecastDay[] }) {
   // Use Pacific time (not UTC) so "Today" label stays correct on Saturday evenings
   const todayISO = new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
@@ -1756,6 +1894,9 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
       {forecast && forecast.length > 0 && !changingCity && (
         <ForecastStrip forecast={forecast} />
       )}
+
+      {/* ── Transit status bar ── */}
+      {!changingCity && <TransitStatusBar onNavigate={onNavigate} />}
 
       {/* ── Today in [City] / This Weekend in [City] ── */}
       {!changingCity && (homeCity || !homeCity) && (
