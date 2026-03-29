@@ -462,6 +462,9 @@ function inferCategory(title, desc, type, venue = "") {
   // "fair" alone is too broad — only match community/arts fairs, not job/health/resource/housing fairs
   const isFairEvent = /\b(craft|art|artisan|maker|vendor|street|holiday|county|state|flea|antique|swap|harvest|spring|summer|fall|winter) fair\b/.test(t);
   if (t.includes("market") || isFairEvent || t.includes("vendor") || isCraftMarket) return "market";
+  // Workshops/classes/lectures in the TITLE are educational — check before outdoor to avoid false positives
+  const titleLower = title.toLowerCase();
+  if (/\b(workshop|webinar|seminar|lecture|class|tutorial|training|course)\b/.test(titleLower)) return "education";
   if (t.includes("hike") || t.includes("hiking") || t.includes("outdoor") || t.includes("garden") || t.includes("nature") || t.includes("trail") || t.includes("park")) return "outdoor";
   if (t.includes("book") || t.includes("reading") || t.includes("lecture") || t.includes("workshop") || t.includes("class") || t.includes("learn") || t.includes("seminar") || t.includes("talk") || t.includes("stem") || t.includes("science") || t.includes("coding") || t.includes("tech")) return "education";
   if (t.includes("food") || t.includes("cooking") || t.includes("taste") || t.includes("chef") || t.includes("wine") || t.includes("beer") || t.includes("culinary")) return "food";
@@ -1065,7 +1068,7 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
           venue: branchName || libraryName,
           address: branchAddr,
           city,
-          category: inferCategory(title, desc, ev.type || ""),
+          category: inferCategory(title, stripHtml(desc), ev.type || ""),
           cost: "free",
           description: truncate(stripHtml(desc)),
           url: ev.registrationUrl || `https://${libraryId}.bibliocommons.com/events/${ev.id}`,
@@ -1161,7 +1164,7 @@ async function fetchScclEvents() {
           venue: libraryName,
           address: "",
           city,
-          category: inferCategory(title, desc, ev.type || ""),
+          category: inferCategory(title, stripHtml(desc), ev.type || ""),
           cost: "free",
           description: truncate(stripHtml(desc)),
           url: ev.registrationUrl || `https://${libraryId}.bibliocommons.com/events/${ev.id}`,
