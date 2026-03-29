@@ -41,7 +41,7 @@ const title = "The South Bay Signal";
         background: var(--sb-bg);
         color: var(--sb-ink);
         margin: 0;
-        overflow-x: hidden;
+        overflow-x: clip;
         -webkit-font-smoothing: antialiased;
       }
 
@@ -85,17 +85,12 @@ const title = "The South Bay Signal";
         text-transform: uppercase;
         margin-top: 4px;
       }
-      .sb-masthead-rule {
-        display: block;
-        max-width: var(--sb-max-width);
-        margin: 16px auto 0;
-        border: none;
-        border-top: 3px double var(--sb-rule);
-      }
+      .sb-masthead-rule { display: none; }
 
       /* ── Nav tabs ── */
       .sb-nav {
         background: var(--sb-bg);
+        border-top: 1px solid var(--sb-border);
         border-bottom: 1px solid var(--sb-border);
         padding: 0 24px;
         position: sticky;
