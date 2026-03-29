@@ -144,12 +144,114 @@ function SpotlightCard({ company }: { company: SccTechSpotlight }) {
   );
 }
 
+// ── Hiring Pulse row ────────────────────────────────────────────────────────
+
+function HiringRow({ company }: { company: TechCompany }) {
+  const isUp = company.trend === "up";
+  const isDown = company.trend === "down";
+  const statusColor = isUp ? "#16a34a" : isDown ? "#dc2626" : "#6b7280";
+  const statusBg = isUp ? "#f0fdf4" : isDown ? "#fef2f2" : "#f9fafb";
+  const statusLabel = isUp ? "▲ Hiring" : isDown ? "▼ Reduced" : "→ Selective";
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        padding: "9px 0",
+        borderBottom: "1px solid var(--sb-border-light)",
+      }}
+    >
+      <div
+        style={{
+          width: 8,
+          height: 8,
+          borderRadius: "50%",
+          background: statusColor,
+          flexShrink: 0,
+        }}
+      />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap" }}>
+          {company.careersUrl ? (
+            <a
+              href={company.careersUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontWeight: 600,
+                fontSize: 13,
+                color: "var(--sb-ink)",
+                textDecoration: "none",
+                fontFamily: "var(--sb-sans)",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+              onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+            >
+              {company.name} ↗
+            </a>
+          ) : (
+            <span style={{ fontWeight: 600, fontSize: 13, fontFamily: "var(--sb-sans)" }}>
+              {company.name}
+            </span>
+          )}
+          <span style={{ fontSize: 11, color: "var(--sb-muted)" }}>{company.city}</span>
+        </div>
+        <div style={{ fontSize: 11, color: "var(--sb-muted)", marginTop: 1, lineHeight: 1.4 }}>
+          {company.trendNote}
+        </div>
+      </div>
+      <span
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          fontFamily: "'Space Mono', monospace",
+          color: statusColor,
+          background: statusBg,
+          border: `1px solid ${statusColor}30`,
+          borderRadius: 4,
+          padding: "3px 7px",
+          whiteSpace: "nowrap",
+          flexShrink: 0,
+        }}
+      >
+        {statusLabel}
+      </span>
+    </div>
+  );
+}
+
 // ── Main view ──────────────────────────────────────────────────────────────
 
 export default function TechnologyView() {
   const sortedCompanies = [...TECH_COMPANIES].sort(
     (a, b) => b.sccEmployeesK - a.sccEmployeesK
   );
+
+  const hiringGroups = [
+    {
+      label: "Actively Hiring",
+      note: "Growing headcount — AI, security, and SaaS leading the wave",
+      companies: TECH_COMPANIES.filter((c) => c.trend === "up").sort(
+        (a, b) => b.sccEmployeesK - a.sccEmployeesK
+      ),
+    },
+    {
+      label: "Selective Hiring",
+      note: "Stable or post-restructuring — open roles but no broad expansion",
+      companies: TECH_COMPANIES.filter((c) => c.trend === "flat").sort(
+        (a, b) => b.sccEmployeesK - a.sccEmployeesK
+      ),
+    },
+    {
+      label: "Reduced Hiring",
+      note: "Post-layoff recovery — limited openings, cautious on headcount",
+      companies: TECH_COMPANIES.filter((c) => c.trend === "down").sort(
+        (a, b) => b.sccEmployeesK - a.sccEmployeesK
+      ),
+    },
+  ];
 
   return (
     <div className="tech-view">
@@ -175,6 +277,62 @@ export default function TechnologyView() {
             <div className="tech-pulse-note">{stat.note}</div>
           </div>
         ))}
+      </div>
+
+      {/* ── Hiring Pulse ── */}
+      <div className="tech-section">
+        <div className="tech-section-head">
+          <h3 className="tech-section-title">Hiring Pulse</h3>
+          <span className="tech-section-note">Q1 2026 · South Bay tech hiring at a glance</span>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 24 }}>
+          {hiringGroups.map((group) => (
+            <div key={group.label}>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  fontFamily: "'Space Mono', monospace",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: group.label === "Actively Hiring" ? "#16a34a" : group.label === "Reduced Hiring" ? "#dc2626" : "#6b7280",
+                  marginBottom: 6,
+                  paddingBottom: 6,
+                  borderBottom: "2px solid var(--sb-border-light)",
+                }}
+              >
+                {group.label}
+              </div>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "var(--sb-muted)",
+                  marginBottom: 8,
+                  lineHeight: 1.4,
+                  fontStyle: "italic",
+                }}
+              >
+                {group.note}
+              </div>
+              {group.companies.map((company) => (
+                <HiringRow key={company.id} company={company} />
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div
+          style={{
+            marginTop: 12,
+            fontSize: 11,
+            color: "var(--sb-muted)",
+            fontStyle: "italic",
+          }}
+        >
+          Based on public filings, layoff announcements, and job board activity as of Q1 2026. Not investment advice.
+          Career links go to each company's official jobs page.
+        </div>
       </div>
 
       {/* ── Top Employers Chart ── */}

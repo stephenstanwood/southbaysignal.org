@@ -44,6 +44,7 @@ export interface TechCompany {
   highlights: string[];
   description: string;
   color: string; // brand-adjacent color for charts
+  careersUrl?: string;
 }
 
 export const TECH_COMPANIES: TechCompany[] = [
@@ -64,6 +65,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Search, cloud, AI, and advertising. The largest campus presence in the South Bay.",
     color: "#4285F4",
+    careersUrl: "https://careers.google.com",
   },
   {
     id: "apple",
@@ -82,6 +84,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Consumer hardware, software, and services. One Apple Park Way, Cupertino.",
     color: "#555555",
+    careersUrl: "https://jobs.apple.com",
   },
   {
     id: "intel",
@@ -100,6 +103,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "CPU pioneer navigating a major strategic pivot. Once the defining company of Silicon Valley.",
     color: "#0071C5",
+    careersUrl: "https://jobs.intel.com",
   },
   {
     id: "cisco",
@@ -118,6 +122,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Enterprise networking, security, and observability. The largest employer in downtown San Jose.",
     color: "#1BA0D7",
+    careersUrl: "https://jobs.cisco.com",
   },
   {
     id: "meta",
@@ -136,6 +141,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Social media, VR/AR, and open-source AI. Menlo Park HQ just over the county line.",
     color: "#0081FB",
+    careersUrl: "https://www.metacareers.com",
   },
   {
     id: "nvidia",
@@ -154,6 +160,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "GPUs and AI accelerators. The defining company of the current AI era. Santa Clara's crown jewel.",
     color: "#76B900",
+    careersUrl: "https://www.nvidia.com/en-us/about-nvidia/careers/",
   },
   {
     id: "adobe",
@@ -172,6 +179,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Creative software for design, video, and documents. Firefly AI reshaping how creators work.",
     color: "#FF0000",
+    careersUrl: "https://careers.adobe.com",
   },
   {
     id: "paypal",
@@ -190,6 +198,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Digital payments and Venmo. Rebuilding focus and momentum after years of stock decline.",
     color: "#003087",
+    careersUrl: "https://careers.pypl.com",
   },
   {
     id: "amd",
@@ -208,6 +217,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "CPUs and GPUs for PCs, servers, and AI. The other chip giant headquartered in Santa Clara.",
     color: "#ED1C24",
+    careersUrl: "https://careers.amd.com",
   },
   {
     id: "servicenow",
@@ -226,6 +236,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Enterprise workflow automation. The quiet giant of South Bay SaaS.",
     color: "#62D84E",
+    careersUrl: "https://careers.servicenow.com",
   },
   {
     id: "linkedin",
@@ -244,6 +255,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Professional network and recruiting platform. Microsoft-owned, headquartered in Sunnyvale.",
     color: "#0A66C2",
+    careersUrl: "https://careers.linkedin.com",
   },
   {
     id: "juniper",
@@ -262,6 +274,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Enterprise networking. Now part of HP Enterprise after a $14B acquisition.",
     color: "#84BD00",
+    careersUrl: "https://careers.hpe.com",
   },
   {
     id: "western-digital",
@@ -280,6 +293,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Data storage hardware. Split off Sandisk to focus on the hard drive business.",
     color: "#CC1414",
+    careersUrl: "https://careers.westerndigital.com",
   },
   {
     id: "ebay",
@@ -298,6 +312,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Online marketplace pioneer. Refocused on enthusiast categories — sneakers, collectibles, luxury.",
     color: "#E53238",
+    careersUrl: "https://jobs.ebayinc.com",
   },
   {
     id: "palo-alto",
@@ -316,6 +331,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Cybersecurity platform. One of the fastest-growing security companies in the world.",
     color: "#FA582D",
+    careersUrl: "https://jobs.paloaltonetworks.com",
   },
   {
     id: "zoom",
@@ -334,6 +350,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "Video meetings and workplace collaboration. A COVID-era breakout finding its steady state.",
     color: "#2D8CFF",
+    careersUrl: "https://careers.zoom.us",
   },
 ];
 
