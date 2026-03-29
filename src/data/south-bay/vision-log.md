@@ -1814,3 +1814,59 @@ The 5 picks span: free crafts (egg decorating), educational play (LEGO Club), na
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — seasonal intelligence added.** SBS now surfaces timely, curated activity guidance around the local school calendar. The WeekendPicksCard handles any weekend; the SpringBreakCard handles the spring break window specifically. This seasonal awareness (knowing when kids are out of school and curating accordingly) is something no other South Bay source does automatically.
+
+---
+
+## 2026-03-29 — Cycle 32: Development Tracker Audit + 3 New Projects
+
+### Context
+Coming off Cycle 31 which delivered the Spring Break Guide. The Development tab has been flagged for an audit in the "Next 3 Strongest Ideas" section of the last 8+ cycles without ever being addressed. The project list was set in Cycles 6 and later — some statuses are stale and three significant projects weren't included.
+
+### What Was Built
+
+**1. Three new projects added to `development-data.ts`:**
+
+- **Super Micro Computer Manufacturing Expansion (San Jose, under-construction)** — $72M warm-shell building permit issued March 2026 at 688 E Brokaw Rd. Verified from SJ open data permit feed. SMCI is expanding AI server manufacturing capacity in North San José as GPU server demand continues to climb.
+
+- **East Middlefield Road Mixed-Use Development (Mountain View, approved)** — Mountain View City Council approved this mixed-use housing project at its March 24, 2026 meeting. Sourced from around-town.json (Stoa council data). Keeps the tracker current with decisions happening right now.
+
+- **Santa Clara Station Area Land Use Plan (Santa Clara, proposed)** — Santa Clara is developing zoning and design rules for areas around its transit stations. City Council reviewed the plan at a March 2026 study session. Sourced from around-town.json.
+
+**2. Status and description updates:**
+
+- **Milpitas BART TOD**: changed from "opening-soon" to "under-construction". The "opening-soon" status was set in early cycles when the first phases were imminent. Early phases have now delivered units; remaining phases are under active construction. Description updated to reflect the phased reality.
+
+- **BART Phase II**: description updated to note tunneling is underway as of 2026, and timeline sharpened to "Expected 2030–2032" (more accurate than the prior "mid-2030s" — VTA's published schedule is 2030).
+
+- **Google Downtown West**: description updated to acknowledge Google's office footprint reduction while noting housing commitments remain. The original description was written before Google's 2023-2024 scaling back became public knowledge.
+
+- **Mineta Airport Terminal B**: description refreshed to read as an ongoing active project rather than a planned one.
+
+**3. Data refresh:**
+- upcoming-events.json: 454 events, 99 ongoing, 16 sources (fresh)
+- around-town.json: 5 items (Mountain View housing, Sunnyvale safe parking, Santa Clara HUD grants, Santa Clara station area)
+- weekend-picks.json: 3 picks (Los Gatos 5K, Silicon Valley Reads author talk, Nate Jackson comedy)
+- digests.json: 8 cities regenerated
+- city-briefings.json: 11 cities — Los Altos and Milpitas now included (previously skipped due to insufficient data)
+
+### Why This Was the Strongest Move
+
+The Development Tracker had stale status on Milpitas BART TOD (still "opening-soon" when early phases opened months ago), outdated Google Downtown West framing, and was completely missing three significant 2026 developments: the SuperMicro $72M factory expansion, Mountain View's newly approved mixed-use project, and Santa Clara's station area planning. All three were verified from primary sources (SJ open data permits, Stoa council records).
+
+More importantly: adding the SuperMicro project connects the Development tab to the Tech tab in a tangible way. A resident browsing the Technology tab sees SuperMicro as one of San José's tech employers. A resident checking the Development tab now sees SuperMicro actively expanding manufacturing capacity. These are the same story — South Bay industrial tech growth — told from two angles.
+
+The city briefings expansion to all 11 cities is a meaningful UX improvement: Los Altos and Milpitas were previously skipped when they had no recent data. Now with more events in the feed (SCCL library programs now covering both cities), both have usable briefings.
+
+### Effect on Real Users
+- **Tech worker/investor**: Sees SuperMicro expansion alongside Intel reduction on the Tech tab — understands the nuanced local employment picture
+- **Mountain View homebuyer**: Development tab now shows East Middlefield approval — more housing supply signal
+- **Santa Clara resident**: Station area planning is on the tracker — they know their neighborhood is being replanned around transit
+- **Milpitas resident**: Finally gets a "Today in Milpitas" city briefing with relevant library events
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511 API key needed. Register at 511.org/open-data. Daily commuter urgency. This has been deferred every cycle for the same reason.
+2. **Palo Alto government coverage (PrimeGov)** — PrimeGov API endpoint structure changed; v1/v2 routes don't exist. Need to inspect the live portal's network traffic to find working API routes.
+3. **Caltrans D4 traffic incidents** — API returns 500. Worth retrying — I-280, US-101, SR-85, SR-87 incident alerts would add commuter urgency to the Transit tab.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — the Development Tracker is now current and expanding.** A resident who opens the Development tab today sees 23 projects including three that reflect decisions made in the past two weeks. The tracker is now a living document of what's being built and decided, not a frozen snapshot from March. The SuperMicro project in particular ties the Development and Technology tabs together: South Bay Signal now covers the full lifecycle from "company is growing" (Tech tab) to "company is building new facilities" (Development tab). That's the kind of connected local intelligence no other South Bay source provides.

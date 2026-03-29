@@ -91,10 +91,10 @@ export const DEV_PROJECTS: DevProject[] = [
     category: "transit",
     status: "under-construction",
     description:
-      "Extension of BART service from Berryessa Station through downtown San Jose — including a 4-mile underground tunnel — to a new terminus at Santa Clara Station near Levi's Stadium. When complete, it will connect South Bay residents directly to the broader Bay Area BART network.",
+      "Extension of BART service from Berryessa Station through downtown San Jose — including a 4-mile bored tunnel — to a new terminus at Santa Clara Station near Levi's Stadium. Tunneling is underway as of 2026. Two new underground stations will serve downtown San José and Santa Clara, connecting the South Bay to the Bay Area BART network.",
     scale: "6 miles, 2 new stations",
-    developer: "Santa Clara Valley Transportation Authority",
-    timeline: "Expected mid-2030s",
+    developer: "Santa Clara Valley Transportation Authority (VTA)",
+    timeline: "Expected 2030–2032",
     featured: true,
   },
 
@@ -106,10 +106,10 @@ export const DEV_PROJECTS: DevProject[] = [
     category: "mixed-use",
     status: "under-construction",
     description:
-      "Google's landmark mixed-use development adjacent to Diridon Station. Approved by San Jose City Council in 2021, the project encompasses office space, thousands of housing units, retail, parks, and community amenities across multiple city blocks near the transit hub.",
-    scale: "7.3M sq ft, 4,000+ housing units",
+      "Google's mixed-use development adjacent to Diridon Station, approved by San Jose City Council in 2021. The project spans office, housing, retail, parks, and community uses near the region's largest transit hub. Google has scaled back its office ambitions since the original approval but reaffirmed housing commitments; initial site work is underway.",
+    scale: "Up to 7.3M sq ft; 4,000+ housing units planned",
     developer: "Google / Lendlease",
-    timeline: "Multiple phases through 2030s",
+    timeline: "Phased — office timeline revised; housing phases ongoing",
     featured: true,
   },
 
@@ -119,12 +119,12 @@ export const DEV_PROJECTS: DevProject[] = [
     city: "Milpitas",
     cityId: "milpitas",
     category: "housing",
-    status: "opening-soon",
+    status: "under-construction",
     description:
-      "Transit-oriented development projects surrounding the Milpitas and Berryessa BART stations are actively under construction, bringing new mixed-income housing, retail, and community amenities to the area. Several apartment complexes have recently opened or are nearing completion.",
+      "Multiple transit-oriented housing projects surrounding the Milpitas and Berryessa BART stations are in various stages of construction and completion. Early phases have delivered new apartments and retail near the stations. Later phases continue to bring mixed-income units and community amenities to this corridor.",
     scale: "Multiple complexes, thousands of units",
     developer: "Various",
-    timeline: "Multiple projects opening 2025–2027",
+    timeline: "Phased delivery 2024–2028",
     featured: false,
   },
 
@@ -166,14 +166,59 @@ export const DEV_PROJECTS: DevProject[] = [
     category: "civic",
     status: "under-construction",
     description:
-      "Major renovation of Terminal B at Norman Y. Mineta San José International Airport, adding gates, improving passenger flow, and upgrading facilities. Part of a broader effort to modernize the airport and expand regional air service capacity.",
+      "Ongoing renovation of Terminal B at Norman Y. Mineta San José International Airport, with new gates, improved passenger flow, and upgraded concessions. The multi-year project is improving the airport experience as SJC continues to add routes and recover ridership after the pandemic. Construction is occurring in phases to keep the terminal operational.",
     scale: "Terminal renovation + gate expansion",
     developer: "City of San José",
-    timeline: "Phased completion through 2026–2027",
+    timeline: "Phased completion 2025–2027",
+    featured: false,
+  },
+
+  {
+    id: "supermicro-brokaw",
+    name: "Super Micro Computer Manufacturing Expansion",
+    city: "San Jose",
+    cityId: "san-jose",
+    category: "tech-campus",
+    status: "under-construction",
+    description:
+      "Super Micro Computer (NASDAQ: SMCI) is building a new manufacturing facility at 688 E Brokaw Road in North San José, permitted in March 2026. The $72M warm-shell build-out will expand SMCI's AI server production capacity as demand for its GPU server systems continues to climb. Supermicro has its global headquarters and major manufacturing operations across San José.",
+    scale: "$72M facility",
+    developer: "Super Micro Computer",
+    timeline: "Permitted March 2026",
     featured: false,
   },
 
   // ── APPROVED ────────────────────────────────────────────────────────────
+
+  {
+    id: "mv-east-middlefield-mixed-use",
+    name: "East Middlefield Road Mixed-Use Development",
+    city: "Mountain View",
+    cityId: "mountain-view",
+    category: "mixed-use",
+    status: "approved",
+    description:
+      "Mountain View City Council approved a mixed-use housing project at East Middlefield Road at its March 24, 2026 meeting. The project adds residential units to one of Mountain View's key transit corridors, consistent with the city's goals for housing near employment centers and transit.",
+    scale: "Residential + ground-floor uses",
+    developer: "TBD",
+    timeline: "Approved March 2026",
+    featured: false,
+  },
+
+  {
+    id: "santa-clara-station-area-plan",
+    name: "Santa Clara Station Area Land Use Plan",
+    city: "Santa Clara",
+    cityId: "santa-clara",
+    category: "mixed-use",
+    status: "proposed",
+    description:
+      "Santa Clara is developing land use and design rules for the areas surrounding its major transit stations. The planning process — reviewed at a March 2026 City Council study session — will guide how transit-adjacent parcels are developed over the coming decades, with a focus on housing, walkability, and connections to VTA and future BART service.",
+    scale: "Multiple station areas",
+    developer: "City of Santa Clara",
+    timeline: "Plan in development 2026",
+    featured: false,
+  },
 
   {
     id: "berryessa-bart-transit-village",
