@@ -48,10 +48,11 @@ function formatMoney(n: number): string {
 }
 
 export default function PermitPulseCard({ homeCity }: { homeCity: City | null }) {
-  if (!homeCity) return null;
-  const data = allData[homeCity];
+  // Use homeCity's data if available; fall back to any city with data (regional view)
+  const data = (homeCity && allData[homeCity]) || Object.values(allData)[0] || null;
   if (!data || !data.permits || data.permits.length === 0) return null;
 
+  const isRegional = !homeCity || !allData[homeCity];
   const { stats, permits, dateRange, city, sourceUrl, source } = data;
 
   return (
@@ -89,7 +90,7 @@ export default function PermitPulseCard({ homeCity }: { homeCity: City | null })
               textTransform: "uppercase",
             }}
           >
-            {city} · {dateRange}
+            {isRegional ? `${city} (Regional) · ` : `${city} · `}{dateRange}
           </div>
         </div>
         <a
