@@ -16,6 +16,18 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const EVENTS_PATH = join(__dirname, "..", "src", "data", "south-bay", "upcoming-events.json");
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "weekend-picks.json");
 
+// Load .env.local if ANTHROPIC_API_KEY not already in environment
+if (!process.env.ANTHROPIC_API_KEY) {
+  try {
+    const envPath = join(__dirname, "..", ".env.local");
+    const lines = readFileSync(envPath, "utf8").split("\n");
+    for (const line of lines) {
+      const m = line.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/);
+      if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+    }
+  } catch {}
+}
+
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 if (!ANTHROPIC_API_KEY) {
   console.error("ERROR: ANTHROPIC_API_KEY not set");

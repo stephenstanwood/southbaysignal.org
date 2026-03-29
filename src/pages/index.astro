@@ -41,6 +41,7 @@ const title = "South Bay Signal";
         background: var(--sb-bg);
         color: var(--sb-ink);
         margin: 0;
+        overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
       }
 
@@ -1757,6 +1758,9 @@ const title = "South Bay Signal";
         .sb-briefing-grid { grid-template-columns: 1fr; }
         .sb-briefing-card { border-right: none; border-bottom: 1px solid var(--sb-border-light); min-height: auto; }
         .sb-briefing-card:last-child { border-bottom: none; }
+        /* Real estate table — collapse to 3 cols (drop Days) on mobile */
+        .re-grid { grid-template-columns: 1fr 90px 70px !important; }
+        .re-grid > *:nth-child(4) { display: none; }
 
         /* Tech section mobile */
         .tech-header-title { font-size: 28px; }

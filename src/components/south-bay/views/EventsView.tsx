@@ -618,7 +618,7 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
           </>
         ) : (
           /* Venue grid */
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12 }}>
             {SOUTH_BAY_VENUES.map((v) => {
               const shows = venueEvents[v.id] ?? [];
               const hasShows = shows.length > 0;

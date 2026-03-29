@@ -14,6 +14,7 @@ import upcomingJson from "../../../data/south-bay/upcoming-events.json";
 import digestsJson from "../../../data/south-bay/digests.json";
 import aroundTownJson from "../../../data/south-bay/around-town.json";
 import weekendPicksJson from "../../../data/south-bay/weekend-picks.json";
+import healthScoresJson from "../../../data/south-bay/health-scores.json";
 import schoolCalJson from "../../../data/south-bay/school-calendar.json";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -474,22 +475,64 @@ interface BriefingStory {
   url?: string;
 }
 
-function pickTopEvent(): BriefingStory | null {
-  // Use AI-curated weekend picks for editorial voice
-  const picks = (weekendPicksJson as { picks?: Array<{ title: string; why: string; url?: string; cost: string; category: string; time?: string; city: string; date: string }> }).picks ?? [];
-  const pick = picks[0];
-  if (pick) {
+function pickEventStory(): BriefingStory | null {
+  // On weekends: use AI-curated pick if it's for this weekend (not stale)
+  if (IS_WEEKEND_MODE) {
+    const wknd = weekendPicksJson as { weekendStart?: string; picks?: Array<{ title: string; why: string; url?: string | null; cost: string; category: string; city: string }> };
+    const { weekendStart, picks = [] } = wknd;
+    if (weekendStart) {
+      const daysDiff = (new Date(weekendStart + "T12:00:00").getTime() - Date.now()) / 86400000;
+      const pick = daysDiff > -3 ? picks[0] : undefined; // fresh if started within last 3 days
+      if (pick) {
+        return {
+          category: "This Weekend",
+          headline: pick.title,
+          lede: pick.why,
+          tab: "events",
+          emoji: CATEGORY_EMOJI[pick.category] ?? "📅",
+          accentColor: "#16a34a",
+          url: pick.url ?? undefined,
+        };
+      }
+    }
+  }
+
+  // Weekday or stale weekend: find next upcoming event with a specific time
+  const events = (upcomingJson as { events?: UpcomingEvent[] }).events ?? [];
+  const next = events
+    .filter((e) => !e.ongoing && e.date >= TODAY_ISO && e.time && e.category !== "sports")
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? "").localeCompare(b.time ?? ""))[0];
+
+  if (next) {
+    const label = next.displayDate + (next.time ? ` · ${next.time}` : "");
     return {
-      category: "This Weekend",
-      headline: pick.title,
-      lede: pick.why,
+      category: "Coming Up",
+      headline: next.title,
+      lede: `${label} · ${next.venue || next.city}`,
       tab: "events",
-      emoji: CATEGORY_EMOJI[pick.category] ?? "📅",
+      emoji: CATEGORY_EMOJI[next.category] ?? "📅",
       accentColor: "#16a34a",
-      url: pick.url,
+      url: next.url ?? undefined,
     };
   }
   return null;
+}
+
+function pickHealthStory(): BriefingStory | null {
+  const { flags = [] } = healthScoresJson as { flags?: Array<{ name: string; city: string; date: string; result: string; summary: string }> };
+  const cutoff = new Date(Date.now() - 14 * 86400000).toISOString().split("T")[0];
+  const closures = flags.filter((f) => f.result === "Y" && f.date >= cutoff);
+  if (!closures.length) return null;
+  const f = closures[0];
+  const sum = f.summary?.slice(0, 110) ?? "Temporarily closed following health inspection.";
+  return {
+    category: "Food Safety",
+    headline: `${f.name} temporarily closed`,
+    lede: `${f.city} · ${sum}${sum.length >= 110 ? "…" : ""}`,
+    tab: "government",
+    emoji: "⚠️",
+    accentColor: "#92400E",
+  };
 }
 
 // Topics that are procedural noise — not newsworthy
@@ -603,7 +646,9 @@ function pickDevelopmentStory(): BriefingStory | null {
   const p = pool.find((p) => p.featured) ?? pool[0];
 
   const statusLabel = STATUS_CONFIG[p.status]?.label ?? p.status;
-  const lede = `${statusLabel} · ${p.city}${p.scale ? ` · ${p.scale}` : ""}${p.timeline ? ` · ${p.timeline}` : ""}`;
+  const lede = p.description
+    ? (p.description.length > 120 ? p.description.slice(0, 117) + "…" : p.description)
+    : `${statusLabel} · ${p.city}${p.scale ? ` · ${p.scale}` : ""}${p.timeline ? ` · ${p.timeline}` : ""}`;
   return {
     category: "Development",
     headline: p.name,
@@ -628,9 +673,9 @@ function SignalBriefing({
   const digests = digestsJson as Record<string, { summary?: string; keyTopics?: string[]; meetingDate?: string; schedule?: string }>;
 
   const stories: BriefingStory[] = [
-    pickTopEvent(),
+    pickEventStory(),
     pickCityHallStory(homeCity, digests),
-    pickDevelopmentStory(),
+    pickHealthStory() ?? pickDevelopmentStory(),
   ].filter((s): s is BriefingStory => s !== null);
 
   if (!stories.length) return null;
@@ -719,7 +764,12 @@ function SignalBriefing({
               alignItems: "center",
               gap: 3,
             }}>
-              {story.url ? "Read more" : `Go to ${story.category} →`}
+              {story.url
+                ? "Read more →"
+                : story.category === "Government" ? "Read full digest →"
+                : story.category === "Food Safety" ? "See health scores →"
+                : story.category === "Development" ? "See all projects →"
+                : "See all events →"}
             </div>
           </button>
         ))}

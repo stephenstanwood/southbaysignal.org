@@ -1,3 +1,4 @@
+import { useState } from "react";
 import realEstateJson from "../../../data/south-bay/real-estate.json";
 import type { City } from "../../../lib/south-bay/types";
 
@@ -23,6 +24,9 @@ interface RealEstateData {
 
 const data = realEstateJson as RealEstateData;
 
+type SortKey = "city" | "price" | "yoy" | "days";
+type SortDir = "asc" | "desc";
+
 function formatPrice(n: number | null): string {
   if (n == null) return "—";
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(2)}M`;
@@ -36,9 +40,24 @@ function formatYoy(n: number | null): { label: string; up: boolean | null } {
 }
 
 function formatPeriod(isoDate: string): string {
-  // e.g. "2026-02-28" → "Feb 2026"
   const d = new Date(isoDate + "T12:00:00");
   return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+
+function sortCities(cities: CityData[], key: SortKey, dir: SortDir): CityData[] {
+  return [...cities].sort((a, b) => {
+    let diff = 0;
+    if (key === "city") {
+      diff = a.city.localeCompare(b.city);
+    } else if (key === "price") {
+      diff = (a.medianSalePrice ?? -Infinity) - (b.medianSalePrice ?? -Infinity);
+    } else if (key === "yoy") {
+      diff = (a.medianSalePriceYoy ?? -Infinity) - (b.medianSalePriceYoy ?? -Infinity);
+    } else if (key === "days") {
+      diff = (a.medianDaysOnMarket ?? Infinity) - (b.medianDaysOnMarket ?? Infinity);
+    }
+    return dir === "asc" ? diff : -diff;
+  });
 }
 
 interface Props {
@@ -46,18 +65,40 @@ interface Props {
 }
 
 export default function RealEstateCard({ homeCity }: Props) {
-  const { cities, sourceUrl, attribution } = data;
+  const [sortKey, setSortKey] = useState<SortKey>("price");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
+
+  const { cities, sourceUrl } = data;
   if (!cities || cities.length === 0) return null;
 
-  // Sort: home city first, then alphabetical
-  const sorted = [...cities].sort((a, b) => {
-    const aHome = homeCity && a.cityId === homeCity ? -1 : 0;
-    const bHome = homeCity && b.cityId === homeCity ? -1 : 0;
-    if (aHome !== bHome) return aHome - bHome;
-    return a.city.localeCompare(b.city);
-  });
-
   const latestPeriod = cities[0]?.periodEnd ? formatPeriod(cities[0].periodEnd) : "";
+
+  const filtered = cities.filter(
+    (c) => !(c.medianSalePriceYoy != null && Math.abs(c.medianSalePriceYoy) > 0.4),
+  );
+  const sorted = sortCities(filtered, sortKey, sortDir);
+
+  function handleSort(key: SortKey) {
+    if (key === sortKey) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      // Natural defaults: price/yoy desc (higher = more interesting), days asc (lower = hotter), city asc
+      setSortDir(key === "days" || key === "city" ? "asc" : "desc");
+    }
+  }
+
+  function SortIndicator({ k }: { k: SortKey }) {
+    if (k !== sortKey) return <span style={{ opacity: 0.25, fontSize: 8 }}> ↕</span>;
+    return <span style={{ fontSize: 8 }}> {sortDir === "desc" ? "↓" : "↑"}</span>;
+  }
+
+  const COLS: { key: SortKey; label: string }[] = [
+    { key: "city",  label: "City" },
+    { key: "price", label: "Median Sale" },
+    { key: "yoy",   label: "vs. Last Year" },
+    { key: "days",  label: "Days" },
+  ];
 
   return (
     <div style={{ marginBottom: 32 }}>
@@ -82,20 +123,27 @@ export default function RealEstateCard({ homeCity }: Props) {
         background: "#fff",
       }}>
         {/* Column headers */}
-        <div style={{
+        <div className="re-grid" style={{
           display: "grid",
           gridTemplateColumns: "1fr 110px 90px 60px",
           padding: "6px 14px",
           background: "var(--sb-bg)",
           borderBottom: "1px solid var(--sb-border-light)",
         }}>
-          {["City", "Median Sale", "vs. Last Year", "Days"].map((h) => (
-            <span key={h} style={{
-              fontSize: 9, fontWeight: 700, fontFamily: "'Space Mono', monospace",
-              letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--sb-muted)",
-            }}>
-              {h}
-            </span>
+          {COLS.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => handleSort(key)}
+              style={{
+                all: "unset",
+                fontSize: 9, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+                letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--sb-muted)",
+                cursor: "pointer", userSelect: "none",
+                display: "flex", alignItems: "center",
+              }}
+            >
+              {label}<SortIndicator k={key} />
+            </button>
           ))}
         </div>
 
@@ -103,17 +151,17 @@ export default function RealEstateCard({ homeCity }: Props) {
         {sorted.map((c, i) => {
           const yoy = formatYoy(c.medianSalePriceYoy);
           const isHome = homeCity && c.cityId === homeCity;
-          const isVolatile = c.medianSalePriceYoy != null && Math.abs(c.medianSalePriceYoy) > 0.4;
 
           return (
             <div
               key={c.cityId}
+              className="re-grid"
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 110px 90px 60px",
                 padding: "8px 14px",
                 borderBottom: i < sorted.length - 1 ? "1px solid var(--sb-border-light)" : "none",
-                background: isHome ? "var(--sb-accent-light)" : "transparent",
+                background: isHome ? "#FEFCE8" : "transparent",
                 alignItems: "center",
               }}
             >
@@ -141,14 +189,6 @@ export default function RealEstateCard({ homeCity }: Props) {
                   fontVariantNumeric: "tabular-nums",
                 }}>
                   {yoy.label}
-                  {isVolatile && (
-                    <span
-                      title="Low transaction volume — may not be statistically significant"
-                      style={{ marginLeft: 3, opacity: 0.5, fontSize: 10, cursor: "help" }}
-                    >
-                      *
-                    </span>
-                  )}
                 </span>
               </div>
               <span style={{
@@ -172,7 +212,7 @@ export default function RealEstateCard({ homeCity }: Props) {
         >
           Redfin Data Center
         </a>
-        {" · All Residential · * = low volume, use caution"}
+        {" · All Residential · Low-volume cities excluded"}
       </div>
     </div>
   );
