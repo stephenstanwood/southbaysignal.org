@@ -478,6 +478,11 @@ function parseRssItems(xml) {
       // Localist-specific
       georss_point: get("georss:point"),
       s_localtime: get("s:localtime"),
+      // MEC (Modern Events Calendar) WordPress plugin
+      mecStartDate: get("mec:startDate"),
+      mecEndDate: get("mec:endDate"),
+      mecStartTime: get("mec:startTime"),
+      mecEndTime: get("mec:endTime"),
     });
   }
   return items;
@@ -1226,6 +1231,46 @@ async function fetchEventbriteEvents() {
 // ── Ticketmaster Discovery API ──
 // Covers SAP Center (Sharks), Shoreline, SJ Civic Auditorium, etc.
 
+function mapTicketmasterEvent(e) {
+  const dateInfo = e.dates?.start;
+  const dateStr = dateInfo?.localDate;
+  const timeStr = dateInfo?.localTime; // "20:00:00"
+  if (!dateStr) return null;
+
+  const start = new Date(`${dateStr}T${timeStr || "00:00:00"}-07:00`);
+  const venue = e._embedded?.venues?.[0];
+  const venueName = venue?.name || "";
+  const city = inferCity(venueName, `${venue?.city?.name || ""} ${venue?.address?.line1 || ""}`);
+  if (!city) return null;
+
+  const priceRange = e.priceRanges?.[0];
+  const minPrice = priceRange?.min;
+  const cost = minPrice === 0 ? "free" : minPrice && minPrice < 25 ? "low" : "paid";
+
+  const classification = e.classifications?.[0];
+  const genre = classification?.genre?.name || "";
+  const segment = classification?.segment?.name || "";
+
+  return {
+    id: `tm-${e.id}`,
+    title: e.name,
+    date: dateStr,
+    displayDate: displayDate(start),
+    time: timeStr ? displayTime(start) : null,
+    endTime: null,
+    venue: venueName,
+    address: venue?.address?.line1 || "",
+    city,
+    category: inferCategory(e.name, genre, segment),
+    cost,
+    costNote: minPrice ? `From $${Math.round(minPrice)}` : undefined,
+    description: truncate(e.info || e.pleaseNote || ""),
+    url: e.url,
+    source: "Ticketmaster",
+    kidFriendly: /family|kid|child|disney|cirque/i.test(e.name + genre),
+  };
+}
+
 async function fetchTicketmasterEvents() {
   console.log("  ⏳ Ticketmaster...");
   const apiKey = process.env.TICKETMASTER_API_KEY;
@@ -1237,63 +1282,58 @@ async function fetchTicketmasterEvents() {
     const startStr = now.toISOString().replace(/\.\d{3}Z$/, "Z");
     const endStr = future.toISOString().replace(/\.\d{3}Z$/, "Z");
 
-    const url = new URL("https://app.ticketmaster.com/discovery/v2/events.json");
-    url.searchParams.set("apikey", apiKey);
-    url.searchParams.set("latlong", "37.3382,-121.8863");
-    url.searchParams.set("radius", "25");
-    url.searchParams.set("unit", "miles");
-    url.searchParams.set("startDateTime", startStr);
-    url.searchParams.set("endDateTime", endStr);
-    url.searchParams.set("size", "200");
-    url.searchParams.set("sort", "date,asc");
+    const baseParams = {
+      apikey: apiKey,
+      radius: "25",
+      unit: "miles",
+      startDateTime: startStr,
+      endDateTime: endStr,
+      size: "200",
+      sort: "date,asc",
+    };
 
-    const res = await fetch(url.toString(), {
-      headers: { "User-Agent": UA },
-      signal: AbortSignal.timeout(20_000),
-    });
-    if (!res.ok) throw new Error(`${res.status}`);
-    const data = await res.json();
+    // Fetch from two center points to ensure Shoreline Amphitheatre (Mountain View)
+    // and SAP Center (San Jose) are both covered without relying on page depth.
+    const centers = [
+      "37.3382,-121.8863", // San Jose center
+      "37.4266,-122.0804", // Mountain View / Shoreline Amphitheatre
+    ];
 
-    const rawEvents = data?._embedded?.events || [];
-    const events = rawEvents.map((e) => {
-      const dateInfo = e.dates?.start;
-      const dateStr = dateInfo?.localDate;
-      const timeStr = dateInfo?.localTime; // "20:00:00"
-      if (!dateStr) return null;
+    const allRaw = [];
+    const seenIds = new Set();
 
-      const start = new Date(`${dateStr}T${timeStr || "00:00:00"}-07:00`);
-      const venue = e._embedded?.venues?.[0];
-      const venueName = venue?.name || "";
-      const city = inferCity(venueName, `${venue?.city?.name || ""} ${venue?.address?.line1 || ""}`);
-      if (!city) return null;
+    for (const latlong of centers) {
+      let page = 0;
+      while (true) {
+        const url = new URL("https://app.ticketmaster.com/discovery/v2/events.json");
+        for (const [k, v] of Object.entries(baseParams)) url.searchParams.set(k, v);
+        url.searchParams.set("latlong", latlong);
+        url.searchParams.set("page", String(page));
 
-      const priceRange = e.priceRanges?.[0];
-      const minPrice = priceRange?.min;
-      const cost = minPrice === 0 ? "free" : minPrice && minPrice < 25 ? "low" : "paid";
+        const res = await fetch(url.toString(), {
+          headers: { "User-Agent": UA },
+          signal: AbortSignal.timeout(20_000),
+        });
+        if (!res.ok) throw new Error(`${res.status}`);
+        const data = await res.json();
 
-      const classification = e.classifications?.[0];
-      const genre = classification?.genre?.name || "";
-      const segment = classification?.segment?.name || "";
+        const raw = data?._embedded?.events || [];
+        for (const e of raw) {
+          if (!seenIds.has(e.id)) {
+            seenIds.add(e.id);
+            allRaw.push(e);
+          }
+        }
 
-      return {
-        id: `tm-${e.id}`,
-        title: e.name,
-        date: dateStr,
-        displayDate: displayDate(start),
-        time: timeStr ? displayTime(start) : null,
-        endTime: null,
-        venue: venueName,
-        address: venue?.address?.line1 || "",
-        city,
-        category: inferCategory(e.name, genre, segment),
-        cost,
-        costNote: minPrice ? `From $${Math.round(minPrice)}` : undefined,
-        description: truncate(e.info || e.pleaseNote || ""),
-        url: e.url,
-        source: "Ticketmaster",
-        kidFriendly: /family|kid|child|disney|cirque/i.test(e.name + genre),
-      };
-    }).filter(Boolean);
+        const totalPages = data.page?.totalPages ?? 1;
+        if (page + 1 >= totalPages || raw.length === 0) break;
+        page++;
+        // Respect Ticketmaster rate limit (5 req/sec)
+        await new Promise((r) => setTimeout(r, 250));
+      }
+    }
+
+    const events = allRaw.map(mapTicketmasterEvent).filter(Boolean);
 
     console.log(`  ✅ Ticketmaster: ${events.length} events`);
     return events;
@@ -1562,6 +1602,104 @@ async function fetchHappyHollowEvents() {
   }
 }
 
+// ── MACLA (Movimiento de Arte y Cultura Latino Americana) ──
+// San Jose arts center — uses MEC WordPress plugin with mec:startDate in RSS
+
+async function fetchMaclaEvents() {
+  console.log("  ⏳ MACLA...");
+  try {
+    const xml = await fetchText("https://maclaarte.org/events/feed/");
+    const items = parseRssItems(xml);
+    const now = new Date();
+    const events = items
+      .map((item) => {
+        const start = parseDate(item.mecStartDate || item.startDate || item.pubDate);
+        if (!start || start < now) return null;
+        const end = item.mecEndDate ? parseDate(item.mecEndDate) : null;
+        return {
+          id: h("macla", item.link || item.title, item.mecStartDate || item.pubDate),
+          title: item.title,
+          date: isoDate(start),
+          displayDate: displayDate(start),
+          time: item.mecStartTime ? displayTime(new Date(`${item.mecStartDate}T${item.mecStartTime}`)) : null,
+          endTime: (item.mecEndTime && item.mecEndDate) ? displayTime(new Date(`${item.mecEndDate}T${item.mecEndTime}`)) : null,
+          venue: "MACLA",
+          address: "510 S 1st St, San Jose, CA 95113",
+          city: "san-jose",
+          category: inferCategory(item.title, item.description || "", ""),
+          cost: "free",
+          description: truncate(stripHtml(item.description || item.content || "")),
+          url: item.link,
+          source: "MACLA",
+          kidFriendly: false,
+        };
+      })
+      .filter(Boolean);
+    console.log(`  ✅ MACLA: ${events.length} events`);
+    return events;
+  } catch (err) {
+    console.log(`  ⚠️  MACLA: ${err.message}`);
+    return [];
+  }
+}
+
+// ── Heritage Theatre Campbell (Ticketmaster venue) ──
+
+async function fetchHeritageTheatreEvents() {
+  console.log("  ⏳ Heritage Theatre Campbell...");
+  const apiKey = process.env.TICKETMASTER_API_KEY;
+  if (!apiKey) { console.log("  ⚠️  Heritage Theatre: no API key"); return []; }
+  try {
+    const now = new Date();
+    const future = new Date(now.getTime() + 180 * 24 * 60 * 60 * 1000);
+    const startStr = now.toISOString().replace(/\.\d{3}Z$/, "Z");
+    const endStr = future.toISOString().replace(/\.\d{3}Z$/, "Z");
+    const url = new URL("https://app.ticketmaster.com/discovery/v2/events.json");
+    url.searchParams.set("apikey", apiKey);
+    url.searchParams.set("venueId", "KovZpZAAnItA"); // Heritage Theatre Campbell
+    url.searchParams.set("startDateTime", startStr);
+    url.searchParams.set("endDateTime", endStr);
+    url.searchParams.set("size", "50");
+    url.searchParams.set("sort", "date,asc");
+    const res = await fetch(url.toString(), { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(15_000) });
+    if (!res.ok) throw new Error(`${res.status}`);
+    const data = await res.json();
+    const rawEvents = data?._embedded?.events || [];
+    const events = rawEvents.map((e) => {
+      const dateInfo = e.dates?.start;
+      const dateStr = dateInfo?.localDate;
+      const timeStr = dateInfo?.localTime;
+      if (!dateStr) return null;
+      const start = new Date(`${dateStr}T${timeStr || "00:00:00"}-07:00`);
+      const priceRange = e.priceRanges?.[0];
+      const minPrice = priceRange?.min;
+      const cost = minPrice === 0 ? "free" : minPrice && minPrice < 25 ? "low" : "paid";
+      return {
+        id: `heritage-${e.id}`,
+        title: e.name,
+        date: dateStr,
+        displayDate: displayDate(start),
+        time: timeStr ? displayTime(start) : null,
+        endTime: null,
+        venue: "Heritage Theatre",
+        address: "1 W Campbell Ave, Campbell, CA 95008",
+        city: "campbell",
+        category: inferCategory(e.name, "", e.classifications?.[0]?.genre?.name || ""),
+        cost,
+        description: "",
+        url: e.url || "",
+        source: "Heritage Theatre",
+        kidFriendly: false,
+      };
+    }).filter(Boolean);
+    console.log(`  ✅ Heritage Theatre: ${events.length} events`);
+    return events;
+  } catch (err) {
+    console.log(`  ⚠️  Heritage Theatre: ${err.message}`);
+    return [];
+  }
+}
+
 // ── Main ──
 
 async function main() {
@@ -1596,6 +1734,8 @@ async function main() {
     fetchSunnyvaleLibraryEvents,
     fetchPaloAltoLibraryEvents,
     fetchHappyHollowEvents,
+    fetchMaclaEvents,
+    fetchHeritageTheatreEvents,
   ];
 
   const results = await Promise.allSettled(sources.map((fn) => fn()));

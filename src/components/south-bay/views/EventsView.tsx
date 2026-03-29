@@ -43,6 +43,7 @@ const SOUTH_BAY_VENUES: SBVenue[] = [
   { id: "discovery",       name: "Discovery Meadows",                      venueMatch: "Discovery Meadows",                    city: "san-jose",      cityLabel: "San Jose",      emoji: "🌿", tags: "Outdoor · Family" },
   { id: "happy-hollow",    name: "Happy Hollow Park & Zoo",                venueMatch: "Happy Hollow",                         city: "san-jose",      cityLabel: "San Jose",      emoji: "🦁", tags: "Family · Zoo" },
   { id: "sjpl",            name: "San Jose Public Library",                venueMatch: "San Jose Public Library",              city: "san-jose",      cityLabel: "San Jose",      emoji: "📚", tags: "Library · Classes · Family" },
+  { id: "macla",           name: "MACLA",                                  venueMatch: "MACLA",                                city: "san-jose",      cityLabel: "San Jose",      emoji: "🎨", tags: "Art · Latinx · Theater" },
   // ── Mountain View ──
   { id: "shoreline",       name: "Shoreline Amphitheatre",                 venueMatch: "Shoreline Amphitheatre",               city: "mountain-view", cityLabel: "Mountain View", emoji: "🎵", tags: "Outdoor Concerts" },
   { id: "mv-cpa",          name: "Mountain View Center for the Performing Arts", venueMatch: "Mountain View Center for the Performing", city: "mountain-view", cityLabel: "Mountain View", emoji: "🎭", tags: "Theater · Dance · Music" },
@@ -63,6 +64,7 @@ const SOUTH_BAY_VENUES: SBVenue[] = [
   { id: "los-gatos-library", name: "Los Gatos Library",                   venueMatch: "Santa Clara County Library",           cityFilter: "los-gatos",  city: "los-gatos",     cityLabel: "Los Gatos",     emoji: "📚", tags: "Library · Classes · Family" },
   // ── Campbell ──
   { id: "campbell-library", name: "Campbell Library",                      venueMatch: "Santa Clara County Library",           cityFilter: "campbell",   city: "campbell",      cityLabel: "Campbell",      emoji: "📚", tags: "Library · Classes · Family" },
+  { id: "heritage-theatre", name: "Heritage Theatre",                      venueMatch: "Heritage Theatre",                     city: "campbell",      cityLabel: "Campbell",      emoji: "🎭", tags: "Concerts · Theater · Events" },
   // ── Milpitas ──
   { id: "milpitas-library", name: "Milpitas Library",                      venueMatch: "Santa Clara County Library",           cityFilter: "milpitas",   city: "milpitas",      cityLabel: "Milpitas",      emoji: "📚", tags: "Library · Classes · Family" },
 ];
