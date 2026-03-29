@@ -644,9 +644,9 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
             )}
           </>
         ) : (
-          /* Venue grid */
+          /* Venue grid — only show venues with upcoming events */
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12 }}>
-            {SOUTH_BAY_VENUES.map((v) => {
+            {SOUTH_BAY_VENUES.filter((v) => (venueEvents[v.id] ?? []).length > 0).map((v) => {
               const shows = venueEvents[v.id] ?? [];
               const hasShows = shows.length > 0;
               const nextShow = shows[0];
@@ -655,12 +655,12 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
                   key={v.id}
                   onClick={() => hasShows && setSelectedVenue(v.id)}
                   style={{
-                    background: hasShows ? "#fff" : "var(--sb-card)",
+                    background: "#fff",
                     border: "1.5px solid var(--sb-border-light)",
                     borderRadius: 8,
                     padding: "16px",
-                    cursor: hasShows ? "pointer" : "default",
-                    opacity: hasShows ? 1 : 0.5,
+                    cursor: "pointer",
+                    opacity: 1,
                     transition: "box-shadow 0.15s, border-color 0.15s",
                   }}
                   onMouseEnter={(e) => {
