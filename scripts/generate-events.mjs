@@ -382,9 +382,15 @@ function isPublicEvent(title, source) {
 
 // Strip calendar-artifact date prefixes like "Apr 1, 2026: " or "March 28: "
 // Also decodes HTML entities that may survive title extraction
+// Known recurring scraper typos — keyed by the bad string, value is the fix.
+// Add entries here when a source consistently sends bad data.
+const TITLE_FIXES = {
+  "Fun Runa": "Fun Run",
+};
+
 function cleanTitle(title) {
   if (!title) return title;
-  return title
+  let t = title
     // Decode common HTML entities first
     .replace(/&#x2019;/gi, "\u2019").replace(/&#x2018;/gi, "\u2018")
     .replace(/&#x201C;/gi, "\u201C").replace(/&#x201D;/gi, "\u201D")
@@ -398,6 +404,11 @@ function cleanTitle(title) {
       "",
     )
     .trim();
+  // Apply known recurring fixes from source data
+  for (const [bad, fix] of Object.entries(TITLE_FIXES)) {
+    t = t.replaceAll(bad, fix);
+  }
+  return t;
 }
 
 function truncate(text, len = 200) {
