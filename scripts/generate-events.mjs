@@ -121,13 +121,15 @@ function displayTime(d) {
 function stripHtml(html) {
   if (!html) return "";
   return html
-    .replace(/<[^>]+>/g, " ")
+    // Decode entities first so entity-encoded tags like &lt;strong&gt; become <strong> before stripping
     .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
     .replace(/&#x2019;/gi, "\u2019").replace(/&#x2018;/gi, "\u2018")
     .replace(/&#x201C;/gi, "\u201C").replace(/&#x201D;/gi, "\u201D")
     .replace(/&#x2013;/gi, "\u2013").replace(/&#x2014;/gi, "\u2014")
-    .replace(/&#\d+;/g, "").replace(/&\w+;/g, "")
+    .replace(/&#\d+;/g, "").replace(/&[a-z]+;/g, "")
+    // Then strip all HTML tags
+    .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ").trim();
 }
 
@@ -362,7 +364,11 @@ function isAwayGame(title) {
   return false;
 }
 
+const CANCELLED_PATTERN = /\bcancell?ed\b/i;
+
 function isPublicEvent(title, source) {
+  // Always filter cancelled events regardless of source
+  if (CANCELLED_PATTERN.test(title)) return false;
   const uniSources = ["Santa Clara University", "SJSU Events", "Stanford Events"];
   if (uniSources.includes(source)) {
     for (const pat of INTERNAL_EVENT_PATTERNS) {
@@ -1049,21 +1055,82 @@ const SCCL_LOCATION_MAP = {
   // MH = Morgan Hill, GI = Gilroy — outside South Bay, omit
 };
 
+function scclCityMapper(branch, addr, locationCode) {
+  if (locationCode && SCCL_LOCATION_MAP[locationCode]) return SCCL_LOCATION_MAP[locationCode];
+  const text = `${branch} ${addr}`.toLowerCase();
+  if (text.includes("campbell")) return "campbell";
+  if (text.includes("cupertino")) return "cupertino";
+  if (text.includes("los altos")) return "los-altos";
+  if (text.includes("los gatos")) return "los-gatos";
+  if (text.includes("milpitas")) return "milpitas";
+  if (text.includes("saratoga")) return "saratoga";
+  if (text.includes("santa clara")) return "santa-clara";
+  return null;
+}
+
 async function fetchScclEvents() {
-  return fetchBiblioEvents("sccl", "Santa Clara County Library", (branch, addr, locationCode) => {
-    // Prefer location code lookup (reliable short code)
-    if (locationCode && SCCL_LOCATION_MAP[locationCode]) return SCCL_LOCATION_MAP[locationCode];
-    // Fallback: text match on branch name/address
-    const text = `${branch} ${addr}`.toLowerCase();
-    if (text.includes("campbell")) return "campbell";
-    if (text.includes("cupertino")) return "cupertino";
-    if (text.includes("los altos")) return "los-altos";
-    if (text.includes("los gatos")) return "los-gatos";
-    if (text.includes("milpitas")) return "milpitas";
-    if (text.includes("saratoga")) return "saratoga";
-    if (text.includes("santa clara")) return "santa-clara";
-    return null;
-  });
+  // SCCL has 2500+ events spread across 50+ pages — paginate to catch all branches (e.g. Campbell)
+  console.log("  ⏳ Santa Clara County Library (paginating all branches)...");
+  const libraryId = "sccl";
+  const libraryName = "Santa Clara County Library";
+  const now = new Date();
+  const allEvents = [];
+  const seenIds = new Set();
+
+  try {
+    for (let page = 1; page <= 60; page++) {
+      const data = await fetchJson(
+        `https://gateway.bibliocommons.com/v2/libraries/${libraryId}/events?limit=50&page=${page}`,
+      );
+      if (data.error) break;
+      const eventList = data.entities?.events ? Object.values(data.entities.events) : [];
+      if (eventList.length === 0) break;
+
+      for (const ev of eventList) {
+        if (seenIds.has(ev.id)) continue;
+        seenIds.add(ev.id);
+
+        const locationCode = ev.definition?.branchLocationId || "";
+        const city = scclCityMapper("", "", locationCode);
+        if (!city) continue; // skip Morgan Hill, Gilroy, etc.
+
+        const startStr = ev.start || ev.definition?.start;
+        const endStr = ev.end || ev.definition?.end;
+        const start = parseDate(startStr);
+        if (!start || start < now) continue;
+
+        const end = parseDate(endStr);
+        const title = ev.title || ev.definition?.title || "";
+        const desc = ev.description || ev.definition?.description || "";
+
+        allEvents.push({
+          id: `${libraryId}-${ev.id}`,
+          title,
+          date: isoDate(start),
+          displayDate: displayDate(start),
+          time: displayTime(start),
+          endTime: end ? displayTime(end) : null,
+          venue: libraryName,
+          address: "",
+          city,
+          category: inferCategory(title, desc, ev.type || ""),
+          cost: "free",
+          description: truncate(stripHtml(desc)),
+          url: ev.registrationUrl || `https://${libraryId}.bibliocommons.com/events/${ev.id}`,
+          source: libraryName,
+          kidFriendly: (ev.audiences || []).some((a) => {
+            const name = typeof a === "string" ? a : a?.name || "";
+            return /child|teen|family|baby|toddler/i.test(name);
+          }),
+        });
+      }
+    }
+    console.log(`  ✅ ${libraryName}: ${allEvents.length} events`);
+    return allEvents;
+  } catch (err) {
+    console.log(`  ⚠️  ${libraryName}: ${err.message}`);
+    return allEvents; // return whatever we got before the error
+  }
 }
 
 // ── Eventbrite geo-search ──
