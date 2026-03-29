@@ -1256,6 +1256,110 @@ function ForecastStrip({ forecast }: { forecast: ForecastDay[] }) {
   );
 }
 
+// ── NWS Weather Alert Banner ──────────────────────────────────────────────────
+
+interface NwsAlertProps {
+  event: string;
+  headline: string;
+  severity: string;
+  expires: string;
+}
+
+function alertStyle(severity: string, event: string) {
+  if (severity === "Extreme" || event.toLowerCase().includes("warning")) {
+    return { bg: "#FEF2F2", border: "#FECACA", color: "#DC2626", dot: "#DC2626" };
+  }
+  if (severity === "Severe" || event.toLowerCase().includes("watch")) {
+    return { bg: "#FFFBEB", border: "#FDE68A", color: "#B45309", dot: "#F59E0B" };
+  }
+  // Advisory / Statement
+  return { bg: "#EFF6FF", border: "#BFDBFE", color: "#1D4ED8", dot: "#3B82F6" };
+}
+
+function WeatherAlertBanner() {
+  const [alerts, setAlerts] = useState<NwsAlertProps[]>([]);
+
+  useEffect(() => {
+    // Santa Clara Valley (inland) zone covers San Jose, Mountain View, Sunnyvale, Cupertino, etc.
+    fetch("https://api.weather.gov/alerts/active?zone=CAZ511", {
+      headers: { "User-Agent": "SouthBaySignal/1.0 (southbaysignal.org)" },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        const now = new Date();
+        const active: NwsAlertProps[] = (data.features ?? [])
+          .filter((f: { properties: { expires: string } }) => new Date(f.properties.expires) > now)
+          .map((f: { properties: NwsAlertProps }) => ({
+            event: f.properties.event,
+            headline: f.properties.headline,
+            severity: f.properties.severity,
+            expires: f.properties.expires,
+          }));
+        setAlerts(active);
+      })
+      .catch(() => {/* silent fail — show nothing if NWS unreachable */});
+  }, []);
+
+  if (alerts.length === 0) return null;
+
+  return (
+    <div style={{ marginBottom: 16, borderRadius: 8, overflow: "hidden" }}>
+      {alerts.slice(0, 3).map((alert, i) => {
+        const s = alertStyle(alert.severity, alert.event);
+        const exp = new Date(alert.expires);
+        const expStr = exp.toLocaleDateString("en-US", {
+          weekday: "short", month: "short", day: "numeric",
+          hour: "numeric", timeZone: "America/Los_Angeles",
+        });
+        // Strip the boilerplate preamble from headlines (e.g. "Heat Advisory issued ...")
+        const shortHeadline = alert.headline
+          .replace(/^[A-Za-z\s]+issued[^\.]+\.\s*/i, "")
+          .replace(/^[A-Za-z\s]+in effect[^\.]+\.\s*/i, "")
+          .slice(0, 150);
+        const isFirst = i === 0;
+        const isLast = i === alerts.length - 1;
+        const borderRadiusVal = isFirst && isLast ? 8
+          : isFirst ? "8px 8px 0 0"
+          : isLast ? "0 0 8px 8px" : 0;
+        return (
+          <div
+            key={i}
+            style={{
+              display: "flex", alignItems: "flex-start", gap: 10,
+              padding: "10px 14px",
+              background: s.bg,
+              border: `1px solid ${s.border}`,
+              borderTop: i > 0 ? "none" : undefined,
+              borderRadius: borderRadiusVal,
+            }}
+          >
+            <span style={{ color: s.dot, fontSize: 15, lineHeight: 1.3, flexShrink: 0, marginTop: 1 }}>⚠</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 2 }}>
+                <span style={{
+                  fontSize: 10, fontWeight: 700, letterSpacing: "0.1em",
+                  textTransform: "uppercase", fontFamily: "'Space Mono', monospace",
+                  color: s.color,
+                }}>
+                  {alert.event}
+                </span>
+                <span style={{ fontSize: 10, color: s.color, opacity: 0.75 }}>
+                  · until {expStr}
+                </span>
+              </div>
+              {shortHeadline && (
+                <div style={{ fontSize: 12, color: "#374151", lineHeight: 1.45 }}>
+                  {shortHeadline}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Around the South Bay ─────────────────────────────────────────────────────
 
 interface AroundTownItem {
@@ -1516,6 +1620,8 @@ const TYPE_ICON: Record<string, string> = {
   holiday: "🗓️",
   graduation: "🎓",
   lastday: "🔔",
+  testing: "📝",
+  finals: "📋",
 };
 
 function SchoolCalendarCard() {
@@ -1895,6 +2001,9 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
       {forecast && forecast.length > 0 && !changingCity && (
         <ForecastStrip forecast={forecast} />
       )}
+
+      {/* ── NWS weather alerts (live, shows only when active) ── */}
+      {!changingCity && <WeatherAlertBanner />}
 
       {/* ── Transit status bar ── */}
       {!changingCity && <TransitStatusBar onNavigate={onNavigate} />}
