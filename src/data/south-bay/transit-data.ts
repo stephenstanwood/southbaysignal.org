@@ -11,6 +11,10 @@ export interface ServiceAlert {
   detail?: string;
   affectedRoutes?: string;
   startDate?: string;
+  /**
+   * If set, alerts with endDate in the past (< today) should be removed on next data refresh.
+   * Use ISO date string "YYYY-MM-DD" or human-readable estimate like "Est. mid-2030s".
+   */
   endDate?: string;
 }
 
@@ -279,9 +283,9 @@ export const QUICK_LINKS = [
 
 export const TRANSIT_PULSE = [
   {
-    value: "17M+",
+    value: "~16M",
     label: "Annual Caltrain Riders",
-    note: "Pre-electrification (2023)",
+    note: "Approx. FY 2022-23 ridership",
   },
   {
     value: "77mi",
