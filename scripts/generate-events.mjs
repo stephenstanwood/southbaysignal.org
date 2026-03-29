@@ -28,6 +28,7 @@
  *   - San Jose Jazz (RSS)
  *   - Silicon Valley Leadership Group (RSS)
  *   - Happy Hollow Park & Zoo (RSS)
+ *   - LibCal (Los Gatos, Milpitas) — BLOCKED: API requires OAuth (see note below)
  *
  * NOTE: Mountain View/Sunnyvale/SJ city/Cupertino CivicPlus iCal feeds return 403/404.
  * Those cities' library systems are covered via BiblioCommons instead.
@@ -1430,6 +1431,12 @@ async function fetchSunnyvaleLibraryEvents() {
 async function fetchPaloAltoLibraryEvents() {
   return fetchBiblioEvents("paloalto", "Palo Alto City Library", () => "palo-alto");
 }
+
+// NOTE: LibCal (Springshare) API v1/v2 require OAuth tokens — not publicly accessible.
+// Los Gatos (losgatosca.libcal.com) and Milpitas library calendars use LibCal but
+// the API endpoints return 403/offline. Their events are partially covered via SCCL
+// BiblioCommons (which includes Los Gatos and Milpitas branch programming).
+// If OAuth credentials become available, implement fetchLibCalEvents(slug, name, city).
 
 // ── Happy Hollow Park & Zoo ──
 

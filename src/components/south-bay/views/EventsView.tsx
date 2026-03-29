@@ -28,15 +28,42 @@ interface SBVenue {
 }
 
 const SOUTH_BAY_VENUES: SBVenue[] = [
-  { id: "sj-improv",       name: "San Jose Improv",                        venueMatch: "San Jose Improv",                      city: "san-jose",   cityLabel: "San Jose",  emoji: "🎤", tags: "Comedy · Music" },
-  { id: "the-ritz",        name: "The Ritz",                               venueMatch: "The Ritz",                             city: "san-jose",   cityLabel: "San Jose",  emoji: "🎵", tags: "Music" },
-  { id: "sj-civic",        name: "San Jose Civic",                         venueMatch: "San Jose Civic",                       city: "san-jose",   cityLabel: "San Jose",  emoji: "🎵", tags: "Concerts" },
-  { id: "sj-cpa",          name: "SJ Center for the Performing Arts",      venueMatch: "San Jose Center for the Performing",   city: "san-jose",   cityLabel: "San Jose",  emoji: "🎭", tags: "Theater · Arts" },
-  { id: "sap-center",      name: "SAP Center",                             venueMatch: "SAP Center",                           city: "san-jose",   cityLabel: "San Jose",  emoji: "🏟️", tags: "Arena" },
-  { id: "frost",           name: "Frost Amphitheatre",                     venueMatch: "Frost Amphitheatre",                   city: "palo-alto",  cityLabel: "Stanford",  emoji: "🎵", tags: "Outdoor Concerts" },
-  { id: "tech-cu",         name: "Tech CU Arena",                          venueMatch: "Tech CU Arena",                        city: "san-jose",   cityLabel: "San Jose",  emoji: "🏀", tags: "Sports · Events" },
-  { id: "mcenery",         name: "McEnery Convention Center",              venueMatch: "McEnery Convention Center",            city: "san-jose",   cityLabel: "San Jose",  emoji: "🎪", tags: "Special Events" },
-  { id: "discovery",       name: "Discovery Meadows",                      venueMatch: "Discovery Meadows",                    city: "san-jose",   cityLabel: "San Jose",  emoji: "🌿", tags: "Outdoor" },
+  // ── San Jose ──
+  { id: "sap-center",      name: "SAP Center",                             venueMatch: "SAP Center",                           city: "san-jose",      cityLabel: "San Jose",      emoji: "🏟️", tags: "Arena · Sports · Concerts" },
+  { id: "sj-cpa",          name: "SJ Center for the Performing Arts",      venueMatch: "San Jose Center for the Performing",   city: "san-jose",      cityLabel: "San Jose",      emoji: "🎭", tags: "Theater · Broadway · Opera" },
+  { id: "california-theatre", name: "California Theatre",                  venueMatch: "California Theatre",                   city: "san-jose",      cityLabel: "San Jose",      emoji: "🎼", tags: "Opera · Classical · Theater" },
+  { id: "sj-civic",        name: "San Jose Civic",                         venueMatch: "San Jose Civic",                       city: "san-jose",      cityLabel: "San Jose",      emoji: "🎵", tags: "Concerts · Shows" },
+  { id: "sj-improv",       name: "San Jose Improv",                        venueMatch: "San Jose Improv",                      city: "san-jose",      cityLabel: "San Jose",      emoji: "🎤", tags: "Comedy · Music" },
+  { id: "the-ritz",        name: "The Ritz",                               venueMatch: "The Ritz",                             city: "san-jose",      cityLabel: "San Jose",      emoji: "🎸", tags: "Music · Indie" },
+  { id: "tech-cu",         name: "Tech CU Arena",                          venueMatch: "Tech CU Arena",                        city: "san-jose",      cityLabel: "San Jose",      emoji: "🏀", tags: "Sports · Events" },
+  { id: "paypal-park",     name: "PayPal Park",                            venueMatch: "PayPal Park",                          city: "san-jose",      cityLabel: "San Jose",      emoji: "⚽", tags: "Soccer · Sports" },
+  { id: "excite-ballpark", name: "Excite Ballpark",                        venueMatch: "Excite Ballpark",                      city: "san-jose",      cityLabel: "San Jose",      emoji: "⚾", tags: "Baseball · MiLB" },
+  { id: "mcenery",         name: "McEnery Convention Center",              venueMatch: "McEnery Convention Center",            city: "san-jose",      cityLabel: "San Jose",      emoji: "🎪", tags: "Conventions · Special Events" },
+  { id: "discovery",       name: "Discovery Meadows",                      venueMatch: "Discovery Meadows",                    city: "san-jose",      cityLabel: "San Jose",      emoji: "🌿", tags: "Outdoor · Family" },
+  { id: "happy-hollow",    name: "Happy Hollow Park & Zoo",                venueMatch: "Happy Hollow",                         city: "san-jose",      cityLabel: "San Jose",      emoji: "🦁", tags: "Family · Zoo" },
+  { id: "sjpl",            name: "San Jose Public Library",                venueMatch: "San Jose Public Library",              city: "san-jose",      cityLabel: "San Jose",      emoji: "📚", tags: "Library · Classes · Family" },
+  // ── Mountain View ──
+  { id: "shoreline",       name: "Shoreline Amphitheatre",                 venueMatch: "Shoreline Amphitheatre",               city: "mountain-view", cityLabel: "Mountain View", emoji: "🎵", tags: "Outdoor Concerts" },
+  { id: "mv-cpa",          name: "Mountain View Center for the Performing Arts", venueMatch: "Mountain View Center for the Performing", city: "mountain-view", cityLabel: "Mountain View", emoji: "🎭", tags: "Theater · Dance · Music" },
+  { id: "chm",             name: "Computer History Museum",                venueMatch: "Computer History Museum",              city: "mountain-view", cityLabel: "Mountain View", emoji: "💾", tags: "Tech · Exhibits · Talks" },
+  { id: "mvpl",            name: "Mountain View Public Library",           venueMatch: "Mountain View Public Library",         city: "mountain-view", cityLabel: "Mountain View", emoji: "📚", tags: "Library · Classes · Family" },
+  // ── Santa Clara ──
+  { id: "levis-stadium",   name: "Levi's Stadium",                         venueMatch: "Levi's Stadium",                       city: "santa-clara",   cityLabel: "Santa Clara",   emoji: "🏈", tags: "Football · Concerts · Events" },
+  { id: "triton-museum",   name: "Triton Museum of Art",                   venueMatch: "Triton Museum",                        city: "santa-clara",   cityLabel: "Santa Clara",   emoji: "🖼️", tags: "Art · Exhibits · Free" },
+  // ── Palo Alto / Stanford ──
+  { id: "frost",           name: "Frost Amphitheatre",                     venueMatch: "Frost Amphitheatre",                   city: "palo-alto",     cityLabel: "Stanford",      emoji: "🌙", tags: "Outdoor Concerts" },
+  { id: "cantor",          name: "Cantor Arts Center",                     venueMatch: "Cantor Arts Center",                   city: "palo-alto",     cityLabel: "Stanford",      emoji: "🗿", tags: "Art · Exhibits · Free" },
+  { id: "palo-alto-library", name: "Palo Alto City Library",              venueMatch: "Palo Alto City Library",               city: "palo-alto",     cityLabel: "Palo Alto",     emoji: "📚", tags: "Library · Classes · Family" },
+  // ── Saratoga ──
+  { id: "montalvo",        name: "Montalvo Arts Center",                   venueMatch: "Montalvo",                             city: "saratoga",      cityLabel: "Saratoga",      emoji: "🎶", tags: "Concerts · Arts · Outdoor" },
+  // ── Sunnyvale ──
+  { id: "sunnyvale-library", name: "Sunnyvale Public Library",             venueMatch: "Sunnyvale Public Library",             city: "sunnyvale",     cityLabel: "Sunnyvale",     emoji: "📚", tags: "Library · Classes · Family" },
+  // ── Los Gatos ──
+  { id: "los-gatos-library", name: "Los Gatos Library",                   venueMatch: "Los Gatos Library",                    city: "los-gatos",     cityLabel: "Los Gatos",     emoji: "📚", tags: "Library · Classes · Family" },
+  // ── Campbell ──
+  { id: "campbell-library", name: "Campbell Library",                      venueMatch: "Campbell Library",                     city: "campbell",      cityLabel: "Campbell",      emoji: "📚", tags: "Library · Classes · Family" },
+  // ── Milpitas ──
+  { id: "milpitas-library", name: "Milpitas Library",                      venueMatch: "Milpitas Library",                     city: "milpitas",      cityLabel: "Milpitas",      emoji: "📚", tags: "Library · Classes · Family" },
 ];
 
 // ── Upcoming event type (from scraped JSON) ──
