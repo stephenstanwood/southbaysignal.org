@@ -5,6 +5,7 @@ import RealEstateCard from "../cards/RealEstateCard";
 import PermitPulseCard from "../cards/PermitPulseCard";
 import AirQualityCard from "../cards/AirQualityCard";
 import QuakeWatchCard from "../cards/QuakeWatchCard";
+import WaterWatchCard from "../cards/WaterWatchCard";
 import {
   SOUTH_BAY_EVENTS,
   type SBEvent,
@@ -2106,6 +2107,9 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
 
       {/* ── Quake Watch ── */}
       {!changingCity && <QuakeWatchCard />}
+
+      {/* ── Stream Watch ── */}
+      {!changingCity && <WaterWatchCard />}
 
       {/* ── Sports scoreboard ── */}
       <SportsView />
