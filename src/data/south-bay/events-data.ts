@@ -185,6 +185,7 @@ export const SOUTH_BAY_EVENTS: SBEvent[] = [
     cost: "free",
     kidFriendly: true,
     description: "Weekend market with fresh produce and vendors.",
+    // sourceNote: No official city URL found — verify location/hours at milpitas.gov or pcfma.org
     emoji: "🥬",
   },
   {
