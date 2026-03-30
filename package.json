@@ -19,7 +19,8 @@
     "generate-city-briefings": "node scripts/generate-city-briefings.mjs",
     "generate-permits": "node scripts/generate-permits.mjs",
     "generate-air-quality": "node scripts/generate-air-quality.mjs",
-    "generate-photos": "node scripts/generate-photos.mjs"
+    "generate-photos": "node scripts/generate-photos.mjs",
+    "generate-restaurant-radar": "node scripts/generate-restaurant-radar.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",

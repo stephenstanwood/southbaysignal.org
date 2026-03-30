@@ -202,9 +202,12 @@ function MiniGameRow({ game }: { game: ParsedGame }) {
 
   let result: React.ReactNode;
   if (isLive) {
+    const sbScoreLive = sbHome ? game.homeScore : game.awayScore;
+    const oppScoreLive = sbHome ? game.awayScore : game.homeScore;
+    const hasScore = sbScoreLive != null && oppScoreLive != null;
     result = (
-      <span style={{ color: "#ef4444", fontWeight: 700, fontSize: 11 }}>
-        ● {game.statusDetail}
+      <span style={{ color: "#ef4444", fontWeight: 700, fontSize: 11, fontFamily: "'Space Mono', monospace" }}>
+        ● {hasScore ? `${sbScoreLive}–${oppScoreLive} · ` : ""}{game.statusDetail}
       </span>
     );
   } else if (isFinal) {

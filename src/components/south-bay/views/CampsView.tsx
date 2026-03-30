@@ -766,9 +766,26 @@ function SummerBuilderMode() {
           }}>
             Which weeks need coverage?
           </h2>
-          <p style={{ fontSize: 13, color: "var(--sb-muted)", marginBottom: 20 }}>
+          <p style={{ fontSize: 13, color: "var(--sb-muted)", marginBottom: 16 }}>
             Select the weeks you need a camp for. Week 2 is a short week (no Friday — July 4th holiday).
           </p>
+          <button
+            onClick={() => {
+              const allNums = SUMMER_WEEKS.map(sw => sw.weekNum);
+              const allSelected = allNums.every(n => selectedWeeks.has(n));
+              setSelectedWeeks(allSelected ? new Set() : new Set(allNums));
+            }}
+            style={{
+              padding: "5px 14px",
+              borderRadius: 100,
+              border: "1px solid var(--sb-border)",
+              background: SUMMER_WEEKS.every(sw => selectedWeeks.has(sw.weekNum)) ? "var(--sb-ink)" : "transparent",
+              color: SUMMER_WEEKS.every(sw => selectedWeeks.has(sw.weekNum)) ? "#fff" : "var(--sb-muted)",
+              fontSize: 11, fontWeight: 700, cursor: "pointer", marginBottom: 16,
+            }}
+          >
+            {SUMMER_WEEKS.every(sw => selectedWeeks.has(sw.weekNum)) ? "Clear all" : "Select all 9 weeks"}
+          </button>
         </div>
 
         <div style={{

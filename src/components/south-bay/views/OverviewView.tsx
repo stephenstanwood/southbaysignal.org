@@ -1570,6 +1570,41 @@ function getPhoto(index: number): CuratedPhoto | null {
   return DAILY_PHOTOS[index % DAILY_PHOTOS.length];
 }
 
+// City-matched photo lookup — keywords found in photo titles/photographer credits
+const CITY_KEYWORDS: Record<string, string[]> = {
+  "cupertino":     ["cupertino", "apple park", "apple hq"],
+  "mountain-view": ["mountain view", "shoreline amphitheatre", "shoreline lake", "moffett"],
+  "san-jose":      ["san jose", "san josé", "sap center", "earthquakes", "mineta", "downtown sj"],
+  "santa-clara":   ["santa clara", "levi", "49ers", "great america"],
+  "sunnyvale":     ["sunnyvale"],
+  "campbell":      ["campbell"],
+  "los-gatos":     ["los gatos", "vasona"],
+  "los-altos":     ["los altos", "hidden villa"],
+  "palo-alto":     ["palo alto", "stanford"],
+  "saratoga":      ["saratoga"],
+  "milpitas":      ["milpitas"],
+};
+
+const CITY_PHOTO_MAP = (() => {
+  const map: Record<string, CuratedPhoto[]> = {};
+  for (const photo of ALL_PHOTOS) {
+    const haystack = (photo.title + " " + (photo.photographer ?? "")).toLowerCase();
+    for (const [city, keywords] of Object.entries(CITY_KEYWORDS)) {
+      if (keywords.some(kw => haystack.includes(kw))) {
+        (map[city] ??= []).push(photo);
+        break;
+      }
+    }
+  }
+  return map;
+})();
+
+function getCityPhoto(cityId: string, offset: number): CuratedPhoto | null {
+  const pool = CITY_PHOTO_MAP[cityId];
+  if (!pool?.length) return null;
+  return pool[offset % pool.length];
+}
+
 // ── Photo strip (auto-scrolling marquee) ─────────────────────────────────────
 
 function PhotoStrip() {
@@ -1636,7 +1671,7 @@ function AroundTownSection() {
           const dateFormatted = new Date(item.date + "T12:00:00").toLocaleDateString("en-US", {
             month: "short", day: "numeric",
           });
-          const photo = getPhoto(i);
+          const photo = getCityPhoto(item.cityId, i + (DATE_SEED % 97));
           return (
             <div key={item.id} style={{
               padding: "14px 0",
@@ -2105,7 +2140,39 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
   }, [homeCity]);
 
   // ── Upcoming scraped events for today ──
-  const allUpcoming = (upcomingJson as { events: UpcomingEvent[] }).events ?? [];
+  // Collapse multiple "Library Closed" notices from the same source/date into one entry
+  const rawUpcoming = (upcomingJson as { events: UpcomingEvent[] }).events ?? [];
+  const allUpcoming = (() => {
+    const closurePattern = /\bClosed\b/i;
+    const byDateSource = new Map<string, UpcomingEvent[]>();
+    const nonClosure: UpcomingEvent[] = [];
+    for (const e of rawUpcoming) {
+      if (closurePattern.test(e.title) && e.source) {
+        const key = `${e.date}::${e.source}`;
+        if (!byDateSource.has(key)) byDateSource.set(key, []);
+        byDateSource.get(key)!.push(e);
+      } else {
+        nonClosure.push(e);
+      }
+    }
+    const collapsed: UpcomingEvent[] = [];
+    for (const [, group] of byDateSource) {
+      if (group.length >= 2) {
+        const rep = group[0];
+        collapsed.push({
+          ...rep,
+          id: `${rep.source.replace(/\s+/g, "-").toLowerCase()}-all-closed-${rep.date}`,
+          title: `All ${rep.source} Locations Closed`,
+          city: "multi",
+          time: null,
+          endTime: null,
+        });
+      } else {
+        collapsed.push(...group);
+      }
+    }
+    return [...nonClosure, ...collapsed].sort((a, b) => a.date.localeCompare(b.date));
+  })();
   const todayUpcoming = allUpcoming.filter((e) => e.date === TODAY_ISO && !e.ongoing);
 
   // Sports events today — pulled out for hero callout (only upcoming, not started)
@@ -2456,14 +2523,14 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
       {/* ── Our Picks (weekends only) ── */}
       {IS_WEEKEND_MODE && !changingCity && <WeekendPicksCard />}
 
+      {/* ── Photo strip ── */}
+      {!changingCity && <PhotoStrip />}
+
       {/* ── On Stage this week (Ticketmaster) ── */}
       {!changingCity && <OnStageSection allUpcoming={allUpcoming} onNavigate={onNavigate} />}
 
       {/* ── This Week in [City] briefing ── */}
       {homeCity && !changingCity && <CityWeeklyBriefing city={homeCity} />}
-
-      {/* ── Photo strip ── */}
-      {!changingCity && <PhotoStrip />}
 
       {/* ── Around the South Bay ── */}
       {!changingCity && <AroundTownSection />}
