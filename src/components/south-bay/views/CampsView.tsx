@@ -23,6 +23,7 @@ const CITY_ACCENT: Record<string, string> = {
   "palo-alto":     "#1d4ed8",
   "saratoga":      "#065F46",
   "los-altos":     "#7c3aed",
+  "multi":         "#1a1a1a",
 };
 
 const TYPE_FILTERS: { id: CampType | "all"; label: string }[] = [
@@ -33,6 +34,7 @@ const TYPE_FILTERS: { id: CampType | "all"; label: string }[] = [
   { id: "stem",      label: "STEM"      },
   { id: "nature",    label: "Nature"    },
   { id: "specialty", label: "Specialty" },
+  { id: "academic",  label: "Academic"  },
 ];
 
 const TYPE_COLORS: Record<CampType, string> = {
@@ -42,11 +44,28 @@ const TYPE_COLORS: Record<CampType, string> = {
   stem:      "#0369a1",
   nature:    "#15803d",
   specialty: "#b45309",
+  academic:  "#b45309",
 };
+
+const ALL_ORG_TYPES: { id: string; label: string }[] = [
+  { id: "all",        label: "All"              },
+  { id: "city",       label: "City Programs"    },
+  { id: "nonprofit",  label: "Nonprofits"       },
+  { id: "private",    label: "Private"          },
+  { id: "university", label: "College Programs" },
+];
+
+const PRICE_TIERS: { id: string; label: string }[] = [
+  { id: "all",     label: "All"             },
+  { id: "budget",  label: "Budget (<$250)"  },
+  { id: "mid",     label: "Mid ($250–$400)" },
+  { id: "premium", label: "Premium ($400+)" },
+];
 
 const ALL_CITIES = Array.from(new Set(CAMPS.map((c) => c.cityId))).sort();
 
 function getCityLabel(cityId: string): string {
+  if (cityId === "multi") return "Multi-city";
   return CAMPS.find((c) => c.cityId === cityId)?.cityName ?? cityId;
 }
 
@@ -79,6 +98,16 @@ function weeksLabel(camp: Camp): string {
   return `Wks ${nums[0]}–${nums[nums.length - 1]}`;
 }
 
+// Price tier helper
+function priceTier(camp: Camp): "budget" | "mid" | "premium" {
+  const prices = camp.weeks.map((w) => w.residentPrice).filter((p): p is number => p !== null);
+  if (!prices.length) return "mid";
+  const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+  if (avg < 250) return "budget";
+  if (avg <= 400) return "mid";
+  return "premium";
+}
+
 // ---------------------------------------------------------------------------
 // Camp card (Browse mode)
 // ---------------------------------------------------------------------------
@@ -86,6 +115,18 @@ function weeksLabel(camp: Camp): string {
 function CampCard({ camp }: { camp: Camp }) {
   const accent = CITY_ACCENT[camp.cityId] ?? "#555";
   const typeColor = TYPE_COLORS[camp.type];
+
+  const orgBadge = (() => {
+    if (camp.orgType === "city") return null;
+    if (camp.orgType === "nonprofit") return { label: "Nonprofit", color: "#0891b2" };
+    if (camp.orgType === "university") return { label: "College", color: "#6d28d9" };
+    return { label: "Private", color: "#6b7280" };
+  })();
+
+  // Only show locations if specific (not just a generic "Various ..." line)
+  const usefulLocations = camp.locations.filter(
+    (loc) => !loc.toLowerCase().startsWith("various")
+  );
 
   return (
     <div style={{
@@ -111,6 +152,15 @@ function CampCard({ camp }: { camp: Camp }) {
         }}>
           {camp.type}
         </span>
+        {orgBadge && (
+          <span style={{
+            fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 3,
+            background: orgBadge.color + "18", color: orgBadge.color,
+            letterSpacing: "0.04em",
+          }}>
+            {orgBadge.label}
+          </span>
+        )}
         {camp.featured && (
           <span style={{ fontSize: 10, color: "#b45309", fontWeight: 700, marginLeft: "auto" }}>
             ★ Featured
@@ -153,6 +203,11 @@ function CampCard({ camp }: { camp: Camp }) {
         <div>
           <span style={{ fontSize: 10, fontWeight: 700, color: "var(--sb-muted)", textTransform: "uppercase", letterSpacing: "0.05em", display: "block" }}>Price</span>
           <span style={{ fontSize: 12, color: "var(--sb-ink)", fontWeight: 600 }}>{priceRange(camp)}</span>
+          {camp.priceNote && (
+            <span style={{ display: "block", fontSize: 10, color: "#15803d", marginTop: 2 }}>
+              ✓ {camp.priceNote}
+            </span>
+          )}
         </div>
         <div>
           <span style={{ fontSize: 10, fontWeight: 700, color: "var(--sb-muted)", textTransform: "uppercase", letterSpacing: "0.05em", display: "block" }}>Coverage</span>
@@ -160,10 +215,12 @@ function CampCard({ camp }: { camp: Camp }) {
         </div>
       </div>
 
-      {/* Locations */}
-      <div style={{ fontSize: 11, color: "var(--sb-muted)", marginBottom: 10 }}>
-        📍 {camp.locations.join(" · ")}
-      </div>
+      {/* Locations — only if useful */}
+      {usefulLocations.length > 0 && (
+        <div style={{ fontSize: 11, color: "var(--sb-muted)", marginBottom: 10 }}>
+          📍 {usefulLocations.join(" · ")}
+        </div>
+      )}
 
       {/* Week chips */}
       <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 12 }}>
@@ -240,6 +297,8 @@ function CampCard({ camp }: { camp: Camp }) {
 function BrowseMode() {
   const [selectedCities, setSelectedCities] = useState<Set<string>>(new Set());
   const [typeFilter, setTypeFilter] = useState<CampType | "all">("all");
+  const [orgTypeFilter, setOrgTypeFilter] = useState<string>("all");
+  const [priceTierFilter, setPriceTierFilter] = useState<string>("all");
   const [ageMin, setAgeMin] = useState<string>("");
   const [ageMax, setAgeMax] = useState<string>("");
   const [weekFilter, setWeekFilter] = useState<number | "all">("all");
@@ -254,15 +313,23 @@ function BrowseMode() {
   };
 
   const filtered = useMemo(() => {
-    return CAMPS.filter((camp) => {
+    const results = CAMPS.filter((camp) => {
       if (selectedCities.size > 0 && !selectedCities.has(camp.cityId)) return false;
       if (typeFilter !== "all" && camp.type !== typeFilter) return false;
+      if (orgTypeFilter !== "all" && camp.orgType !== orgTypeFilter) return false;
+      if (priceTierFilter !== "all" && priceTier(camp) !== priceTierFilter) return false;
       if (ageMin !== "" && camp.ageMax < parseInt(ageMin)) return false;
       if (ageMax !== "" && camp.ageMin > parseInt(ageMax)) return false;
       if (weekFilter !== "all" && !campHasWeek(camp, weekFilter)) return false;
       return true;
     });
-  }, [selectedCities, typeFilter, ageMin, ageMax, weekFilter]);
+    // Featured camps first
+    return [...results].sort((a, b) => {
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+      return 0;
+    });
+  }, [selectedCities, typeFilter, orgTypeFilter, priceTierFilter, ageMin, ageMax, weekFilter]);
 
   return (
     <div>
@@ -298,7 +365,7 @@ function BrowseMode() {
       </div>
 
       {/* Type + week + age filters */}
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 20, alignItems: "flex-end" }}>
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 14, alignItems: "flex-end" }}>
         <div>
           <div style={{ fontSize: 11, fontWeight: 700, color: "var(--sb-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
             Type
@@ -386,6 +453,43 @@ function BrowseMode() {
         </div>
       </div>
 
+      {/* Second filter row: Org type + Price tier */}
+      <div style={{ display: "flex", gap: 20, flexWrap: "wrap", marginBottom: 20, alignItems: "flex-end" }}>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "var(--sb-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+            Program Type
+          </div>
+          <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+            {ALL_ORG_TYPES.map((f) => (
+              <button
+                key={f.id}
+                onClick={() => setOrgTypeFilter(f.id)}
+                className={`camps-filter-pill${orgTypeFilter === f.id ? " camps-filter-pill--active" : ""}`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "var(--sb-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+            Price
+          </div>
+          <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+            {PRICE_TIERS.map((f) => (
+              <button
+                key={f.id}
+                onClick={() => setPriceTierFilter(f.id)}
+                className={`camps-filter-pill${priceTierFilter === f.id ? " camps-filter-pill--active" : ""}`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Results */}
       <div style={{
         fontSize: 11,
@@ -435,7 +539,7 @@ interface BuilderSuggestion {
 
 function SummerBuilderMode() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [childAge, setChildAge] = useState<string>("");
+  const [childAges, setChildAges] = useState<string[]>([""]);
   const [selectedWeeks, setSelectedWeeks] = useState<Set<number>>(new Set());
 
   const toggleWeek = (weekNum: number) => {
@@ -447,14 +551,28 @@ function SummerBuilderMode() {
     });
   };
 
-  const age = childAge !== "" ? parseInt(childAge) : null;
+  const addChild = () => setChildAges((prev) => [...prev, ""]);
+  const updateChild = (idx: number, val: string) => {
+    setChildAges((prev) => prev.map((v, i) => (i === idx ? val : v)));
+  };
+  const removeChild = (idx: number) => {
+    setChildAges((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const parsedAges = childAges
+    .map((a) => (a !== "" ? parseInt(a) : null))
+    .filter((a): a is number => a !== null && a >= 4 && a <= 17);
+
+  const allAgesValid = parsedAges.length > 0 && parsedAges.length === childAges.filter((a) => a !== "").length;
 
   const suggestions = useMemo((): BuilderSuggestion[] => {
-    if (age === null) return [];
+    if (parsedAges.length === 0) return [];
     const sorted = Array.from(selectedWeeks).sort((a, b) => a - b);
     return sorted.map((weekNum) => {
-      const matchingCamps = CAMPS.filter(
-        (camp) => age >= camp.ageMin && age <= camp.ageMax && campHasWeek(camp, weekNum)
+      // Camp must work for ALL entered ages
+      const matchingCamps = CAMPS.filter((camp) =>
+        parsedAges.every((age) => age >= camp.ageMin && age <= camp.ageMax) &&
+        campHasWeek(camp, weekNum)
       );
       const options = matchingCamps
         .map((camp) => ({ camp, week: getCampWeek(camp, weekNum)! }))
@@ -467,7 +585,7 @@ function SummerBuilderMode() {
         .slice(0, 3);
       return { weekNum, weekLabel: SUMMER_WEEKS.find((sw) => sw.weekNum === weekNum)?.label ?? `Week ${weekNum}`, options };
     });
-  }, [age, selectedWeeks]);
+  }, [parsedAges.join(","), selectedWeeks]);
 
   const suggestedPlan = useMemo(() => {
     return suggestions
@@ -481,17 +599,31 @@ function SummerBuilderMode() {
     }, 0);
   }, [suggestedPlan]);
 
+  // Mix-it-up suggestion: if 3+ weeks all same type, suggest mixing
+  const mixItUpSuggestion = useMemo(() => {
+    if (suggestedPlan.length < 3) return null;
+    const types = suggestedPlan.map((item) => item.camp.type);
+    const firstType = types[0];
+    if (types.every((t) => t === firstType)) {
+      const otherTypes: CampType[] = ["general", "sports", "arts", "stem", "nature", "specialty", "academic"];
+      const alternatives = otherTypes.filter((t) => t !== firstType);
+      const suggestion = alternatives[0];
+      return { dominantType: firstType, suggestedType: suggestion };
+    }
+    return null;
+  }, [suggestedPlan]);
+
   const handleReset = () => {
     setStep(1);
-    setChildAge("");
+    setChildAges([""]);
     setSelectedWeeks(new Set());
   };
 
-  // Step 1: Age
+  // Step 1: Age(s)
   if (step === 1) {
     return (
       <div>
-        <div style={{ maxWidth: 420, margin: "0 auto", textAlign: "center", padding: "32px 0 24px" }}>
+        <div style={{ maxWidth: 480, margin: "0 auto", textAlign: "center", padding: "32px 0 24px" }}>
           <div style={{ fontSize: 32, marginBottom: 12 }}>🏕️</div>
           <h2 style={{
             fontFamily: "var(--sb-serif)",
@@ -503,10 +635,10 @@ function SummerBuilderMode() {
             Build your child's summer
           </h2>
           <p style={{ fontSize: 14, color: "var(--sb-muted)", marginBottom: 28, lineHeight: 1.6 }}>
-            Tell us your child's age and which weeks you need coverage, and we'll put together a suggested camp plan with estimated costs.
+            Tell us your children's ages and which weeks you need coverage, and we'll put together a suggested camp plan with estimated costs.
           </p>
 
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 24, textAlign: "left" }}>
             <label style={{
               display: "block",
               fontSize: 12,
@@ -514,45 +646,85 @@ function SummerBuilderMode() {
               color: "var(--sb-muted)",
               textTransform: "uppercase",
               letterSpacing: "0.06em",
-              marginBottom: 8,
+              marginBottom: 10,
             }}>
-              Child's Age
+              Children's Ages
             </label>
-            <input
-              type="number"
-              min={4}
-              max={17}
-              placeholder="e.g. 8"
-              value={childAge}
-              onChange={(e) => setChildAge(e.target.value)}
-              style={{
-                width: "100%",
-                maxWidth: 120,
-                fontSize: 24,
-                fontWeight: 700,
-                textAlign: "center",
-                padding: "12px 16px",
-                border: "2px solid var(--sb-border)",
-                borderRadius: "var(--sb-radius)",
-                background: "var(--sb-card)",
-                color: "var(--sb-ink)",
-                fontFamily: "var(--sb-sans)",
-              }}
-            />
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-start" }}>
+              {childAges.map((age, idx) => (
+                <div key={idx} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <input
+                    type="number"
+                    min={4}
+                    max={17}
+                    placeholder="Age (4–17)"
+                    value={age}
+                    onChange={(e) => updateChild(idx, e.target.value)}
+                    style={{
+                      width: 130,
+                      fontSize: 18,
+                      fontWeight: 700,
+                      textAlign: "center",
+                      padding: "10px 12px",
+                      border: "2px solid var(--sb-border)",
+                      borderRadius: "var(--sb-radius)",
+                      background: "var(--sb-card)",
+                      color: "var(--sb-ink)",
+                      fontFamily: "var(--sb-sans)",
+                    }}
+                  />
+                  {childAges.length > 1 && (
+                    <button
+                      onClick={() => removeChild(idx)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "var(--sb-muted)",
+                        fontSize: 16,
+                        padding: "4px 6px",
+                      }}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                onClick={addChild}
+                style={{
+                  background: "none",
+                  border: "1px dashed var(--sb-border)",
+                  borderRadius: "var(--sb-radius)",
+                  cursor: "pointer",
+                  color: "var(--sb-muted)",
+                  fontSize: 12,
+                  padding: "6px 14px",
+                  marginTop: 4,
+                }}
+              >
+                + Add another child
+              </button>
+            </div>
+            {parsedAges.length > 1 && (
+              <div style={{ fontSize: 12, color: "var(--sb-muted)", marginTop: 8 }}>
+                Will show camps that work for all {parsedAges.length} ages simultaneously.
+              </div>
+            )}
           </div>
 
           <button
-            onClick={() => age !== null && age >= 4 && age <= 17 && setStep(2)}
-            disabled={age === null || age < 4 || age > 17}
+            onClick={() => allAgesValid && setStep(2)}
+            disabled={!allAgesValid}
             style={{
               padding: "10px 28px",
-              background: age !== null && age >= 4 && age <= 17 ? "var(--sb-ink)" : "var(--sb-border)",
-              color: age !== null && age >= 4 && age <= 17 ? "#fff" : "var(--sb-muted)",
+              background: allAgesValid ? "var(--sb-ink)" : "var(--sb-border)",
+              color: allAgesValid ? "#fff" : "var(--sb-muted)",
               border: "none",
               borderRadius: "var(--sb-radius)",
               fontSize: 13,
               fontWeight: 700,
-              cursor: age !== null && age >= 4 && age <= 17 ? "pointer" : "default",
+              cursor: allAgesValid ? "pointer" : "default",
               letterSpacing: "0.04em",
               transition: "all 0.15s",
             }}
@@ -566,6 +738,10 @@ function SummerBuilderMode() {
 
   // Step 2: Week selection
   if (step === 2) {
+    const ageLabel = parsedAges.length === 1
+      ? `Age ${parsedAges[0]}`
+      : `Ages ${parsedAges.join(", ")}`;
+
     return (
       <div>
         <div style={{ marginBottom: 20 }}>
@@ -579,7 +755,7 @@ function SummerBuilderMode() {
             >
               ← Back
             </button>
-            <span style={{ fontSize: 12, color: "var(--sb-muted)" }}>Age {age}</span>
+            <span style={{ fontSize: 12, color: "var(--sb-muted)" }}>{ageLabel}</span>
           </div>
           <h2 style={{
             fontFamily: "var(--sb-serif)",
@@ -652,6 +828,9 @@ function SummerBuilderMode() {
 
   // Step 3: Results
   const weeksWithNoCamps = suggestions.filter((s) => s.options.length === 0);
+  const ageLabel = parsedAges.length === 1
+    ? `Age ${parsedAges[0]}`
+    : `Ages ${parsedAges.join(", ")}`;
 
   return (
     <div>
@@ -674,7 +853,7 @@ function SummerBuilderMode() {
         }}>
           Your Summer Plan
         </h2>
-        <span style={{ fontSize: 12, color: "var(--sb-muted)", marginLeft: "auto" }}>Age {age}</span>
+        <span style={{ fontSize: 12, color: "var(--sb-muted)", marginLeft: "auto" }}>{ageLabel}</span>
       </div>
 
       {/* Suggested plan summary */}
@@ -685,7 +864,7 @@ function SummerBuilderMode() {
           borderLeft: "3px solid #15803d",
           borderRadius: "var(--sb-radius)",
           padding: "14px 16px",
-          marginBottom: 20,
+          marginBottom: 16,
         }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: "#15803d", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
             Suggested Plan — Lowest Cost
@@ -723,8 +902,24 @@ function SummerBuilderMode() {
             <span style={{ color: "#15803d" }}>${totalCost}</span>
           </div>
           <div style={{ fontSize: 11, color: "#4ade80", marginTop: 6, fontStyle: "italic" }}>
-            Resident prices shown. Verify all prices at each city's website.
+            Resident prices shown. Verify all prices at each program's website.
           </div>
+        </div>
+      )}
+
+      {/* Mix it up suggestion */}
+      {mixItUpSuggestion && (
+        <div style={{
+          background: "#fffbeb",
+          border: "1px solid #fde68a",
+          borderLeft: "3px solid #d97706",
+          borderRadius: "var(--sb-radius)",
+          padding: "10px 14px",
+          marginBottom: 16,
+          fontSize: 13,
+          color: "#92400e",
+        }}>
+          💡 Your plan is all <strong>{mixItUpSuggestion.dominantType}</strong> camps — consider mixing in a <strong>{mixItUpSuggestion.suggestedType}</strong> week for variety.
         </div>
       )}
 
@@ -758,7 +953,7 @@ function SummerBuilderMode() {
 
           {suggestion.options.length === 0 ? (
             <div style={{ fontSize: 13, color: "var(--sb-muted)", padding: "8px 0" }}>
-              No camps found for age {age} in week {suggestion.weekNum}. Try checking individual city websites.
+              No camps found for {ageLabel} in week {suggestion.weekNum}. Try checking individual city websites.
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -873,10 +1068,10 @@ export default function CampsView() {
         <div className="dev-header-eyebrow">South Bay / Summer 2026</div>
         <h1 className="dev-header-title">Summer Camps</h1>
         <p className="dev-header-subtitle">
-          City recreation camps across the South Bay — compare options, check availability by week, and build a full-summer plan for your kids.
+          City rec programs, specialty camps, sports academies, arts programs, and more — all in one place. Use Summer Builder to piece together your whole summer.
         </p>
         <div className="dev-header-note">
-          Prices and availability from city recreation departments. Always verify at the city's website before registering.
+          32 programs listed for Summer 2026. City program prices are approximate — verify before registering.
         </div>
       </div>
 
@@ -931,7 +1126,7 @@ export default function CampsView() {
         color: "var(--sb-muted)",
         lineHeight: 1.6,
       }}>
-        <strong style={{ color: "var(--sb-ink)" }}>About this data:</strong> Camp listings are based on city recreation programs for Summer 2026. Prices for non-San Jose cities are approximate and should be verified directly with the city before registering. Availability changes quickly — check city websites for current enrollment status.
+        <strong style={{ color: "var(--sb-ink)" }}>About this data:</strong> Camp listings cover city programs, nonprofits, private camps, and college programs for Summer 2026. Prices are approximate and should be verified directly with each program before registering. Availability changes quickly — check each program's website for current enrollment status.
       </div>
     </div>
   );
