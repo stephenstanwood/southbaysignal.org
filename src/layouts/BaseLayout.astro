@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Analytics from "@vercel/analytics/astro";
+import ReaderWidget from "../components/south-bay/ReaderWidget";
 
 interface Props {
   title: string;
@@ -52,6 +53,7 @@ const ogImage = `${siteUrl}/images/og-image.png`;
     <main id="main-content">
       <slot />
     </main>
+    <ReaderWidget client:idle />
     <Analytics />
   </body>
 </html>
