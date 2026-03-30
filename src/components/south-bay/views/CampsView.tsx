@@ -6,6 +6,7 @@ import {
   type CampType,
   type CampWeek,
 } from "../../../data/south-bay/camps-data";
+import springBreakJson from "../../../data/south-bay/spring-break-picks.json";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -1072,6 +1073,263 @@ function SummerBuilderMode() {
 }
 
 // ---------------------------------------------------------------------------
+// Spring Break section (shown ~1 week before through end of break)
+// ---------------------------------------------------------------------------
+
+const SB_SHOW_START = "2026-03-30";
+const SB_BREAK_END  = "2026-04-17";
+
+const SB_CITY_LINKS: { city: string; label: string; url: string }[] = [
+  { city: "San José",     label: "SJ Parks & Rec",   url: "https://sjregistration.com" },
+  { city: "Sunnyvale",    label: "Sunnyvale Rec",     url: "https://www.sunnyvale.ca.gov/home/showpublisheddocument/39258" },
+  { city: "Mountain View",label: "MV Parks & Rec",   url: "https://www.mountainview.gov/departments/parks_and_recreation/registration" },
+  { city: "Cupertino",    label: "Cupertino Rec",    url: "https://recreation.cupertino.org" },
+  { city: "Santa Clara",  label: "Santa Clara Rec",  url: "https://santaclaraca.gov/residents/parks-recreation" },
+  { city: "Campbell",     label: "Campbell Rec",     url: "https://www.campbellca.gov/recreation" },
+];
+
+const PICK_EMOJI: Record<string, string> = {
+  community: "🎉",
+  education: "📚",
+  arts:      "🎨",
+  family:    "👨‍👩‍👧",
+  sports:    "⚽",
+};
+
+function SpringBreakSection() {
+  const today = new Date().toISOString().split("T")[0];
+  if (today < SB_SHOW_START || today > SB_BREAK_END) return null;
+
+  const data = springBreakJson as {
+    breakStart?: string;
+    breakEnd?: string;
+    picks?: Array<{
+      id: string;
+      title: string;
+      displayDate: string;
+      time?: string;
+      venue?: string;
+      city: string;
+      cost: string;
+      url?: string;
+      category: string;
+      why?: string;
+    }>;
+  };
+  const picks = data.picks ?? [];
+
+  // Countdown to first break wave (Apr 6)
+  const firstBreak = "2026-04-06";
+  let badge = "";
+  if (today < firstBreak) {
+    const days = Math.round(
+      (new Date(firstBreak + "T00:00:00").getTime() - new Date(today + "T00:00:00").getTime()) /
+        86400000
+    );
+    badge = days === 1 ? "Tomorrow!" : `${days} days away`;
+  } else {
+    badge = "This week!";
+  }
+
+  return (
+    <div style={{ marginBottom: 28 }}>
+      {/* Section header */}
+      <div
+        style={{
+          background: "#fff8f0",
+          border: "1.5px solid #fed7aa",
+          borderRadius: 10,
+          padding: "14px 16px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: 12,
+            flexWrap: "wrap",
+          }}
+        >
+          <span style={{ fontSize: 17 }}>🌸</span>
+          <span style={{ fontWeight: 700, fontSize: 14, color: "var(--sb-ink)" }}>
+            Spring Break Guide
+          </span>
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              padding: "2px 8px",
+              background: "#ea580c",
+              color: "#fff",
+              borderRadius: 100,
+            }}
+          >
+            {badge}
+          </span>
+          <span
+            style={{
+              fontSize: 11,
+              color: "var(--sb-muted)",
+              marginLeft: "auto",
+              fontFamily: "'Space Mono', monospace",
+            }}
+          >
+            Apr 3–17
+          </span>
+        </div>
+
+        {/* Curated picks */}
+        {picks.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
+            {picks.map((pick) => {
+              const emoji = PICK_EMOJI[pick.category] ?? "📅";
+              return (
+                <div
+                  key={pick.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: 10,
+                    padding: "10px 12px",
+                    background: "#fff",
+                    borderRadius: 8,
+                    border: "1px solid #fed7aa",
+                  }}
+                >
+                  <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>{emoji}</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        flexWrap: "wrap",
+                        marginBottom: 2,
+                      }}
+                    >
+                      {pick.url ? (
+                        <a
+                          href={pick.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: "var(--sb-ink)",
+                            textDecoration: "none",
+                          }}
+                        >
+                          {pick.title}
+                        </a>
+                      ) : (
+                        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--sb-ink)" }}>
+                          {pick.title}
+                        </span>
+                      )}
+                      {pick.cost === "free" && (
+                        <span
+                          style={{
+                            fontSize: 10,
+                            fontWeight: 700,
+                            padding: "1px 5px",
+                            borderRadius: 3,
+                            background: "#DCFCE7",
+                            color: "#15803D",
+                            flexShrink: 0,
+                          }}
+                        >
+                          FREE
+                        </span>
+                      )}
+                    </div>
+                    {pick.why && (
+                      <div
+                        style={{
+                          fontSize: 12,
+                          color: "var(--sb-muted)",
+                          marginBottom: 3,
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {pick.why}
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        fontSize: 11,
+                        color: "var(--sb-light)",
+                        fontFamily: "'Space Mono', monospace",
+                      }}
+                    >
+                      {pick.displayDate}
+                      {pick.time ? ` · ${pick.time}` : ""}
+                      {pick.venue ? ` · ${pick.venue}` : ""}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* City parks & rec links for full-week programs */}
+        <div>
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: "var(--sb-muted)",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              marginBottom: 8,
+            }}
+          >
+            Full-week day camp programs
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {SB_CITY_LINKS.map((link) => (
+              <a
+                key={link.city}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  padding: "5px 10px",
+                  borderRadius: 6,
+                  background: "#fff",
+                  border: "1px solid #fdba74",
+                  color: "#c2410c",
+                  textDecoration: "none",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {link.label} →
+              </a>
+            ))}
+          </div>
+          <div
+            style={{
+              fontSize: 11,
+              color: "var(--sb-muted)",
+              marginTop: 8,
+              lineHeight: 1.5,
+            }}
+          >
+            City programs book fast — check directly with each department for 2026 spring break availability.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main view
 // ---------------------------------------------------------------------------
 
@@ -1091,6 +1349,9 @@ export default function CampsView() {
           32 programs listed for Summer 2026. City program prices are approximate — verify before registering.
         </div>
       </div>
+
+      {/* Spring break section — seasonal, shows ~1 wk before through Apr 17 */}
+      <SpringBreakSection />
 
       {/* Mode switcher */}
       <div style={{ display: "flex", gap: 4, marginBottom: 24 }}>
