@@ -12,6 +12,7 @@ import TransitView from "./views/TransitView";
 import WeatherView from "./views/WeatherView";
 import FoodView from "./views/FoodView";
 import PlanView from "./views/PlanView";
+import CampsView from "./views/CampsView";
 
 const TODAY = new Date().toLocaleDateString("en-US", {
   weekday: "long",
@@ -179,6 +180,7 @@ export default function SignalApp() {
         {activeTab === "food" && <FoodView />}
         {activeTab === "weather" && <WeatherView homeCity={homeCity} />}
         {activeTab === "plan" && <PlanView />}
+        {activeTab === "camps" && <CampsView />}
       </main>
 
       {/* Footer */}

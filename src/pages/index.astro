@@ -1810,6 +1810,36 @@ const title = "The South Bay Signal";
         .tech-legend-note { display: none; }
         .tech-chart-wrap { overflow-x: auto; }
       }
+
+      /* ── Camps ── */
+      .camps-view {
+        padding: 0;
+      }
+      .camps-filter-pill {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 10px;
+        border-radius: 100px;
+        border: 1px solid var(--sb-border);
+        background: transparent;
+        color: var(--sb-muted);
+        cursor: pointer;
+        transition: all 0.12s;
+        white-space: nowrap;
+      }
+      .camps-filter-pill:hover {
+        border-color: var(--sb-ink);
+        color: var(--sb-ink);
+      }
+      .camps-filter-pill--active {
+        background: var(--sb-ink);
+        border-color: var(--sb-ink);
+        color: #fff;
+        font-weight: 700;
+      }
+      @media (max-width: 640px) {
+        .camps-view .dev-header-title { font-size: 28px; }
+      }
     </style>
   </Fragment>
 

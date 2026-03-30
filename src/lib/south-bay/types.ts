@@ -15,7 +15,7 @@ export type City =
   | "palo-alto"
   | "milpitas";
 
-export type Category = "sports" | "events" | "government" | "technology" | "plan" | "development" | "transit" | "weather" | "food";
+export type Category = "sports" | "events" | "government" | "technology" | "plan" | "development" | "transit" | "weather" | "food" | "camps";
 
 export type Tab = "overview" | Category;
 
@@ -27,6 +27,7 @@ export interface TabDef {
 export const TABS: TabDef[] = [
   { id: "overview", label: "Today" },
   { id: "plan", label: "Plan My Day" },
+  { id: "camps", label: "Camps" },
   { id: "events", label: "Events" },
   { id: "government", label: "Gov" },
   { id: "technology", label: "Tech" },
