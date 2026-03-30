@@ -10,7 +10,7 @@ const TYPE_META: Record<string, { emoji: string; label: string; color: number }>
 };
 
 export const POST: APIRoute = async ({ request }) => {
-  const webhookUrl = import.meta.env.SBS_DISCORD_WEBHOOK;
+  const webhookUrl = import.meta.env.DISCORD_FEEDBACK_WEBHOOK;
   if (!webhookUrl) {
     return new Response(JSON.stringify({ error: 'Not configured' }), { status: 500 });
   }
