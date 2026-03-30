@@ -2252,6 +2252,13 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
 
   const southBayCount = southBayTodayStatic.length + southBayTodayUpcoming.length;
 
+  // ── Ongoing events active today (multi-day exhibits, festivals, open houses) ──
+  // These have e.ongoing === true and started on or before today
+  const ongoingToday = allUpcoming
+    .filter((e) => e.ongoing === true && e.date <= TODAY_ISO && e.category !== "sports")
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, 6);
+
   const cityIsEmpty = homeCity && cityTodayCount < 5;
   const showExpandedRegional = cityIsEmpty;
   const SB_LIMIT = homeCity ? 6 : 8;
@@ -2546,6 +2553,23 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
               )}
             </>
           )}
+        </div>
+      )}
+
+      {/* ── Ongoing events (multi-day exhibits, festivals, open houses) ── */}
+      {ongoingToday.length > 0 && !changingCity && (
+        <div style={{ marginBottom: 28 }}>
+          <div className="sb-section-header" style={{ marginBottom: 10 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--sb-muted)", fontFamily: "'Space Mono', monospace" }}>
+              Also this week
+            </span>
+            <div className="sb-section-line" />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0 32px" }} className="sb-today-grid">
+            {ongoingToday.map((e) => (
+              <UpcomingRow key={e.id} event={e} showCity={true} />
+            ))}
+          </div>
         </div>
       )}
 
