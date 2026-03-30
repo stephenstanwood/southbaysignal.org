@@ -31,7 +31,7 @@ export const POST: APIRoute = async ({ request }) => {
   const pageStr = page ? ` — ${page}` : '';
 
   const payload = {
-    content: `${meta.emoji} **${meta.label}**${pageStr}`,
+    content: `${meta.emoji} **${meta.label}**${pageStr}\n> ${message.trim().slice(0, 1800).replace(/\n/g, '\n> ')}`,
     embeds: [{
       title: `${meta.emoji} ${meta.label}`,
       description: message.trim().slice(0, 2000),
