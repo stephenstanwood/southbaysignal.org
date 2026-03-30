@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-03-30T07:07:29.282Z",
+      "generatedAt": "2026-03-30T11:08:43.733Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
       "dateRange": "Mar 23 – Mar 30",
       "stats": {
-        "total": 231,
-        "notable": 20,
-        "newUnits": 5,
-        "totalValuation": 78947246
+        "total": 108,
+        "notable": 11,
+        "newUnits": 4,
+        "totalValuation": 5124642
       },
       "permits": [
         {
@@ -63,42 +63,6 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-116374-RS",
-          "address": "2760 Longford Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "New Detached adu 450 Sq Ft",
-          "valuation": 76091,
-          "units": 1,
-          "issueDate": "2026-03-23",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2026-108610-CI",
-          "address": "2333 Samaritan Dr",
-          "category": "new-construction",
-          "categoryLabel": "New Construction",
-          "workType": "New Construction",
-          "description": "Good Samaritan (Bemp 20%) Foundation Only Parking Garage",
-          "valuation": 170000,
-          "units": 0,
-          "issueDate": "2026-03-23",
-          "subtype": "Open Public Parking Garage"
-        },
-        {
-          "id": "2026-108908-CI",
-          "address": "688 E Brokaw Rd",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "New Construction",
-          "description": "Balance to Complete Supermicro New Warm Shell Bldg",
-          "valuation": 72000000,
-          "units": 0,
-          "issueDate": "2026-03-23",
-          "subtype": "Manufacturing"
-        },
-        {
           "id": "2026-109466-CI",
           "address": "2161 Monterey Rd",
           "category": "commercial-large",
@@ -123,16 +87,52 @@
           "subtype": "Office"
         },
         {
-          "id": "2026-106391-CI",
-          "address": "5353 Almaden Ex J",
+          "id": "2026-108673-CI",
+          "address": "2325 Orchard Py",
           "category": "commercial-large",
           "categoryLabel": "Commercial Project",
           "workType": "Tenant Improvement",
-          "description": "Trader Joe'S ti",
-          "valuation": 500000,
+          "description": "Apple (Bemp100%) Tool Install",
+          "valuation": 250000,
           "units": 0,
-          "issueDate": "2026-03-23",
-          "subtype": "Retail"
+          "issueDate": "2026-03-24",
+          "subtype": "Office"
+        },
+        {
+          "id": "2024-098636-RS",
+          "address": "1015 Riverside Dr",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Additions/Alterations",
+          "description": "Complete Rebuild & Additions",
+          "valuation": 377409,
+          "units": 1,
+          "issueDate": "2026-03-24",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-108378-CI",
+          "address": "2549 S King Rd",
+          "category": "commercial",
+          "categoryLabel": "Commercial",
+          "workType": "Tenant Improvement",
+          "description": "Srp (Bemp100%) Fomo ti #A16",
+          "valuation": 100000,
+          "units": 0,
+          "issueDate": "2026-03-24",
+          "subtype": "Restaurant"
+        },
+        {
+          "id": "2026-109056-CI",
+          "address": "1710 Automation Py",
+          "category": "commercial",
+          "categoryLabel": "Commercial",
+          "workType": "Tenant Improvement",
+          "description": "Quantumscape (Bem100%) Ph 2.51 Tool Install",
+          "valuation": 70000,
+          "units": 0,
+          "issueDate": "2026-03-24",
+          "subtype": "R & D Lab"
         }
       ]
     }

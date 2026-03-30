@@ -1640,8 +1640,9 @@ function getCityPhoto(cityId: string, offset: number): CuratedPhoto | null {
 
 function PhotoStrip() {
   if (ALL_PHOTOS.length < 4) return null;
-  // Use up to 20 photos; duplicate for seamless loop
-  const strip = DAILY_PHOTOS.slice(0, Math.min(20, DAILY_PHOTOS.length));
+  // Shuffle per page load so the strip is always different
+  const LOAD_SEED = Math.floor(Math.random() * 1_000_000);
+  const strip = seededShuffle(ALL_PHOTOS, LOAD_SEED).slice(0, Math.min(20, ALL_PHOTOS.length));
 
   const tile = (p: CuratedPhoto, keySuffix: string) => (
     <a
