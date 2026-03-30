@@ -165,6 +165,8 @@ const INTERNAL_EVENT_PATTERNS = [
   /\bgrades?\s+due\b/i,
   /\bquarter\s*:\s*(gsb|instruction|exams?|begins?|ends?)\b/i,
   /\b(spring|fall|winter|summer)\s+quarter\s*:/i,
+  /\bquarter\s+planning\b/i,
+  /\bopens?\s+for\s+enrollment\b/i,
   /\bgsb\s+instruction\b/i,
   /\bholiday\s+observance\b/i,
   /\buniversity\s+holiday\b/i,
@@ -181,6 +183,8 @@ const INTERNAL_EVENT_PATTERNS = [
   /\beligibility\s+criteria\b/i,
   /\b(MDD|ADHD|PTSD)\s+study\b/i,
   // HR / payroll / admin (internal university operations)
+  /\bfinancial\s+counseling\b/i,
+  /\bby\s+appointment\s+only\b/i,
   /\btimesheets?\b/i,
   /\bapprove\s+timesheets?\b/i,
   /\bpay\s+period\b/i,

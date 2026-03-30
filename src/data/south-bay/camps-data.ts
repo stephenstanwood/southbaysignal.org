@@ -53,6 +53,37 @@ export const SUMMER_WEEKS = [
 // ---------------------------------------------------------------------------
 
 export const CAMPS: Camp[] = [
+  // ── Los Gatos (small/local) ───────────────────────────────────────────────
+  {
+    id: "los-gatitos-camp",
+    name: "Los Gatitos Enrichment Summer Camp",
+    cityId: "los-gatos",
+    cityName: "Los Gatos",
+    type: "specialty",
+    orgType: "private",
+    tags: ["Spanish immersion", "cooking", "farm animals", "ages 2-5", "small groups"],
+    ageMin: 2,
+    ageMax: 5,
+    hours: "8am–4pm",
+    days: "Mon–Fri (or Mon/Wed/Fri)",
+    locations: ["Los Gatitos Daycare (Los Gatos area)"],
+    description: "Unique enrichment camp for the youngest campers. Spanish immersion, hands-on cooking classes, learning about chickens, and 6 field trips (extra fee). Two schedule options: 3-day or 5-day week.",
+    registerUrl: "mailto:Losgatitos193@gmail.com",
+    priceNote: "3-day week (Mon/Wed/Fri): $400 · 5-day week (Mon–Fri): $600. Call 408-835-0111 to register.",
+    weeks: [
+      { weekNum: 1, label: "Week 1", startDate: "2026-06-15", endDate: "2026-06-19", displayDates: "Jun 15–19", residentPrice: 400 },
+      { weekNum: 2, label: "Week 2", startDate: "2026-06-22", endDate: "2026-06-26", displayDates: "Jun 22–26", residentPrice: 400 },
+      { weekNum: 3, label: "Week 3", startDate: "2026-06-29", endDate: "2026-07-03", displayDates: "Jun 29–Jul 3", residentPrice: 400 },
+      { weekNum: 4, label: "Week 4", startDate: "2026-07-06", endDate: "2026-07-10", displayDates: "Jul 6–10", residentPrice: 400 },
+      { weekNum: 5, label: "Week 5", startDate: "2026-07-13", endDate: "2026-07-17", displayDates: "Jul 13–17", residentPrice: 400 },
+      { weekNum: 6, label: "Week 6", startDate: "2026-07-20", endDate: "2026-07-24", displayDates: "Jul 20–24", residentPrice: 400 },
+      { weekNum: 7, label: "Week 7", startDate: "2026-07-27", endDate: "2026-07-31", displayDates: "Jul 27–31", residentPrice: 400 },
+      { weekNum: 8, label: "Week 8", startDate: "2026-08-03", endDate: "2026-08-07", displayDates: "Aug 3–7", residentPrice: 400 },
+      { weekNum: 9, label: "Week 9", startDate: "2026-08-10", endDate: "2026-08-14", displayDates: "Aug 10–14", residentPrice: 400 },
+      { weekNum: 10, label: "Week 10", startDate: "2026-08-17", endDate: "2026-08-21", displayDates: "Aug 17–21", residentPrice: 400 },
+    ],
+  },
+
   // ── San Jose ──────────────────────────────────────────────────────────────
   {
     id: "sj-camp-san-jose",
@@ -270,8 +301,8 @@ export const CAMPS: Camp[] = [
     hours: "8:30am–4:30pm",
     days: "Mon–Fri",
     locations: ["Los Gatos parks and recreation facilities"],
-    description: "Los Gatos's city-run summer day camp program. Visit Parks & Recreation for current schedule, program details, and registration.",
-    registerUrl: "https://losgatosca.gov/recreation",
+    description: "Summer programs from Los Gatos-Saratoga Recreation — the joint rec department for both cities. Programs include Summer Fun Academy (Gr 1–8), Boat Camp at Vasona Lake (ages 9–15), aquatics, and more.",
+    registerUrl: "https://lgsrecreation.org",
     notes: "Pricing not listed online — check city website to register.",
     weeks: [
       { weekNum: 1, label: "Week 1", startDate: "2026-06-22", endDate: "2026-06-26", displayDates: "Jun 22–26", residentPrice: null },
@@ -327,8 +358,8 @@ export const CAMPS: Camp[] = [
     hours: "8am–5pm",
     days: "Mon–Fri",
     locations: ["Saratoga parks and community center"],
-    description: "Saratoga's city-run summer day camp program. Visit Parks & Recreation for current schedule, program details, and registration.",
-    registerUrl: "https://saratoga.ca.us/recreation",
+    description: "Summer programs through Los Gatos-Saratoga Recreation (lgsrecreation.org) — the joint rec department serving both cities. Programs include Summer Fun Academy, aquatics camps, and specialty programs at the Saratoga Community Center.",
+    registerUrl: "https://lgsrecreation.org",
     notes: "Pricing not listed online — check city website to register.",
     weeks: [
       { weekNum: 1, label: "Week 1", startDate: "2026-06-22", endDate: "2026-06-26", displayDates: "Jun 22–26", residentPrice: null },
