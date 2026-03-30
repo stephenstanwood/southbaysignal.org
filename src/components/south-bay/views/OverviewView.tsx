@@ -2172,32 +2172,35 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
 
   // ── Tomorrow's events for weekend mode ──────────────────────────────────────
   // Only populated when tomorrow is a weekend day (Fri→Sat, Sat→Sun; not Sun→Mon)
-  const cityTomorrowStatic = SHOW_WEEKEND_TOMORROW && homeCity
+  const cityTomorrowStatic = homeCity
     ? SOUTH_BAY_EVENTS
         .filter(e => isActiveTomorrow(e) && e.city === homeCity && e.category !== "sports")
         .sort((a, b) => startMinutes(a.time) - startMinutes(b.time))
     : [];
-  const cityTomorrowUpcoming = SHOW_WEEKEND_TOMORROW && homeCity
+  const cityTomorrowUpcoming = homeCity
     ? allUpcoming
         .filter(e => e.date === TOMORROW_ISO_STR && e.city === homeCity && !e.ongoing && e.category !== "sports")
         .sort((a, b) => startMinutes(a.time) - startMinutes(b.time))
     : [];
   const cityTomorrowCount = cityTomorrowStatic.length + cityTomorrowUpcoming.length;
 
-  const southBayTomorrowStatic = SHOW_WEEKEND_TOMORROW
-    ? SOUTH_BAY_EVENTS
-        .filter(e => isActiveTomorrow(e) && (homeCity ? e.city !== homeCity : true) && e.category !== "sports")
-        .sort((a, b) => startMinutes(a.time) - startMinutes(b.time))
-    : [];
-  const southBayTomorrowUpcoming = SHOW_WEEKEND_TOMORROW
-    ? allUpcoming
-        .filter(e => e.date === TOMORROW_ISO_STR && (homeCity ? e.city !== homeCity : true) && !e.ongoing && e.category !== "sports")
-        .sort((a, b) => startMinutes(a.time) - startMinutes(b.time))
-    : [];
+  const southBayTomorrowStatic = SOUTH_BAY_EVENTS
+    .filter(e => isActiveTomorrow(e) && (homeCity ? e.city !== homeCity : true) && e.category !== "sports")
+    .sort((a, b) => startMinutes(a.time) - startMinutes(b.time));
+  const southBayTomorrowUpcoming = allUpcoming
+    .filter(e => e.date === TOMORROW_ISO_STR && (homeCity ? e.city !== homeCity : true) && !e.ongoing && e.category !== "sports")
+    .sort((a, b) => startMinutes(a.time) - startMinutes(b.time));
   const southBayTomorrowCount = southBayTomorrowStatic.length + southBayTomorrowUpcoming.length;
 
+  // When today has nothing, look ahead to tomorrow instead of showing an empty state
+  const showingTomorrow = cityTodayCount === 0 && southBayCount === 0 && (cityTomorrowCount > 0 || southBayTomorrowCount > 0);
+
   // ── Today section title ──
-  const todaySectionTitle = homeCity
+  const todaySectionTitle = showingTomorrow
+    ? homeCity
+      ? (showExpandedRegional ? "Tomorrow in the South Bay" : `Tomorrow in ${getCityName(homeCity)}`)
+      : "Tomorrow in the South Bay"
+    : homeCity
     ? IS_WEEKEND_MODE
       ? (showExpandedRegional ? "This Weekend in the South Bay" : `This Weekend in ${getCityName(homeCity)}`)
       : (showExpandedRegional ? "Today in the South Bay" : `Today in ${getCityName(homeCity)}`)
@@ -2263,7 +2266,7 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
         <div style={{ marginBottom: 32 }}>
           <div className="sb-section-header" style={{ marginBottom: 12 }}>
             <span className="sb-section-title">
-              {IS_WEEKEND_MODE ? "🌅 " : ""}{todaySectionTitle}
+              {(IS_WEEKEND_MODE || showingTomorrow) ? "🌅 " : ""}{todaySectionTitle}
             </span>
             {homeCity && cityTodayCount > 0 && !showExpandedRegional && !IS_WEEKEND_MODE && (
               <span style={{ fontSize: 12, fontWeight: 500, color: "var(--sb-muted)" }}>
@@ -2275,10 +2278,19 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
           {homeCity ? (
             showExpandedRegional ? (
               <>
-                {cityTodayCount === 0 && southBayCount === 0 && (!IS_WEEKEND_MODE || (southBayTomorrowCount === 0 && cityTomorrowCount === 0)) ? (
+                {cityTodayCount === 0 && southBayCount === 0 && cityTomorrowCount === 0 && southBayTomorrowCount === 0 ? (
                   <div style={{ padding: "16px 0", color: "var(--sb-muted)", fontSize: 13, fontStyle: "italic" }}>
                     Nothing on the calendar today ({WEEKDAY}). Check the Events tab for upcoming events.
                   </div>
+                ) : showingTomorrow ? (
+                  <>
+                    {bucketEvents(cityTomorrowStatic, cityTomorrowUpcoming, false, true, false)}
+                    {bucketEvents(
+                      southBayTomorrowStatic.slice(0, SB_LIMIT),
+                      southBayTomorrowUpcoming.slice(0, SB_LIMIT),
+                      true, false, false,
+                    )}
+                  </>
                 ) : (
                   <>
                     {showTodaySubHeader && (cityTodayCount > 0 || southBayCount > 0) && (
@@ -2332,10 +2344,14 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
               </>
             ) : (
               <>
-                {cityTodayCount === 0 && (!IS_WEEKEND_MODE || cityTomorrowCount === 0) ? (
+                {cityTodayCount === 0 && cityTomorrowCount === 0 && southBayTomorrowCount === 0 ? (
                   <div style={{ padding: "16px 0", color: "var(--sb-muted)", fontSize: 13, fontStyle: "italic" }}>
                     Nothing scheduled in {getCityName(homeCity)} today ({WEEKDAY}). Check the Events tab for upcoming events.
                   </div>
+                ) : showingTomorrow ? (
+                  <>
+                    {bucketEvents(cityTomorrowStatic, cityTomorrowUpcoming, false, false, false)}
+                  </>
                 ) : (
                   <>
                     {showTodaySubHeader && cityTodayCount > 0 && (
@@ -2374,10 +2390,18 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
           ) : (
             /* No home city — show south bay wide */
             <>
-              {southBayCount === 0 && (!IS_WEEKEND_MODE || southBayTomorrowCount === 0) ? (
+              {southBayCount === 0 && southBayTomorrowCount === 0 ? (
                 <div style={{ padding: "20px 0", color: "var(--sb-muted)", fontSize: 14, fontStyle: "italic" }}>
                   {`No recurring events on ${WEEKDAY}s this time of year.`}
                 </div>
+              ) : showingTomorrow ? (
+                <>
+                  {bucketEvents(
+                    southBayTomorrowStatic.slice(0, SB_LIMIT),
+                    southBayTomorrowUpcoming.slice(0, SB_LIMIT),
+                    true, false, false,
+                  )}
+                </>
               ) : (
                 <>
                   {showTodaySubHeader && southBayCount > 0 && (
