@@ -9,6 +9,7 @@ import {
   Cell,
 } from "recharts";
 import upcomingJson from "../../../data/south-bay/upcoming-events.json";
+import techBriefingJson from "../../../data/south-bay/tech-briefing.json";
 import {
   TECH_COMPANIES,
   TECH_PULSE,
@@ -623,6 +624,61 @@ export default function TechnologyView() {
           Data snapshot · Q1 2026 · Santa Clara County employment estimates · Not affiliated with any company listed
         </div>
       </div>
+
+      {/* ── Weekly Tech Briefing ── */}
+      {techBriefingJson?.summary && (
+        <div
+          style={{
+            margin: "0 0 20px",
+            padding: "14px 16px",
+            background: "var(--sb-cream, #fdf8f0)",
+            border: "1px solid var(--sb-border-light)",
+            borderLeft: "4px solid #7c3aed",
+            borderRadius: 6,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              gap: 10,
+              marginBottom: 8,
+            }}
+          >
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                fontFamily: "'Space Mono', monospace",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "#7c3aed",
+              }}
+            >
+              This Week in South Bay Tech
+            </span>
+            <span
+              style={{
+                fontSize: 10,
+                color: "var(--sb-muted)",
+                fontFamily: "'Space Mono', monospace",
+              }}
+            >
+              {techBriefingJson.weekLabel}
+            </span>
+          </div>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 13,
+              lineHeight: 1.6,
+              color: "var(--sb-ink)",
+            }}
+          >
+            {techBriefingJson.summary}
+          </p>
+        </div>
+      )}
 
       {/* ── Pulse strip ── */}
       <div className="tech-pulse">
