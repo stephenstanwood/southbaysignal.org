@@ -156,6 +156,7 @@ export const DEV_PROJECTS: DevProject[] = [
     developer: "Thompson Thrift / Pruneyard Companies",
     timeline: "Ongoing",
     featured: false,
+    sourceNote: "Developer attribution unverified — confirm current ownership at campbellca.gov or local records.",
   },
 
   {

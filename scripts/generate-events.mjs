@@ -501,6 +501,10 @@ function inferCategory(title, desc, type, venue = "") {
   // Board games, card games, tabletop games and D&D are community, not sports
   const isBoardGame = /\b(board game|card game|tabletop|dungeons.{0,5}dragons|d&d|rpg club|wargame)\b/.test(t);
   if (!isBoardGame && (t.includes("game") || t.includes("sport") || t.includes("athletic") || t.includes("golf") || t.includes("tennis") || t.includes("soccer") || t.includes("basketball") || t.includes("baseball") || t.includes("softball") || t.includes("volleyball") || t.includes("swimming") || t.includes("swim meet") || t.includes("track") || t.includes("cross country") || t.includes("lacrosse") || t.includes("football") || t.includes("gymnastics") || t.includes("wrestling") || t.includes("water polo") || t.includes("polo") || t.includes("hockey") || t.includes("rugby") || /\browing\b/.test(t) || t.includes("crew") || t.includes("diving") || t.includes("fencing") || t.includes("skiing") || t.includes("snowboard") || t.includes("cycling") || t.includes("equestrian") || t.includes("vs.") || t.includes("vs ") || (!isSchoolFundraiser && /\b(fun run|road run|trail run|color run)\b/.test(t)) || (!isSchoolFundraiser && /\b(5k|10k|half marathon|marathon|triathlon)\b/.test(t)) || (!isSchoolFundraiser && t.includes("race")))) return "sports";
+  // Government/civic commission and committee meetings are always community events.
+  // Must run BEFORE the sports check because "transportation" contains "sport" as substring.
+  if (/\b(commission|committee|council|board)\s+(meeting|hearing|session)\b/i.test(title) ||
+      /\b(city council|town council|planning commission|city manager|public works)\b/i.test(title)) return "community";
   // Government/civic events at markets are still community events
   if (/\b(office hours|mayor|city council|council member|supervisor)\b/.test(t) && t.includes("market")) return "community";
   // "craft" alone is too broad — "well-crafted resume", "refine your craft" → require craft market context
@@ -557,7 +561,9 @@ function parseRssItems(xml) {
 
 function parseIcalEvents(ical) {
   const events = [];
-  const eventBlocks = ical.split("BEGIN:VEVENT");
+  // RFC 5545 §3.1: long lines are folded with CRLF + whitespace. Unfold before parsing.
+  const unfolded = ical.replace(/\r?\n[ \t]/g, "");
+  const eventBlocks = unfolded.split("BEGIN:VEVENT");
   for (let i = 1; i < eventBlocks.length; i++) {
     const block = eventBlocks[i].split("END:VEVENT")[0];
     const get = (prop) => {
