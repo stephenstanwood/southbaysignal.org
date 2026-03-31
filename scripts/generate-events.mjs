@@ -214,10 +214,7 @@ const INTERNAL_EVENT_PATTERNS = [
   /\badmission\s+(deadline|decision)\b/i,
   // Graduate program info sessions / recruitment webinars (not open public events)
   /\binfo(rmation)?\s+session\b/i,
-  /\b(software|tech|it|system|tool)\s+(support\s+)?office\s+hours?\b/i,
-  /\bacademic\s+office\s+hours?\b/i,
-  /\btutor(ing)?\s+office\s+hours?\b/i,
-  /\bvirtual\s+office\s+hours?\b/i,
+  /\boffice\s+hours?\b/i,
   /\bwebinar\s+series\b/i,
   /\bprogram\s+webinar\b/i,
   /\badmissions?\s+webinar\b/i,
@@ -395,11 +392,19 @@ function isVirtualEvent(title, description, venue) {
   return VIRTUAL_PATTERNS.some(p => p.test(fields));
 }
 
+// Events that aren't a good fit regardless of source
+const GLOBAL_EXCLUSIONS = [
+  /\balcoholics\s+anonymous\b/i,
+  /\b(?:AA|NA|Al-Anon)\s+meeting\b/i,
+];
+
 function isPublicEvent(title, source, description, venue) {
   // Always filter cancelled events regardless of source
   if (CANCELLED_PATTERN.test(title)) return false;
   // Filter virtual/online-only events
   if (isVirtualEvent(title, description, venue)) return false;
+  // Global exclusions — not a fit for a local news site
+  if (GLOBAL_EXCLUSIONS.some(p => p.test(title))) return false;
   const uniSources = ["Santa Clara University", "SJSU Events", "Stanford Events"];
   if (uniSources.includes(source)) {
     for (const pat of INTERNAL_EVENT_PATTERNS) {
