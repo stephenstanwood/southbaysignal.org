@@ -145,6 +145,7 @@ const INTERNAL_EVENT_PATTERNS = [
   /\badd\s*[&\/]\s*drop\b/i,
   /\broom\s+closed\b/i,
   /\bclosed\b.*\b(day|holiday|weekend)\b/i,
+  /^closed\s*[-–]/i, // campus closed announcements like "Closed - Good Friday"
   /\bdeadline\b/i,
   /\bno\s+class(es)?\b/i,
   /\bfinals?\s+(week|exam)\b/i,
@@ -1968,21 +1969,58 @@ async function main() {
     return true;
   });
 
-  const ongoingCount = finalEvents.filter((e) => e.ongoing).length;
+  // Collapse multi-branch library closures: when the same source posts 2+ "closed" events
+  // on the same date, collapse into one "All [Source] Locations Closed" entry.
+  const closureKey = (e) => {
+    const isClosureTitle = /\bclosed\b/i.test(e.title);
+    return isClosureTitle ? `${e.source}|${e.date}` : null;
+  };
+  const closureGroups = {};
+  for (const e of finalEvents) {
+    const k = closureKey(e);
+    if (!k) continue;
+    if (!closureGroups[k]) closureGroups[k] = [];
+    closureGroups[k].push(e);
+  }
+  const idsToRemove = new Set();
+  const extraEntries = [];
+  for (const [key, evs] of Object.entries(closureGroups)) {
+    if (evs.length < 2) continue; // single-branch closure: keep as-is
+    // Extract holiday/reason from title, e.g. "Cupertino Library Closed for Easter" → "Easter"
+    const reasonMatch = evs[0].title.match(/closed\s+(?:for\s+)?(.+)/i);
+    const reason = reasonMatch ? reasonMatch[1].trim() : "";
+    const collapsed = {
+      ...evs[0],
+      id: `${evs[0].source.toLowerCase().replace(/[^a-z0-9]/g, "-")}-closed-${evs[0].date}`,
+      title: reason ? `All ${evs[0].source} Locations Closed for ${reason}` : `All ${evs[0].source} Locations Closed`,
+      city: evs[0].city, // use first branch city as representative
+      venue: evs[0].source,
+      description: `All ${evs[0].source} branch locations are closed${reason ? ` for ${reason}` : ""}.`,
+    };
+    for (const e of evs) idsToRemove.add(e.id);
+    extraEntries.push(collapsed);
+    console.log(`  📚 Collapsed ${evs.length} closures → "${collapsed.title}"`);
+  }
+  const collapsedEvents = [
+    ...finalEvents.filter((e) => !idsToRemove.has(e.id)),
+    ...extraEntries,
+  ];
+
+  const ongoingCount = collapsedEvents.filter((e) => e.ongoing).length;
 
   const output = {
     generatedAt: new Date().toISOString(),
-    eventCount: finalEvents.length,
+    eventCount: collapsedEvents.length,
     sources: sourceNames,
-    events: finalEvents,
+    events: collapsedEvents,
   };
 
   writeFileSync(OUT_PATH, JSON.stringify(output, null, 2) + "\n");
-  console.log(`\n✅ Done — ${finalEvents.length} events (${ongoingCount} ongoing) from ${sourceNames.length} sources → ${OUT_PATH}`);
+  console.log(`\n✅ Done — ${collapsedEvents.length} events (${ongoingCount} ongoing) from ${sourceNames.length} sources → ${OUT_PATH}`);
 
   // Summary by city
   const byCity = {};
-  finalEvents.forEach((e) => { byCity[e.city] = (byCity[e.city] || 0) + 1; });
+  collapsedEvents.forEach((e) => { byCity[e.city] = (byCity[e.city] || 0) + 1; });
   console.log("\nBy city:", byCity);
 }
 
