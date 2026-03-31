@@ -20,8 +20,8 @@
  *   - The Tech Interactive (RSS) — 404 as of 2026-03 (no /feed/ endpoint)
  *   - San Jose Public Library (BiblioCommons API)
  *   - Santa Clara County Library (BiblioCommons API)
- *   - Mountain View Public Library (BiblioCommons API)
- *   - Sunnyvale Public Library (BiblioCommons API)
+ *   - Mountain View Public Library (BiblioCommons API) — site ID: "librarypoint"
+ *   - Sunnyvale Public Library (BiblioCommons API) — Events feature disabled (403)
  *   - Palo Alto City Library (BiblioCommons API)
  *   - Computer History Museum Events (RSS + title-based date extraction)
  *   - Montalvo Arts Center (RSS)
@@ -1684,10 +1684,14 @@ async function fetchBayFCSchedule() {
 // (not part of SCCL) that are likely on the BiblioCommons platform.
 
 async function fetchMvplEvents() {
-  return fetchBiblioEvents("mountainview", "Mountain View Public Library", () => "mountain-view");
+  // BiblioCommons site ID for Mountain View Public Library is "librarypoint"
+  // (not "mountainview" — confirmed from login page HTML)
+  return fetchBiblioEvents("librarypoint", "Mountain View Public Library", () => "mountain-view");
 }
 
 async function fetchSunnyvaleLibraryEvents() {
+  // Sunnyvale library site ID is correct ("sunnyvale") but their BiblioCommons
+  // instance has the Events feature disabled (returns 403). Will return [].
   return fetchBiblioEvents("sunnyvale", "Sunnyvale Public Library", () => "sunnyvale");
 }
 
@@ -2005,6 +2009,13 @@ async function main() {
     ...finalEvents.filter((e) => !idsToRemove.has(e.id)),
     ...extraEntries,
   ];
+
+  // Normalize whitespace in all string fields — sources often have double spaces,
+  // leading/trailing whitespace in titles and venue names
+  for (const e of collapsedEvents) {
+    if (e.title) e.title = e.title.replace(/\s+/g, " ").trim();
+    if (e.venue) e.venue = e.venue.replace(/\s+/g, " ").trim();
+  }
 
   const ongoingCount = collapsedEvents.filter((e) => e.ongoing).length;
 
