@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-03-31T14:56:13.481Z",
+      "generatedAt": "2026-03-31T19:11:52.717Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -16,7 +16,7 @@
       "permits": []
     },
     "palo-alto": {
-      "generatedAt": "2026-03-31T14:56:15.867Z",
+      "generatedAt": "2026-03-31T19:11:55.003Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -30,6 +30,18 @@
       },
       "permits": [
         {
+          "id": "26BLD-00775",
+          "address": "1130 California Av",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "Res MEP: Replace (E) 40gal gas water heater to (N) 50gal heat pump water heater (Same Location - Garage) and install 100A Subpanel directly behind the Main Service Panel",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-03-24",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-00797",
           "address": "401 Webster St",
           "category": "commercial",
@@ -42,24 +54,12 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00803",
-          "address": "3108 Middlefield Rd",
+          "id": "26BLD-00773",
+          "address": "3401 Hillview Av",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "Res: Remove and replace all siding with stucco.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-03-26",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00775",
-          "address": "1130 California Av",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "Res MEP: Replace (E) 40gal gas water heater to (N) 50gal heat pump water heater (Same Location - Garage) and install 100A Subpanel directly behind the Main Service Panel",
+          "description": "Broadcom: Minor tenant improvement to install a door/sidelight, and lighting fixture.",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-03-24",
@@ -78,36 +78,12 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00773",
-          "address": "3401 Hillview Av",
+          "id": "26BLD-00803",
+          "address": "3108 Middlefield Rd",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "Broadcom: Minor tenant improvement to install a door/sidelight, and lighting fixture.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-03-24",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00780",
-          "address": "1441 Dana Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-03-24",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00809",
-          "address": "473 Gary Ct",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "description": "Res: Remove and replace all siding with stucco.",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-03-26",
@@ -126,6 +102,18 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-00780",
+          "address": "1441 Dana Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-03-24",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-00788",
           "address": "805 Garland Dr",
           "category": "residential-large",
@@ -135,6 +123,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-03-25",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00809",
+          "address": "473 Gary Ct",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-03-26",
           "subtype": "Permit Issued"
         },
         {
