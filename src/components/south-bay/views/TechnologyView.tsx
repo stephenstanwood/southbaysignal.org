@@ -562,7 +562,7 @@ function RecentlyFundedSection() {
     <div className="tech-section">
       <div className="tech-section-head">
         <h3 className="tech-section-title">Recently Funded</h3>
-        <span className="tech-section-note">South Bay startups · Q4 2025 – Q1 2026 · 20 rounds</span>
+        <span className="tech-section-note">South Bay startups · Q4 2025 – Q1 2026 · {RECENTLY_FUNDED.length} rounds</span>
       </div>
       <div>
         {sorted.map((company) => (
@@ -608,6 +608,7 @@ const SPOTLIGHT_CITY_FILTERS = [
   { key: "Palo Alto", label: "Palo Alto" },
   { key: "Milpitas", label: "Milpitas" },
   { key: "Cupertino", label: "Cupertino" },
+  { key: "Los Gatos", label: "Los Gatos" },
 ] as const;
 
 export default function TechnologyView() {
@@ -869,7 +870,7 @@ export default function TechnologyView() {
       <div className="tech-section">
         <div className="tech-section-head">
           <h3 className="tech-section-title">More South Bay Tech</h3>
-          <span className="tech-section-note">Notable SCC companies beyond the top employers</span>
+          <span className="tech-section-note">Notable SCC companies beyond the top employers · {SCC_SPOTLIGHT.length} companies</span>
         </div>
         <div className="tech-filter-strip">
           {SPOTLIGHT_CITY_FILTERS.map((f) => (
