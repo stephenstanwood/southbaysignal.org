@@ -2078,3 +2078,50 @@ Two of the four are in Campbell — making Campbell a more visible part of the S
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — the Tech tab now covers the full daily-life layer of South Bay tech.** A Campbell resident who charges their EV, a tech employee who logs in through Zscaler, a small business owner who uses Barracuda email security — all of them can now see on the Tech tab that these services come from companies in their own city. That's the local intelligence layer no other South Bay outlet provides.
+
+---
+
+## 2026-04-01 — Cycle 39: RECENTLY_FUNDED Expanded + Non-AI Data Refresh
+
+### Context
+April 1, 2026. ANTHROPIC_API_KEY continues to be unavailable in child Node processes — AI scripts (around-town, tech-briefing, digests, city-briefings, weekend-picks) are blocked for a third consecutive cycle. Non-AI data pipeline is fully operational.
+
+The RECENTLY_FUNDED section had 11 entries, all March 2026. Four companies added to SCC_SPOTLIGHT in cycles 34–37 had verified 2026 funding rounds but were never added to RECENTLY_FUNDED. Glean closed a confirmed Series F at $7.2B (verified via glean.com blog post, Feb 6 2026).
+
+### What Was Built
+
+**5 new entries added to RECENTLY_FUNDED in tech-companies.ts:**
+
+1. **Axiado** (San Jose) — $100M Series C+, Dec 2025. AI security chips embedded in data center control hardware. Growing 38% YoY. Was only in Spotlight; now also in Recently Funded.
+
+2. **Glean** (Palo Alto) — $150M Series F at $7.2B valuation, Feb 6 2026. Led by Wellington Management. Enterprise AI search for the Fortune 500. Also updated Glean's SCC_SPOTLIGHT entry from $4.6B to $7.2B valuation.
+
+3. **Lyte** (Mountain View) — $107M seed raise, January 2026. Ex-Apple Face ID engineers building 4D perception systems as the robotic visual cortex. CES 2026 Best of Innovation. Was only in Spotlight.
+
+4. **Sunday Robotics** (Mountain View) — $165M Series B at $1.15B valuation, March 2026 (Coatue). Household robots for dishes, laundry, tidying. Beta 2026, 3,000+ waitlist. Was only in Spotlight.
+
+5. **Eridu** (Saratoga) — $200M+ Series A, March 2026 (John Doerr). AI data center networking startup redesigning the 3-tier network into one high-radix switch layer. Was only in Spotlight.
+
+**Non-AI data pipeline fully refreshed:**
+- upcoming-events.json: 421 events (99 ongoing), 17 sources
+- upcoming-meetings.json: 1 city with upcoming meeting
+- air-quality.json: South Bay avg AQI 37 (Good)
+- health-scores.json: latest SCC health inspection data
+- real-estate.json: Palo Alto $3.2M (-9.6% YoY), San Jose $1.3M (-7.5% YoY), Santa Clara $1.8M (+7.1% YoY)
+- permit-pulse.json: Palo Alto 4 notable permits
+- outages.json: 0 active outages
+- restaurant-radar.json: refreshed
+
+### Why This Was the Strongest Move
+
+The RECENTLY_FUNDED section was missing 5 companies with recent verified rounds that were already curated in the Spotlight section. A resident browsing the Tech tab saw Eridu, Sunday, and Lyte in the Spotlight cards but wouldn't see them in the "Recently Funded" section — creating a confusing gap where the same companies appeared inconsistently. Adding them makes the funded section complete and consistent.
+
+The Glean update is particularly notable: the company went from $4.6B to $7.2B valuation in a single round (Feb 2026). That's a 56% jump and reflects how fast enterprise AI search is growing. A Palo Alto resident who works at a tech company almost certainly has Glean deployed by their IT team.
+
+### Next 3 Strongest Ideas
+1. **Fix API key inheritance for child Node processes** — The ANTHROPIC_API_KEY is in the shell but not passed to `node scripts/*.mjs`. Solution: write a wrapper that creates `.env.local` from the environment on each scheduled run, or modify all AI scripts to accept the key via `--env-file` flag.
+2. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data. Daily commuter urgency (deferred every cycle).
+3. **Palo Alto government (PrimeGov)** — Inspect live PrimeGov portal network traffic at cityofpaloalto.org/gov to find working API routes.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — the Recently Funded section now tells a complete story.** When a South Bay resident opens the Tech tab, the funding section now spans Saratoga (Eridu), Mountain View (Sunday, Lyte), Palo Alto (Glean), and San Jose (Axiado) — five cities, three categories (robotics, networking, security), and rounds from seed to Series F. That's the full arc of South Bay startup momentum in one view.

@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-01T11:11:26.169Z",
+      "generatedAt": "2026-04-01T17:07:15.119Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -16,7 +16,7 @@
       "permits": []
     },
     "palo-alto": {
-      "generatedAt": "2026-04-01T11:11:28.024Z",
+      "generatedAt": "2026-04-01T17:07:17.498Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -29,30 +29,6 @@
         "totalValuation": 0
       },
       "permits": [
-        {
-          "id": "26BLD-00818",
-          "address": "1610 Dana Av",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "Res: Voluntary seismic strengthening (NO GRANT)",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-03-27",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00790",
-          "address": "764 Garland Dr",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "RES: (1) layer of wood shingle roof (12/12 pitch) and (1) layer of tar & gravel roof (flat roof). Install 30# felt underlayment over the existing solid sheathing. Install a new Cedur Synthetic Shake Roof (12/12 pitch) (color: Shiloh)  and Single Ply 60 Mil TPO Roof System (flat roof).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-03-25",
-          "subtype": "Permit Issued"
-        },
         {
           "id": "26BLD-00803",
           "address": "3108 Middlefield Rd",
@@ -72,6 +48,30 @@
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
           "description": "FRONT PORCH COMMUNITIES The project consists of adding 14 door operators to 14 existing doors: the 14 doors that will be affected are: Basement parking garage (replace (e) operator system). Basement restroom women (new door operator). Basement restroom man (new door operator). Basement 3 door @ patio to be replaced, re sized to add convenience door operator. Floor 1-fix and repair pool gate, (add header for convenience door operator). Floor 1 gate @ first level (new door operator). Floor 1 door from building to pool gate (new door operator). Floor 1 recycling room (new door operator). Floor 2 recycling room (new door operator). Floor 3 recycling room (new door operator). Floor 4 recycling room (new door operator). Floor 5 recycling room (new door operator).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-03-25",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00818",
+          "address": "1610 Dana Av",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "Res: Voluntary seismic strengthening (NO GRANT)",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-03-27",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00790",
+          "address": "764 Garland Dr",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "RES: (1) layer of wood shingle roof (12/12 pitch) and (1) layer of tar & gravel roof (flat roof). Install 30# felt underlayment over the existing solid sheathing. Install a new Cedur Synthetic Shake Roof (12/12 pitch) (color: Shiloh)  and Single Ply 60 Mil TPO Roof System (flat roof).",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-03-25",
