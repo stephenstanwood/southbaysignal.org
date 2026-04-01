@@ -33,6 +33,12 @@ if (!FLICKR_KEY) { console.error("❌ FLICKR_API_KEY not set"); process.exit(1);
 
 const UA = "SouthBaySignal/1.0 (southbaysignal.org; educational/noncommercial)";
 
+// Photos permanently removed from the curated set — never re-add on regeneration
+const BLOCKED_IDS = new Set([
+  "wm-60300988",  // HP Pavilion rooftop aerial (Bill Abbott)
+  "wm-98942442",  // HP Pavilion dv6 laptop (TAKA@P.P.R.S) — not even local
+]);
+
 // ── Flickr ────────────────────────────────────────────────────────────────────
 const SB_BBOX = "-122.20,37.19,-121.77,37.47";
 const CC_LICENSES = "4,5,6,9,10";
@@ -267,7 +273,7 @@ async function fetchWikimedia() {
     // Architecture / landmarks
     "Apple_Park",
     "Levi's_Stadium",
-    "HP_Pavilion",
+    "SAP_Center",
     "Santana_Row",
     "Stanford_University_campus",
   ];
@@ -291,7 +297,8 @@ async function fetchWikimedia() {
 // ── HTML review page ──────────────────────────────────────────────────────────
 
 function buildHtml(sources) {
-  const all = sources.flatMap(s => s.photos.map(p => ({ ...p, sourceName: s.name })));
+  const all = sources.flatMap(s => s.photos.map(p => ({ ...p, sourceName: s.name })))
+    .filter(p => !BLOCKED_IDS.has(p.id));
   const poolInfo = sources.map(s => `${s.name}: ~${s.poolSize} in region`).join("  ·  ");
 
   return `<!DOCTYPE html>

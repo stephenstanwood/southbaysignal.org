@@ -1369,7 +1369,8 @@ function ForecastStrip({ forecast }: { forecast: ForecastDay[] }) {
           const isToday = day.date === todayISO;
           const d = new Date(day.date + "T12:00:00");
           const label = isToday ? "TODAY" : DAY_LABELS[d.getDay()].toUpperCase();
-          const showRain = day.rainPct >= 20;
+          const hasRainEmoji = /🌦|🌧|⛈|🌨/.test(day.emoji);
+          const showRain = day.rainPct >= 20 || hasRainEmoji;
           const color = tempColor(day.high);
           const bg = tempBg(day.high, isToday);
           return (
