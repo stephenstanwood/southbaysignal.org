@@ -665,6 +665,45 @@ const title = "The South Bay Signal";
       .tech-legend-down { color: #dc2626; font-weight: 600; }
       .tech-legend-note { color: var(--sb-light); margin-left: auto; }
 
+      /* Category / city filter pills */
+      .tech-filter-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 10px 0 12px;
+      }
+      .tech-filter-pill {
+        font-family: var(--sb-sans);
+        font-size: 12px;
+        font-weight: 500;
+        padding: 4px 10px;
+        border: 1px solid var(--sb-border);
+        border-radius: 20px;
+        background: var(--sb-card);
+        color: var(--sb-ink);
+        cursor: pointer;
+        transition: background 0.12s, color 0.12s, border-color 0.12s;
+        line-height: 1.4;
+      }
+      .tech-filter-pill:hover {
+        background: var(--sb-primary-light);
+        border-color: var(--sb-primary);
+      }
+      .tech-filter-pill--active {
+        background: var(--sb-primary);
+        border-color: var(--sb-primary);
+        color: #fff;
+      }
+      .tech-filter-pill--active:hover {
+        background: var(--sb-primary);
+      }
+      .tech-filter-empty {
+        font-size: 13px;
+        color: var(--sb-light);
+        padding: 16px 0;
+        grid-column: 1 / -1;
+      }
+
       /* Company grid */
       .tech-grid {
         display: grid;

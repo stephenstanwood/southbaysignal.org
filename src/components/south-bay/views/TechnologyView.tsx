@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   BarChart,
   Bar,
@@ -581,10 +582,42 @@ function RecentlyFundedSection() {
 
 // ── Main view ──────────────────────────────────────────────────────────────
 
+// Category filters for the All Companies grid (only cats with ≥2 companies)
+const COMPANY_CATEGORY_FILTERS = [
+  { key: null, label: "All" },
+  { key: "chip", label: "Chip" },
+  { key: "cloud", label: "Cloud" },
+  { key: "security", label: "Security" },
+  { key: "robotics", label: "Robotics" },
+  { key: "hardware", label: "Hardware" },
+  { key: "saas", label: "SaaS" },
+  { key: "network", label: "Network" },
+  { key: "software", label: "Software" },
+] as const;
+
+// City filters for the More South Bay Tech spotlight
+const SPOTLIGHT_CITY_FILTERS = [
+  { key: null, label: "All" },
+  { key: "San Jose", label: "San Jose" },
+  { key: "Santa Clara", label: "Santa Clara" },
+  { key: "Mountain View", label: "Mountain View" },
+  { key: "Sunnyvale", label: "Sunnyvale" },
+  { key: "Palo Alto", label: "Palo Alto" },
+  { key: "Milpitas", label: "Milpitas" },
+  { key: "Cupertino", label: "Cupertino" },
+] as const;
+
 export default function TechnologyView() {
-  const sortedCompanies = [...TECH_COMPANIES].sort(
-    (a, b) => b.sccEmployeesK - a.sccEmployeesK
-  );
+  const [companyCategoryFilter, setCompanyCategoryFilter] = useState<string | null>(null);
+  const [spotlightCityFilter, setSpotlightCityFilter] = useState<string | null>(null);
+
+  const sortedCompanies = [...TECH_COMPANIES]
+    .filter((c) => companyCategoryFilter === null || c.category === companyCategoryFilter)
+    .sort((a, b) => b.sccEmployeesK - a.sccEmployeesK);
+
+  const filteredSpotlight = spotlightCityFilter === null
+    ? SCC_SPOTLIGHT
+    : SCC_SPOTLIGHT.filter((c) => c.city === spotlightCityFilter);
 
   const hiringGroups = [
     {
@@ -811,7 +844,17 @@ export default function TechnologyView() {
           <h3 className="tech-section-title">All Companies</h3>
           <span className="tech-section-note">Sorted by SCC local employment</span>
         </div>
-
+        <div className="tech-filter-strip">
+          {COMPANY_CATEGORY_FILTERS.map((f) => (
+            <button
+              key={String(f.key)}
+              className={`tech-filter-pill${companyCategoryFilter === f.key ? " tech-filter-pill--active" : ""}`}
+              onClick={() => setCompanyCategoryFilter(f.key)}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
         <div className="tech-grid">
           {sortedCompanies.map((company) => (
             <CompanyCard key={company.id} company={company} />
@@ -825,10 +868,24 @@ export default function TechnologyView() {
           <h3 className="tech-section-title">More South Bay Tech</h3>
           <span className="tech-section-note">Notable SCC companies beyond the top employers</span>
         </div>
+        <div className="tech-filter-strip">
+          {SPOTLIGHT_CITY_FILTERS.map((f) => (
+            <button
+              key={String(f.key)}
+              className={`tech-filter-pill${spotlightCityFilter === f.key ? " tech-filter-pill--active" : ""}`}
+              onClick={() => setSpotlightCityFilter(f.key)}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
         <div className="tech-spotlight-grid">
-          {SCC_SPOTLIGHT.map((company) => (
+          {filteredSpotlight.map((company) => (
             <SpotlightCard key={company.id} company={company} />
           ))}
+          {filteredSpotlight.length === 0 && (
+            <p className="tech-filter-empty">No companies in {spotlightCityFilter} yet.</p>
+          )}
         </div>
       </div>
 
