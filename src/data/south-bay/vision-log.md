@@ -1997,3 +1997,44 @@ The banner is designed to be useful exactly when it's useful and invisible other
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — the Events tab is now spring-break-aware.** A Cupertino parent opening SBS today sees "Spring Break in 5 days" and can click once to see all the things their family could do during their specific break week. That's the kind of local intelligence that turns a "might check once" into "I actually use this."
+
+---
+
+## 2026-04-01 — Cycle 37: Tech Tab — 3 South Bay Companies Residents Don't Know Are Local
+
+### Context
+Today is April 1, 2026. The Tech tab's SCC Spotlight had 33 companies, weighted toward the familiar giants. Three notable South Bay tech companies that residents probably don't realize are headquartered locally were missing: Sandisk (just became independent again), Trellix (enterprise security, hidden in Milpitas), and Lumentum (their phone's Face ID laser is made here).
+
+### What Was Built
+
+**3 new companies added to SCC Spotlight in tech-companies.ts:**
+
+1. **Sandisk** (San Jose) — Flash storage pioneer, independent again since WD spinoff February 2025. Trades as SNDK. One of the most recognized storage brands in the world, headquartered in San Jose since 1988. ~8K employees globally.
+
+2. **Trellix** (Milpitas) — Enterprise XDR cybersecurity platform formed in 2022 from the merger of McAfee Enterprise and FireEye. Protects governments and large enterprises from advanced persistent threats. One of Milpitas' largest private-sector employers. ~4K employees.
+
+3. **Lumentum** (Milpitas) — Optical components manufacturer. Their VCSEL lasers power the 3D sensing in iPhone Face ID. Their fiber optic transceivers connect hyperscale data centers. Spun off from JDSU in 2015. ~6K employees globally. Trades as LITE.
+
+**Data pipelines refreshed (non-AI):**
+- upcoming-events.json: 428 events (99 ongoing)
+- upcoming-meetings.json: San Jose Apr 7
+- real-estate.json, health-scores.json, air-quality.json (South Bay avg AQI: 49 Good)
+- permit-pulse.json: Palo Alto 6 notable permits, San Jose 2
+- outages.json: 0 active outages
+- restaurant-radar.json: refreshed
+
+**Note:** ANTHROPIC_API_KEY not available in environment — AI-powered scripts (around-town, weekend-picks, tech-briefing, digests, city-briefings) not refreshed this cycle.
+
+### Why This Was the Strongest Move
+
+Residents drive past Sandisk, Trellix, and Lumentum buildings every day without knowing those companies are headquartered in their city. The "Face ID laser made in Milpitas" angle is exactly the kind of surprising local fact SBS should surface. Trellix employs ~4K people in Milpitas but formed from brand names that people recognize (McAfee, FireEye) — that gap between "brand you know" and "it's here in Milpitas" is the Tech tab's sweet spot.
+
+**Mountain View permits blocked:** data-mountainview.opendata.arcgis.com has only 28 datasets, none of which are building permits. Mountain View uses an internal permit system with no public API.
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data. Daily commuter urgency.
+2. **High school sports scores** — MaxPreps for South Bay high schools (Saratoga, Los Gatos, Monta Vista, Paly). Spring sports season active now.
+3. **Palo Alto government (PrimeGov)** — PrimeGov API endpoint structure changed; need to inspect live portal network traffic to find working routes.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — Tech tab now covers another layer of the South Bay tech ecosystem.** A Milpitas resident learning that their Face ID works because of a company in their own city, or a San Jose resident realizing Sandisk is a standalone company again — that's the local tech signal SBS is supposed to provide.
