@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-02T11:12:29.983Z",
+      "generatedAt": "2026-04-02T19:10:15.141Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -9,7 +9,7 @@
       "dateRange": "Mar 26 – Apr 2",
       "stats": {
         "total": 285,
-        "notable": 9,
+        "notable": 8,
         "newUnits": 4,
         "totalValuation": 3133184
       },
@@ -75,18 +75,6 @@
           "subtype": "Commercial/Industrial"
         },
         {
-          "id": "2026-110625-RS",
-          "address": "871 N 15th St",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "ReRoof",
-          "description": "Reroof",
-          "valuation": 1017128,
-          "units": 0,
-          "issueDate": "2026-03-31",
-          "subtype": "Duplex"
-        },
-        {
           "id": "2026-104085-CI",
           "address": "959 Story Rd H107",
           "category": "commercial",
@@ -125,7 +113,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-02T11:12:32.392Z",
+      "generatedAt": "2026-04-02T19:10:17.450Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -139,18 +127,6 @@
       },
       "permits": [
         {
-          "id": "26BLD-00803",
-          "address": "3108 Middlefield Rd",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "Res: Remove and replace all siding with stucco.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-03-26",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00818",
           "address": "1610 Dana Av",
           "category": "commercial",
@@ -160,6 +136,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-03-27",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00803",
+          "address": "3108 Middlefield Rd",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "Res: Remove and replace all siding with stucco.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-03-26",
           "subtype": "Permit Issued"
         },
         {
