@@ -44,7 +44,6 @@ export default function DigestCard({ digest, onRefresh, upcomingMeeting }: Props
         <div className="sb-digest-body">{digest.body}</div>
       </div>
       <div className="sb-digest-date">{digest.meetingDate}</div>
-      <p className="sb-digest-summary">{digest.summary}</p>
       {digest.keyTopics.length > 0 && (
         <ul className="sb-digest-topics">
           {digest.keyTopics.map((topic, i) => (

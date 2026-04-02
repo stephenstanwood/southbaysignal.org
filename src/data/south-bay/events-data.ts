@@ -452,6 +452,24 @@ export const SOUTH_BAY_EVENTS: SBEvent[] = [
     emoji: "📚",
   },
 
+  {
+    id: "lg-library-park-it-market",
+    title: "Park-It Market — Los Gatos Library",
+    city: "los-gatos",
+    venue: "Los Gatos Library",
+    address: "110 E Main St, Los Gatos",
+    category: "food",
+    recurrence: "biweekly",
+    days: ["thursday"],
+    time: "10am",
+    cost: "free",
+    kidFriendly: true,
+    description:
+      "West Valley Community Services offers free access to fresh produce, meat, dairy, dry goods and canned food on the 2nd and 4th Thursday of each month.",
+    url: "https://www.wvcommunityservices.org",
+    emoji: "🥬",
+  },
+
   // ── CONCERT SERIES (specific schedules) ────────────────────────────────
 
   {
