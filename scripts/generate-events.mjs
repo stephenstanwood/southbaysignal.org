@@ -489,6 +489,8 @@ function cleanVenue(raw) {
   v = v.replace(/\s{2,}\d+\s+.*$/, "");
   // Strip trailing " - " or lone dash at end
   v = v.replace(/\s*-\s*$/, "");
+  // Strip " - <address>" suffix where address starts with a number (e.g. "Council Chambers - 110 E. Main St")
+  v = v.replace(/\s+-\s+\d+\s+.*$/, "");
   // If the entire string is just a raw address (starts with a number), return empty so caller can use fallback
   if (/^\d+\s/.test(v)) return "";
   return v.trim();
