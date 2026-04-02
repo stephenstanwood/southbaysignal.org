@@ -1,44 +1,153 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-01T23:09:58.782Z",
+      "generatedAt": "2026-04-02T11:12:29.983Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Mar 25 – Apr 1",
+      "dateRange": "Mar 26 – Apr 2",
       "stats": {
-        "total": 0,
-        "notable": 0,
-        "newUnits": 0,
-        "totalValuation": 0
+        "total": 285,
+        "notable": 9,
+        "newUnits": 4,
+        "totalValuation": 3133184
       },
-      "permits": []
+      "permits": [
+        {
+          "id": "2025-122298-RS",
+          "address": "3403 Viewmont Ct #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Code Case Legalize Unpermitted Garage Conversion to adu",
+          "valuation": 101454,
+          "units": 1,
+          "issueDate": "2026-03-30",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-128786-RS",
+          "address": "402 S Henry Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Attached adu",
+          "valuation": 89618,
+          "units": 1,
+          "issueDate": "2026-03-30",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-137519-RS",
+          "address": "107 Felice Ct #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "(Bepm) New Detached adu",
+          "valuation": 84376,
+          "units": 1,
+          "issueDate": "2026-03-30",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-143511-RS",
+          "address": "2211 Arleen Wy #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Conversion of Living Space to Jadu",
+          "valuation": 48191,
+          "units": 1,
+          "issueDate": "2026-03-27",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2026-108797-CI",
+          "address": "585 N Capitol Av",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Capitol Dental Office ti",
+          "valuation": 500000,
+          "units": 0,
+          "issueDate": "2026-03-27",
+          "subtype": "Commercial/Industrial"
+        },
+        {
+          "id": "2026-110625-RS",
+          "address": "871 N 15th St",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "ReRoof",
+          "description": "Reroof",
+          "valuation": 1017128,
+          "units": 0,
+          "issueDate": "2026-03-31",
+          "subtype": "Duplex"
+        },
+        {
+          "id": "2026-104085-CI",
+          "address": "959 Story Rd H107",
+          "category": "commercial",
+          "categoryLabel": "Commercial",
+          "workType": "Tenant Improvement",
+          "description": "(Bem 100%) #5115 Salon ti",
+          "valuation": 132454,
+          "units": 0,
+          "issueDate": "2026-03-27",
+          "subtype": "Retail"
+        },
+        {
+          "id": "2026-099896-CI",
+          "address": "260 Commercial St",
+          "category": "commercial",
+          "categoryLabel": "Commercial",
+          "workType": "Tenant Improvement",
+          "description": "(Bm 100%) Hvac ti",
+          "valuation": 54000,
+          "units": 0,
+          "issueDate": "2026-03-27",
+          "subtype": "Nursing/Assisted Living"
+        },
+        {
+          "id": "2026-109763-CI",
+          "address": "6100 Hellyer Av #100",
+          "category": "commercial",
+          "categoryLabel": "Commercial",
+          "workType": "Tenant Improvement",
+          "description": "Accessible Restroom",
+          "valuation": 50000,
+          "units": 0,
+          "issueDate": "2026-03-27",
+          "subtype": "Medical/Dental Clinic"
+        }
+      ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-01T23:10:01.027Z",
+      "generatedAt": "2026-04-02T11:12:32.392Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Mar 25 – Apr 1",
+      "dateRange": "Mar 26 – Apr 2",
       "stats": {
-        "total": 97,
-        "notable": 7,
+        "total": 94,
+        "notable": 5,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
         {
-          "id": "26BLD-00790",
-          "address": "764 Garland Dr",
+          "id": "26BLD-00803",
+          "address": "3108 Middlefield Rd",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "RES: (1) layer of wood shingle roof (12/12 pitch) and (1) layer of tar & gravel roof (flat roof). Install 30# felt underlayment over the existing solid sheathing. Install a new Cedur Synthetic Shake Roof (12/12 pitch) (color: Shiloh)  and Single Ply 60 Mil TPO Roof System (flat roof).",
+          "description": "Res: Remove and replace all siding with stucco.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-03-25",
+          "issueDate": "2026-03-26",
           "subtype": "Permit Issued"
         },
         {
@@ -54,27 +163,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00803",
-          "address": "3108 Middlefield Rd",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "Res: Remove and replace all siding with stucco.",
+          "id": "26BLD-00825",
+          "address": "3946 Louis Rd",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-03-26",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00797",
-          "address": "401 Webster St",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "FRONT PORCH COMMUNITIES The project consists of adding 14 door operators to 14 existing doors: the 14 doors that will be affected are: Basement parking garage (replace (e) operator system). Basement restroom women (new door operator). Basement restroom man (new door operator). Basement 3 door @ patio to be replaced, re sized to add convenience door operator. Floor 1-fix and repair pool gate, (add header for convenience door operator). Floor 1 gate @ first level (new door operator). Floor 1 door from building to pool gate (new door operator). Floor 1 recycling room (new door operator). Floor 2 recycling room (new door operator). Floor 3 recycling room (new door operator). Floor 4 recycling room (new door operator). Floor 5 recycling room (new door operator).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-03-25",
+          "issueDate": "2026-03-30",
           "subtype": "Permit Issued"
         },
         {
@@ -90,28 +187,16 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00788",
-          "address": "805 Garland Dr",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "id": "26PLN-00067",
+          "address": "1450 Page Mill Rd",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Removal and replacement of five (5) non-protected trees associated with 24BLD-03580 scope",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-03-25",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00825",
-          "address": "3946 Louis Rd",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-03-30",
-          "subtype": "Permit Issued"
+          "issueDate": "2026-04-01",
+          "subtype": "Over the Counter Approved"
         }
       ]
     }
