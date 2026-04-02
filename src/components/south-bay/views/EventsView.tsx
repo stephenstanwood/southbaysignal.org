@@ -31,7 +31,7 @@ interface Props {
 
 type ViewMode = "upcoming" | "recurring" | "venues";
 
-// ── South Bay entertainment venues ──
+// ── South Bay venues (auto-discovered from events + curated overrides) ──
 
 interface SBVenue {
   id: string;
@@ -44,46 +44,127 @@ interface SBVenue {
   tags: string;
 }
 
-const SOUTH_BAY_VENUES: SBVenue[] = [
-  // ── San Jose ──
-  { id: "sap-center",      name: "SAP Center",                             venueMatch: "SAP Center",                           city: "san-jose",      cityLabel: "San Jose",      emoji: "🏟️", tags: "Arena · Sports · Concerts" },
-  { id: "sj-cpa",          name: "SJ Center for the Performing Arts",      venueMatch: "San Jose Center for the Performing",   city: "san-jose",      cityLabel: "San Jose",      emoji: "🎭", tags: "Theater · Broadway · Opera" },
-  { id: "california-theatre", name: "California Theatre",                  venueMatch: "California Theatre",                   city: "san-jose",      cityLabel: "San Jose",      emoji: "🎼", tags: "Opera · Classical · Theater" },
-  { id: "sj-civic",        name: "San Jose Civic",                         venueMatch: "San Jose Civic",                       city: "san-jose",      cityLabel: "San Jose",      emoji: "🎵", tags: "Concerts · Shows" },
-  { id: "sj-improv",       name: "San Jose Improv",                        venueMatch: "San Jose Improv",                      city: "san-jose",      cityLabel: "San Jose",      emoji: "🎤", tags: "Comedy · Music" },
-  { id: "the-ritz",        name: "The Ritz",                               venueMatch: "The Ritz",                             city: "san-jose",      cityLabel: "San Jose",      emoji: "🎸", tags: "Music · Indie" },
-  { id: "tech-cu",         name: "Tech CU Arena",                          venueMatch: "Tech CU Arena",                        city: "san-jose",      cityLabel: "San Jose",      emoji: "🏀", tags: "Sports · Events" },
-  { id: "paypal-park",     name: "PayPal Park",                            venueMatch: "PayPal Park",                          city: "san-jose",      cityLabel: "San Jose",      emoji: "⚽", tags: "Soccer · Sports" },
-  { id: "excite-ballpark", name: "Excite Ballpark",                        venueMatch: "Excite Ballpark",                      city: "san-jose",      cityLabel: "San Jose",      emoji: "⚾", tags: "Baseball · MiLB" },
-  { id: "mcenery",         name: "McEnery Convention Center",              venueMatch: "McEnery Convention Center",            city: "san-jose",      cityLabel: "San Jose",      emoji: "🎪", tags: "Conventions · Special Events" },
-  { id: "discovery",       name: "Discovery Meadows",                      venueMatch: "Discovery Meadows",                    city: "san-jose",      cityLabel: "San Jose",      emoji: "🌿", tags: "Outdoor · Family" },
-  { id: "happy-hollow",    name: "Happy Hollow Park & Zoo",                venueMatch: "Happy Hollow",                         city: "san-jose",      cityLabel: "San Jose",      emoji: "🦁", tags: "Family · Zoo" },
-  { id: "sjpl",            name: "San Jose Public Library",                venueMatch: "San Jose Public Library",              city: "san-jose",      cityLabel: "San Jose",      emoji: "📚", tags: "Library · Classes · Family" },
-  { id: "macla",           name: "MACLA",                                  venueMatch: "MACLA",                                city: "san-jose",      cityLabel: "San Jose",      emoji: "🎨", tags: "Art · Latinx · Theater" },
-  // ── Mountain View ──
-  { id: "shoreline",       name: "Shoreline Amphitheatre",                 venueMatch: "Shoreline Amphitheatre",               city: "mountain-view", cityLabel: "Mountain View", emoji: "🎵", tags: "Outdoor Concerts" },
-  { id: "mv-cpa",          name: "Mountain View Center for the Performing Arts", venueMatch: "Mountain View Center for the Performing", city: "mountain-view", cityLabel: "Mountain View", emoji: "🎭", tags: "Theater · Dance · Music" },
-  { id: "chm",             name: "Computer History Museum",                venueMatch: "Computer History Museum",              city: "mountain-view", cityLabel: "Mountain View", emoji: "💾", tags: "Tech · Exhibits · Talks" },
-  { id: "mvpl",            name: "Mountain View Public Library",           venueMatch: "Mountain View Public Library",         city: "mountain-view", cityLabel: "Mountain View", emoji: "📚", tags: "Library · Classes · Family" },
-  // ── Santa Clara ──
-  { id: "levis-stadium",   name: "Levi's Stadium",                         venueMatch: "Levi's Stadium",                       city: "santa-clara",   cityLabel: "Santa Clara",   emoji: "🏈", tags: "Football · Concerts · Events" },
-  { id: "triton-museum",   name: "Triton Museum of Art",                   venueMatch: "Triton Museum",                        city: "santa-clara",   cityLabel: "Santa Clara",   emoji: "🖼️", tags: "Art · Exhibits · Free" },
-  // ── Palo Alto / Stanford ──
-  { id: "frost",           name: "Frost Amphitheatre",                     venueMatch: "Frost Amphitheatre",                   city: "palo-alto",     cityLabel: "Stanford",      emoji: "🌙", tags: "Outdoor Concerts" },
-  { id: "cantor",          name: "Cantor Arts Center",                     venueMatch: "Cantor Arts Center",                   city: "palo-alto",     cityLabel: "Stanford",      emoji: "🗿", tags: "Art · Exhibits · Free" },
-  { id: "palo-alto-library", name: "Palo Alto City Library",              venueMatch: "Palo Alto City Library",               city: "palo-alto",     cityLabel: "Palo Alto",     emoji: "📚", tags: "Library · Classes · Family" },
-  // ── Saratoga ──
-  { id: "montalvo",        name: "Montalvo Arts Center",                   venueMatch: "Montalvo",                             city: "saratoga",      cityLabel: "Saratoga",      emoji: "🎶", tags: "Concerts · Arts · Outdoor" },
-  // ── Sunnyvale ──
-  { id: "sunnyvale-library", name: "Sunnyvale Public Library",             venueMatch: "Sunnyvale Public Library",             city: "sunnyvale",     cityLabel: "Sunnyvale",     emoji: "📚", tags: "Library · Classes · Family" },
-  // ── Los Gatos ──
-  { id: "los-gatos-library", name: "Los Gatos Library",                   venueMatch: "Santa Clara County Library",           cityFilter: "los-gatos",  city: "los-gatos",     cityLabel: "Los Gatos",     emoji: "📚", tags: "Library · Classes · Family" },
-  // ── Campbell ──
-  { id: "campbell-library", name: "Campbell Library",                      venueMatch: "Santa Clara County Library",           cityFilter: "campbell",   city: "campbell",      cityLabel: "Campbell",      emoji: "📚", tags: "Library · Classes · Family" },
-  { id: "heritage-theatre", name: "Heritage Theatre",                      venueMatch: "Heritage Theatre",                     city: "campbell",      cityLabel: "Campbell",      emoji: "🎭", tags: "Concerts · Theater · Events" },
-  // ── Milpitas ──
-  { id: "milpitas-library", name: "Milpitas Library",                      venueMatch: "Santa Clara County Library",           cityFilter: "milpitas",   city: "milpitas",      cityLabel: "Milpitas",      emoji: "📚", tags: "Library · Classes · Family" },
-];
+// Curated display overrides for known venues (emoji, friendly name, tags)
+const VENUE_OVERRIDES: Record<string, Partial<SBVenue>> = {
+  "SAP Center":                            { emoji: "🏟️", tags: "Arena · Sports · Concerts", name: "SAP Center" },
+  "San Jose Center for the Performing":    { emoji: "🎭", tags: "Theater · Broadway · Opera", name: "SJ Center for the Performing Arts" },
+  "California Theatre":                    { emoji: "🎼", tags: "Opera · Classical · Theater" },
+  "San Jose Civic":                        { emoji: "🎵", tags: "Concerts · Shows" },
+  "San Jose Improv":                       { emoji: "🎤", tags: "Comedy · Music" },
+  "The Ritz":                              { emoji: "🎸", tags: "Music · Indie" },
+  "Tech CU Arena":                         { emoji: "🏀", tags: "Sports · Events" },
+  "PayPal Park":                           { emoji: "⚽", tags: "Soccer · Sports" },
+  "Excite Ballpark":                       { emoji: "⚾", tags: "Baseball · MiLB" },
+  "McEnery Convention Center":             { emoji: "🎪", tags: "Conventions · Special Events" },
+  "Discovery Meadows":                     { emoji: "🌿", tags: "Outdoor · Family" },
+  "Happy Hollow":                          { emoji: "🦁", tags: "Family · Zoo", name: "Happy Hollow Park & Zoo" },
+  "San Jose Public Library":               { emoji: "📚", tags: "Library · Classes · Family" },
+  "MACLA":                                 { emoji: "🎨", tags: "Art · Latinx · Theater" },
+  "Shoreline Amphitheatre":                { emoji: "🎵", tags: "Outdoor Concerts" },
+  "Mountain View Center for the Performing": { emoji: "🎭", tags: "Theater · Dance · Music", name: "Mountain View Center for the Performing Arts" },
+  "Computer History Museum":               { emoji: "💾", tags: "Tech · Exhibits · Talks" },
+  "Mountain View Public Library":          { emoji: "📚", tags: "Library · Classes · Family" },
+  "Levi's Stadium":                        { emoji: "🏈", tags: "Football · Concerts · Events" },
+  "Triton Museum":                         { emoji: "🖼️", tags: "Art · Exhibits · Free", name: "Triton Museum of Art" },
+  "Frost Amphitheatre":                    { emoji: "🌙", tags: "Outdoor Concerts" },
+  "Cantor Arts Center":                    { emoji: "🗿", tags: "Art · Exhibits · Free" },
+  "Palo Alto City Library":                { emoji: "📚", tags: "Library · Classes · Family" },
+  "Montalvo":                              { emoji: "🎶", tags: "Concerts · Arts · Outdoor", name: "Montalvo Arts Center" },
+  "Sunnyvale Public Library":              { emoji: "📚", tags: "Library · Classes · Family" },
+  "Heritage Theatre":                      { emoji: "🎭", tags: "Concerts · Theater · Events" },
+  "SJZ Break Room":                        { emoji: "🎷", tags: "Jazz · Live Music · Free" },
+  "Santa Clara University":                { emoji: "🎓", tags: "University · Talks · Arts" },
+  "San Jose State University":             { emoji: "🎓", tags: "University · Events · Sports" },
+  "Hacker Dojo":                           { emoji: "💻", tags: "Tech · Meetups · Coworking" },
+  "De Anza College":                       { emoji: "🎓", tags: "College · Community · Arts" },
+  "West Valley College":                   { emoji: "🎓", tags: "College · Community" },
+  "San Jose City College":                 { emoji: "🎓", tags: "College · Community" },
+  "Mission College":                       { emoji: "🎓", tags: "College · Community" },
+};
+
+// Venues that share a name but should be split by city (e.g. "Santa Clara County Library")
+const SPLIT_BY_CITY: Record<string, Record<string, string>> = {
+  "Santa Clara County Library": {
+    "los-gatos": "Los Gatos Library",
+    "campbell": "Campbell Library",
+    "milpitas": "Milpitas Library",
+    "cupertino": "Cupertino Library",
+    "saratoga": "Saratoga Library",
+    "los-altos": "Los Altos Library",
+  },
+};
+
+const CITY_LABELS: Record<string, string> = {
+  "san-jose": "San Jose", "campbell": "Campbell", "los-gatos": "Los Gatos",
+  "saratoga": "Saratoga", "cupertino": "Cupertino", "santa-clara": "Santa Clara",
+  "sunnyvale": "Sunnyvale", "mountain-view": "Mountain View", "palo-alto": "Palo Alto",
+  "milpitas": "Milpitas", "los-altos": "Los Altos",
+};
+
+// Category → emoji fallback for auto-discovered venues
+const CATEGORY_EMOJI: Record<string, string> = {
+  music: "🎵", arts: "🎨", sports: "⚽", education: "📚", family: "👨‍👩‍👦",
+  community: "🤝", outdoor: "🌳", food: "🍽️", market: "🥦",
+};
+
+const MIN_EVENTS_FOR_VENUE = 3;
+
+// Build venues dynamically from event data
+function buildVenuesFromEvents(events: UpcomingEvent[]): SBVenue[] {
+  // Group events by venue+city, handling SCCL split
+  const groups = new Map<string, { venue: string; city: string; events: UpcomingEvent[] }>();
+
+  for (const e of events) {
+    if (!e.venue || e.ongoing) continue;
+    const splitMap = SPLIT_BY_CITY[e.venue];
+    const displayName = splitMap?.[e.city] ?? e.venue;
+    const key = `${displayName}|||${splitMap ? e.city : ""}`;
+
+    if (!groups.has(key)) {
+      groups.set(key, { venue: displayName, city: e.city, events: [] });
+    }
+    groups.get(key)!.events.push(e);
+  }
+
+  // Convert to SBVenue, filtering by minimum event count
+  const venues: SBVenue[] = [];
+  for (const [, g] of groups) {
+    if (g.events.length < MIN_EVENTS_FOR_VENUE) continue;
+
+    // Find override by checking if any override key is a substring of the venue name
+    const overrideKey = Object.keys(VENUE_OVERRIDES).find(
+      (k) => g.venue.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(g.venue.toLowerCase()),
+    );
+    const override = overrideKey ? VENUE_OVERRIDES[overrideKey] : undefined;
+
+    // Infer most common category for auto-discovered venues
+    const catCounts: Record<string, number> = {};
+    for (const e of g.events) { catCounts[e.category] = (catCounts[e.category] || 0) + 1; }
+    const topCat = Object.entries(catCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "community";
+
+    const id = g.venue.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "").slice(0, 30);
+    const cityLabel = CITY_LABELS[g.city] ?? g.city.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
+
+    venues.push({
+      id,
+      name: override?.name ?? g.venue,
+      venueMatch: g.venue,
+      city: g.city,
+      cityLabel: override?.cityLabel ?? cityLabel,
+      emoji: override?.emoji ?? CATEGORY_EMOJI[topCat] ?? "📍",
+      tags: override?.tags ?? topCat.charAt(0).toUpperCase() + topCat.slice(1),
+    });
+  }
+
+  // Sort: most events first
+  venues.sort((a, b) => {
+    const aCount = groups.get(`${a.venueMatch}|||${SPLIT_BY_CITY[a.venueMatch] ? a.city : ""}`)?.events.length ?? 0;
+    const bCount = groups.get(`${b.venueMatch}|||${SPLIT_BY_CITY[b.venueMatch] ? b.city : ""}`)?.events.length ?? 0;
+    return bCount - aCount;
+  });
+
+  return venues;
+}
 
 // ── Upcoming event type (from scraped JSON) ──
 
@@ -420,6 +501,9 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
   const daysUntilBreak = Math.ceil((new Date(SB_BREAK_START).getTime() - now.getTime()) / 86400000);
   const breakInProgress = todayIso >= SB_BREAK_START && todayIso <= SB_BREAK_END;
 
+  // ── Dynamic venue list (auto-discovered from event data) ──
+  const SOUTH_BAY_VENUES = useMemo(() => buildVenuesFromEvents(allUpcomingEvents), []);
+
   // ── Upcoming events (scraped, specific dates) ──
   const filteredUpcoming = useMemo(() => {
     const allCities = selectedCities.size === 11;
@@ -507,20 +591,24 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
     });
   }, [selectedCities, category, showKidsOnly, search]);
 
-  // ── Venue events (TM events grouped by venue) ──
+  // ── Venue events (events grouped by venue) ──
   const venueEvents = useMemo(() => {
     const result: Record<string, UpcomingEvent[]> = {};
     for (const v of SOUTH_BAY_VENUES) {
       result[v.id] = allUpcomingEvents
         .filter((e) => {
-          if (!e.venue?.toLowerCase().includes(v.venueMatch.toLowerCase())) return false;
-          if (v.cityFilter && e.city !== v.cityFilter) return false;
-          return true;
+          if (!e.venue) return false;
+          // For split-by-city venues (SCCL branches), match the original venue name + city
+          const splitMap = SPLIT_BY_CITY[e.venue];
+          if (splitMap) {
+            return splitMap[e.city] === v.name;
+          }
+          return e.venue.toLowerCase().includes(v.venueMatch.toLowerCase());
         })
         .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
     }
     return result;
-  }, []);
+  }, [SOUTH_BAY_VENUES]);
 
   // Events at selected venue, with search/category/kids filter applied
   const venueFilteredEvents = useMemo(() => {
@@ -529,8 +617,11 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
     if (!v) return [];
     return allUpcomingEvents
       .filter((e) => {
-        if (!e.venue?.toLowerCase().includes(v.venueMatch.toLowerCase())) return false;
-        if (v.cityFilter && e.city !== v.cityFilter) return false;
+        if (!e.venue) return false;
+        const splitMap = SPLIT_BY_CITY[e.venue];
+        if (splitMap) {
+          if (splitMap[e.city] !== v.name) return false;
+        } else if (!e.venue.toLowerCase().includes(v.venueMatch.toLowerCase())) return false;
         if (category !== "all" && e.category !== category) return false;
         if (showKidsOnly && !e.kidFriendly) return false;
         if (search) {
