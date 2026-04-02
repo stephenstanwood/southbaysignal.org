@@ -115,15 +115,24 @@ async function callClaude(prompt) {
 }
 
 const TECH_EVENT_KEYWORDS = [
-  "ai", "artificial intelligence", "machine learning", "robot", "silicon",
-  "tech", "chip", "semiconductor", "startup", "software", "computer",
-  "data", "cloud", "cyber", "coding", "engineering", "developer",
-  "hackathon", "computer history museum", "chm",
+  "artificial intelligence", "machine learning", "robot", "silicon",
+  "chip", "semiconductor", "startup", "computer history museum", "chm",
+  "hackathon", "neural", "venture capital", "autonomous", "physical ai",
 ];
 
+// Exclude events where "tech" only appears in the venue name (e.g. "Tech CU Arena")
+// and generic library help sessions
+const TECH_EVENT_EXCLUDES = /\btech cu\b|tech help|computer help|digital skills|1-on-1|one-on-one|\btech assist/i;
+
 function isTechEvent(event) {
-  const haystack = `${event.title} ${event.venue ?? ""} ${event.category ?? ""}`.toLowerCase();
-  return TECH_EVENT_KEYWORDS.some((kw) => haystack.includes(kw));
+  const title = event.title.toLowerCase();
+  const venue = (event.venue ?? "").toLowerCase();
+  const haystack = `${title} ${venue}`;
+  if (TECH_EVENT_EXCLUDES.test(haystack)) return false;
+  // Title-only match for broad terms
+  const titleMatch = /\b(ai|tech|chip|software|data|cloud|cyber|coding|engineering|developer)\b/.test(title);
+  const deepMatch = TECH_EVENT_KEYWORDS.some((kw) => haystack.includes(kw));
+  return titleMatch || deepMatch;
 }
 
 async function main() {

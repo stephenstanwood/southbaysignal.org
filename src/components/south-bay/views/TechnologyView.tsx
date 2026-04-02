@@ -563,8 +563,13 @@ const Q1_2026_ROUNDS = RECENTLY_FUNDED.filter(
   (r) => r.date >= "2026-01-01" && r.date <= "2026-03-31"
 ).length;
 
+const EARLY_STAGES = new Set(["Seed", "Pre-Seed", "Series A", "Series A1"]);
+
 function RecentlyFundedSection() {
+  const [stageFilter, setStageFilter] = useState<"all" | "early">("all");
   const sorted = [...RECENTLY_FUNDED].sort((a, b) => b.date.localeCompare(a.date));
+  const earlyCount = sorted.filter((r) => EARLY_STAGES.has(r.round)).length;
+  const filtered = stageFilter === "early" ? sorted.filter((r) => EARLY_STAGES.has(r.round)) : sorted;
   return (
     <div className="tech-section">
       <div className="tech-section-head">
@@ -622,8 +627,32 @@ function RecentlyFundedSection() {
         </div>
       </div>
 
+      {/* Stage filter */}
+      <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
+        {(["all", "early"] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setStageFilter(f)}
+            style={{
+              padding: "4px 12px",
+              fontSize: 11,
+              fontWeight: 700,
+              fontFamily: "'Space Mono', monospace",
+              letterSpacing: "0.04em",
+              border: `1px solid ${stageFilter === f ? "#7c3aed" : "var(--sb-border-light)"}`,
+              borderRadius: 4,
+              background: stageFilter === f ? "#7c3aed" : "#fff",
+              color: stageFilter === f ? "#fff" : "var(--sb-muted)",
+              cursor: "pointer",
+            }}
+          >
+            {f === "all" ? `All (${sorted.length})` : `Early Stage (${earlyCount})`}
+          </button>
+        ))}
+      </div>
+
       <div>
-        {sorted.map((company) => (
+        {filtered.map((company) => (
           <RecentlyFundedCard key={company.id} company={company} />
         ))}
       </div>
