@@ -12,8 +12,7 @@ import { writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY ?? "";
-const CLAUDE_HAIKU = "claude-haiku-4-5-20251001";
+const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY ?? "";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "restaurant-radar.json");
@@ -224,48 +223,32 @@ async function main() {
     return b.date.localeCompare(a.date);
   });
 
-  // Enrich items missing names using Claude (best-effort)
+  // Enrich items missing names using Google Places (best-effort)
   const topItems = items.slice(0, 20);
-  if (ANTHROPIC_API_KEY) {
+  if (GOOGLE_PLACES_API_KEY) {
     const unnamed = topItems.filter((it) => !it.name);
     if (unnamed.length > 0) {
-      console.log(`\n  🔍 Looking up ${unnamed.length} unnamed permit locations…`);
-      const addresses = unnamed.map((it) => `${it.address}, San Jose, CA (${it.workType}, ${it.subtype})`).join("\n");
-      try {
-        const res = await fetch("https://api.anthropic.com/v1/messages", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": ANTHROPIC_API_KEY,
-            "anthropic-version": "2023-06-01",
-          },
-          body: JSON.stringify({
-            model: CLAUDE_HAIKU,
-            max_tokens: 512,
-            messages: [{
-              role: "user",
-              content: `For each address, tell me the restaurant or food business name that is/was at that location in San Jose, CA. If you don't know, say "unknown".\n\nReturn ONLY a JSON array of objects: [{"address": "...", "name": "..."}]\n\n${addresses}`,
-            }],
-          }),
-        });
-        if (res.ok) {
+      console.log(`\n  🔍 Looking up ${unnamed.length} unnamed permit locations via Google Places…`);
+      for (const item of unnamed) {
+        try {
+          const query = `restaurant ${item.address}, San Jose, CA`;
+          const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(query)}&inputtype=textquery&fields=name,formatted_address,business_status&key=${GOOGLE_PLACES_API_KEY}`;
+          const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+          if (!res.ok) continue;
           const data = await res.json();
-          const text = data.content?.[0]?.text ?? "";
-          const jsonMatch = text.match(/\[[\s\S]*\]/);
-          if (jsonMatch) {
-            const lookups = JSON.parse(jsonMatch[0]);
-            for (const lookup of lookups) {
-              if (!lookup.name || lookup.name.toLowerCase() === "unknown") continue;
-              const item = unnamed.find((it) => it.address === lookup.address.replace(/, San Jose.*$/, "").trim());
-              if (item) {
-                item.name = lookup.name;
-                console.log(`    ✓ ${item.address} → ${lookup.name}`);
-              }
+          const candidate = data.candidates?.[0];
+          if (candidate?.name) {
+            item.name = candidate.name;
+            const status = candidate.business_status;
+            if (status === "CLOSED_PERMANENTLY" || status === "CLOSED_TEMPORARILY") {
+              item.description = `${candidate.name} (${status === "CLOSED_PERMANENTLY" ? "permanently closed" : "temporarily closed"})`;
             }
+            console.log(`    ✓ ${item.address} → ${candidate.name}${status ? ` [${status}]` : ""}`);
           }
+          await new Promise((r) => setTimeout(r, 200)); // rate limit
+        } catch (err) {
+          console.log(`    ⚠️ ${item.address}: ${err.message}`);
         }
-      } catch (err) {
-        console.log(`    ⚠️ Name lookup failed: ${err.message}`);
       }
     }
   }
