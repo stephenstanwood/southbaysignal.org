@@ -35,8 +35,9 @@ const configuredCities = Object.keys(staticDigests) as City[];
 
 // If no pre-generated data, fall back to the known configured cities
 const KNOWN_CITIES: City[] = [
-  "campbell", "saratoga", "los-altos",
+  "campbell", "saratoga", "los-altos", "los-gatos",
   "san-jose", "mountain-view", "sunnyvale", "cupertino", "santa-clara",
+  "milpitas", "palo-alto",
 ];
 
 // Agenda page URLs — fallback link when no digest is available
