@@ -66,7 +66,7 @@ export const SOUTH_BAY_TEAMS: SouthBayTeam[] = [
     espnPath: "", // AHL data comes from our /api/ahl-scores proxy (ESPN returns 400 for AHL)
     abbreviation: "SJB",
     displayNameMatch: "barracuda",
-    fallbackLogoUrl: "https://a.espncdn.com/i/teamlogos/ahl/500/sjb.png",
+    fallbackLogoUrl: "https://lscluster.hockeytech.com/download.php?client_code=ahl&file_path=img/logos/405.png",
     color: "#006D75",
     textColor: "#00AAB5",
     primary: true,

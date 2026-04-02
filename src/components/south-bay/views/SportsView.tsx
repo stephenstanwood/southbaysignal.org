@@ -455,8 +455,11 @@ export default function SportsView() {
   }
 
   // Split teams into South Bay local and broader Bay Area — only show teams with games
-  const localTeams = SOUTH_BAY_TEAMS.filter((t) => t.primary && (gamesByTeam.get(t.key)?.length ?? 0) > 0);
-  const bayAreaTeams = SOUTH_BAY_TEAMS.filter((t) => !t.primary && (gamesByTeam.get(t.key)?.length ?? 0) > 0);
+  // Sort by league order so related sports stack together (hockey, soccer, etc.)
+  const byLeagueOrder = (a: SouthBayTeam, b: SouthBayTeam) =>
+    (LEAGUE_META[a.league]?.order ?? 99) - (LEAGUE_META[b.league]?.order ?? 99);
+  const localTeams = SOUTH_BAY_TEAMS.filter((t) => t.primary && (gamesByTeam.get(t.key)?.length ?? 0) > 0).sort(byLeagueOrder);
+  const bayAreaTeams = SOUTH_BAY_TEAMS.filter((t) => !t.primary && (gamesByTeam.get(t.key)?.length ?? 0) > 0).sort(byLeagueOrder);
 
   const liveCount = [...gamesByTeam.values()].flat().filter((g) => g.status === "in").length;
 

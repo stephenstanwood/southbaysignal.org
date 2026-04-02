@@ -107,6 +107,51 @@ const CATEGORY_EMOJI: Record<string, string> = {
   community: "🤝", outdoor: "🌳", food: "🍽️", market: "🥦",
 };
 
+// Smarter emoji/tag inference from venue name + event content
+const VENUE_KEYWORD_RULES: { test: RegExp; emoji: string; tags: string }[] = [
+  { test: /\blibrary\b/i,                           emoji: "📚", tags: "Library · Classes · Family" },
+  { test: /\buniversity\b|\bcollege\b|\bsjsu\b/i,   emoji: "🎓", tags: "University · Events" },
+  { test: /\bschool\b/i,                            emoji: "🏫", tags: "School · Education" },
+  { test: /\bpark\b(?!ing)/i,                       emoji: "🌳", tags: "Park · Outdoor" },
+  { test: /\bstadium\b|\barena\b|\bballpark\b/i,    emoji: "🏟️", tags: "Sports · Events" },
+  { test: /\btheatre\b|\btheater\b|\bperforming/i,  emoji: "🎭", tags: "Theater · Performing Arts" },
+  { test: /\bmuseum\b|\bgallery\b/i,                emoji: "🖼️", tags: "Museum · Exhibits" },
+  { test: /\bchurch\b|\btemple\b|\bmosque\b/i,      emoji: "⛪", tags: "Worship · Community" },
+  { test: /\bjazz\b|\bmusic\b|\bconcert/i,          emoji: "🎷", tags: "Music · Live Shows" },
+  { test: /\bbrewery\b|\bwinery\b|\btap/i,          emoji: "🍺", tags: "Drinks · Social" },
+  { test: /\bcafe\b|\bcoffee\b|\brestaurant/i,      emoji: "☕", tags: "Food · Drinks" },
+  { test: /\bgarden\b|\bbotanical\b|\bconservancy/i, emoji: "🌿", tags: "Garden · Nature" },
+  { test: /\btrail\b|\bpreserve\b|\bopen space/i,   emoji: "🥾", tags: "Trails · Nature" },
+  { test: /\bcommunity center\b|\brec center/i,     emoji: "🏠", tags: "Community · Recreation" },
+  { test: /\bhacker\b|\bcowork\b|\btech\b/i,        emoji: "💻", tags: "Tech · Meetups" },
+  { test: /\bpool\b|\baquatic/i,                    emoji: "🏊", tags: "Swimming · Recreation" },
+  { test: /\bzoo\b|\bwildlife\b|\banimal/i,         emoji: "🦁", tags: "Wildlife · Family" },
+  { test: /\bfarm\b|\borchard\b/i,                  emoji: "🌾", tags: "Farm · Agriculture" },
+  { test: /\bmarket\b/i,                            emoji: "🥦", tags: "Market · Shopping" },
+];
+
+function inferVenueEmojiAndTags(
+  venueName: string,
+  topCategory: string,
+  events: UpcomingEvent[],
+): { emoji: string; tags: string } {
+  // Check venue name against keyword rules
+  for (const rule of VENUE_KEYWORD_RULES) {
+    if (rule.test.test(venueName)) return { emoji: rule.emoji, tags: rule.tags };
+  }
+
+  // Check event titles for hints (sample first 10)
+  const titleSample = events.slice(0, 10).map((e) => e.title).join(" ");
+  for (const rule of VENUE_KEYWORD_RULES) {
+    if (rule.test.test(titleSample)) return { emoji: rule.emoji, tags: rule.tags };
+  }
+
+  // Fall back to category emoji
+  const catEmoji = CATEGORY_EMOJI[topCategory] ?? "📍";
+  const catTag = topCategory.charAt(0).toUpperCase() + topCategory.slice(1);
+  return { emoji: catEmoji, tags: catTag };
+}
+
 const MIN_EVENTS_FOR_VENUE = 3;
 
 // Build venues dynamically from event data
@@ -144,6 +189,7 @@ function buildVenuesFromEvents(events: UpcomingEvent[]): SBVenue[] {
 
     const id = g.venue.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "").slice(0, 30);
     const cityLabel = CITY_LABELS[g.city] ?? g.city.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
+    const inferred = inferVenueEmojiAndTags(g.venue, topCat, g.events);
 
     venues.push({
       id,
@@ -151,8 +197,8 @@ function buildVenuesFromEvents(events: UpcomingEvent[]): SBVenue[] {
       venueMatch: g.venue,
       city: g.city,
       cityLabel: override?.cityLabel ?? cityLabel,
-      emoji: override?.emoji ?? CATEGORY_EMOJI[topCat] ?? "📍",
-      tags: override?.tags ?? topCat.charAt(0).toUpperCase() + topCat.slice(1),
+      emoji: override?.emoji ?? inferred.emoji,
+      tags: override?.tags ?? inferred.tags,
     });
   }
 
