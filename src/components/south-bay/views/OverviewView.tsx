@@ -228,7 +228,7 @@ const BUCKET_LABELS: Record<TimeBucket, string> = {
   morning: "This Morning",
   afternoon: "This Afternoon",
   evening: "Tonight",
-  none: "Today",
+  none: "Also Today",
 };
 const BUCKET_ORDER: TimeBucket[] = ["now", "morning", "afternoon", "evening", "none"];
 

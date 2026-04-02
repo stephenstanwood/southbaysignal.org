@@ -93,6 +93,21 @@ function categorize(record) {
     work.includes("new construction") || work.includes("new constr");
   const isAddition = work.includes("addition") || work.includes("alteration");
 
+  // Skip boring residential maintenance — reroofs, HVAC, water heaters, etc.
+  const isRoutineMaintenance =
+    work.includes("reroof") ||
+    work.includes("re-roof") ||
+    work.includes("roofing") ||
+    work.includes("roof replacement") ||
+    work.includes("hvac") ||
+    work.includes("water heater") ||
+    work.includes("furnace") ||
+    work.includes("solar panel") ||
+    work.includes("electrical panel") ||
+    work.includes("sewer") ||
+    work.includes("plumbing");
+  if (isResidential && isRoutineMaintenance) return null;
+
   if (isResidential && isNewConstruction) {
     return isMultiFamily ? "multi-family-new" : "residential-new";
   }

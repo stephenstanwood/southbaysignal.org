@@ -124,6 +124,21 @@ function displayTime(d) {
   });
 }
 
+// ── Event title blocklist — skip private/internal/irrelevant events ──────────
+const TITLE_BLOCKLIST = [
+  /\bpractice\b/i,        // team practices
+  /\brehearsal\b/i,       // rehearsals
+  /\bboard meeting\b/i,   // internal board meetings
+  /\bstaff meeting\b/i,   // internal staff meetings
+  /\bcommittee meeting\b/i, // internal committee meetings
+  /\bclosed\s+(for|—|–|-)/i, // closure notices
+  /\bcancelled?\b/i,      // cancelled events
+];
+
+function isBlockedEvent(title) {
+  return TITLE_BLOCKLIST.some((re) => re.test(title));
+}
+
 function stripHtml(html) {
   if (!html) return "";
   return html
@@ -945,6 +960,7 @@ async function fetchCampbellEvents() {
     const events = items.map((item) => {
       // Campbell uses calendarEvent:EventDates ("March 28, 2026" or "April 6, 2026 - April 10, 2026")
       // not calendarEvent:startDate. Fall back to pubDate only if EventDates is missing.
+      if (isBlockedEvent(item.title)) return null;
       const start = parseCivicPlusEventDates(item.eventDates)
         || parseDate(item.startDate)
         || parseDate(item.pubDate);
@@ -988,6 +1004,7 @@ async function fetchCivicPlusIcal(name, url, defaultCity) {
 
     const events = rawEvents
       .map((ev) => {
+        if (isBlockedEvent(ev.summary)) return null;
         const start = parseIcalDate(ev.dtstart);
         if (!start || start < now || start > thirtyDaysOut) return null;
         const end = parseIcalDate(ev.dtend);
