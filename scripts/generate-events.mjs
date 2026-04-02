@@ -455,8 +455,10 @@ function cleanTitle(title) {
       "",
     )
     .trim();
-  // Downcase ALL-CAPS words that aren't acronyms (4+ letters, e.g. SPECIAL → Special)
-  t = t.replace(/\b[A-Z]{4,}\b/g, (w) => w[0] + w.slice(1).toLowerCase());
+  // Downcase ALL-CAPS words that aren't acronyms (5+ letters, e.g. SPECIAL → Special)
+  t = t.replace(/\b[A-Z]{5,}\b/g, (w) => w[0] + w.slice(1).toLowerCase());
+  // Fix pipes without surrounding spaces: "Foo |Bar" → "Foo | Bar"
+  t = t.replace(/\s*\|\s*/g, " | ");
   // Apply known recurring fixes from source data
   for (const [bad, fix] of Object.entries(TITLE_FIXES)) {
     t = t.replaceAll(bad, fix);
