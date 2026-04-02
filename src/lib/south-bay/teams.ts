@@ -63,7 +63,7 @@ export const SOUTH_BAY_TEAMS: SouthBayTeam[] = [
     name: "San Jose Barracuda",
     shortName: "Barracuda",
     league: "ahl",
-    espnPath: "hockey/ahl",
+    espnPath: "", // AHL data comes from our /api/ahl-scores proxy (ESPN returns 400 for AHL)
     abbreviation: "SJB",
     displayNameMatch: "barracuda",
     fallbackLogoUrl: "https://a.espncdn.com/i/teamlogos/ahl/500/sjb.png",

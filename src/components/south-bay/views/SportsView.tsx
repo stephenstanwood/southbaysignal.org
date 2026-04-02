@@ -170,6 +170,49 @@ function parseMilbGames(data: unknown): ParsedGame[] {
   return games;
 }
 
+// ── AHL HockeyTech parsing (San Jose Barracuda) ──
+
+interface AhlApiGame {
+  id: string;
+  date: string;
+  startTime: string;
+  isoTime: string;
+  homeTeam: string;
+  homeAbbr: string;
+  homeGoals: number;
+  awayTeam: string;
+  awayAbbr: string;
+  awayGoals: number;
+  status: "pre" | "in" | "post";
+  statusDetail: string;
+  isSouthBayHome: boolean;
+}
+
+function parseAhlGames(data: { games?: AhlApiGame[] }): ParsedGame[] {
+  const barracuda = SOUTH_BAY_TEAMS.find((t) => t.key === "sj-barracuda");
+  if (!barracuda) return [];
+
+  return (data.games ?? []).map((g) => ({
+    id: `ahl-${g.id}`,
+    league: "ahl" as const,
+    leagueLabel: "AHL",
+    homeTeam: g.homeTeam,
+    awayTeam: g.awayTeam,
+    homeAbbr: g.homeAbbr,
+    awayAbbr: g.awayAbbr,
+    homeScore: g.status === "pre" ? undefined : g.homeGoals,
+    awayScore: g.status === "pre" ? undefined : g.awayGoals,
+    homeColor: g.isSouthBayHome ? barracuda.color : "#888",
+    awayColor: !g.isSouthBayHome ? barracuda.color : "#888",
+    status: g.status,
+    statusDetail: g.statusDetail,
+    startTime: g.isoTime,
+    broadcasts: [],
+    isSouthBayHome: g.isSouthBayHome,
+    southBayTeamKey: "sj-barracuda",
+  }));
+}
+
 // ── Mini game row (compact schedule style) ──
 
 function formatShortDate(iso: string): string {
@@ -348,7 +391,14 @@ export default function SportsView() {
         if (milbRes.ok) milbGames = parseMilbGames(await milbRes.json());
       } catch { /* best-effort */ }
 
-      const allGames: ParsedGame[] = [...milbGames];
+      // AHL (San Jose Barracuda) — via our proxy (HockeyTech blocks CORS)
+      let ahlGames: ParsedGame[] = [];
+      try {
+        const ahlRes = await fetch("/api/ahl-scores?days_back=4&days_forward=4");
+        if (ahlRes.ok) ahlGames = parseAhlGames(await ahlRes.json());
+      } catch { /* best-effort */ }
+
+      const allGames: ParsedGame[] = [...milbGames, ...ahlGames];
       for (const result of results) {
         if (result.status === "fulfilled") allGames.push(...result.value);
       }
