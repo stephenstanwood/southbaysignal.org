@@ -18,6 +18,7 @@ Run these scripts to refresh pre-generated data:
 - Vercel project connected to this repo
 - Custom domain: southbaysignal.org
 - stanwood.dev/south-bay redirects here permanently
+- NEVER create files in a root `api/` directory — Vercel treats that as legacy serverless functions and routes all `/api/*` traffic away from Astro's `_render`, breaking every API route. All API routes must live in `src/pages/api/`.
 
 ## Tabs
 Order: Today | Plan My Day | Events | Gov | Tech | Development | Transit | Sports
