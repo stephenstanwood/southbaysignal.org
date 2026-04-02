@@ -48,6 +48,30 @@ export default function HealthScoresCard() {
         <div className="sb-section-line" />
       </div>
 
+      {/* Score legend */}
+      <div style={{
+        display: "flex", gap: 0, marginBottom: 14,
+        borderRadius: 6, overflow: "hidden",
+        border: "1px solid var(--sb-border)",
+        fontSize: 10, fontFamily: "'Space Mono', monospace",
+        lineHeight: 1.3,
+      }}>
+        {([
+          { range: "90–100", label: "Pass", bg: "#E8F5E9", color: "#2E7D32", icon: "✓" },
+          { range: "80–89", label: "Adequate", bg: "#FFF8E1", color: "#7A6020", icon: "~" },
+          { range: "70–79", label: "Needs Improvement", bg: "#FFF3E0", color: "#BF360C", icon: "!" },
+          { range: "< 70", label: "Poor", bg: "#FFEBEE", color: "#7F1D1D", icon: "✗" },
+        ] as const).map(({ range, label, bg, color, icon }) => (
+          <div key={range} style={{
+            flex: 1, padding: "6px 6px", background: bg,
+            textAlign: "center", borderRight: "1px solid var(--sb-border)",
+          }}>
+            <div style={{ fontWeight: 800, fontSize: 11, color }}>{icon} {range}</div>
+            <div style={{ fontSize: 9, color, opacity: 0.8 }}>{label}</div>
+          </div>
+        ))}
+      </div>
+
       {/* Red placards */}
       {reds.length > 0 && (
         <div style={{ marginBottom: 14 }}>

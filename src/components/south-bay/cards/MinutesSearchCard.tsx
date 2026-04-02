@@ -120,7 +120,7 @@ export default function MinutesSearchCard({ homeCity, selectedCities }: Props) {
       if (cityParam) params.set("city", cityParam);
       if (q.trim().length >= 2) params.set("q", q.trim());
       if (topic && topic !== "All Topics") params.set("topic", topic);
-      const res = await fetch(`https://stoa.works/api/council-meetings?${params.toString()}`);
+      const res = await fetch(`https://www.stoa.works/api/council-meetings?${params.toString()}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setResults(data.records ?? []);

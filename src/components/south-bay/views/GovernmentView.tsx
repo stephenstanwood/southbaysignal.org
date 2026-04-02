@@ -296,19 +296,6 @@ export default function GovernmentView({ selectedCities, homeCity }: Props) {
         );
       })}
 
-      {/* Unconfigured cities */}
-      {unconfiguredSelected.length > 0 && (
-        <div className="sb-gov-upcoming">
-          <p>
-            Digests not yet available for:{" "}
-            {unconfiguredSelected.map(cityLabel).join(", ")}.
-            {" "}Currently covering:{" "}
-            {allConfigured.length > 0
-              ? allConfigured.map(cityLabel).join(", ")
-              : "—"}
-          </p>
-        </div>
-      )}
 
       {/* ── Council Records Search ── */}
       <MinutesSearchCard homeCity={homeCity} selectedCities={selectedCities} />
