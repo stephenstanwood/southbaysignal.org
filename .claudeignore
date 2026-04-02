@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.astro/
+.vercel/
+.next/
+build/
+.turbo/
+__pycache__/
+*.lock
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+.DS_Store
+*.log
+.env
+.env.*
