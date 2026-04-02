@@ -213,7 +213,9 @@ function cityLabel(city: string): string {
 function costBadge(cost: string, costNote?: string): { label: string; bg: string; color: string } {
   if (cost === "free") return { label: "FREE", bg: "#D1FAE5", color: "#065F46" };
   if (cost === "low") return { label: costNote?.split(" ")[0] ?? "$", bg: "#FEF3C7", color: "#92400E" };
-  return { label: costNote?.split(" ")[0] ?? "$$", bg: "#EDE9FE", color: "#5B21B6" };
+  const priceHint = costNote?.split(" ")[0];
+  const label = priceHint && /^[\$\d]/.test(priceHint) ? priceHint : "$$";
+  return { label, bg: "#EDE9FE", color: "#5B21B6" };
 }
 
 const CATEGORY_EMOJI: Record<string, string> = {
