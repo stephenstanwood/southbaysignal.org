@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "sbs-dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "/bin/zsh",
+      "runtimeArgs": ["-l", "-c", "npm run dev"],
       "port": 4321
     }
   ]
