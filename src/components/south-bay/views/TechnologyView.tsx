@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import upcomingJson from "../../../data/south-bay/upcoming-events.json";
 import techBriefingJson from "../../../data/south-bay/tech-briefing.json";
+import upcomingMeetingsJson from "../../../data/south-bay/upcoming-meetings.json";
 import {
   TECH_COMPANIES,
   TECH_PULSE,
@@ -223,6 +224,111 @@ function HiringRow({ company }: { company: TechCompany }) {
       >
         {statusLabel}
       </span>
+    </div>
+  );
+}
+
+// ── Gov × Tech callout ────────────────────────────────────────────────────
+
+const GOV_TECH_KEYWORDS = /\b(ai|artificial intelligence|govai|energy storage|battery storage|ev |electric vehicle|autonomous|robot|startup|innovation|chip|semiconductor|broadband|5g|fiber optic|automation|data center|software|digital infrastructure)\b/i;
+
+interface GovTechItem {
+  city: string;
+  date: string;
+  displayDate: string;
+  title: string;
+  url: string;
+}
+
+interface MeetingAgendaItem {
+  title: string;
+  sequence: number;
+}
+
+interface UpcomingMeeting {
+  date: string;
+  displayDate: string;
+  bodyName: string;
+  url: string;
+  agendaItems: MeetingAgendaItem[];
+}
+
+function getGovTechItems(): GovTechItem[] {
+  const data = upcomingMeetingsJson as { meetings: Record<string, UpcomingMeeting> };
+  const results: GovTechItem[] = [];
+  for (const [cityId, meeting] of Object.entries(data.meetings)) {
+    const cityName = cityId.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
+    for (const item of meeting.agendaItems) {
+      if (GOV_TECH_KEYWORDS.test(item.title)) {
+        results.push({
+          city: cityName,
+          date: meeting.date,
+          displayDate: meeting.displayDate,
+          title: item.title.replace(/\.$/, ""),
+          url: meeting.url,
+        });
+      }
+    }
+  }
+  results.sort((a, b) => a.date.localeCompare(b.date));
+  return results.slice(0, 5);
+}
+
+function GovTechCallout() {
+  const items = getGovTechItems();
+  if (items.length === 0) return null;
+  return (
+    <div className="tech-section">
+      <div className="tech-section-head">
+        <h3 className="tech-section-title">City Hall × Tech</h3>
+        <span className="tech-section-note">Tech-relevant items on upcoming council agendas</span>
+      </div>
+      {items.map((item, i) => (
+        <a
+          key={i}
+          href={item.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 12,
+            padding: "10px 0",
+            borderBottom: "1px solid var(--sb-border-light)",
+            textDecoration: "none",
+            color: "inherit",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 11,
+              color: "var(--sb-muted)",
+              fontFamily: "'Space Mono', monospace",
+              whiteSpace: "nowrap",
+              minWidth: 80,
+              paddingTop: 2,
+            }}
+          >
+            {item.displayDate}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                fontFamily: "var(--sb-sans)",
+                lineHeight: 1.3,
+                color: "var(--sb-ink)",
+              }}
+            >
+              {item.title} ↗
+            </div>
+            <div style={{ fontSize: 11, color: "var(--sb-muted)", marginTop: 2 }}>
+              {item.city} City Council
+            </div>
+          </div>
+        </a>
+      ))}
     </div>
   );
 }
@@ -598,7 +704,7 @@ function RecentlyFundedSection() {
             textAlign: "center",
           }}
         >
-          <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "'Space Mono', monospace", color: "#581c87", lineHeight: 1 }}>$3.1B+</div>
+          <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "'Space Mono', monospace", color: "#581c87", lineHeight: 1 }}>$3.2B+</div>
           <div style={{ fontSize: 10, color: "#6b21a8", fontFamily: "'Space Mono', monospace", marginTop: 4, letterSpacing: "0.04em" }}>Q1 2026 RAISED</div>
         </div>
         <div
@@ -983,6 +1089,9 @@ export default function TechnologyView() {
 
       {/* ── Tech Events Near You ── */}
       <TechEventsSection />
+
+      {/* ── Gov × Tech callout ── */}
+      <GovTechCallout />
 
       {/* ── Footer note ── */}
       <div className="tech-footer-note">
