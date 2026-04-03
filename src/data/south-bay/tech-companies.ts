@@ -1411,3 +1411,94 @@ export const TECH_MILESTONES: TechMilestone[] = [
     url: "https://adobe.com",
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Annual Tech Conferences — major South Bay and nearby events
+// typicalMonth: the month they usually occur (1-12)
+// typicalDay / typicalEndDay: approximate days if known
+// ---------------------------------------------------------------------------
+
+export interface TechConference {
+  id: string;
+  name: string;
+  organizer: string;
+  venue: string;
+  city: string;
+  typicalMonth: number;
+  typicalDay?: number;
+  typicalEndDay?: number;
+  description: string;
+  url: string;
+  scale: "global" | "regional";
+}
+
+export const TECH_CONFERENCES: TechConference[] = [
+  {
+    id: "nvidia-gtc",
+    name: "NVIDIA GTC",
+    organizer: "NVIDIA",
+    venue: "San Jose Convention Center",
+    city: "San Jose",
+    typicalMonth: 3,
+    description: "The premier AI and accelerated computing conference — 300+ sessions, 1,000+ speakers. Jensen Huang's keynotes have become unmissable Silicon Valley events. Held annually at the San Jose Convention Center.",
+    url: "https://www.nvidia.com/gtc/",
+    scale: "global",
+  },
+  {
+    id: "startup-grind",
+    name: "Startup Grind Global",
+    organizer: "Startup Grind",
+    venue: "Fox Theatre",
+    city: "Redwood City",
+    typicalMonth: 4,
+    typicalDay: 28,
+    typicalEndDay: 29,
+    description: "World's largest startup conference — 5,000+ founders, investors, and operators from 125+ countries. Held in Redwood City, minutes from Sand Hill Road and the heart of Silicon Valley's VC ecosystem.",
+    url: "https://www.startupgrind.com/conference/",
+    scale: "global",
+  },
+  {
+    id: "rsa-conference",
+    name: "RSA Conference",
+    organizer: "RSA Security",
+    venue: "Moscone Center",
+    city: "San Francisco",
+    typicalMonth: 4,
+    description: "The world's leading cybersecurity event — 40,000+ attendees. Security is one of the South Bay's fastest-growing tech sectors; RSAC is where the industry sets the agenda for the year.",
+    url: "https://www.rsaconference.com/",
+    scale: "global",
+  },
+  {
+    id: "google-io",
+    name: "Google I/O",
+    organizer: "Google",
+    venue: "Shoreline Amphitheatre",
+    city: "Mountain View",
+    typicalMonth: 5,
+    description: "Google's annual developer conference at Shoreline Amphitheatre, right next to the Googleplex. Keynotes stream free online. A Mountain View landmark event every May — and one of the most-watched tech announcements of the year.",
+    url: "https://io.google",
+    scale: "global",
+  },
+  {
+    id: "apple-wwdc",
+    name: "Apple WWDC",
+    organizer: "Apple",
+    venue: "Apple Park",
+    city: "Cupertino",
+    typicalMonth: 6,
+    description: "Apple's Worldwide Developers Conference. Keynotes and sessions stream online; Apple hosts select developers for in-person labs at Apple Park. The defining Cupertino tech event of the year.",
+    url: "https://developer.apple.com/wwdc/",
+    scale: "global",
+  },
+  {
+    id: "svforum-summit",
+    name: "SVForum Tech Summit",
+    organizer: "SVForum",
+    venue: "Computer History Museum",
+    city: "Mountain View",
+    typicalMonth: 9,
+    description: "Silicon Valley's regional tech and innovation summit — panels on SV's economic competitiveness, emerging sectors, and local tech policy. Held at the Computer History Museum in Mountain View.",
+    url: "https://svforum.org",
+    scale: "regional",
+  },
+];

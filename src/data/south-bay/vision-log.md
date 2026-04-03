@@ -2170,6 +2170,104 @@ The "City Hall × Tech" callout is uniquely SBS. No other local product surfaces
 
 ---
 
+## 2026-04-03 — Cycle 43: Palo Alto Restaurant Radar + Data Refresh
+
+### Context
+April 3, 2026 (Good Friday). Previous cycles gave SBS a strong tech tab and event coverage, but the Food tab's Restaurant Radar only covered San Jose. Palo Alto — home of University Ave and California Ave restaurant rows — had zero coverage. The Palo Alto PermitView API was already implemented in the permits script but untapped for restaurant signals.
+
+### What Was Built
+
+**Palo Alto restaurant radar expansion:**
+- `generate-restaurant-radar.mjs` now fetches from both San Jose (CKAN) and Palo Alto (PermitView)
+- PA food permit filter: queries PermitView with SQL-style LIKE clauses for restaurant/cafe/bakery/food/kitchen/dining/bistro/brew/bar terms
+- Residential permit filter: strips "Web - Kitchen or Bath Remodel", "Res:" prefix, single-family, ADU, instant permit patterns
+- Business name extraction from PA DESCRIPTION field: "COM: Standalone U&O for 'Bistro Demiya'" → "Bistro Demiya"
+- Signal labeling for PA: "New Opening" (U&O permits), "Conditional Use" (CUP), "Renovation" (TI), "New Buildout" (equipment adds)
+- Each item now has a `city` field ("san-jose" or "palo-alto")
+- `FoodView.tsx`: added CITY_LABELS map, city tag on each radar item meta row, updated subtitle "San Jose · Palo Alto", updated disclaimer
+
+**PA signals this cycle:**
+- **Bistro Demiya** at 407 Lytton Ave — New Opening (U&O permit filed, downtown PA)
+- **121 Lytton Ave** — New Opening (unnamed, same Lytton Ave block)
+- **338 University Ave** — Renovation (iconic restaurant row)
+- **341 California Ave** — Conditional Use Permit (alcohol license amendment, CA Ave restaurant row)
+
+**SJ signals this cycle:**
+- **Eos & Nyx** at 2040 N 1st St — Possible Closure (demolition permit)
+- **Baekjeong** at 2855 Stevens Creek Blvd — $3.1M new build (Korean BBQ chain)
+- **Flora** at 355 Santana Row — $1.2M major buildout
+
+**Data refresh:**
+- upcoming-events.json: 527 events (108 ongoing), 25 sources
+- city-briefings.json: 11 cities, Apr 3–10
+- around-town.json: 8 items (same as prior cycle)
+- digests.json: 11 city digests
+- tech-briefing.json: refreshed
+- restaurant-radar.json: 12 signals (7 SJ + 5 PA)
+
+### Why This Was the Strongest Move
+
+Palo Alto's University Ave and California Ave are two of the most closely-watched restaurant strips in the South Bay. "Bistro Demiya" opening on Lytton Ave in downtown PA is exactly the kind of local signal a Palo Alto resident would want to see — and no newspaper or app surfaces it from permit data. SBS now does. The multi-city expansion also future-proofs the feature: the architecture (`city` field on every item, CITY_LABELS map) makes adding Mountain View or Sunnyvale straightforward if those cities expose permit APIs.
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data. Daily commuter urgency.
+2. **Mountain View restaurant radar** — Mountain View doesn't have CKAN or PermitView. Check their direct permit portal at permits.mountainview.gov or similar. Major gap: Castro St is highly watched.
+3. **Tech tab: curated conferences** — Add static curated list of major South Bay tech events (Startup Grind, YC Demo Days, etc.) so the Tech Events section is never empty.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — the Food tab now serves two of the South Bay's most food-conscious cities.** A Palo Alto resident opening the Food tab now sees real permit activity on streets they walk every week. "Bistro Demiya is opening on Lytton Ave" is a sentence that only SBS is saying right now.
+
+---
+
+## 2026-04-03 — Cycle 44: Annual Tech Conferences Section + Data Refresh
+
+### Context
+April 3, 2026. The Tech tab had only 2 events showing in the next 60 days via keyword matching from the events scraper — one of which was a library digital literacy session, not a tech conference. The "Tech Events Near You" section was essentially empty for developers and tech workers looking for South Bay tech events. The vision log had listed "tech tab: curated conferences" as a top-3 priority for two consecutive cycles.
+
+### What Was Built
+
+**New section: Annual Tech Conferences** in `TechnologyView.tsx`:
+- Added `TechConference` interface and `TECH_CONFERENCES` array to `tech-companies.ts` — 6 annual SV tech conferences
+- Added `ConferenceRow` and `AnnualConferencesSection` React components
+- Section placed between "Tech Events Near You" and "City Hall × Tech"
+- Smart date logic: computes next occurrence (this year if upcoming, next year if past), shows "Coming Up" vs "Later This Year" grouping
+- Each conference shows: name (link), Global/Regional badge, venue, city, 2-line description
+- Footer note: "Dates are typical annual timing — confirm on the organizer's website before making plans"
+
+**Conferences included:**
+- **NVIDIA GTC** — San Jose Convention Center, typically March (already past for 2026 → shows as "Later This Year: March 2027")
+- **Startup Grind Global** — Redwood City, typically April 28–29 (Coming Up)
+- **RSA Conference** — San Francisco, typically April (Coming Up)
+- **Google I/O** — Shoreline Amphitheatre, Mountain View, typically May (Coming Up)
+- **Apple WWDC** — Apple Park, Cupertino, typically June (Coming Up)
+- **SVForum Tech Summit** — Computer History Museum, Mountain View, typically September (Later This Year)
+
+**Data refresh:**
+- upcoming-events.json: refreshed, 25 active sources
+- city-briefings.json: 11 cities, Apr 3–10
+- digests.json: 11 city digests
+- tech-briefing.json: refreshed (Nexthop AI / MatX / Ayar Labs $500M rounds narrative)
+- around-town.json: refreshed
+- upcoming-meetings.json: San Jose, Sunnyvale, Cupertino for Apr 7
+
+### Why This Was the Strongest Move
+
+The Tech Events Near You section was showing 2 events in the next 60 days. A tech worker in Mountain View opening SBS would see a library digital literacy session and a city task force meeting — nothing relevant to the developer/startup ecosystem they live and breathe. The Annual Tech Conferences section fixes this permanently: no matter when someone opens the Tech tab, they see the major annual SV events coming up, with context on why each matters.
+
+The section is self-maintaining: the date logic computes "next occurrence" dynamically, so Google I/O will correctly show "May 2026" in April, and "May 2027" in June. No data refresh needed — it's always accurate to today.
+
+The four "Coming Up" conferences as of today are exactly the ones a South Bay tech worker would care about: Startup Grind (founders/investors, Redwood City), RSA (security, the South Bay's fastest-growing sector), Google I/O (Mountain View's marquee event), and WWDC (Cupertino's marquee event). These four alone represent what April–June looks like for the SV tech calendar.
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data. Daily commuter urgency. Has been #1 for many cycles.
+2. **Mountain View restaurant radar** — MV doesn't have CKAN. Investigate permits.mountainview.gov or the city's permit portal. Castro St is highly watched.
+3. **Mobile polish pass** — Per standing orders, aesthetics are a real gap. A dedicated cycle fixing typography hierarchy, spacing, and card density on 375px screens would deliver visible quality improvement.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — the Tech tab now answers "what's happening in SV tech this spring?"** A developer in Mountain View opens the Tech tab and sees: Google I/O is coming to Shoreline in May, WWDC is at Apple Park in June, Startup Grind is in Redwood City this month. No other South Bay homepage aggregates this. The conferences section transforms the Tech tab from "company data" to "SV tech culture calendar."
+
+---
+
 ## 2026-04-03 — Cycle 42: Expand SV History Milestones + Data Refresh
 
 ### Context
