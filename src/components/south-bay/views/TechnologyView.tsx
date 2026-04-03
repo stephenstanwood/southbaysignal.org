@@ -20,11 +20,13 @@ import {
   SCC_SPOTLIGHT,
   RECENTLY_FUNDED,
   TECH_MILESTONES,
+  TECH_CONFERENCES,
   type TechCompany,
   type TechTrend,
   type SccTechSpotlight,
   type RecentlyFunded,
   type TechMilestone,
+  type TechConference,
 } from "../../../data/south-bay/tech-companies";
 
 // ── Tooltip for chart ──────────────────────────────────────────────────────
@@ -919,6 +921,153 @@ function SvHistorySection() {
   );
 }
 
+// ── Annual Tech Conferences ────────────────────────────────────────────────
+
+const MONTH_NAMES_FULL = [
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December",
+];
+
+function getConferenceNextDate(conf: TechConference, now: Date): { label: string; sortMs: number; isUpcoming: boolean } {
+  const currentMonth = now.getMonth() + 1;
+  const year = conf.typicalMonth < currentMonth ? now.getFullYear() + 1 : now.getFullYear();
+  const monthName = MONTH_NAMES_FULL[conf.typicalMonth - 1];
+  const approxDay = conf.typicalDay ?? 15;
+  const targetMs = new Date(year, conf.typicalMonth - 1, approxDay).getTime();
+  const diffDays = (targetMs - now.getTime()) / (1000 * 60 * 60 * 24);
+  const isUpcoming = diffDays >= -7 && diffDays <= 90;
+  let label = `${monthName} ${year}`;
+  if (conf.typicalDay) {
+    label = conf.typicalEndDay
+      ? `${monthName} ${conf.typicalDay}–${conf.typicalEndDay}, ${year}`
+      : `${monthName} ${conf.typicalDay}, ${year}`;
+  }
+  return { label, sortMs: targetMs, isUpcoming };
+}
+
+function ConferenceRow({ conf, dateLabel, highlight }: { conf: TechConference; dateLabel: string; highlight: boolean }) {
+  const scaleStyle = conf.scale === "global"
+    ? { bg: "#eff6ff", color: "#1e40af", border: "#bfdbfe", text: "Global" }
+    : { bg: "#f0fdf4", color: "#166534", border: "#bbf7d0", text: "Regional" };
+  return (
+    <a
+      href={conf.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 12,
+        padding: "11px 0",
+        borderBottom: "1px solid var(--sb-border-light)",
+        textDecoration: "none",
+        color: "inherit",
+      }}
+    >
+      <div style={{ minWidth: 82, paddingTop: 2, flexShrink: 0 }}>
+        <div style={{
+          fontSize: 11,
+          fontFamily: "'Space Mono', monospace",
+          color: highlight ? "#16a34a" : "var(--sb-muted)",
+          fontWeight: highlight ? 700 : 400,
+          lineHeight: 1.3,
+        }}>
+          {dateLabel}
+        </div>
+        {highlight && (
+          <div style={{
+            fontSize: 9,
+            fontFamily: "'Space Mono', monospace",
+            color: "#16a34a",
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+            marginTop: 2,
+          }}>
+            Coming up
+          </div>
+        )}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 3 }}>
+          <span style={{ fontSize: 13, fontWeight: 600, fontFamily: "var(--sb-sans)", color: "var(--sb-ink)" }}>
+            {conf.name} ↗
+          </span>
+          <span style={{
+            fontSize: 10, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+            background: scaleStyle.bg, color: scaleStyle.color, border: `1px solid ${scaleStyle.border}`,
+            borderRadius: 3, padding: "2px 6px", whiteSpace: "nowrap",
+          }}>
+            {scaleStyle.text}
+          </span>
+        </div>
+        <div style={{ fontSize: 11, color: "var(--sb-muted)", marginBottom: 4 }}>
+          {conf.venue} · {conf.city}
+        </div>
+        <div style={{ fontSize: 12, color: "#374151", lineHeight: 1.5, fontFamily: "var(--sb-sans)" }}>
+          {conf.description}
+        </div>
+      </div>
+    </a>
+  );
+}
+
+function AnnualConferencesSection() {
+  const now = new Date();
+  const withDates = TECH_CONFERENCES
+    .map((conf) => ({ conf, ...getConferenceNextDate(conf, now) }))
+    .sort((a, b) => a.sortMs - b.sortMs);
+
+  const upcoming = withDates.filter((c) => c.isUpcoming);
+  const later = withDates.filter((c) => !c.isUpcoming);
+
+  return (
+    <div className="tech-section">
+      <div className="tech-section-head">
+        <h3 className="tech-section-title">Annual Tech Conferences</h3>
+        <span className="tech-section-note">Major SV events · South Bay and nearby · typical annual timing</span>
+      </div>
+
+      {upcoming.length > 0 && (
+        <>
+          <div style={{
+            fontSize: 10, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+            letterSpacing: "0.08em", textTransform: "uppercase",
+            color: "#16a34a", marginBottom: 10, paddingBottom: 6,
+            borderBottom: "2px solid var(--sb-border-light)",
+          }}>
+            Coming Up
+          </div>
+          {upcoming.map(({ conf, label }) => (
+            <ConferenceRow key={conf.id} conf={conf} dateLabel={label} highlight />
+          ))}
+        </>
+      )}
+
+      {later.length > 0 && (
+        <>
+          <div style={{
+            fontSize: 10, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+            letterSpacing: "0.08em", textTransform: "uppercase",
+            color: "#6b7280",
+            marginTop: upcoming.length > 0 ? 16 : 0,
+            marginBottom: 10, paddingBottom: 6,
+            borderBottom: "2px solid var(--sb-border-light)",
+          }}>
+            Later This Year
+          </div>
+          {later.map(({ conf, label }) => (
+            <ConferenceRow key={conf.id} conf={conf} dateLabel={label} highlight={false} />
+          ))}
+        </>
+      )}
+
+      <div style={{ fontSize: 10, color: "var(--sb-muted)", marginTop: 8, fontStyle: "italic" }}>
+        Dates are typical annual timing — confirm on the organizer's website before making plans.
+      </div>
+    </div>
+  );
+}
+
 // ── Main view ──────────────────────────────────────────────────────────────
 
 // Category filters for the All Companies grid (only cats with ≥2 companies)
@@ -1234,6 +1383,9 @@ export default function TechnologyView() {
 
       {/* ── Tech Events Near You ── */}
       <TechEventsSection />
+
+      {/* ── Annual Tech Conferences ── */}
+      <AnnualConferencesSection />
 
       {/* ── Gov × Tech callout ── */}
       <GovTechCallout />

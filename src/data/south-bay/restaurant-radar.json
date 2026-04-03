@@ -1,14 +1,16 @@
 {
-  "generatedAt": "2026-04-03T11:12:05.043Z",
-  "city": "San Jose",
-  "windowDays": 45,
-  "source": "data.sanjoseca.gov",
-  "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
+  "generatedAt": "2026-04-03T20:22:29.502Z",
+  "cities": [
+    "San Jose",
+    "Palo Alto"
+  ],
+  "windowDays": 60,
   "items": [
     {
       "id": "2026-107055-CI",
+      "city": "san-jose",
       "address": "2040 N 1st St",
-      "name": "Eos & Nyx",
+      "name": null,
       "description": "(Bp100%) Demo",
       "workType": "Demolition",
       "subtype": "Restaurant",
@@ -19,6 +21,7 @@
     },
     {
       "id": "2021-059676-CI",
+      "city": "san-jose",
       "address": "2855 Stevens Creek Bl",
       "name": "Baekjeong",
       "description": "(Sti) Baekjeong (Bepm 100%) # 1808 Restaurant Ti",
@@ -31,6 +34,7 @@
     },
     {
       "id": "2026-105907-CI",
+      "city": "san-jose",
       "address": "355 Santana Row",
       "name": "Flora",
       "description": "(Bepm100%) Flora Ti",
@@ -43,6 +47,7 @@
     },
     {
       "id": "2026-108378-CI",
+      "city": "san-jose",
       "address": "2549 S King Rd",
       "name": "Fomo",
       "description": "Srp (Bemp100%) Fomo Ti #A16",
@@ -55,6 +60,7 @@
     },
     {
       "id": "2026-108271-CI",
+      "city": "san-jose",
       "address": "233 W Santa Clara St",
       "name": "Hedley Club",
       "description": "(Bep100%) Srp Hedley Club Ti",
@@ -67,6 +73,7 @@
     },
     {
       "id": "2026-103064-CI",
+      "city": "san-jose",
       "address": "1080 Saratoga Av",
       "name": "JC'S BBQ",
       "description": "Jc'S Bbq (Bepm 100%) Interior Ti",
@@ -79,6 +86,7 @@
     },
     {
       "id": "2025-145089-CI",
+      "city": "san-jose",
       "address": "22 N White Rd",
       "name": "Ce Patli Tortilleria",
       "description": "(Bpm100%) Srp Ce Patli Tortilleria",
@@ -88,6 +96,66 @@
       "label": "Renovation",
       "valuation": 46773,
       "date": "2026-03-04"
+    },
+    {
+      "id": "pa-407 Lytton Av-2026-03-19",
+      "city": "palo-alto",
+      "address": "407 Lytton Av",
+      "name": "Bistro Demiya",
+      "description": "COM: Standalone U&O for 'Bistro Demiya'",
+      "workType": "Building Permit",
+      "signal": "opening",
+      "label": "New Opening",
+      "valuation": 0,
+      "date": "2026-03-19"
+    },
+    {
+      "id": "pa-121 Lytton Av-2026-02-10",
+      "city": "palo-alto",
+      "address": "121 Lytton Av",
+      "name": null,
+      "description": "COM: 'RIKYU'; Minor TI and U&O: Interior improvements for tenant fit-out for …",
+      "workType": "Building Permit",
+      "signal": "opening",
+      "label": "New Opening",
+      "valuation": 0,
+      "date": "2026-02-10"
+    },
+    {
+      "id": "pa-401 Webster St-2026-02-26",
+      "city": "palo-alto",
+      "address": "401 Webster St",
+      "name": "Front Porch",
+      "description": "FRONT PORCH: Remodel 650SF UNIT 107 like for like kitchen, bathroom, and upgr…",
+      "workType": "Building Permit",
+      "signal": "activity",
+      "label": "Permit Activity",
+      "valuation": 0,
+      "date": "2026-02-26"
+    },
+    {
+      "id": "pa-341 California Av-2026-02-26",
+      "city": "palo-alto",
+      "address": "341 California Av",
+      "name": null,
+      "description": "Request for Conditional Use Permit to Amend Alcohol Service from an existing …",
+      "workType": "Entitlement",
+      "signal": "activity",
+      "label": "Conditional Use",
+      "valuation": 0,
+      "date": "2026-02-26"
+    },
+    {
+      "id": "pa-338 University Av-2026-02-25",
+      "city": "palo-alto",
+      "address": "338 University Av",
+      "name": null,
+      "description": "C1- AC/HK- ZHANGLING MALATANG: restaurant tenant improvement ~2300sf for remo…",
+      "workType": "Building Permit",
+      "signal": "activity",
+      "label": "Renovation",
+      "valuation": 0,
+      "date": "2026-02-25"
     }
   ]
 }

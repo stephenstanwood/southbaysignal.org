@@ -148,6 +148,7 @@ function FarmersMarkets() {
 
 type RadarItem = {
   id: string;
+  city?: string;
   address: string;
   name: string | null;
   description: string;
@@ -167,17 +168,25 @@ const SIGNAL_STYLES: Record<string, { bg: string; color: string; border: string 
   "Permit Activity": { bg: "#f3f4f6", color: "#374151", border: "#d1d5db" },
 };
 
+const CITY_LABELS: Record<string, string> = {
+  "san-jose": "San José",
+  "palo-alto": "Palo Alto",
+};
+
 function RestaurantRadar() {
-  const items = (restaurantRadarJson as { items: RadarItem[]; city: string; generatedAt: string }).items;
+  const data = restaurantRadarJson as { items: RadarItem[]; cities?: string[]; city?: string; generatedAt: string };
+  const items = data.items;
   if (!items || items.length === 0) return null;
 
-  // Only show opening/closing signals (skip generic "Permit Activity")
-  const notable = items.filter((it) => it.label !== "Permit Activity");
+  // Only show opening/closing signals (skip generic "Permit Activity" unless named)
+  const notable = items.filter((it) => it.label !== "Permit Activity" || it.name);
   if (notable.length === 0) return null;
 
   const updatedDate = new Date(restaurantRadarJson.generatedAt).toLocaleDateString("en-US", {
     month: "short", day: "numeric",
   });
+
+  const cityList = data.cities ? data.cities.join(" · ") : (data.city ?? "San Jose");
 
   return (
     <div style={{ marginBottom: 28 }}>
@@ -185,7 +194,7 @@ function RestaurantRadar() {
         <span className="sb-section-title">🍽 Restaurant Radar</span>
       </div>
       <div style={{ fontSize: 11, color: "var(--sb-muted)", marginBottom: 12 }}>
-        New buildouts &amp; permit activity · San Jose · Updated {updatedDate}
+        New buildouts &amp; permit activity · {cityList} · Updated {updatedDate}
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
@@ -194,6 +203,7 @@ function RestaurantRadar() {
           const dateLabel = new Date(item.date + "T12:00:00").toLocaleDateString("en-US", {
             month: "short", day: "numeric",
           });
+          const cityLabel = item.city ? CITY_LABELS[item.city] ?? item.city : null;
           return (
             <div
               key={item.id}
@@ -225,6 +235,12 @@ function RestaurantRadar() {
                 </div>
                 <div style={{ fontSize: 11, color: "var(--sb-muted)", display: "flex", gap: 6, flexWrap: "wrap" }}>
                   <span>{item.address}</span>
+                  {cityLabel && (
+                    <>
+                      <span style={{ color: "var(--sb-border)" }}>·</span>
+                      <span>{cityLabel}</span>
+                    </>
+                  )}
                   <span style={{ color: "var(--sb-border)" }}>·</span>
                   <span>{item.workType}</span>
                   {item.valuation > 0 && (
@@ -242,7 +258,7 @@ function RestaurantRadar() {
         })}
       </div>
       <div style={{ fontSize: 10, color: "var(--sb-muted)", marginTop: 8, fontStyle: "italic" }}>
-        Based on building permits issued by the City of San Jose. A permit doesn't mean open yet — it means construction is underway.
+        Based on building permits issued by San José and Palo Alto. A permit doesn't mean open yet — it means construction is underway.
       </div>
     </div>
   );

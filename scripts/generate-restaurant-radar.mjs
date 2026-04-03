@@ -2,8 +2,10 @@
 /**
  * generate-restaurant-radar.mjs
  *
- * Fetches recent restaurant-related building permits from San Jose's open data
- * to surface new buildouts, major renovations, and demolitions as opening/closing signals.
+ * Fetches recent restaurant-related building permits from:
+ *   - San Jose (data.sanjoseca.gov CKAN API)
+ *   - Palo Alto (gis.cityofpaloalto.org PermitView)
+ * to surface new buildouts, openings, and closures.
  *
  * Run: node scripts/generate-restaurant-radar.mjs
  */
@@ -11,6 +13,8 @@
 import { writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+
+const PA_PERMIT_VIEW = "https://gis.cityofpaloalto.org/PermitView";
 
 const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY ?? "";
 
@@ -119,6 +123,165 @@ function labelFromSignal(signal, workType, valuation) {
   return "Permit Activity";
 }
 
+// ── Palo Alto PermitView helpers ──────────────────────────────────────────────
+
+const PA_FOOD_KEYWORDS = ["restaurant", "cafe", "café", "bakery", "food", "kitchen", "dining", "bistro", "brew", "bar ", "brewery", "winery", "eatery", "pizza", "sushi", "taco", "boba"];
+
+function isPaResidential(record) {
+  const desc = (record.DESCRIPTION ?? "").trim();
+  const cat = record.RECORD_TYPE_CATEGORY ?? "";
+  if (cat === "Web - Kitchen or Bath Remodel") return true;
+  // Descriptions that start with residential prefixes
+  if (/^(RES:|Res:|C1-[A-Z\-\/]+\s*[-\s]+Res:|C1-[A-Z]+\s+Res:)/i.test(desc)) return true;
+  if (/\bsingle.family\b|\bSFR\b|\bADU\b|\bsingle family\b/i.test(desc)) return true;
+  // "Instant permit for a residential..." pattern
+  if (/^Instant permit for a residential/i.test(desc)) return true;
+  return false;
+}
+
+function extractPaName(desc) {
+  if (!desc) return null;
+  // "COM: Standalone U&O for 'Bistro Demiya'" or "COM: TI for 'Name'"
+  const uoMatch = desc.match(/U&O for ['"]([^'"]+)['"]/i) ||
+                  desc.match(/for ['"]([^'"]+)['"]/i);
+  if (uoMatch) return uoMatch[1].trim();
+  // "FRONT PORCH: ..." — all-caps name before colon
+  const colonMatch = desc.match(/^([A-Z][A-Z\s'&]+):/);
+  if (colonMatch) {
+    const name = colonMatch[1].trim();
+    // Skip generic codes
+    if (!/^(RES|COM|C1|REV|MEP|OTC|MFR|SFR)$/i.test(name) && name.length > 3 && name.length < 40) {
+      return name.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+    }
+  }
+  return null;
+}
+
+function labelPaPermit(record) {
+  const desc = (record.DESCRIPTION ?? "").toLowerCase();
+  const cat = record.RECORD_TYPE_CATEGORY ?? "";
+  if (/u&o|use.and.occupancy|standalone u/i.test(desc) || /^new construction/i.test(desc)) return "New Opening";
+  if (cat === "Entitlement" || /conditional use permit|cup to amend/i.test(desc)) return "Conditional Use";
+  if (/tenant improvement|TI:/i.test(desc)) return "Renovation";
+  if (/kitchen equipment|add.*equipment|new equipment/i.test(desc)) return "New Buildout";
+  return "Permit Activity";
+}
+
+async function fetchPaloAltoFoodPermits() {
+  console.log("\nFetching restaurant permit activity from Palo Alto PermitView…");
+
+  let page;
+  try {
+    page = await fetch(`${PA_PERMIT_VIEW}/`, {
+      headers: { "User-Agent": "SouthBaySignal/1.0 (southbaysignal.org; permits research)" },
+      signal: AbortSignal.timeout(15_000),
+    });
+  } catch (err) {
+    console.warn(`  ⚠️ PA PermitView unavailable: ${err.message}`);
+    return [];
+  }
+  if (!page.ok) {
+    console.warn(`  ⚠️ PA PermitView HTTP ${page.status}`);
+    return [];
+  }
+
+  const allCookies = page.headers.getSetCookie
+    ? page.headers.getSetCookie()
+    : [page.headers.get("set-cookie")].filter(Boolean);
+  const cookieParts = allCookies.map((c) => c.split(";")[0]).join("; ");
+  const xsrfMatch = cookieParts.match(/XSRF-TOKEN=([^;]+)/);
+  const xsrfDecoded = xsrfMatch ? decodeURIComponent(xsrfMatch[1]) : "";
+  const html = await page.text();
+  const csrfMatch = html.match(/<meta name="csrf-token" content="([^"]+)"/);
+  const csrf = csrfMatch ? csrfMatch[1] : "";
+
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 60);
+  const cutoffStr = cutoff.toISOString().split("T")[0];
+
+  // Build SQL-style filter for food keywords in DESCRIPTION
+  const foodLikes = PA_FOOD_KEYWORDS.map((k) => `LOWER(p.DESCRIPTION) LIKE '%${k}%'`).join(" OR ");
+  const formData = new URLSearchParams();
+  formData.append("where", `p.DATE_OPENED >= '${cutoffStr}' AND (${foodLikes})`);
+
+  let res;
+  try {
+    res = await fetch(`${PA_PERMIT_VIEW}/get-remote-data`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRF-TOKEN": csrf,
+        "X-XSRF-TOKEN": xsrfDecoded,
+        "X-Requested-With": "XMLHttpRequest",
+        Cookie: cookieParts,
+        Referer: `${PA_PERMIT_VIEW}/`,
+        "User-Agent": "SouthBaySignal/1.0 (southbaysignal.org; permits research)",
+      },
+      body: formData.toString(),
+      signal: AbortSignal.timeout(20_000),
+    });
+  } catch (err) {
+    console.warn(`  ⚠️ PA PermitView data error: ${err.message}`);
+    return [];
+  }
+  if (!res.ok) {
+    console.warn(`  ⚠️ PA PermitView data HTTP ${res.status}`);
+    return [];
+  }
+
+  const body = await res.json();
+  const records = body.data ?? [];
+  console.log(`  ${records.length} raw PA food permits`);
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const items = records
+    .filter((r) => !isPaResidential(r))
+    .map((r) => {
+      const desc = (r.DESCRIPTION ?? "").trim();
+      const cat = r.RECORD_TYPE_CATEGORY ?? "";
+      const rawAddr = (r.ADDR_FULL_LINE ?? "").split(",")[0].trim();
+      const address = rawAddr
+        .toLowerCase()
+        .replace(/\b\w/g, (c) => c.toUpperCase())
+        .replace(/\s+/g, " ");
+      const date = (r.DATE_OPENED ?? todayStr).slice(0, 10);
+      const label = labelPaPermit(r);
+
+      // Skip pure signage or MEP-only scopes with no food narrative
+      if (label === "Permit Activity" && /^(OTC Architectural review for|RES MEP:|Res: Temporary|Res: Voluntary)/i.test(desc)) return null;
+
+      const name = extractPaName(desc);
+      return {
+        id: `pa-${r.RECORD_NUMBER ?? address}-${date}`,
+        city: "palo-alto",
+        address,
+        name,
+        description: desc.length > 80 ? desc.slice(0, 77) + "…" : desc,
+        workType: cat,
+        signal: label === "Possible Closure" ? "closing" : label === "New Opening" ? "opening" : "activity",
+        label,
+        valuation: 0,
+        date,
+      };
+    })
+    .filter(Boolean);
+
+  // Deduplicate by address+date (PA sometimes has multiple permit records per project)
+  const seen = new Set();
+  const unique = items.filter((it) => {
+    const key = `${it.address}|${it.date}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  // Skip pure "Permit Activity" if we have named/notable items
+  const notable = unique.filter((it) => it.label !== "Permit Activity" || it.name);
+  console.log(`  ${notable.length} notable PA food permits`);
+  notable.forEach((it) => console.log(`    [${it.label}] ${it.address}${it.name ? ` — ${it.name}` : ""}`));
+  return notable;
+}
+
 async function main() {
   console.log("Fetching restaurant permit activity from San Jose open data…");
 
@@ -198,6 +361,7 @@ async function main() {
 
       return {
         id: r.FOLDERNUMBER ?? String(r._id),
+        city: "san-jose",
         address: formatAddress(r.gx_location),
         name: name ?? null,
         description: rawName
@@ -223,12 +387,12 @@ async function main() {
     return b.date.localeCompare(a.date);
   });
 
-  // Enrich items missing names using Google Places (best-effort)
-  const topItems = items.slice(0, 20);
+  // Enrich SJ items missing names using Google Places (best-effort)
+  const topSjItems = items.slice(0, 15);
   if (GOOGLE_PLACES_API_KEY) {
-    const unnamed = topItems.filter((it) => !it.name);
+    const unnamed = topSjItems.filter((it) => !it.name);
     if (unnamed.length > 0) {
-      console.log(`\n  🔍 Looking up ${unnamed.length} unnamed permit locations via Google Places…`);
+      console.log(`\n  🔍 Looking up ${unnamed.length} unnamed SJ permit locations via Google Places…`);
       for (const item of unnamed) {
         try {
           const query = `restaurant ${item.address}, San Jose, CA`;
@@ -253,19 +417,31 @@ async function main() {
     }
   }
 
+  // Fetch Palo Alto permits
+  const paItems = await fetchPaloAltoFoodPermits();
+
+  // Combine and sort: opening/closure signals first, then by date desc
+  const allItems = [...topSjItems, ...paItems];
+  allItems.sort((a, b) => {
+    if (a.signal === "closing" && b.signal !== "closing") return -1;
+    if (b.signal === "closing" && a.signal !== "closing") return 1;
+    if (a.signal === "opening" && b.signal !== "opening") return -1;
+    if (b.signal === "opening" && a.signal !== "opening") return 1;
+    if (b.valuation !== a.valuation) return b.valuation - a.valuation;
+    return b.date.localeCompare(a.date);
+  });
+
   const output = {
     generatedAt: new Date().toISOString(),
-    city: "San Jose",
-    windowDays: 45,
-    source: "data.sanjoseca.gov",
-    sourceUrl: "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
-    items: topItems,
+    cities: ["San Jose", "Palo Alto"],
+    windowDays: 60,
+    items: allItems,
   };
 
   writeFileSync(OUT_PATH, JSON.stringify(output, null, 2) + "\n");
-  console.log(`\n✅ ${items.length} restaurant permit signals → restaurant-radar.json`);
-  items.forEach((it) =>
-    console.log(`  [${it.label}] ${it.address} — ${it.workType}${it.valuation ? ` ($${it.valuation.toLocaleString()})` : ""}`)
+  console.log(`\n✅ ${allItems.length} restaurant permit signals (SJ: ${topSjItems.length}, PA: ${paItems.length}) → restaurant-radar.json`);
+  allItems.forEach((it) =>
+    console.log(`  [${it.city}][${it.label}] ${it.address}${it.name ? ` — ${it.name}` : ""}${it.valuation ? ` ($${it.valuation.toLocaleString()})` : ""}`)
   );
 }
 
