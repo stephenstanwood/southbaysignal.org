@@ -19,10 +19,12 @@ import {
   CHART_DATA,
   SCC_SPOTLIGHT,
   RECENTLY_FUNDED,
+  TECH_MILESTONES,
   type TechCompany,
   type TechTrend,
   type SccTechSpotlight,
   type RecentlyFunded,
+  type TechMilestone,
 } from "../../../data/south-bay/tech-companies";
 
 // ── Tooltip for chart ──────────────────────────────────────────────────────
@@ -777,6 +779,146 @@ function RecentlyFundedSection() {
   );
 }
 
+// ── This Week in SV History ────────────────────────────────────────────────
+
+function getActiveMilestones(): TechMilestone[] {
+  const now = new Date();
+  const WINDOW_DAYS = 8; // show milestone if within ±8 days
+  return TECH_MILESTONES.filter((m) => {
+    // Build a date for this milestone in the current year
+    const mDate = new Date(now.getFullYear(), m.month - 1, m.day);
+    const diff = Math.abs(mDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
+    return diff <= WINDOW_DAYS;
+  });
+}
+
+function milestoneAge(m: TechMilestone): number {
+  return new Date().getFullYear() - m.foundedYear;
+}
+
+function ordinal(n: number): string {
+  if (n % 100 >= 11 && n % 100 <= 13) return `${n}th`;
+  if (n % 10 === 1) return `${n}st`;
+  if (n % 10 === 2) return `${n}nd`;
+  if (n % 10 === 3) return `${n}rd`;
+  return `${n}th`;
+}
+
+function SvHistorySection() {
+  const milestones = getActiveMilestones();
+  if (milestones.length === 0) return null;
+
+  return (
+    <div className="tech-section">
+      <div className="tech-section-head">
+        <h3 className="tech-section-title">This Week in SV History</h3>
+        <span className="tech-section-note">Local company milestones happening right now</span>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {milestones.map((m) => {
+          const age = milestoneAge(m);
+          return (
+            <div
+              key={m.id}
+              style={{
+                display: "flex",
+                gap: 14,
+                padding: "14px 16px",
+                background: "#fdf8f0",
+                border: "1px solid var(--sb-border-light)",
+                borderLeft: "4px solid #b45309",
+                borderRadius: 6,
+              }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 8,
+                    flexWrap: "wrap",
+                    marginBottom: 4,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 700,
+                      color: "var(--sb-ink)",
+                      fontFamily: "var(--sb-sans)",
+                    }}
+                  >
+                    {m.company}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 700,
+                      fontFamily: "'Space Mono', monospace",
+                      letterSpacing: "0.06em",
+                      textTransform: "uppercase",
+                      color: "#b45309",
+                      background: "#fef3c7",
+                      padding: "2px 7px",
+                      borderRadius: 3,
+                    }}
+                  >
+                    {ordinal(age)} anniversary
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 11,
+                      color: "var(--sb-muted)",
+                      fontFamily: "var(--sb-sans)",
+                    }}
+                  >
+                    {m.city} · est. {m.foundedYear}
+                  </span>
+                </div>
+
+                <p
+                  style={{
+                    margin: "0 0 6px",
+                    fontSize: 13,
+                    lineHeight: 1.55,
+                    color: "var(--sb-ink)",
+                  }}
+                >
+                  {m.anniversaryNote}
+                </p>
+
+                {m.chmExhibit && (
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 5,
+                      fontSize: 11,
+                      color: "#1d4ed8",
+                      background: "#eff6ff",
+                      border: "1px solid #bfdbfe",
+                      borderRadius: 4,
+                      padding: "3px 8px",
+                      marginTop: 2,
+                    }}
+                  >
+                    <span>🏛️</span>
+                    <span>
+                      Computer History Museum:{" "}
+                      <strong>{m.chmExhibit}</strong>
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ── Main view ──────────────────────────────────────────────────────────────
 
 // Category filters for the All Companies grid (only cats with ≥2 companies)
@@ -910,6 +1052,9 @@ export default function TechnologyView() {
           </p>
         </div>
       )}
+
+      {/* ── This Week in SV History ── */}
+      <SvHistorySection />
 
       {/* ── Pulse strip ── */}
       <div className="tech-pulse">

@@ -1236,3 +1236,123 @@ export const TECH_PULSE = [
     note: "Applied Materials + KLA powering the AI fab boom from Santa Clara",
   },
 ];
+
+// ── Tech Milestones — "This Week in Silicon Valley History" ─────────────────
+// Anniversaries and landmarks keyed by month + day window.
+// Each milestone has a window: show it if today is within [month/day ± 7 days].
+
+export interface TechMilestone {
+  id: string;
+  company: string;
+  city: string;           // headquarters city
+  foundedYear: number;
+  month: number;          // 1-12
+  day: number;            // 1-31
+  tagline: string;        // one-line company description
+  anniversaryNote: string; // what makes this milestone notable
+  url?: string;           // official company URL
+  chmExhibit?: string;    // CHM exhibit title if one exists
+}
+
+export const TECH_MILESTONES: TechMilestone[] = [
+  {
+    id: "apple",
+    company: "Apple",
+    city: "Cupertino",
+    foundedYear: 1976,
+    month: 4,
+    day: 1,
+    tagline: "Consumer electronics, software, and services — founded in a Cupertino garage.",
+    anniversaryNote: "Apple celebrates its 50th anniversary this month. From a Cupertino garage to a $3 trillion company, it's the most consequential story in Silicon Valley history.",
+    url: "https://apple.com",
+    chmExhibit: "Apple at 50",
+  },
+  {
+    id: "nvidia",
+    company: "NVIDIA",
+    city: "Santa Clara",
+    foundedYear: 1993,
+    month: 4,
+    day: 5,
+    tagline: "GPU pioneer and AI accelerator giant headquartered in Santa Clara.",
+    anniversaryNote: "NVIDIA was founded April 5, 1993 — 33 years ago this week. Jensen Huang's bet on parallel computing went from gaming GPUs to powering the entire AI revolution.",
+    url: "https://nvidia.com",
+  },
+  {
+    id: "intel",
+    company: "Intel",
+    city: "Santa Clara",
+    foundedYear: 1968,
+    month: 7,
+    day: 18,
+    tagline: "Semiconductor giant that put Silicon in Silicon Valley, founded 1968.",
+    anniversaryNote: "Robert Noyce and Gordon Moore founded Intel on July 18, 1968 — the company that literally named the era.",
+    url: "https://intel.com",
+  },
+  {
+    id: "cisco",
+    company: "Cisco",
+    city: "San Jose",
+    foundedYear: 1984,
+    month: 12,
+    day: 10,
+    tagline: "Networking and cybersecurity giant headquartered in San Jose.",
+    anniversaryNote: "Cisco was founded by Stanford computer scientists in December 1984. Their multi-protocol router helped build the modern internet.",
+    url: "https://cisco.com",
+  },
+  {
+    id: "amd",
+    company: "AMD",
+    city: "Santa Clara",
+    foundedYear: 1969,
+    month: 5,
+    day: 1,
+    tagline: "Chip maker challenging Intel and NVIDIA across CPUs, GPUs, and AI accelerators.",
+    anniversaryNote: "AMD was founded May 1, 1969 by Jerry Sanders. Now one of Santa Clara's most important semiconductor companies.",
+    url: "https://amd.com",
+  },
+  {
+    id: "hp",
+    company: "HP",
+    city: "Palo Alto",
+    foundedYear: 1939,
+    month: 1,
+    day: 1,
+    tagline: "Silicon Valley's original company, born in a Palo Alto garage in 1939.",
+    anniversaryNote: "Hewlett-Packard is often called the original Silicon Valley startup — Bill Hewlett and Dave Packard started it in a rented Palo Alto garage. That garage is now a California Historical Landmark.",
+    url: "https://hp.com",
+  },
+  {
+    id: "google",
+    company: "Google",
+    city: "Mountain View",
+    foundedYear: 1998,
+    month: 9,
+    day: 4,
+    tagline: "Search, cloud, and AI giant anchoring Mountain View's economy.",
+    anniversaryNote: "Google was incorporated September 4, 1998 — Larry Page and Sergey Brin's Stanford research project became the world's most powerful information company.",
+    url: "https://google.com",
+  },
+  {
+    id: "yahoo",
+    company: "Yahoo",
+    city: "Sunnyvale",
+    foundedYear: 1995,
+    month: 3,
+    day: 2,
+    tagline: "Pioneer internet portal founded at Stanford and based in Sunnyvale for decades.",
+    anniversaryNote: "Yahoo was incorporated March 2, 1995 by Jerry Yang and David Filo — a generation of South Bay residents built their internet habits around this Sunnyvale company.",
+    url: "https://yahoo.com",
+  },
+  {
+    id: "netflix",
+    company: "Netflix",
+    city: "Los Gatos",
+    foundedYear: 1997,
+    month: 8,
+    day: 29,
+    tagline: "Streaming giant headquartered in Los Gatos, transforming home entertainment.",
+    anniversaryNote: "Netflix was founded August 29, 1997 in Scotts Valley. Now a Los Gatos company that changed how the world watches TV and film.",
+    url: "https://netflix.com",
+  },
+];
