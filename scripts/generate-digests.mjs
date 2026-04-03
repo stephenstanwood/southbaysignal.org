@@ -42,18 +42,27 @@ const CLAUDE_HAIKU = "claude-haiku-4-5-20251001";
 // ── City config (SBS city IDs → Stoa city names + schedule) ──
 
 const CITIES = [
-  { city: "campbell",      stoaCity: "Campbell",      cityName: "Campbell",      schedule: "1st and 3rd Tuesday",  agendaUrl: "https://www.cityofcampbell.com/271/City-Council-Meetings" },
+  { city: "campbell",      stoaCity: "Campbell",      cityName: "Campbell",      schedule: "1st and 3rd Tuesday",   agendaUrl: "https://www.cityofcampbell.com/271/City-Council-Meetings" },
   { city: "saratoga",      stoaCity: "Saratoga",      cityName: "Saratoga",      schedule: "1st and 3rd Wednesday", agendaUrl: "https://saratoga-ca.municodemeetings.com/" },
-  { city: "los-altos",     stoaCity: "Los Altos",     cityName: "Los Altos",     schedule: "2nd and 4th Tuesday",  agendaUrl: "https://losaltos-ca.municodemeetings.com/" },
-  { city: "los-gatos",     stoaCity: "Los Gatos",     cityName: "Los Gatos",     schedule: "1st and 3rd Monday",   agendaUrl: "https://losgatos-ca.municodemeetings.com/" },
-  { city: "san-jose",      stoaCity: "San Jose",      cityName: "San José",      schedule: "1st and 3rd Tuesday",  agendaUrl: "https://sanjose.legistar.com/Calendar.aspx" },
-  { city: "mountain-view", stoaCity: "Mountain View", cityName: "Mountain View", schedule: "2nd and 4th Tuesday",  agendaUrl: "https://mountainview.legistar.com/Calendar.aspx" },
-  { city: "sunnyvale",     stoaCity: "Sunnyvale",     cityName: "Sunnyvale",     schedule: "2nd and 4th Tuesday",  agendaUrl: "https://sunnyvale.legistar.com/Calendar.aspx" },
-  { city: "cupertino",     stoaCity: "Cupertino",     cityName: "Cupertino",     schedule: "1st and 3rd Tuesday",  agendaUrl: "https://cupertino.legistar.com/Calendar.aspx" },
-  { city: "santa-clara",   stoaCity: "Santa Clara",   cityName: "Santa Clara",   schedule: "2nd and 4th Tuesday",  agendaUrl: "https://santaclara.legistar.com/Calendar.aspx" },
-  { city: "milpitas",      stoaCity: "Milpitas",      cityName: "Milpitas",      schedule: "1st and 3rd Tuesday",  agendaUrl: "https://www.ci.milpitas.ca.gov/government/council/" },
-  { city: "palo-alto",     stoaCity: "Palo Alto",     cityName: "Palo Alto",     schedule: "1st and 3rd Monday",   agendaUrl: "https://www.cityofpaloalto.org/Government/City-Clerk/Meetings-Agendas-Minutes" },
+  { city: "los-altos",     stoaCity: "Los Altos",     cityName: "Los Altos",     schedule: "2nd and 4th Tuesday",   agendaUrl: "https://losaltos-ca.municodemeetings.com/" },
+  { city: "los-gatos",     stoaCity: "Los Gatos",     cityName: "Los Gatos",     schedule: "1st and 3rd Monday",    agendaUrl: "https://losgatos-ca.municodemeetings.com/" },
+  { city: "san-jose",      stoaCity: "San Jose",      cityName: "San José",      schedule: "1st and 3rd Tuesday",   agendaUrl: "https://sanjose.legistar.com/Calendar.aspx",      legistar: "sanjose" },
+  { city: "mountain-view", stoaCity: "Mountain View", cityName: "Mountain View", schedule: "2nd and 4th Tuesday",   agendaUrl: "https://mountainview.legistar.com/Calendar.aspx", legistar: "mountainview" },
+  { city: "sunnyvale",     stoaCity: "Sunnyvale",     cityName: "Sunnyvale",     schedule: "2nd and 4th Tuesday",   agendaUrl: "https://sunnyvale.legistar.com/Calendar.aspx",    legistar: "sunnyvale" },
+  { city: "cupertino",     stoaCity: "Cupertino",     cityName: "Cupertino",     schedule: "1st and 3rd Tuesday",   agendaUrl: "https://cupertino.legistar.com/Calendar.aspx",    legistar: "cupertino" },
+  { city: "santa-clara",   stoaCity: "Santa Clara",   cityName: "Santa Clara",   schedule: "2nd and 4th Tuesday",   agendaUrl: "https://santaclara.legistar.com/Calendar.aspx",   legistar: "santaclara" },
+  { city: "milpitas",      stoaCity: "Milpitas",      cityName: "Milpitas",      schedule: "1st and 3rd Tuesday",   agendaUrl: "https://www.ci.milpitas.ca.gov/government/council/" },
+  { city: "palo-alto",     stoaCity: "Palo Alto",     cityName: "Palo Alto",     schedule: "1st and 3rd Monday",    agendaUrl: "https://www.cityofpaloalto.org/Government/City-Clerk/Meetings-Agendas-Minutes", legistar: "paloalto" },
 ];
+
+// ── Helpers ──
+
+/** For Legistar cities, construct a calendar URL filtered to a specific meeting date. */
+function legistarMeetingUrl(subdomain, date) {
+  const [year, month, day] = date.split("-");
+  const d = `${parseInt(month)}%2F${parseInt(day)}%2F${year}`;
+  return `https://${subdomain}.legistar.com/Calendar.aspx?From=${d}&To=${d}`;
+}
 
 // ── Fetch Stoa data ──
 
@@ -231,7 +240,7 @@ async function main() {
         summary: parsed.summary ?? "",
         keyTopics: parsed.keyTopics ?? meeting.keywords.slice(0, 5),
         schedule: config.schedule,
-        sourceUrl: config.agendaUrl,
+        sourceUrl: config.legistar ? legistarMeetingUrl(config.legistar, meeting.date) : config.agendaUrl,
         generatedAt: new Date().toISOString(),
       };
 

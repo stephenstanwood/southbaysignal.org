@@ -45,17 +45,17 @@ const CLAUDE_HAIKU = "claude-haiku-4-5-20251001";
 // ── City config ──
 
 const CITIES = [
-  { stoaCity: "Campbell",      cityId: "campbell",      cityName: "Campbell",      agendaUrl: "https://www.cityofcampbell.com/271/City-Council-Meetings" },
-  { stoaCity: "Saratoga",      cityId: "saratoga",      cityName: "Saratoga",      agendaUrl: "https://saratoga-ca.municodemeetings.com/" },
-  { stoaCity: "Los Altos",     cityId: "los-altos",     cityName: "Los Altos",     agendaUrl: "https://losaltos-ca.municodemeetings.com/" },
-  { stoaCity: "Los Gatos",     cityId: "los-gatos",     cityName: "Los Gatos",     agendaUrl: "https://losgatos-ca.municodemeetings.com/" },
-  { stoaCity: "San Jose",      cityId: "san-jose",      cityName: "San José",      agendaUrl: "https://sanjose.legistar.com/Calendar.aspx" },
-  { stoaCity: "Mountain View", cityId: "mountain-view", cityName: "Mountain View", agendaUrl: "https://mountainview.legistar.com/Calendar.aspx" },
-  { stoaCity: "Sunnyvale",     cityId: "sunnyvale",     cityName: "Sunnyvale",     agendaUrl: "https://sunnyvale.legistar.com/Calendar.aspx" },
-  { stoaCity: "Cupertino",     cityId: "cupertino",     cityName: "Cupertino",     agendaUrl: "https://cupertino.legistar.com/Calendar.aspx" },
-  { stoaCity: "Santa Clara",   cityId: "santa-clara",   cityName: "Santa Clara",   agendaUrl: "https://santaclara.legistar.com/Calendar.aspx" },
-  { stoaCity: "Milpitas",      cityId: "milpitas",      cityName: "Milpitas",      agendaUrl: "https://www.ci.milpitas.ca.gov/government/council/" },
-  { stoaCity: "Palo Alto",     cityId: "palo-alto",     cityName: "Palo Alto",     agendaUrl: "https://www.cityofpaloalto.org/Government/City-Clerk/Meetings-Agendas-Minutes" },
+  { stoaCity: "Campbell",      cityId: "campbell",      cityName: "Campbell",      agendaUrl: "https://www.cityofcampbell.com/271/City-Council-Meetings",              permitUrl: null },
+  { stoaCity: "Saratoga",      cityId: "saratoga",      cityName: "Saratoga",      agendaUrl: "https://saratoga-ca.municodemeetings.com/",                            permitUrl: null },
+  { stoaCity: "Los Altos",     cityId: "los-altos",     cityName: "Los Altos",     agendaUrl: "https://losaltos-ca.municodemeetings.com/",                            permitUrl: null },
+  { stoaCity: "Los Gatos",     cityId: "los-gatos",     cityName: "Los Gatos",     agendaUrl: "https://losgatos-ca.municodemeetings.com/",                            permitUrl: null },
+  { stoaCity: "San Jose",      cityId: "san-jose",      cityName: "San José",      agendaUrl: "https://sanjose.legistar.com/Calendar.aspx",      legistar: "sanjose",      permitUrl: "https://sjpermits.org/" },
+  { stoaCity: "Mountain View", cityId: "mountain-view", cityName: "Mountain View", agendaUrl: "https://mountainview.legistar.com/Calendar.aspx", legistar: "mountainview",  permitUrl: null },
+  { stoaCity: "Sunnyvale",     cityId: "sunnyvale",     cityName: "Sunnyvale",     agendaUrl: "https://sunnyvale.legistar.com/Calendar.aspx",    legistar: "sunnyvale",     permitUrl: null },
+  { stoaCity: "Cupertino",     cityId: "cupertino",     cityName: "Cupertino",     agendaUrl: "https://cupertino.legistar.com/Calendar.aspx",    legistar: "cupertino",     permitUrl: null },
+  { stoaCity: "Santa Clara",   cityId: "santa-clara",   cityName: "Santa Clara",   agendaUrl: "https://santaclara.legistar.com/Calendar.aspx",   legistar: "santaclara",    permitUrl: null },
+  { stoaCity: "Milpitas",      cityId: "milpitas",      cityName: "Milpitas",      agendaUrl: "https://www.ci.milpitas.ca.gov/government/council/",                   permitUrl: null },
+  { stoaCity: "Palo Alto",     cityId: "palo-alto",     cityName: "Palo Alto",     agendaUrl: "https://www.cityofpaloalto.org/Government/City-Clerk/Meetings-Agendas-Minutes", legistar: "paloalto", permitUrl: "https://www.cityofpaloalto.org/Gov/Depts/PW/Permits/Permits.asp" },
 ];
 
 const CITY_BY_STOA = Object.fromEntries(CITIES.map((c) => [c.stoaCity, c]));
@@ -86,6 +86,13 @@ async function claudeJson(prompt, maxTokens = 1024) {
 
 function makeId(cityId, date, headline) {
   return `${cityId}-${date}-${Buffer.from(headline).toString("base64").slice(0, 8)}`;
+}
+
+/** For Legistar cities, construct a calendar URL filtered to a specific meeting date. */
+function legistarMeetingUrl(subdomain, date) {
+  const [year, month, day] = date.split("-");
+  const d = `${parseInt(month)}%2F${parseInt(day)}%2F${year}`;
+  return `https://${subdomain}.legistar.com/Calendar.aspx?From=${d}&To=${d}`;
 }
 
 // ── Boilerplate detection (shared with generate-digests.mjs) ──
@@ -202,6 +209,9 @@ async function gatherMeetingItems(meetingType) {
     try {
       const found = await findInterestingItems(config, cityMeetings, label);
       for (const item of found) {
+        const sourceUrl = config.legistar
+          ? legistarMeetingUrl(config.legistar, item.date)
+          : config.agendaUrl;
         items.push({
           id: makeId(config.cityId, item.date, item.headline),
           cityId: config.cityId,
@@ -209,7 +219,7 @@ async function gatherMeetingItems(meetingType) {
           date: item.date,
           headline: item.headline,
           summary: item.summary,
-          sourceUrl: config.agendaUrl,
+          sourceUrl,
           source: sourceTag,
         });
         console.log(`  ✅ ${config.cityName}: ${item.headline}`);
@@ -296,7 +306,7 @@ Return [] if nothing is genuinely noteworthy.`, 512);
           date: item.date,
           headline: item.headline,
           summary: item.summary,
-          sourceUrl: config.agendaUrl,
+          sourceUrl: config.permitUrl || config.agendaUrl,
           source: "permit",
         });
         console.log(`  ✅ ${config.cityName}: ${item.headline}`);
