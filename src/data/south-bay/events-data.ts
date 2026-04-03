@@ -212,7 +212,7 @@ export const SOUTH_BAY_EVENTS: SBEvent[] = [
     address: "San Pedro Square, San Jose",
     category: "market",
     recurrence: "weekly",
-    days: ["friday"],
+    days: ["wednesday"],
     time: "10am – 2pm",
     cost: "free",
     kidFriendly: true,

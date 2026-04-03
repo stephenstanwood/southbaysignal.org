@@ -179,12 +179,9 @@ function buildWeatherNote(weather: WeatherInfo, input: PlanInput): string {
 // ── Day-of-week helpers ───────────────────────────────────────────────────────
 
 function isActiveOnDate(e: SBEvent, date: Date): boolean {
-  const month = date.getMonth() + 1;
-  const dayIdx = date.getDay();
-  const dayName = [
-    "sunday", "monday", "tuesday", "wednesday",
-    "thursday", "friday", "saturday",
-  ][dayIdx] as DayOfWeek;
+  const ptLocale = { timeZone: "America/Los_Angeles" } as const;
+  const month = parseInt(date.toLocaleDateString("en-US", { ...ptLocale, month: "numeric" }));
+  const dayName = date.toLocaleDateString("en-US", { ...ptLocale, weekday: "long" }).toLowerCase() as DayOfWeek;
 
   if (e.months && !e.months.includes(month)) return false;
   if (!e.days) return e.recurrence !== "seasonal"; // seasonal without days = whole-season, not a daily event
