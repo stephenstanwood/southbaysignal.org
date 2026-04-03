@@ -1998,7 +1998,7 @@ function RestaurantRadarTeaser({ onNavigate }: { onNavigate: (tab: Tab) => void 
                 {r.name}
               </div>
               <div style={{ fontSize: 11, color: "var(--sb-muted)", marginTop: 1 }}>
-                {r.label}{r.valuation ? ` · $${(r.valuation / 1e6).toFixed(1)}M permit` : ""}
+                {r.address}{r.valuation ? ` · $${(r.valuation / 1e6).toFixed(1)}M permit` : ""}
               </div>
             </div>
           </div>
