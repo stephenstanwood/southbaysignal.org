@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-03T11:13:37.788Z",
+      "generatedAt": "2026-04-03T19:09:17.453Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -89,7 +89,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-03T11:13:40.080Z",
+      "generatedAt": "2026-04-03T19:09:19.838Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -103,15 +103,15 @@
       },
       "permits": [
         {
-          "id": "26BLD-00818",
-          "address": "1610 Dana Av",
+          "id": "26BLD-00830",
+          "address": "151 Melville Av",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "Res: Voluntary seismic strengthening (NO GRANT)",
+          "description": "RES MEP: We will replace your damaged sewer line",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-03-27",
+          "issueDate": "2026-03-30",
           "subtype": "Permit Issued"
         },
         {
@@ -127,32 +127,20 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00830",
-          "address": "151 Melville Av",
+          "id": "26BLD-00818",
+          "address": "1610 Dana Av",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "RES MEP: We will replace your damaged sewer line",
+          "description": "Res: Voluntary seismic strengthening (NO GRANT)",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-03-30",
+          "issueDate": "2026-03-27",
           "subtype": "Permit Issued"
         },
         {
           "id": "26BLD-00863",
           "address": "1221 Hopkins Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-02",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00872",
-          "address": "841 Ames Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -172,6 +160,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-03-30",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00872",
+          "address": "841 Ames Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-02",
           "subtype": "Permit Issued"
         },
         {
