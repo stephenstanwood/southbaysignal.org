@@ -42,7 +42,7 @@
 import { writeFileSync, readFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import { createHash } from "crypto";
+import { createHash, createSign } from "crypto";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -2242,6 +2242,216 @@ function fetchLgChamberEvents() {
   return events;
 }
 
+// ── Meetup ──────────────────────────────────────────────────────────────────
+
+const MEETUP_JUNK = [
+  /\bsingles?\b/i,
+  /\bdating\b/i,
+  /\bspeed\s+dat/i,
+  /\bsoulmate\b/i,
+  /\bnetwork\s+market/i,
+  /\bmlm\b/i,
+  /\bbusiness\s+opportunity\b/i,
+  /\bmake\s+money\b/i,
+  /\bincome\s+opportunity\b/i,
+  /\bpyramid\b/i,
+  /\bforex\b/i,
+  /\bcrypto\s+trading\b/i,
+  /\bget\s+rich\b/i,
+  /\bpaid\s+course\b/i,
+  /\bfree\s+trial\b/i,     // usually sales funnels
+];
+
+// Map Meetup city name → slug used in this codebase
+function meetupCitySlug(city) {
+  if (!city) return null;
+  const c = city.toLowerCase().trim();
+  const MAP = {
+    "san jose": "san-jose",
+    "mountain view": "mountain-view",
+    "sunnyvale": "sunnyvale",
+    "campbell": "campbell",
+    "los gatos": "los-gatos",
+    "saratoga": "saratoga",
+    "los altos": "los-altos",
+    "milpitas": "milpitas",
+    "santa clara": "santa-clara",
+    "cupertino": "cupertino",
+    "morgan hill": "morgan-hill",
+    "gilroy": "gilroy",
+    "palo alto": "palo-alto",
+    "menlo park": "menlo-park",
+    "redwood city": "redwood-city",
+    "san mateo": "san-mateo",
+    "fremont": "fremont",
+    "oakland": "oakland",
+    "berkeley": "berkeley",
+    "san francisco": "san-francisco",
+    "south san francisco": "south-san-francisco",
+  };
+  return MAP[c] ?? c.replace(/\s+/g, "-");
+}
+
+// South Bay / Silicon Valley cities we accept (exclude events too far out)
+const MEETUP_ACCEPTED_CITIES = new Set([
+  "san-jose", "mountain-view", "sunnyvale", "campbell", "los-gatos",
+  "saratoga", "los-altos", "milpitas", "santa-clara", "cupertino",
+  "morgan-hill", "gilroy", "palo-alto", "menlo-park",
+]);
+
+async function fetchMeetupEvents() {
+  const CLIENT_ID = process.env.MEETUP_CLIENT_ID;
+  const MEMBER_ID = process.env.MEETUP_MEMBER_ID;
+  const KID = process.env.MEETUP_KID;
+  const PRIVATE_KEY = process.env.MEETUP_PRIVATE_KEY?.replace(/\\n/g, "\n");
+
+  if (!CLIENT_ID || !MEMBER_ID || !KID || !PRIVATE_KEY) {
+    console.log("  ⚠️  Meetup: credentials not set, skipping");
+    return [];
+  }
+
+  // JWT bearer token
+  function base64url(str) {
+    return Buffer.from(str).toString("base64")
+      .replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+  }
+  const now = Math.floor(Date.now() / 1000);
+  const jwtHeader = base64url(JSON.stringify({ alg: "RS256", typ: "JWT", kid: KID }));
+  const jwtPayload = base64url(JSON.stringify({
+    iss: CLIENT_ID, sub: MEMBER_ID, aud: "api.meetup.com",
+    iat: now, exp: now + 3600,
+  }));
+  const signer = createSign("RSA-SHA256");
+  signer.update(`${jwtHeader}.${jwtPayload}`);
+  const sig = signer.sign(PRIVATE_KEY, "base64")
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+  const jwt = `${jwtHeader}.${jwtPayload}.${sig}`;
+
+  const tokenRes = await fetch("https://secure.meetup.com/oauth2/access", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion: jwt,
+    }),
+  });
+  const tokenData = await tokenRes.json();
+  if (!tokenData.access_token) {
+    console.log("  ⚠️  Meetup: auth failed", JSON.stringify(tokenData));
+    return [];
+  }
+  const token = tokenData.access_token;
+
+  async function meetupGql(query) {
+    const res = await fetch("https://api.meetup.com/gql-ext", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({ query }),
+      signal: AbortSignal.timeout(20_000),
+    });
+    return res.json();
+  }
+
+  const today = new Date();
+  const endDate = new Date(today.getTime() + 60 * 24 * 60 * 60 * 1000);
+  const startStr = today.toISOString().replace("Z", "") + "-07:00";
+  const endStr = endDate.toISOString().replace("Z", "") + "-07:00";
+
+  // Run multiple keyword queries to get broad coverage; deduplicate by event ID
+  const QUERIES = ["tech", "community", "startup", "arts", "music", "food", "outdoor", "networking"];
+  const seenIds = new Set();
+  const rawEvents = [];
+
+  for (const kw of QUERIES) {
+    try {
+      const data = await meetupGql(`{
+        eventSearch(
+          filter: {
+            query: "${kw}",
+            lat: 37.3382, lon: -121.8863, radius: 25,
+            startDateRange: "${startStr}",
+            endDateRange: "${endStr}",
+            eventType: PHYSICAL
+          }
+          first: 50
+        ) {
+          edges {
+            node {
+              id title dateTime endTime eventUrl eventType status
+              venue { name address city lat lon }
+              group { name urlname stats { memberCounts { all } } }
+              rsvps { totalCount yesCount }
+            }
+          }
+        }
+      }`);
+      const edges = data?.data?.eventSearch?.edges ?? [];
+      for (const { node } of edges) {
+        if (!seenIds.has(node.id)) {
+          seenIds.add(node.id);
+          rawEvents.push(node);
+        }
+      }
+    } catch (err) {
+      console.log(`  ⚠️  Meetup query "${kw}" failed:`, err.message);
+    }
+  }
+
+  // Apply quality filters
+  const MIN_MEMBERS = 50;
+  const MIN_RSVP = 3;
+
+  const events = [];
+  for (const node of rawEvents) {
+    if (node.status !== "ACTIVE") continue;
+    if (node.eventType !== "PHYSICAL") continue;
+
+    const memberCount = node.group?.stats?.memberCounts?.all ?? 0;
+    if (memberCount < MIN_MEMBERS) continue;
+
+    const rsvpCount = node.rsvps?.yesCount ?? node.rsvps?.totalCount ?? 0;
+    if (rsvpCount < MIN_RSVP) continue;
+
+    const title = node.title?.trim();
+    if (!title) continue;
+    if (MEETUP_JUNK.some((p) => p.test(title))) continue;
+
+    const city = node.venue?.city;
+    const citySlug = meetupCitySlug(city);
+    if (!citySlug || !MEETUP_ACCEPTED_CITIES.has(citySlug)) continue;
+
+    const start = parseDate(node.dateTime);
+    if (!start) continue;
+
+    const venue = node.venue?.name?.trim() || node.group?.name || "TBD";
+    const address = node.venue?.address?.trim() || null;
+
+    events.push({
+      id: h("meetup", node.id),
+      title,
+      date: isoDate(start),
+      displayDate: displayDate(start),
+      time: displayTime(start),
+      endTime: node.endTime ? displayTime(parseDate(node.endTime)) : null,
+      venue,
+      address,
+      city: citySlug,
+      category: "community",
+      cost: null,
+      description: `Meetup event by ${node.group?.name ?? "local group"}.`,
+      url: node.eventUrl,
+      source: "Meetup",
+      kidFriendly: false,
+    });
+  }
+
+  console.log(`  ✅ Meetup: ${events.length} events (from ${rawEvents.length} raw across ${QUERIES.length} queries)`);
+  return events;
+}
+
 // ── Main ──
 
 async function main() {
@@ -2282,6 +2492,7 @@ async function main() {
     fetchScccfdEvents,
     fetchLgChamberEvents,
     fetchMiscHardcodedEvents,
+    fetchMeetupEvents,
   ];
 
   const results = await Promise.allSettled(sources.map((fn) => fn()));
