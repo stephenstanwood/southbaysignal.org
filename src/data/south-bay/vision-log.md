@@ -2125,3 +2125,45 @@ The Glean update is particularly notable: the company went from $4.6B to $7.2B v
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — the Recently Funded section now tells a complete story.** When a South Bay resident opens the Tech tab, the funding section now spans Saratoga (Eridu), Mountain View (Sunday, Lyte), Palo Alto (Glean), and San Jose (Axiado) — five cities, three categories (robotics, networking, security), and rounds from seed to Series F. That's the full arc of South Bay startup momentum in one view.
+
+---
+
+## 2026-04-03 — Cycle 40: City Hall × Tech Callout + Easter Weekend Data Refresh
+
+### Context
+April 3, 2026 (Good Friday). AI scripts are operational this cycle — ANTHROPIC_API_KEY resolved correctly. San Jose's April 7 city council agenda contains a uniquely surfaceable item: "Establishment of the GovAI Coalition as a Nonprofit Corporation." — a government-led AI governance org being incorporated at the city level. This is the kind of cross-domain story that only SBS surfaces.
+
+### What Was Built
+
+**New feature: City Hall × Tech callout section on the Tech tab**
+- Added `GovTechCallout` component to `TechnologyView.tsx`
+- Scans `upcoming-meetings.json` for agenda items matching tech-relevant keywords (AI, energy storage, EV, autonomous, chip, 5G, etc.)
+- Renders up to 5 items with city, date, and link to the meeting
+- April 7 San Jose council agenda surfaces: "Establishment of the GovAI Coalition as a Nonprofit Corporation" and "Willow Rock Long Duration Energy Storage Agreement"
+- Also fixed hardcoded `$3.1B+` → `$3.2B+` in the recently funded stat (Q1 2026 total recalculated)
+
+**Full data refresh (Easter weekend):**
+- upcoming-events.json: 515 events (106 ongoing), 22 sources — 34 Easter weekend events
+- upcoming-meetings.json: 3 cities (San Jose, Sunnyvale, Cupertino) for Apr 7 meetings
+- around-town.json: 8 items from Stoa
+- digests.json: 11 city digests
+- city-briefings.json: 11 cities, week of Apr 3–10
+- weekend-picks.json: Spring Egg Hunt, SJ Earthquakes vs SD FC, National Poetry Month rap
+- restaurant-radar.json: 7 SJ signals — $3.1M build at Stevens Creek Blvd, $1.2M buildout at Santana Row
+- tech-briefing.json: Nexthop AI $500M, MatX $500M featured
+- real-estate.json: 11 cities
+- permit-pulse.json: San Jose + Palo Alto
+- air-quality.json: South Bay avg AQI 25 (Good)
+- health-scores.json: latest SCC data
+
+### Why This Was the Strongest Move
+
+The "City Hall × Tech" callout is uniquely SBS. No other local product surfaces the intersection of municipal government decisions and tech relevance for residents. The GovAI Coalition item is genuinely newsworthy — San Jose is literally incorporating an AI governance nonprofit at the council level on April 7. A tech worker in Santa Clara reading SBS on Good Friday would see this and say "wait, my city is doing *what*?"
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data. Daily commuter urgency.
+2. **Mobile polish pass** — Aesthetics gap from standing orders; typography and spacing need a dedicated cycle.
+3. **Tech tab: upcoming tech events** — Pull verified meetup/conference data for South Bay tech events (Eventbrite API or direct calendar parsing).
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — the Tech tab now bridges startup culture and civic governance.** The City Hall × Tech callout is a capability no other South Bay product offers. A resident who cares about AI, energy, or infrastructure can see at a glance what their city council is voting on next week — without leaving the tech tab.
