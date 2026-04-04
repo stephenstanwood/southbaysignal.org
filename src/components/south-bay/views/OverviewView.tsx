@@ -2556,10 +2556,22 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
 
   // ── Ongoing events active today (multi-day exhibits, festivals, open houses) ──
   // These have e.ongoing === true and started on or before today
-  const ongoingToday = allUpcoming
-    .filter((e) => e.ongoing === true && e.date <= TODAY_ISO && e.category !== "sports")
-    .sort((a, b) => a.date.localeCompare(b.date))
-    .slice(0, 6);
+  const ongoingToday = (() => {
+    const candidates = allUpcoming
+      .filter((e) => e.ongoing === true && e.date <= TODAY_ISO && e.category !== "sports")
+      .sort((a, b) => a.date.localeCompare(b.date));
+    // Cap at 2 per city for geographic diversity
+    const cityCounts: Record<string, number> = {};
+    const picked: typeof candidates = [];
+    for (const e of candidates) {
+      const city = e.city ?? "unknown";
+      if ((cityCounts[city] ?? 0) >= 2) continue;
+      cityCounts[city] = (cityCounts[city] ?? 0) + 1;
+      picked.push(e);
+      if (picked.length >= 6) break;
+    }
+    return picked;
+  })();
 
   const cityIsEmpty = homeCity && cityTodayCount < 5;
   const showExpandedRegional = cityIsEmpty;
