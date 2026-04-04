@@ -22,8 +22,27 @@ const TODAY = new Date().toLocaleDateString("en-US", {
   timeZone: "America/Los_Angeles",
 });
 
+const TAB_IDS = new Set<string>(TABS.map((t) => t.id));
+
+function getTabFromHash(): Tab {
+  const hash = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
+  return TAB_IDS.has(hash) ? (hash as Tab) : "overview";
+}
+
 export default function SignalApp() {
-  const [activeTab, setActiveTab] = useState<Tab>("overview");
+  const [activeTab, setActiveTab] = useState<Tab>(getTabFromHash);
+
+  const navigateTo = useCallback((tab: Tab) => {
+    setActiveTab(tab);
+    window.location.hash = tab === "overview" ? "" : tab;
+  }, []);
+
+  useEffect(() => {
+    const onHashChange = () => setActiveTab(getTabFromHash());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
   const [selectedCities, setSelectedCities] = useState<Set<City>>(
     () => new Set(CITIES.map((c) => c.id)),
   );
@@ -120,7 +139,7 @@ export default function SignalApp() {
             <button
               key={tab.id}
               className={`sb-tab${activeTab === tab.id ? " sb-tab--active" : ""}`}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => navigateTo(tab.id)}
               aria-current={activeTab === tab.id ? "page" : undefined}
             >
               {tab.label}
@@ -165,7 +184,7 @@ export default function SignalApp() {
       {/* Content */}
       <main className="sb-main">
         {activeTab === "overview" && (
-          <OverviewView homeCity={homeCity} setHomeCity={setHomeCity} onNavigate={setActiveTab} />
+          <OverviewView homeCity={homeCity} setHomeCity={setHomeCity} onNavigate={navigateTo} />
         )}
         {activeTab === "sports" && <SportsView />}
         {activeTab === "events" && (
