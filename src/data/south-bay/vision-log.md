@@ -2343,3 +2343,35 @@ The milestone system is also evergreen: Intel at 58 (July), Google at 28 (Septem
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — SBS now has a sense of time.** The "This Week in SV History" section gives the Tech tab a temporal dimension — it changes every week based on what's happening in Silicon Valley's past. A resident who opens SBS this Easter weekend sees Apple's birthday AND NVIDIA's birthday. That's a story no newspaper, aggregator, or app is telling them. It's local, it's timely, and it's only possible because SBS is building its own data layer city by city, company by company.
+
+---
+
+## 2026-04-03 — Cycle 45: Alcatraz AI + Data Refresh (Easter Weekend)
+
+### Context
+Good Friday / Easter weekend. Data pipeline was fresh from earlier today. Focus was on surfacing a specific April 2026 South Bay funding story that no one else was covering locally.
+
+### What Was Built
+
+**Alcatraz AI added to Recently Funded (Tech tab)**
+- Cupertino startup (founded 2016 by ex-Apple Face ID hardware engineer Vince Gaydarzhiev)
+- Raised $50M Series B on April 2, 2026 — led by BlackPeak Capital, Cogito Capital, Taiwania Capital
+- Product: The Rock™ — AI facial authentication replacing building badge readers, privacy-preserving (no photo storage)
+- 300% YoY data center growth; deployed at Fortune 100s, U.S. airports, NFL stadiums
+- Total raised: $100M+
+- Updated TECH_PULSE to 20 rounds / $3.3B+ for Q1–Q2 2026
+
+**Data refreshes:**
+- around-town.json: refreshed with new Campbell story — "Three council members recuse themselves from transit development vote" (SB 79 / transit-oriented housing, rule of necessity invoked)
+- upcoming-meetings.json: refreshed (San Jose, Sunnyvale, Cupertino Apr 7)
+
+### Why This Was the Strongest Move
+Alcatraz is exactly the kind of company SBS exists to surface — a Cupertino startup that made a notable raise this week and won't get covered by regional media. The Apple Face ID lineage is a local story: a founder who worked on Face ID at Apple in Cupertino goes on to build a company in Cupertino using the same biometric technology. That's a genuinely local narrative. A Cupertino resident opening SBS sees a recent raise from a company in their own city that they probably didn't know existed.
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data.
+2. **Mountain View restaurant radar** — Mountain View has ArcGIS Open Data at data-mountainview.opendata.arcgis.com — need to check for a building permits layer. The e-permits portal at epermits.mountainview.gov may have a queryable interface.
+3. **More April 2026 funding rounds** — Q1 2026 saw $297B globally; searches didn't surface other specific South Bay seed/Series A companies from April. Worth trying again next cycle with direct Crunchbase or TechCrunch search.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — the Tech tab is now the most current it's ever been.** Alcatraz raised April 2 and it's in SBS by April 3. That's same-day local tech coverage that no newspaper or aggregator offers for a sub-100-employee Cupertino startup. The Easter weekend data — Spring Egg Hunt picks, Easter Vigil at SCU, Earthquakes home opener — is all showing correctly.
