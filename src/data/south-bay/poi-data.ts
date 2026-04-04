@@ -468,7 +468,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     kidFriendly: true,
     description:
       "Charming walkable downtown with excellent coffee, restaurants, boutiques, and a relaxed local vibe.",
-    why: "One of the best walkable downtowns in the South Bay — great food, zero pretension",
+    why: "Get a coffee at Orchard City Kitchen, browse the indie boutiques on Campbell Ave, and grab lunch at Luna Mexican Kitchen or Olla Cocina",
     emoji: "☕",
     indoorOutdoor: "both",
     bestSlots: ["morning", "afternoon", "evening"],
@@ -483,7 +483,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     kidFriendly: true,
     description:
       "Upscale open-air shopping and dining district — European-style streets with restaurants, wine bars, and boutiques.",
-    why: "Leisurely and beautiful — great for a slow afternoon or evening out",
+    why: "Stroll the European-style boulevard, browse designer boutiques, then grab a table at Straits, Sino, or the Zinnia patio for dinner",
     emoji: "🛍️",
     url: "https://www.santanarow.com",
     indoorOutdoor: "both",
@@ -499,7 +499,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     kidFriendly: true,
     description:
       "Lively, pedestrian-friendly downtown with diverse restaurants, coffee shops, and regular community events.",
-    why: "Excellent walkable downtown with a great restaurant scene — especially good for lunch",
+    why: "Hit the weekend Farmers Market, grab pho or a bánh mì at one of Castro St's many spots, and browse indie shops — excellent value lunch strip",
     emoji: "🍜",
     indoorOutdoor: "both",
     bestSlots: ["afternoon", "evening"],
@@ -514,7 +514,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     kidFriendly: true,
     description:
       "Charming foothill town with excellent brunch spots, boutiques, and a relaxed California pace.",
-    why: "Feels like a getaway without going far — beautiful downtown with some of the best brunch in the South Bay",
+    why: "Grab a pastry at Fleur de Cocoa, browse the boutiques on Santa Cruz Ave, and settle in for lunch at Los Gatos Brewing Co or a slow dinner at Dio Deka — the most European-feeling downtown in the South Bay",
     emoji: "🏡",
     indoorOutdoor: "both",
     bestSlots: ["morning", "afternoon"],
@@ -529,7 +529,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     kidFriendly: true,
     description:
       "Downtown San Jose food hall with diverse vendors, outdoor seating, and a lively atmosphere.",
-    why: "Great for lunch or an afternoon snack run — lots of options in one spot",
+    why: "Mix and match lunch from a dozen vendors under one roof — tacos, ramen, banh mi, coffee. Best all-in-one food stop in downtown San Jose, especially on a warm weekend afternoon with a patio seat",
     emoji: "🍱",
     url: "https://www.sanpedrosquaremarket.com",
     indoorOutdoor: "both",
@@ -545,7 +545,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     kidFriendly: true,
     description:
       "San Jose's most charming neighborhood — tree-lined Lincoln Ave with indie shops, patisseries, and great brunch spots.",
-    why: "The most charming neighborhood in San Jose — great for a slow weekend morning browse",
+    why: "Start with a pastry at La Fiorentina or an espresso at Caffe Frascati, wander the indie boutiques on Lincoln Ave, and lunch at Paesano's — San Jose's most pleasant neighborhood walk",
     emoji: "🌷",
     indoorOutdoor: "both",
     bestSlots: ["morning", "afternoon"],
@@ -560,7 +560,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     kidFriendly: true,
     description:
       "Murphy Avenue has a walkable strip of restaurants, a craft beer garden, and a relaxed neighborhood feel.",
-    why: "Underrated — solid restaurant row with a chill local atmosphere",
+    why: "Dinner at Teske's Germania (a local institution since 1975), fondue night at La Fondue, or craft beers at one of Murphy Ave's tap rooms — Sunnyvale's most walkable and genuinely local strip",
     emoji: "🍻",
     indoorOutdoor: "both",
     bestSlots: ["afternoon", "evening"],
@@ -575,7 +575,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     kidFriendly: true,
     description:
       "Tree-lined University Avenue with independent restaurants, bookstores, and coffee shops a block from Stanford.",
-    why: "Classic Palo Alto walkability — great food and very close to Stanford campus",
+    why: "Coffee at Coupa Café, lunch at Oren's Hummus or Vina Enoteca, then browse Kepler's Books — University Ave is one of the most pleasant afternoon walks in the Bay Area with Stanford a block away",
     emoji: "🌳",
     indoorOutdoor: "both",
     bestSlots: ["morning", "afternoon", "evening"],
@@ -590,7 +590,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     kidFriendly: true,
     description:
       "One of only three surviving Japantowns in the US — a vibrant neighborhood with ramen shops, mochi bakeries, Japanese markets, and cultural events.",
-    why: "Deeply authentic and genuinely special — a neighborhood with real history and excellent food",
+    why: "Pick up mochi at Okayama Kobo, get a bowl of udon at Gombei, and browse the Japanese grocery on Jackson St — one of only three surviving Japantowns in the US, worth making a whole afternoon of",
     emoji: "🍜",
     url: "https://www.japantownsanjose.org",
     indoorOutdoor: "both",
@@ -606,7 +606,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     kidFriendly: true,
     description:
       "Cupertino's walkable mixed-use district with restaurants, a cinema, weekend markets, and community events — near Apple Park.",
-    why: "Cupertino's best neighborhood destination — good food and right next to Apple's headquarters",
+    why: "Hit the Saturday farmers market, grab lunch at Lazy Dog or one of the many Asian restaurants nearby, then walk the outdoor plaza steps from Apple Park — Cupertino's most pleasant afternoon destination",
     emoji: "🍎",
     url: "https://www.mainstreetcupertino.com",
     indoorOutdoor: "both",
@@ -622,7 +622,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     kidFriendly: true,
     description:
       "Quiet, upscale foothill village with excellent wine bars, high-end restaurants, art galleries, and a relaxed European feel.",
-    why: "The most charming small-town feel in the South Bay — great for a slow afternoon splurge",
+    why: "Afternoon wine at Out of the Cellar wine bar, dinner at The Basin gastropub or splurge on the Bella Saratoga patio — the quietest and most refined village feel in the South Bay",
     emoji: "🍷",
     indoorOutdoor: "both",
     bestSlots: ["afternoon", "evening"],
@@ -637,7 +637,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     kidFriendly: true,
     description:
       "A quiet, walkable historic district with Mission Santa Clara at its center, local restaurants, and close proximity to Levi's Stadium.",
-    why: "Underrated and easygoing — good local food scene without the crowds of larger South Bay downtowns",
+    why: "Stop at Falafel's Drive-In (a Santa Clara institution since 1966, cash only), walk past Mission Santa Clara, and grab a beer at one of the local spots on Franklin St — low-key, authentic, zero hype",
     emoji: "⛪",
     indoorOutdoor: "both",
     bestSlots: ["afternoon", "evening"],

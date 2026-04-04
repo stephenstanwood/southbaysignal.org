@@ -18,6 +18,26 @@ const PA_PERMIT_VIEW = "https://gis.cityofpaloalto.org/PermitView";
 
 const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY ?? "";
 
+/**
+ * Manual overrides — keyed by "city:address" (lowercase, normalized).
+ * These survive regeneration and fill in name/blurb when permit text is ambiguous.
+ * city: the city id (e.g. "san-jose", "palo-alto")
+ * address: the formatted address string as it appears in the output
+ */
+const MANUAL_OVERRIDES = {
+  // Palo Alto: name inside quotes in description, not caught by extractor
+  "palo-alto:121 Lytton Av": { name: "Rikyu", blurb: "Japanese restaurant fitting out a new space on Lytton Ave" },
+  // Palo Alto: name in all-caps before colon in description
+  "palo-alto:338 University Av": { name: "Zhangling Malatang", blurb: "Sichuan-style malatang — customizable spicy hot pot — coming to University Ave" },
+  // San Jose: known blurbs for named spots
+  "san-jose:2855 Stevens Creek Bl": { blurb: "Korean BBQ chain known for tabletop charcoal grilling and premium cuts" },
+  "san-jose:355 Santana Row": { blurb: "California seasonal cuisine with a botanical-inspired menu, opening on Santana Row" },
+  "san-jose:233 W Santa Clara St": { blurb: "Historic cocktail lounge inside the Hotel De Anza, a downtown San Jose landmark since 1931" },
+  "san-jose:22 N White Rd": { blurb: "Mexican tortilleria and taqueria on the east side" },
+  "palo-alto:407 Lytton Av": { blurb: "Japanese bistro opening in downtown Palo Alto" },
+  "palo-alto:401 Webster St": { blurb: "Neighborhood American restaurant on Webster St undergoing a kitchen remodel" },
+};
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "restaurant-radar.json");
 
@@ -430,6 +450,16 @@ async function main() {
     if (b.valuation !== a.valuation) return b.valuation - a.valuation;
     return b.date.localeCompare(a.date);
   });
+
+  // Apply manual overrides (name, blurb) keyed by "city:address"
+  for (const item of allItems) {
+    const key = `${item.city ?? ""}:${item.address}`;
+    const override = MANUAL_OVERRIDES[key];
+    if (override) {
+      if (override.name && !item.name) item.name = override.name;
+      if (override.blurb) item.blurb = item.blurb ?? override.blurb;
+    }
+  }
 
   const output = {
     generatedAt: new Date().toISOString(),

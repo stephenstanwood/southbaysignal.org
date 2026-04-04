@@ -151,6 +151,7 @@ type RadarItem = {
   city?: string;
   address: string;
   name: string | null;
+  blurb?: string | null;
   description: string;
   workType: string;
   signal: "opening" | "closing" | "activity";
@@ -233,6 +234,11 @@ function RestaurantRadar() {
                     {item.label}
                   </span>
                 </div>
+                {item.blurb && (
+                  <div style={{ fontSize: 12, color: "var(--sb-muted)", lineHeight: 1.5, marginBottom: 4 }}>
+                    {item.blurb}
+                  </div>
+                )}
                 <div style={{ fontSize: 11, color: "var(--sb-muted)", display: "flex", gap: 6, flexWrap: "wrap" }}>
                   <span>{item.address}</span>
                   {cityLabel && (
