@@ -1848,7 +1848,7 @@ function TechBriefingCallout({ onNavigate }: { onNavigate: (tab: Tab) => void })
           {teaser}
         </div>
         <button
-          onClick={() => onNavigate("Tech")}
+          onClick={() => onNavigate("technology")}
           style={{ marginTop: 8, background: "none", border: "none", padding: 0, color: "#7c3aed", fontSize: 12, fontWeight: 700, cursor: "pointer", letterSpacing: "0.02em" }}
         >
           Full tech briefing →
@@ -1949,7 +1949,7 @@ function CityHallThisWeek({ onNavigate }: { onNavigate: (tab: Tab) => void }) {
         })}
       </div>
       <button
-        onClick={() => onNavigate("Gov")}
+        onClick={() => onNavigate("government")}
         style={{ marginTop: 8, background: "none", border: "none", padding: 0, color: "var(--sb-primary)", fontSize: 12, fontWeight: 700, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3 }}
       >
         More in Gov →
@@ -2005,7 +2005,7 @@ function RestaurantRadarTeaser({ onNavigate }: { onNavigate: (tab: Tab) => void 
         ))}
       </div>
       <button
-        onClick={() => onNavigate("Food")}
+        onClick={() => onNavigate("food")}
         style={{ marginTop: 8, background: "none", border: "none", padding: 0, color: "var(--sb-primary)", fontSize: 12, fontWeight: 700, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3 }}
       >
         More in Food →
