@@ -2375,3 +2375,40 @@ Alcatraz is exactly the kind of company SBS exists to surface — a Cupertino st
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — the Tech tab is now the most current it's ever been.** Alcatraz raised April 2 and it's in SBS by April 3. That's same-day local tech coverage that no newspaper or aggregator offers for a sub-100-employee Cupertino startup. The Easter weekend data — Spring Egg Hunt picks, Easter Vigil at SCU, Earthquakes home opener — is all showing correctly.
+
+---
+
+## 2026-04-04 — Cycle 46: Netscape at 32 + Two More Funding Rounds + Full Data Refresh
+
+### Context
+Saturday April 4, 2026. Day after Good Friday. Easter weekend continues. Today is the 32nd anniversary of Netscape's founding (incorporated April 4, 1994 in Mountain View).
+
+### What Was Built
+
+**Netscape added to "This Week in SV History" (Tech tab)**
+- April 4, 1994: Marc Andreessen and Jim Clark incorporated Mosaic Communications Corporation in Mountain View (renamed Netscape in November 1994)
+- 32 years ago today — Netscape Navigator made the web accessible to everyone and ignited the dot-com era
+- Shows alongside Apple (50th, Apr 1) and NVIDIA (33rd, Apr 5) during this exact week
+
+**Two new companies added to Recently Funded:**
+- **Mind Robotics** (Palo Alto) — $500M Series A, March 11, 2026. Rivian-spinout building full-stack industrial AI robotics; $2B valuation co-led by Accel and a16z.
+- **Sycamore** (Palo Alto) — $65M Seed, March 30, 2026. Enterprise AI agent OS with security/governance built in; founded by Sri Viswanath (former Atlassian CTO).
+- TECH_PULSE updated: $3.9B+ / 22 rounds
+
+**Full data pipeline refresh:**
+- upcoming-events.json: 527 events (105 ongoing) from 25 sources
+- around-town.json: 8 items — Cupertino incentives for retail/startups, Santa Clara federal housing input
+- upcoming-meetings.json: San Jose, Sunnyvale, Cupertino for Apr 7
+- digests.json: 11 cities refreshed
+- weekend-picks.json: Beetlejuice, Earthquakes vs SD FC, Spring Egg Hunt (Apr 3–5)
+
+### Why This Was the Strongest Move
+Today is Netscape's 32nd birthday — and no newspaper or aggregator is marking it. SBS now surfaces it in the "This Week in SV History" section to any Mountain View or South Bay resident who opens the tech tab this weekend. Mind Robotics ($500M Series A) and Sycamore ($65M Seed) were verified March 2026 rounds not yet in SBS; both are Palo Alto companies with strong South Bay credentials. Together with Alcatraz, these additions make the Recently Funded list the most current it's been — 22 rounds totaling $3.9B+.
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data.
+2. **Mountain View restaurant radar** — Mountain View has ArcGIS Open Data at data-mountainview.opendata.arcgis.com — check building permits layer or e-permits portal at epermits.mountainview.gov.
+3. **High school sports scores** — Prominent South Bay HS athletic programs (Los Gatos, Saratoga, Palo Alto, Gunn, Archbishop Mitty). MaxPreps API or web scraping.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — the Tech tab now marks the day.** When a Mountain View resident opens SBS on April 4, they see that Netscape was founded 32 years ago today in their city. Apple's 50th is still showing (it's within the ±8 day window). NVIDIA's 33rd is tomorrow. This week is uniquely rich in Silicon Valley history, and SBS is the only local product surfacing it in real time.
