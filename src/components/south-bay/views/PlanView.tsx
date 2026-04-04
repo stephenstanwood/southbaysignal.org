@@ -308,10 +308,10 @@ export default function PlanView({ homeCity }: { homeCity: string | null }) {
   const [plan, setPlan] = useState<DayPlan | null>(null);
 
   // Form state with sensible defaults
-  const [who, setWho] = useState<Who>("couple");
+  const [who, setWho] = useState<Who>("family-young");
   const [duration, setDuration] = useState<Duration>("full-day");
   const [vibe, setVibe] = useState<VibeType>("mix");
-  const [budget, setBudget] = useState<BudgetType>("some");
+  const [budget, setBudget] = useState<BudgetType>("anything");
   const [selectedDateIdx, setSelectedDateIdx] = useState<number>(0);
 
   // Fetch weather silently on mount

@@ -42,7 +42,7 @@ const CLAUDE_HAIKU = "claude-haiku-4-5-20251001";
 // ── City config (SBS city IDs → Stoa city names + schedule) ──
 
 const CITIES = [
-  { city: "campbell",      stoaCity: "Campbell",      cityName: "Campbell",      schedule: "1st and 3rd Tuesday",   agendaUrl: "https://www.cityofcampbell.com/271/City-Council-Meetings" },
+  { city: "campbell",      stoaCity: "Campbell",      cityName: "Campbell",      schedule: "1st and 3rd Tuesday",   agendaUrl: "https://www.campbellca.gov/AgendaCenter/City-Council-10" },
   { city: "saratoga",      stoaCity: "Saratoga",      cityName: "Saratoga",      schedule: "1st and 3rd Wednesday", agendaUrl: "https://saratoga-ca.municodemeetings.com/" },
   { city: "los-altos",     stoaCity: "Los Altos",     cityName: "Los Altos",     schedule: "2nd and 4th Tuesday",   agendaUrl: "https://losaltos-ca.municodemeetings.com/" },
   { city: "los-gatos",     stoaCity: "Los Gatos",     cityName: "Los Gatos",     schedule: "1st and 3rd Monday",    agendaUrl: "https://losgatos-ca.municodemeetings.com/" },

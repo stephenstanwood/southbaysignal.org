@@ -42,7 +42,7 @@ const KNOWN_CITIES: City[] = [
 
 // Agenda page URLs — fallback link when no digest is available
 const AGENDA_URLS: Record<string, string> = {
-  "campbell": "https://www.cityofcampbell.com/271/City-Council-Meetings",
+  "campbell": "https://www.campbellca.gov/AgendaCenter/City-Council-10",
   "saratoga": "https://saratoga-ca.municodemeetings.com/",
   "los-altos": "https://losaltos-ca.municodemeetings.com/",
   "los-gatos": "https://losgatos-ca.municodemeetings.com/",

@@ -45,7 +45,7 @@ const CLAUDE_HAIKU = "claude-haiku-4-5-20251001";
 // ── City config ──
 
 const CITIES = [
-  { stoaCity: "Campbell",      cityId: "campbell",      cityName: "Campbell",      agendaUrl: "https://www.cityofcampbell.com/271/City-Council-Meetings",              permitUrl: null },
+  { stoaCity: "Campbell",      cityId: "campbell",      cityName: "Campbell",      agendaUrl: "https://www.campbellca.gov/AgendaCenter/City-Council-10",              permitUrl: null },
   { stoaCity: "Saratoga",      cityId: "saratoga",      cityName: "Saratoga",      agendaUrl: "https://saratoga-ca.municodemeetings.com/",                            permitUrl: null },
   { stoaCity: "Los Altos",     cityId: "los-altos",     cityName: "Los Altos",     agendaUrl: "https://losaltos-ca.municodemeetings.com/",                            permitUrl: null },
   { stoaCity: "Los Gatos",     cityId: "los-gatos",     cityName: "Los Gatos",     agendaUrl: "https://losgatos-ca.municodemeetings.com/",                            permitUrl: null },
