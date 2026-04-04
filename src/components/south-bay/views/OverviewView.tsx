@@ -2432,7 +2432,7 @@ function bucketEvents(
                 {bucket === "now" && "● "}{BUCKET_LABELS[bucket]}
               </div>
             )}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0 32px" }}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0 32px", alignItems: "start" }}
               className="sb-today-grid">
               {items.map((item) =>
                 item._type === "static"
@@ -2683,6 +2683,12 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
                 {cityTodayCount} {cityTodayCount === 1 ? "event" : "events"}
               </span>
             )}
+            <button
+              onClick={() => onNavigate("events")}
+              style={{ marginLeft: "auto", background: "none", border: "1px solid var(--sb-border)", borderRadius: 100, padding: "4px 12px", fontSize: 12, fontWeight: 600, color: "var(--sb-ink)", cursor: "pointer", whiteSpace: "nowrap", letterSpacing: "0.01em" }}
+            >
+              All events →
+            </button>
           </div>
 
           {homeCity ? (
