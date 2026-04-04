@@ -1280,6 +1280,30 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     color: "#16a34a",
     url: "https://sycamore.ai",
   },
+  {
+    id: "axiom-math-ai",
+    name: "Axiom Math AI",
+    city: "Palo Alto",
+    category: "software",
+    round: "Series A",
+    amount: "$200M",
+    date: "2026-03-12",
+    tagline: "AI that formally proves AI-generated code is correct — using the Lean proof language to give mathematical certainty that code will never return wrong answers. Founded by 25-year-old Stanford PhD student Carina Hong; scored a perfect 12/12 on the Putnam Competition and proved a 20-year-old open conjecture. $1.6B valuation led by Menlo Ventures.",
+    color: "#7c3aed",
+    url: "https://axiommath.ai",
+  },
+  {
+    id: "exaforce",
+    name: "Exaforce",
+    city: "San Jose",
+    category: "security",
+    round: "Series A",
+    amount: "$75M",
+    date: "2026-01-12",
+    tagline: "Agentic AI platform that automates the entire security operations center lifecycle — threat detection, triage, investigation, and response — using AI agents called Exabots. Delivers 10× reduction in human SOC work. Founded by veterans of Google, F5, and Palo Alto Networks; led by Khosla Ventures and Mayfield.",
+    color: "#dc2626",
+    url: "https://www.exaforce.com",
+  },
 ];
 
 // Pulse stats for the header strip
@@ -1295,9 +1319,9 @@ export const TECH_PULSE = [
     note: "25K local jobs each at Googleplex & Apple Park",
   },
   {
-    value: "$3.9B+",
+    value: "$4.2B+",
     label: "Raised in Q1–Q2 2026",
-    note: "22 South Bay startup rounds · chips, robotics, networking, security led the way",
+    note: "24 South Bay startup rounds · chips, robotics, networking, security, AI led the way",
   },
   {
     value: "Chip equipment",
