@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-04T19:11:16.384Z",
+      "generatedAt": "2026-04-04T20:10:27.365Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,7 +137,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-04T19:11:18.848Z",
+      "generatedAt": "2026-04-04T20:10:29.792Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -175,6 +175,18 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-00863",
+          "address": "1221 Hopkins Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-02",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-00825",
           "address": "3946 Louis Rd",
           "category": "residential-large",
@@ -189,18 +201,6 @@
         {
           "id": "26BLD-00872",
           "address": "841 Ames Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-02",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00863",
-          "address": "1221 Hopkins Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",

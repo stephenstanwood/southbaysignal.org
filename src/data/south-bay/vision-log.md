@@ -2441,3 +2441,41 @@ Today is Netscape's 32nd birthday — and no newspaper or aggregator is marking 
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — the Tech tab now marks the day.** When a Mountain View resident opens SBS on April 4, they see that Netscape was founded 32 years ago today in their city. Apple's 50th is still showing (it's within the ±8 day window). NVIDIA's 33rd is tomorrow. This week is uniquely rich in Silicon Valley history, and SBS is the only local product surfacing it in real time.
+
+---
+
+## 2026-04-04 — Cycle 48: Full Data Refresh + TECH_PULSE 26-Round Update
+
+### Context
+Saturday April 4, 2026. Easter Saturday. Spring Break week 1 of 2 (Apr 3–17). Netscape's 32nd birthday (today). NVIDIA's 33rd tomorrow. Apple's 50th still showing in the ±7 day window.
+
+### What Was Built
+
+**TECH_PULSE stat corrected:**
+- Updated "24 South Bay startup rounds" → "26 South Bay startup rounds" in the header strip
+- RECENTLY_FUNDED now has 26 verified entries in tech-companies.ts; the pulse stat now matches
+
+**Full data pipeline refresh:**
+- upcoming-events.json: 531 events from 24 sources; 47 events today (Easter Saturday spike)
+- around-town.json: 8 items (Stoa-sourced council news — Cupertino, Santa Clara)
+- upcoming-meetings.json: San Jose, Sunnyvale, Cupertino for Apr 7
+- digests.json: 11 cities refreshed; Santa Clara (Apr 2) is freshest
+- city-briefings.json: 11 cities for Apr 4–11 week; Easter and spring break context
+- permit-pulse.json: san-jose (10 permits) + palo-alto (6 permits); refreshed
+- tech-briefing.json: 26 rounds tracked, Nexthop AI + MatX $500M rounds prominent
+- real-estate.json: 11 cities; Cupertino $3241K (+33.4% YoY), Campbell $1701K (-12.8%)
+- restaurant-radar.json: 13 signals (SJ: 8, PA: 5); Baekjeong $3.1M buildout at Stevens Creek
+- health-scores.json: April 3-4 inspection cycle
+- scc-food-openings.json: recent openings through Mar 27; coming soon through Apr 1
+- air-quality.json: AQI 44 average (Good) across all 11 cities
+
+### Why This Was the Strongest Move
+With 531 events in the pipeline (47 today alone for Easter Saturday) and fresh data across all 11 data feeds, SBS is as current as it's ever been. The TECH_PULSE correction ensures the headline "26 South Bay startup rounds" is accurate when residents visit the tech tab. The restaurant radar now shows the Baekjeong $3.1M buildout — a real new opening story for San Jose residents. Twelve active Spring Break picks across the region.
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data.
+2. **Mountain View restaurant radar** — ArcGIS Open Data at data-mountainview.opendata.arcgis.com has no permits layer; e-permits portal has no public REST API. Blocked.
+3. **High school sports scores** — MaxPreps ToS prohibits scraping; no official public API. Blocked.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — breadth and freshness are at an all-time high.** 531 events, 11 city digests, real-time restaurant radar with a $3.1M new opening, and a tech funding list that's both accurate (26 rounds) and timely (Alcatraz Apr 2 is the freshest). A San Jose resident opening SBS on Easter Saturday sees today's events, this week's meetings, fresh council news, and a restaurant opening they didn't know about.
