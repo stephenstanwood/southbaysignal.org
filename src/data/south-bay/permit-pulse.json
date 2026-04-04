@@ -1,19 +1,31 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-03T23:09:22.549Z",
+      "generatedAt": "2026-04-04T11:09:27.752Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Mar 27 – Apr 3",
+      "dateRange": "Mar 28 – Apr 4",
       "stats": {
-        "total": 328,
-        "notable": 6,
-        "newUnits": 5,
-        "totalValuation": 3771451
+        "total": 429,
+        "notable": 12,
+        "newUnits": 7,
+        "totalValuation": 5448911
       },
       "permits": [
+        {
+          "id": "2025-137614-RS",
+          "address": "61 Scharff Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Adu W/ Attached Workshop",
+          "valuation": 208207,
+          "units": 1,
+          "issueDate": "2026-04-02",
+          "subtype": "2nd Unit Added"
+        },
         {
           "id": "2025-122298-RS",
           "address": "3403 Viewmont Ct #2",
@@ -75,6 +87,18 @@
           "subtype": "2nd Unit Added"
         },
         {
+          "id": "2025-117612-RS",
+          "address": "3085 Senter Rd #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Code Case Legalize Unpermitted Garage Conversion to Jadu",
+          "valuation": 64254,
+          "units": 1,
+          "issueDate": "2026-04-02",
+          "subtype": "2nd Unit Added"
+        },
+        {
           "id": "2026-110761-CI",
           "address": "1300 W San Carlos St",
           "category": "commercial-large",
@@ -85,19 +109,43 @@
           "units": 0,
           "issueDate": "2026-04-01",
           "subtype": "Commercial/Industrial"
+        },
+        {
+          "id": "2026-110777-CI",
+          "address": "2125 Zanker Rd",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "(Be 100%) Transformer and Switchboard",
+          "valuation": 210100,
+          "units": 0,
+          "issueDate": "2026-04-02",
+          "subtype": "Office"
+        },
+        {
+          "id": "2026-111036-CI",
+          "address": "1001 Ridder Park Dr",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Exterior Service Yard",
+          "valuation": 200000,
+          "units": 0,
+          "issueDate": "2026-04-02",
+          "subtype": "R & D Lab"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-03T23:09:25.004Z",
+      "generatedAt": "2026-04-04T11:09:30.113Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Mar 27 – Apr 3",
+      "dateRange": "Mar 28 – Apr 4",
       "stats": {
-        "total": 105,
-        "notable": 7,
+        "total": 91,
+        "notable": 6,
         "newUnits": 0,
         "totalValuation": 0
       },
@@ -115,18 +163,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00818",
-          "address": "1610 Dana Av",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "Res: Voluntary seismic strengthening (NO GRANT)",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-03-27",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00830",
           "address": "151 Melville Av",
           "category": "commercial",
@@ -139,8 +175,8 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00872",
-          "address": "841 Ames Av",
+          "id": "26BLD-00863",
+          "address": "1221 Hopkins Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -163,8 +199,8 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00863",
-          "address": "1221 Hopkins Av",
+          "id": "26BLD-00872",
+          "address": "841 Ames Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",

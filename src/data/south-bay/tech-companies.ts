@@ -1256,6 +1256,30 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     color: "#1d4ed8",
     url: "https://www.alcatraz.ai",
   },
+  {
+    id: "mind-robotics",
+    name: "Mind Robotics",
+    city: "Palo Alto",
+    category: "robotics",
+    round: "Series A",
+    amount: "$500M",
+    date: "2026-03-11",
+    tagline: "Full-stack industrial AI robotics — foundation models, purpose-built robots, and deployment infrastructure for dexterous manufacturing tasks. Rivian-spinout founded by RJ Scaringe; $2B valuation co-led by Accel and a16z.",
+    color: "#7c3aed",
+    url: "https://mindrobotics.ai",
+  },
+  {
+    id: "sycamore",
+    name: "Sycamore",
+    city: "Palo Alto",
+    category: "saas",
+    round: "Seed",
+    amount: "$65M",
+    date: "2026-03-30",
+    tagline: "Enterprise AI agent operating system with built-in security, governance, and human oversight. Founded by Sri Viswanath (former Atlassian CTO); co-led by Coatue and Lightspeed.",
+    color: "#16a34a",
+    url: "https://sycamore.ai",
+  },
 ];
 
 // Pulse stats for the header strip
@@ -1271,9 +1295,9 @@ export const TECH_PULSE = [
     note: "25K local jobs each at Googleplex & Apple Park",
   },
   {
-    value: "$3.3B+",
+    value: "$3.9B+",
     label: "Raised in Q1–Q2 2026",
-    note: "20 South Bay startup rounds · chips, robotics, networking, security led the way",
+    note: "22 South Bay startup rounds · chips, robotics, networking, security led the way",
   },
   {
     value: "Chip equipment",
@@ -1454,6 +1478,17 @@ export const TECH_MILESTONES: TechMilestone[] = [
     tagline: "Creative software giant headquartered in San Jose — Photoshop, Acrobat, and Premiere touch nearly every piece of digital content ever made.",
     anniversaryNote: "Adobe was founded December 2, 1982 by John Warnock and Charles Geschke after leaving Xerox PARC. Named after Adobe Creek in Los Altos, the company's PostScript language revolutionized desktop publishing and set the stage for the creative software industry.",
     url: "https://adobe.com",
+  },
+  {
+    id: "netscape",
+    company: "Netscape",
+    city: "Mountain View",
+    foundedYear: 1994,
+    month: 4,
+    day: 4,
+    tagline: "The web browser that launched the commercial internet — founded in Mountain View by the team behind NCSA Mosaic.",
+    anniversaryNote: "Netscape was incorporated April 4, 1994 as Mosaic Communications Corporation by Marc Andreessen and Jim Clark in Mountain View. Before Google, before Facebook, before the iPhone — Netscape Navigator made the web accessible to everyone. Their 1995 IPO ignited the dot-com era and defined Silicon Valley for a generation.",
+    url: "https://en.wikipedia.org/wiki/Netscape",
   },
 ];
 
