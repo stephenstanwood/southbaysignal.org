@@ -1244,6 +1244,18 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     color: "#0369a1",
     url: "https://imperativecare.com",
   },
+  {
+    id: "alcatraz-ai",
+    name: "Alcatraz",
+    city: "Cupertino",
+    category: "security",
+    round: "Series B",
+    amount: "$50M",
+    date: "2026-04-02",
+    tagline: "Facial authentication for building access — replaces badge readers with privacy-preserving AI that verifies identity without storing photos. Founded by Vince Gaydarzhiev, who led Face ID hardware prototyping at Apple. 300% YoY data center growth; deployed at Fortune 100 companies, U.S. airports, and NFL stadiums.",
+    color: "#1d4ed8",
+    url: "https://www.alcatraz.ai",
+  },
 ];
 
 // Pulse stats for the header strip
@@ -1259,9 +1271,9 @@ export const TECH_PULSE = [
     note: "25K local jobs each at Googleplex & Apple Park",
   },
   {
-    value: "$3.2B+",
-    label: "Raised in Q1 2026",
-    note: "19 South Bay startup rounds · chips, robotics, networking led the way",
+    value: "$3.3B+",
+    label: "Raised in Q1–Q2 2026",
+    note: "20 South Bay startup rounds · chips, robotics, networking, security led the way",
   },
   {
     value: "Chip equipment",
