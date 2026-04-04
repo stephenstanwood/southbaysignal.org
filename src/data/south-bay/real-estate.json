@@ -1,3 +1,5 @@
+Before: 1.222222222
+After: None
 {
   "cities": [
     {
@@ -27,7 +29,7 @@
       "cityId": "los-altos",
       "periodEnd": "2026-02-28",
       "medianSalePrice": 5550000,
-      "medianSalePriceYoy": 1.222222222,
+      "medianSalePriceYoy": null,
       "inventory": 29,
       "medianDaysOnMarket": 10,
       "avgSaleToList": 1.071559441,
@@ -78,7 +80,7 @@
       "soldAboveListPct": 0.6666666667
     },
     {
-      "city": "San José",
+      "city": "San Jos\u00e9",
       "cityId": "san-jose",
       "periodEnd": "2026-02-28",
       "medianSalePrice": 1330000,
