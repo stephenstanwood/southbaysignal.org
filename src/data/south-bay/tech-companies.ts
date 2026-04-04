@@ -1264,7 +1264,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     round: "Series A",
     amount: "$500M",
     date: "2026-03-11",
-    tagline: "Full-stack industrial AI robotics — foundation models, purpose-built robots, and deployment infrastructure for dexterous manufacturing tasks. Rivian-spinout founded by RJ Scaringe; $2B valuation co-led by Accel and a16z.",
+    tagline: "Full-stack industrial AI robotics — foundation models, purpose-built robots, and deployment infrastructure for dexterous manufacturing tasks. Co-led by Accel and a16z. (Verify: founder attribution and Rivian connection unconfirmed.)",
     color: "#7c3aed",
     url: "https://mindrobotics.ai",
   },
