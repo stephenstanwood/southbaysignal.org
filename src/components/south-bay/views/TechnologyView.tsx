@@ -12,6 +12,7 @@ import {
 import upcomingJson from "../../../data/south-bay/upcoming-events.json";
 import techBriefingJson from "../../../data/south-bay/tech-briefing.json";
 import upcomingMeetingsJson from "../../../data/south-bay/upcoming-meetings.json";
+import apodJson from "../../../data/south-bay/apod.json";
 import {
   TECH_COMPANIES,
   TECH_PULSE,
@@ -1096,6 +1097,57 @@ const SPOTLIGHT_CITY_FILTERS = [
   { key: "Los Gatos", label: "Los Gatos" },
 ] as const;
 
+// ── NASA APOD Strip ───────────────────────────────────────────────────────────
+
+interface ApodItem {
+  date: string;
+  title: string;
+  explanation: string;
+  url: string;
+  hdurl: string;
+  copyright: string | null;
+}
+
+function ApodStrip() {
+  const items = (apodJson as { items: ApodItem[] }).items;
+  if (!items?.length) return null;
+
+  const tile = (item: ApodItem, keySuffix: string) => (
+    <a
+      key={item.date + keySuffix}
+      href={`https://apod.nasa.gov/apod/ap${item.date.replace(/-/g, "").slice(2)}.html`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={item.title}
+      style={{
+        flexShrink: 0, display: "block", position: "relative",
+        height: 200, width: 300, overflow: "hidden", background: "#0a0a1a",
+      }}
+    >
+      <img
+        src={item.url}
+        alt={item.title}
+        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        onError={(e) => { (e.currentTarget.closest("a") as HTMLElement).style.display = "none"; }}
+      />
+      <div className="ps-caption">
+        <span style={{ fontSize: 9, color: "#fff", fontFamily: "'Space Mono', monospace", lineHeight: 1.5 }}>
+          {item.title}{item.copyright ? ` · © ${item.copyright}` : " · NASA/APOD"}
+        </span>
+      </div>
+    </a>
+  );
+
+  return (
+    <div style={{ marginBottom: 0, marginLeft: -16, marginRight: -16, overflow: "hidden" }}>
+      <div className="apod-strip-track">
+        {items.map(p => tile(p, "-a"))}
+        {items.map(p => tile(p, "-b"))}
+      </div>
+    </div>
+  );
+}
+
 export default function TechnologyView() {
   const [companyCategoryFilter, setCompanyCategoryFilter] = useState<string | null>(null);
   const [spotlightCityFilter, setSpotlightCityFilter] = useState<string | null>(null);
@@ -1134,6 +1186,9 @@ export default function TechnologyView() {
 
   return (
     <div className="tech-view">
+      {/* ── APOD Strip ── */}
+      <ApodStrip />
+
       {/* ── Header ── */}
       <div className="tech-header">
         <div className="tech-header-eyebrow">South Bay</div>

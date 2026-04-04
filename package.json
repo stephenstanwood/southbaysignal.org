@@ -21,7 +21,8 @@
     "generate-air-quality": "node scripts/generate-air-quality.mjs",
     "generate-photos": "node scripts/generate-photos.mjs",
     "generate-restaurant-radar": "node scripts/generate-restaurant-radar.mjs",
-    "generate-tech-briefing": "node scripts/generate-tech-briefing.mjs"
+    "generate-tech-briefing": "node scripts/generate-tech-briefing.mjs",
+    "generate-apod": "node scripts/generate-apod.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",
