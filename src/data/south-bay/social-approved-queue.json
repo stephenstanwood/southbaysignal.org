@@ -270,7 +270,40 @@
     "targetUrl": "https://librarypoint.bibliocommons.com/events/69947dcc4a9fd98b7f7e8508",
     "approvedAt": "2026-04-05T12:17:56.325Z",
     "comment": null,
-    "published": false
+    "published": true,
+    "publishedAt": "2026-04-05T23:30:06.503Z",
+    "publishedTo": [
+      {
+        "platform": "x",
+        "ok": true,
+        "postId": "2040935015694098768",
+        "id": "2040935015694098768",
+        "text": "English Conversation Group at Mountain View Public Library this Wednesday at 2:30 PM. Free, relaxed, no pressure—just practice speaking with others. 🗣️ https://t.co/K1l0t83nhQ"
+      },
+      {
+        "platform": "bluesky",
+        "ok": true,
+        "postId": "at://did:plc:x4f3xqmbhekcjeze33exlxjo/app.bsky.feed.post/3mirvqyur7h2r",
+        "uri": "at://did:plc:x4f3xqmbhekcjeze33exlxjo/app.bsky.feed.post/3mirvqyur7h2r",
+        "cid": "bafyreihx3dsc472zgz3aw6b7mux4s2poqzq5xvdgtrfpkxra4xpxbgcu4m"
+      },
+      {
+        "platform": "threads",
+        "ok": false,
+        "error": "Threads container creation failed (400): {\"error\":{\"message\":\"API access blocked.\",\"type\":\"OAuthException\",\"code\":200,\"fbtrace_id\":\"A4UTXUZvybQZwGBVnfYTrQT\"}}"
+      },
+      {
+        "platform": "facebook",
+        "ok": false,
+        "error": "Facebook post failed (400): {\"error\":{\"message\":\"Any of the pages_read_engagement, pages_manage_metadata,\\n        pages_read_user_content, pages_manage_ads, pages_show_list or\\n        pages_messaging permission(s) must be granted before impersonating a\\n        user's page.\",\"type\":\"OAuthException\",\"code\":190,\"fbtrace_id\":\"Ao1U1YJtobiFayRxw-hOSjL\"}}"
+      }
+    ],
+    "rewrittenCopy": {
+      "x": "English Conversation Group at Mountain View Public Library this Wednesday at 2:30 PM. Free, relaxed, no pressure—just practice speaking with others. 🗣️ https://librarypoint.bibliocommons.com/events/69947dcc4a9fd98b7f7e8508",
+      "threads": "English Conversation Group happening this Wednesday at 2:30 PM at Mountain View Public Library. It's free and genuinely relaxed—no judgment, just people practicing together in a friendly space. Great if you're looking to build confidence speaking English. 🗣️ https://librarypoint.bibliocommons.com/events/69947dcc4a9fd98b7f7e8508",
+      "bluesky": "English Conversation Group at Mountain View Public Library this Wednesday, 2:30 PM. Free, laid-back atmosphere—just show up and practice speaking with others. No pressure. 🗣️ https://librarypoint.bibliocommons.com/events/69947dcc4a9fd98b7f7e8508",
+      "facebook": "English Conversation Group coming up this Wednesday at 2:30 PM at Mountain View Public Library. It's free and genuinely welcoming—perfect if you want to practice speaking in a relaxed, no-pressure setting with others. Great community vibe. 🗣️ https://librarypoint.bibliocommons.com/events/69947dcc4a9fd98b7f7e8508"
+    }
   },
   {
     "postType": "single",
