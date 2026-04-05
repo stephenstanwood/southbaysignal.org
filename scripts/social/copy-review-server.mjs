@@ -538,7 +538,7 @@ function updateQueueBadge(size) {
   queueSize = size;
   const el = document.getElementById('queue-badge');
   el.textContent = size + ' in approved queue';
-  el.className = 'queue-badge' + (size < 10 ? ' low' : size < 25 ? ' mid' : '');
+  el.className = 'queue-badge' + (size < 40 ? ' low' : size < 60 ? ' mid' : '');
 }
 
 async function init() {
