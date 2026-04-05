@@ -2612,3 +2612,40 @@ October and November were dead zones for SV History. Any South Bay resident open
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — all 12 months now have at least one TECH_MILESTONES entry.** A South Bay resident opening the Tech tab any day of the year will see a "This Week in SV History" card tied to their city. October (Sunnyvale/Atari) and November (Santa Clara/Intel) were the last two dead zones and are now filled. The full SV History narrative spans January (HP) through December (Cisco/Adobe), covering the founding of Silicon Valley's most iconic companies and inventions.
+
+---
+
+## 2026-04-05 — Cycle 55: SCC Food Openings Data Quality + AI Blurbs
+
+### Context
+Sunday April 5, 2026 (evening cycle). Cycle 54's "next ideas" list called out restaurant openings from SCC food permits as needing tuning. On inspection the current pipeline had specific data quality problems: permit artifact suffixes appearing in business names (e.g., "Tasty Noodle - 3 Comp Sink Install"), pure legal entity names with no real business descriptor (e.g., "Sp Social LLC", "Umesjoakland Inc."), and non-restaurant types like golf course pro shops getting through.
+
+### What Was Built
+
+**`generate-scc-food-openings.mjs` data quality improvements:**
+- `cleanName()` now strips trailing permit artifact suffixes — patterns like `- 3 Comp Sink Install`, `- TI`, `- Remodel`, `- Hood Install`, and 15+ other common SCC permit descriptions
+- `shouldSkip()` now filters pure legal entity names: if the cleaned name matches `LLC / Inc. / Corp.` with 2 or fewer words before the entity suffix, the record is skipped
+- Added `\bPRO SHOP\b` to `SKIP_PATTERNS` to exclude golf/retail pro shops
+- Integrated `.env.local` loading so `ANTHROPIC_API_KEY` is available to scripts
+
+**Claude Haiku blurb generation:**
+- `generateBlurbs()` calls `claude-haiku-4-5-20251001` with the top 8 recently opened restaurants
+- Generates a single warm, neighborhood-tip-style sentence per restaurant (e.g., "Campbell's got amazing handmade dumplings now—seriously worth the trip.")
+- Handles markdown code-fence stripping in API response parsing
+
+**`FoodView.tsx` blurb rendering:**
+- Added `blurb?: string | null` to `SccFoodItem` type
+- `FoodRow` now renders blurbs in italic below the restaurant name (only for opened items that have one)
+
+**Regenerated `scc-food-openings.json`:**
+- 25 recently opened (up from 12 — cleaner filters let more valid restaurants through)
+- 50 coming soon
+- Top 8 opened now have Haiku-generated blurbs
+
+### Why This Was the Strongest Move
+The Food tab is the most "resident-facing" section — people actually use it to find places to eat. Showing "Tasty Noodle - 3 Comp Sink Install" or "Sp Social LLC" undercuts trust in the whole signal. The blurbs add genuine discovery value: a one-liner like "Japanese curry fusion in a cool garage setting—flavors blow your mind" tells you something about Jappacurry that an address alone doesn't. This is the first tab on the site where AI-generated content adds real utility rather than just filling space.
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data.
+2. **RECENTLY_FUNDED updates** — Last entries dated March 27, 2026. Need a reliable source for verifiable South Bay startup funding rounds (Crunchbase, TechCrunch, Business Wire).
+3. **Blurbs for coming-soon restaurants** — The same Haiku integration could generate anticipation-building blurbs for coming-soon items ("Looks like Milpitas is getting Gao's BBQ & Crab — the Fremont location has a devoted following."). Currently only opened items get blurbs.
