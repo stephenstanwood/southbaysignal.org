@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-05T02:08:14.980Z",
+      "generatedAt": "2026-04-05T11:13:08.092Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Mar 28 – Apr 4",
+      "dateRange": "Mar 29 – Apr 5",
       "stats": {
-        "total": 429,
+        "total": 421,
         "notable": 12,
         "newUnits": 7,
-        "totalValuation": 5448911
+        "totalValuation": 5436283
       },
       "permits": [
         {
@@ -137,12 +137,12 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-05T02:08:17.374Z",
+      "generatedAt": "2026-04-05T11:13:10.531Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Mar 28 – Apr 4",
+      "dateRange": "Mar 29 – Apr 5",
       "stats": {
         "total": 88,
         "notable": 6,
@@ -150,18 +150,6 @@
         "totalValuation": 0
       },
       "permits": [
-        {
-          "id": "26BLD-00861",
-          "address": "3132 Alexis Dr",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "Res: Temporary power (underground)",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-02",
-          "subtype": "Permit Issued"
-        },
         {
           "id": "26BLD-00830",
           "address": "151 Melville Av",
@@ -172,6 +160,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-03-30",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00861",
+          "address": "3132 Alexis Dr",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "Res: Temporary power (underground)",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-02",
           "subtype": "Permit Issued"
         },
         {

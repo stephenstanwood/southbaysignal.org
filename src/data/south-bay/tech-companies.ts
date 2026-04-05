@@ -1541,6 +1541,18 @@ export const TECH_MILESTONES: TechMilestone[] = [
     url: "https://en.wikipedia.org/wiki/Yahoo",
     defunct: true,
   },
+  {
+    id: "moores-law",
+    company: "Moore's Law",
+    city: "Mountain View",
+    foundedYear: 1965,
+    month: 4,
+    day: 19,
+    tagline: "Gordon Moore's 1965 prediction that transistor counts would double every two years — the principle that powered six decades of Silicon Valley progress.",
+    anniversaryNote: "On April 19, 1965, Gordon Moore published 'Cramming more components onto integrated circuits' in Electronics magazine while working at Fairchild Semiconductor in Mountain View. His prediction — that chip density would double roughly every two years — became the metronome of the entire tech industry for 60+ years. Moore later co-founded Intel in Santa Clara. 2026 marks the 61st anniversary of the paper that defined Silicon Valley's ambition.",
+    url: "https://en.wikipedia.org/wiki/Moore%27s_law",
+    defunct: false,
+  },
 ];
 
 // ---------------------------------------------------------------------------
