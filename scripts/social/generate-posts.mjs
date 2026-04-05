@@ -18,6 +18,7 @@ import { loadAllCandidates, upcomingCandidates } from "./lib/data-loader.mjs";
 import { scoreAndRank } from "./lib/scoring.mjs";
 import { diverseSelect } from "./lib/diversity.mjs";
 import { recentHistory, flattenHistory } from "./lib/dedup.mjs";
+import { enrichUrls } from "./lib/url-enrich.mjs";
 import { filterByUrl } from "./lib/url-check.mjs";
 import { factCheckAll } from "./lib/fact-check.mjs";
 import { generateSingleItemCopy } from "./lib/copy-gen.mjs";
@@ -183,7 +184,11 @@ async function main() {
   const topCandidates = diverseSelect(scored, maxPosts * 3);
   logStep("📈", `Top ${topCandidates.length} diverse candidates by score`);
 
-  // 6. URL validation — filter out items without good direct links
+  // 6. URL enrichment — find better URLs for generic/missing links
+  logStep("🔗", "Enriching URLs...");
+  await enrichUrls(topCandidates);
+
+  // 7. URL validation — filter out items without good direct links
   logStep("🔗", "Validating URLs...");
   const urlValid = await filterByUrl(topCandidates);
 

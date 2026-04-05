@@ -90,13 +90,19 @@ ITEM:
 - URL (MUST include this exact URL): ${item.url}
 
 Write four variants:
-1. X (max 270 chars including URL) — punchy, clean
-2. Threads (max 490 chars including URL) — slightly warmer, can breathe more
-3. Bluesky (max 290 chars including URL) — similar to X, can be slightly looser
-4. Facebook (max 500 chars including URL) — conversational, can include a bit more context, similar warmth to Threads
+1. X (max 270 chars including URL) — punchy, clean, no hashtags
+2. Threads (max 470 chars including URL + hashtags) — slightly warmer, can breathe more. End with 2-3 relevant hashtags (e.g. #SanJose #LiveMusic #ThingsToDo)
+3. Bluesky (max 270 chars including URL + hashtags) — similar to X, can be slightly looser. End with 2-3 relevant hashtags (e.g. #SouthBay #SanJose #LocalNews). These hashtags are important for Bluesky discovery and Surf.social aggregation.
+4. Facebook (max 500 chars including URL) — conversational, can include a bit more context, similar warmth to Threads, no hashtags
 
 Each variant must include the exact URL provided above.
 Use time-appropriate framing ("tonight", "this afternoon", "tomorrow", "this weekend" etc. based on current time).
+
+HASHTAG RULES (for Bluesky and Threads only):
+- Always include a city hashtag: #SanJose, #Campbell, #LosGatos, #PaloAlto, #Cupertino, #Sunnyvale, #MountainView, #SantaClara, #Milpitas, #Saratoga, #LosAltos
+- Add 1-2 topic hashtags based on category: #LiveMusic, #LocalNews, #ThingsToDo, #FreeEvents, #SouthBay, #SiliconValley, #BayArea, #LocalArts, #CityHall, #YouthSports
+- Max 3 hashtags total. Place them at the very end, space-separated.
+- Hashtags count toward the character limit.
 
 Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook" — each a string. No other text.`;
 

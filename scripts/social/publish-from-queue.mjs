@@ -13,9 +13,12 @@ import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
 import { CONFIG } from "./lib/constants.mjs";
 
+import { randomBytes } from "node:crypto";
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const QUEUE_FILE = join(__dirname, "..", "..", "src", "data", "south-bay", "social-approved-queue.json");
 const HISTORY_FILE = join(__dirname, "..", "..", "src", "data", "south-bay", "social-post-history.json");
+const SHORT_URLS_FILE = join(__dirname, "..", "..", "src", "data", "south-bay", "short-urls.json");
 
 // Load env
 if (!process.env.ANTHROPIC_API_KEY) {
@@ -244,6 +247,23 @@ async function main() {
       }
     }
 
+    // Shorten long URLs for cleaner posts
+    const targetUrl = item.url || post.targetUrl;
+    if (targetUrl && targetUrl.length > 80) {
+      const shortSlug = randomBytes(4).toString("hex");
+      const shortUrl = `https://southbaysignal.org/go/${shortSlug}`;
+      // Save to short-urls.json
+      let shortUrls = {};
+      try { shortUrls = JSON.parse(readFileSync(SHORT_URLS_FILE, "utf8")); } catch {}
+      shortUrls[shortSlug] = targetUrl;
+      writeFileSync(SHORT_URLS_FILE, JSON.stringify(shortUrls, null, 2) + "\n");
+      // Replace URL in all platform copies
+      for (const [platform, text] of Object.entries(rewrittenCopy)) {
+        rewrittenCopy[platform] = text.replace(targetUrl, shortUrl);
+      }
+      console.log(`      🔗 URL shortened: ${shortUrl} → ${targetUrl.slice(0, 60)}...`);
+    }
+
     if (dryRun) {
       console.log(`      🏜️  DRY RUN — would publish:`);
       for (const [platform, text] of Object.entries(rewrittenCopy)) {
@@ -255,7 +275,7 @@ async function main() {
 
     // Publish to each platform
     const platforms = ["x", "bluesky", "threads", "facebook"];
-    const published = [];
+    const publishResults = [];
 
     for (const platform of platforms) {
       const copy = rewrittenCopy[platform];
@@ -265,18 +285,24 @@ async function main() {
         const client = await import(`./lib/platforms/${platform}.mjs`);
         const result = await client.publish(copy);
         console.log(`      ✅ ${platform}: ${JSON.stringify(result)}`);
-        published.push(platform);
+        publishResults.push({
+          platform,
+          ok: true,
+          postId: result.id || result.uri || null,
+          ...result,
+        });
       } catch (err) {
         console.log(`      ❌ ${platform}: ${err.message}`);
+        publishResults.push({ platform, ok: false, error: err.message });
       }
 
       await new Promise((r) => setTimeout(r, 1000));
     }
 
-    // Mark as published in queue
+    // Mark as published in queue with structured results
     post.published = true;
     post.publishedAt = new Date().toISOString();
-    post.publishedTo = published;
+    post.publishedTo = publishResults;
     post.rewrittenCopy = rewrittenCopy;
     console.log();
   }
