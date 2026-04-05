@@ -197,7 +197,8 @@ function isActiveToday(e: SBEvent): boolean {
   if ((e as any).startDate && TODAY_ISO < (e as any).startDate) return false;
   if (e.months && !e.months.includes(MONTH)) return false;
   if (!e.days) return e.recurrence !== "seasonal";
-  return e.days.includes(DAY_NAME as DayOfWeek);
+  if (!e.days.includes(DAY_NAME as DayOfWeek)) return false;
+  return isNotEnded(e.time);
 }
 
 function isActiveTomorrow(e: SBEvent): boolean {
@@ -2544,7 +2545,7 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
   const cityTodayUpcoming = homeCity
     ? todayUpcoming
         .filter((e) => e.city === homeCity)
-        .filter((e) => hasNotStarted(e.time))
+        .filter((e) => isNotEnded(e.time))
         .sort((a, b) => startMinutes(a.time) - startMinutes(b.time))
     : [];
 
@@ -2557,7 +2558,7 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
 
   const southBayTodayUpcoming = todayUpcoming
     .filter((e) => (homeCity ? e.city !== homeCity : true))
-    .filter((e) => hasNotStarted(e.time))
+    .filter((e) => isNotEnded(e.time))
     .sort((a, b) => startMinutes(a.time) - startMinutes(b.time));
 
   const southBayCount = southBayTodayStatic.length + southBayTodayUpcoming.length;
