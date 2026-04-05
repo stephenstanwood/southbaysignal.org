@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-05T17:09:36.279Z",
+      "generatedAt": "2026-04-05T19:10:01.975Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,7 +137,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-05T17:09:38.592Z",
+      "generatedAt": "2026-04-05T19:10:04.367Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -151,6 +151,18 @@
       },
       "permits": [
         {
+          "id": "26BLD-00830",
+          "address": "151 Melville Av",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "RES MEP: We will replace your damaged sewer line",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-03-30",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-00861",
           "address": "3132 Alexis Dr",
           "category": "commercial",
@@ -163,15 +175,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00830",
-          "address": "151 Melville Av",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "RES MEP: We will replace your damaged sewer line",
+          "id": "26BLD-00872",
+          "address": "841 Ames Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-03-30",
+          "issueDate": "2026-04-02",
           "subtype": "Permit Issued"
         },
         {
@@ -189,18 +201,6 @@
         {
           "id": "26BLD-00863",
           "address": "1221 Hopkins Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-02",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00872",
-          "address": "841 Ames Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
