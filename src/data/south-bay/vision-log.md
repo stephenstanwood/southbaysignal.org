@@ -2576,3 +2576,39 @@ May was the thinnest month for SV History — only AMD. A resident opening the T
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — May is now fully covered in SV History.** A Mountain View resident opening SBS any day in May will see a story about their city. April and May together now offer continuous coverage from Apr 1 (Apple) through May 31 (Java), with no dead zones.
+
+---
+
+## 2026-04-05 — Cycle 54: October + November SV History Milestones + Full Data Refresh
+
+### Context
+Sunday April 5, 2026 (afternoon cycle). Events data had dropped to 4 events (pipeline needed refresh). October and November had zero TECH_MILESTONES entries — two full months with no "This Week in SV History" coverage.
+
+### What Was Built
+
+**Two new TECH_MILESTONES filling October and November:**
+- **Intel 4004** (November 15, 1971, Santa Clara): The world's first commercially available microprocessor, designed by Ted Hoff, Federico Faggin, and Stan Mazor at Intel's Santa Clara facility. 2,300 transistors on a fingernail-sized chip. Every CPU, GPU, and smartphone in existence traces its lineage to this moment. Fills the entire November window.
+- **Atari 2600** (October 14, 1977, Sunnyvale): The first mass-market programmable home video game console, launched by Atari from Sunnyvale HQ. At $199 it brought gaming into millions of living rooms and created the home video game industry. Fills the entire October window.
+
+Both months now have coverage. All 12 months are covered (some months lightly, but no more zeros).
+
+**Full data pipeline refresh:**
+- upcoming-events.json: 532 events (106 ongoing) from 24 sources
+- around-town.json: 8 items refreshed (Apr 1–Apr 5 window)
+- digests.json: 9 cities refreshed (Santa Clara Apr 2 freshest)
+- upcoming-meetings.json: SJ/Sunnyvale/Cupertino Apr 7 confirmed
+- weekend-picks.json: Bay FC, Beetlejuice, Young Artists exhibit
+- city-briefings.json: 11 cities for Apr 5–12 week
+- air-quality.json: avg AQI 55 Moderate across 11 cities
+- permit-pulse.json: Palo Alto refreshed
+
+### Why This Was the Strongest Move
+October and November were dead zones for SV History. Any South Bay resident opening the Tech tab in October would see nothing after Google (Sep 4). Now they'll see the Atari 2600 — a Sunnyvale story that every gamer, parent, and nostalgia-driven resident knows. In November, Intel 4004 is arguably the single most foundational tech event in Silicon Valley history: the moment the modern chip was born, in Santa Clara. Both stories are deeply local and deeply important. No other local news product surfaces these.
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data.
+2. **Thin TECH_MILESTONES months** — June, July, August have light coverage (Intel July 18 for July; Oracle June 16; Netflix Aug 29). January has only HP. Consider adding Hewlett-Packard garage (founded Jan 1, 1939) as a standalone milestone or Atari Pong arcade (Nov 29, 1972, Sunnyvale) for November depth.
+3. **Restaurant openings from SCC food permits** — generate-scc-food-openings.mjs exists but may need tuning for higher-quality signals.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — all 12 months now have at least one TECH_MILESTONES entry.** A South Bay resident opening the Tech tab any day of the year will see a "This Week in SV History" card tied to their city. October (Sunnyvale/Atari) and November (Santa Clara/Intel) were the last two dead zones and are now filled. The full SV History narrative spans January (HP) through December (Cisco/Adobe), covering the founding of Silicon Valley's most iconic companies and inventions.
