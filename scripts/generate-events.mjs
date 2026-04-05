@@ -464,7 +464,8 @@ function cleanTitle(title) {
     )
     .trim();
   // Downcase ALL-CAPS words that aren't acronyms (5+ letters, e.g. SPECIAL → Special)
-  t = t.replace(/\b[A-Z]{5,}\b/g, (w) => w[0] + w.slice(1).toLowerCase());
+  const KEEP_UPPER = new Set(["ICYMI", "LGBTQ", "LGBTQIA", "BIPOC", "STEAM", "LEGO"]);
+  t = t.replace(/\b[A-Z]{5,}\b/g, (w) => KEEP_UPPER.has(w) ? w : w[0] + w.slice(1).toLowerCase());
   // Fix pipes without surrounding spaces: "Foo |Bar" → "Foo | Bar"
   t = t.replace(/\s*\|\s*/g, " | ");
   // Strip non-Latin (CJK, etc.) prefix before English content:
