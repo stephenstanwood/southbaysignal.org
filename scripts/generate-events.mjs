@@ -176,7 +176,7 @@ const INTERNAL_EVENT_PATTERNS = [
   /\bcommencement\b/i,
   /\bconvocation\b/i,
   /\bfaculty\s+(meeting|senate|assembly)\b/i,
-  /\bstaff\s+(meeting|development|recognition)\b/i,
+  /\bstaff\s+(meeting|development|recognition|affairs)\b/i,
   /\bacademic\s+calendar\b/i,
   /\bconferral\s+of\s+degrees?\b/i,
   /\binstruction\s+begins?\b/i,
