@@ -34,10 +34,8 @@ if (!FLICKR_KEY) { console.error("❌ FLICKR_API_KEY not set"); process.exit(1);
 const UA = "SouthBaySignal/1.0 (southbaysignal.org; educational/noncommercial)";
 
 // Photos permanently removed from the curated set — never re-add on regeneration
-const BLOCKED_IDS = new Set([
-  "wm-60300988",  // HP Pavilion rooftop aerial (Bill Abbott)
-  "wm-98942442",  // HP Pavilion dv6 laptop (TAKA@P.P.R.S) — not even local
-]);
+// Canonical list lives in blocked-photos.mjs (shared with build-curated-photos.mjs)
+import { BLOCKED_IDS } from "./blocked-photos.mjs";
 
 // ── Flickr ────────────────────────────────────────────────────────────────────
 const SB_BBOX = "-122.20,37.19,-121.77,37.47";

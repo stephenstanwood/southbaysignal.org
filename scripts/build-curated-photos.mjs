@@ -10,6 +10,7 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import { BLOCKED_IDS } from "./blocked-photos.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -26,7 +27,7 @@ const votes     = JSON.parse(readFileSync(votesPath, "utf8"));
 const approved  = new Set(votes.approved ?? []);
 
 const curated = allPhotos
-  .filter(p => approved.has(p.id))
+  .filter(p => approved.has(p.id) && !BLOCKED_IDS.has(p.id))
   .map(({ id, thumb, full, title, photographer, photoPage, license, source }) => ({
     id, thumb, full,
     title:        (title || "").slice(0, 100),
