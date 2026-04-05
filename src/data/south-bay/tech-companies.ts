@@ -1576,6 +1576,29 @@ export const TECH_MILESTONES: TechMilestone[] = [
     url: "https://en.wikipedia.org/wiki/Moore%27s_law",
     defunct: false,
   },
+  {
+    id: "linkedin",
+    company: "LinkedIn",
+    city: "Mountain View",
+    foundedYear: 2003,
+    month: 5,
+    day: 5,
+    tagline: "The world's professional network — launched from Mountain View and now the default platform for 1 billion careers worldwide.",
+    anniversaryNote: "LinkedIn launched publicly on May 5, 2003, from its original offices in Mountain View. Founded by Reid Hoffman and co-founders just months after leaving PayPal, LinkedIn pioneered the idea of putting your resume online and connecting with colleagues — before social networking was a category. In 2016, Microsoft acquired it for $26.2 billion, the largest tech acquisition of that year. LinkedIn's DNA is entirely South Bay: founded, built, and scaled from the Peninsula.",
+    url: "https://linkedin.com",
+  },
+  {
+    id: "java",
+    company: "Java (Sun Microsystems)",
+    city: "Mountain View",
+    foundedYear: 1995,
+    month: 5,
+    day: 23,
+    tagline: "The programming language that runs on billions of devices — born at Sun Microsystems in Mountain View.",
+    anniversaryNote: "On May 23, 1995, Sun Microsystems announced Java at SunWorld '95. James Gosling and his team at Sun's Mountain View headquarters spent years building a language that could run anywhere — 'Write once, run anywhere.' Java went on to power Android apps, enterprise servers, and billions of embedded devices. It's one of the most consequential pieces of software ever written, and it came from Mountain View. 2026 marks the 31st anniversary of the announcement.",
+    url: "https://en.wikipedia.org/wiki/Java_(programming_language)",
+    defunct: false,
+  },
 ];
 
 // ---------------------------------------------------------------------------
