@@ -293,8 +293,8 @@ export const TRANSIT_PULSE = [
     note: "SF to Gilroy along the Peninsula",
   },
   {
-    value: "$6.1B",
+    value: "$6.1B+",
     label: "BART Silicon Valley Cost",
-    note: "Phase II: Berryessa → Diridon",
+    note: "Phase II: Berryessa → Diridon — est. may be outdated; verify at vta.org",
   },
 ];
