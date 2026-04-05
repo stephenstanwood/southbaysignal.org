@@ -16,7 +16,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const QUEUE_FILE = join(__dirname, "..", "..", "src", "data", "south-bay", "social-approved-queue.json");
 const POST_DIR = "/tmp/sbs-social";
 const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1488592203251978271/Qf_2sPiCbbuQLnmn6AcSXmD7OfTQbbkKo2J-4K2FiASnQ-F3G0W71bfGwtJqfCKYrklz";
-const QUEUE_THRESHOLD = 25;
+const QUEUE_THRESHOLD = 40;
 const GENERATE_BATCH = 25;
 
 function loadQueue() {
