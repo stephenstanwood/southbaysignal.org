@@ -159,6 +159,10 @@ function stripHtml(html) {
 const INTERNAL_EVENT_PATTERNS = [
   /\bregistration\b/i,
   /\badd\s*[&\/]\s*drop\b/i,
+  /\blast\s+day\s+to\s+add\s+a\s+class\b/i,
+  /\bopens?\s+for\s+\w+\s+enrollment\b/i,
+  /\bcourse\s+enrollment\b/i,
+  /\baxess\b/i,
   /\broom\s+closed\b/i,
   /\bclosed\b.*\b(day|holiday|weekend)\b/i,
   /^closed\s*[-–]/i, // campus closed announcements like "Closed - Good Friday"

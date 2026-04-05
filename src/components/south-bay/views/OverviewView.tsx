@@ -72,13 +72,11 @@ const WEEKDAY = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Sa
 const MONTH_NAME = NOW.toLocaleDateString("en-US", { month: "long" });
 const NEXT_MONTH_NAME = new Date(NOW.getFullYear(), NOW.getMonth() + 1, 1).toLocaleDateString("en-US", { month: "long" });
 
-// Pre-compute the next 6 dates (tomorrow through 6 days from now)
+// Pre-compute the next 6 dates (tomorrow through 6 days from now) in Pacific time
 const NEXT_DAYS: Array<{ iso: string; label: string }> = Array.from({ length: 6 }, (_, i) => {
-  const d = new Date(NOW);
-  d.setDate(d.getDate() + i + 1);
-  d.setHours(0, 0, 0, 0);
-  const iso = d.toISOString().split("T")[0];
-  const label = d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  const d = new Date(NOW_PT.getFullYear(), NOW_PT.getMonth(), NOW_PT.getDate() + i + 1);
+  const iso = d.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  const label = d.toLocaleDateString("en-US", { timeZone: "America/Los_Angeles", weekday: "short", month: "short", day: "numeric" });
   return { iso, label };
 });
 
@@ -199,8 +197,7 @@ function isActiveToday(e: SBEvent): boolean {
   if ((e as any).startDate && TODAY_ISO < (e as any).startDate) return false;
   if (e.months && !e.months.includes(MONTH)) return false;
   if (!e.days) return e.recurrence !== "seasonal";
-  if (!e.days.includes(DAY_NAME as DayOfWeek)) return false;
-  return hasNotStarted(e.time);
+  return e.days.includes(DAY_NAME as DayOfWeek);
 }
 
 function isActiveTomorrow(e: SBEvent): boolean {

@@ -539,9 +539,9 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
   const currentMonth = now.getMonth() + 1;
   const primary = homeCity ?? "san-jose";
 
-  const todayIso = now.toISOString().split("T")[0];
-  const tomorrowIso = new Date(now.getTime() + 86400000).toISOString().split("T")[0];
-  const weekEndIso = new Date(now.getTime() + 7 * 86400000).toISOString().split("T")[0];
+  const todayIso = now.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  const tomorrowIso = new Date(now.getTime() + 86400000).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  const weekEndIso = new Date(now.getTime() + 7 * 86400000).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
 
   const showSpringBreakBanner = todayIso >= SB_BANNER_START && todayIso <= SB_BREAK_END;
   const daysUntilBreak = Math.ceil((new Date(SB_BREAK_START).getTime() - now.getTime()) / 86400000);
