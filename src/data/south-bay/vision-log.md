@@ -2508,3 +2508,38 @@ With 531 events in the pipeline (47 today alone for Easter Saturday) and fresh d
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — breadth and freshness are at an all-time high.** 531 events, 11 city digests, real-time restaurant radar with a $3.1M new opening, and a tech funding list that's both accurate (26 rounds) and timely (Alcatraz Apr 2 is the freshest). A San Jose resident opening SBS on Easter Saturday sees today's events, this week's meetings, fresh council news, and a restaurant opening they didn't know about.
+
+---
+
+## 2026-04-05 — Cycle 51: Moore's Law April Milestone + Full Data Refresh
+
+### Context
+Sunday April 5, 2026. NVIDIA's 33rd birthday today (already covered). End of Easter weekend, Spring Break week 1 continues through April 17. April 7 council meetings (San Jose, Sunnyvale, Cupertino) are 2 days away.
+
+### What Was Built
+
+**New SV History milestone — Moore's Law 61st anniversary:**
+- Added `moores-law` to TECH_MILESTONES: April 19, 1965 — Gordon Moore published "Cramming more components onto integrated circuits" in Electronics magazine while at Fairchild Semiconductor in Mountain View.
+- 2026 is the **61st anniversary** of the paper that became the metronome of Silicon Valley's entire 60-year progress arc.
+- Fills the **April 13–26 window** — previously empty after Yahoo IPO (Apr 12). Now April is fully covered: Apple (Apr 1), Intuit (Apr 1), Netscape (Apr 4), NVIDIA (Apr 5), Yahoo IPO (Apr 12), Moore's Law (Apr 19).
+- Tagged to Mountain View (Fairchild Semiconductor origin). Moore later co-founded Intel in Santa Clara — both cities represented.
+
+**Full data pipeline refresh:**
+- upcoming-events.json: 530 events (107 ongoing) from 24 sources; 14 events today
+- around-town.json: 8 items (Cupertino economic incentives, Palo Alto San Antonio Road plan, Santa Clara housing input)
+- digests.json: 9 cities refreshed (Santa Clara Apr 2 freshest)
+- upcoming-meetings.json: San Jose, Sunnyvale, Cupertino confirmed for April 7 (5 agenda items each)
+- weekend-picks.json: Beetlejuice, Bay FC vs. Washington Spirit, Young Artists exhibit
+- city-briefings.json: 11 cities for Apr 5–12 week
+- air-quality, health-scores, outages, permit-pulse, real-estate: all refreshed
+
+### Why This Was the Strongest Move
+Any South Bay resident opening the Tech tab April 13–26 previously saw no "This Week in SV History" card after Yahoo. Now they'll see Moore's Law — a story that every tech worker, educator, and curious resident in the South Bay knows by name but may not know originated right here in Mountain View. Fairchild Semiconductor in Mountain View → Intel in Santa Clara: the entire lineage of Silicon Valley's chip industry traces back to this paper. The full April is now blanketed with SV history that no other local product surfaces.
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data.
+2. **May TECH_MILESTONES** — AMD (May 1, 1969, Santa Clara) shows up but check what other May milestones are missing.
+3. **High school sports scores** — MaxPreps ToS prohibits scraping; no official public API. Blocked.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — the SV History section now covers all of April.** A Mountain View resident opening SBS any day in April will see a story tied directly to their city's tech legacy. The full pipeline is refreshed, April 7 meetings are surfaced in upcoming-meetings, and the Easter weekend data gap is closed.
