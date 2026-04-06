@@ -1635,6 +1635,30 @@ export const TECH_MILESTONES: TechMilestone[] = [
     url: "https://en.wikipedia.org/wiki/Atari",
     defunct: true,
   },
+  {
+    id: "palm-computing",
+    company: "Palm Computing",
+    city: "Santa Clara",
+    foundedYear: 1992,
+    month: 1,
+    day: 14,
+    tagline: "Creator of the Palm Pilot, the device that made the personal digital assistant mainstream — founded in Santa Clara in 1992.",
+    anniversaryNote: "Palm Computing was founded in January 1992 in Santa Clara by Jeff Hawkins and Donna Dubinsky. Their Palm Pilot, launched in 1996, was the first PDA most people actually used — a million sold in the first 18 months. Before the iPhone, before Android, before smartwatches: the Palm Pilot was Silicon Valley's first great attempt to put a computer in everyone's pocket.",
+    url: "https://en.wikipedia.org/wiki/Palm,_Inc.",
+    defunct: true,
+  },
+  {
+    id: "netscape-ipo",
+    company: "Netscape",
+    city: "Mountain View",
+    foundedYear: 1994,
+    month: 8,
+    day: 9,
+    tagline: "The web browser that opened the internet to the world — and the IPO that ignited the dot-com era, from Mountain View.",
+    anniversaryNote: "On August 9, 1995, Netscape went public — and changed everything. The stock was priced at $28, refused to open for hours because demand was too great, and finally traded at $71, closing at $58. It was 16 months old and had never turned a profit. Netscape's IPO told the world that internet companies could be worth billions, igniting the dot-com boom. The browser, the company, and the moment were all born in Mountain View.",
+    url: "https://en.wikipedia.org/wiki/Netscape",
+    defunct: true,
+  },
 ];
 
 // ---------------------------------------------------------------------------

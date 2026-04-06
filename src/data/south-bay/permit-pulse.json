@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-05T23:10:04.833Z",
+      "generatedAt": "2026-04-06T11:10:59.105Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Mar 29 – Apr 5",
+      "dateRange": "Mar 30 – Apr 6",
       "stats": {
-        "total": 421,
-        "notable": 12,
-        "newUnits": 7,
-        "totalValuation": 5436283
+        "total": 412,
+        "notable": 14,
+        "newUnits": 6,
+        "totalValuation": 7435032
       },
       "permits": [
         {
@@ -27,39 +27,27 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-122298-RS",
-          "address": "3403 Viewmont Ct #2",
+          "id": "2025-097409-RS",
+          "address": "390 Atlanta Av",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Code Case Legalize Unpermitted Garage Conversion to adu",
-          "valuation": 101454,
+          "description": "Demo Detached Garage & Build New Detached adu W/ Garage",
+          "valuation": 185508,
           "units": 1,
-          "issueDate": "2026-03-30",
+          "issueDate": "2026-04-03",
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-128786-RS",
-          "address": "402 S Henry Av #2",
+          "id": "2025-092358-RS",
+          "address": "5189 Doyle Rd #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "New Attached adu",
-          "valuation": 89618,
+          "description": "Detached adu",
+          "valuation": 152181,
           "units": 1,
-          "issueDate": "2026-03-30",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-137519-RS",
-          "address": "107 Felice Ct #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "(Bepm) New Detached adu",
-          "valuation": 84376,
-          "units": 1,
-          "issueDate": "2026-03-30",
+          "issueDate": "2026-04-03",
           "subtype": "2nd Unit Added"
         },
         {
@@ -99,6 +87,18 @@
           "subtype": "2nd Unit Added"
         },
         {
+          "id": "2026-109214-CI",
+          "address": "1290 Ridder Park Dr",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "(Be 100%) Elevator Upgrades",
+          "valuation": 1100000,
+          "units": 0,
+          "issueDate": "2026-04-03",
+          "subtype": "Commercial/Industrial"
+        },
+        {
           "id": "2026-110761-CI",
           "address": "1300 W San Carlos St",
           "category": "commercial-large",
@@ -111,6 +111,18 @@
           "subtype": "Commercial/Industrial"
         },
         {
+          "id": "2026-111324-CI",
+          "address": "475 Eggo Wy",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "ReRoof",
+          "description": "Warehouse/Storage",
+          "valuation": 351540,
+          "units": 0,
+          "issueDate": "2026-04-03",
+          "subtype": "Warehouse/Storage"
+        },
+        {
           "id": "2026-110777-CI",
           "address": "2125 Zanker Rd",
           "category": "commercial-large",
@@ -121,30 +133,18 @@
           "units": 0,
           "issueDate": "2026-04-02",
           "subtype": "Office"
-        },
-        {
-          "id": "2026-111036-CI",
-          "address": "1001 Ridder Park Dr",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Exterior Service Yard",
-          "valuation": 200000,
-          "units": 0,
-          "issueDate": "2026-04-02",
-          "subtype": "R & D Lab"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-05T23:10:07.232Z",
+      "generatedAt": "2026-04-06T11:11:01.042Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Mar 29 – Apr 5",
+      "dateRange": "Mar 30 – Apr 6",
       "stats": {
-        "total": 88,
+        "total": 87,
         "notable": 6,
         "newUnits": 0,
         "totalValuation": 0
@@ -187,18 +187,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00872",
-          "address": "841 Ames Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-02",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00825",
           "address": "3946 Louis Rd",
           "category": "residential-large",
@@ -208,6 +196,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-03-30",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00872",
+          "address": "841 Ames Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-02",
           "subtype": "Permit Issued"
         },
         {
