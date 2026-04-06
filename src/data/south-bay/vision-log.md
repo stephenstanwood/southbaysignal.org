@@ -2649,3 +2649,40 @@ The Food tab is the most "resident-facing" section — people actually use it to
 1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data.
 2. **RECENTLY_FUNDED updates** — Last entries dated March 27, 2026. Need a reliable source for verifiable South Bay startup funding rounds (Crunchbase, TechCrunch, Business Wire).
 3. **Blurbs for coming-soon restaurants** — The same Haiku integration could generate anticipation-building blurbs for coming-soon items ("Looks like Milpitas is getting Gao's BBQ & Crab — the Fremont location has a devoted following."). Currently only opened items get blurbs.
+
+---
+
+## 2026-04-05 — Cycle 56: Coming-Soon Blurbs + Atari June Milestone + Data Refresh
+
+### Context
+Sunday April 5, 2026 (late cycle). Cycle 55 added AI blurbs for opened restaurants but left the 12 coming-soon items blurb-free. June had only Oracle (Jun 16) — light for a full month. April 7 council meetings (Cupertino, Milpitas, Palo Alto, Campbell) are 2 days away.
+
+### What Was Built
+
+**Coming-soon blurbs for Food tab:**
+- Added `generateComingSoonBlurbs()` to `generate-scc-food-openings.mjs` — uses Claude Haiku with an anticipation-building prompt ("like a local food lover who can't wait for it to open") 
+- 8 of 12 coming-soon items now have blurbs (Haiku matched the top 8 it was given)
+- Sample blurbs: "Downtown San Jose's historic hotel finally opens its own cozy cafe." (Hotel De Anza), "Smoky BBQ and fresh crab are headed straight to Milpitas." (Gao's BBQ & Crab)
+- FoodView.tsx already renders blurbs for all `SccFoodItem` rows — no frontend change needed
+
+**New TECH_MILESTONES entry — Atari founding:**
+- Added `atari-founding` to TECH_MILESTONES: June 27, 1972, Sunnyvale
+- Atari was founded by Nolan Bushnell and Ted Dabney. Their first product, Pong, launched the video game industry from a Sunnyvale warehouse.
+- Fills the June 27 – July 4 window. June now has Oracle (Jun 16) + Atari (Jun 27) = continuous coverage through the month.
+
+**Full data pipeline refresh:**
+- upcoming-events.json: 413 events (68 ongoing) from 23 sources
+- digests.json: 11 cities refreshed (Sunnyvale Apr 6 is freshest)
+- around-town.json: 8 items (San José West San Carlos permit, Cupertino amnesty program, Palo Alto retail vitality, Los Altos BMR housing)
+- upcoming-meetings.json: 9 cities confirmed — Cupertino/Milpitas Apr 7, Palo Alto Apr 6, Campbell Apr 8, Saratoga Apr 16, Los Altos Apr 15
+
+### Why This Was the Strongest Move
+The Food tab is where residents make real decisions ("should I try that new place?"). Coming-soon items without blurbs were just a name and address — barely more useful than a permit filing. Now they have a reason to care: "Moomo Tea is coming to Mountain View" is inert; "Mountain View's Castro Street is about to get authentic Taiwanese bubble tea" makes someone plan a visit. The Atari milestone fills a gap that would have left any South Bay resident opening the Tech tab June 27–July 4 seeing nothing after Oracle.
+
+### Next 3 Strongest Ideas
+1. **Transit real-time** — 511.org API key required. Register at https://511.org/open-data.
+2. **RECENTLY_FUNDED updates** — Last entries dated March 27, 2026. Need fresh South Bay startup funding rounds (Crunchbase, TechCrunch, Business Wire).
+3. **Thin SV History months** — August (just Netflix Aug 29) and January (just HP Jan 1) could use additional milestones. August candidate: Hewlett-Packard's first product (Model 200A audio oscillator, 1939). January candidate: Electronic Arts founding (May 27, 1982 — actually May, so not January).
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — the Food tab now has discovery value on both sections.** A resident scrolling "Coming Soon" sees anticipation blurbs that tell them why to care, not just where the permit was filed. June now has continuous SV History coverage. A Sunnyvale resident opening SBS late June will see Atari's founding story — a piece of their city's history most residents have forgotten (or never knew was Sunnyvale).
