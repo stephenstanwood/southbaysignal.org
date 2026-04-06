@@ -95,7 +95,8 @@ const TOMORROW_LABEL_STR = NEXT_DAYS[0]?.label ?? "Tomorrow";
 
 function parseMinutes(timeStr: string, useLast = false): number | null {
   if (!timeStr) return null;
-  const parts = timeStr.split(/\s*[–\-]\s*/);
+  // Handle comma-separated session times ("12pm, 1pm, 2pm") and ranges ("2pm–4pm")
+  const parts = timeStr.split(/\s*[,–\-]\s*/);
   const target = (useLast ? parts[parts.length - 1] : parts[0]).trim();
   const match = target.match(/^(\d+)(?::(\d+))?\s*(am|pm)$/i);
   if (!match) return null;

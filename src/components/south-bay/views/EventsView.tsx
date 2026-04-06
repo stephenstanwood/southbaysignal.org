@@ -265,7 +265,10 @@ function hasNotStarted(time: string | null): boolean {
 }
 
 function parseTimeToMinutes(t: string): number | null {
-  const m = t.trim().match(/^(\d+)(?::(\d+))?\s*(am|pm)$/i);
+  // For comma-separated session times ("12pm, 1pm, 2pm"), use the last one
+  const parts = t.split(/,/);
+  const target = parts[parts.length - 1].trim();
+  const m = target.match(/^(\d+)(?::(\d+))?\s*(am|pm)$/i);
   if (!m) return null;
   let h = parseInt(m[1]);
   const min = parseInt(m[2] ?? "0");
