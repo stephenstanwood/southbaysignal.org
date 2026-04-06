@@ -252,10 +252,14 @@ async function main() {
     if (targetUrl && targetUrl.length > 80) {
       const shortSlug = randomBytes(4).toString("hex");
       const shortUrl = `https://southbaysignal.org/go/${shortSlug}`;
-      // Save to short-urls.json
+      // Save to short-urls.json with metadata for OG tags
       let shortUrls = {};
       try { shortUrls = JSON.parse(readFileSync(SHORT_URLS_FILE, "utf8")); } catch {}
-      shortUrls[shortSlug] = targetUrl;
+      shortUrls[shortSlug] = {
+        url: targetUrl,
+        title: item.title || "",
+        description: (item.summary || item.description || "").slice(0, 200),
+      };
       writeFileSync(SHORT_URLS_FILE, JSON.stringify(shortUrls, null, 2) + "\n");
       // Replace URL in all platform copies
       for (const [platform, text] of Object.entries(rewrittenCopy)) {

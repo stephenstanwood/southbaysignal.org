@@ -80,7 +80,52 @@ export async function uploadImage(imageBuffer, mimeType = "image/png") {
 }
 
 /**
- * Create a post on Bluesky with optional image embed.
+ * Fetch OG tags from a URL and return a link card embed object.
+ * Returns null if fetching fails.
+ */
+async function fetchLinkCard(url) {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "SouthBaySignalBot/1.0 (link preview)" },
+      redirect: "follow",
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return null;
+    const html = await res.text();
+    const og = (prop) => {
+      const m = html.match(new RegExp(`<meta[^>]+property=["']og:${prop}["'][^>]+content=["']([^"']+)["']`, "i"))
+        || html.match(new RegExp(`<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:${prop}["']`, "i"));
+      return m ? m[1] : "";
+    };
+    const title = og("title") || html.match(/<title[^>]*>([^<]+)<\/title>/i)?.[1] || url;
+    const description = og("description") || "";
+    const thumb = og("image") || "";
+
+    let thumbBlob = null;
+    if (thumb) {
+      try {
+        const imgRes = await fetch(thumb, {
+          headers: { "User-Agent": "SouthBaySignalBot/1.0" },
+          signal: AbortSignal.timeout(8000),
+        });
+        if (imgRes.ok) {
+          const buf = Buffer.from(await imgRes.arrayBuffer());
+          const mime = imgRes.headers.get("content-type") || "image/jpeg";
+          thumbBlob = await uploadImage(buf, mime);
+        }
+      } catch { /* skip thumbnail */ }
+    }
+
+    const card = { uri: url, title, description };
+    if (thumbBlob) card.thumb = thumbBlob;
+    return { $type: "app.bsky.embed.external", external: card };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Create a post on Bluesky with optional image embed or link card.
  */
 export async function createPost(text, imageBlob = null, imageAlt = "") {
   const session = await createSession();
@@ -98,6 +143,30 @@ export async function createPost(text, imageBlob = null, imageAlt = "") {
       $type: "app.bsky.embed.images",
       images: [{ alt: imageAlt, image: imageBlob }],
     };
+  } else {
+    // No image — try to attach a link card from the first URL in the text
+    const urlMatch = text.match(/https?:\/\/[^\s)]+/);
+    if (urlMatch) {
+      let cardUrl = urlMatch[0];
+      let displayUrl = cardUrl;
+      // For /go/ short links, fetch OG from the destination but display our URL
+      const goMatch = cardUrl.match(/southbaysignal\.org\/go\/(\w+)/);
+      if (goMatch) {
+        try {
+          const { readFileSync } = await import("node:fs");
+          const { join } = await import("node:path");
+          const shortUrls = JSON.parse(readFileSync(join(process.cwd(), "src/data/south-bay/short-urls.json"), "utf8"));
+          const entry = shortUrls[goMatch[1]];
+          const dest = typeof entry === "string" ? entry : entry?.url;
+          if (dest) { displayUrl = cardUrl; cardUrl = dest; }
+        } catch { /* fall through to fetching the short URL directly */ }
+      }
+      const linkEmbed = await fetchLinkCard(cardUrl);
+      if (linkEmbed) {
+        linkEmbed.external.uri = displayUrl;
+        record.embed = linkEmbed;
+      }
+    }
   }
 
   const res = await fetch(`${BSKY_API}/com.atproto.repo.createRecord`, {
