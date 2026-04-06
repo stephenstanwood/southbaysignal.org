@@ -1670,6 +1670,18 @@ export const TECH_MILESTONES: TechMilestone[] = [
     url: "https://en.wikipedia.org/wiki/Netscape",
     defunct: true,
   },
+  {
+    id: "intel-pentium",
+    company: "Intel Pentium",
+    city: "Santa Clara",
+    foundedYear: 1993,
+    month: 3,
+    day: 22,
+    tagline: "Intel's Pentium chip, launched March 22, 1993 from Santa Clara — the processor that powered a decade of PCs and defined the computing era.",
+    anniversaryNote: "On March 22, 1993, Intel shipped the Pentium — the world's first processor to be named with a word instead of a number. Designed at Intel's Santa Clara campus, it ran at 60 and 66 MHz and was five times faster than the 486 it replaced. The Pentium became the defining chip of the 1990s: millions of families bought their first PC because it said 'Intel Inside.' Every spreadsheet, first email, and early website for a generation ran on a Pentium. The chip that put computing in the mainstream came from Santa Clara.",
+    url: "https://en.wikipedia.org/wiki/Pentium_(original)",
+    defunct: false,
+  },
 ];
 
 // ---------------------------------------------------------------------------
