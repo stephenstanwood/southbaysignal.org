@@ -219,6 +219,47 @@ Respond with a JSON array of objects with "name" and "blurb" fields only. No mar
   }
 }
 
+/**
+ * Generate anticipation-style blurbs for coming-soon restaurants using Claude Haiku.
+ * Returns a map of item id → blurb string.
+ */
+async function generateComingSoonBlurbs(items) {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey || items.length === 0) return {};
+
+  const client = new Anthropic({ apiKey });
+  const list = items.map((i) => `- ${i.name} at ${i.address ?? "unknown address"}, ${i.cityName}`).join("\n");
+
+  const prompt = `You are writing micro-blurbs for a local news site about restaurants coming soon to Silicon Valley's South Bay.
+
+For each restaurant below, write a single sentence (max 12 words) that builds anticipation — like a local food lover who can't wait for it to open. Don't start with the restaurant name. Be specific if the name hints at a cuisine. Keep it enthusiastic and neighborly.
+
+Restaurants:
+${list}
+
+Respond with a JSON array of objects with "name" and "blurb" fields only. No markdown, no explanation.`;
+
+  try {
+    const msg = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 512,
+      messages: [{ role: "user", content: prompt }],
+    });
+    let text = msg.content[0]?.text ?? "[]";
+    text = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
+    const parsed = JSON.parse(text);
+    const map = {};
+    for (const entry of parsed) {
+      const match = items.find((i) => i.name === entry.name);
+      if (match) map[match.id] = entry.blurb;
+    }
+    return map;
+  } catch (err) {
+    console.warn("Coming-soon blurb generation failed:", err.message);
+    return {};
+  }
+}
+
 async function fetchPage(whereClause, orderField, limit = 50) {
   const params = new URLSearchParams({
     $where: whereClause,
@@ -322,12 +363,22 @@ async function main() {
     blurb: blurbs[i.id] ?? null,
   }));
 
+  // Generate anticipation blurbs for top coming-soon restaurants
+  const topComingSoon = comingSoonFinal.slice(0, 8);
+  console.log("Generating blurbs for coming-soon restaurants…");
+  const comingSoonBlurbs = await generateComingSoonBlurbs(topComingSoon);
+
+  const comingSoonWithBlurbs = comingSoonFinal.slice(0, 12).map((i) => ({
+    ...i,
+    blurb: comingSoonBlurbs[i.id] ?? null,
+  }));
+
   const output = {
     generatedAt: new Date().toISOString(),
     lookbackDays: LOOKBACK_DAYS,
     sourceUrl: "https://data.sccgov.org/resource/skd7-7ix3",
     opened: openedWithBlurbs,
-    comingSoon: comingSoonFinal.slice(0, 12),
+    comingSoon: comingSoonWithBlurbs,
   };
 
   writeFileSync(OUT_PATH, JSON.stringify(output, null, 2));

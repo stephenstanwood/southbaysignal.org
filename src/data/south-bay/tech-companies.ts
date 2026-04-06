@@ -1623,6 +1623,18 @@ export const TECH_MILESTONES: TechMilestone[] = [
     url: "https://en.wikipedia.org/wiki/Atari_2600",
     defunct: true,
   },
+  {
+    id: "atari-founding",
+    company: "Atari",
+    city: "Sunnyvale",
+    foundedYear: 1972,
+    month: 6,
+    day: 27,
+    tagline: "The company that invented the video game industry — founded in Sunnyvale by Nolan Bushnell and Ted Dabney on June 27, 1972.",
+    anniversaryNote: "Atari was founded June 27, 1972 in Sunnyvale by Nolan Bushnell and Ted Dabney. Their first product, Pong — a coin-operated arcade cabinet — launched the entire video game industry from a Sunnyvale warehouse. Within a few years, Atari was the fastest-growing company in American history. Before Nintendo, before Sony, before Xbox: it all started here.",
+    url: "https://en.wikipedia.org/wiki/Atari",
+    defunct: true,
+  },
 ];
 
 // ---------------------------------------------------------------------------
