@@ -134,6 +134,7 @@ const TITLE_BLOCKLIST = [
   /\bcommittee meeting\b/i, // internal committee meetings
   /\bclosed\s+(for|—|–|-)/i, // closure notices
   /\bcancelled?\b/i,      // cancelled events
+  /\bIndustry Insights with Alumni\b/i, // Stanford affiliates only
 ];
 
 function isBlockedEvent(title) {
@@ -454,13 +455,12 @@ const TITLE_FIXES = {
 function cleanTitle(title) {
   if (!title) return title;
   let t = title
-    // Decode common HTML entities first
-    .replace(/&#x2019;/gi, "\u2019").replace(/&#x2018;/gi, "\u2018")
-    .replace(/&#x201C;/gi, "\u201C").replace(/&#x201D;/gi, "\u201D")
-    .replace(/&#x2013;/gi, "\u2013").replace(/&#x2014;/gi, "\u2014")
-    .replace(/&#x26;/gi, "&").replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"')
-    .replace(/&#\d+;/g, "").replace(/&\w+;/g, "")
+    // Decode HTML entities
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
+    .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
+    .replace(/&\w+;/g, "")
     // Strip calendar-artifact date prefixes
     .replace(
       /^(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s*\d{4})?\s*:\s*/i,
