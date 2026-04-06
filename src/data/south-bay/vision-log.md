@@ -2868,3 +2868,43 @@ A resident opening the Tech tab in late September would previously see *nothing*
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — the Tech tab's "This Week in SV History" now has meaningful content for most of the year.** Any South Bay resident who opens the site in late September sees the Fairchild story — how eight engineers from a Palo Alto garage launched the entire semiconductor industry. Anyone opening it in October sees the iPod story. In November, Android. These are stories every South Bay resident has a personal connection to, even if they don't know the local angle yet.
+
+---
+
+## 2026-04-06 — Cycle 61: SV History Gap Fill (Jul/Sep/Dec)
+
+### Context
+Monday April 6, 2026 (third cycle of the day). Previous cycles already refreshed data and added 5 milestones. Search for new Q2 2026 funding rounds found no new entries beyond Alcatraz AI (Apr 2) — all discovered March rounds were already in the database. Shifted to filling remaining SV History calendar gaps.
+
+### What Was Built
+
+**3 new TECH_MILESTONES added to tech-companies.ts:**
+
+1. **Intel Core 2 Duo launch** (Jul 27, 2006, Santa Clara) — fills Jul 27-31 gap
+   - Intel's dramatic comeback after the Pentium 4 era and AMD pressure. Beat AMD's best by 20–40% on launch day. ±8 = Jul 19-Aug 4.
+
+2. **Apple 'Think Different' campaign** (Sep 28, 1997, Cupertino) — fills Sep 27-Oct 5 gap
+   - First aired during the Emmy Awards. Steve Jobs, 3 months back at Apple, 2 weeks from insolvency. The declaration that started the greatest corporate comeback in Silicon Valley history. ±8 = Sep 20-Oct 6.
+
+3. **Apple IPO** (Dec 12, 1980, Cupertino) — fills Dec 19-20 of Dec 19-23 gap
+   - Largest IPO since Ford 1956. 300 employees became millionaires overnight. Jobs was 25. ±8 = Dec 4-20. (Dec 21-23 remain uncovered.)
+
+**Coverage improvement:** 42 uncovered days → 17 uncovered days. Total reduction: 59%.
+
+**Remaining gaps after this cycle:**
+- Mar 11-13 (3 days) — no confirmed March 10-14 milestone yet
+- May 14 (1 day) — between LinkedIn (May 5) and Java (May 23)
+- Jun 1-7 (7 days) — between Java (May 23) and Oracle (Jun 16) — largest remaining gap
+- Aug 18-20 (3 days) — between Netscape IPO (Aug 9) and Netflix (Aug 29)
+- Dec 21-23 (3 days) — Apple IPO covers through Dec 20; HP covers from Dec 24
+
+### Why This Was the Strongest Move
+The "Think Different" milestone fills the Tech tab's most culturally resonant gap. Any South Bay resident who opens the site in late September now sees the story of Apple's comeback — and it happened in Cupertino. The Intel Core 2 story is a counterpart: Silicon Valley companies don't just succeed once, they bounce back. The Apple IPO gives December a Cupertino anchor before the holidays.
+
+### Next 3 Strongest Ideas
+1. **Jun 1-7 SV History gap** — 7 days still uncovered. Candidates: Intel Itanium launch (late May/early June 2001, Santa Clara — exact date needs verification), Electronic Arts founding (May 28, 1982, San Mateo — close but San Mateo County not SCC).
+2. **RECENTLY_FUNDED updates** — No new Q2 2026 rounds indexed yet as of April 6. Check again next cycle.
+3. **Aug 18-20 gap** — 3 days uncovered. Candidates: HP acquiring Compaq (completed May 2002 — wrong month), Atari 2600 reaching $1B in revenue (hard to verify date), Intel Sandy Bridge launch (Jan 2011 — wrong month).
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — 17 uncovered days from 42, and the most culturally resonant gap (late September) is now filled.** A resident opening the Tech tab any day from September 20 to October 6 now sees the Think Different story. The Intel Core 2 milestone grounds July in the "comeback" narrative that is deeply South Bay. The Apple IPO entry connects December to the origins of the startup-IPO dream that has defined Silicon Valley ever since.
