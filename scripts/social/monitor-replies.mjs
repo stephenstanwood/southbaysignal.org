@@ -1017,7 +1017,7 @@ async function main() {
               `Reply: "${reply.text.slice(0, 300)}"\n` +
               `Action: ${reply.action}\n` +
               `${reply.permalink ? `Link: ${reply.permalink}` : ""}`;
-            if (!dryRun) await sendDiscord(msg);
+            if (!dryRun) { await sendDiscord(msg); reply._discordSent = true; }
             else console.log(`   would DM: ${reply.action} for "${reply.postTitle}"`);
           }
         }
@@ -1035,6 +1035,7 @@ async function main() {
           `${reply.permalink ? `Link: ${reply.permalink}` : ""}`;
         if (!dryRun) {
           await sendDiscord(msg);
+          reply._discordSent = true;
           console.log(`   [${reply.platform}] escalated @${reply.author}'s reply to Discord`);
         } else {
           console.log(`   [${reply.platform}] would escalate @${reply.author}'s reply`);
@@ -1042,6 +1043,33 @@ async function main() {
         stats.escalated++;
         break;
       }
+    }
+
+    // Universal Discord DM for ALL replies (skip if already notified above)
+    if (!reply._discordSent && !dryRun) {
+      const actionSummary =
+        reply.classified === "positive_simple"
+          ? reply.liked ? "Auto-liked ✓" : "Positive (no like API)"
+          : reply.classified === "question_simple"
+            ? reply.responded ? `Auto-replied: "${(reply.actionNote || "").slice(0, 120)}"` : "Drafted response"
+            : reply.classified === "factual_simple"
+              ? reply.responded ? `Auto-replied: "${(reply.actionNote || "").slice(0, 120)}"` : "Drafted response"
+              : "—";
+
+      const emoji =
+        reply.classified === "positive_simple" ? "💬" :
+        reply.classified === "question_simple" ? "❓" :
+        reply.classified === "factual_simple" ? "📝" : "💬";
+
+      const msg =
+        `${emoji} **New reply on ${reply.platform}**\n` +
+        `Post: ${reply.postTitle || "(unknown)"}\n` +
+        `Author: @${reply.author}\n` +
+        `Reply: "${reply.text.slice(0, 300)}"\n` +
+        `Classification: ${reply.classified}\n` +
+        `Action: ${actionSummary}\n` +
+        `${reply.permalink ? `Link: ${reply.permalink}` : ""}`;
+      await sendDiscord(msg);
     }
 
     await sleep(200);
