@@ -283,10 +283,20 @@ async function main() {
     return 15;
   }
 
+  // Combine timing relevance with item quality for final ranking.
+  // Timing is the primary signal (is now the right moment to post this?),
+  // quality is the secondary signal (given equal timing, prefer better stuff).
+  function combinedScore(post) {
+    const timing = publishRelevanceScore(post);
+    const quality = post.item?.score || 0;
+    // Timing dominates (scaled 0-100), quality adds refinement (typically 20-30)
+    return timing * 10 + quality;
+  }
+
   relevant.sort((a, b) => {
-    const scoreA = publishRelevanceScore(a);
-    const scoreB = publishRelevanceScore(b);
-    if (scoreB !== scoreA) return scoreB - scoreA; // higher score first
+    const scoreA = combinedScore(a);
+    const scoreB = combinedScore(b);
+    if (scoreB !== scoreA) return scoreB - scoreA;
     // Tie-break: soonest event first
     const dateA = getEventDate(a) || "9999";
     const dateB = getEventDate(b) || "9999";
@@ -295,17 +305,18 @@ async function main() {
 
   // Log the scoring for transparency
   for (const p of relevant.slice(0, 5)) {
-    const score = publishRelevanceScore(p);
+    const timing = publishRelevanceScore(p);
+    const quality = p.item?.score || 0;
     const title = (p.item?.title || "").slice(0, 40);
     const eventDate = getEventDate(p);
-    console.log(`   ${score >= 70 ? "🟢" : score >= 40 ? "🟡" : "🔴"} [${score}] ${title} (${eventDate})`);
+    console.log(`   ${timing >= 70 ? "🟢" : timing >= 40 ? "🟡" : "🔴"} [t:${timing} q:${quality}] ${title} (${eventDate})`);
   }
   if (relevant.length > 5) console.log(`   ... and ${relevant.length - 5} more`);
   console.log();
 
   // Filter out low-relevance posts — they'll score better later in the week
-  const MIN_PUBLISH_SCORE = 30;
-  const publishable = relevant.filter((p) => publishRelevanceScore(p) >= MIN_PUBLISH_SCORE);
+  const MIN_TIMING_SCORE = 30;
+  const publishable = relevant.filter((p) => publishRelevanceScore(p) >= MIN_TIMING_SCORE);
   if (publishable.length < relevant.length) {
     console.log(`   ${relevant.length - publishable.length} posts held back (low relevance score, will promote later)`);
   }
