@@ -236,15 +236,82 @@ async function main() {
     return;
   }
 
-  // Sort by soonest event first
+  // ── Smart scheduling: score posts by publish-time relevance ──────────
+  // Principles:
+  // - Today/tomorrow events get top priority (urgent)
+  // - Weekend events shouldn't be promoted Mon-Tue (too early, awkward)
+  //   → best promoted starting Thu/Fri
+  // - Between equal-quality posts, pick the soonest event
+  // - Events 5+ days out get low priority (wait until closer)
+  function publishRelevanceScore(post) {
+    const eventDate = getEventDate(post);
+    if (!eventDate) return 50; // no date = filler, medium priority
+
+    const event = new Date(eventDate + "T12:00:00");
+    const publish = new Date(today + "T12:00:00");
+    const daysUntil = Math.round((event - publish) / 86400000);
+    const publishDow = ptTime.getDay(); // 0=Sun, 6=Sat
+    const eventDow = event.getDay();
+
+    // Already past = should not be here, but just in case
+    if (daysUntil < 0) return -100;
+
+    // Today = highest priority
+    if (daysUntil === 0) return 100;
+
+    // Tomorrow = very high priority
+    if (daysUntil === 1) return 90;
+
+    // Weekend events (Sat/Sun)
+    const isWeekendEvent = eventDow === 0 || eventDow === 6;
+    if (isWeekendEvent) {
+      // Mon/Tue: too early to promote weekend events
+      if (publishDow === 1 || publishDow === 2) return 10;
+      // Wed: acceptable but not ideal
+      if (publishDow === 3) return 40;
+      // Thu/Fri: perfect time to promote weekend events
+      if (publishDow === 4 || publishDow === 5) return 80;
+    }
+
+    // 2-3 days out = good timing
+    if (daysUntil >= 2 && daysUntil <= 3) return 70;
+
+    // 4-5 days out = acceptable
+    if (daysUntil >= 4 && daysUntil <= 5) return 40;
+
+    // 6+ days out = wait, too far
+    return 15;
+  }
+
   relevant.sort((a, b) => {
+    const scoreA = publishRelevanceScore(a);
+    const scoreB = publishRelevanceScore(b);
+    if (scoreB !== scoreA) return scoreB - scoreA; // higher score first
+    // Tie-break: soonest event first
     const dateA = getEventDate(a) || "9999";
     const dateB = getEventDate(b) || "9999";
     return dateA.localeCompare(dateB);
   });
 
+  // Log the scoring for transparency
+  for (const p of relevant.slice(0, 5)) {
+    const score = publishRelevanceScore(p);
+    const title = (p.item?.title || "").slice(0, 40);
+    const eventDate = getEventDate(p);
+    console.log(`   ${score >= 70 ? "🟢" : score >= 40 ? "🟡" : "🔴"} [${score}] ${title} (${eventDate})`);
+  }
+  if (relevant.length > 5) console.log(`   ... and ${relevant.length - 5} more`);
+  console.log();
+
+  // Filter out low-relevance posts — they'll score better later in the week
+  const MIN_PUBLISH_SCORE = 30;
+  const publishable = relevant.filter((p) => publishRelevanceScore(p) >= MIN_PUBLISH_SCORE);
+  if (publishable.length < relevant.length) {
+    console.log(`   ${relevant.length - publishable.length} posts held back (low relevance score, will promote later)`);
+  }
+
   // Take up to maxPosts
-  const toPublish = relevant.slice(0, maxPosts);
+  const toPublish = publishable.slice(0, maxPosts);
   console.log(`   Publishing ${toPublish.length} posts:\n`);
 
   for (const post of toPublish) {
