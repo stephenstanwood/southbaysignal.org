@@ -1131,6 +1131,7 @@ function SpringBreakCard() {
         return weeks.map((week) => {
           const weekPicks = sorted.filter((p) => p.date >= week.start && p.date <= week.end);
           if (weekPicks.length === 0) return null;
+          const isCurrentWeek = today >= week.start && today <= week.end;
           return (
             <div key={week.label} style={{ marginBottom: 16 }}>
               <div style={{
@@ -1139,7 +1140,14 @@ function SpringBreakCard() {
                 color: "var(--sb-muted)", marginBottom: 8,
                 display: "flex", alignItems: "center", gap: 8,
               }}>
-                <span style={{ color: "var(--sb-accent)", background: "var(--sb-cream)", border: "1px solid var(--sb-border-light)", borderRadius: 3, padding: "2px 6px" }}>{week.label}</span>
+                <span style={{
+                  color: isCurrentWeek ? "#065F46" : "var(--sb-accent)",
+                  background: isCurrentWeek ? "#D1FAE5" : "var(--sb-cream)",
+                  border: `1px solid ${isCurrentWeek ? "#6EE7B7" : "var(--sb-border-light)"}`,
+                  borderRadius: 3, padding: "2px 6px",
+                }}>
+                  {isCurrentWeek ? "NOW" : week.label}
+                </span>
                 <span>{week.dateRange}</span>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -1149,14 +1157,16 @@ function SpringBreakCard() {
                     .split("-")
                     .map((w: string) => w[0].toUpperCase() + w.slice(1))
                     .join(" ");
+                  const isToday = pick.date === today;
                   return (
                     <div
                       key={pick.id}
                       style={{
-                        border: "1.5px solid var(--sb-border-light)",
+                        border: isToday ? "1.5px solid #6EE7B7" : "1.5px solid var(--sb-border-light)",
+                        borderLeft: isToday ? "3px solid #059669" : undefined,
                         borderRadius: 8,
                         padding: "12px 14px",
-                        background: "#fff",
+                        background: isToday ? "#F0FDF4" : "#fff",
                       }}
                     >
                       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
@@ -1178,6 +1188,16 @@ function SpringBreakCard() {
                             ) : (
                               <span style={{ fontSize: 14, fontWeight: 700, color: "var(--sb-ink)" }}>
                                 {pick.title}
+                              </span>
+                            )}
+                            {isToday && (
+                              <span style={{
+                                fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3,
+                                background: "#059669", color: "#fff",
+                                letterSpacing: "0.08em", textTransform: "uppercase",
+                                flexShrink: 0,
+                              }}>
+                                TODAY
                               </span>
                             )}
                             <span style={{

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-05T17:09:11.613Z",
+  "generatedAt": "2026-04-07T20:10:22.262Z",
   "cities": [
     "San Jose",
     "Palo Alto"
@@ -10,7 +10,7 @@
       "id": "2026-107055-CI",
       "city": "san-jose",
       "address": "2040 N 1st St",
-      "name": "Chingadazos Taqueria & Bar",
+      "name": "Angelou's Mexican Grill",
       "description": "(Bp100%) Demo",
       "workType": "Demolition",
       "subtype": "Restaurant",
@@ -32,20 +32,6 @@
       "valuation": 3100000,
       "date": "2026-03-18",
       "blurb": "Korean BBQ chain known for tabletop charcoal grilling and premium cuts"
-    },
-    {
-      "id": "2026-105907-CI",
-      "city": "san-jose",
-      "address": "355 Santana Row",
-      "name": "Flora",
-      "description": "(Bepm100%) Flora Ti",
-      "workType": "Tenant Improvement",
-      "subtype": "Restaurant",
-      "signal": "opening",
-      "label": "Major Buildout",
-      "valuation": 1200000,
-      "date": "2026-03-06",
-      "blurb": "California seasonal cuisine with a botanical-inspired menu, opening on Santana Row"
     },
     {
       "id": "2026-108378-CI",
@@ -88,20 +74,6 @@
       "date": "2026-03-18"
     },
     {
-      "id": "2025-145089-CI",
-      "city": "san-jose",
-      "address": "22 N White Rd",
-      "name": "Ce Patli Tortilleria",
-      "description": "(Bpm100%) Srp Ce Patli Tortilleria",
-      "workType": "Tenant Improvement",
-      "subtype": "Restaurant",
-      "signal": "opening",
-      "label": "Renovation",
-      "valuation": 46773,
-      "date": "2026-03-04",
-      "blurb": "Mexican tortilleria and taqueria on the east side"
-    },
-    {
       "id": "2026-107675-CI",
       "city": "san-jose",
       "address": "1725 Branham Ln",
@@ -132,13 +104,25 @@
       "city": "palo-alto",
       "address": "121 Lytton Av",
       "name": "Rikyu",
-      "description": "COM: 'RIKYU'; Minor TI and U&O: Interior improvements for tenant fit-out for …",
+      "description": "RIKYU: Minor TI and U&O: Interior improvements for tenant fit-out for cafe op…",
       "workType": "Building Permit",
       "signal": "opening",
       "label": "New Opening",
       "valuation": 0,
       "date": "2026-02-10",
       "blurb": "Japanese restaurant fitting out a new space on Lytton Ave"
+    },
+    {
+      "id": "pa-341 California Av-2026-02-26",
+      "city": "palo-alto",
+      "address": "341 California Av",
+      "name": null,
+      "description": "Request for Conditional Use Permit to Amend Alcohol Service from an existing …",
+      "workType": "Entitlement",
+      "signal": "activity",
+      "label": "Conditional Use",
+      "valuation": 0,
+      "date": "2026-02-26"
     },
     {
       "id": "pa-401 Webster St-2026-02-26",
@@ -152,18 +136,6 @@
       "valuation": 0,
       "date": "2026-02-26",
       "blurb": "Neighborhood American restaurant on Webster St undergoing a kitchen remodel"
-    },
-    {
-      "id": "pa-341 California Av-2026-02-26",
-      "city": "palo-alto",
-      "address": "341 California Av",
-      "name": null,
-      "description": "Request for Conditional Use Permit to Amend Alcohol Service from an existing …",
-      "workType": "Entitlement",
-      "signal": "activity",
-      "label": "Conditional Use",
-      "valuation": 0,
-      "date": "2026-02-26"
     },
     {
       "id": "pa-338 University Av-2026-02-25",

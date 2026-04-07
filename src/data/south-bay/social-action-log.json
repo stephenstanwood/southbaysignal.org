@@ -234,5 +234,111 @@
         }
       }
     ]
+  },
+  {
+    "timestamp": "2026-04-07T19:17:20.144Z",
+    "comment": "we don’t do “right now\"",
+    "postTitle": "Bilingual Mandarin Family Storytime",
+    "postUrl": "https://sccl.bibliocommons.com/events/695ec4c676261f2800631427",
+    "actions": [
+      {
+        "type": "add_penalty_signal",
+        "reason": "Reviewer indicates that posts with 'right now' or similar urgent/immediate language are not acceptable for this portal",
+        "result": {
+          "ok": true,
+          "detail": "\"right now\" already in penalty signals"
+        }
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-04-07T19:17:38.236Z",
+    "comment": "we don’t do “right now\"",
+    "postTitle": "Bilingual Mandarin Family Storytime",
+    "postUrl": "",
+    "actions": [
+      {
+        "type": "add_penalty_signal",
+        "reason": "Reviewer indicates the portal does not cover events described as happening 'right now' or with immediate/present-tense language",
+        "result": {
+          "ok": true,
+          "detail": "\"right now\" already in penalty signals"
+        }
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-04-07T20:11:12.177Z",
+    "comment": "we don’t do remote",
+    "postTitle": "Algorithms of Love",
+    "postUrl": "https://computerhistory.org/events/algorithms-of-love/",
+    "actions": [
+      {
+        "type": "add_penalty_signal",
+        "reason": "Reviewer indicates this organization doesn't cover remote events; pattern should be penalized in future submissions",
+        "result": {
+          "ok": true,
+          "detail": "Added penalty signal \"remote\" (-20)"
+        }
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-04-07T20:11:35.544Z",
+    "comment": "we don’t do remote",
+    "postTitle": "Algorithms of Love",
+    "postUrl": "",
+    "actions": [
+      {
+        "type": "add_penalty_signal",
+        "reason": "Reviewer indicates this venue/event type (remote) is not covered by the publication",
+        "result": {
+          "ok": true,
+          "detail": "\"remote\" already in penalty signals"
+        }
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-04-07T20:11:36.941Z",
+    "comment": "remote, delete",
+    "postTitle": "On Demand | Plant-Rich Meals Made Simple",
+    "postUrl": "https://events.stanford.edu/event/plant-powered-nutrition-plant-rich-meals-made-simple-2104",
+    "actions": [
+      {
+        "type": "block_event",
+        "reason": "Reviewer explicitly instructed to delete this event. The word 'remote' suggests the event may not be appropriate for the public events portal (possibly internal or remote-only access).",
+        "result": {
+          "ok": true,
+          "removed": 1,
+          "detail": "Removed 1 event(s) from upcoming-events.json and blocked title"
+        }
+      },
+      {
+        "type": "flag_data_error",
+        "reason": "",
+        "result": {
+          "ok": true,
+          "detail": "Data error flagged: Event marked as 'remote' - venue listed as Stanford University but event appears to be remote/online. Data accuracy needs verification."
+        }
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-04-07T20:11:38.222Z",
+    "comment": "remote, delete",
+    "postTitle": "On Demand | Plant-Rich Meals Made Simple",
+    "postUrl": "",
+    "actions": [
+      {
+        "type": "block_event",
+        "reason": "Reviewer instructed to delete this event with 'delete' keyword, indicating it shouldn't appear in future event generation",
+        "result": {
+          "ok": true,
+          "removed": 0,
+          "detail": "Removed 0 event(s) from upcoming-events.json and blocked title"
+        }
+      }
+    ]
   }
 ]

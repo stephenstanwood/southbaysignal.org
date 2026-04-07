@@ -3092,3 +3092,46 @@ Current milestone coverage verified with code's actual WINDOW_DAYS = 8:
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — 0 uncovered days.** Every day of the year, any South Bay resident who opens the Tech tab sees a locally-rooted Silicon Valley story. The iPhone story (Cupertino), the Apple Store story (Cupertino), HP's garage (Palo Alto), Intel's 8086 (Santa Clara), Google's IPO (Mountain View) — these aren't abstract tech history; they're the stories of the companies whose campuses these residents drive past every day.
+
+---
+
+## 2026-04-07 — Cycle 65: Spring Break Data Refresh + Today Highlighting
+
+### Context
+Tuesday April 7, 2026 (evening). Spring break week 1 is actively underway (SJUSD/PAUSD/MVWSD/LGSUHSD/MVLA on break through Apr 10; FUHSD/CUSD/Campbell USD break begins Apr 13). Full data refresh cycle.
+
+### What Was Built
+
+**Spring Break Guide: "TODAY" pick highlighting** (`OverviewView.tsx`)
+
+The Spring Break Guide card now highlights picks happening today:
+- Active week shows "NOW" badge (green) instead of "Week 1"/"Week 2" label
+- Picks matching today's date get a green left border, green background tint, and a solid green "TODAY" badge
+- Parents checking the guide during break can immediately see what's available right now vs. later in the week
+
+Today (Apr 7) has 4 picks: LEGO Club at Cupertino Library, Ester Hernandez exhibit at Stanford, Ruth Asawa: A Living Art at Stanford, and State of Illusion at SCU. All 4 will display with the TODAY treatment.
+
+**Data refreshed (16 files):**
+- `upcoming-events.json` — 524 events (108 ongoing) from 24 sources
+- `spring-break-picks.json` — 12 picks Apr 7–17; 4 today-specific picks
+- `around-town.json` — 8 items (council news + permits, 10-day lookback)
+- `upcoming-meetings.json` — 7 cities; Campbell + Milpitas meeting today (Apr 7)
+- `tech-briefing.json` — Apr 7–14; $4B+ in funding led by Nexthop AI, Rhoda AI, Mind Robotics
+- `digests.json` — 10 city briefings refreshed
+- `scc-food-openings.json` — 12 opened, 12 coming soon
+- `restaurant-radar.json` — 11 signals (Bistro Demiya + Rikyu opening on Lytton Ave PA; Baekjeong $3.1M SJ buildout)
+- `permit-pulse.json` — SJ (364 permits, 14 notable) + PA (27 issued, 8 notable)
+- `city-briefings.json` — 10 city briefings for Apr 7–14
+- `weekend-picks.json` — 3 picks for Apr 10–12
+- `social-*` files — action log, approved queue, blacklist, replies, review history
+
+### Why This Was the Strongest Move
+Spring break is actively happening. Parents checking South Bay Signal during the week need to know *what they can do today*, not just what's happening across the whole week. The "NOW" and "TODAY" treatments are small visual changes with high practical value — the kind of polish that makes the difference between a useful tool and a sticky one. The data refresh (524 events, fresh briefings, live permit + radar data) keeps everything current for the week.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED updates** — Monitor for new Q2 2026 rounds. Last entry: Alcatraz AI (Apr 2). Watch for any Apr 7–14 announcements.
+2. **PAUSD graduation dates** — PAUSD (Paly + Gunn) is missing graduation entries in school-calendar.json. Couldn't verify exact 2026 dates this cycle (PAUSD calendar pages returned 404). Check pausd.org closer to end of year.
+3. **Aesthetic: Spring Break card improvements** — Consider adding weather-aware suggestions ("great day for Rancho San Antonio" when sunny, "try the Tech Interactive" when rainy) pulled from the live weather feed.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes.** A parent checking SBS today (spring break Tuesday) sees: today's 4 spring break picks highlighted as TODAY, the week's city council meetings (Campbell + Milpitas today), fresh restaurant radar with Lytton Ave openings, the full school calendar through end of year, and live Caltrain/VTA status. The TODAY treatment is the kind of feature that makes residents want to check it every morning.
