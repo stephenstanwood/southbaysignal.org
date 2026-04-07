@@ -252,7 +252,62 @@ Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook" — ea
     throw new Error("Missing platform variant in Claude response");
   }
 
+  // Enforce hard character limits — LLMs can't count reliably
+  const HARD_LIMITS = { x: 280, threads: 500, bluesky: 300, facebook: 500 };
+  for (const [platform, limit] of Object.entries(HARD_LIMITS)) {
+    if (variants[platform].length > limit) {
+      variants[platform] = trimToLimit(variants[platform], limit);
+    }
+  }
+
   return variants;
+}
+
+/**
+ * Trim a social post to fit within a character limit.
+ * Preserves the URL and hashtags at the end, trims body sentences.
+ */
+function trimToLimit(text, limit) {
+  if (text.length <= limit) return text;
+
+  // Split off trailing hashtags (lines starting with #)
+  const lines = text.split("\n");
+  let hashtagSuffix = "";
+  while (lines.length > 1 && /^#/.test(lines[lines.length - 1].trim())) {
+    hashtagSuffix = "\n" + lines.pop().trim() + hashtagSuffix;
+  }
+  let body = lines.join("\n").trim();
+
+  // Extract URL from body
+  const urlMatch = body.match(/(https?:\/\/\S+)\s*$/);
+  let urlSuffix = "";
+  if (urlMatch) {
+    urlSuffix = " " + urlMatch[1];
+    body = body.slice(0, urlMatch.index).trim();
+  }
+
+  // Also check for inline hashtags at end of body (space-separated #tags)
+  const inlineHashMatch = body.match(/(\s+#\S+(?:\s+#\S+)*)$/);
+  if (inlineHashMatch) {
+    hashtagSuffix = inlineHashMatch[1] + hashtagSuffix;
+    body = body.slice(0, inlineHashMatch.index).trim();
+  }
+
+  const suffix = urlSuffix + hashtagSuffix;
+
+  // Trim sentences from the end until it fits
+  while (body.length + suffix.length > limit && body.includes(". ")) {
+    const lastSentence = body.lastIndexOf(". ");
+    body = body.slice(0, lastSentence + 1).trim();
+  }
+
+  // If still too long, hard truncate with ellipsis
+  const maxBody = limit - suffix.length - 1;
+  if (body.length > maxBody) {
+    body = body.slice(0, maxBody - 1).trim() + "…";
+  }
+
+  return (body + suffix).trim();
 }
 
 // Keep the old function for backward compat during transition
