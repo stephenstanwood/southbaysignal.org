@@ -13,6 +13,43 @@ These are permanent directives from Stephen — override any other instinct:
 
 ---
 
+## 2026-04-07 — Cycle 66: Weather-Aware Spring Break + Data Refresh
+
+### Context
+Tuesday April 7 (evening), spring break week 1 underway. Previous cycle already added TODAY highlighting to spring break picks. This cycle adds a live weather context banner to make those picks even more actionable.
+
+### What Was Built
+
+**Spring Break Guide: weather-aware banner** (`OverviewView.tsx`)
+
+The Spring Break Guide card now shows a contextual weather tip based on today's live forecast:
+- Rainy day (≥40% rain chance): "🌧️ Rainy today (X°F, Y% rain chance) — library events and indoor activities are your best bet."
+- Sunny/clear day (<20% rain): "[emoji] [Condition] today, X°F — a great day to get outside."
+- Neutral/cloudy days: no banner shown (only meaningful tips displayed)
+
+The forecast data is already fetched by the parent OverviewView component; the Spring Break card now receives `todayForecast` as a prop (first element of the 5-day forecast). No additional API calls needed.
+
+**Data refreshed (4 files):**
+- `around-town.json` — 8 items: SJ Mexican Heritage Plaza grant, Cupertino Active Transportation Plan update, Milpitas vacancy rules, SJ elevator upgrade permit
+- `upcoming-meetings.json` — 7 cities: Campbell + Milpitas meetings today (Apr 7), Palo Alto Apr 13, Saratoga Apr 15, Los Altos Apr 14
+- `outages.json` — 0 active PG&E outages
+
+### Why This Was the Strongest Move
+Spring break week. A family checking the Spring Break Guide sees not just "what to do" but "what to do *given today's weather*." If it's rainy, the banner immediately points them to indoor options; if it's sunny, it nudges outdoor picks. Small contextual tip, high practical value — exactly the kind of signal that makes SBS feel alive rather than static.
+
+### Tech Funding Research (Apr 3-7)
+Searched for new South Bay funding rounds this week. Most recent confirmed entry (Alcatraz AI, Apr 2) remains the newest. No verified new rounds found specifically in the Apr 3-7 window — research agent found March rounds only. RECENTLY_FUNDED list is current.
+
+### Next 3 Strongest Ideas
+1. **PAUSD graduation dates** — Couldn't verify exact 2026 dates last cycle (pages 404'd). Check pausd.org closer to year-end; add to school-calendar.json.
+2. **Weather-aware outdoor picks on regular Events tab** — similar treatment to spring break banner: "Sunny 75°F day — check outdoor events!" at top of Events view.
+3. **Permit pulse expansion** — Mountain View and Palo Alto have open data portals. Adding a second city would broaden the development coverage significantly.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes, incrementally.** The spring break card now feels like a smart assistant: it knows today's weather and connects it to what you should do with your family. That's the kind of ambient intelligence that makes "check SBS first" a habit.
+
+---
+
 ## 2026-03-27 — Cycle 1: The Events Section
 
 ### Context
