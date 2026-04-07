@@ -1527,11 +1527,31 @@ function mapTicketmasterEvent(e) {
     cost,
     costNote: minPrice ? `From $${Math.round(minPrice)}` : undefined,
     description: truncate(e.info || e.pleaseNote || ""),
-    url: e.url,
+    url: fixTicketmasterUrl(e.url, e.name),
     source: "Ticketmaster",
     kidFriendly: /family|kid|child|disney|cirque/i.test(e.name + genre),
   };
 }
+
+// The TM Discovery API sometimes returns short-form URLs like
+// ticketmaster.com/event/<api-id> that 401 publicly.  Working URLs have a
+// slug prefix: ticketmaster.com/<slug>/event/<hex-id>.  When we detect a
+// broken short-form URL, fall back to a TM search so the link still lands
+// somewhere useful.
+function fixTicketmasterUrl(url, eventName) {
+  if (!url) return url;
+  try {
+    const u = new URL(url);
+    if (
+      u.hostname.endsWith("ticketmaster.com") &&
+      /^\/event\/[A-Za-z0-9_-]+$/.test(u.pathname)
+    ) {
+      return `https://www.ticketmaster.com/search?q=${encodeURIComponent(eventName)}`;
+    }
+  } catch { /* keep original */ }
+  return url;
+}
+
 
 async function fetchTicketmasterEvents() {
   console.log("  ⏳ Ticketmaster...");
