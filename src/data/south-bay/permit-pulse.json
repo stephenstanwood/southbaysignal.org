@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-07T20:08:00.232Z",
+      "generatedAt": "2026-04-07T23:09:53.665Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,7 +137,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-07T20:08:02.816Z",
+      "generatedAt": "2026-04-07T23:09:55.851Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -187,18 +187,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00863",
-          "address": "1221 Hopkins Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-02",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00876",
           "address": "3445 Louis Rd",
           "category": "residential-large",
@@ -223,16 +211,16 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26PLN-00067",
-          "address": "1450 Page Mill Rd",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Removal and replacement of five (5) non-protected trees associated with 24BLD-03580 scope",
+          "id": "26BLD-00863",
+          "address": "1221 Hopkins Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-01",
-          "subtype": "Over the Counter Approved"
+          "issueDate": "2026-04-02",
+          "subtype": "Permit Issued"
         },
         {
           "id": "26PLN-00070",
@@ -244,6 +232,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-03",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00067",
+          "address": "1450 Page Mill Rd",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Removal and replacement of five (5) non-protected trees associated with 24BLD-03580 scope",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-01",
           "subtype": "Over the Counter Approved"
         }
       ]
