@@ -1,14 +1,22 @@
 {
-  "generatedAt": "2026-04-07T11:11:45.186Z",
-  "weekLabel": "Apr 7 – Apr 14",
-  "weekStart": "2026-04-07",
-  "weekEnd": "2026-04-14",
+  "generatedAt": "2026-04-06T23:11:35.019Z",
+  "weekLabel": "Apr 6 – Apr 13",
+  "weekStart": "2026-04-06",
+  "weekEnd": "2026-04-13",
   "cities": {
     "campbell": {
       "cityId": "campbell",
       "cityName": "Campbell",
-      "summary": "Campbell's Planning Commission meets Thursday to weigh in on development projects that'll shape the city's next chapter.",
+      "summary": "Campbell City Council tackles community priorities Tuesday night at the downtown council chambers on North First Street.",
       "highlights": [
+        {
+          "type": "event",
+          "title": "City Council Regular Meeting",
+          "when": "Tue, Apr 7 · 7pm",
+          "venue": "70 North First Street",
+          "category": "community",
+          "url": "https://www.campbellca.gov/Calendar.aspx?EID=3910"
+        },
         {
           "type": "event",
           "title": "Civic Improvement Commission",
@@ -16,23 +24,15 @@
           "venue": "Campbell",
           "category": "community",
           "url": "https://www.campbellca.gov/Calendar.aspx?EID=3432"
-        },
-        {
-          "type": "event",
-          "title": "Planning Commission Regular Meeting",
-          "when": "Tue, Apr 14",
-          "venue": "Campbell",
-          "category": "community",
-          "url": "https://www.campbellca.gov/Calendar.aspx?EID=3870"
         }
       ],
-      "weekLabel": "Apr 7 – Apr 14",
-      "generatedAt": "2026-04-07T11:11:30.760Z"
+      "weekLabel": "Apr 6 – Apr 13",
+      "generatedAt": "2026-04-06T23:11:21.430Z"
     },
     "cupertino": {
       "cityId": "cupertino",
       "cityName": "Cupertino",
-      "summary": "Cupertino's launching a business amnesty program and retail incentives while the Garden Gate Coalition sues over Mary Avenue safety delays.",
+      "summary": "Cupertino City Council tackles its Active Transportation Plan overhaul Tuesday while the city faces a lawsuit over Mary Avenue safety hazards.",
       "highlights": [
         {
           "type": "event",
@@ -51,22 +51,30 @@
           "url": "https://sccl.bibliocommons.com/events/69b5a0598d5e2d0933654343"
         },
         {
-          "type": "cityhall",
-          "title": "Active Transportation Plan update with revised scoring and next steps",
-          "when": null,
+          "type": "council",
+          "title": "Subject:  An update on the development of the Active Transportation Plan, including a summary of Phase 2, explanations of plan edits, revised scoring criteria, and next steps",
+          "when": "Tue, Apr 7",
           "venue": null,
           "category": "government",
-          "url": "https://cupertino.legistar.com/Calendar.aspx?From=4%2F7%2F2026&To=4%2F7%2F2026"
+          "url": "https://cupertino.legistar.com/MeetingDetail.aspx?ID=5288&GUID=9DA9394D-7313-49F2-B72C-CADBEAF8F0D7"
         }
       ],
-      "weekLabel": "Apr 7 – Apr 14",
-      "generatedAt": "2026-04-07T11:11:31.761Z"
+      "weekLabel": "Apr 6 – Apr 13",
+      "generatedAt": "2026-04-06T23:11:22.441Z"
     },
     "los-gatos": {
       "cityId": "los-gatos",
       "cityName": "Los Gatos",
-      "summary": "Los Gatos kicks off spring with a Complete Streets meeting Wednesday, followed by Muse Markets' weekend pop-up and a networking mixer at Coup de Thai.",
+      "summary": "Los Gatos is weighing transportation upgrades at this week's Complete Streets Commission meeting while Muse Markets returns to Town for spring shopping.",
       "highlights": [
+        {
+          "type": "event",
+          "title": "Parks and Sustainability Commission",
+          "when": "Mon, Apr 6 · 6:00 PM",
+          "venue": "41",
+          "category": "outdoor",
+          "url": "https://www.losgatosca.gov/calendar.aspx?EID=5777"
+        },
         {
           "type": "event",
           "title": "Complete Streets and Transportation Commission Meeting",
@@ -74,23 +82,15 @@
           "venue": "Parks and Public Works Conference Room",
           "category": "community",
           "url": "https://www.losgatosca.gov/calendar.aspx?EID=5594"
-        },
-        {
-          "type": "event",
-          "title": "Muse Markets",
-          "when": "Sat, Apr 11 · 11:00 AM",
-          "venue": "Town",
-          "category": "market",
-          "url": null
         }
       ],
-      "weekLabel": "Apr 7 – Apr 14",
-      "generatedAt": "2026-04-07T11:11:33.044Z"
+      "weekLabel": "Apr 6 – Apr 13",
+      "generatedAt": "2026-04-06T23:11:23.702Z"
     },
     "mountain-view": {
       "cityId": "mountain-view",
       "cityName": "Mountain View",
-      "summary": "Mountain View's offering free tax prep clinics this week plus Wealth Wednesdays—library's got you covered if finances stress you out.",
+      "summary": "Mountain View's library is packed this week with free tax prep clinics, a recycling-focused Earth Heroes event, and financial literacy workshops—perfect timing before tax season ends.",
       "highlights": [
         {
           "type": "event",
@@ -109,13 +109,13 @@
           "url": "https://librarypoint.bibliocommons.com/events/69947dcc4a9fd98b7f7e8508"
         }
       ],
-      "weekLabel": "Apr 7 – Apr 14",
-      "generatedAt": "2026-04-07T11:11:34.400Z"
+      "weekLabel": "Apr 6 – Apr 13",
+      "generatedAt": "2026-04-06T23:11:25.451Z"
     },
     "saratoga": {
       "cityId": "saratoga",
       "cityName": "Saratoga",
-      "summary": "Saratoga's library is packed this week with everything from sci-fi book club to tulip-drawing workshops—perfect if you need a creative break.",
+      "summary": "Saratoga's library is packed this week with book clubs, drawing classes, and kids reading to therapy dogs—something for every nerd and family in town.",
       "highlights": [
         {
           "type": "event",
@@ -134,88 +134,80 @@
           "url": "https://sccl.bibliocommons.com/events/68aa476f4afabc39de516386"
         }
       ],
-      "weekLabel": "Apr 7 – Apr 14",
-      "generatedAt": "2026-04-07T11:11:36.775Z"
+      "weekLabel": "Apr 6 – Apr 13",
+      "generatedAt": "2026-04-06T23:11:26.677Z"
     },
     "sunnyvale": {
       "cityId": "sunnyvale",
       "cityName": "Sunnyvale",
-      "summary": "Sunnyvale City Hall is opening the door for residents to shape how millions in community development grants get spent this week.",
+      "summary": "Sunnyvale City Council tackles homelessness strategy and community access Tuesday while opening grants for local housing programs.",
       "highlights": [
         {
-          "type": "cityhall",
-          "title": "City seeks input on community development grants",
-          "when": null,
+          "type": "council",
+          "title": "Public Participation and Access",
+          "when": "Tue, Apr 7",
           "venue": null,
           "category": "government",
-          "url": "https://sunnyvale.legistar.com/Calendar.aspx?From=3%2F25%2F2026&To=3%2F25%2F2026"
+          "url": "https://sunnyvaleca.legistar.com/MeetingDetail.aspx?ID=4509&GUID=41E09897-3C5C-4768-BA60-9FD31019FEE5"
         }
       ],
-      "weekLabel": "Apr 7 – Apr 14",
-      "generatedAt": "2026-04-07T11:11:38.410Z"
+      "weekLabel": "Apr 6 – Apr 13",
+      "generatedAt": "2026-04-06T23:11:27.901Z"
     },
     "san-jose": {
       "cityId": "san-jose",
       "cityName": "San Jose",
-      "summary": "San Jose's pushing forward on affordable housing near Berryessa transit and getting state funding for Mexican Heritage Plaza arts programming this week.",
+      "summary": "San Jose City Council tackles AI governance and energy storage deals Tuesday while SJSU hosts art exhibitions and health equity discussions.",
       "highlights": [
         {
           "type": "event",
-          "title": "Impact of ICE on Asian American Communities at Student Union",
-          "when": "Tue, Apr 7 · 11:30 AM",
+          "title": "Natalie and James Thompson Gallery: Click on My Mouth: Language and Technology at ART 127: Thompson Gallery",
+          "when": "Tue, Apr 7 · 12:00 PM",
           "venue": "San Jose State University",
-          "category": "community",
-          "url": "https://events.sjsu.edu/event/impact-of-ice-on-asian-american-communities"
-        },
-        {
-          "type": "event",
-          "title": "Research Week Braintrust at Student Services Center",
-          "when": "Tue, Apr 7 · 2:00 PM",
-          "venue": "San Jose State University",
-          "category": "education",
-          "url": "https://events.sjsu.edu/event/research-week-braintrust"
+          "category": "arts",
+          "url": "https://events.sjsu.edu/event/natalie-and-james-thompson-gallery-click-on-my-mouth-language-and-technology"
         },
         {
           "type": "council",
-          "title": "Approval of the Issuance of Tax-Exempt Multifamily Housing Revenue Bonds and the Loan of the Proceeds thereof for the Financing of Berryessa TOD, an Affordable Housing Project, and Related Documents",
-          "when": "Tue, Apr 14",
+          "title": "Establishment of the GovAI Coalition as a Nonprofit Corporation",
+          "when": "Tue, Apr 7",
           "venue": null,
           "category": "government",
-          "url": "https://sanjose.legistar.com/MeetingDetail.aspx?ID=7617&GUID=ABCB3DA6-5ACC-4A2F-AD99-273BAF658C1A"
+          "url": "https://sanjose.legistar.com/MeetingDetail.aspx?ID=7616&GUID=DD26C585-9FF7-4636-B1B8-E24404F75FAB"
         }
       ],
-      "weekLabel": "Apr 7 – Apr 14",
-      "generatedAt": "2026-04-07T11:11:39.523Z"
+      "weekLabel": "Apr 6 – Apr 13",
+      "generatedAt": "2026-04-06T23:11:29.368Z"
     },
     "santa-clara": {
       "cityId": "santa-clara",
       "cityName": "Santa Clara",
-      "summary": "Santa Clara University's packed Tuesday lineup spans career prep to campus nostalgia, with \"Taking the Stage: 50 Years Ago at the Mayer\" marking a major milestone for the historic venue.",
+      "summary": "Santa Clara University's hosting everything from a Giants pregame mixer to a Passover Seder tonight, making it the week's cultural hub for the South Bay.",
       "highlights": [
         {
           "type": "event",
-          "title": "Fidelity One on One Appointments",
-          "when": "Tue, Apr 7",
+          "title": "SCU Night at the Giants & Alumni Pregame Mixer",
+          "when": "Mon, Apr 6 · 4:30 PM",
           "venue": "Santa Clara University",
-          "category": "education",
-          "url": "https://events.scu.edu/human-resources/event/452031-fidelity-one-on-one-appointments"
+          "category": "community",
+          "url": "https://events.scu.edu/alumni-association/event/372369-scu-night-at-the-giants-alumni-pregame-mixer"
         },
         {
           "type": "event",
-          "title": "Pay Day",
-          "when": "Tue, Apr 7",
+          "title": "Passover Seder Dinner",
+          "when": "Mon, Apr 6 · 6:30 PM",
           "venue": "Santa Clara University",
-          "category": "community",
-          "url": "https://events.scu.edu/human-resources/event/360127-pay-day"
+          "category": "education",
+          "url": "https://events.scu.edu/campus-ministry/event/451575-passover-seder-dinner"
         }
       ],
-      "weekLabel": "Apr 7 – Apr 14",
-      "generatedAt": "2026-04-07T11:11:40.897Z"
+      "weekLabel": "Apr 6 – Apr 13",
+      "generatedAt": "2026-04-06T23:11:30.476Z"
     },
     "los-altos": {
       "cityId": "los-altos",
       "cityName": "Los Altos",
-      "summary": "Library's got you covered this week: bird talk Wednesday, watercolor Friday, board games Sunday, and meditation bookends Monday.",
+      "summary": "Local birders are gathering Thursday night for \"Pelicans, Herons, and Egrets, Oh My!\" at the library—perfect timing as spring migration peaks in the Bay Area.",
       "highlights": [
         {
           "type": "event",
@@ -234,13 +226,13 @@
           "url": "https://sccl.bibliocommons.com/events/6930896e7f0b8a3e004c76e4"
         }
       ],
-      "weekLabel": "Apr 7 – Apr 14",
-      "generatedAt": "2026-04-07T11:11:42.441Z"
+      "weekLabel": "Apr 6 – Apr 13",
+      "generatedAt": "2026-04-06T23:11:32.150Z"
     },
     "palo-alto": {
       "cityId": "palo-alto",
       "cityName": "Palo Alto",
-      "summary": "Palo Alto's Graphic Novel Book Club kicks off Wednesday night at City Library, spotlighting visual storytelling in a community increasingly hungry for alternative narratives.",
+      "summary": "Palo Alto City Council just approved new retail rules to revitalize downtown while natural gas rates climb next fiscal year.",
       "highlights": [
         {
           "type": "event",
@@ -249,15 +241,23 @@
           "venue": "Palo Alto City Library",
           "category": "arts",
           "url": "https://paloalto.bibliocommons.com/events/68057e180453817cac2a944c"
+        },
+        {
+          "type": "cityhall",
+          "title": "Natural Gas Rates Set to Change in Fiscal 2027",
+          "when": null,
+          "venue": null,
+          "category": "government",
+          "url": "https://paloalto.legistar.com/Calendar.aspx?From=3%2F31%2F2026&To=3%2F31%2F2026"
         }
       ],
-      "weekLabel": "Apr 7 – Apr 14",
-      "generatedAt": "2026-04-07T11:11:43.542Z"
+      "weekLabel": "Apr 6 – Apr 13",
+      "generatedAt": "2026-04-06T23:11:33.163Z"
     },
     "milpitas": {
       "cityId": "milpitas",
       "cityName": "Milpitas",
-      "summary": "Milpitas City Council just voted to shrink vacancy appointment sizes, while the library keeps the community busy with chess classes, meditation, and programs for littles this week.",
+      "summary": "Milpitas Library's packed week kicks off with Knitting for Kids Tuesday, followed by back-to-back chess classes and a wellness-focused Qi Gong class for adults.",
       "highlights": [
         {
           "type": "event",
@@ -274,18 +274,10 @@
           "venue": "Santa Clara County Library",
           "category": "family",
           "url": "https://sccl.bibliocommons.com/events/69165797dff9d93e00cff0a9"
-        },
-        {
-          "type": "cityhall",
-          "title": "Council votes to reduce size of vacancy appointments",
-          "when": null,
-          "venue": null,
-          "category": "government",
-          "url": "https://www.ci.milpitas.ca.gov/government/council/"
         }
       ],
-      "weekLabel": "Apr 7 – Apr 14",
-      "generatedAt": "2026-04-07T11:11:44.884Z"
+      "weekLabel": "Apr 6 – Apr 13",
+      "generatedAt": "2026-04-06T23:11:34.719Z"
     }
   }
 }

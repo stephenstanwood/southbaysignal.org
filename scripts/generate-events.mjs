@@ -135,6 +135,13 @@ const TITLE_BLOCKLIST = [
   /\bclosed\s+(for|—|–|-)/i, // closure notices
   /\bcancelled?\b/i,      // cancelled events
   /\bIndustry Insights with Alumni\b/i, // Stanford affiliates only
+  /\bnetworking mixer\b/i, // internal student/professional mixers
+  /\bimpact of ICE\b/i,    // political
+  /\bTerminalFour\b/i,     // internal CMS staff training
+  /\bTree Trackers\b/i,    // on-campus student activity
+  /\bFidelity One on One\b/i, // internal HR appointments
+  /\bPay Day\b/i,          // internal HR payroll notices
+  /\bResearch Week Braintrust\b/i, // internal student workshop
 ];
 
 function isBlockedEvent(title) {
