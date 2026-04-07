@@ -1850,6 +1850,30 @@ export const TECH_MILESTONES: TechMilestone[] = [
     url: "https://en.wikipedia.org/wiki/NeXT",
     defunct: false,
   },
+  {
+    id: "iphone-announcement",
+    company: "Apple",
+    city: "Cupertino",
+    foundedYear: 2007,
+    month: 1,
+    day: 9,
+    tagline: "Apple introduced the original iPhone on January 9, 2007 — the Cupertino product that redefined what a phone could be and launched the smartphone era.",
+    anniversaryNote: "On January 9, 2007, Steve Jobs took the stage at Macworld Expo in San Francisco and announced the original iPhone. 'Every once in a while, a revolutionary product comes along that changes everything,' he said — and this was one. The iPhone combined a phone, an iPod, and an internet communicator into a single glass touchscreen, with no hardware keyboard. The audience gasped when Jobs scrolled through music with a flick of his finger. RIM, Nokia, and Motorola had dismissed touch-only smartphones as impractical. Two years later, the App Store launched. By 2017, Apple had sold over 1.2 billion iPhones. The device that rewired personal communication, disrupted entire industries, and made Cupertino a household name around the world was designed — start to finish — on Apple's campus in Cupertino.",
+    url: "https://en.wikipedia.org/wiki/IPhone_(1st_generation)",
+    defunct: false,
+  },
+  {
+    id: "apple-retail",
+    company: "Apple",
+    city: "Cupertino",
+    foundedYear: 2001,
+    month: 5,
+    day: 19,
+    tagline: "Apple opened its first retail stores on May 19, 2001 — a Cupertino bet that tech could be sold face-to-face, and it became the highest-revenue retail concept per square foot in history.",
+    anniversaryNote: "On May 19, 2001, Apple opened its first two retail stores — at Tysons Corner Center in Virginia and Glendale Galleria in California — a move industry analysts widely predicted would fail. Business Week ran the headline: 'Sorry Steve: Here's Why Apple Stores Won't Work.' Ron Johnson, recruited by Jobs from Target, designed every detail: the open wooden tables, the hands-on demo stations, the Genius Bar. The first weekend brought $1 million in sales. By 2012, Apple's retail stores were generating more revenue per square foot than any retailer in history — more than Tiffany & Co., more than Best Buy. The stores didn't just sell computers; they made technology feel welcoming and human. Every decision behind the Apple Store concept was made on Apple's campus in Cupertino.",
+    url: "https://en.wikipedia.org/wiki/Apple_Store",
+    defunct: false,
+  },
 ];
 
 // ---------------------------------------------------------------------------
