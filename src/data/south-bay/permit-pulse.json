@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-06T23:10:02.328Z",
+      "generatedAt": "2026-04-07T11:10:17.590Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Mar 30 – Apr 6",
+      "dateRange": "Mar 31 – Apr 7",
       "stats": {
-        "total": 412,
+        "total": 364,
         "notable": 14,
         "newUnits": 6,
-        "totalValuation": 7435032
+        "totalValuation": 6291012
       },
       "permits": [
         {
@@ -137,31 +137,19 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-06T23:10:04.766Z",
+      "generatedAt": "2026-04-07T11:10:19.992Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Mar 30 – Apr 6",
+      "dateRange": "Mar 31 – Apr 7",
       "stats": {
-        "total": 114,
-        "notable": 11,
+        "total": 105,
+        "notable": 8,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
-        {
-          "id": "26BLD-00861",
-          "address": "3132 Alexis Dr",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "Res: Temporary power (underground)",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-02",
-          "subtype": "Permit Issued"
-        },
         {
           "id": "26BLD-00847",
           "address": "2353 Webster St",
@@ -175,51 +163,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00828",
-          "address": "3239 Waverley St",
+          "id": "26BLD-00861",
+          "address": "3132 Alexis Dr",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "Res MEP: 40A, Level 2, EV Charging Circuit (Remove & Replace)",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-03-30",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00830",
-          "address": "151 Melville Av",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "RES MEP: We will replace your damaged sewer line",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-03-30",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00872",
-          "address": "841 Ames Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "description": "Res: Temporary power (underground)",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-02",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00825",
-          "address": "3946 Louis Rd",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-03-30",
           "subtype": "Permit Issued"
         },
         {
@@ -235,18 +187,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00876",
-          "address": "3445 Louis Rd",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-03",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00884",
           "address": "61 Erstwild Ct",
           "category": "residential-large",
@@ -259,6 +199,30 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-00876",
+          "address": "3445 Louis Rd",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-03",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00872",
+          "address": "841 Ames Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-02",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26PLN-00067",
           "address": "1450 Page Mill Rd",
           "category": "entitlement",
@@ -268,6 +232,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-01",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00070",
+          "address": "4035 Transport St",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Over the Counter Architectural Review to install one illuminated channel letter building sign on the rear elevation of the existing commercial building. Sign will be internally illuminated LED channel letters with electrical connection to existing building power. The proposed sign will be two feet tall by 38 feet wide to read, \"Peninsula Land.Com\". Environmental Assessment: Not a Project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-03",
           "subtype": "Over the Counter Approved"
         }
       ]
