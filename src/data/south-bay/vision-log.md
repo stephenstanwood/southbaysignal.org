@@ -3039,3 +3039,56 @@ Four verifiable, consequential Silicon Valley milestones — all from companies 
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes — 7 uncovered days from 21, across only 4 remaining windows.** Any South Bay resident opening the Tech tab from August through December now sees continuous, locally-relevant Silicon Valley history. The four new milestones (HP-35, App Store, Google IPO, Apple-NeXT) cover the most historically dense periods of SV innovation.
+
+---
+
+## 2026-04-07 — Cycle 64: Full Year SV History Coverage Achieved
+
+### Context
+Tuesday April 7, 2026 (evening). Previous cycle (63) reported 7 uncovered days across 4 windows, but that analysis used ±7. The actual code uses WINDOW_DAYS = 8 (±8). Recomputing with ±8 revealed only 2 true gaps:
+- **Jan 10-15** (6 days) — between HP/Jan 1 (ends Jan 9) and Mac/Jan 24 (starts Jan 16)
+- **May 14** (1 day) — between LinkedIn/May 5 (ends May 13) and Java/May 23 (starts May 15)
+
+The other 4 gaps the vision log listed (Oct 6, Nov 23-24, May 31) were already covered with ±8. The "7 uncovered days" count was accurate; only the specific days were mislabeled.
+
+### What Was Built
+
+**2 new TECH_MILESTONES added — completing full year coverage:**
+
+1. **iPhone Announcement** (Jan 9, 2007, Cupertino) — fills Jan 10-15 gap
+   - "Every once in a while, a revolutionary product comes along that changes everything." Steve Jobs announced the original iPhone at Macworld Expo. Jan 9 ±8 = Jan 1-17, bridging HP/Jan 1 (ends Jan 9) to Mac/Jan 24 (starts Jan 16). Covers Jan 10-15 with overlap on both sides.
+
+2. **First Apple Store** (May 19, 2001, Cupertino) — fills May 14 gap
+   - Apple opened its first two stores on May 19, 2001. Business Week predicted they would fail; they became the highest-revenue retail concept per square foot in history. May 19 ±8 = May 11-27, covering May 14 and bridging LinkedIn (May 5) to Java (May 23).
+
+**Data refreshed:**
+- `upcoming-events.json` — 536 events (110 ongoing) from 24 sources
+- `around-town.json` — 8 items (council news, permits)
+- `upcoming-meetings.json` — 7 cities with upcoming meetings
+
+**Coverage improvement:** 7 uncovered days → 0 uncovered days
+
+### Why This Was the Strongest Move
+The iPhone announcement and the first Apple Store are two of the most consequential things Apple has ever done — and both are Cupertino stories. Any South Bay resident opening the Tech tab on January 10-15 now sees the moment Jobs changed personal communication forever; anyone opening it around May 14 sees the story of how Apple reinvented retail. These aren't obscure milestones — they're events any South Bay resident who lived through them will remember.
+
+### Full Coverage Status
+**0 uncovered days. Full 365-day coverage of the SV History section achieved for the first time.**
+
+Current milestone coverage verified with code's actual WINDOW_DAYS = 8:
+- Jan 1 (HP) → Dec 24-Jan 9
+- Jan 9 (iPhone) → Jan 1-Jan 17 ← NEW (fills Jan 10-15)
+- Jan 24 (Mac) → Jan 16-Feb 1
+- Feb 1 (HP-35) → Jan 24-Feb 9
+... continuous through the year ...
+- May 5 (LinkedIn) → Apr 27-May 13
+- May 19 (Apple Store) → May 11-May 27 ← NEW (fills May 14)
+- May 23 (Java) → May 15-May 31
+... continuous through Dec 28 (NeXT) → Dec 24 (HP, next year loop)
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED updates** — Monitor for new Q2 2026 rounds. Alcatraz AI (Apr 2) is the most recent entry. Check weekly for AI/robotics/semiconductor rounds.
+2. **Tech tab small company focus** — Use Crunchbase API or LinkedIn to surface local seed/pre-seed activity from companies with <50 employees in South Bay cities.
+3. **SV History display enhancement** — Now that coverage is complete, consider showing the upcoming milestone (days until next event) in a "Coming up in SV history" chip.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes — 0 uncovered days.** Every day of the year, any South Bay resident who opens the Tech tab sees a locally-rooted Silicon Valley story. The iPhone story (Cupertino), the Apple Store story (Cupertino), HP's garage (Palo Alto), Intel's 8086 (Santa Clara), Google's IPO (Mountain View) — these aren't abstract tech history; they're the stories of the companies whose campuses these residents drive past every day.
