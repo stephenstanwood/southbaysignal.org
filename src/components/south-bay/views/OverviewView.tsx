@@ -1090,7 +1090,7 @@ interface SpringBreakPick {
   why: string;
 }
 
-function SpringBreakCard() {
+function SpringBreakCard({ todayForecast }: { todayForecast?: ForecastDay | null }) {
   const data = springBreakJson as {
     label?: string;
     subtitle?: string;
@@ -1107,6 +1107,30 @@ function SpringBreakCard() {
   const showUntil = data.breakEnd ?? "2026-04-17";
   if (today < showAfter || today > showUntil) return null;
 
+  // Weather-aware banner: suggest indoor vs outdoor based on today's forecast
+  let weatherTip: { emoji: string; text: string; bg: string; border: string } | null = null;
+  if (todayForecast) {
+    const { emoji, high, rainPct, desc } = todayForecast;
+    const descLower = desc.toLowerCase();
+    const isRainy = rainPct >= 40 || descLower.includes("rain") || descLower.includes("shower") || descLower.includes("drizzle");
+    const isClear = rainPct < 20 && (descLower.includes("clear") || descLower.includes("sunny") || descLower.includes("partly"));
+    if (isRainy) {
+      weatherTip = {
+        emoji: "🌧️",
+        text: `Rainy today (${high}°F, ${rainPct}% rain chance) — library events and indoor activities are your best bet.`,
+        bg: "#EFF6FF",
+        border: "#BFDBFE",
+      };
+    } else if (isClear) {
+      weatherTip = {
+        emoji: emoji,
+        text: `${desc} today, ${high}°F — a great day to get outside.`,
+        bg: "#F0FDF4",
+        border: "#BBF7D0",
+      };
+    }
+  }
+
   return (
     <div style={{ marginBottom: 32 }}>
       <div className="sb-section-header" style={{ marginBottom: 12 }}>
@@ -1118,6 +1142,19 @@ function SpringBreakCard() {
         )}
         <div className="sb-section-line" />
       </div>
+      {weatherTip && (
+        <div style={{
+          fontSize: 12, color: "var(--sb-ink)",
+          background: weatherTip.bg,
+          border: `1px solid ${weatherTip.border}`,
+          borderRadius: 6, padding: "8px 12px",
+          marginBottom: 14,
+          display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <span style={{ fontSize: 16 }}>{weatherTip.emoji}</span>
+          <span>{weatherTip.text}</span>
+        </div>
+      )}
 
       {(() => {
         // Group picks by week
@@ -2964,7 +3001,7 @@ export default function OverviewView({ homeCity, setHomeCity, onNavigate }: Prop
       {!changingCity && <SchoolCalendarCard />}
 
       {/* ── Spring Break Guide (shown Mar 28 – Apr 17) ── */}
-      {!changingCity && <SpringBreakCard />}
+      {!changingCity && <SpringBreakCard todayForecast={forecast?.[0] ?? null} />}
 
       {/* ── Housing Market ── */}
       {!changingCity && <RealEstateCard homeCity={homeCity} />}
