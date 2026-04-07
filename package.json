@@ -29,7 +29,8 @@
     "social:weekend": "node scripts/social/generate-weekend-roundup.mjs",
     "social:civic": "node scripts/social/generate-civic-signal.mjs",
     "social:publish": "node scripts/social/publish.mjs",
-    "social:generate": "node scripts/social/generate-posts.mjs"
+    "social:generate": "node scripts/social/generate-posts.mjs",
+    "social:sv-history": "node scripts/social/generate-sv-history.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",

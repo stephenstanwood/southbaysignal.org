@@ -143,6 +143,110 @@ Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook" — ea
   return variants;
 }
 
+/**
+ * Generate copy for an SV History milestone post.
+ *
+ * @param {object} milestone - TechMilestone object from tech-companies.ts
+ * @param {Date} ptTime - current Pacific Time
+ * @returns {Promise<{x: string, threads: string, bluesky: string, facebook: string}>}
+ */
+export async function generateSvHistoryCopy(milestone, ptTime) {
+  loadEnv();
+
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
+
+  const age = ptTime.getFullYear() - milestone.foundedYear;
+  const now = ptTime.toLocaleString("en-US", {
+    dateStyle: "full",
+    timeStyle: "short",
+  });
+
+  const ordinal = (n) => {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  };
+
+  const defunctNote = milestone.defunct
+    ? `\nNote: ${milestone.company} no longer exists as an independent company.`
+    : "";
+  const chmNote = milestone.chmExhibit
+    ? `\nComputer History Museum exhibit: "${milestone.chmExhibit}"`
+    : "";
+
+  const prompt = `Write an "On This Day in Silicon Valley" social post about this tech milestone. Current date: ${now}.
+
+MILESTONE:
+- Company: ${milestone.company}
+- City: ${milestone.city}
+- Founded/Occurred: ${milestone.month}/${milestone.day}/${milestone.foundedYear}
+- Age: ${age} years (${ordinal(age)} anniversary)
+- Tagline: ${milestone.tagline}
+- Anniversary context: ${milestone.anniversaryNote}
+- URL (MUST include this exact URL): ${milestone.url}${defunctNote}${chmNote}
+
+TONE FOR THIS POST TYPE:
+- This is a "Silicon Valley history" post, not a breaking news item
+- Lead with the anniversary angle: "${age} years ago today..." or "On this day in ${milestone.foundedYear}..."
+- Be reverent but not stuffy — these are origin stories, not textbook entries
+- Connect the past to why it matters NOW in the South Bay
+- If the company still exists locally, nod to its current presence
+- If defunct, frame it as legacy/influence, not loss
+
+Write four variants:
+1. X (max 270 chars including URL) — punchy, clean, no hashtags
+2. Threads (max 470 chars including URL + hashtags) — slightly warmer, can breathe more. End with 2-3 relevant hashtags
+3. Bluesky (max 270 chars including URL + hashtags) — similar to X, can be slightly looser. End with 2-3 relevant hashtags
+4. Facebook (max 500 chars including URL) — conversational, can include a bit more context, no hashtags
+
+Each variant must include the exact URL provided above.
+
+HASHTAG RULES (for Bluesky and Threads only):
+- Always include #SiliconValley
+- Add a city hashtag: #${milestone.city.replace(/\s+/g, "")}
+- Add 1 topic hashtag: #TechHistory, #OnThisDay, or #SouthBay
+- Max 3 hashtags total. Place them at the very end, space-separated.
+
+Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook" — each a string. No other text.`;
+
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      model: CLAUDE_MODEL,
+      max_tokens: 1024,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: "user", content: prompt }],
+    }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Claude API error (${res.status}): ${text}`);
+  }
+
+  const data = await res.json();
+  const text = data.content?.[0]?.text ?? "";
+
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error(`Failed to extract JSON from Claude response: ${text.slice(0, 200)}`);
+  }
+
+  const variants = JSON.parse(jsonMatch[0]);
+
+  if (!variants.x || !variants.threads || !variants.bluesky || !variants.facebook) {
+    throw new Error("Missing platform variant in Claude response");
+  }
+
+  return variants;
+}
+
 // Keep the old function for backward compat during transition
 export async function generateCopy(format, items, url) {
   if (items.length === 1) {

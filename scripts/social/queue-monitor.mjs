@@ -68,6 +68,20 @@ async function main() {
     return;
   }
 
+  // Always check for SV History milestones (date-sensitive, runs regardless of queue health)
+  console.log("Checking for SV History milestones...");
+  try {
+    const nodePath = process.execPath;
+    const envFile = join(__dirname, "..", "..", ".env.local");
+    execFileSync(nodePath, ["--env-file=" + envFile, join(__dirname, "generate-sv-history.mjs")], {
+      cwd: join(__dirname, "..", ".."),
+      timeout: 120_000,
+      stdio: "inherit",
+    });
+  } catch (err) {
+    console.error("SV History generation failed:", err.message);
+  }
+
   // Queue is low — generate drafts if we don't already have some waiting
   if (pendingDrafts < 10) {
     console.log(`Generating ${GENERATE_BATCH} new drafts...`);
