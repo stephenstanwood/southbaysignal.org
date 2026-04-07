@@ -1256,6 +1256,18 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     url: "https://imperativecare.com",
   },
   {
+    id: "aria-networks",
+    name: "Aria Networks",
+    city: "Palo Alto",
+    category: "network",
+    round: "Series A",
+    amount: "$125M",
+    date: "2026-04-07",
+    tagline: "AI-native networking infrastructure purpose-built for large GPU clusters — hardware + software that maximizes token efficiency across Nvidia and Google chips. Emerged from stealth April 2026 with customer deployments already underway. Founded by Mansour Karam, who previously built and sold Apstra to Juniper for ~$450M.",
+    color: "#0369a1",
+    url: "https://aria.network",
+  },
+  {
     id: "alcatraz-ai",
     name: "Alcatraz",
     city: "Cupertino",
