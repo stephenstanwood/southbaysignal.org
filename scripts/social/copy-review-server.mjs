@@ -10,7 +10,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, unlink
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
-import { execFile } from "node:child_process";
+import { execFile, execFileSync } from "node:child_process";
 import { processComment } from "./lib/action-commands.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -88,16 +88,28 @@ function generateNewBatch() {
   isGenerating = true;
   console.log(`\n🔄 Generating next batch of ${BATCH_SIZE} posts...`);
 
-  // Clear old post files
+  // Clear old post files (preserve sv-history posts — they're date-sensitive and shouldn't be regenerated)
   if (existsSync(POST_DIR)) {
     for (const f of readdirSync(POST_DIR)) {
-      if (f.startsWith("post-") && f.endsWith(".json")) {
+      if (f.startsWith("post-") && f.endsWith(".json") && !f.includes("-sv-history-")) {
         unlinkSync(join(POST_DIR, f));
       }
     }
   }
 
   const nodePath = process.execPath;
+
+  // Generate sv-history posts first (quick — only produces output on anniversary dates)
+  try {
+    execFileSync(nodePath, ["--env-file=" + ENV_FILE, join(__dirname, "generate-sv-history.mjs")], {
+      cwd: join(__dirname, "..", ".."),
+      timeout: 120_000,
+      stdio: "inherit",
+    });
+  } catch (err) {
+    console.error("SV History generation failed:", err.message);
+  }
+
   execFile(nodePath, ["--env-file=" + ENV_FILE, GENERATE_SCRIPT, "--max", String(BATCH_SIZE)], {
     cwd: join(__dirname, "..", ".."),
     timeout: 300_000,
