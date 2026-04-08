@@ -125,7 +125,7 @@ export default function CityPage({ cityId, cityName }: Props) {
       {/* ═══ HEADER ═══ */}
       <div style={{ marginBottom: 24 }}>
         <a href="/" style={{ fontSize: 11, color: "var(--sb-muted)", textDecoration: "none", fontFamily: "'Space Mono', monospace", letterSpacing: "0.06em" }}>
-          ← THE SOUTH BAY SIGNAL
+          ← SOUTH BAY TODAY
         </a>
         <h1 style={{
           fontFamily: "var(--sb-serif)", fontWeight: 900, fontSize: 42,
@@ -144,6 +144,9 @@ export default function CityPage({ cityId, cityName }: Props) {
           )}
         </div>
       </div>
+
+      {/* ═══ YOUR DAY ═══ */}
+      <CityDayPlan cityId={cityId as City} cityName={cityName} />
 
       {/* ═══ TONIGHT AT CITY HALL ═══ */}
       {meetingIsToday && nextMeeting && (
@@ -390,6 +393,89 @@ function EventRow({ event }: { event: UpcomingEvent }) {
           {event.venue && <span>· {event.venue}</span>}
         </div>
       </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// City Day Plan — compact plan-day integration for city pages
+// ---------------------------------------------------------------------------
+
+const PLAN_ACCENTS = ["#FF6B35", "#E63946", "#06D6A0", "#7B2FBE", "#1A5AFF", "#FF3CAC"];
+const PLAN_EMOJI: Record<string, string> = {
+  food: "🍽️", outdoor: "🌿", museum: "🏛️", entertainment: "🎭",
+  wellness: "💆", shopping: "🛍️", arts: "🎨", events: "📅", sports: "⚾",
+};
+
+type DayCard = {
+  id: string; name: string; category: string; timeBlock: string;
+  blurb: string; why: string; photoRef?: string | null;
+  url?: string | null; mapsUrl?: string | null;
+  cost?: string | null; costNote?: string | null;
+  source: "event" | "place";
+};
+
+function CityDayPlan({ cityId, cityName }: { cityId: City; cityName: string }) {
+  const [cards, setCards] = useState<DayCard[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/plan-day", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ city: cityId, kids: false, currentHour: new Date().getHours() }),
+    })
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => { if (d?.cards) setCards(d.cards); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [cityId]);
+
+  if (loading) {
+    return (
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "var(--sb-muted)", marginBottom: 10 }}>
+          Your day in {cityName}
+        </div>
+        {[0,1,2].map((i) => (
+          <div key={i} style={{ height: 48, borderRadius: 8, background: `${PLAN_ACCENTS[i]}10`, border: `1px solid ${PLAN_ACCENTS[i]}15`, marginBottom: 6, opacity: 0, animation: `cityPlanFadeIn 0.4s ease ${i * 0.15}s forwards` }} />
+        ))}
+        <style>{`@keyframes cityPlanFadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }`}</style>
+      </div>
+    );
+  }
+
+  if (!cards.length) return null;
+
+  return (
+    <div style={{ marginBottom: 24 }}>
+      <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "var(--sb-muted)", marginBottom: 10 }}>
+        Your day in {cityName}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {cards.map((card, i) => {
+          const accent = PLAN_ACCENTS[i % PLAN_ACCENTS.length];
+          const emoji = PLAN_EMOJI[card.category] || "📍";
+          return (
+            <div key={card.id} style={{ display: "flex", gap: 10, padding: "10px 12px", borderRadius: 8, background: `${accent}08`, border: `1px solid ${accent}18` }}>
+              <div style={{ width: 48, height: 48, borderRadius: 8, overflow: "hidden", flexShrink: 0, background: card.photoRef ? `url(/api/place-photo?ref=${encodeURIComponent(card.photoRef || "")}&w=120&h=120) center/cover no-repeat, ${accent}15` : `${accent}15`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>
+                {!card.photoRef && emoji}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 1 }}>
+                  <span style={{ fontSize: 10, fontWeight: 800, color: "var(--sb-ink)" }}>{card.timeBlock}</span>
+                  <span style={{ fontSize: 8, fontWeight: 700, color: accent, textTransform: "uppercase" as const, letterSpacing: 1 }}>{card.category}</span>
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: "var(--sb-ink)", lineHeight: 1.2, marginBottom: 2 }}>{card.name}</div>
+                <div style={{ fontSize: 12, color: "var(--sb-muted)", lineHeight: 1.35 }}>{card.blurb}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <a href="/#overview" style={{ display: "inline-block", marginTop: 10, fontSize: 12, fontWeight: 700, color: "var(--sb-accent)", textDecoration: "none" }}>
+        Customize your plan →
+      </a>
     </div>
   );
 }

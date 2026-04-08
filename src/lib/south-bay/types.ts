@@ -26,14 +26,12 @@ export interface TabDef {
 
 export const TABS: TabDef[] = [
   { id: "overview", label: "Today" },
-  { id: "plan", label: "Plan My Day" },
   { id: "events", label: "Events" },
   { id: "camps", label: "Camps" },
   { id: "government", label: "Gov" },
   { id: "technology", label: "Tech" },
   { id: "development", label: "Development" },
   { id: "food", label: "Food" },
-  { id: "transit", label: "Transit" },
   { id: "weather", label: "Weather" },
   { id: "sports", label: "Sports" },
 ];
