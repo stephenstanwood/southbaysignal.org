@@ -3,7 +3,7 @@ import type { Tab, City } from "../../lib/south-bay/types";
 import { TABS } from "../../lib/south-bay/types";
 import { CITIES, getCityName } from "../../lib/south-bay/cities";
 import SportsView from "./views/SportsView";
-import OverviewView from "./views/OverviewView";
+import HomepageView from "./homepage/HomepageView";
 import GovernmentView from "./views/GovernmentView";
 import EventsView from "./views/EventsView";
 import TechnologyView from "./views/TechnologyView";
@@ -200,7 +200,7 @@ export default function SignalApp() {
       {/* Content */}
       <main className="sb-main">
         {activeTab === "overview" && (
-          <OverviewView homeCity={homeCity} setHomeCity={setHomeCity} onNavigate={navigateTo} />
+          <HomepageView homeCity={homeCity} setHomeCity={setHomeCity} onNavigate={navigateTo} />
         )}
         {activeTab === "sports" && <SportsView />}
         {activeTab === "events" && (

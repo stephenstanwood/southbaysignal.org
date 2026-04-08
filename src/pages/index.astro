@@ -1890,6 +1890,17 @@ const title = "The South Bay Signal";
         .tech-section-head { flex-direction: column; gap: 2px; }
         .tech-legend-note { display: none; }
         .tech-chart-wrap { overflow-x: auto; }
+
+        /* Homepage v2 responsive */
+        .sb-lead-grid { grid-template-columns: 1fr !important; }
+        .sb-civic-grid { grid-template-columns: 1fr !important; }
+        .sb-city-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      }
+
+      /* Pulse animation for "Happening Now" indicator */
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
       }
 
       /* ── Camps ── */
