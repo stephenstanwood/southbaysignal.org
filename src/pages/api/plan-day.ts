@@ -109,6 +109,15 @@ function todayStr(): string {
   return new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
 }
 
+const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+
+/** Check if a place is open today based on its hours data. null hours = assume open. */
+function isOpenToday(hours: Record<string, string> | null): boolean {
+  if (!hours) return true; // no hours data = assume open
+  const dayIdx = new Date().toLocaleDateString("en-US", { timeZone: "America/Los_Angeles", weekday: "short" }).toLowerCase().slice(0, 3);
+  return dayIdx in hours;
+}
+
 function currentPTHour(): number {
   return new Date().toLocaleString("en-US", {
     timeZone: "America/Los_Angeles",
@@ -301,6 +310,9 @@ function buildCandidatePool(
     if (VENUE_ONLY_TYPES.has(primaryType) || types.some((t: string) => VENUE_ONLY_TYPES.has(t))) {
       continue;
     }
+
+    // Skip places that are closed today
+    if (!isOpenToday(p.hours)) continue;
 
     // Filter to city or nearby
     if (p.city !== city) {

@@ -264,6 +264,13 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         </button>
       </div>
 
+      {/* Instruction line */}
+      {cards.length > 0 && (
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: "#bbb", margin: "0 0 10px" }}>
+          ✓ Lock what sounds great &nbsp;·&nbsp; Skip what&apos;s not for today &nbsp;·&nbsp; Hide what&apos;s not for you
+        </p>
+      )}
+
       {/* Error */}
       {error && (
         <div style={{ textAlign: "center", padding: 40, color: "#E63946", fontFamily: "'Inter', sans-serif" }}>
@@ -315,8 +322,9 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
                 </div>
                 {/* Actions */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 4, marginLeft: 12, flexShrink: 0, alignItems: "center" }}>
-                  <button onClick={() => handleLock(card.id)} title={card.locked ? "Unlock" : "Lock"} style={{ width: 32, height: 32, borderRadius: 8, border: card.locked ? "2px solid #06D6A0" : "1.5px solid #ddd", background: card.locked ? "#06D6A0" : "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, padding: 0 }}>{card.locked ? "🔒" : "✓"}</button>
-                  <button onClick={() => handleDismiss(card.id, "skip")} title="Skip for 30 days" style={{ width: 32, height: 32, borderRadius: 8, border: "1.5px solid #ddd", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: "#aaa", fontFamily: "'Inter', sans-serif", padding: 0 }}>✕</button>
+                  <button onClick={() => handleLock(card.id)} title={card.locked ? "Unlock" : "Lock this"} style={{ width: 32, height: 32, borderRadius: 8, border: card.locked ? "2px solid #06D6A0" : "1.5px solid #ddd", background: card.locked ? "#06D6A0" : "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, padding: 0 }}>{card.locked ? "🔒" : "✓"}</button>
+                  <button onClick={() => handleDismiss(card.id, "skip")} title="Not today (skip 30 days)" style={{ padding: "3px 8px", borderRadius: 6, border: "1.5px solid #ddd", background: "#fff", cursor: "pointer", fontSize: 9, fontWeight: 700, color: "#aaa", fontFamily: "'Inter', sans-serif" }}>Skip</button>
+                  <button onClick={() => handleDismiss(card.id, "hide")} title="Never show this" style={{ padding: "3px 8px", borderRadius: 6, border: "1.5px solid #000", background: "#000", cursor: "pointer", fontSize: 9, fontWeight: 700, color: "#fff", fontFamily: "'Inter', sans-serif" }}>Hide</button>
                 </div>
               </div>
             );
