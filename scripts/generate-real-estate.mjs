@@ -51,15 +51,34 @@ function parseNum(s) {
   return isNaN(n) ? null : n;
 }
 
+const MAX_RETRIES = 2;
+const TIMEOUT_MS = 300_000;
+
+async function fetchWithRetry() {
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      if (attempt > 0) {
+        const delay = attempt * 5_000;
+        console.log(`  Retry ${attempt}/${MAX_RETRIES} after ${delay / 1000}s…`);
+        await new Promise((r) => setTimeout(r, delay));
+      }
+      const res = await fetch(REDFIN_URL, {
+        headers: { "User-Agent": "SouthBaySignal/1.0 (southbaysignal.org; public data)" },
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res;
+    } catch (err) {
+      console.error(`  Attempt ${attempt + 1} failed: ${err.message}`);
+      if (attempt === MAX_RETRIES) throw err;
+    }
+  }
+}
+
 async function main() {
   console.log("Streaming Redfin city market tracker…");
 
-  // Stream download → gunzip → readline (line by line)
-  const res = await fetch(REDFIN_URL, {
-    headers: { "User-Agent": "SouthBaySignal/1.0 (southbaysignal.org; public data)" },
-    signal: AbortSignal.timeout(180_000),
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const res = await fetchWithRetry();
 
   const nodeStream = Readable.fromWeb(res.body);
   const gunzip = createGunzip();
