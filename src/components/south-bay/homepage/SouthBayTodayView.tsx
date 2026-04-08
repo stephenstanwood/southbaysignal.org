@@ -26,6 +26,7 @@ interface DayCard {
   cost?: string | null;
   costNote?: string | null;
   photoRef?: string | null;
+  venue?: string | null;
   source: "event" | "place";
   locked: boolean;
 }
@@ -124,6 +125,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
   const [loading, setLoading] = useState(true);
   const [swapLoading, setSwapLoading] = useState(false); // loading triggered by a dismiss
   const [fadingIds, setFadingIds] = useState<Set<string>>(new Set());
+  const [replacedIds, setReplacedIds] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const [timeDisplay, setTimeDisplay] = useState(() => formatTime());
   const [showMoreCities, setShowMoreCities] = useState(false);
@@ -168,6 +170,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
       const data: PlanResponse = await res.json();
       const sorted = [...data.cards].sort((a, b) => parseTimeBlock(a.timeBlock) - parseTimeBlock(b.timeBlock));
       setCards(sorted.map((c) => ({ ...c, locked: state.locked.includes(c.id) })));
+      setReplacedIds(new Set());
       setWeather(data.weather);
       setActiveCard(0);
     } catch (err) {
@@ -222,10 +225,10 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
     setFadingIds((prev) => new Set([...prev, cardId]));
     setSwapLoading(true);
 
-    // After animation completes, remove card from list
+    // After animation: swap card to in-place loading skeleton (don't remove yet)
     setTimeout(() => {
-      setCards((prev) => prev.filter((c) => c.id !== cardId));
       setFadingIds((prev) => { const n = new Set(prev); n.delete(cardId); return n; });
+      setReplacedIds((prev) => new Set([...prev, cardId]));
     }, 320);
 
     const entry: DismissedEntry = type === "hide"
@@ -257,6 +260,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
           <div className="sbt-time-display" style={{ fontFamily: "'Inter', sans-serif", fontSize: 48, fontWeight: 900, letterSpacing: -2, color: "#000", lineHeight: 1 }}>{timeDisplay}</div>
           <div>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, fontWeight: 700, color: "#333" }}>{headline}</div>
+            {weather && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: "#888", marginTop: 2 }}>🌤 {weather} · {CITY_MAP[state.city]?.name}</div>}
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -266,7 +270,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
             <button onClick={() => { if (!state.kids) handleKidsToggle(); }} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, padding: "4px 10px", border: "none", borderLeft: "2px solid #000", background: state.kids ? "#000" : "#fff", color: state.kids ? "#fff" : "#888", cursor: "pointer", transition: "all 0.15s" }}>Kids</button>
           </div>
           {/* New Plan */}
-          <button onClick={handleNewPlan} disabled={loading} style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 900, padding: "5px 16px", borderRadius: 14, border: "2.5px solid #000", background: loading ? "#eee" : "linear-gradient(135deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC)", color: loading ? "#999" : "#fff", cursor: loading ? "not-allowed" : "pointer", textTransform: "uppercase" as const, letterSpacing: 1, backgroundSize: "200% 200%", animation: loading ? "none" : "rainbow 3s ease infinite", whiteSpace: "nowrap" as const }}>Shuffle ↻</button>
+          <button onClick={handleNewPlan} disabled={loading && !swapLoading} style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 900, padding: "5px 16px", borderRadius: 14, border: "2.5px solid #000", background: (loading && !swapLoading) ? "#eee" : "linear-gradient(135deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC)", color: (loading && !swapLoading) ? "#999" : "#fff", cursor: (loading && !swapLoading) ? "not-allowed" : "pointer", textTransform: "uppercase" as const, letterSpacing: 1, backgroundSize: "200% 200%", animation: (loading && !swapLoading) ? "none" : "rainbow 3s ease infinite", whiteSpace: "nowrap" as const }}>Shuffle ↻</button>
         </div>
       </div>
 
@@ -295,15 +299,6 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
           </button>
         </div>
       </div>
-
-      {/* Weather strip */}
-      {weather && (
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 14px", marginBottom: 10, background: "#f8f8f8", borderRadius: 10, border: "1px solid #eee" }}>
-          <span style={{ fontSize: 18 }}>🌤</span>
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 700, color: "#333" }}>{weather}</span>
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: "#bbb", marginLeft: "auto" }}>{CITY_MAP[state.city]?.name}, CA</span>
-        </div>
-      )}
 
       {/* Instruction line */}
       {cards.length > 0 && (
@@ -348,7 +343,21 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
             const accent = ACCENT_COLORS[i % ACCENT_COLORS.length];
             const emoji = CATEGORY_EMOJI[card.category] || "📍";
             const isFading = fadingIds.has(card.id);
+            const isReplaced = replacedIds.has(card.id);
             const cardUrl = card.source === "event" ? (card.url || card.mapsUrl) : (card.mapsUrl || card.url);
+
+            // In-place loading skeleton for dismissed card
+            if (isReplaced) {
+              return (
+                <div key={card.id} style={{ display: "flex", background: "#fff", borderRadius: 10, border: "1px dashed #e8e8e8", overflow: "hidden", opacity: 0, animation: "cardAppear 0.35s ease-out forwards" }}>
+                  <div style={{ width: 5, background: "#e8e8e8", flexShrink: 0 }} />
+                  <div style={{ flex: 1, padding: "14px 16px", display: "flex", alignItems: "center" }}>
+                    <LoadingVerb />
+                  </div>
+                </div>
+              );
+            }
+
             return (
               <div
                 key={card.id}
@@ -391,15 +400,6 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
               </div>
             );
           })}
-          {/* Swap-loading stub — shown while fetching a replacement card */}
-          {swapLoading && (
-            <div style={{ display: "flex", background: "#fff", borderRadius: 10, border: "1px dashed #e8e8e8", overflow: "hidden", opacity: 0, animation: "cardAppear 0.4s ease-out 0.35s forwards" }}>
-              <div style={{ width: 5, background: "#e8e8e8", flexShrink: 0 }} />
-              <div style={{ flex: 1, padding: "14px 16px", display: "flex", alignItems: "center" }}>
-                <LoadingVerb />
-              </div>
-            </div>
-          )}
         </div>
       )}
 
@@ -507,6 +507,12 @@ function CardInner({ card, emoji, accent }: { card: DayCard; emoji: string; acce
           {card.source === "event" && <span style={{ fontSize: 9, fontWeight: 700, color: "#E63946", fontFamily: "'Inter', sans-serif" }}>EVENT</span>}
         </div>
         <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, fontWeight: 900, color: "#000", margin: "0 0 3px", lineHeight: 1.2 }}>{card.name}</h3>
+        {card.source === "event" && card.venue && (
+          <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3 }}>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: "#aaa" }}>{card.venue}</span>
+          </div>
+        )}
         <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#555", margin: "0 0 3px", lineHeight: 1.4 }}>{card.blurb}</p>
         <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 600, color: accent, margin: 0, lineHeight: 1.3, fontStyle: "italic" }}>{card.why}</p>
         {(card.costNote || card.cost) && (

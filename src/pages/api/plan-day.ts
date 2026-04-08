@@ -51,6 +51,7 @@ interface Candidate {
   url?: string | null;
   mapsUrl?: string | null;
   hours?: Record<string, string> | null;
+  venue?: string | null;
   source: "event" | "place";
   eventDate?: string;
   eventTime?: string | null;
@@ -63,6 +64,7 @@ interface DayCard {
   category: string;
   city: string;
   address: string;
+  venue?: string | null;
   timeBlock: string;
   blurb: string;
   why: string;
@@ -288,7 +290,8 @@ function buildCandidatePool(
       name: evt.title,
       category: evt.category || "events",
       city: evt.city,
-      address: evt.address || evt.venue || "",
+      address: evt.address || "",
+      venue: evt.venue || null,
       description: evt.description?.slice(0, 200),
       cost: evt.cost,
       kidFriendly: evt.kidFriendly ?? null,
@@ -503,6 +506,7 @@ Return ONLY the JSON array. No explanation.`;
       cost: candidate.cost,
       costNote: candidate.costNote,
       photoRef: (candidate as any).photoRef || null,
+      venue: candidate.venue || null,
       source: candidate.source,
       locked: lockedCandidates.some((l) => l.id === candidate.id),
     });
