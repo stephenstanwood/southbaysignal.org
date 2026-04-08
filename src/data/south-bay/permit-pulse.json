@@ -1,19 +1,91 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-08T02:06:53.945Z",
+      "generatedAt": "2026-04-08T11:10:48.829Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Mar 31 – Apr 7",
+      "dateRange": "Apr 1 – Apr 8",
       "stats": {
-        "total": 364,
-        "notable": 14,
-        "newUnits": 6,
-        "totalValuation": 6291012
+        "total": 347,
+        "notable": 28,
+        "newUnits": 84,
+        "totalValuation": 19764055
       },
       "permits": [
+        {
+          "id": "2026-111055-MF",
+          "address": "678 E St John St",
+          "category": "multi-family-new",
+          "categoryLabel": "New Multi-Family",
+          "workType": "New Construction",
+          "description": "Trillium (Bemp 100%) Senior Apartments",
+          "valuation": 8795834,
+          "units": 65,
+          "issueDate": "2026-04-06",
+          "subtype": "Apartment"
+        },
+        {
+          "id": "2026-108615-MF",
+          "address": "0 Seely Av",
+          "category": "multi-family-new",
+          "categoryLabel": "New Multi-Family",
+          "workType": "New Construction",
+          "description": "Trimble Summerhill 6-Plex New Construction",
+          "valuation": 2069400,
+          "units": 6,
+          "issueDate": "2026-04-06",
+          "subtype": "Townhouse"
+        },
+        {
+          "id": "2026-107126-RS",
+          "address": "2720 Gay Av",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Lot 2 (Model 2) New Duplex",
+          "valuation": 464479,
+          "units": 2,
+          "issueDate": "2026-04-06",
+          "subtype": "Duplex"
+        },
+        {
+          "id": "2026-107197-RS",
+          "address": "148 N Capitol Av",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Lot 3 (Model 3) New Single Family Residence",
+          "valuation": 427210,
+          "units": 1,
+          "issueDate": "2026-04-06",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-107086-RS",
+          "address": "2710 Gay Av",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Lot 1 (Model 1) New Single Family",
+          "valuation": 351379,
+          "units": 1,
+          "issueDate": "2026-04-06",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-107218-RS",
+          "address": "140 N Capitol Av",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Lot 4 (Model 4) New Single Family",
+          "valuation": 348619,
+          "units": 1,
+          "issueDate": "2026-04-06",
+          "subtype": "Single-Family"
+        },
         {
           "id": "2025-137614-RS",
           "address": "61 Scharff Av #2",
@@ -39,6 +111,18 @@
           "subtype": "2nd Unit Added"
         },
         {
+          "id": "2024-066797-RS",
+          "address": "885 Curtner Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Code Case Attached adu",
+          "valuation": 168245,
+          "units": 1,
+          "issueDate": "2026-04-06",
+          "subtype": "2nd Unit Added"
+        },
+        {
           "id": "2025-092358-RS",
           "address": "5189 Doyle Rd #2",
           "category": "residential-new",
@@ -49,119 +133,23 @@
           "units": 1,
           "issueDate": "2026-04-03",
           "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-133642-RS",
-          "address": "1280 Turrett Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Code Case Garage Conversion to adu",
-          "valuation": 80656,
-          "units": 1,
-          "issueDate": "2026-04-01",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2024-115372-RS",
-          "address": "3923 Arden Farms Pl #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Attached Garage Conversion to adu",
-          "valuation": 79472,
-          "units": 1,
-          "issueDate": "2026-04-01",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-117612-RS",
-          "address": "3085 Senter Rd #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Code Case Legalize Unpermitted Garage Conversion to Jadu",
-          "valuation": 64254,
-          "units": 1,
-          "issueDate": "2026-04-02",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2026-109214-CI",
-          "address": "1290 Ridder Park Dr",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "(Be 100%) Elevator Upgrades",
-          "valuation": 1100000,
-          "units": 0,
-          "issueDate": "2026-04-03",
-          "subtype": "Commercial/Industrial"
-        },
-        {
-          "id": "2026-110761-CI",
-          "address": "1300 W San Carlos St",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "ReRoof",
-          "description": "Commercial/Industrial",
-          "valuation": 696570,
-          "units": 0,
-          "issueDate": "2026-04-01",
-          "subtype": "Commercial/Industrial"
-        },
-        {
-          "id": "2026-111324-CI",
-          "address": "475 Eggo Wy",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "ReRoof",
-          "description": "Warehouse/Storage",
-          "valuation": 351540,
-          "units": 0,
-          "issueDate": "2026-04-03",
-          "subtype": "Warehouse/Storage"
-        },
-        {
-          "id": "2026-110777-CI",
-          "address": "2125 Zanker Rd",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "(Be 100%) Transformer and Switchboard",
-          "valuation": 210100,
-          "units": 0,
-          "issueDate": "2026-04-02",
-          "subtype": "Office"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-08T02:06:56.313Z",
+      "generatedAt": "2026-04-08T11:10:51.057Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Mar 31 – Apr 7",
+      "dateRange": "Apr 1 – Apr 8",
       "stats": {
-        "total": 88,
-        "notable": 8,
+        "total": 113,
+        "notable": 12,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
-        {
-          "id": "26BLD-00861",
-          "address": "3132 Alexis Dr",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "Res: Temporary power (underground)",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-02",
-          "subtype": "Permit Issued"
-        },
         {
           "id": "26BLD-00847",
           "address": "2353 Webster St",
@@ -175,27 +163,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00884",
-          "address": "61 Erstwild Ct",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "id": "26BLD-00861",
+          "address": "3132 Alexis Dr",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "Res: Temporary power (underground)",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-05",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00876",
-          "address": "3445 Louis Rd",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-03",
+          "issueDate": "2026-04-02",
           "subtype": "Permit Issued"
         },
         {
@@ -211,6 +187,54 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-00896",
+          "address": "3032 Waverley St",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-07",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00905",
+          "address": "541 Maybell Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-07",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00909",
+          "address": "837 Ilima Ct",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-07",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00876",
+          "address": "3445 Louis Rd",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-03",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-00863",
           "address": "1221 Hopkins Av",
           "category": "residential-large",
@@ -223,6 +247,18 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-00884",
+          "address": "61 Erstwild Ct",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-05",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26PLN-00067",
           "address": "1450 Page Mill Rd",
           "category": "entitlement",
@@ -232,18 +268,6 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-01",
-          "subtype": "Over the Counter Approved"
-        },
-        {
-          "id": "26PLN-00070",
-          "address": "4035 Transport St",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Over the Counter Architectural Review to install one illuminated channel letter building sign on the rear elevation of the existing commercial building. Sign will be internally illuminated LED channel letters with electrical connection to existing building power. The proposed sign will be two feet tall by 38 feet wide to read, \"Peninsula Land.Com\". Environmental Assessment: Not a Project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-03",
           "subtype": "Over the Counter Approved"
         }
       ]
