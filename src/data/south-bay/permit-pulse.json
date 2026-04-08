@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-08T11:10:48.829Z",
+      "generatedAt": "2026-04-08T19:11:40.888Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,7 +137,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-08T11:10:51.057Z",
+      "generatedAt": "2026-04-08T19:11:43.447Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -175,8 +175,44 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00872",
-          "address": "841 Ames Av",
+          "id": "26BLD-00876",
+          "address": "3445 Louis Rd",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-03",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00884",
+          "address": "61 Erstwild Ct",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-05",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00896",
+          "address": "3032 Waverley St",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-07",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00863",
+          "address": "1221 Hopkins Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -187,8 +223,8 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00896",
-          "address": "3032 Waverley St",
+          "id": "26BLD-00909",
+          "address": "837 Ilima Ct",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -211,32 +247,8 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00909",
-          "address": "837 Ilima Ct",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-07",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00876",
-          "address": "3445 Louis Rd",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-03",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00863",
-          "address": "1221 Hopkins Av",
+          "id": "26BLD-00872",
+          "address": "841 Ames Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -247,27 +259,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00884",
-          "address": "61 Erstwild Ct",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-05",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26PLN-00067",
-          "address": "1450 Page Mill Rd",
+          "id": "26PLN-00074",
+          "address": "1053 E Meadow Cir",
           "category": "entitlement",
           "categoryLabel": "Entitlement / Zoning",
           "workType": "Entitlement",
-          "description": "Removal and replacement of five (5) non-protected trees associated with 24BLD-03580 scope",
+          "description": "Revision scope includes: Updated utility easement layout and transformer and switch location per Palo Alto utility department requirement. Revising parking table to use 2.64 parking reduction due to losing additional one parking stall (Total reduced parking in project is 2).",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-01",
+          "issueDate": "2026-04-07",
           "subtype": "Over the Counter Approved"
         }
       ]
