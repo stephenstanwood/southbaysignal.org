@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>South Bay Today — Design Directions</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garabald:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; color: #fff; font-family: 'DM Sans', sans-serif; }
+
+  /* === PICKER NAV === */
+  .picker-nav {
+    position: sticky; top: 0; z-index: 1000;
+    background: #0a0a0a; border-bottom: 1px solid #222;
+    padding: 12px 20px;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    justify-content: center;
+  }
+  .picker-nav .label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    color: #666; margin-right: 8px; white-space: nowrap;
+  }
+  .picker-btn {
+    background: #1a1a1a; border: 1px solid #333; color: #999;
+    padding: 6px 14px; border-radius: 6px; cursor: pointer;
+    font-size: 12px; font-family: 'DM Sans', sans-serif;
+    font-weight: 500; transition: all .15s;
+    white-space: nowrap;
+  }
+  .picker-btn:hover { background: #252525; color: #ccc; border-color: #555; }
+  .picker-btn.active { background: #fff; color: #000; border-color: #fff; }
+
+  .mockup-container { min-height: 100vh; }
+
+  /* === SHARED CARD DATA === */
+  .card-dismiss {
+    position: absolute; top: 8px; right: 8px; width: 26px; height: 26px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 14px; line-height: 1; z-index: 2;
+  }
+  .card-lock {
+    position: absolute; top: 8px; left: 8px; width: 26px; height: 26px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 13px; line-height: 1; z-index: 2;
+  }
+
+  /* Hide all mockups by default */
+  .mockup { display: none; }
+  .mockup.active { display: block; }
+</style>
+</head>
+<body>
+
+<nav class="picker-nav">
+  <span class="label">Direction:</span>
+  <button class="picker-btn active" data-dir="1">1. Daily Deck</button>
+  <button class="picker-btn" data-dir="2">2. Card Salon</button>
+  <button class="picker-btn" data-dir="3">3. Concierge</button>
+  <button class="picker-btn" data-dir="4">4. Smart Stack</button>
+  <button class="picker-btn" data-dir="5">5. Day Dealer</button>
+  <button class="picker-btn" data-dir="6">6. Today Tape</button>
+  <button class="picker-btn" data-dir="7">7. Playbook</button>
+  <button class="picker-btn" data-dir="8">8. Soft City</button>
+  <button class="picker-btn" data-dir="9">9. Metro Leisure</button>
+  <button class="picker-btn" data-dir="10">10. Golden Hour</button>
+</nav>
+
+<!-- ============================================================ -->
+<!-- DIRECTION 1: DAILY DECK -->
+<!-- ============================================================ -->
+<div class="mockup active" id="mockup-1">
+<style>
+  #mockup-1 {
+    background: #f5f3f0; min-height: 100vh; font-family: 'DM Sans', sans-serif;
+    color: #1a1a1a; padding-bottom: 60px;
+  }
+  #mockup-1 .dd-header {
+    text-align: center; padding: 48px 20px 24px;
+  }
+  #mockup-1 .dd-time {
+    font-size: 64px; font-weight: 800; letter-spacing: -2px; color: #111;
+    line-height: 1;
+  }
+  #mockup-1 .dd-subtitle {
+    font-size: 22px; font-weight: 400; color: #666; margin-top: 8px;
+  }
+  #mockup-1 .dd-controls {
+    display: flex; justify-content: center; gap: 12px; margin-top: 20px;
+    flex-wrap: wrap; align-items: center;
+  }
+  #mockup-1 .dd-city-select {
+    padding: 8px 16px; border-radius: 8px; border: 2px solid #ddd;
+    font-size: 14px; font-family: 'DM Sans', sans-serif; background: #fff;
+    cursor: pointer;
+  }
+  #mockup-1 .dd-toggle {
+    display: flex; background: #e8e5e0; border-radius: 20px; overflow: hidden;
+  }
+  #mockup-1 .dd-toggle span {
+    padding: 8px 16px; font-size: 13px; cursor: pointer; font-weight: 500;
+    transition: all .15s;
+  }
+  #mockup-1 .dd-toggle span.active { background: #1a1a1a; color: #fff; border-radius: 20px; }
+  #mockup-1 .dd-toggle span:not(.active) { color: #888; }
+  #mockup-1 .dd-reshuffle {
+    background: #1a1a1a; color: #fff; border: none; padding: 10px 24px;
+    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; letter-spacing: .5px;
+    transition: transform .15s;
+  }
+  #mockup-1 .dd-reshuffle:hover { transform: scale(1.03); }
+  #mockup-1 .dd-deck {
+    max-width: 700px; margin: 36px auto 0; padding: 0 20px;
+    position: relative;
+  }
+  #mockup-1 .dd-card {
+    background: #fff; border-radius: 16px; padding: 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.06);
+    margin-bottom: 20px; position: relative; overflow: hidden;
+    display: flex; min-height: 140px;
+    transition: transform .2s;
+  }
+  #mockup-1 .dd-card:nth-child(even) { transform: rotate(.4deg); }
+  #mockup-1 .dd-card:nth-child(odd) { transform: rotate(-.3deg); }
+  #mockup-1 .dd-card:hover { transform: rotate(0deg) scale(1.01); }
+  #mockup-1 .dd-card-img {
+    width: 160px; min-height: 140px; flex-shrink: 0;
+  }
+  #mockup-1 .dd-card-body { padding: 20px 40px 20px 20px; flex: 1; }
+  #mockup-1 .dd-card-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; background: #1a1a1a; color: #fff;
+    border-radius: 50%; font-size: 13px; font-weight: 700; margin-bottom: 8px;
+  }
+  #mockup-1 .dd-card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  #mockup-1 .dd-card-meta {
+    font-size: 12px; color: #999; margin-bottom: 6px;
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  #mockup-1 .dd-card-meta .tag {
+    background: #f0ede8; padding: 2px 8px; border-radius: 4px; font-weight: 500;
+    color: #666;
+  }
+  #mockup-1 .dd-card-blurb { font-size: 13px; color: #555; line-height: 1.5; }
+  #mockup-1 .dd-card .card-dismiss {
+    background: #f5f3f0; color: #999;
+  }
+  #mockup-1 .dd-card .card-dismiss:hover { background: #e0ddd8; color: #333; }
+  #mockup-1 .dd-card .card-lock {
+    background: #f5f3f0; color: #bbb;
+  }
+  #mockup-1 .dd-transit {
+    text-align: center; font-size: 12px; color: #aaa; margin: -8px 0 12px;
+    font-weight: 500;
+  }
+</style>
+<div class="dd-header">
+  <div class="dd-time" id="time-1"></div>
+  <div class="dd-subtitle">What should we do today?</div>
+  <div class="dd-controls">
+    <select class="dd-city-select">
+      <option>All South Bay</option><option>Campbell</option><option>San Jose</option><option>Cupertino</option><option>Los Gatos</option><option>Mountain View</option><option>Palo Alto</option><option>Saratoga</option><option>Sunnyvale</option><option>Santa Clara</option><option>Los Altos</option><option>Milpitas</option>
+    </select>
+    <div class="dd-toggle">
+      <span class="active">Everyone</span>
+      <span>Family</span>
+    </div>
+    <button class="dd-reshuffle">Reshuffle</button>
+  </div>
+</div>
+<div class="dd-deck">
+  <div class="dd-card">
+    <div class="dd-card-img" style="background: linear-gradient(135deg, #f6d365, #fda085);"></div>
+    <div class="dd-card-body">
+      <div class="card-lock">&#9744;</div>
+      <div class="card-dismiss">&times;</div>
+      <div class="dd-card-num">1</div>
+      <div class="dd-card-title">Muse Markets</div>
+      <div class="dd-card-meta"><span class="tag">Outdoor Market</span> <span>Los Gatos</span> <span>&bull;</span> <span>11:00 AM &ndash; 1:00 PM</span></div>
+      <div class="dd-card-blurb">Monthly artisan market with 40+ local vendors. Great morning energy.</div>
+    </div>
+  </div>
+  <div class="dd-transit">&#8595; 10 min drive to Campbell</div>
+  <div class="dd-card">
+    <div class="dd-card-img" style="background: linear-gradient(135deg, #e0776b, #c4453a);"></div>
+    <div class="dd-card-body">
+      <div class="card-lock">&#9744;</div>
+      <div class="card-dismiss">&times;</div>
+      <div class="dd-card-num">2</div>
+      <div class="dd-card-title">Zona Rosa</div>
+      <div class="dd-card-meta"><span class="tag">Mexican Restaurant</span> <span>Campbell</span> <span>&bull;</span> <span>1:15 PM</span></div>
+      <div class="dd-card-blurb">Fresh-made mole and house margaritas. 4.6&#9733; on Google. 10 min from Los Gatos.</div>
+    </div>
+  </div>
+  <div class="dd-transit">&#8595; 10 min drive back to Los Gatos</div>
+  <div class="dd-card">
+    <div class="dd-card-img" style="background: linear-gradient(135deg, #56ab2f, #a8e063);"></div>
+    <div class="dd-card-body">
+      <div class="card-lock">&#9744;</div>
+      <div class="card-dismiss">&times;</div>
+      <div class="dd-card-num">3</div>
+      <div class="dd-card-title">Vasona Lake Park</div>
+      <div class="dd-card-meta"><span class="tag">Park</span> <span>Los Gatos</span> <span>&bull;</span> <span>2:30 &ndash; 4:00 PM</span></div>
+      <div class="dd-card-blurb">Beautiful afternoon for the lake trail. 72&deg;F and sunny today.</div>
+    </div>
+  </div>
+  <div class="dd-transit">&#8595; 15 min drive to San Jose</div>
+  <div class="dd-card">
+    <div class="dd-card-img" style="background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+    <div class="dd-card-body">
+      <div class="card-lock">&#9744;</div>
+      <div class="card-dismiss">&times;</div>
+      <div class="dd-card-num">4</div>
+      <div class="dd-card-title">Click on My Mouth: Language of AI</div>
+      <div class="dd-card-meta"><span class="tag">Art Exhibition</span> <span>San Jose</span> <span>&bull;</span> <span>4:30 &ndash; 5:30 PM</span></div>
+      <div class="dd-card-blurb">New exhibit at SJMA. Free admission Wednesdays.</div>
+    </div>
+  </div>
+  <div class="dd-transit">&#8595; 5 min walk downtown</div>
+  <div class="dd-card">
+    <div class="dd-card-img" style="background: linear-gradient(135deg, #2d3436, #636e72);"></div>
+    <div class="dd-card-body">
+      <div class="card-lock">&#9744;</div>
+      <div class="card-dismiss">&times;</div>
+      <div class="dd-card-num">5</div>
+      <div class="dd-card-title">Hedley Club</div>
+      <div class="dd-card-meta"><span class="tag">New Opening</span> <span>San Jose</span> <span>&bull;</span> <span>6:30 PM</span></div>
+      <div class="dd-card-blurb">Just opened this week. Craft cocktails and small plates downtown.</div>
+    </div>
+  </div>
+  <div class="dd-transit">&#8595; 10 min drive to Campbell</div>
+  <div class="dd-card">
+    <div class="dd-card-img" style="background: linear-gradient(135deg, #f8b4c8, #fce4ec);"></div>
+    <div class="dd-card-body">
+      <div class="card-lock">&#9744;</div>
+      <div class="card-dismiss">&times;</div>
+      <div class="dd-card-num">6</div>
+      <div class="dd-card-title">Treatbot</div>
+      <div class="dd-card-meta"><span class="tag">Dessert</span> <span>Campbell</span> <span>&bull;</span> <span>8:15 PM</span></div>
+      <div class="dd-card-blurb">Classic South Bay ice cream truck. Usually parked on Campbell Ave evenings.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DIRECTION 2: THE CARD SALON -->
+<!-- ============================================================ -->
+<div class="mockup" id="mockup-2">
+<style>
+  #mockup-2 {
+    background: #f7f4ef; min-height: 100vh; font-family: 'Cormorant Garamond', serif;
+    color: #2c2420; padding-bottom: 60px;
+  }
+  #mockup-2 .cs-header {
+    text-align: center; padding: 60px 20px 32px;
+  }
+  #mockup-2 .cs-time {
+    font-size: 72px; font-weight: 700; color: #2c2420; letter-spacing: -1px;
+    font-style: italic;
+  }
+  #mockup-2 .cs-subtitle {
+    font-size: 28px; font-weight: 400; color: #8a7d6f; margin-top: 4px;
+    font-style: italic;
+  }
+  #mockup-2 .cs-controls {
+    display: flex; justify-content: center; gap: 16px; margin-top: 28px;
+    flex-wrap: wrap; align-items: center;
+  }
+  #mockup-2 .cs-pills {
+    display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+  }
+  #mockup-2 .cs-pill {
+    padding: 6px 14px; border: 1px solid #c9bfb0; border-radius: 20px;
+    font-size: 14px; cursor: pointer; background: transparent; color: #8a7d6f;
+    font-family: 'Cormorant Garamond', serif;
+    transition: all .15s;
+  }
+  #mockup-2 .cs-pill.active { background: #2c2420; color: #f7f4ef; border-color: #2c2420; }
+  #mockup-2 .cs-toggle-area {
+    display: flex; gap: 12px; align-items: center;
+  }
+  #mockup-2 .cs-fam-toggle {
+    width: 44px; height: 24px; border-radius: 12px; background: #c9bfb0;
+    position: relative; cursor: pointer;
+  }
+  #mockup-2 .cs-fam-toggle::after {
+    content: ''; width: 20px; height: 20px; background: #fff; border-radius: 50%;
+    position: absolute; top: 2px; left: 2px; transition: .2s;
+  }
+  #mockup-2 .cs-fam-label { font-size: 14px; color: #8a7d6f; }
+  #mockup-2 .cs-reshuffle {
+    background: none; border: 2px solid #2c2420; color: #2c2420;
+    padding: 10px 28px; font-size: 15px; font-family: 'Cormorant Garamond', serif;
+    font-weight: 600; cursor: pointer; letter-spacing: 1px;
+    transition: all .15s;
+  }
+  #mockup-2 .cs-reshuffle:hover { background: #2c2420; color: #f7f4ef; }
+  #mockup-2 .cs-gallery {
+    max-width: 880px; margin: 40px auto 0; padding: 0 20px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  }
+  @media (max-width: 700px) { #mockup-2 .cs-gallery { grid-template-columns: 1fr; } }
+  #mockup-2 .cs-card {
+    position: relative; background: #fff; padding: 0;
+    border: 1px solid #e5ddd0;
+  }
+  #mockup-2 .cs-card-img {
+    height: 180px; width: 100%;
+  }
+  #mockup-2 .cs-card-body { padding: 24px 28px; }
+  #mockup-2 .cs-card-cat {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #b0a594;
+    margin-bottom: 8px;
+  }
+  #mockup-2 .cs-card-title { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
+  #mockup-2 .cs-card-time { font-size: 14px; color: #8a7d6f; margin-bottom: 8px; font-style: italic; }
+  #mockup-2 .cs-card-blurb { font-size: 15px; color: #6b5e50; line-height: 1.6; }
+  #mockup-2 .cs-card .card-dismiss {
+    background: rgba(255,255,255,.8); color: #8a7d6f; border: 1px solid #ddd;
+  }
+  #mockup-2 .cs-card .card-lock {
+    background: rgba(255,255,255,.8); color: #b0a594; border: 1px solid #ddd;
+  }
+  #mockup-2 .cs-transit {
+    grid-column: 1 / -1; text-align: center; font-size: 13px; color: #b0a594;
+    font-style: italic; margin: -16px 0;
+  }
+</style>
+<div class="cs-header">
+  <div class="cs-time" id="time-2"></div>
+  <div class="cs-subtitle">What should we do today?</div>
+  <div class="cs-controls">
+    <div class="cs-pills">
+      <button class="cs-pill active">All South Bay</button>
+      <button class="cs-pill">Campbell</button>
+      <button class="cs-pill">San Jose</button>
+      <button class="cs-pill">Los Gatos</button>
+      <button class="cs-pill">Cupertino</button>
+      <button class="cs-pill">Mountain View</button>
+      <button class="cs-pill">Palo Alto</button>
+      <button class="cs-pill">More</button>
+    </div>
+    <div class="cs-toggle-area">
+      <div class="cs-fam-toggle"></div>
+      <span class="cs-fam-label">Family</span>
+    </div>
+    <button class="cs-reshuffle">RESHUFFLE</button>
+  </div>
+</div>
+<div class="cs-gallery">
+  <div class="cs-card">
+    <div class="card-lock">&#9744;</div>
+    <div class="card-dismiss">&times;</div>
+    <div class="cs-card-img" style="background: linear-gradient(135deg, #f6d365, #fda085);"></div>
+    <div class="cs-card-body">
+      <div class="cs-card-cat">Outdoor Market &bull; Los Gatos</div>
+      <div class="cs-card-title">Muse Markets</div>
+      <div class="cs-card-time">11:00 AM &ndash; 1:00 PM</div>
+      <div class="cs-card-blurb">Monthly artisan market with 40+ local vendors. Great morning energy.</div>
+    </div>
+  </div>
+  <div class="cs-card">
+    <div class="card-lock">&#9744;</div>
+    <div class="card-dismiss">&times;</div>
+    <div class="cs-card-img" style="background: linear-gradient(135deg, #e0776b, #c4453a);"></div>
+    <div class="cs-card-body">
+      <div class="cs-card-cat">Mexican Restaurant &bull; Campbell</div>
+      <div class="cs-card-title">Zona Rosa</div>
+      <div class="cs-card-time">1:15 PM &mdash; 10 min from Los Gatos</div>
+      <div class="cs-card-blurb">Fresh-made mole and house margaritas. 4.6&#9733; on Google.</div>
+    </div>
+  </div>
+  <div class="cs-card">
+    <div class="card-lock">&#9744;</div>
+    <div class="card-dismiss">&times;</div>
+    <div class="cs-card-img" style="background: linear-gradient(135deg, #56ab2f, #a8e063);"></div>
+    <div class="cs-card-body">
+      <div class="cs-card-cat">Park &bull; Los Gatos</div>
+      <div class="cs-card-title">Vasona Lake Park</div>
+      <div class="cs-card-time">2:30 &ndash; 4:00 PM</div>
+      <div class="cs-card-blurb">Beautiful afternoon for the lake trail. 72&deg;F and sunny today.</div>
+    </div>
+  </div>
+  <div class="cs-card">
+    <div class="card-lock">&#9744;</div>
+    <div class="card-dismiss">&times;</div>
+    <div class="cs-card-img" style="background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+    <div class="cs-card-body">
+      <div class="cs-card-cat">Art Exhibition &bull; San Jose</div>
+      <div class="cs-card-title">Click on My Mouth: Language of AI</div>
+      <div class="cs-card-time">4:30 &ndash; 5:30 PM &mdash; 15 min drive</div>
+      <div class="cs-card-blurb">New exhibit at SJMA. Free admission Wednesdays.</div>
+    </div>
+  </div>
+  <div class="cs-card">
+    <div class="card-lock">&#9744;</div>
+    <div class="card-dismiss">&times;</div>
+    <div class="cs-card-img" style="background: linear-gradient(135deg, #2d3436, #636e72);"></div>
+    <div class="cs-card-body">
+      <div class="cs-card-cat">New Opening &bull; San Jose</div>
+      <div class="cs-card-title">Hedley Club</div>
+      <div class="cs-card-time">6:30 PM &mdash; 5 min walk downtown</div>
+      <div class="cs-card-blurb">Just opened this week. Craft cocktails and small plates downtown.</div>
+    </div>
+  </div>
+  <div class="cs-card">
+    <div class="card-lock">&#9744;</div>
+    <div class="card-dismiss">&times;</div>
+    <div class="cs-card-img" style="background: linear-gradient(135deg, #f8b4c8, #fce4ec);"></div>
+    <div class="cs-card-body">
+      <div class="cs-card-cat">Dessert &bull; Campbell</div>
+      <div class="cs-card-title">Treatbot</div>
+      <div class="cs-card-time">8:15 PM &mdash; 10 min drive</div>
+      <div class="cs-card-blurb">Classic South Bay ice cream truck. Usually parked on Campbell Ave evenings.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DIRECTION 3: CONCIERGE CARDS -->
+<!-- ============================================================ -->
+<div class="mockup" id="mockup-3">
+<style>
+  #mockup-3 {
+    background: #faf8f3; min-height: 100vh; font-family: 'Playfair Display', serif;
+    color: #2a2520; padding-bottom: 60px;
+  }
+  #mockup-3 .con-header {
+    text-align: center; padding: 52px 20px 28px;
+    border-bottom: 1px solid #e8dcc8;
+  }
+  #mockup-3 .con-badge {
+    display: inline-block; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 4px; color: #b8a080; border: 1px solid #d4c4a8;
+    padding: 4px 16px; margin-bottom: 16px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  #mockup-3 .con-time {
+    font-size: 68px; font-weight: 700; color: #2a2520;
+    line-height: 1; font-style: italic;
+  }
+  #mockup-3 .con-subtitle {
+    font-size: 24px; font-weight: 400; color: #8a7a60; margin-top: 8px;
+    font-style: italic;
+  }
+  #mockup-3 .con-controls {
+    display: flex; justify-content: center; gap: 16px; margin-top: 24px;
+    flex-wrap: wrap; align-items: center;
+  }
+  #mockup-3 .con-select {
+    padding: 8px 20px; border: 1px solid #d4c4a8; background: transparent;
+    font-family: 'Playfair Display', serif; font-size: 14px; color: #2a2520;
+    cursor: pointer; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a7a60' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+    padding-right: 36px;
+  }
+  #mockup-3 .con-fam {
+    font-size: 13px; color: #8a7a60; display: flex; gap: 8px; align-items: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+  #mockup-3 .con-fam input { accent-color: #b8a080; }
+  #mockup-3 .con-reshuffle {
+    background: #c8a96e; color: #fff; border: none; padding: 10px 32px;
+    font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 600;
+    cursor: pointer; letter-spacing: 1px;
+    transition: background .15s;
+  }
+  #mockup-3 .con-reshuffle:hover { background: #b89858; }
+  #mockup-3 .con-cards {
+    max-width: 640px; margin: 40px auto 0; padding: 0 20px;
+  }
+  #mockup-3 .con-card {
+    position: relative; background: #fff; border: 1px solid #e8dcc8;
+    padding: 28px 32px; margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  }
+  #mockup-3 .con-card::before {
+    content: attr(data-num); position: absolute; top: -12px; left: 28px;
+    width: 24px; height: 24px; background: #c8a96e; color: #fff;
+    font-size: 12px; font-weight: 700; display: flex; align-items: center;
+    justify-content: center; font-family: 'DM Sans', sans-serif;
+  }
+  #mockup-3 .con-card-top {
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  #mockup-3 .con-card-img {
+    width: 80px; height: 80px; flex-shrink: 0; border: 1px solid #e8dcc8;
+  }
+  #mockup-3 .con-card-info { flex: 1; }
+  #mockup-3 .con-card-title { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  #mockup-3 .con-card-meta {
+    font-size: 12px; color: #b8a080; font-family: 'DM Sans', sans-serif;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+  }
+  #mockup-3 .con-card-timeblock {
+    font-size: 14px; color: #c8a96e; font-weight: 600; margin-bottom: 6px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  #mockup-3 .con-card-blurb {
+    font-size: 14px; color: #6b5e50; line-height: 1.6; font-style: italic;
+    font-family: 'Playfair Display', serif;
+  }
+  #mockup-3 .con-card .card-dismiss { background: #faf8f3; color: #c9bfb0; }
+  #mockup-3 .con-card .card-lock { background: #faf8f3; color: #c9bfb0; top: 28px; left: auto; right: auto; }
+  #mockup-3 .con-transit {
+    text-align: center; font-size: 12px; color: #c9bfb0; margin: -12px 0 12px;
+    font-family: 'DM Sans', sans-serif; letter-spacing: 1px; text-transform: uppercase;
+  }
+</style>
+<div class="con-header">
+  <div class="con-badge">South Bay Today</div>
+  <div class="con-time" id="time-3"></div>
+  <div class="con-subtitle">What should we do today?</div>
+  <div class="con-controls">
+    <select class="con-select">
+      <option>All South Bay</option><option>Campbell</option><option>San Jose</option><option>Cupertino</option><option>Los Gatos</option><option>Mountain View</option><option>Palo Alto</option><option>Saratoga</option><option>Sunnyvale</option><option>Santa Clara</option><option>Los Altos</option><option>Milpitas</option>
+    </select>
+    <label class="con-fam"><input type="checkbox"> Family-friendly only</label>
+    <button class="con-reshuffle">RESHUFFLE</button>
+  </div>
+</div>
+<div class="con-cards">
+  <div class="con-card" data-num="1">
+    <div class="card-lock" style="top:28px;left:auto;right:40px;">&#9744;</div>
+    <div class="card-dismiss">&times;</div>
+    <div class="con-card-top">
+      <div class="con-card-img" style="background: linear-gradient(135deg, #f6d365, #fda085);"></div>
+      <div class="con-card-info">
+        <div class="con-card-title">Muse Markets</div>
+        <div class="con-card-meta">Outdoor Market &bull; Los Gatos</div>
+        <div class="con-card-timeblock">11:00 AM &ndash; 1:00 PM</div>
+        <div class="con-card-blurb">Monthly artisan market with 40+ local vendors. Great morning energy.</div>
+      </div>
+    </div>
+  </div>
+  <div class="con-transit">&darr; 10 min drive</div>
+  <div class="con-card" data-num="2">
+    <div class="card-lock" style="top:28px;left:auto;right:40px;">&#9744;</div>
+    <div class="card-dismiss">&times;</div>
+    <div class="con-card-top">
+      <div class="con-card-img" style="background: linear-gradient(135deg, #e0776b, #c4453a);"></div>
+      <div class="con-card-info">
+        <div class="con-card-title">Zona Rosa</div>
+        <div class="con-card-meta">Mexican Restaurant &bull; Campbell</div>
+        <div class="con-card-timeblock">1:15 PM</div>
+        <div class="con-card-blurb">Fresh-made mole and house margaritas. 4.6&#9733; on Google.</div>
+      </div>
+    </div>
+  </div>
+  <div class="con-transit">&darr; 10 min drive</div>
+  <div class="con-card" data-num="3">
+    <div class="card-lock" style="top:28px;left:auto;right:40px;">&#9744;</div>
+    <div class="card-dismiss">&times;</div>
+    <div class="con-card-top">
+      <div class="con-card-img" style="background: linear-gradient(135deg, #56ab2f, #a8e063);"></div>
+      <div class="con-card-info">
+        <div class="con-card-title">Vasona Lake Park</div>
+        <div class="con-card-meta">Park &bull; Los Gatos</div>
+        <div class="con-card-timeblock">2:30 &ndash; 4:00 PM</div>
+        <div class="con-card-blurb">Beautiful afternoon for the lake trail. 72&deg;F and sunny today.</div>
+      </div>
+    </div>
+  </div>
+  <div class="con-transit">&darr; 15 min drive</div>
+  <div class="con-card" data-num="4">
+    <div class="card-lock" style="top:28px;left:auto;right:40px;">&#9744;</div>
+    <div class="card-dismiss">&times;</div>
+    <div class="con-card-top">
+      <div class="con-card-img" style="background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+      <div class="con-card-info">
+        <div class="con-card-title">Click on My Mouth: Language of AI</div>
+        <div class="con-card-meta">Art Exhibition &bull; San Jose</div>
+        <div class="con-card-timeblock">4:30 &ndash; 5:30 PM</div>
+        <div class="con-card-blurb">New exhibit at SJMA. Free admission Wednesdays.</div>
+      </div>
+    </div>
+  </div>
+  <div class="con-transit">&darr; 5 min walk</div>
+  <div class="con-card" data-num="5">
+    <div class="card-lock" style="top:28px;left:auto;right:40px;">&#9744;</div>
+    <div class="card-dismiss">&times;</div>
+    <div class="con-card-top">
+      <div class="con-card-img" style="background: linear-gradient(135deg, #2d3436, #636e72);"></div>
+      <div class="con-card-info">
+        <div class="con-card-title">Hedley Club</div>
+        <div class="con-card-meta">New Opening &bull; San Jose</div>
+        <div class="con-card-timeblock">6:30 PM</div>
+        <div class="con-card-blurb">Just opened this week. Craft cocktails and small plates downtown.</div>
+      </div>
+    </div>
+  </div>
+  <div class="con-transit">&darr; 10 min drive</div>
+  <div class="con-card" data-num="6">
+    <div class="card-lock" style="top:28px;left:auto;right:40px;">&#9744;</div>
+    <div class="card-dismiss">&times;</div>
+    <div class="con-card-top">
+      <div class="con-card-img" style="background: linear-gradient(135deg, #f8b4c8, #fce4ec);"></div>
+      <div class="con-card-info">
+        <div class="con-card-title">Treatbot</div>
+        <div class="con-card-meta">Dessert &bull; Campbell</div>
+        <div class="con-card-timeblock">8:15 PM</div>
+        <div class="con-card-blurb">Classic South Bay ice cream truck. Usually parked on Campbell Ave evenings.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DIRECTION 4: SMART STACK -->
+<!-- ============================================================ -->
+<div class="mockup" id="mockup-4">
+<style>
+  #mockup-4 {
+    background: #fff; min-height: 100vh; font-family: 'Inter', sans-serif;
+    color: #1d1d1f; padding-bottom: 60px;
+  }
+  #mockup-4 .ss-header {
+    text-align: center; padding: 56px 20px 28px;
+  }
+  #mockup-4 .ss-time {
+    font-size: 80px; font-weight: 800; color: #1d1d1f;
+    letter-spacing: -4px; line-height: 1;
+  }
+  #mockup-4 .ss-subtitle {
+    font-size: 20px; font-weight: 400; color: #86868b; margin-top: 4px;
+  }
+  #mockup-4 .ss-controls {
+    display: flex; justify-content: center; gap: 12px; margin-top: 24px;
+    flex-wrap: wrap; align-items: center;
+  }
+  #mockup-4 .ss-seg {
+    display: inline-flex; background: #f5f5f7; border-radius: 8px; overflow: hidden;
+  }
+  #mockup-4 .ss-seg button {
+    padding: 8px 16px; border: none; background: transparent; font-size: 13px;
+    font-family: 'Inter', sans-serif; font-weight: 500; color: #86868b;
+    cursor: pointer; transition: all .15s;
+  }
+  #mockup-4 .ss-seg button.active { background: #1d1d1f; color: #fff; border-radius: 8px; }
+  #mockup-4 .ss-city-menu {
+    padding: 8px 14px; border: 1px solid #d2d2d7; border-radius: 8px;
+    font-size: 13px; font-family: 'Inter', sans-serif; background: #fff;
+    color: #1d1d1f; cursor: pointer;
+  }
+  #mockup-4 .ss-reshuffle {
+    background: #0071e3; color: #fff; border: none; padding: 10px 24px;
+    border-radius: 980px; font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background .15s;
+  }
+  #mockup-4 .ss-reshuffle:hover { background: #0077ed; }
+  #mockup-4 .ss-stack {
+    max-width: 600px; margin: 32px auto 0; padding: 0 20px;
+  }
+  #mockup-4 .ss-card {
+    position: relative; background: #f5f5f7; border-radius: 16px;
+    margin-bottom: 12px; padding: 20px 24px; display: flex; gap: 16px;
+    align-items: center;
+  }
+  #mockup-4 .ss-card-img {
+    width: 64px; height: 64px; border-radius: 12px; flex-shrink: 0;
+  }
+  #mockup-4 .ss-card-body { flex: 1; }
+  #mockup-4 .ss-card-title { font-size: 16px; font-weight: 600; margin-bottom: 2px; }
+  #mockup-4 .ss-card-meta { font-size: 12px; color: #86868b; margin-bottom: 4px; }
+  #mockup-4 .ss-card-blurb { font-size: 13px; color: #6e6e73; line-height: 1.4; }
+  #mockup-4 .ss-card .card-dismiss {
+    background: #e8e8ed; color: #86868b; top: 12px; right: 12px;
+    width: 24px; height: 24px; font-size: 12px;
+  }
+  #mockup-4 .ss-card .card-lock {
+    background: #e8e8ed; color: #86868b; top: 12px; left: 12px;
+    width: 24px; height: 24px; font-size: 11px;
+  }
+  #mockup-4 .ss-transit {
+    text-align: center; font-size: 11px; color: #aaa; margin: -4px 0 8px;
+    font-weight: 500;
+  }
+</style>
+<div class="ss-header">
+  <div class="ss-time" id="time-4"></div>
+  <div class="ss-subtitle">What should we do today?</div>
+  <div class="ss-controls">
+    <select class="ss-city-menu">
+      <option>All South Bay</option><option>Campbell</option><option>San Jose</option><option>Cupertino</option><option>Los Gatos</option><option>Mountain View</option><option>Palo Alto</option><option>Saratoga</option><option>Sunnyvale</option><option>Santa Clara</option><option>Los Altos</option><option>Milpitas</option>
+    </select>
+    <div class="ss-seg">
+      <button class="active">Everyone</button>
+      <button>Family</button>
+    </div>
+    <button class="ss-reshuffle">Reshuffle</button>
+  </div>
+</div>
+<div class="ss-stack">
+  <div class="ss-card">
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ss-card-img" style="background: linear-gradient(135deg, #f6d365, #fda085); border-radius:12px;"></div>
+    <div class="ss-card-body">
+      <div class="ss-card-title">Muse Markets</div>
+      <div class="ss-card-meta">Outdoor Market &middot; Los Gatos &middot; 11:00 AM &ndash; 1:00 PM</div>
+      <div class="ss-card-blurb">Monthly artisan market with 40+ local vendors. Great morning energy.</div>
+    </div>
+  </div>
+  <div class="ss-transit">10 min drive &darr;</div>
+  <div class="ss-card">
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ss-card-img" style="background: linear-gradient(135deg, #e0776b, #c4453a); border-radius:12px;"></div>
+    <div class="ss-card-body">
+      <div class="ss-card-title">Zona Rosa</div>
+      <div class="ss-card-meta">Mexican Restaurant &middot; Campbell &middot; 1:15 PM</div>
+      <div class="ss-card-blurb">Fresh-made mole and house margaritas. 4.6&#9733; on Google.</div>
+    </div>
+  </div>
+  <div class="ss-transit">10 min drive &darr;</div>
+  <div class="ss-card">
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ss-card-img" style="background: linear-gradient(135deg, #56ab2f, #a8e063); border-radius:12px;"></div>
+    <div class="ss-card-body">
+      <div class="ss-card-title">Vasona Lake Park</div>
+      <div class="ss-card-meta">Park &middot; Los Gatos &middot; 2:30 &ndash; 4:00 PM</div>
+      <div class="ss-card-blurb">Beautiful afternoon for the lake trail. 72&deg;F and sunny today.</div>
+    </div>
+  </div>
+  <div class="ss-transit">15 min drive &darr;</div>
+  <div class="ss-card">
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ss-card-img" style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius:12px;"></div>
+    <div class="ss-card-body">
+      <div class="ss-card-title">Click on My Mouth: Language of AI</div>
+      <div class="ss-card-meta">Art Exhibition &middot; San Jose &middot; 4:30 &ndash; 5:30 PM</div>
+      <div class="ss-card-blurb">New exhibit at SJMA. Free admission Wednesdays.</div>
+    </div>
+  </div>
+  <div class="ss-transit">5 min walk &darr;</div>
+  <div class="ss-card">
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ss-card-img" style="background: linear-gradient(135deg, #2d3436, #636e72); border-radius:12px;"></div>
+    <div class="ss-card-body">
+      <div class="ss-card-title">Hedley Club</div>
+      <div class="ss-card-meta">New Opening &middot; San Jose &middot; 6:30 PM</div>
+      <div class="ss-card-blurb">Just opened this week. Craft cocktails and small plates downtown.</div>
+    </div>
+  </div>
+  <div class="ss-transit">10 min drive &darr;</div>
+  <div class="ss-card">
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ss-card-img" style="background: linear-gradient(135deg, #f8b4c8, #fce4ec); border-radius:12px;"></div>
+    <div class="ss-card-body">
+      <div class="ss-card-title">Treatbot</div>
+      <div class="ss-card-meta">Dessert &middot; Campbell &middot; 8:15 PM</div>
+      <div class="ss-card-blurb">Classic South Bay ice cream truck. Usually parked on Campbell Ave evenings.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DIRECTION 5: DAY DEALER -->
+<!-- ============================================================ -->
+<div class="mockup" id="mockup-5">
+<style>
+  #mockup-5 {
+    background: #0f0f0f; min-height: 100vh; font-family: 'Space Grotesk', sans-serif;
+    color: #fff; padding-bottom: 60px;
+  }
+  #mockup-5 .ddr-header {
+    text-align: center; padding: 48px 20px 24px;
+    background: linear-gradient(180deg, #1a0a2e 0%, #0f0f0f 100%);
+  }
+  #mockup-5 .ddr-time {
+    font-size: 72px; font-weight: 700; letter-spacing: -2px;
+    background: linear-gradient(135deg, #f093fb, #f5576c, #fda085);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  #mockup-5 .ddr-subtitle {
+    font-size: 24px; font-weight: 400; color: #888; margin-top: 4px;
+  }
+  #mockup-5 .ddr-controls {
+    display: flex; justify-content: center; gap: 12px; margin-top: 24px;
+    flex-wrap: wrap; align-items: center;
+  }
+  #mockup-5 .ddr-select {
+    padding: 8px 16px; border-radius: 8px; border: 2px solid #333;
+    background: #1a1a1a; color: #fff; font-size: 14px;
+    font-family: 'Space Grotesk', sans-serif; cursor: pointer;
+  }
+  #mockup-5 .ddr-toggle {
+    display: flex; background: #1a1a1a; border-radius: 20px; border: 2px solid #333;
+    overflow: hidden;
+  }
+  #mockup-5 .ddr-toggle span {
+    padding: 8px 16px; font-size: 13px; cursor: pointer; font-weight: 500;
+    transition: all .15s; color: #666;
+  }
+  #mockup-5 .ddr-toggle span.active {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: #fff; border-radius: 20px;
+  }
+  #mockup-5 .ddr-reshuffle {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: #fff; border: none; padding: 12px 28px; border-radius: 12px;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    text-transform: uppercase; letter-spacing: 1px;
+    transition: transform .15s, box-shadow .15s;
+    box-shadow: 0 0 20px rgba(245,87,108,.3);
+  }
+  #mockup-5 .ddr-reshuffle:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(245,87,108,.5); }
+  #mockup-5 .ddr-deck {
+    max-width: 740px; margin: 36px auto 0; padding: 0 20px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+  }
+  @media (max-width: 700px) { #mockup-5 .ddr-deck { grid-template-columns: 1fr; } }
+  #mockup-5 .ddr-card {
+    position: relative; background: #1a1a1a; border-radius: 16px;
+    border: 1px solid #2a2a2a; overflow: hidden;
+    transition: transform .2s;
+  }
+  #mockup-5 .ddr-card:nth-child(1) { transform: rotate(-1.5deg); }
+  #mockup-5 .ddr-card:nth-child(2) { transform: rotate(1deg); }
+  #mockup-5 .ddr-card:nth-child(3) { transform: rotate(-0.5deg); }
+  #mockup-5 .ddr-card:nth-child(4) { transform: rotate(1.2deg); }
+  #mockup-5 .ddr-card:nth-child(5) { transform: rotate(-0.8deg); }
+  #mockup-5 .ddr-card:nth-child(6) { transform: rotate(0.7deg); }
+  #mockup-5 .ddr-card:hover { transform: rotate(0deg) scale(1.03); z-index: 2; }
+  #mockup-5 .ddr-card-img { height: 120px; width: 100%; }
+  #mockup-5 .ddr-card-body { padding: 16px; }
+  #mockup-5 .ddr-card-num {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,.7); color: #f5576c; font-weight: 700;
+    width: 28px; height: 28px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 13px;
+    border: 2px solid #f5576c; z-index: 3;
+  }
+  #mockup-5 .ddr-card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  #mockup-5 .ddr-card-meta { font-size: 11px; color: #666; margin-bottom: 4px; }
+  #mockup-5 .ddr-card-time {
+    font-size: 12px; color: #f5576c; font-weight: 600; margin-bottom: 6px;
+  }
+  #mockup-5 .ddr-card-blurb { font-size: 12px; color: #888; line-height: 1.4; }
+  #mockup-5 .ddr-card .card-dismiss {
+    background: rgba(255,255,255,.1); color: #666; top: 8px;
+  }
+  #mockup-5 .ddr-card .card-lock {
+    background: rgba(255,255,255,.1); color: #666; top: 8px;
+  }
+</style>
+<div class="ddr-header">
+  <div class="ddr-time" id="time-5"></div>
+  <div class="ddr-subtitle">What should we do today?</div>
+  <div class="ddr-controls">
+    <select class="ddr-select">
+      <option>All South Bay</option><option>Campbell</option><option>San Jose</option><option>Cupertino</option><option>Los Gatos</option><option>Mountain View</option><option>Palo Alto</option><option>Saratoga</option><option>Sunnyvale</option><option>Santa Clara</option><option>Los Altos</option><option>Milpitas</option>
+    </select>
+    <div class="ddr-toggle">
+      <span class="active">Everyone</span>
+      <span>Family</span>
+    </div>
+    <button class="ddr-reshuffle">RESHUFFLE</button>
+  </div>
+</div>
+<div class="ddr-deck">
+  <div class="ddr-card">
+    <div class="ddr-card-num">1</div>
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ddr-card-img" style="background: linear-gradient(135deg, #f6d365, #fda085);"></div>
+    <div class="ddr-card-body">
+      <div class="ddr-card-title">Muse Markets</div>
+      <div class="ddr-card-meta">Outdoor Market &bull; Los Gatos</div>
+      <div class="ddr-card-time">11:00 AM &ndash; 1:00 PM</div>
+      <div class="ddr-card-blurb">Monthly artisan market with 40+ local vendors. Great morning energy.</div>
+    </div>
+  </div>
+  <div class="ddr-card">
+    <div class="ddr-card-num">2</div>
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ddr-card-img" style="background: linear-gradient(135deg, #e0776b, #c4453a);"></div>
+    <div class="ddr-card-body">
+      <div class="ddr-card-title">Zona Rosa</div>
+      <div class="ddr-card-meta">Mexican &bull; Campbell &bull; 10 min</div>
+      <div class="ddr-card-time">1:15 PM</div>
+      <div class="ddr-card-blurb">Fresh-made mole and house margaritas. 4.6&#9733; on Google.</div>
+    </div>
+  </div>
+  <div class="ddr-card">
+    <div class="ddr-card-num">3</div>
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ddr-card-img" style="background: linear-gradient(135deg, #56ab2f, #a8e063);"></div>
+    <div class="ddr-card-body">
+      <div class="ddr-card-title">Vasona Lake Park</div>
+      <div class="ddr-card-meta">Park &bull; Los Gatos &bull; 10 min</div>
+      <div class="ddr-card-time">2:30 &ndash; 4:00 PM</div>
+      <div class="ddr-card-blurb">Beautiful afternoon for the lake trail. 72&deg;F and sunny today.</div>
+    </div>
+  </div>
+  <div class="ddr-card">
+    <div class="ddr-card-num">4</div>
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ddr-card-img" style="background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+    <div class="ddr-card-body">
+      <div class="ddr-card-title">Click on My Mouth: Language of AI</div>
+      <div class="ddr-card-meta">Exhibition &bull; San Jose &bull; 15 min</div>
+      <div class="ddr-card-time">4:30 &ndash; 5:30 PM</div>
+      <div class="ddr-card-blurb">New exhibit at SJMA. Free admission Wednesdays.</div>
+    </div>
+  </div>
+  <div class="ddr-card">
+    <div class="ddr-card-num">5</div>
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ddr-card-img" style="background: linear-gradient(135deg, #2d3436, #636e72);"></div>
+    <div class="ddr-card-body">
+      <div class="ddr-card-title">Hedley Club</div>
+      <div class="ddr-card-meta">New Opening &bull; San Jose &bull; walk</div>
+      <div class="ddr-card-time">6:30 PM</div>
+      <div class="ddr-card-blurb">Just opened this week. Craft cocktails and small plates downtown.</div>
+    </div>
+  </div>
+  <div class="ddr-card">
+    <div class="ddr-card-num">6</div>
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ddr-card-img" style="background: linear-gradient(135deg, #f8b4c8, #fce4ec);"></div>
+    <div class="ddr-card-body">
+      <div class="ddr-card-title">Treatbot</div>
+      <div class="ddr-card-meta">Dessert &bull; Campbell &bull; 10 min</div>
+      <div class="ddr-card-time">8:15 PM</div>
+      <div class="ddr-card-blurb">Classic South Bay ice cream truck. Usually parked on Campbell Ave.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DIRECTION 6: TODAY TAPE -->
+<!-- ============================================================ -->
+<div class="mockup" id="mockup-6">
+<style>
+  #mockup-6 {
+    background: #fafafa; min-height: 100vh; font-family: 'Inter', sans-serif;
+    color: #1a1a1a; padding-bottom: 60px;
+  }
+  #mockup-6 .tt-header {
+    text-align: center; padding: 48px 20px 24px;
+  }
+  #mockup-6 .tt-time {
+    font-size: 64px; font-weight: 800; letter-spacing: -3px; color: #111;
+  }
+  #mockup-6 .tt-subtitle { font-size: 20px; color: #888; margin-top: 4px; }
+  #mockup-6 .tt-controls {
+    display: flex; justify-content: center; gap: 12px; margin-top: 20px;
+    flex-wrap: wrap; align-items: center;
+  }
+  #mockup-6 .tt-select {
+    padding: 8px 14px; border: 2px solid #e0e0e0; border-radius: 8px;
+    font-size: 13px; font-family: 'Inter', sans-serif; background: #fff;
+  }
+  #mockup-6 .tt-fam {
+    display: flex; gap: 6px; align-items: center; font-size: 13px; color: #666;
+  }
+  #mockup-6 .tt-fam input { accent-color: #e74c3c; }
+  #mockup-6 .tt-reshuffle {
+    background: #e74c3c; color: #fff; border: none; padding: 10px 24px;
+    border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  #mockup-6 .tt-timeline {
+    max-width: 700px; margin: 36px auto 0; padding: 0 20px;
+    position: relative;
+  }
+  #mockup-6 .tt-timeline::before {
+    content: ''; position: absolute; left: 40px; top: 0; bottom: 0;
+    width: 3px; background: linear-gradient(180deg, #e74c3c, #f39c12, #2ecc71, #3498db, #9b59b6, #e74c3c);
+    border-radius: 2px;
+  }
+  #mockup-6 .tt-entry {
+    position: relative; padding-left: 80px; margin-bottom: 32px;
+  }
+  #mockup-6 .tt-dot {
+    position: absolute; left: 32px; top: 8px; width: 20px; height: 20px;
+    border-radius: 50%; border: 3px solid #fff; z-index: 1;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+  }
+  #mockup-6 .tt-time-label {
+    position: absolute; left: 80px; top: -18px;
+    font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #mockup-6 .tt-card {
+    position: relative; background: #fff; border-radius: 12px; padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.06); border: 1px solid #f0f0f0;
+    display: flex; gap: 16px;
+  }
+  #mockup-6 .tt-card-img {
+    width: 80px; height: 80px; border-radius: 8px; flex-shrink: 0;
+  }
+  #mockup-6 .tt-card-body { flex: 1; }
+  #mockup-6 .tt-card-title { font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+  #mockup-6 .tt-card-meta { font-size: 12px; color: #999; margin-bottom: 6px; }
+  #mockup-6 .tt-card-blurb { font-size: 13px; color: #666; line-height: 1.5; }
+  #mockup-6 .tt-card .card-dismiss { background: #f5f5f5; color: #bbb; }
+  #mockup-6 .tt-card .card-lock { background: #f5f5f5; color: #bbb; }
+  #mockup-6 .tt-travel {
+    padding-left: 80px; margin: -20px 0 12px; font-size: 11px; color: #bbb;
+    font-weight: 500;
+  }
+</style>
+<div class="tt-header">
+  <div class="tt-time" id="time-6"></div>
+  <div class="tt-subtitle">What should we do today?</div>
+  <div class="tt-controls">
+    <select class="tt-select">
+      <option>All South Bay</option><option>Campbell</option><option>San Jose</option><option>Cupertino</option><option>Los Gatos</option><option>Mountain View</option><option>Palo Alto</option><option>Saratoga</option><option>Sunnyvale</option><option>Santa Clara</option><option>Los Altos</option><option>Milpitas</option>
+    </select>
+    <label class="tt-fam"><input type="checkbox"> Family</label>
+    <button class="tt-reshuffle">Reshuffle</button>
+  </div>
+</div>
+<div class="tt-timeline">
+  <div class="tt-entry">
+    <div class="tt-dot" style="background: #e74c3c;"></div>
+    <div class="tt-time-label">11:00 AM &ndash; 1:00 PM</div>
+    <div class="tt-card">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="tt-card-img" style="background: linear-gradient(135deg, #f6d365, #fda085); border-radius: 8px;"></div>
+      <div class="tt-card-body">
+        <div class="tt-card-title">Muse Markets</div>
+        <div class="tt-card-meta">Outdoor Market &bull; Los Gatos</div>
+        <div class="tt-card-blurb">Monthly artisan market with 40+ local vendors. Great morning energy.</div>
+      </div>
+    </div>
+  </div>
+  <div class="tt-travel">&darr; 10 min drive to Campbell</div>
+  <div class="tt-entry">
+    <div class="tt-dot" style="background: #f39c12;"></div>
+    <div class="tt-time-label">1:15 PM</div>
+    <div class="tt-card">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="tt-card-img" style="background: linear-gradient(135deg, #e0776b, #c4453a); border-radius: 8px;"></div>
+      <div class="tt-card-body">
+        <div class="tt-card-title">Zona Rosa</div>
+        <div class="tt-card-meta">Mexican Restaurant &bull; Campbell</div>
+        <div class="tt-card-blurb">Fresh-made mole and house margaritas. 4.6&#9733; on Google.</div>
+      </div>
+    </div>
+  </div>
+  <div class="tt-travel">&darr; 10 min drive back to Los Gatos</div>
+  <div class="tt-entry">
+    <div class="tt-dot" style="background: #2ecc71;"></div>
+    <div class="tt-time-label">2:30 &ndash; 4:00 PM</div>
+    <div class="tt-card">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="tt-card-img" style="background: linear-gradient(135deg, #56ab2f, #a8e063); border-radius: 8px;"></div>
+      <div class="tt-card-body">
+        <div class="tt-card-title">Vasona Lake Park</div>
+        <div class="tt-card-meta">Park &bull; Los Gatos</div>
+        <div class="tt-card-blurb">Beautiful afternoon for the lake trail. 72&deg;F and sunny today.</div>
+      </div>
+    </div>
+  </div>
+  <div class="tt-travel">&darr; 15 min drive to San Jose</div>
+  <div class="tt-entry">
+    <div class="tt-dot" style="background: #3498db;"></div>
+    <div class="tt-time-label">4:30 &ndash; 5:30 PM</div>
+    <div class="tt-card">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="tt-card-img" style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px;"></div>
+      <div class="tt-card-body">
+        <div class="tt-card-title">Click on My Mouth: Language of AI</div>
+        <div class="tt-card-meta">Art Exhibition &bull; San Jose</div>
+        <div class="tt-card-blurb">New exhibit at SJMA. Free admission Wednesdays.</div>
+      </div>
+    </div>
+  </div>
+  <div class="tt-travel">&darr; 5 min walk downtown</div>
+  <div class="tt-entry">
+    <div class="tt-dot" style="background: #9b59b6;"></div>
+    <div class="tt-time-label">6:30 PM</div>
+    <div class="tt-card">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="tt-card-img" style="background: linear-gradient(135deg, #2d3436, #636e72); border-radius: 8px;"></div>
+      <div class="tt-card-body">
+        <div class="tt-card-title">Hedley Club</div>
+        <div class="tt-card-meta">New Opening &bull; San Jose</div>
+        <div class="tt-card-blurb">Just opened this week. Craft cocktails and small plates downtown.</div>
+      </div>
+    </div>
+  </div>
+  <div class="tt-travel">&darr; 10 min drive to Campbell</div>
+  <div class="tt-entry">
+    <div class="tt-dot" style="background: #e74c3c;"></div>
+    <div class="tt-time-label">8:15 PM</div>
+    <div class="tt-card">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="tt-card-img" style="background: linear-gradient(135deg, #f8b4c8, #fce4ec); border-radius: 8px;"></div>
+      <div class="tt-card-body">
+        <div class="tt-card-title">Treatbot</div>
+        <div class="tt-card-meta">Dessert &bull; Campbell</div>
+        <div class="tt-card-blurb">Classic South Bay ice cream truck. Usually parked on Campbell Ave evenings.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DIRECTION 7: PLAYBOOK -->
+<!-- ============================================================ -->
+<div class="mockup" id="mockup-7">
+<style>
+  #mockup-7 {
+    background: #f8f9fa; min-height: 100vh; font-family: 'JetBrains Mono', 'Inter', monospace;
+    color: #1a1a2e; padding-bottom: 60px;
+  }
+  #mockup-7 .pb-header {
+    background: #1a1a2e; padding: 40px 20px 28px; text-align: center;
+    color: #fff;
+  }
+  #mockup-7 .pb-time {
+    font-size: 64px; font-weight: 700; letter-spacing: -2px;
+    font-family: 'Inter', sans-serif;
+  }
+  #mockup-7 .pb-subtitle {
+    font-size: 18px; color: #8888aa; margin-top: 4px;
+    font-family: 'Inter', sans-serif;
+  }
+  #mockup-7 .pb-controls {
+    display: flex; justify-content: center; gap: 12px; margin-top: 20px;
+    flex-wrap: wrap; align-items: center;
+  }
+  #mockup-7 .pb-select {
+    padding: 8px 14px; border: 1px solid #333355; border-radius: 6px;
+    background: #22223b; color: #fff; font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #mockup-7 .pb-toggle {
+    display: flex; border: 1px solid #333355; border-radius: 6px; overflow: hidden;
+  }
+  #mockup-7 .pb-toggle span {
+    padding: 8px 14px; font-size: 12px; cursor: pointer; color: #8888aa;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #mockup-7 .pb-toggle span.active { background: #4a4e69; color: #fff; }
+  #mockup-7 .pb-reshuffle {
+    background: #e63946; color: #fff; border: none; padding: 10px 24px;
+    border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer;
+    font-family: 'JetBrains Mono', monospace; text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #mockup-7 .pb-plays {
+    max-width: 680px; margin: 32px auto 0; padding: 0 20px;
+  }
+  #mockup-7 .pb-play {
+    position: relative; display: flex; gap: 20px; margin-bottom: 8px;
+    align-items: stretch;
+  }
+  #mockup-7 .pb-play-left {
+    width: 48px; display: flex; flex-direction: column; align-items: center;
+    flex-shrink: 0;
+  }
+  #mockup-7 .pb-play-num {
+    width: 36px; height: 36px; background: #1a1a2e; color: #fff;
+    border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+  }
+  #mockup-7 .pb-play-line {
+    flex: 1; width: 2px; background: #ddd; margin: 4px 0;
+  }
+  #mockup-7 .pb-play-card {
+    position: relative; flex: 1; background: #fff; border-radius: 8px;
+    padding: 16px 20px; border: 1px solid #e8e8e8;
+    display: flex; gap: 14px; align-items: flex-start;
+    box-shadow: 0 1px 4px rgba(0,0,0,.04);
+  }
+  #mockup-7 .pb-card-img {
+    width: 56px; height: 56px; border-radius: 6px; flex-shrink: 0;
+  }
+  #mockup-7 .pb-card-body { flex: 1; }
+  #mockup-7 .pb-card-title { font-size: 15px; font-weight: 700; margin-bottom: 2px; font-family: 'Inter', sans-serif; }
+  #mockup-7 .pb-card-meta { font-size: 11px; color: #999; margin-bottom: 4px; }
+  #mockup-7 .pb-card-time {
+    display: inline-block; font-size: 11px; background: #1a1a2e; color: #fff;
+    padding: 2px 8px; border-radius: 3px; margin-bottom: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #mockup-7 .pb-card-blurb { font-size: 12px; color: #777; line-height: 1.4; font-family: 'Inter', sans-serif; }
+  #mockup-7 .pb-play-card .card-dismiss { background: #f0f0f0; color: #bbb; width: 22px; height: 22px; font-size: 11px; }
+  #mockup-7 .pb-play-card .card-lock { background: #f0f0f0; color: #bbb; width: 22px; height: 22px; font-size: 10px; }
+  #mockup-7 .pb-travel {
+    margin-left: 68px; font-size: 10px; color: #bbb; margin-bottom: 8px;
+    font-weight: 500; text-transform: uppercase; letter-spacing: 1px;
+  }
+  #mockup-7 .pb-travel::before { content: '> '; color: #e63946; }
+</style>
+<div class="pb-header">
+  <div class="pb-time" id="time-7"></div>
+  <div class="pb-subtitle">What should we do today?</div>
+  <div class="pb-controls">
+    <select class="pb-select">
+      <option>All South Bay</option><option>Campbell</option><option>San Jose</option><option>Cupertino</option><option>Los Gatos</option><option>Mountain View</option><option>Palo Alto</option><option>Saratoga</option><option>Sunnyvale</option><option>Santa Clara</option><option>Los Altos</option><option>Milpitas</option>
+    </select>
+    <div class="pb-toggle">
+      <span class="active">Everyone</span>
+      <span>Family</span>
+    </div>
+    <button class="pb-reshuffle">RESHUFFLE</button>
+  </div>
+</div>
+<div class="pb-plays">
+  <div class="pb-play">
+    <div class="pb-play-left"><div class="pb-play-num">01</div><div class="pb-play-line"></div></div>
+    <div class="pb-play-card">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="pb-card-img" style="background: linear-gradient(135deg, #f6d365, #fda085); border-radius: 6px;"></div>
+      <div class="pb-card-body">
+        <div class="pb-card-title">Muse Markets</div>
+        <div class="pb-card-meta">Outdoor Market &bull; Los Gatos</div>
+        <div class="pb-card-time">11:00 AM &ndash; 1:00 PM</div>
+        <div class="pb-card-blurb">Monthly artisan market with 40+ local vendors. Great morning energy.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pb-travel">drive 10 min to campbell</div>
+  <div class="pb-play">
+    <div class="pb-play-left"><div class="pb-play-num">02</div><div class="pb-play-line"></div></div>
+    <div class="pb-play-card">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="pb-card-img" style="background: linear-gradient(135deg, #e0776b, #c4453a); border-radius: 6px;"></div>
+      <div class="pb-card-body">
+        <div class="pb-card-title">Zona Rosa</div>
+        <div class="pb-card-meta">Mexican Restaurant &bull; Campbell</div>
+        <div class="pb-card-time">1:15 PM</div>
+        <div class="pb-card-blurb">Fresh-made mole and house margaritas. 4.6&#9733; on Google.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pb-travel">drive 10 min back to los gatos</div>
+  <div class="pb-play">
+    <div class="pb-play-left"><div class="pb-play-num">03</div><div class="pb-play-line"></div></div>
+    <div class="pb-play-card">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="pb-card-img" style="background: linear-gradient(135deg, #56ab2f, #a8e063); border-radius: 6px;"></div>
+      <div class="pb-card-body">
+        <div class="pb-card-title">Vasona Lake Park</div>
+        <div class="pb-card-meta">Park &bull; Los Gatos</div>
+        <div class="pb-card-time">2:30 &ndash; 4:00 PM</div>
+        <div class="pb-card-blurb">Beautiful afternoon for the lake trail. 72&deg;F and sunny today.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pb-travel">drive 15 min to san jose</div>
+  <div class="pb-play">
+    <div class="pb-play-left"><div class="pb-play-num">04</div><div class="pb-play-line"></div></div>
+    <div class="pb-play-card">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="pb-card-img" style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 6px;"></div>
+      <div class="pb-card-body">
+        <div class="pb-card-title">Click on My Mouth: Language of AI</div>
+        <div class="pb-card-meta">Art Exhibition &bull; San Jose</div>
+        <div class="pb-card-time">4:30 &ndash; 5:30 PM</div>
+        <div class="pb-card-blurb">New exhibit at SJMA. Free admission Wednesdays.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pb-travel">walk 5 min downtown</div>
+  <div class="pb-play">
+    <div class="pb-play-left"><div class="pb-play-num">05</div><div class="pb-play-line"></div></div>
+    <div class="pb-play-card">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="pb-card-img" style="background: linear-gradient(135deg, #2d3436, #636e72); border-radius: 6px;"></div>
+      <div class="pb-card-body">
+        <div class="pb-card-title">Hedley Club</div>
+        <div class="pb-card-meta">New Opening &bull; San Jose</div>
+        <div class="pb-card-time">6:30 PM</div>
+        <div class="pb-card-blurb">Just opened this week. Craft cocktails and small plates downtown.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pb-travel">drive 10 min to campbell</div>
+  <div class="pb-play">
+    <div class="pb-play-left"><div class="pb-play-num">06</div></div>
+    <div class="pb-play-card">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="pb-card-img" style="background: linear-gradient(135deg, #f8b4c8, #fce4ec); border-radius: 6px;"></div>
+      <div class="pb-card-body">
+        <div class="pb-card-title">Treatbot</div>
+        <div class="pb-card-meta">Dessert &bull; Campbell</div>
+        <div class="pb-card-time">8:15 PM</div>
+        <div class="pb-card-blurb">Classic South Bay ice cream truck. Usually parked on Campbell Ave evenings.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DIRECTION 8: SOFT CITY -->
+<!-- ============================================================ -->
+<div class="mockup" id="mockup-8">
+<style>
+  #mockup-8 {
+    background: #fef6f0; min-height: 100vh; font-family: 'Outfit', sans-serif;
+    color: #3d2c22; padding-bottom: 60px;
+  }
+  #mockup-8 .sc-header {
+    text-align: center; padding: 48px 20px 28px;
+  }
+  #mockup-8 .sc-time {
+    font-size: 68px; font-weight: 700; color: #e07850;
+    letter-spacing: -2px;
+  }
+  #mockup-8 .sc-subtitle {
+    font-size: 22px; font-weight: 400; color: #b08870; margin-top: 4px;
+  }
+  #mockup-8 .sc-controls {
+    display: flex; justify-content: center; gap: 12px; margin-top: 24px;
+    flex-wrap: wrap; align-items: center;
+  }
+  #mockup-8 .sc-pills {
+    display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+  }
+  #mockup-8 .sc-pill {
+    padding: 7px 14px; border-radius: 20px; border: none;
+    font-size: 13px; cursor: pointer; font-family: 'Outfit', sans-serif;
+    font-weight: 500; background: #fde8d8; color: #c07850;
+    transition: all .15s;
+  }
+  #mockup-8 .sc-pill.active { background: #e07850; color: #fff; }
+  #mockup-8 .sc-fam-toggle {
+    background: #e8ddd4; border-radius: 24px; padding: 4px;
+    display: flex; cursor: pointer;
+  }
+  #mockup-8 .sc-fam-toggle span {
+    padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
+    transition: all .15s; color: #b08870;
+  }
+  #mockup-8 .sc-fam-toggle span.active { background: #fff; color: #3d2c22; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+  #mockup-8 .sc-reshuffle {
+    background: #e07850; color: #fff; border: none; padding: 12px 28px;
+    border-radius: 24px; font-size: 15px; font-weight: 600; cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    box-shadow: 0 4px 16px rgba(224,120,80,.3);
+    transition: transform .15s;
+  }
+  #mockup-8 .sc-reshuffle:hover { transform: scale(1.04); }
+  #mockup-8 .sc-cards {
+    max-width: 560px; margin: 36px auto 0; padding: 0 20px;
+  }
+  #mockup-8 .sc-card {
+    position: relative; background: #fff; border-radius: 24px;
+    margin-bottom: 16px; padding: 0; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,.06);
+    display: flex; min-height: 120px;
+  }
+  #mockup-8 .sc-card-img {
+    width: 120px; flex-shrink: 0;
+  }
+  #mockup-8 .sc-card-body { padding: 18px 36px 18px 18px; flex: 1; }
+  #mockup-8 .sc-card-cat {
+    display: inline-block; background: #fde8d8; color: #e07850;
+    padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;
+    margin-bottom: 6px;
+  }
+  #mockup-8 .sc-card-title { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+  #mockup-8 .sc-card-time { font-size: 13px; color: #b08870; margin-bottom: 6px; font-weight: 500; }
+  #mockup-8 .sc-card-blurb { font-size: 13px; color: #8a7060; line-height: 1.5; }
+  #mockup-8 .sc-card .card-dismiss {
+    background: #fef6f0; color: #d0b8a8; border-radius: 12px;
+  }
+  #mockup-8 .sc-card .card-lock {
+    background: #fef6f0; color: #d0b8a8; border-radius: 12px;
+  }
+  #mockup-8 .sc-transit {
+    text-align: center; font-size: 12px; color: #d0b8a8; margin: -4px 0 12px;
+    font-weight: 500;
+  }
+</style>
+<div class="sc-header">
+  <div class="sc-time" id="time-8"></div>
+  <div class="sc-subtitle">What should we do today?</div>
+  <div class="sc-controls">
+    <div class="sc-pills">
+      <button class="sc-pill active">All Cities</button>
+      <button class="sc-pill">Campbell</button>
+      <button class="sc-pill">San Jose</button>
+      <button class="sc-pill">Los Gatos</button>
+      <button class="sc-pill">Cupertino</button>
+      <button class="sc-pill">More</button>
+    </div>
+    <div class="sc-fam-toggle">
+      <span class="active">Everyone</span>
+      <span>Family</span>
+    </div>
+    <button class="sc-reshuffle">Reshuffle</button>
+  </div>
+</div>
+<div class="sc-cards">
+  <div class="sc-card">
+    <div class="sc-card-img" style="background: linear-gradient(135deg, #f6d365, #fda085);"></div>
+    <div class="sc-card-body">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="sc-card-cat">Outdoor Market</div>
+      <div class="sc-card-title">Muse Markets</div>
+      <div class="sc-card-time">11:00 AM &ndash; 1:00 PM &bull; Los Gatos</div>
+      <div class="sc-card-blurb">Monthly artisan market with 40+ local vendors. Great morning energy.</div>
+    </div>
+  </div>
+  <div class="sc-transit">10 min drive &darr;</div>
+  <div class="sc-card">
+    <div class="sc-card-img" style="background: linear-gradient(135deg, #e0776b, #c4453a);"></div>
+    <div class="sc-card-body">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="sc-card-cat">Mexican Restaurant</div>
+      <div class="sc-card-title">Zona Rosa</div>
+      <div class="sc-card-time">1:15 PM &bull; Campbell</div>
+      <div class="sc-card-blurb">Fresh-made mole and house margaritas. 4.6&#9733; on Google.</div>
+    </div>
+  </div>
+  <div class="sc-transit">10 min drive &darr;</div>
+  <div class="sc-card">
+    <div class="sc-card-img" style="background: linear-gradient(135deg, #56ab2f, #a8e063);"></div>
+    <div class="sc-card-body">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="sc-card-cat">Park</div>
+      <div class="sc-card-title">Vasona Lake Park</div>
+      <div class="sc-card-time">2:30 &ndash; 4:00 PM &bull; Los Gatos</div>
+      <div class="sc-card-blurb">Beautiful afternoon for the lake trail. 72&deg;F and sunny today.</div>
+    </div>
+  </div>
+  <div class="sc-transit">15 min drive &darr;</div>
+  <div class="sc-card">
+    <div class="sc-card-img" style="background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+    <div class="sc-card-body">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="sc-card-cat">Art Exhibition</div>
+      <div class="sc-card-title">Click on My Mouth: Language of AI</div>
+      <div class="sc-card-time">4:30 &ndash; 5:30 PM &bull; San Jose</div>
+      <div class="sc-card-blurb">New exhibit at SJMA. Free admission Wednesdays.</div>
+    </div>
+  </div>
+  <div class="sc-transit">5 min walk &darr;</div>
+  <div class="sc-card">
+    <div class="sc-card-img" style="background: linear-gradient(135deg, #2d3436, #636e72);"></div>
+    <div class="sc-card-body">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="sc-card-cat">New Opening</div>
+      <div class="sc-card-title">Hedley Club</div>
+      <div class="sc-card-time">6:30 PM &bull; San Jose</div>
+      <div class="sc-card-blurb">Just opened this week. Craft cocktails and small plates downtown.</div>
+    </div>
+  </div>
+  <div class="sc-transit">10 min drive &darr;</div>
+  <div class="sc-card">
+    <div class="sc-card-img" style="background: linear-gradient(135deg, #f8b4c8, #fce4ec);"></div>
+    <div class="sc-card-body">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="sc-card-cat">Dessert</div>
+      <div class="sc-card-title">Treatbot</div>
+      <div class="sc-card-time">8:15 PM &bull; Campbell</div>
+      <div class="sc-card-blurb">Classic South Bay ice cream truck. Usually parked on Campbell Ave evenings.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DIRECTION 9: METRO LEISURE -->
+<!-- ============================================================ -->
+<div class="mockup" id="mockup-9">
+<style>
+  #mockup-9 {
+    background: #f0f0f0; min-height: 100vh; font-family: 'Syne', sans-serif;
+    color: #111; padding-bottom: 60px;
+  }
+  #mockup-9 .ml-header {
+    background: #111; color: #fff; padding: 40px 20px 28px; text-align: left;
+    max-width: 1000px; margin: 0 auto;
+  }
+  #mockup-9 .ml-brand {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 4px;
+    color: #666; margin-bottom: 12px;
+  }
+  #mockup-9 .ml-time {
+    font-size: 80px; font-weight: 800; letter-spacing: -4px;
+    line-height: .9;
+  }
+  #mockup-9 .ml-subtitle {
+    font-size: 22px; font-weight: 400; color: #888; margin-top: 8px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  #mockup-9 .ml-controls {
+    display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; align-items: center;
+  }
+  #mockup-9 .ml-select {
+    padding: 8px 14px; border: 1px solid #333; background: #222; color: #fff;
+    font-size: 13px; font-family: 'Syne', sans-serif; cursor: pointer;
+    border-radius: 0;
+  }
+  #mockup-9 .ml-toggle {
+    display: flex; border: 1px solid #333;
+  }
+  #mockup-9 .ml-toggle span {
+    padding: 8px 16px; font-size: 12px; cursor: pointer; color: #666;
+    font-family: 'DM Sans', sans-serif; font-weight: 500;
+  }
+  #mockup-9 .ml-toggle span.active { background: #fff; color: #111; }
+  #mockup-9 .ml-reshuffle {
+    background: #fff; color: #111; border: none; padding: 10px 28px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    font-family: 'Syne', sans-serif; text-transform: uppercase;
+    letter-spacing: 2px; transition: all .15s;
+  }
+  #mockup-9 .ml-reshuffle:hover { background: #e0e0e0; }
+  #mockup-9 .ml-grid {
+    max-width: 1000px; margin: 0 auto; padding: 24px 20px 0;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+  }
+  @media (max-width: 700px) { #mockup-9 .ml-grid { grid-template-columns: 1fr; } }
+  #mockup-9 .ml-card {
+    position: relative; background: #fff; padding: 0;
+    overflow: hidden;
+  }
+  #mockup-9 .ml-card-img { height: 160px; width: 100%; }
+  #mockup-9 .ml-card-body { padding: 18px 20px; }
+  #mockup-9 .ml-card-num {
+    font-size: 48px; font-weight: 800; color: #f0f0f0; line-height: 1;
+    position: absolute; top: 8px; left: 12px; z-index: 1;
+  }
+  #mockup-9 .ml-card-cat {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+    color: #999; margin-bottom: 4px; font-family: 'DM Sans', sans-serif;
+  }
+  #mockup-9 .ml-card-title {
+    font-size: 18px; font-weight: 700; margin-bottom: 4px;
+  }
+  #mockup-9 .ml-card-time {
+    font-size: 12px; font-weight: 700; color: #111; margin-bottom: 6px;
+    font-family: 'DM Sans', sans-serif;
+    border-bottom: 2px solid #111; display: inline-block; padding-bottom: 2px;
+  }
+  #mockup-9 .ml-card-blurb { font-size: 12px; color: #888; line-height: 1.5; font-family: 'DM Sans', sans-serif; }
+  #mockup-9 .ml-card .card-dismiss {
+    background: rgba(0,0,0,.06); color: #aaa; top: auto; bottom: 8px; right: 8px;
+  }
+  #mockup-9 .ml-card .card-lock {
+    background: rgba(0,0,0,.06); color: #aaa; top: auto; bottom: 8px; left: 8px;
+  }
+  #mockup-9 .ml-card-travel {
+    font-size: 10px; color: #bbb; margin-top: 8px; text-transform: uppercase;
+    letter-spacing: 1px; font-family: 'DM Sans', sans-serif;
+  }
+</style>
+<div class="ml-header">
+  <div class="ml-brand">South Bay Today</div>
+  <div class="ml-time" id="time-9"></div>
+  <div class="ml-subtitle">What should we do today?</div>
+  <div class="ml-controls">
+    <select class="ml-select">
+      <option>All South Bay</option><option>Campbell</option><option>San Jose</option><option>Cupertino</option><option>Los Gatos</option><option>Mountain View</option><option>Palo Alto</option><option>Saratoga</option><option>Sunnyvale</option><option>Santa Clara</option><option>Los Altos</option><option>Milpitas</option>
+    </select>
+    <div class="ml-toggle">
+      <span class="active">Everyone</span>
+      <span>Family</span>
+    </div>
+    <button class="ml-reshuffle">Reshuffle</button>
+  </div>
+</div>
+<div class="ml-grid">
+  <div class="ml-card">
+    <div class="ml-card-num">01</div>
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ml-card-img" style="background: linear-gradient(135deg, #f6d365, #fda085);"></div>
+    <div class="ml-card-body">
+      <div class="ml-card-cat">Outdoor Market &bull; Los Gatos</div>
+      <div class="ml-card-title">Muse Markets</div>
+      <div class="ml-card-time">11:00 AM &ndash; 1:00 PM</div>
+      <div class="ml-card-blurb">Monthly artisan market with 40+ local vendors. Great morning energy.</div>
+    </div>
+  </div>
+  <div class="ml-card">
+    <div class="ml-card-num">02</div>
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ml-card-img" style="background: linear-gradient(135deg, #e0776b, #c4453a);"></div>
+    <div class="ml-card-body">
+      <div class="ml-card-cat">Mexican Restaurant &bull; Campbell</div>
+      <div class="ml-card-title">Zona Rosa</div>
+      <div class="ml-card-time">1:15 PM</div>
+      <div class="ml-card-blurb">Fresh-made mole and house margaritas. 4.6&#9733; on Google.</div>
+      <div class="ml-card-travel">&rarr; 10 min drive from prev</div>
+    </div>
+  </div>
+  <div class="ml-card">
+    <div class="ml-card-num">03</div>
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ml-card-img" style="background: linear-gradient(135deg, #56ab2f, #a8e063);"></div>
+    <div class="ml-card-body">
+      <div class="ml-card-cat">Park &bull; Los Gatos</div>
+      <div class="ml-card-title">Vasona Lake Park</div>
+      <div class="ml-card-time">2:30 &ndash; 4:00 PM</div>
+      <div class="ml-card-blurb">Beautiful afternoon for the lake trail. 72&deg;F and sunny today.</div>
+      <div class="ml-card-travel">&rarr; 10 min drive from prev</div>
+    </div>
+  </div>
+  <div class="ml-card">
+    <div class="ml-card-num">04</div>
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ml-card-img" style="background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+    <div class="ml-card-body">
+      <div class="ml-card-cat">Art Exhibition &bull; San Jose</div>
+      <div class="ml-card-title">Click on My Mouth: Language of AI</div>
+      <div class="ml-card-time">4:30 &ndash; 5:30 PM</div>
+      <div class="ml-card-blurb">New exhibit at SJMA. Free admission Wednesdays.</div>
+      <div class="ml-card-travel">&rarr; 15 min drive from prev</div>
+    </div>
+  </div>
+  <div class="ml-card">
+    <div class="ml-card-num">05</div>
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ml-card-img" style="background: linear-gradient(135deg, #2d3436, #636e72);"></div>
+    <div class="ml-card-body">
+      <div class="ml-card-cat">New Opening &bull; San Jose</div>
+      <div class="ml-card-title">Hedley Club</div>
+      <div class="ml-card-time">6:30 PM</div>
+      <div class="ml-card-blurb">Just opened this week. Craft cocktails and small plates downtown.</div>
+      <div class="ml-card-travel">&rarr; 5 min walk from prev</div>
+    </div>
+  </div>
+  <div class="ml-card">
+    <div class="ml-card-num">06</div>
+    <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+    <div class="ml-card-img" style="background: linear-gradient(135deg, #f8b4c8, #fce4ec);"></div>
+    <div class="ml-card-body">
+      <div class="ml-card-cat">Dessert &bull; Campbell</div>
+      <div class="ml-card-title">Treatbot</div>
+      <div class="ml-card-time">8:15 PM</div>
+      <div class="ml-card-blurb">Classic South Bay ice cream truck. Usually parked on Campbell Ave evenings.</div>
+      <div class="ml-card-travel">&rarr; 10 min drive from prev</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DIRECTION 10: GOLDEN HOUR -->
+<!-- ============================================================ -->
+<div class="mockup" id="mockup-10">
+<style>
+  #mockup-10 {
+    min-height: 100vh; font-family: 'Fraunces', serif;
+    color: #2a1f14; padding-bottom: 60px;
+    transition: background 1s;
+  }
+  #mockup-10 .gh-header {
+    text-align: center; padding: 48px 20px 28px;
+    position: relative;
+  }
+  #mockup-10 .gh-time {
+    font-size: 88px; font-weight: 700; letter-spacing: -3px;
+    line-height: 1; opacity: .9;
+  }
+  #mockup-10 .gh-subtitle {
+    font-size: 24px; font-weight: 400; opacity: .6; margin-top: 4px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  #mockup-10 .gh-controls {
+    display: flex; justify-content: center; gap: 12px; margin-top: 24px;
+    flex-wrap: wrap; align-items: center;
+  }
+  #mockup-10 .gh-select {
+    padding: 8px 16px; border-radius: 20px; border: 2px solid rgba(0,0,0,.15);
+    background: rgba(255,255,255,.5); backdrop-filter: blur(8px);
+    font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer;
+    color: inherit;
+  }
+  #mockup-10 .gh-toggle {
+    display: flex; background: rgba(255,255,255,.4); border-radius: 20px;
+    backdrop-filter: blur(8px);
+  }
+  #mockup-10 .gh-toggle span {
+    padding: 8px 16px; font-size: 13px; cursor: pointer; font-weight: 500;
+    border-radius: 20px; font-family: 'DM Sans', sans-serif;
+    color: rgba(0,0,0,.5); transition: all .15s;
+  }
+  #mockup-10 .gh-toggle span.active {
+    background: rgba(255,255,255,.8); color: #2a1f14;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  }
+  #mockup-10 .gh-reshuffle {
+    background: rgba(255,255,255,.7); backdrop-filter: blur(8px);
+    color: #2a1f14; border: 2px solid rgba(0,0,0,.1); padding: 10px 28px;
+    border-radius: 24px; font-size: 15px; font-weight: 600; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all .15s;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+  }
+  #mockup-10 .gh-reshuffle:hover { background: rgba(255,255,255,.9); }
+  #mockup-10 .gh-cards {
+    max-width: 640px; margin: 36px auto 0; padding: 0 20px;
+  }
+  #mockup-10 .gh-card {
+    position: relative; background: rgba(255,255,255,.65);
+    backdrop-filter: blur(12px); border-radius: 20px;
+    margin-bottom: 16px; overflow: hidden;
+    display: flex; min-height: 130px;
+    border: 1px solid rgba(255,255,255,.5);
+    box-shadow: 0 4px 24px rgba(0,0,0,.06);
+  }
+  #mockup-10 .gh-card-img {
+    width: 140px; flex-shrink: 0;
+  }
+  #mockup-10 .gh-card-body { padding: 18px 40px 18px 18px; flex: 1; }
+  #mockup-10 .gh-card-cat {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    opacity: .5; margin-bottom: 4px; font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+  }
+  #mockup-10 .gh-card-title { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
+  #mockup-10 .gh-card-time {
+    font-size: 13px; font-weight: 600; opacity: .7; margin-bottom: 6px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  #mockup-10 .gh-card-blurb { font-size: 13px; opacity: .6; line-height: 1.5; font-family: 'DM Sans', sans-serif; }
+  #mockup-10 .gh-card .card-dismiss {
+    background: rgba(255,255,255,.6); color: rgba(0,0,0,.3);
+  }
+  #mockup-10 .gh-card .card-lock {
+    background: rgba(255,255,255,.6); color: rgba(0,0,0,.3);
+  }
+  #mockup-10 .gh-transit {
+    text-align: center; font-size: 12px; opacity: .35; margin: -4px 0 12px;
+    font-family: 'DM Sans', sans-serif; font-weight: 500;
+  }
+</style>
+<div class="gh-header">
+  <div class="gh-time" id="time-10"></div>
+  <div class="gh-subtitle">What should we do today?</div>
+  <div class="gh-controls">
+    <select class="gh-select">
+      <option>All South Bay</option><option>Campbell</option><option>San Jose</option><option>Cupertino</option><option>Los Gatos</option><option>Mountain View</option><option>Palo Alto</option><option>Saratoga</option><option>Sunnyvale</option><option>Santa Clara</option><option>Los Altos</option><option>Milpitas</option>
+    </select>
+    <div class="gh-toggle">
+      <span class="active">Everyone</span>
+      <span>Family</span>
+    </div>
+    <button class="gh-reshuffle">Reshuffle</button>
+  </div>
+</div>
+<div class="gh-cards">
+  <div class="gh-card">
+    <div class="gh-card-img" style="background: linear-gradient(135deg, #f6d365, #fda085);"></div>
+    <div class="gh-card-body">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="gh-card-cat">Outdoor Market &bull; Los Gatos</div>
+      <div class="gh-card-title">Muse Markets</div>
+      <div class="gh-card-time">11:00 AM &ndash; 1:00 PM</div>
+      <div class="gh-card-blurb">Monthly artisan market with 40+ local vendors. Great morning energy.</div>
+    </div>
+  </div>
+  <div class="gh-transit">&darr; 10 min drive</div>
+  <div class="gh-card">
+    <div class="gh-card-img" style="background: linear-gradient(135deg, #e0776b, #c4453a);"></div>
+    <div class="gh-card-body">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="gh-card-cat">Mexican Restaurant &bull; Campbell</div>
+      <div class="gh-card-title">Zona Rosa</div>
+      <div class="gh-card-time">1:15 PM</div>
+      <div class="gh-card-blurb">Fresh-made mole and house margaritas. 4.6&#9733; on Google.</div>
+    </div>
+  </div>
+  <div class="gh-transit">&darr; 10 min drive</div>
+  <div class="gh-card">
+    <div class="gh-card-img" style="background: linear-gradient(135deg, #56ab2f, #a8e063);"></div>
+    <div class="gh-card-body">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="gh-card-cat">Park &bull; Los Gatos</div>
+      <div class="gh-card-title">Vasona Lake Park</div>
+      <div class="gh-card-time">2:30 &ndash; 4:00 PM</div>
+      <div class="gh-card-blurb">Beautiful afternoon for the lake trail. 72&deg;F and sunny today.</div>
+    </div>
+  </div>
+  <div class="gh-transit">&darr; 15 min drive</div>
+  <div class="gh-card">
+    <div class="gh-card-img" style="background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+    <div class="gh-card-body">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="gh-card-cat">Art Exhibition &bull; San Jose</div>
+      <div class="gh-card-title">Click on My Mouth: Language of AI</div>
+      <div class="gh-card-time">4:30 &ndash; 5:30 PM</div>
+      <div class="gh-card-blurb">New exhibit at SJMA. Free admission Wednesdays.</div>
+    </div>
+  </div>
+  <div class="gh-transit">&darr; 5 min walk</div>
+  <div class="gh-card">
+    <div class="gh-card-img" style="background: linear-gradient(135deg, #2d3436, #636e72);"></div>
+    <div class="gh-card-body">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="gh-card-cat">New Opening &bull; San Jose</div>
+      <div class="gh-card-title">Hedley Club</div>
+      <div class="gh-card-time">6:30 PM</div>
+      <div class="gh-card-blurb">Just opened this week. Craft cocktails and small plates downtown.</div>
+    </div>
+  </div>
+  <div class="gh-transit">&darr; 10 min drive</div>
+  <div class="gh-card">
+    <div class="gh-card-img" style="background: linear-gradient(135deg, #f8b4c8, #fce4ec);"></div>
+    <div class="gh-card-body">
+      <div class="card-lock">&#9744;</div><div class="card-dismiss">&times;</div>
+      <div class="gh-card-cat">Dessert &bull; Campbell</div>
+      <div class="gh-card-title">Treatbot</div>
+      <div class="gh-card-time">8:15 PM</div>
+      <div class="gh-card-blurb">Classic South Bay ice cream truck. Usually parked on Campbell Ave evenings.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- JAVASCRIPT -->
+<!-- ============================================================ -->
+<script>
+// Picker navigation
+document.querySelectorAll('.picker-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.picker-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.mockup').forEach(m => m.classList.remove('active'));
+    document.getElementById('mockup-' + btn.dataset.dir).classList.add('active');
+  });
+});
+
+// Live California time
+function updateTimes() {
+  const now = new Date();
+  const caTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+  let h = caTime.getHours();
+  const m = String(caTime.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  const timeStr = `It's ${h}:${m} ${ampm}`;
+
+  for (let i = 1; i <= 10; i++) {
+    const el = document.getElementById('time-' + i);
+    if (el) el.textContent = timeStr;
+  }
+
+  // Golden Hour background shift
+  const hour = caTime.getHours();
+  const ghEl = document.getElementById('mockup-10');
+  if (ghEl) {
+    let bg;
+    if (hour >= 5 && hour < 9) {
+      bg = 'linear-gradient(180deg, #ffeaa7 0%, #fdcb6e 40%, #fab1a0 100%)';
+    } else if (hour >= 9 && hour < 14) {
+      bg = 'linear-gradient(180deg, #ffecd2 0%, #fcb69f 100%)';
+    } else if (hour >= 14 && hour < 17) {
+      bg = 'linear-gradient(180deg, #fff5e6 0%, #ffe0b2 60%, #ffcc80 100%)';
+    } else if (hour >= 17 && hour < 20) {
+      bg = 'linear-gradient(180deg, #fda085 0%, #f5576c 50%, #764ba2 100%)';
+    } else {
+      bg = 'linear-gradient(180deg, #2d3436 0%, #1a1a2e 100%)';
+      ghEl.style.color = '#e0d5c0';
+    }
+    ghEl.style.background = bg;
+    if (hour >= 20 || hour < 5) {
+      ghEl.style.color = '#e0d5c0';
+    } else {
+      ghEl.style.color = '#2a1f14';
+    }
+  }
+}
+
+updateTimes();
+setInterval(updateTimes, 10000);
+
+// Toggle click handlers for all mockups
+document.querySelectorAll('.dd-toggle span, .ddr-toggle span, .sc-fam-toggle span, .gh-toggle span, .ss-seg button, .pb-toggle span, .ml-toggle span').forEach(span => {
+  span.addEventListener('click', function() {
+    this.parentElement.querySelectorAll('span, button').forEach(s => s.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// City pill click handlers
+document.querySelectorAll('.cs-pill, .sc-pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    this.parentElement.querySelectorAll('button').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>
