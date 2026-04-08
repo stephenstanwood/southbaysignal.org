@@ -783,15 +783,38 @@ function RecentlyFundedSection() {
 
 // ── This Week in SV History ────────────────────────────────────────────────
 
+const WINDOW_DAYS = 8; // show milestone if within ±8 days
+
 function getActiveMilestones(): TechMilestone[] {
   const now = new Date();
-  const WINDOW_DAYS = 8; // show milestone if within ±8 days
   return TECH_MILESTONES.filter((m) => {
     // Build a date for this milestone in the current year
     const mDate = new Date(now.getFullYear(), m.month - 1, m.day);
     const diff = Math.abs(mDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24);
     return diff <= WINDOW_DAYS;
   });
+}
+
+function getNextMilestone(): { milestone: TechMilestone; daysUntil: number } | null {
+  const now = new Date();
+  const nowMs = now.getTime();
+  let best: { milestone: TechMilestone; daysUntil: number } | null = null;
+
+  for (const m of TECH_MILESTONES) {
+    // Try current year first, then next year if already passed
+    for (const yearOffset of [0, 1]) {
+      const mDate = new Date(now.getFullYear() + yearOffset, m.month - 1, m.day);
+      const diffMs = mDate.getTime() - nowMs;
+      const diffDays = diffMs / (1000 * 60 * 60 * 24);
+      if (diffDays > WINDOW_DAYS) {
+        if (!best || diffDays < best.daysUntil) {
+          best = { milestone: m, daysUntil: Math.ceil(diffDays) };
+        }
+        break;
+      }
+    }
+  }
+  return best;
 }
 
 function milestoneAge(m: TechMilestone): number {
@@ -808,7 +831,59 @@ function ordinal(n: number): string {
 
 function SvHistorySection() {
   const milestones = getActiveMilestones();
-  if (milestones.length === 0) return null;
+
+  if (milestones.length === 0) {
+    const next = getNextMilestone();
+    if (!next) return null;
+    const { milestone: m, daysUntil } = next;
+    const age = new Date().getFullYear() - m.foundedYear;
+    const mDate = new Date(new Date().getFullYear(), m.month - 1, m.day);
+    const monthLabel = mDate.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    return (
+      <div className="tech-section">
+        <div className="tech-section-head">
+          <h3 className="tech-section-title">Coming Up in SV History</h3>
+          <span className="tech-section-note">Next local milestone in {daysUntil} day{daysUntil === 1 ? "" : "s"}</span>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+            padding: "12px 16px",
+            background: "#f9fafb",
+            border: "1px solid var(--sb-border-light)",
+            borderLeft: "4px solid #9ca3af",
+            borderRadius: 6,
+          }}
+        >
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap", marginBottom: 3 }}>
+              <span style={{ fontSize: 14, fontWeight: 700, color: "var(--sb-ink)", fontFamily: "var(--sb-sans)" }}>
+                {m.company}
+              </span>
+              <span
+                style={{
+                  fontSize: 10, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+                  letterSpacing: "0.06em", textTransform: "uppercase",
+                  color: "#6b7280", background: "#f3f4f6",
+                  padding: "2px 7px", borderRadius: 3,
+                }}
+              >
+                {monthLabel} · {ordinal(age)} anniversary
+              </span>
+              <span style={{ fontSize: 11, color: "var(--sb-muted)", fontFamily: "var(--sb-sans)" }}>
+                {m.city} · est. {m.foundedYear}
+              </span>
+            </div>
+            <p style={{ margin: 0, fontSize: 12, color: "var(--sb-muted)", lineHeight: 1.5 }}>
+              {m.tagline}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="tech-section">
