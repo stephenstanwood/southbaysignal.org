@@ -287,26 +287,23 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         </div>
       )}
 
-      {/* Loading — cards appear one at a time then glow */}
+      {/* Loading — skeleton cards + cycling verb */}
       {loading && cards.length === 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "20px 0" }}>
-          {Array.from({ length: 6 }).map((_, i) => {
+          {Array.from({ length: 5 }).map((_, i) => {
             const accent = ACCENT_COLORS[i % ACCENT_COLORS.length];
             return (
-              <div
-                key={i}
-                style={{
-                  height: 80,
-                  borderRadius: 12,
-                  background: `linear-gradient(135deg, ${accent}10, ${accent}22)`,
-                  border: `1.5px solid ${accent}25`,
-                  opacity: 0,
-                  animation: `cardAppear 0.5s ease-out ${i * 0.25}s forwards, softGlow 2.5s ease-in-out ${i * 0.25 + 0.5}s infinite`,
-                }}
-              />
+              <div key={i} style={{ display: "flex", background: "#fff", borderRadius: 10, border: "1px solid #e8e8e8", overflow: "hidden", opacity: 0, animation: `cardAppear 0.5s ease-out ${i * 0.2}s forwards, softGlow 2.5s ease-in-out ${i * 0.2 + 0.5}s infinite` }}>
+                <div style={{ width: 5, background: accent, flexShrink: 0 }} />
+                <div style={{ flex: 1, padding: "14px 16px" }}>
+                  <div style={{ width: "30%", height: 10, borderRadius: 4, background: "#eee", marginBottom: 8 }} />
+                  <div style={{ width: "65%", height: 14, borderRadius: 4, background: "#eee", marginBottom: 6 }} />
+                  <div style={{ width: "90%", height: 10, borderRadius: 4, background: "#f5f5f5" }} />
+                </div>
+              </div>
             );
           })}
-          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 600, color: "#ccc", textAlign: "center", marginTop: 8, opacity: 0, animation: "cardAppear 0.5s ease-out 1.5s forwards" }}>Planning your day...</p>
+          <LoadingVerb />
         </div>
       )}
 
@@ -368,6 +365,9 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
           0%, 100% { box-shadow: 0 0 0 rgba(0,0,0,0); }
           50% { box-shadow: 0 0 16px rgba(100,100,255,0.1); }
         }
+        @keyframes blink {
+          50% { opacity: 0; }
+        }
         @keyframes fadeSlideIn {
           from { opacity: 0; transform: translateY(12px); }
           to { opacity: 1; transform: translateY(0); }
@@ -402,6 +402,51 @@ function parseTimeBlock(tb: string): number {
   if (pm && h !== 12) h += 12;
   if (!pm && h === 12) h = 0;
   return h * 60 + min;
+}
+
+const LOADING_VERBS = [
+  "Planning", "Scheming", "Mapping out", "Dreaming up", "Cooking up",
+  "Piecing together", "Scouting", "Curating", "Lining up", "Sketching out",
+  "Assembling", "Rounding up", "Whipping up", "Plotting", "Mixing up",
+  "Brainstorming", "Crafting", "Shuffling", "Dialing in", "Sorting out",
+];
+
+function LoadingVerb() {
+  const [verbIdx, setVerbIdx] = useState(0);
+  const [charIdx, setCharIdx] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const verb = LOADING_VERBS[verbIdx % LOADING_VERBS.length];
+    const full = `${verb} your day...`;
+
+    if (!deleting && charIdx < full.length) {
+      const t = setTimeout(() => setCharIdx((c) => c + 1), 40 + Math.random() * 30);
+      return () => clearTimeout(t);
+    }
+    if (!deleting && charIdx >= full.length) {
+      const t = setTimeout(() => setDeleting(true), 1200);
+      return () => clearTimeout(t);
+    }
+    if (deleting && charIdx > 0) {
+      const t = setTimeout(() => setCharIdx((c) => c - 1), 20);
+      return () => clearTimeout(t);
+    }
+    if (deleting && charIdx === 0) {
+      setDeleting(false);
+      setVerbIdx((v) => v + 1);
+    }
+  }, [charIdx, deleting, verbIdx]);
+
+  const verb = LOADING_VERBS[verbIdx % LOADING_VERBS.length];
+  const full = `${verb} your day...`;
+  const display = full.slice(0, charIdx);
+
+  return (
+    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, color: "#bbb", textAlign: "center", marginTop: 8, minHeight: 20 }}>
+      {display}<span style={{ opacity: 0.4, animation: "blink 0.8s step-end infinite" }}>|</span>
+    </p>
+  );
 }
 
 function formatTime(): string {

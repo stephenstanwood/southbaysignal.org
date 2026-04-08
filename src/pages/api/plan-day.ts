@@ -443,7 +443,7 @@ ${kids ? "- Kid-friendly is essential. Skip anything adults-only.\n- BUDGET: Kid
 - READ THE PRICE DATA: if a place is listed as $$$$ it is NOT "casual." Match your description to the actual price level.
 
 TONE: Write like a friend texting a plan, not a travel brochure or AI assistant.
-- "blurb": what to actually DO there (order the tri-tip sandwich, hike the upper loop, sit on the patio). Be specific.
+- "blurb": what to actually DO at THAT SPECIFIC PLACE (order the tri-tip sandwich, hike the upper loop, sit on the patio). The blurb MUST describe the place named by that ID — never describe a different place in the blurb. If you don't know what the place offers, keep the blurb generic for that type (e.g. "Try the local favorite dishes" for a restaurant you don't know).
 - "why": one casual sentence. "Perfect weather for it" or "you won't find better ramen" — NOT "this is a one-time event that makes today unforgettable"
 - NEVER say: "real game", "real event", "anchor event", "one-time", "only today", "happens only today", "unforgettable", "energy burn", "change of scenery"
 - NEVER mention distance, travel time, or proximity. No "near", "nearby", "close to", "minutes from", "zero travel time", "short drive", "easy drive". The user doesn't need you to justify logistics.
@@ -572,11 +572,12 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // Start with ALL today's events (they're rare and valuable)
     const diversePool: Candidate[] = [...eventCandidates];
 
-    // Fill remaining slots with diverse places
+    // Fill remaining slots — hard cap per category to force diversity
     const catCounts: Record<string, number> = {};
+    const CAT_CAPS: Record<string, number> = { food: 4, outdoor: 3, museum: 2, entertainment: 3, wellness: 2, shopping: 2 };
     for (const c of placeCandidates) {
       const count = catCounts[c.category] || 0;
-      const maxForCat = c.category === "food" ? 10 : 6;
+      const maxForCat = CAT_CAPS[c.category] ?? 3;
       if (count < maxForCat) {
         diversePool.push(c);
         catCounts[c.category] = count + 1;
