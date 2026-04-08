@@ -208,7 +208,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
   const handleDismiss = (cardId: string, type: DismissType) => {
     const entry: DismissedEntry = type === "hide"
       ? { type: "hide", permanent: true }
-      : { type: "skip", until: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10) };
+      : { type: "skip", until: new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" }) };
     setState((s) => {
       const next = {
         ...s,

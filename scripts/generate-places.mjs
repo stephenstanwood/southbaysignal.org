@@ -199,6 +199,31 @@ const TYPE_TO_CATEGORY = {
 // ---------------------------------------------------------------------------
 
 /** Maps a formatted address to one of our city slugs */
+// ---------------------------------------------------------------------------
+// Name cleaning — strip junk suffixes from Google Places names
+// ---------------------------------------------------------------------------
+
+const NAME_SUFFIXES_TO_STRIP = [
+  / Parking Lot$/i,
+  / Parking$/i,
+  / Trailhead$/i,
+  / Trail Entrance$/i,
+  / Entrance$/i,
+  / Visitor Center$/i,
+  / - Gate$/i,
+  /,\s*(North|South|East|West)\s*Entrance$/i,
+  /,\s*\w+\s*Entrance$/i,
+  /\s*-\s*\w+\s*Trailhead$/i,
+];
+
+function cleanPlaceName(name) {
+  let cleaned = name;
+  for (const pattern of NAME_SUFFIXES_TO_STRIP) {
+    cleaned = cleaned.replace(pattern, "");
+  }
+  return cleaned.trim();
+}
+
 function detectCity(address) {
   const addr = address.toLowerCase();
   for (const city of CITIES) {
@@ -404,7 +429,7 @@ async function main() {
 
           const entry = {
             id: placeId,
-            name: place.displayName?.text || "Unknown",
+            name: cleanPlaceName(place.displayName?.text || "Unknown"),
             address: place.formattedAddress || "",
             city: detectedCity,
             lat: place.location?.latitude ?? null,
