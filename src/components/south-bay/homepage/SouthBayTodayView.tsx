@@ -286,54 +286,115 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
 
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 20px 80px" }}>
-      {/* Time display */}
-      <div style={{ textAlign: "center", padding: "32px 0 8px" }}>
-        <div
-          className="sbt-time-display"
-          style={{
-            fontFamily: "'Inter', sans-serif",
-            fontSize: 90,
-            fontWeight: 900,
-            letterSpacing: -5,
-            color: "#000",
-            lineHeight: 1,
-          }}
-        >
-          {timeDisplay}
-        </div>
-        <h1
-          style={{
-            fontFamily: "'Inter', sans-serif",
-            fontSize: 24,
-            fontWeight: 700,
-            color: "#444",
-            margin: "8px 0 0",
-          }}
-        >
-          What should we do today?
-        </h1>
-        {weather && (
+      {/* Compact header: time + headline left, controls right */}
+      <div
+        className="sbt-header"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "16px 0 12px",
+          gap: 16,
+          flexWrap: "wrap",
+        }}
+      >
+        {/* Left: time + headline */}
+        <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexShrink: 0 }}>
           <div
+            className="sbt-time-display"
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: 14,
-              color: "#888",
-              marginTop: 4,
+              fontSize: 48,
+              fontWeight: 900,
+              letterSpacing: -2,
+              color: "#000",
+              lineHeight: 1,
             }}
           >
-            {weather}
+            {timeDisplay}
           </div>
-        )}
+          <div>
+            <div
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 16,
+                fontWeight: 700,
+                color: "#333",
+                lineHeight: 1.2,
+              }}
+            >
+              What should we do today?
+            </div>
+            {weather && (
+              <div
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 12,
+                  color: "#999",
+                  marginTop: 2,
+                }}
+              >
+                {weather}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right: controls */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <button
+            onClick={handleKidsToggle}
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: 12,
+              fontWeight: 700,
+              padding: "6px 14px",
+              borderRadius: 16,
+              border: "2px solid #000",
+              background: state.kids ? "#06D6A0" : "#fff",
+              color: state.kids ? "#000" : "#555",
+              cursor: "pointer",
+              transition: "all 0.15s",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {state.kids ? "👨‍👩‍👧‍👦 Kids" : "🧑‍🤝‍🧑 No Kids"}
+          </button>
+          <button
+            onClick={handleReshuffle}
+            disabled={loading}
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: 13,
+              fontWeight: 900,
+              padding: "6px 20px",
+              borderRadius: 16,
+              border: "3px solid #000",
+              background: loading
+                ? "#eee"
+                : "linear-gradient(135deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC)",
+              color: loading ? "#999" : "#fff",
+              cursor: loading ? "not-allowed" : "pointer",
+              textTransform: "uppercase" as const,
+              letterSpacing: 1.5,
+              transition: "all 0.2s",
+              backgroundSize: "200% 200%",
+              animation: loading ? "none" : "rainbow 3s ease infinite",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {loading ? "Planning..." : "Reshuffle"}
+          </button>
+        </div>
       </div>
 
-      {/* City pills */}
+      {/* City pills — single compact row */}
       <div
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: 8,
-          justifyContent: "center",
-          padding: "16px 0",
+          gap: 6,
+          padding: "0 0 12px",
         }}
       >
         {CITIES.map((c) => (
@@ -342,13 +403,13 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
             onClick={() => handleCityChange(c.id)}
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: 13,
+              fontSize: 11,
               fontWeight: state.city === c.id ? 800 : 500,
-              padding: "6px 14px",
-              borderRadius: 20,
-              border: state.city === c.id ? "2px solid #000" : "2px solid #ddd",
+              padding: "4px 10px",
+              borderRadius: 14,
+              border: state.city === c.id ? "2px solid #000" : "1.5px solid #ddd",
               background: state.city === c.id ? "#000" : "#fff",
-              color: state.city === c.id ? "#fff" : "#555",
+              color: state.city === c.id ? "#fff" : "#777",
               cursor: "pointer",
               transition: "all 0.15s",
             }}
@@ -357,76 +418,6 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
           </button>
         ))}
       </div>
-
-      {/* Controls row */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 16,
-          padding: "8px 0 24px",
-        }}
-      >
-        {/* Kids toggle */}
-        <button
-          onClick={handleKidsToggle}
-          style={{
-            fontFamily: "'Inter', sans-serif",
-            fontSize: 13,
-            fontWeight: 700,
-            padding: "8px 20px",
-            borderRadius: 20,
-            border: "2px solid #000",
-            background: state.kids ? "#06D6A0" : "#fff",
-            color: state.kids ? "#000" : "#555",
-            cursor: "pointer",
-            transition: "all 0.15s",
-          }}
-        >
-          {state.kids ? "👨‍👩‍👧‍👦 Kids" : "🧑‍🤝‍🧑 No Kids"}
-        </button>
-
-        {/* Reshuffle */}
-        <button
-          onClick={handleReshuffle}
-          disabled={loading}
-          style={{
-            fontFamily: "'Inter', sans-serif",
-            fontSize: 15,
-            fontWeight: 900,
-            padding: "10px 32px",
-            borderRadius: 24,
-            border: "3px solid #000",
-            background: loading
-              ? "#eee"
-              : "linear-gradient(135deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC)",
-            color: loading ? "#999" : "#fff",
-            cursor: loading ? "not-allowed" : "pointer",
-            textTransform: "uppercase" as const,
-            letterSpacing: 2,
-            transition: "all 0.2s",
-            backgroundSize: "200% 200%",
-            animation: loading ? "none" : "rainbow 3s ease infinite",
-          }}
-        >
-          {loading ? "Planning..." : "Reshuffle"}
-        </button>
-      </div>
-
-      {/* Instruction line */}
-      <p
-        style={{
-          textAlign: "center",
-          fontFamily: "'Inter', sans-serif",
-          fontSize: 12,
-          color: "#aaa",
-          margin: "0 0 24px",
-        }}
-      >
-        Lock what sounds great. Skip what&apos;s not for today. Hide what&apos;s
-        not for you.
-      </p>
 
       {/* Error state */}
       {error && (
@@ -594,9 +585,14 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
             transform: none !important;
             margin-top: 0 !important;
           }
+          .sbt-header {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 8px !important;
+          }
           .sbt-time-display {
-            font-size: 60px !important;
-            letter-spacing: -3px !important;
+            font-size: 36px !important;
+            letter-spacing: -1px !important;
           }
         }
       `}</style>

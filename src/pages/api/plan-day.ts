@@ -405,6 +405,10 @@ RULES:
 - Geographic clustering — don't zigzag across the region
 - Each card needs a fresh, specific "blurb" (1 sentence, what to do there) and "why" (1 sentence, why it's worth it today)
 - Time blocks should be realistic (meals: 1-1.5hr, museums: 2hr, parks: 1-2hr, events: per schedule)
+- Match places to appropriate time slots: cafes/coffee for morning, restaurants for lunch/dinner, parks for daytime, bars for evening
+- NEVER suggest a sit-down restaurant for "morning coffee" — use actual cafes or coffee shops instead
+- Neighborhoods/downtown areas are great but describe a SPECIFIC thing to do there, not just "walk around"
+- Only suggest a venue (theater, amphitheater, stadium) if it appears as an EVENT in the pool with a specific show/game today
 ${kids ? "- Kid-friendly is essential. Skip anything adults-only." : ""}
 
 OUTPUT FORMAT (JSON array, no markdown fences):
