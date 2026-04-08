@@ -160,7 +160,7 @@ const SHORT_URLS_FILE = join(ROOT, "src", "data", "south-bay", "short-urls.json"
 
 function createShortUrl(longUrl, title, description) {
   const slug = randomBytes(4).toString("hex");
-  const shortUrl = `https://southbaysignal.org/go/${slug}`;
+  const shortUrl = `https://southbaytoday.org/go/${slug}`;
 
   let shortUrls = {};
   try { shortUrls = JSON.parse(readFileSync(SHORT_URLS_FILE, "utf8")); } catch {}

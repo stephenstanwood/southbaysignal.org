@@ -292,7 +292,7 @@ function buildCard(format, items, date) {
                 type: "div",
                 props: {
                   style: { fontSize: "13px", color: COLORS.muted },
-                  children: "southbaysignal.org",
+                  children: "southbaytoday.org",
                 },
               },
             ],

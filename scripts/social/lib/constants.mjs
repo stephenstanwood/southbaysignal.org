@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// South Bay Signal — Social Posting Configuration
+// South Bay Today — Social Posting Configuration
 // ---------------------------------------------------------------------------
 
 export const CONFIG = {
@@ -11,7 +11,7 @@ export const CONFIG = {
   HISTORY_FILE: "src/data/south-bay/social-post-history.json",
   HISTORY_RETENTION_DAYS: 30,
   CARD_OUTPUT_DIR: "/tmp/sbs-social-cards",
-  SBS_BASE_URL: "https://southbaysignal.org",
+  SBS_BASE_URL: "https://southbaytoday.org",
 };
 
 // Use Haiku for now — can upgrade to Sonnet when API key permits

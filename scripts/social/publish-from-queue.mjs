@@ -345,7 +345,7 @@ async function main() {
     if (targetUrl) {
       try {
         const ogRes = await fetch(targetUrl, {
-          headers: { "User-Agent": "SouthBaySignalBot/1.0 (link preview)" },
+          headers: { "User-Agent": "SouthBayTodayBot/1.0 (link preview)" },
           redirect: "follow",
           signal: AbortSignal.timeout(8000),
         });
@@ -362,7 +362,7 @@ async function main() {
     // Shorten long URLs for cleaner posts
     if (targetUrl && targetUrl.length > 80) {
       const shortSlug = randomBytes(4).toString("hex");
-      const shortUrl = `https://southbaysignal.org/go/${shortSlug}`;
+      const shortUrl = `https://southbaytoday.org/go/${shortSlug}`;
       // Save to short-urls.json with metadata for OG tags
       let shortUrls = {};
       try { shortUrls = JSON.parse(readFileSync(SHORT_URLS_FILE, "utf8")); } catch {}

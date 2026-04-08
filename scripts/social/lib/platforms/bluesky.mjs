@@ -86,7 +86,7 @@ export async function uploadImage(imageBuffer, mimeType = "image/png") {
 async function fetchLinkCard(url) {
   try {
     const res = await fetch(url, {
-      headers: { "User-Agent": "SouthBaySignalBot/1.0 (link preview)" },
+      headers: { "User-Agent": "SouthBayTodayBot/1.0 (link preview)" },
       redirect: "follow",
       signal: AbortSignal.timeout(8000),
     });
@@ -105,7 +105,7 @@ async function fetchLinkCard(url) {
     if (thumb) {
       try {
         const imgRes = await fetch(thumb, {
-          headers: { "User-Agent": "SouthBaySignalBot/1.0" },
+          headers: { "User-Agent": "SouthBayTodayBot/1.0" },
           signal: AbortSignal.timeout(8000),
         });
         if (imgRes.ok) {
@@ -150,7 +150,7 @@ export async function createPost(text, imageBlob = null, imageAlt = "") {
       let cardUrl = urlMatch[0];
       let displayUrl = cardUrl;
       // For /go/ short links, fetch OG from the destination but display our URL
-      const goMatch = cardUrl.match(/southbaysignal\.org\/go\/(\w+)/);
+      const goMatch = cardUrl.match(/southbaytoday\.org\/go\/(\w+)/);
       if (goMatch) {
         try {
           const { readFileSync } = await import("node:fs");

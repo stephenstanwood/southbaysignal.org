@@ -69,7 +69,7 @@ export async function isUrlReachable(url, timeout = 8000) {
       method: "GET",
       signal: AbortSignal.timeout(timeout),
       headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; SouthBaySignal/1.0)",
+        "User-Agent": "Mozilla/5.0 (compatible; SouthBayToday/1.0)",
       },
       redirect: "follow",
     });
