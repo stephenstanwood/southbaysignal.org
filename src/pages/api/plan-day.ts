@@ -250,8 +250,11 @@ function buildCandidatePool(
   for (const evt of events) {
     if (dismissedIds.has(`event:${evt.id}`)) continue;
 
-    // Only today's events (or ongoing)
-    if (evt.date !== today && !evt.ongoing) continue;
+    // Only today's events — ongoing exhibitions ok, but skip future single-day events
+    const isToday = evt.date === today;
+    const isOngoingExhibition = evt.ongoing && !evt.date; // no specific date = true ongoing
+    const isOngoingPastStart = evt.ongoing && evt.date && evt.date <= today;
+    if (!isToday && !isOngoingExhibition && !isOngoingPastStart) continue;
 
     // Must be in our city or a nearby city
     const evtCity = evt.city as City;
