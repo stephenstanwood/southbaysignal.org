@@ -57,7 +57,7 @@ export default function PhotoStrip() {
   );
 
   return (
-    <div style={{ marginLeft: -16, marginRight: -16, overflow: "hidden" }}>
+    <div style={{ overflow: "hidden", borderRadius: 4, marginTop: 4, marginBottom: 4 }}>
       <div className="photo-strip-track">
         {strip.map(p => tile(p, "-a"))}
         {strip.map(p => tile(p, "-b"))}

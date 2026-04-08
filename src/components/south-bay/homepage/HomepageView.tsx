@@ -95,7 +95,7 @@ export default function HomepageView({ homeCity, setHomeCity, onNavigate }: Prop
 
       {/* ═══ Weather strip ═══ */}
       {data.weather && (
-        <div style={{ background: "var(--sb-primary-light)", border: "1px solid var(--sb-border-light)", borderRadius: "var(--sb-radius)", padding: "10px 16px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ background: "var(--sb-primary-light)", border: "1px solid var(--sb-border-light)", borderRadius: "var(--sb-radius)", padding: "10px 16px", marginBottom: 8, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           <span style={{ fontSize: 14, color: "var(--sb-ink)", fontWeight: 500 }}>{data.weather}</span>
           <span style={{ fontSize: 11, color: "var(--sb-muted)", letterSpacing: "0.04em" }}>
             · {homeCity ? getCityName(homeCity) : "South Bay"}, CA
@@ -124,11 +124,13 @@ export default function HomepageView({ homeCity, setHomeCity, onNavigate }: Prop
 
       {/* ═══ 5-day forecast ═══ */}
       {data.forecast && data.forecast.length > 0 && !changingCity && (
-        <ForecastStrip forecast={data.forecast} />
+        <div style={{ marginBottom: 8 }}>
+          <ForecastStrip forecast={data.forecast} />
+        </div>
       )}
 
       {/* ═══ Photo strip ═══ */}
-      {!changingCity && <PhotoStrip />}
+      {!changingCity && <div style={{ marginBottom: 20 }}><PhotoStrip /></div>}
 
       {/* ═══ Today in [City] / This Weekend — THE MAIN EVENT SECTION ═══ */}
       {!changingCity && data.bucketedEvents.length > 0 && (
@@ -144,26 +146,29 @@ export default function HomepageView({ homeCity, setHomeCity, onNavigate }: Prop
         />
       )}
 
-      {/* ═══ City briefing ═══ */}
-      {homeCity && data.cityBriefing && !changingCity && (
-        <CityBriefingSection briefing={data.cityBriefing} onNavigate={onNavigate} />
-      )}
+      {/* ═══ Below-the-fold sections with consistent spacing ═══ */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 32, marginTop: 12 }}>
+        {/* City briefing */}
+        {homeCity && data.cityBriefing && !changingCity && (
+          <CityBriefingSection briefing={data.cityBriefing} onNavigate={onNavigate} />
+        )}
 
-      {/* ═══ Around the South Bay ═══ */}
-      {!changingCity && <AroundTown />}
+        {/* Around the South Bay */}
+        {!changingCity && <AroundTown />}
 
-      {/* ═══ Civic Watch ═══ */}
-      {data.civicHighlights.length > 0 && !changingCity && (
-        <CivicWatchSection highlights={data.civicHighlights} onNavigate={onNavigate} />
-      )}
+        {/* Civic Watch */}
+        {data.civicHighlights.length > 0 && !changingCity && (
+          <CivicWatchSection highlights={data.civicHighlights} onNavigate={onNavigate} />
+        )}
 
-      {/* ═══ New & Notable ═══ */}
-      {data.newNotable.length > 0 && !changingCity && (
-        <NewNotableSection items={data.newNotable} onNavigate={onNavigate} />
-      )}
+        {/* New & Notable */}
+        {data.newNotable.length > 0 && !changingCity && (
+          <NewNotableSection items={data.newNotable} onNavigate={onNavigate} />
+        )}
 
-      {/* ═══ Sports ═══ */}
-      {!changingCity && <SportsView />}
+        {/* Sports */}
+        {!changingCity && <SportsView />}
+      </div>
     </>
   );
 }
