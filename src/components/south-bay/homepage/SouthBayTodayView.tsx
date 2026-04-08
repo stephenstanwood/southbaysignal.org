@@ -569,9 +569,9 @@ function parseTimeBlock(tb: string): number {
 }
 
 const LOADING_VERBS = [
-  "Planning", "Scheming", "Mapping out", "Dreaming up", "Cooking up",
+  "Planning", "Mapping out", "Dreaming up", "Cooking up",
   "Piecing together", "Scouting", "Curating", "Lining up", "Sketching out",
-  "Assembling", "Rounding up", "Whipping up", "Plotting", "Mixing up",
+  "Assembling", "Rounding up", "Whipping up", "Mixing up", "Building",
   "Brainstorming", "Crafting", "Shuffling", "Dialing in", "Sorting out",
 ];
 
