@@ -17,6 +17,7 @@ import SportsView from "../views/SportsView";
 import OutagesCard from "../cards/OutagesCard";
 import PhotoStrip from "./PhotoStrip";
 import AroundTown from "./AroundTown";
+import CivicThisWeek from "./CivicThisWeek";
 
 // ── Shared styles ──
 
@@ -153,13 +154,11 @@ export default function HomepageView({ homeCity, setHomeCity, onNavigate }: Prop
           <CityBriefingSection briefing={data.cityBriefing} onNavigate={onNavigate} />
         )}
 
+        {/* This Week in Local Government — unified civic rollup */}
+        {!changingCity && <CivicThisWeek onNavigate={onNavigate} />}
+
         {/* Around the South Bay */}
         {!changingCity && <AroundTown />}
-
-        {/* Civic Watch */}
-        {data.civicHighlights.length > 0 && !changingCity && (
-          <CivicWatchSection highlights={data.civicHighlights} onNavigate={onNavigate} />
-        )}
 
         {/* New & Notable */}
         {data.newNotable.length > 0 && !changingCity && (
@@ -432,71 +431,6 @@ function CityBriefingSection({ briefing, onNavigate }: {
       <p style={{ fontSize: 13, lineHeight: 1.55, color: "#713f12", margin: 0 }}>
         {briefing.summary.slice(0, 200)}{briefing.summary.length > 200 ? "…" : ""}
       </p>
-    </div>
-  );
-}
-
-
-// ═══════════════════════════════════════════════════════════════════════════
-// CIVIC WATCH
-// ═══════════════════════════════════════════════════════════════════════════
-
-function CivicWatchSection({ highlights, onNavigate }: {
-  highlights: Array<{ cityId: string; cityName: string; headline: string; summary: string; meetingDate?: string; sourceUrl?: string }>;
-  onNavigate: (tab: Tab) => void;
-}) {
-  return (
-    <div>
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 14 }}>
-        <h2 style={{ ...sectionTitle, fontSize: 18 }}>🏛️ Civic Watch</h2>
-        <button
-          onClick={() => onNavigate("government")}
-          style={{
-            background: "none", border: "1px solid var(--sb-border)", borderRadius: 100,
-            padding: "4px 14px", fontSize: 11, fontWeight: 600, cursor: "pointer",
-            color: "var(--sb-ink)", fontFamily: "inherit",
-          }}
-        >
-          All government →
-        </button>
-      </div>
-
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(2, 1fr)",
-        gap: 12,
-      }}
-      className="sb-civic-grid"
-      >
-        {highlights.map((h, i) => (
-          <div
-            key={i}
-            style={{
-              ...cardBase,
-              padding: "14px 16px",
-              cursor: h.sourceUrl ? "pointer" : undefined,
-              transition: "box-shadow 0.15s",
-            }}
-            onClick={() => h.sourceUrl ? window.open(h.sourceUrl, "_blank") : onNavigate("government")}
-            onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.boxShadow = "var(--sb-shadow-hover)"}
-            onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.boxShadow = "none"}
-          >
-            <div style={{ ...sectionLabel, color: "#6366f1", marginBottom: 6 }}>
-              {h.cityName} {h.meetingDate ? `· ${h.meetingDate}` : ""}
-            </div>
-            <div style={{
-              fontFamily: "var(--sb-serif)", fontWeight: 700, fontSize: 14,
-              lineHeight: 1.3, color: "var(--sb-ink)", marginBottom: 6,
-              display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden",
-            }}>
-              {h.headline}
-            </div>
-            <div style={{ fontSize: 12, color: "var(--sb-muted)", lineHeight: 1.4 }}>
-              {h.summary.slice(0, 100)}{h.summary.length > 100 ? "…" : ""}
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
