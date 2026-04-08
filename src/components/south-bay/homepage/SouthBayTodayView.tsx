@@ -181,7 +181,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
     setState((s) => ({ ...s, kids: !s.kids }));
     setTimeout(() => fetchPlan(), 50);
   };
-  const handleNew Plan = () => fetchPlan();
+  const handleNewPlan = () => fetchPlan();
   const handleGeolocate = () => {
     if (!navigator.geolocation) return;
     setGeoLoading(true);
@@ -246,7 +246,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
             <button onClick={() => { if (!state.kids) handleKidsToggle(); }} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, padding: "4px 10px", border: "none", borderLeft: "2px solid #000", background: state.kids ? "#000" : "#fff", color: state.kids ? "#fff" : "#888", cursor: "pointer", transition: "all 0.15s" }}>Kids</button>
           </div>
           {/* New Plan */}
-          <button onClick={handleNew Plan} disabled={loading} style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 900, padding: "5px 16px", borderRadius: 14, border: "2.5px solid #000", background: loading ? "#eee" : "linear-gradient(135deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC)", color: loading ? "#999" : "#fff", cursor: loading ? "not-allowed" : "pointer", textTransform: "uppercase" as const, letterSpacing: 1, backgroundSize: "200% 200%", animation: loading ? "none" : "rainbow 3s ease infinite", whiteSpace: "nowrap" as const }}>{loading ? "Planning..." : "New Plan"}</button>
+          <button onClick={handleNewPlan} disabled={loading} style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 900, padding: "5px 16px", borderRadius: 14, border: "2.5px solid #000", background: loading ? "#eee" : "linear-gradient(135deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC)", color: loading ? "#999" : "#fff", cursor: loading ? "not-allowed" : "pointer", textTransform: "uppercase" as const, letterSpacing: 1, backgroundSize: "200% 200%", animation: loading ? "none" : "rainbow 3s ease infinite", whiteSpace: "nowrap" as const }}>{loading ? "Planning..." : "New Plan"}</button>
         </div>
       </div>
 
@@ -283,7 +283,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         <div style={{ textAlign: "center", padding: 40, color: "#E63946", fontFamily: "'Inter', sans-serif" }}>
           <p style={{ fontSize: 16, fontWeight: 700 }}>Couldn&apos;t plan your day</p>
           <p style={{ fontSize: 13, color: "#888" }}>{error}</p>
-          <button onClick={handleNew Plan} style={{ marginTop: 12, padding: "8px 20px", borderRadius: 20, border: "2px solid #000", background: "#fff", cursor: "pointer", fontWeight: 700 }}>Try Again</button>
+          <button onClick={handleNewPlan} style={{ marginTop: 12, padding: "8px 20px", borderRadius: 20, border: "2px solid #000", background: "#fff", cursor: "pointer", fontWeight: 700 }}>Try Again</button>
         </div>
       )}
 

@@ -84,7 +84,7 @@ const MAX_CARDS = 6;
 const CANDIDATE_POOL_SIZE = 25; // fewer = faster Haiku response
 
 // Distance threshold in km for "nearby" places
-const NEARBY_KM = 15;
+const NEARBY_KM = 8; // ~5 miles — reasonable driving distance
 
 // In-memory plan cache: city:kids:hour → { data, ts }
 const planCache = new Map<string, { data: any; ts: number }>();
@@ -439,7 +439,8 @@ TONE: Write like a friend texting a plan, not a travel brochure or AI assistant.
 - "why": one casual sentence. "Perfect weather for it" or "you won't find better ramen" — NOT "this is a one-time event that makes today unforgettable"
 - NEVER say: "real game", "real event", "anchor event", "one-time", "only today", "happens only today", "unforgettable", "energy burn", "change of scenery"
 - NEVER mention distance, travel time, or proximity. No "near", "nearby", "close to", "minutes from", "zero travel time", "short drive", "easy drive". The user doesn't need you to justify logistics.
-- NEVER fabricate details not in the data
+- NEVER fabricate details not in the data — don't assume drop-in availability, class schedules, or specific menu items unless the data says so
+- NEVER describe a place as being "in" a city it's not in — check the city field
 - NEVER hedge or qualify — just recommend it confidently
 
 OUTPUT FORMAT (JSON array, no markdown fences):
