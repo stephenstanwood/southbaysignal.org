@@ -183,8 +183,14 @@ async function fetchPrimeGovMeeting(city, domain, committeeId) {
   const daysOut = (date.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
   if (daysOut > 60) return null;
 
+  // Use Pacific Time for both date fields — toISOString() is UTC and causes off-by-one errors
+  // when meetings are scheduled late in the day (UTC midnight crosses into the next calendar day)
+  const pacificIso = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(date);
+
   return {
-    date: date.toISOString().split("T")[0],
+    date: pacificIso,
     displayDate: date.toLocaleDateString("en-US", {
       weekday: "short", month: "short", day: "numeric",
       timeZone: "America/Los_Angeles",
