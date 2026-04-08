@@ -54,6 +54,7 @@ const FIELD_MASK = [
   "places.primaryType",
   "places.websiteUri",
   "places.googleMapsUri",
+  "places.photos",
 ].join(",");
 
 const MIN_RATING = 4.0;
@@ -417,6 +418,7 @@ async function main() {
             hours: parseHours(place.regularOpeningHours),
             url: place.websiteUri || null,
             mapsUrl: place.googleMapsUri || null,
+            photoRef: place.photos?.[0]?.name || null,
             curated: false,
           };
 

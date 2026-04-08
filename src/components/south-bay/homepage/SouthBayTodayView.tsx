@@ -27,6 +27,7 @@ interface DayCard {
   mapsUrl?: string | null;
   cost?: string | null;
   costNote?: string | null;
+  photoRef?: string | null;
   source: "event" | "place";
   locked: boolean;
 }
@@ -643,27 +644,14 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
                     width: 100,
                     height: 140,
                     borderRadius: 10,
-                    border: "2px solid #ddd",
-                    background: `linear-gradient(160deg, #f8f8f8, #eee)`,
+                    border: "2px solid #e0e0e0",
+                    background: `linear-gradient(160deg, #fafafa, #f0f0f0)`,
                     animation: `gentleShuffle 3s ease-in-out ${delay}s infinite`,
                     transform: `translateX(${offsetX}px) rotate(${angle}deg)`,
                     zIndex: i,
-                    boxShadow: "1px 2px 4px rgba(0,0,0,0.06)",
+                    boxShadow: "1px 2px 4px rgba(0,0,0,0.05)",
                   }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: "100%",
-                      fontSize: 24,
-                      opacity: 0.4,
-                    }}
-                  >
-                    {["🍽️", "🌿", "🎭", "🏛️", "⚾", "☕"][i]}
-                  </div>
-                </div>
+                />
               );
             })}
           </div>
@@ -828,8 +816,6 @@ function DayCardComponent({
 }) {
   const [hovered, setHovered] = useState(false);
 
-  const emoji = CATEGORY_EMOJI[card.category] || "📍";
-
   const baseTransform = `translateX(${spreadX}px) translateY(${arcY}px) rotate(${fanAngle}deg)`;
   const hoverTransform = `translateX(${spreadX}px) translateY(${arcY - 14}px) rotate(${fanAngle * 0.3}deg)`;
 
@@ -854,20 +840,20 @@ function DayCardComponent({
         transformOrigin: "bottom center",
       }}
     >
-      {/* Gradient header with accent color */}
+      {/* Header — photo or gradient */}
       <div
         style={{
-          height: 72,
-          background: `linear-gradient(135deg, ${accent}18, ${accent}38)`,
+          height: 56,
+          background: card.photoRef
+            ? `url(/api/place-photo?ref=${encodeURIComponent(card.photoRef)}&w=400&h=200) center/cover no-repeat`
+            : `linear-gradient(135deg, ${accent}12, ${accent}30)`,
           borderBottom: `2.5px solid #000`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 32,
           position: "relative",
         }}
       >
-        {emoji}
 
         {/* Lock button (upper left) */}
         <button

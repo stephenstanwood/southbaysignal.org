@@ -70,6 +70,7 @@ interface DayCard {
   mapsUrl?: string | null;
   cost?: string | null;
   costNote?: string | null;
+  photoRef?: string | null;
   source: "event" | "place";
   locked: boolean;
 }
@@ -320,6 +321,7 @@ function buildCandidatePool(
       indoorOutdoor: p.indoorOutdoor || null,
       url: p.url,
       mapsUrl: p.mapsUrl,
+      photoRef: p.photoRef || null,
       hours: p.hours,
       source: "place",
       score: 0,
@@ -468,6 +470,7 @@ Return ONLY the JSON array. No explanation.`;
       mapsUrl: candidate.mapsUrl,
       cost: candidate.cost,
       costNote: candidate.costNote,
+      photoRef: (candidate as any).photoRef || null,
       source: candidate.source,
       locked: lockedCandidates.some((l) => l.id === candidate.id),
     });
