@@ -16,7 +16,7 @@ import type { APIRoute } from "astro";
 import Anthropic from "@anthropic-ai/sdk";
 import { errJson, okJson, toErrMsg } from "../../lib/apiHelpers";
 import { rateLimit, rateLimitResponse } from "../../lib/rateLimit";
-import { CLAUDE_HAIKU, extractText, stripFences } from "../../lib/models";
+import { CLAUDE_SONNET, extractText, stripFences } from "../../lib/models";
 import { CITY_MAP, getCityName } from "../../lib/south-bay/cities";
 import type { City } from "../../lib/south-bay/types";
 
@@ -229,6 +229,13 @@ function scoreCandidates(
     // --- Cost preference (free/low preferred) ---
     if (c.cost === "free") score += 5;
 
+    // --- In kids mode, heavily penalize expensive restaurants ---
+    if (kids) {
+      const price = (c as any).priceLevel || c.costNote || "";
+      if (price === "PRICE_LEVEL_VERY_EXPENSIVE" || price === "$$$$") score -= 50;
+      if (price === "PRICE_LEVEL_EXPENSIVE" || price === "$$$") score -= 20;
+    }
+
     // --- Penalize generic neighborhood entries — specific places are always better ---
     if (c.category === "neighborhood") score -= 30;
 
@@ -432,7 +439,8 @@ RULES:
 - NEVER suggest a sit-down restaurant for "morning coffee" — use actual cafes or coffee shops instead
 - NEVER pick a "neighborhood" or "downtown area" as a card — always pick a SPECIFIC restaurant, cafe, park, museum, or venue instead. "Grab lunch at Luna Mexican Kitchen" is great; "Go to Downtown Campbell" is useless to a local.
 - Only suggest a venue (theater, amphitheater, stadium) if it appears as an EVENT in the pool with a specific show/game today
-${kids ? "- Kid-friendly is essential. Skip anything adults-only." : ""}
+${kids ? "- Kid-friendly is essential. Skip anything adults-only.\n- BUDGET: Kids mode = casual and affordable. Never suggest $$$$ restaurants. Prefer $ and $$ spots." : ""}
+- READ THE PRICE DATA: if a place is listed as $$$$ it is NOT "casual." Match your description to the actual price level.
 
 TONE: Write like a friend texting a plan, not a travel brochure or AI assistant.
 - "blurb": what to actually DO there (order the tri-tip sandwich, hike the upper loop, sit on the patio). Be specific.
@@ -456,7 +464,7 @@ OUTPUT FORMAT (JSON array, no markdown fences):
 Return ONLY the JSON array. No explanation.`;
 
   const response = await client.messages.create({
-    model: CLAUDE_HAIKU,
+    model: CLAUDE_SONNET,
     max_tokens: 1500,
     messages: [{ role: "user", content: prompt }],
   });

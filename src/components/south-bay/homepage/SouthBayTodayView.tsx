@@ -317,16 +317,18 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
             const accent = ACCENT_COLORS[i % ACCENT_COLORS.length];
             const emoji = CATEGORY_EMOJI[card.category] || "📍";
             return (
-              <div key={card.id} style={{ display: "flex", gap: 0, padding: "12px 14px", borderRadius: 12, background: `linear-gradient(135deg, ${accent}08, ${accent}15)`, border: `1.5px solid ${accent}20`, animation: `fadeSlideIn 0.3s ease-out ${i * 0.05}s both` }}>
+              <div key={card.id} style={{ display: "flex", gap: 0, background: "#fff", borderRadius: 10, border: "1px solid #e8e8e8", overflow: "hidden", animation: `fadeSlideIn 0.3s ease-out ${i * 0.05}s both` }}>
+                {/* Accent bar */}
+                <div style={{ width: 5, background: accent, flexShrink: 0 }} />
                 {/* Thumbnail: photo or emoji fallback */}
-                <div style={{ width: 64, height: 64, borderRadius: 10, overflow: "hidden", flexShrink: 0, marginRight: 14, background: card.photoRef ? `url(/api/place-photo?ref=${encodeURIComponent(card.photoRef)}&w=200&h=200) center/cover no-repeat, ${accent}20` : `${accent}18`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28 }}>
+                <div style={{ width: 72, height: 72, flexShrink: 0, margin: "10px 0 10px 12px", borderRadius: 8, overflow: "hidden", background: card.photoRef ? `url(/api/place-photo?ref=${encodeURIComponent(card.photoRef)}&w=200&h=200) center/cover no-repeat, #f0f0f0` : `#f5f5f5`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28 }}>
                   {!card.photoRef && emoji}
                 </div>
                 {/* Content */}
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ flex: 1, minWidth: 0, padding: "10px 12px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
                     <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 800, color: "#000" }}>{card.timeBlock}</span>
-                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 700, color: accent, textTransform: "uppercase" as const, letterSpacing: 1 }}>{card.category}</span>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 700, color: "#999", textTransform: "uppercase" as const, letterSpacing: 1 }}>{card.category}</span>
                     {card.source === "event" && <span style={{ fontSize: 9, fontWeight: 700, color: "#E63946", fontFamily: "'Inter', sans-serif" }}>EVENT</span>}
                   </div>
                   <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, fontWeight: 900, color: "#000", margin: "0 0 3px", lineHeight: 1.2 }}>{card.name}</h3>
@@ -339,10 +341,10 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
                     </div>
                   )}
                 </div>
-                {/* Actions — traffic light: green lock, yellow skip, red hide */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 3, marginLeft: 10, flexShrink: 0, alignItems: "center" }}>
+                {/* Traffic light actions */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 3, padding: "10px 10px 10px 0", flexShrink: 0, alignItems: "center", justifyContent: "center" }}>
                   <button onClick={() => handleLock(card.id)} title={card.locked ? "Unlock" : "Lock this"} style={{ width: 28, height: 28, borderRadius: "50%", border: "none", background: card.locked ? "#22c55e" : "#dcfce7", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, padding: 0, color: card.locked ? "#fff" : "#22c55e", fontWeight: 700, transition: "all 0.15s" }}>✓</button>
-                  <button onClick={() => handleDismiss(card.id, "skip")} title="Not today (skip 30 days)" style={{ width: 28, height: 28, borderRadius: "50%", border: "none", background: "#fef9c3", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, padding: 0, color: "#ca8a04", fontWeight: 700, transition: "all 0.15s" }}>→</button>
+                  <button onClick={() => handleDismiss(card.id, "skip")} title="Not today" style={{ width: 28, height: 28, borderRadius: "50%", border: "none", background: "#fef9c3", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, padding: 0, color: "#ca8a04", fontWeight: 700, transition: "all 0.15s" }}>→</button>
                   <button onClick={() => handleDismiss(card.id, "hide")} title="Never show this" style={{ width: 28, height: 28, borderRadius: "50%", border: "none", background: "#fee2e2", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, padding: 0, color: "#dc2626", fontWeight: 700, transition: "all 0.15s" }}>✕</button>
                 </div>
               </div>
