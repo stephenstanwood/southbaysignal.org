@@ -343,7 +343,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
             const accent = ACCENT_COLORS[i % ACCENT_COLORS.length];
             const emoji = CATEGORY_EMOJI[card.category] || "📍";
             const isFading = fadingIds.has(card.id);
-            const cardUrl = card.url || card.mapsUrl;
+            const cardUrl = card.source === "event" ? (card.url || card.mapsUrl) : (card.mapsUrl || card.url);
             return (
               <div
                 key={card.id}
