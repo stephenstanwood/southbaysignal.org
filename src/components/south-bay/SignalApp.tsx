@@ -217,7 +217,7 @@ export default function SignalApp() {
 
       {/* Footer */}
       <footer className="sb-footer">
-        <a href="/">southbaytoday.org</a>
+        a project of <a href="https://stanwood.dev" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Permanent Marker', cursive", textDecoration: "none", color: "inherit" }}>stanwood.dev</a>
       </footer>
     </>
   );
