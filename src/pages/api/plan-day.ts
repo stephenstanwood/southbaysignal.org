@@ -46,12 +46,14 @@ interface Candidate {
   rating?: number | null;
   cost?: string | null;
   costNote?: string | null;
+  kidsCostNote?: string | null;
   kidFriendly?: boolean | null;
   indoorOutdoor?: string | null;
   url?: string | null;
   mapsUrl?: string | null;
   hours?: Record<string, string> | null;
   venue?: string | null;
+  photoRef?: string | null;
   source: "event" | "place";
   eventDate?: string;
   eventTime?: string | null;
@@ -72,6 +74,7 @@ interface DayCard {
   mapsUrl?: string | null;
   cost?: string | null;
   costNote?: string | null;
+  kidsCostNote?: string | null;
   photoRef?: string | null;
   source: "event" | "place";
   locked: boolean;
@@ -121,6 +124,18 @@ function isOpenToday(hours: Record<string, string> | null): boolean {
   return dayIdx in hours;
 }
 
+/** Get today's closing hour for a place, or null if unknown. */
+function closingHourToday(hours: Record<string, string> | null | undefined): number | null {
+  if (!hours) return null;
+  const dayIdx = new Date().toLocaleDateString("en-US", { timeZone: "America/Los_Angeles", weekday: "short" }).toLowerCase().slice(0, 3);
+  const range = hours[dayIdx];
+  if (!range) return null;
+  const close = range.split("-")[1];
+  if (!close) return null;
+  const h = parseHour(close);
+  return h;
+}
+
 function currentPTHour(): number {
   return new Date().toLocaleString("en-US", {
     timeZone: "America/Los_Angeles",
@@ -128,6 +143,24 @@ function currentPTHour(): number {
     hour12: false,
   }) as unknown as number;
 }
+
+/** Parse a time string like "9:00 PM" or "21:00" into 24h hour. Returns null if unparseable. */
+function parseHour(timeStr: string): number | null {
+  // Try "H:MM AM/PM" format
+  const ampm = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+  if (ampm) {
+    let h = parseInt(ampm[1], 10);
+    if (ampm[3].toUpperCase() === "PM" && h !== 12) h += 12;
+    if (ampm[3].toUpperCase() === "AM" && h === 12) h = 0;
+    return h;
+  }
+  // Try 24h "HH:MM"
+  const mil = timeStr.match(/^(\d{1,2}):(\d{2})$/);
+  if (mil) return parseInt(mil[1], 10);
+  return null;
+}
+
+const KIDS_CURFEW_HOUR = 20; // 8 PM — nothing starting at or after this
 
 // ---------------------------------------------------------------------------
 // Weather fetch (internal, same-origin)
@@ -285,6 +318,12 @@ function buildCandidatePool(
       if (dist > NEARBY_KM) continue;
     }
 
+    // In kids mode, skip events that start at or after curfew
+    if (kids && evt.time) {
+      const startH = parseHour(evt.time.split(/\s*-\s*/)[0]);
+      if (startH !== null && startH >= KIDS_CURFEW_HOUR) continue;
+    }
+
     candidates.push({
       id: `event:${evt.id}`,
       name: evt.title,
@@ -344,6 +383,7 @@ function buildCandidatePool(
       rating: p.rating,
       cost: p.cost || null,
       costNote: p.costNote || (p.priceLevel ? priceLevelLabel(p.priceLevel) : null),
+      kidsCostNote: (p as any).kidsCostNote || null,
       kidFriendly: p.kidFriendly ?? null,
       indoorOutdoor: p.indoorOutdoor || null,
       url: p.url,
@@ -414,6 +454,11 @@ async function sequenceWithClaude(
       if (c.kidFriendly === true) parts.push(`kid-friendly`);
       if (c.why) parts.push(`note: ${c.why}`);
       if (c.indoorOutdoor) parts.push(`setting: ${c.indoorOutdoor}`);
+      const closeH = closingHourToday((c as any).hours);
+      if (closeH !== null) {
+        const closeAmPm = closeH > 12 ? `${closeH - 12} PM` : closeH === 12 ? "12 PM" : `${closeH} AM`;
+        parts.push(`closes: ${closeAmPm}`);
+      }
       return parts.join(" | ");
     })
     .join("\n");
@@ -442,8 +487,9 @@ RULES:
 - Match places to appropriate time slots: cafes/coffee for morning, restaurants for lunch/dinner, parks for daytime, bars for evening
 - NEVER suggest a sit-down restaurant for "morning coffee" — use actual cafes or coffee shops instead
 - NEVER pick a "neighborhood" or "downtown area" as a card — always pick a SPECIFIC restaurant, cafe, park, museum, or venue instead. "Grab lunch at Luna Mexican Kitchen" is great; "Go to Downtown Campbell" is useless to a local.
+- NEVER schedule a place after its closing time. If a place says "closes: 4 PM", your time block must END by 4 PM at the latest. A museum that closes at 4:30 PM cannot be a 9 PM activity.
 - Only suggest a venue (theater, amphitheater, stadium) if it appears as an EVENT in the pool with a specific show/game today
-${kids ? "- Kid-friendly is essential. Skip anything adults-only.\n- BUDGET: Kids mode = casual and affordable. Never suggest $$$$ restaurants. Prefer $ and $$ spots." : ""}
+${kids ? "- Kid-friendly is essential. Skip anything adults-only.\n- BUDGET: Kids mode = casual and affordable. Never suggest $$$$ restaurants. Prefer $ and $$ spots.\n- CURFEW: Last activity must END by 9:00 PM. Kids need to be home by 9. Never schedule anything starting after 8:00 PM." : ""}
 - READ THE PRICE DATA: if a place is listed as $$$$ it is NOT "casual." Match your description to the actual price level.
 
 TONE: Write like a friend texting a plan, not a travel brochure or AI assistant.
@@ -505,12 +551,48 @@ Return ONLY the JSON array. No explanation.`;
       url: candidate.url,
       mapsUrl: candidate.mapsUrl,
       cost: candidate.cost,
-      costNote: candidate.costNote,
+      costNote: kids && candidate.kidsCostNote ? candidate.kidsCostNote : candidate.costNote,
+      kidsCostNote: candidate.kidsCostNote,
       photoRef: (candidate as any).photoRef || null,
       venue: candidate.venue || null,
       source: candidate.source,
       locked: lockedCandidates.some((l) => l.id === candidate.id),
     });
+  }
+
+  // Post-process: enforce kids curfew — drop any card starting at or after 8 PM
+  if (kids) {
+    const before = cards.length;
+    for (let i = cards.length - 1; i >= 0; i--) {
+      const startTime = cards[i].timeBlock.split(/\s*-\s*/)[0];
+      const h = parseHour(startTime);
+      if (h !== null && h >= KIDS_CURFEW_HOUR && !cards[i].locked) {
+        cards.splice(i, 1);
+      }
+    }
+    if (cards.length < before) {
+      console.log(`[plan-day] kids curfew: dropped ${before - cards.length} card(s) starting after ${KIDS_CURFEW_HOUR}:00`);
+    }
+  }
+
+  // Post-process: drop places scheduled past their closing time
+  {
+    const before = cards.length;
+    for (let i = cards.length - 1; i >= 0; i--) {
+      if (cards[i].locked) continue;
+      const candidate = candidateMap.get(cards[i].id);
+      if (!candidate) continue;
+      const closeH = closingHourToday((candidate as any).hours);
+      if (closeH === null) continue; // unknown hours — keep it
+      const startTime = cards[i].timeBlock.split(/\s*-\s*/)[0];
+      const startH = parseHour(startTime);
+      if (startH !== null && startH >= closeH) {
+        cards.splice(i, 1);
+      }
+    }
+    if (cards.length < before) {
+      console.log(`[plan-day] closing time: dropped ${before - cards.length} card(s) scheduled past closing`);
+    }
   }
 
   // Post-process: fix same-category back-to-back by swapping with nearest non-adjacent different-category card

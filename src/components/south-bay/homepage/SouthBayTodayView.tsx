@@ -298,7 +298,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
             <button onClick={() => { if (!state.kids) handleKidsToggle(); }} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, padding: "4px 10px", border: "none", borderLeft: "2px solid #000", background: state.kids ? "#000" : "#fff", color: state.kids ? "#fff" : "#888", cursor: "pointer", transition: "all 0.15s" }}>Kids</button>
           </div>
           {/* New Plan */}
-          <button onClick={handleNewPlan} disabled={loading && !swapLoading} style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 900, padding: "5px 16px", borderRadius: 14, border: "2.5px solid #000", backgroundColor: (loading && !swapLoading) ? "#eee" : "transparent", backgroundImage: (loading && !swapLoading) ? "none" : "linear-gradient(135deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC)", color: (loading && !swapLoading) ? "#999" : "#fff", cursor: (loading && !swapLoading) ? "not-allowed" : "pointer", textTransform: "uppercase" as const, letterSpacing: 1, backgroundSize: "200% 200%", animation: (loading && !swapLoading) ? "none" : "rainbow 3s ease infinite", whiteSpace: "nowrap" as const }}>Shuffle ↻</button>
+          <button onClick={handleNewPlan} disabled={loading && !swapLoading} className={(loading && !swapLoading) ? "sbt-shuffle sbt-shuffle--loading" : "sbt-shuffle"}>Shuffle ↻</button>
         </div>
       </div>
 
@@ -430,6 +430,45 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
 
 
       <style>{`
+        .sbt-shuffle {
+          font-family: 'Inter', sans-serif;
+          font-size: 12px;
+          font-weight: 900;
+          padding: 5px 16px;
+          border-radius: 14px;
+          border: 2.5px solid #000;
+          background: linear-gradient(135deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC);
+          background-size: 200% 200%;
+          animation: rainbow 3s ease infinite;
+          color: #fff;
+          cursor: pointer;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          white-space: nowrap;
+          position: relative;
+          overflow: hidden;
+          z-index: 0;
+        }
+        .sbt-shuffle--loading {
+          background: #e8e8e8;
+          color: #fff;
+          cursor: not-allowed;
+          animation: none;
+        }
+        .sbt-shuffle--loading::after {
+          content: '';
+          position: absolute;
+          left: 0; right: 0; bottom: 0;
+          height: 0%;
+          background: linear-gradient(to top, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC);
+          animation: fillUp 4s ease-out forwards;
+          z-index: -1;
+          border-radius: inherit;
+        }
+        @keyframes fillUp {
+          0%   { height: 0%; }
+          100% { height: 100%; }
+        }
         @keyframes shimmer {
           0% { background-position: 200% 0; }
           100% { background-position: -200% 0; }
@@ -607,8 +646,8 @@ function LoadingVerb() {
   const display = full.slice(0, charIdx);
 
   return (
-    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 17, fontWeight: 700, color: "#999", textAlign: "center", margin: 0, minHeight: 24 }}>
-      {display}<span style={{ opacity: 0.4, animation: "blink 0.8s step-end infinite" }}>|</span>
+    <p className="loading-verb" style={{ fontSize: 28, fontWeight: 900, textAlign: "center", margin: 0, minHeight: 36, background: "linear-gradient(90deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC, #FF6B35)", backgroundSize: "200% 100%", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", animation: "rainbow 3s ease infinite", fontFamily: "'Inter', sans-serif", letterSpacing: -0.5 }}>
+      {display}<span style={{ WebkitTextFillColor: "#ccc", animation: "blink 0.8s step-end infinite" }}>|</span>
     </p>
   );
 }

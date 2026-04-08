@@ -41,6 +41,7 @@ export default memo(function PhotoStrip() {
       style={{
         flexShrink: 0, display: "block", position: "relative",
         height: 200, width: 280, overflow: "hidden", background: "#ccc",
+        borderRadius: 6,
       }}
     >
       <img
