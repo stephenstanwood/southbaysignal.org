@@ -217,9 +217,7 @@ export default function SignalApp() {
 
       {/* Footer */}
       <footer className="sb-footer">
-        Sports data via ESPN and MLB. Scores update every 30 seconds during live games.
-        <br />
-        <a href="/">stanwood.dev</a>
+        <a href="/">southbaytoday.org</a>
       </footer>
     </>
   );
