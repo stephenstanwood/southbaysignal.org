@@ -457,30 +457,71 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         </div>
       )}
 
-      {/* Loading skeleton */}
+      {/* Loading animation — dealing cards */}
       {loading && cards.length === 0 && (
-        <div
-          className="sbt-card-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "16px 16px",
-            maxWidth: 1100,
-          }}
-        >
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              style={{
-                height: 260,
-                borderRadius: 16,
-                border: "3px solid #eee",
-                background: "#f8f8f8",
-                animation: "pulse 1.5s ease-in-out infinite",
-                animationDelay: `${i * 0.1}s`,
-              }}
-            />
-          ))}
+        <div style={{ textAlign: "center", padding: "40px 0" }}>
+          <div
+            className="sbt-card-grid"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "16px 16px",
+              maxWidth: 1100,
+            }}
+          >
+            {ACCENT_COLORS.map((color, i) => (
+              <div
+                key={i}
+                className="sbt-card"
+                style={{
+                  height: 240,
+                  borderRadius: 16,
+                  border: "3px solid #000",
+                  background: `linear-gradient(135deg, ${color}15, ${color}35)`,
+                  animation: `dealIn 0.4s ease-out ${i * 0.12}s both`,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 12,
+                }}
+              >
+                <div style={{ fontSize: 36, animation: `float 2s ease-in-out ${i * 0.2}s infinite` }}>
+                  {["🗺️", "🍽️", "🌿", "🎭", "🏛️", "🎸"][i]}
+                </div>
+                <div
+                  style={{
+                    width: "60%",
+                    height: 8,
+                    borderRadius: 4,
+                    background: `${color}33`,
+                    animation: `shimmer 1.5s ease-in-out ${i * 0.15}s infinite`,
+                  }}
+                />
+                <div
+                  style={{
+                    width: "40%",
+                    height: 8,
+                    borderRadius: 4,
+                    background: `${color}22`,
+                    animation: `shimmer 1.5s ease-in-out ${i * 0.15 + 0.2}s infinite`,
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+          <p
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              fontSize: 14,
+              fontWeight: 600,
+              color: "#aaa",
+              marginTop: 24,
+              animation: "pulse 1.5s ease-in-out infinite",
+            }}
+          >
+            Shuffling the deck...
+          </p>
         </div>
       )}
 
@@ -519,7 +560,25 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         }
         @keyframes pulse {
           0%, 100% { opacity: 0.4; }
-          50% { opacity: 0.7; }
+          50% { opacity: 0.8; }
+        }
+        @keyframes dealIn {
+          from {
+            opacity: 0;
+            transform: translateY(40px) rotate(8deg) scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) rotate(0deg) scale(1);
+          }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-6px); }
+        }
+        @keyframes shimmer {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.6; }
         }
         @keyframes slideOut {
           to {
@@ -681,39 +740,35 @@ function DayCardComponent({
 
       {/* Card body */}
       <div style={{ padding: 16 }}>
-        {/* Category + time */}
+        {/* Time block */}
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 8,
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 13,
+            fontWeight: 800,
+            color: "#000",
+            marginBottom: 4,
           }}
         >
+          {card.timeBlock}
+        </div>
+        {/* Category label */}
+        <div style={{ marginBottom: 8 }}>
           <span
             style={{
               fontFamily: "'Inter', sans-serif",
-              fontSize: 11,
+              fontSize: 10,
               fontWeight: 900,
               textTransform: "uppercase" as const,
               letterSpacing: 2,
               color: "#000",
               border: "2px solid #000",
               borderRadius: 4,
-              padding: "4px 10px",
+              padding: "3px 8px",
+              display: "inline-block",
             }}
           >
             {card.category}
-          </span>
-          <span
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: 13,
-              fontWeight: 800,
-              color: "#000",
-            }}
-          >
-            {card.timeBlock}
           </span>
         </div>
 

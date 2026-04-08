@@ -277,9 +277,23 @@ function buildCandidatePool(
   }
 
   // --- Places from the pool ---
+  // Venue-only types: only useful if there's an actual event today
+  const VENUE_ONLY_TYPES = new Set([
+    "performing_arts_theater", "concert_hall", "amphitheatre",
+    "event_venue", "convention_center", "stadium", "arena",
+    "live_music_venue", "comedy_club",
+  ]);
+
   const places = (placesData as any).places ?? [];
   for (const p of places) {
     if (dismissedIds.has(`place:${p.id}`)) continue;
+
+    // Skip venue-only places — these need a specific event to be useful
+    const primaryType = p.primaryType || "";
+    const types: string[] = p.types || [];
+    if (VENUE_ONLY_TYPES.has(primaryType) || types.some((t: string) => VENUE_ONLY_TYPES.has(t))) {
+      continue;
+    }
 
     // Filter to city or nearby
     if (p.city !== city) {
