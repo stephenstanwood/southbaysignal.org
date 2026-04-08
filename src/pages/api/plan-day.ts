@@ -176,7 +176,7 @@ function scoreCandidates(
   candidates: Candidate[],
   weather: WeatherContext | null,
   hour: number,
-  _kids: boolean,
+  kids: boolean,
 ): Candidate[] {
   for (const c of candidates) {
     let score = 0;
