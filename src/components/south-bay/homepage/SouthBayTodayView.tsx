@@ -342,24 +342,51 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
 
         {/* Right: controls */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-          <button
-            onClick={handleKidsToggle}
+          {/* Kids segmented toggle */}
+          <div
             style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: 12,
-              fontWeight: 700,
-              padding: "6px 14px",
+              display: "flex",
               borderRadius: 16,
               border: "2px solid #000",
-              background: state.kids ? "#06D6A0" : "#fff",
-              color: state.kids ? "#000" : "#555",
-              cursor: "pointer",
-              transition: "all 0.15s",
-              whiteSpace: "nowrap",
+              overflow: "hidden",
             }}
           >
-            {state.kids ? "👨‍👩‍👧‍👦 Kids" : "🧑‍🤝‍🧑 No Kids"}
-          </button>
+            <button
+              onClick={() => { if (state.kids) handleKidsToggle(); }}
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 12,
+                fontWeight: 700,
+                padding: "5px 12px",
+                border: "none",
+                background: !state.kids ? "#000" : "#fff",
+                color: !state.kids ? "#fff" : "#888",
+                cursor: "pointer",
+                transition: "all 0.15s",
+                whiteSpace: "nowrap",
+              }}
+            >
+              No Kids
+            </button>
+            <button
+              onClick={() => { if (!state.kids) handleKidsToggle(); }}
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 12,
+                fontWeight: 700,
+                padding: "5px 12px",
+                border: "none",
+                borderLeft: "2px solid #000",
+                background: state.kids ? "#000" : "#fff",
+                color: state.kids ? "#fff" : "#888",
+                cursor: "pointer",
+                transition: "all 0.15s",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Kids
+            </button>
+          </div>
           <button
             onClick={handleReshuffle}
             disabled={loading}
