@@ -8,7 +8,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { City, Tab } from "../../../lib/south-bay/types";
-import { CITIES } from "../../../lib/south-bay/cities";
+import { CITIES, CITY_MAP } from "../../../lib/south-bay/cities";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -139,6 +139,9 @@ type Props = {
 // Main component
 // ---------------------------------------------------------------------------
 
+// Top 5 featured cities — the rest behind "More..."
+const FEATURED_CITIES: City[] = ["campbell", "los-gatos", "mountain-view", "san-jose", "palo-alto"];
+
 export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
   const [state, setState] = useState<LocalState>(() => {
     const loaded = loadState();
@@ -151,6 +154,8 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [timeDisplay, setTimeDisplay] = useState(() => formatTime());
   const [animatingOut, setAnimatingOut] = useState<Set<string>>(new Set());
+  const [showMoreCities, setShowMoreCities] = useState(false);
+  const [geoLoading, setGeoLoading] = useState(false);
   const fetchRef = useRef(0);
 
   // Persist state changes
@@ -237,6 +242,32 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
 
   const handleReshuffle = () => {
     fetchPlan();
+  };
+
+  const handleGeolocate = () => {
+    if (!navigator.geolocation) return;
+    setGeoLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        // Find nearest city
+        let nearest: City = "campbell";
+        let minDist = Infinity;
+        for (const c of CITIES) {
+          const dist = Math.sqrt((c.lat - latitude) ** 2 + (c.lon - longitude) ** 2);
+          if (dist < minDist) {
+            minDist = dist;
+            nearest = c.id;
+          }
+        }
+        setGeoLoading(false);
+        handleCityChange(nearest);
+      },
+      () => {
+        setGeoLoading(false);
+      },
+      { timeout: 8000 },
+    );
   };
 
   const handleLock = (cardId: string) => {
@@ -415,35 +446,138 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         </div>
       </div>
 
-      {/* City pills — single compact row */}
+      {/* City selector — featured cities + More + geolocation */}
       <div
         style={{
           display: "flex",
-          flexWrap: "wrap",
+          alignItems: "center",
           gap: 6,
           padding: "0 0 12px",
+          flexWrap: "wrap",
         }}
       >
-        {CITIES.map((c) => (
-          <button
-            key={c.id}
-            onClick={() => handleCityChange(c.id)}
-            style={{
-              fontFamily: "'Inter', sans-serif",
-              fontSize: 11,
-              fontWeight: state.city === c.id ? 800 : 500,
-              padding: "4px 10px",
-              borderRadius: 14,
-              border: state.city === c.id ? "2px solid #000" : "1.5px solid #ddd",
-              background: state.city === c.id ? "#000" : "#fff",
-              color: state.city === c.id ? "#fff" : "#777",
-              cursor: "pointer",
-              transition: "all 0.15s",
-            }}
-          >
-            {c.name}
-          </button>
-        ))}
+        <span
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 11,
+            fontWeight: 600,
+            color: "#bbb",
+            marginRight: 2,
+          }}
+        >
+          Near
+        </span>
+
+        {/* Featured cities */}
+        {FEATURED_CITIES.map((id) => {
+          const c = CITY_MAP[id];
+          return (
+            <button
+              key={id}
+              onClick={() => handleCityChange(id)}
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 11,
+                fontWeight: state.city === id ? 800 : 500,
+                padding: "4px 10px",
+                borderRadius: 14,
+                border: state.city === id ? "2px solid #000" : "1.5px solid #ddd",
+                background: state.city === id ? "#000" : "#fff",
+                color: state.city === id ? "#fff" : "#777",
+                cursor: "pointer",
+                transition: "all 0.15s",
+              }}
+            >
+              {c.name}
+            </button>
+          );
+        })}
+
+        {/* More dropdown — shows if selected city isn't in featured list, or on click */}
+        {showMoreCities ? (
+          CITIES.filter((c) => !FEATURED_CITIES.includes(c.id)).map((c) => (
+            <button
+              key={c.id}
+              onClick={() => { handleCityChange(c.id); setShowMoreCities(false); }}
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 11,
+                fontWeight: state.city === c.id ? 800 : 500,
+                padding: "4px 10px",
+                borderRadius: 14,
+                border: state.city === c.id ? "2px solid #000" : "1.5px solid #ddd",
+                background: state.city === c.id ? "#000" : "#fff",
+                color: state.city === c.id ? "#fff" : "#777",
+                cursor: "pointer",
+                transition: "all 0.15s",
+              }}
+            >
+              {c.name}
+            </button>
+          ))
+        ) : (
+          <>
+            {/* Show selected city if it's not in featured list */}
+            {!FEATURED_CITIES.includes(state.city) && (
+              <button
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 11,
+                  fontWeight: 800,
+                  padding: "4px 10px",
+                  borderRadius: 14,
+                  border: "2px solid #000",
+                  background: "#000",
+                  color: "#fff",
+                  cursor: "default",
+                }}
+              >
+                {CITY_MAP[state.city]?.name}
+              </button>
+            )}
+            <button
+              onClick={() => setShowMoreCities(true)}
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 11,
+                fontWeight: 600,
+                padding: "4px 10px",
+                borderRadius: 14,
+                border: "1.5px dashed #ccc",
+                background: "#fff",
+                color: "#999",
+                cursor: "pointer",
+                transition: "all 0.15s",
+              }}
+            >
+              More...
+            </button>
+          </>
+        )}
+
+        {/* Geolocation button */}
+        <button
+          onClick={handleGeolocate}
+          disabled={geoLoading}
+          title="Use my location"
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 11,
+            fontWeight: 600,
+            padding: "4px 10px",
+            borderRadius: 14,
+            border: "1.5px solid #ddd",
+            background: "#fff",
+            color: "#777",
+            cursor: geoLoading ? "wait" : "pointer",
+            transition: "all 0.15s",
+            display: "flex",
+            alignItems: "center",
+            gap: 3,
+          }}
+        >
+          {geoLoading ? "..." : "📍"} Locate me
+        </button>
       </div>
 
       {/* Error state */}

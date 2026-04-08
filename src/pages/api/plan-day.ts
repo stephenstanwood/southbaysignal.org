@@ -397,6 +397,8 @@ ${poolText}
 
 TASK: Pick ${MAX_CARDS} items from the pool (including all locked items) and sequence them into a great day plan. Return a JSON array of exactly ${MAX_CARDS} objects.
 
+CRITICAL: Items marked "EVENT TODAY" are real, one-time happenings — include at least 1-2 of these if any exist in the pool. They're what makes today different from any other day.
+
 RULES:
 - Start from NOW (${hour}:00) — don't schedule things in the past
 - Events with specific times are anchors — schedule around them
@@ -515,12 +517,17 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const lockedCandidates = scored.filter((c) => lockedSet.has(c.id));
     const unlockedPool = scored.filter((c) => !lockedSet.has(c.id));
 
-    // 5. Ensure category diversity in pool
-    const diversePool: Candidate[] = [];
+    // 5. Events always get priority slots, then fill with diverse places
+    const eventCandidates = unlockedPool.filter((c) => c.source === "event");
+    const placeCandidates = unlockedPool.filter((c) => c.source === "place");
+
+    // Start with ALL today's events (they're rare and valuable)
+    const diversePool: Candidate[] = [...eventCandidates];
+
+    // Fill remaining slots with diverse places
     const catCounts: Record<string, number> = {};
-    for (const c of unlockedPool) {
+    for (const c of placeCandidates) {
       const count = catCounts[c.category] || 0;
-      // Allow more food since it's the biggest category
       const maxForCat = c.category === "food" ? 10 : 6;
       if (count < maxForCat) {
         diversePool.push(c);
