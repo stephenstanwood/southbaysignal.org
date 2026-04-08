@@ -3172,3 +3172,42 @@ Spring break is actively happening. Parents checking South Bay Signal during the
 
 ### Are We Becoming More Like the Homepage for South Bay Life?
 **Yes.** A parent checking SBS today (spring break Tuesday) sees: today's 4 spring break picks highlighted as TODAY, the week's city council meetings (Campbell + Milpitas today), fresh restaurant radar with Lytton Ave openings, the full school calendar through end of year, and live Caltrain/VTA status. The TODAY treatment is the kind of feature that makes residents want to check it every morning.
+
+---
+
+## 2026-04-07 — Cycle 67: "Coming Up in SV History" + Full Data Refresh
+
+### Context
+Tuesday April 7, 2026 (evening). Spring break week 1 continues (SJUSD/PAUSD/MVWSD/LGSUHSD/MVLA on break through Apr 10). All data pipelines refreshed.
+
+### What Was Built
+
+**Tech tab: "Coming Up in SV History" chip** (`TechnologyView.tsx`)
+
+The "This Week in SV History" section previously returned null whenever no milestones fell within the ±8-day window — creating blank periods (e.g., Apr 20–23, between Yahoo and AMD). It now always shows something:
+
+- **When active**: existing full milestone cards (unchanged)
+- **When no active milestones**: a compact "Coming Up in SV History" chip showing the next milestone — company name, how many days away, `ordinal(age)` anniversary badge, city/founding year, and the company's tagline
+
+The chip uses a muted gray treatment (vs. the amber of active milestones) to signal "upcoming" vs. "now." The `getNextMilestone()` function scans all milestones and picks the closest future one (wraps to next year if needed).
+
+**Data refreshed (13 files):**
+- `upcoming-events.json` — 507 events from 25 sources
+- `weekend-picks.json` — 3 picks for Apr 10–12 (USWNT vs Japan, Julius Caesar, Sciencepalooza!)
+- `around-town.json` — 8 items, 10-day lookback
+- `digests.json` — 10 city digests refreshed
+- `upcoming-meetings.json` — 7 cities; Campbell tonight (Apr 8), Milpitas (Apr 7)
+- `tech-briefing.json` — Apr 7–14; $4B+ in Q1–Q2, Nexthop/MatX/Ayar leading
+- `city-briefings.json` — 10 city briefings
+- `real-estate.json` — 10 cities, Mountain View fastest market (8d)
+- `restaurant-radar.json` — Bistro Demiya + Rikyu opening Lytton Ave PA; Baekjeong SJ buildout
+- `scc-food-openings.json` — 12 opened, 12 coming soon
+- `permit-pulse.json` — SJ + PA refreshed
+
+### Why This Was the Strongest Move
+The "Coming Up" chip fills a real gap — the section was invisible for ~3 days per month whenever milestones were between windows. Now it always surfaces interesting SV history. A resident who opens the Tech tab on April 21 will see "AMD · 57th anniversary · in 10 days" instead of nothing. The chip is low-key (gray, compact) so it doesn't oversell itself.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED updates** — Watch for new Q2 2026 rounds. Aria Networks (Apr 7) is current latest. Check for Apr 8–14 announcements next cycle.
+2. **Permit Pulse: add Mountain View** — Mountain View has an open data portal (data.mountainview.gov). Research their permits API and add a third city.
+3. **Neighborhood-level filtering** — San José has distinct neighborhoods (Willow Glen, Almaden, Rose Garden, etc.) — a city as large as SJ could benefit from sub-city filtering in Events and Permits.
