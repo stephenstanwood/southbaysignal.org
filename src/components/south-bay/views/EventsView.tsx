@@ -337,7 +337,7 @@ const CATEGORY_ACCENT: Record<string, { color: string; bg: string; label: string
 
 // ── Upcoming Event Card ──
 
-function UpcomingEventCard({ event }: { event: UpcomingEvent }) {
+function UpcomingEventCard({ event, showDate }: { event: UpcomingEvent; showDate?: boolean }) {
   const badge = costBadge(event.cost);
   const showBadge = !(event.cost === "free" && event.category === "community");
   const accent = CATEGORY_ACCENT[event.category] ?? CATEGORY_ACCENT.community;
@@ -407,6 +407,14 @@ function UpcomingEventCard({ event }: { event: UpcomingEvent }) {
 
         {/* Meta row */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 8px", fontSize: 11, color: "var(--sb-muted)" }}>
+          {showDate && event.displayDate && (
+            <><span style={{
+              fontWeight: 700, color: "var(--sb-ink)", fontSize: 11,
+              background: "var(--sb-card)", border: "1px solid var(--sb-border-light)",
+              borderRadius: 3, padding: "0px 5px",
+            }}>{event.displayDate}</span>
+            {(event.time || event.venue || event.city) && <span style={{ color: "var(--sb-border)" }}>·</span>}</>
+          )}
           {event.time && (
             <span style={{ fontWeight: 600, color: "var(--sb-ink)", fontSize: 11 }}>
               {formatTimeRange(event.time, event.endTime, event.category === "sports")}
@@ -512,14 +520,43 @@ function RecurringEventCard({ event }: { event: SBEvent }) {
 
 // ── Date grouping helpers ──
 
-function getDateGroupLabel(dateIso: string, todayIso: string, tomorrowIso: string, weekEndIso: string): string {
+function shortDate(isoDate: string): string {
+  const d = new Date(isoDate + "T12:00:00");
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+function weekMonday(isoDate: string): string {
+  const d = new Date(isoDate + "T12:00:00");
+  const dow = d.getDay(); // 0=Sun
+  const daysToMon = dow === 0 ? 6 : dow - 1;
+  const mon = new Date(d.getTime() - daysToMon * 86400000);
+  return mon.toLocaleDateString("en-CA");
+}
+
+function weekLabel(monIso: string): string {
+  const sun = new Date(monIso + "T12:00:00");
+  sun.setDate(sun.getDate() + 6);
+  return `${shortDate(monIso)}–${shortDate(sun.toLocaleDateString("en-CA"))}`;
+}
+
+function getEventBucket(dateIso: string, todayIso: string, tomorrowIso: string, weekEndIso: string): string {
   if (dateIso === todayIso) return "Today";
   if (dateIso === tomorrowIso) return "Tomorrow";
   if (dateIso <= weekEndIso) return "This Week";
-  return "Later";
+  return `week:${weekMonday(dateIso)}`;
 }
 
-const DATE_GROUP_ORDER = ["Today", "Tomorrow", "This Week", "Later"];
+function bucketLabel(bucket: string, weekEndIso: string): string {
+  if (bucket === "Today" || bucket === "Tomorrow" || bucket === "This Week") return bucket;
+  const monIso = bucket.slice(5); // "week:2026-04-13" → "2026-04-13"
+  const today = new Date();
+  const monDate = new Date(monIso + "T12:00:00");
+  const diffDays = Math.round((monDate.getTime() - today.getTime()) / 86400000);
+  if (diffDays <= 7) return `Next Week · ${weekLabel(monIso)}`;
+  return `Week of ${shortDate(monIso)}`;
+}
+
+const DATE_GROUP_STATIC = ["Today", "Tomorrow", "This Week"];
 
 // ── Main View ──
 
@@ -717,25 +754,35 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
         } else if (e.date <= SB_BREAK_WK1) {
           label = "Spring Break · Wk 1 (Apr 3–10)";
         } else {
-          label = "Spring Break · Wk 2 (Apr 13–17)";
+          label = "Spring Break · Wk 2 (Apr 14–17)";
         }
         if (!groups[label]) groups[label] = [];
         groups[label].push(e);
       }
-      const order = ["Easter Weekend", "Spring Break · Wk 1 (Apr 3–10)", "Spring Break · Wk 2 (Apr 13–17)"];
-      return order.filter((g) => groups[g]?.length > 0).map((label) => ({ label, events: groups[label] }));
+      const order = ["Easter Weekend", "Spring Break · Wk 1 (Apr 3–10)", "Spring Break · Wk 2 (Apr 14–17)"];
+      return order.filter((g) => groups[g]?.length > 0).map((label) => ({ label, events: groups[label], showDate: false }));
     }
 
     const groups: Record<string, UpcomingEvent[]> = {};
     for (const e of filteredUpcoming) {
-      const label = getDateGroupLabel(e.date || "", todayIso, tomorrowIso, weekEndIso);
-      if (!groups[label]) groups[label] = [];
-      groups[label].push(e);
+      const bucket = getEventBucket(e.date || "", todayIso, tomorrowIso, weekEndIso);
+      if (!groups[bucket]) groups[bucket] = [];
+      groups[bucket].push(e);
     }
-    return DATE_GROUP_ORDER.filter((g) => groups[g]?.length > 0).map((label) => ({
-      label,
-      events: groups[label],
-    }));
+
+    // Sort buckets: static groups first, then calendar weeks in order
+    const staticBuckets = DATE_GROUP_STATIC.filter((g) => groups[g]?.length > 0);
+    const weekBuckets = Object.keys(groups)
+      .filter((k) => k.startsWith("week:"))
+      .sort();
+
+    return [...staticBuckets, ...weekBuckets]
+      .filter((bucket) => groups[bucket]?.length > 0)
+      .map((bucket) => ({
+        label: bucketLabel(bucket, weekEndIso),
+        events: groups[bucket],
+        showDate: !DATE_GROUP_STATIC.includes(bucket),
+      }));
   }, [filteredUpcoming, todayIso, tomorrowIso, weekEndIso, springBreakMode]);
 
   return (
@@ -1045,23 +1092,24 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
       ) : viewMode === "upcoming" ? (
         /* Upcoming: grouped by date */
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-          {groupedUpcoming.map(({ label, events }) => {
-            const isLater = label === "Later";
-            const visible = isLater && !showAllLater ? events.slice(0, 50) : events;
+          {groupedUpcoming.map(({ label, events, showDate }) => {
+            const isWeekBucket = !DATE_GROUP_STATIC.includes(label) && !label.startsWith("Spring");
+            const visible = isWeekBucket && !showAllLater ? events.slice(0, 50) : events;
+            const isToday = label === "Today";
+            const isTomorrow = label === "Tomorrow";
             return (
               <div key={label} style={{ marginBottom: 24 }}>
                 {/* Date group header */}
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                   <span style={{
-                    fontSize: label === "Today" || label === "Tomorrow" ? 13 : 11,
+                    fontSize: isToday || isTomorrow ? 13 : 11,
                     fontWeight: 800,
                     fontFamily: "'Space Mono', monospace",
                     letterSpacing: "0.06em",
                     textTransform: "uppercase",
-                    color: label === "Today" ? "var(--sb-accent)" : "var(--sb-ink)",
-                    ...(label === "Today" ? {
+                    color: isToday ? "#fff" : "var(--sb-ink)",
+                    ...(isToday ? {
                       background: "var(--sb-accent)",
-                      color: "#fff",
                       padding: "2px 8px",
                       borderRadius: 4,
                     } : {}),
@@ -1075,10 +1123,10 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {visible.map((event) => (
-                    <UpcomingEventCard key={event.id} event={event} />
+                    <UpcomingEventCard key={event.id} event={event} showDate={showDate} />
                   ))}
                 </div>
-                {isLater && !showAllLater && events.length > 50 && (
+                {isWeekBucket && !showAllLater && events.length > 50 && (
                   <button
                     onClick={() => setShowAllLater(true)}
                     style={{
