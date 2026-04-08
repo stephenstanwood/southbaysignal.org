@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 630px;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #FAF9F6;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Accent color strip at top */
+  .strip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: linear-gradient(90deg, #FF6B35, #E63946, #06D6A0, #7B2FBE, #1A5AFF, #FF3CAC);
+  }
+  .title {
+    font-size: 72px;
+    font-weight: 900;
+    color: #000;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .subtitle {
+    font-size: 28px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 32px;
+  }
+  .cities {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 900px;
+  }
+  .city {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 2px solid #ddd;
+    color: #777;
+    background: #fff;
+  }
+  .url {
+    position: absolute;
+    bottom: 32px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #bbb;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+  <div class="strip"></div>
+  <div class="title">South Bay Today</div>
+  <div class="subtitle">What should we do today?</div>
+  <div class="cities">
+    <span class="city">Campbell</span>
+    <span class="city">Los Gatos</span>
+    <span class="city">Mountain View</span>
+    <span class="city">San Jose</span>
+    <span class="city">Palo Alto</span>
+    <span class="city">Cupertino</span>
+    <span class="city">Saratoga</span>
+    <span class="city">Sunnyvale</span>
+    <span class="city">Santa Clara</span>
+    <span class="city">Los Altos</span>
+    <span class="city">Milpitas</span>
+  </div>
+  <div class="url">southbaytoday.org</div>
+</body>
+</html>
