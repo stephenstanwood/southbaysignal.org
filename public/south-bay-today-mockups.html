@@ -595,6 +595,178 @@
   .v5 .card-body .card-time-accent-5 { color: #1A5AFF; }
   .v5 .card-body .card-time-accent-6 { color: #FF3CAC; }
   .v5 .card-blurb { font-size: 13px; color: #555; line-height: 1.5; font-weight: 500; }
+
+  /* ============================================
+     VARIANT 6 — HIGH CONTRAST POP + ORIGINAL LAYOUT
+     Combines v5 color/aesthetic with dramatic dealt-hand grid
+     ============================================ */
+  .v6 {
+    background: #ffffff;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+  }
+  .v6 .hero {
+    padding: 60px 40px 40px;
+    text-align: center;
+  }
+  .v6 .time-display {
+    font-size: 90px;
+    font-weight: 900;
+    letter-spacing: -5px;
+    color: #000;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .v6 .headline {
+    font-size: 24px;
+    font-weight: 700;
+    color: #444;
+    margin-bottom: 32px;
+  }
+  .v6 .controls {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center;
+    margin-bottom: 16px;
+  }
+  .v6 .city-pills {
+    display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+    max-width: 700px;
+  }
+  .v6 .city-pill {
+    padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 700;
+    background: #f0f0f0; border: 2px solid #e0e0e0; color: #666; cursor: pointer;
+    transition: all .15s;
+  }
+  .v6 .city-pill:hover { background: #e0e0e0; color: #333; border-color: #ccc; }
+  .v6 .city-pill.active { background: #000; color: #fff; border-color: #000; }
+  .v6 .toggle-row {
+    display: flex; gap: 12px; align-items: center; justify-content: center;
+    margin: 20px 0;
+  }
+  .v6 .family-toggle {
+    display: flex; border-radius: 8px; overflow: hidden; border: 3px solid #000;
+  }
+  .v6 .family-toggle button {
+    padding: 8px 20px; font-size: 14px; font-weight: 800; cursor: pointer;
+    border: none; background: #fff; color: #666; font-family: inherit;
+    transition: all .15s;
+  }
+  .v6 .family-toggle button.active { background: #000; color: #fff; }
+  .v6 .instruction-line {
+    text-align: center; font-size: 14px; font-weight: 600; color: #888;
+    margin: 8px 0 4px; letter-spacing: -0.2px;
+  }
+  .v6 .reshuffle-btn {
+    padding: 16px 44px; border-radius: 14px; font-size: 20px; font-weight: 900;
+    background: linear-gradient(135deg, #FF3366, #FF6B35, #FFCC00, #33CC66, #3366FF, #CC33FF);
+    background-size: 300% 300%;
+    animation: rainbowShift 4s ease infinite;
+    color: #fff; border: 3px solid #000; cursor: pointer;
+    font-family: inherit; letter-spacing: -0.5px;
+    box-shadow: 0 4px 0 #000;
+    transition: all .15s;
+    text-transform: uppercase;
+  }
+  .v6 .reshuffle-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #000; }
+  .v6 .reshuffle-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #000; }
+
+  /* === DEALT HAND GRID — dramatic fan-out === */
+  .v6 .cards-dealt {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 40px 100px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 16px 20px;
+  }
+  /* Dramatic per-card rotations + offsets for dealt feeling */
+  .v6 .card-wrapper { position: relative; }
+  .v6 .card-wrapper:nth-child(1) { transform: rotate(-3.5deg) translateY(8px); z-index: 2; }
+  .v6 .card-wrapper:nth-child(2) { transform: rotate(1.8deg) translateY(-6px); z-index: 3; }
+  .v6 .card-wrapper:nth-child(3) { transform: rotate(-2.2deg) translateY(12px); z-index: 1; }
+  .v6 .card-wrapper:nth-child(4) { transform: rotate(3deg) translateY(-4px); z-index: 2; }
+  .v6 .card-wrapper:nth-child(5) { transform: rotate(-1.5deg) translateY(10px); z-index: 4; }
+  .v6 .card-wrapper:nth-child(6) { transform: rotate(2.8deg) translateY(-8px); z-index: 1; }
+  /* Overlap: negative margins on row 2 to cascade into row 1 */
+  .v6 .card-wrapper:nth-child(n+4) { margin-top: -24px; }
+
+  .v6 .travel-hint {
+    text-align: center; font-size: 14px; color: #666; padding: 8px 0;
+    font-weight: 800;
+  }
+  .v6 .card {
+    position: relative; border-radius: 16px; overflow: hidden;
+    border: 3px solid #000;
+    box-shadow: 6px 6px 0 #000;
+    background: #fff; cursor: grab;
+    transition: all .25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .v6 .card:hover { transform: rotate(0deg) translateY(-8px) scale(1.03); box-shadow: 10px 10px 0 #000; z-index: 10; }
+  .v6 .card-accent-1 { border-color: #FF6B35; box-shadow: 6px 6px 0 #FF6B35; }
+  .v6 .card-accent-1:hover { box-shadow: 10px 10px 0 #FF6B35; }
+  .v6 .card-accent-2 { border-color: #E63946; box-shadow: 6px 6px 0 #E63946; }
+  .v6 .card-accent-2:hover { box-shadow: 10px 10px 0 #E63946; }
+  .v6 .card-accent-3 { border-color: #06D6A0; box-shadow: 6px 6px 0 #06D6A0; }
+  .v6 .card-accent-3:hover { box-shadow: 10px 10px 0 #06D6A0; }
+  .v6 .card-accent-4 { border-color: #7B2FBE; box-shadow: 6px 6px 0 #7B2FBE; }
+  .v6 .card-accent-4:hover { box-shadow: 10px 10px 0 #7B2FBE; }
+  .v6 .card-accent-5 { border-color: #1A5AFF; box-shadow: 6px 6px 0 #1A5AFF; }
+  .v6 .card-accent-5:hover { box-shadow: 10px 10px 0 #1A5AFF; }
+  .v6 .card-accent-6 { border-color: #FF3CAC; box-shadow: 6px 6px 0 #FF3CAC; }
+  .v6 .card-accent-6:hover { box-shadow: 10px 10px 0 #FF3CAC; }
+
+  /* Lock checkbox — upper left */
+  .v6 .card-lock-check {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    display: flex; align-items: center; gap: 4px;
+    background: #fff; border: 2px solid #000; border-radius: 6px;
+    padding: 3px 8px; cursor: pointer; font-size: 12px; font-weight: 800;
+    transition: all .15s;
+  }
+  .v6 .card-lock-check input[type="checkbox"] {
+    width: 14px; height: 14px; accent-color: #000; cursor: pointer;
+  }
+  .v6 .card-lock-check:hover { background: #000; color: #fff; }
+
+  /* Skip + Hide pills — upper right */
+  .v6 .card-actions {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    display: flex; gap: 4px;
+  }
+  .v6 .card-action-btn {
+    font-size: 11px; font-weight: 800; font-family: 'Inter', sans-serif;
+    padding: 4px 10px; border-radius: 20px; cursor: pointer;
+    transition: all .15s; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .v6 .card-skip {
+    background: transparent; border: 2px solid #000; color: #000;
+  }
+  .v6 .card-skip:hover { background: #000; color: #fff; }
+  .v6 .card-hide {
+    background: #999; border: 2px solid #999; color: #fff;
+  }
+  .v6 .card-hide:hover { background: #666; border-color: #666; }
+
+  .v6 .card-gradient {
+    height: 130px; position: relative;
+    display: flex; align-items: flex-end; padding: 14px;
+  }
+  .v6 .card-category {
+    font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;
+    color: #000; background: #fff; padding: 4px 10px;
+    border-radius: 4px; border: 2px solid #000;
+  }
+  .v6 .card-body { padding: 16px; }
+  .v6 .card-title { font-size: 19px; font-weight: 900; color: #000; margin-bottom: 4px; letter-spacing: -0.5px; }
+  .v6 .card-time { font-size: 13px; font-weight: 800; color: #000; margin-bottom: 8px; }
+  .v6 .card-body .card-time-accent-1 { color: #FF6B35; }
+  .v6 .card-body .card-time-accent-2 { color: #E63946; }
+  .v6 .card-body .card-time-accent-3 { color: #06D6A0; }
+  .v6 .card-body .card-time-accent-4 { color: #7B2FBE; }
+  .v6 .card-body .card-time-accent-5 { color: #1A5AFF; }
+  .v6 .card-body .card-time-accent-6 { color: #FF3CAC; }
+  .v6 .card-blurb { font-size: 13px; color: #555; line-height: 1.5; font-weight: 500; }
 </style>
 </head>
 <body>
@@ -607,6 +779,7 @@
   <button class="picker-btn" onclick="showVariant(3)">3. Soft Gradient</button>
   <button class="picker-btn" onclick="showVariant(4)">4. Paper Texture</button>
   <button class="picker-btn" onclick="showVariant(5)">5. High Contrast Pop</button>
+  <button class="picker-btn" onclick="showVariant(6)">6. Pop + Original Layout</button>
 </nav>
 
 <div class="mockup-container">
@@ -1184,6 +1357,142 @@
   </div>
 </div>
 
+<!-- ============================================
+     VARIANT 6 — HIGH CONTRAST POP + ORIGINAL LAYOUT
+     ============================================ -->
+<div class="mockup v6" id="v6">
+  <div class="hero">
+    <div class="time-display" id="time6"></div>
+    <div class="headline">What should we do today?</div>
+    <div class="controls">
+      <div class="city-pills">
+        <span class="city-pill">Campbell</span>
+        <span class="city-pill">San Jose</span>
+        <span class="city-pill">Cupertino</span>
+        <span class="city-pill active">Los Gatos</span>
+        <span class="city-pill">Mountain View</span>
+        <span class="city-pill">Palo Alto</span>
+        <span class="city-pill">Saratoga</span>
+        <span class="city-pill">Sunnyvale</span>
+        <span class="city-pill">Santa Clara</span>
+        <span class="city-pill">Los Altos</span>
+        <span class="city-pill">Milpitas</span>
+      </div>
+    </div>
+    <div class="toggle-row">
+      <div class="family-toggle">
+        <button class="active">Kids</button>
+        <button>No Kids</button>
+      </div>
+      <button class="reshuffle-btn">Reshuffle!</button>
+    </div>
+    <div class="instruction-line">Lock what sounds great. Skip what's not for today. Hide what's not for you.</div>
+  </div>
+  <div class="cards-dealt">
+    <!-- Card 1 -->
+    <div class="card-wrapper">
+      <div class="card card-accent-1">
+        <label class="card-lock-check"><input type="checkbox"> Lock</label>
+        <div class="card-actions">
+          <button class="card-action-btn card-skip">Skip</button>
+          <button class="card-action-btn card-hide">Hide</button>
+        </div>
+        <div class="card-gradient" style="background: linear-gradient(135deg, #FF9A56, #FF6B6B);"><span class="card-category">Market</span></div>
+        <div class="card-body">
+          <div class="card-title">Muse Markets</div>
+          <div class="card-time card-time-accent-1">11am - 1pm &middot; Los Gatos</div>
+          <div class="card-blurb">Monthly artisan market with 40+ local vendors. Great morning energy.</div>
+        </div>
+      </div>
+      <div class="travel-hint">&#x1f697; 10 min drive to Campbell</div>
+    </div>
+    <!-- Card 2 -->
+    <div class="card-wrapper">
+      <div class="card card-accent-2">
+        <label class="card-lock-check"><input type="checkbox"> Lock</label>
+        <div class="card-actions">
+          <button class="card-action-btn card-skip">Skip</button>
+          <button class="card-action-btn card-hide">Hide</button>
+        </div>
+        <div class="card-gradient" style="background: linear-gradient(135deg, #E63946, #FF6B8A);"><span class="card-category">Restaurant</span></div>
+        <div class="card-body">
+          <div class="card-title">Zona Rosa</div>
+          <div class="card-time card-time-accent-2">1:15pm &middot; Campbell</div>
+          <div class="card-blurb">Fresh-made mole and house margaritas. 4.6&#9733; on Google. 10 min from Los Gatos.</div>
+        </div>
+      </div>
+      <div class="travel-hint">&#x1f697; 8 min drive to Los Gatos</div>
+    </div>
+    <!-- Card 3 -->
+    <div class="card-wrapper">
+      <div class="card card-accent-3">
+        <label class="card-lock-check"><input type="checkbox"> Lock</label>
+        <div class="card-actions">
+          <button class="card-action-btn card-skip">Skip</button>
+          <button class="card-action-btn card-hide">Hide</button>
+        </div>
+        <div class="card-gradient" style="background: linear-gradient(135deg, #06D6A0, #0FA68E);"><span class="card-category">Park</span></div>
+        <div class="card-body">
+          <div class="card-title">Vasona Lake Park</div>
+          <div class="card-time card-time-accent-3">2:30 - 4pm &middot; Los Gatos</div>
+          <div class="card-blurb">Beautiful afternoon for the lake trail. 72&#176;F and sunny today.</div>
+        </div>
+      </div>
+      <div class="travel-hint">&#x1f697; 20 min drive to San Jose</div>
+    </div>
+    <!-- Card 4 -->
+    <div class="card-wrapper">
+      <div class="card card-accent-4">
+        <label class="card-lock-check"><input type="checkbox"> Lock</label>
+        <div class="card-actions">
+          <button class="card-action-btn card-skip">Skip</button>
+          <button class="card-action-btn card-hide">Hide</button>
+        </div>
+        <div class="card-gradient" style="background: linear-gradient(135deg, #7B2FBE, #4A00E0);"><span class="card-category">Art Exhibition</span></div>
+        <div class="card-body">
+          <div class="card-title">Click on My Mouth</div>
+          <div class="card-time card-time-accent-4">4:30 - 5:30pm &middot; San Jose</div>
+          <div class="card-blurb">New exhibit at SJMA. Free admission Wednesdays.</div>
+        </div>
+      </div>
+      <div class="travel-hint">&#x1f6b6; 5 min walk downtown</div>
+    </div>
+    <!-- Card 5 -->
+    <div class="card-wrapper">
+      <div class="card card-accent-5">
+        <label class="card-lock-check"><input type="checkbox"> Lock</label>
+        <div class="card-actions">
+          <button class="card-action-btn card-skip">Skip</button>
+          <button class="card-action-btn card-hide">Hide</button>
+        </div>
+        <div class="card-gradient" style="background: linear-gradient(135deg, #1A3A6B, #2B5EA7);"><span class="card-category">New Opening</span></div>
+        <div class="card-body">
+          <div class="card-title">Hedley Club</div>
+          <div class="card-time card-time-accent-5">6:30pm &middot; San Jose</div>
+          <div class="card-blurb">Just opened this week. Craft cocktails and small plates downtown.</div>
+        </div>
+      </div>
+      <div class="travel-hint">&#x1f697; 12 min drive to Campbell</div>
+    </div>
+    <!-- Card 6 -->
+    <div class="card-wrapper">
+      <div class="card card-accent-6">
+        <label class="card-lock-check"><input type="checkbox"> Lock</label>
+        <div class="card-actions">
+          <button class="card-action-btn card-skip">Skip</button>
+          <button class="card-action-btn card-hide">Hide</button>
+        </div>
+        <div class="card-gradient" style="background: linear-gradient(135deg, #FF3CAC, #E8447A);"><span class="card-category">Dessert</span></div>
+        <div class="card-body">
+          <div class="card-title">Treatbot</div>
+          <div class="card-time card-time-accent-6">8:15pm &middot; Campbell</div>
+          <div class="card-blurb">Classic South Bay ice cream truck. Usually parked on Campbell Ave evenings.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- /mockup-container -->
 
 <script>
@@ -1197,7 +1506,7 @@
   const timeStr = "It's " + caTime;
 
   // Set all time displays
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= 6; i++) {
     const el = document.getElementById('time' + i);
     if (el) el.textContent = timeStr;
   }
