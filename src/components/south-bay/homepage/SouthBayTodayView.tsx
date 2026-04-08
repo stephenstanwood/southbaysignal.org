@@ -7,6 +7,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { City, Tab } from "../../../lib/south-bay/types";
 import { CITIES, CITY_MAP } from "../../../lib/south-bay/cities";
+import PhotoStrip from "./PhotoStrip";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -300,8 +301,10 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         </div>
       </div>
 
-      {/* Hero photo */}
-      <HeroPhoto city={state.city} />
+      {/* Photo scroll */}
+      <div style={{ margin: "0 -16px 14px" }}>
+        <PhotoStrip />
+      </div>
 
       {/* Instruction line */}
       {cards.length > 0 && (
@@ -465,64 +468,6 @@ interface UnsplashPhoto {
   photographer: string;
   photographerUrl: string;
   unsplashUrl: string;
-}
-
-// ---------------------------------------------------------------------------
-// HeroPhoto — full-width landscape banner with Unsplash image
-// ---------------------------------------------------------------------------
-
-const CITY_HERO_QUERIES: Record<string, string> = {
-  campbell: "campbell california downtown",
-  "los-gatos": "los gatos california hills",
-  "monte-sereno": "saratoga california neighborhood",
-  "los-altos": "los altos california neighborhood",
-  "los-altos-hills": "los altos hills california",
-  "mountain-view": "mountain view california downtown",
-  "palo-alto": "palo alto california university",
-  "santa-clara": "santa clara california",
-  "san-jose": "san jose california downtown",
-  saratoga: "saratoga california hills",
-  sunnyvale: "sunnyvale california technology",
-};
-
-function HeroPhoto({ city }: { city: City }) {
-  const [photo, setPhoto] = useState<UnsplashPhoto | null>(null);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    setPhoto(null);
-    setLoaded(false);
-    const q = CITY_HERO_QUERIES[city] ?? "california lifestyle outdoor";
-    fetch(`/api/unsplash-photo?query=${encodeURIComponent(q)}&orientation=landscape`)
-      .then((r) => r.json())
-      .then((d: UnsplashPhoto) => { if (d.url) setPhoto(d); })
-      .catch(() => {});
-  }, [city]);
-
-  if (!photo) return null;
-
-  return (
-    <div style={{ position: "relative", borderRadius: 12, overflow: "hidden", marginBottom: 14, height: 200 }}>
-      <img
-        src={photo.url}
-        alt={`${city} scene`}
-        onLoad={() => setLoaded(true)}
-        style={{
-          width: "100%", height: "100%", objectFit: "cover", display: "block",
-          opacity: loaded ? 1 : 0, transition: "opacity 0.5s ease",
-        }}
-      />
-      {/* Bottom gradient overlay */}
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.55) 100%)" }} />
-      {/* Attribution */}
-      <div style={{ position: "absolute", bottom: 8, right: 10, fontSize: 9, color: "rgba(255,255,255,0.65)", fontFamily: "'Inter', sans-serif" }}>
-        Photo by{" "}
-        <a href={photo.photographerUrl} target="_blank" rel="noopener" onClick={(e) => e.stopPropagation()} style={{ color: "rgba(255,255,255,0.75)", textDecoration: "underline" }}>{photo.photographer}</a>
-        {" on "}
-        <a href={photo.unsplashUrl} target="_blank" rel="noopener" onClick={(e) => e.stopPropagation()} style={{ color: "rgba(255,255,255,0.75)", textDecoration: "underline" }}>Unsplash</a>
-      </div>
-    </div>
-  );
 }
 
 function CardInner({ card, emoji, accent }: { card: DayCard; emoji: string; accent: string }) {

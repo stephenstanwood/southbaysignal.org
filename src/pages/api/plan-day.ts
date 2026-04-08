@@ -294,6 +294,7 @@ function buildCandidatePool(
       venue: evt.venue || null,
       description: evt.description?.slice(0, 200),
       cost: evt.cost,
+      costNote: (evt as any).costNote || null,
       kidFriendly: evt.kidFriendly ?? null,
       url: evt.url,
       source: "event",
@@ -361,10 +362,10 @@ function buildCandidatePool(
 function priceLevelLabel(level: string): string | null {
   switch (level) {
     case "PRICE_LEVEL_FREE": return "Free";
-    case "PRICE_LEVEL_INEXPENSIVE": return "$";
-    case "PRICE_LEVEL_MODERATE": return "$$";
-    case "PRICE_LEVEL_EXPENSIVE": return "$$$";
-    case "PRICE_LEVEL_VERY_EXPENSIVE": return "$$$$";
+    case "PRICE_LEVEL_INEXPENSIVE": return "$ (under $15)";
+    case "PRICE_LEVEL_MODERATE": return "$$ ($15–30)";
+    case "PRICE_LEVEL_EXPENSIVE": return "$$$ ($30–60)";
+    case "PRICE_LEVEL_VERY_EXPENSIVE": return "$$$$ ($60+)";
     default: return null;
   }
 }
