@@ -12,7 +12,7 @@ import {
   formatAge, startMinutes, formatTimeRange, timeBucket,
   BUCKET_ORDER, BUCKET_LABELS, type TimeBucket,
 } from "../../../lib/south-bay/timeHelpers";
-import { useHomepageData, type UpcomingEvent, type LeadStory } from "./useHomepageData";
+import { useHomepageData, type UpcomingEvent } from "./useHomepageData";
 import SportsView from "../views/SportsView";
 import OutagesCard from "../cards/OutagesCard";
 import PhotoStrip from "./PhotoStrip";
@@ -68,44 +68,69 @@ export default function HomepageView({ homeCity, setHomeCity, onNavigate }: Prop
   const data = useHomepageData(homeCity);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: SECTION_GAP }}>
-
-      {/* ═══ Freshness + City bar ═══ */}
-      <FreshnessBar
-        homeCity={homeCity}
-        changingCity={changingCity}
-        setChangingCity={setChangingCity}
-        setHomeCity={setHomeCity}
-        freshness={data.freshness}
-        weather={data.weather}
-      />
-
-      {/* ═══ City picker ═══ */}
-      {changingCity && (
+    <>
+      {/* ═══ City prompt / picker ═══ */}
+      {!homeCity && !changingCity ? (
+        <div style={{ background: "var(--sb-primary-light)", border: "1px solid var(--sb-border-light)", borderRadius: "var(--sb-radius)", padding: "12px 16px", marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 13, color: "var(--sb-muted)", lineHeight: 1.4 }}>
+            Personalize for your city — see your local events, council meetings, and active projects.
+          </span>
+          <button
+            onClick={() => setChangingCity(true)}
+            style={{ padding: "6px 14px", borderRadius: 100, border: "1px solid var(--sb-ink)", background: "var(--sb-ink)", color: "white", fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}
+          >
+            Set my city →
+          </button>
+        </div>
+      ) : changingCity ? (
         <CityPicker
           homeCity={homeCity}
           onSelect={(city) => { setHomeCity(city); setChangingCity(false); }}
           onClose={() => setChangingCity(false)}
         />
-      )}
+      ) : null}
 
       {/* ═══ Power outage alert ═══ */}
       <OutagesCard />
 
-      {/* ═══ THE LEAD — hero story area ═══ */}
-      {data.leadStories.length > 0 && !changingCity && (
-        <LeadSection stories={data.leadStories} onNavigate={onNavigate} />
+      {/* ═══ Weather strip ═══ */}
+      {data.weather && (
+        <div style={{ background: "var(--sb-primary-light)", border: "1px solid var(--sb-border-light)", borderRadius: "var(--sb-radius)", padding: "10px 16px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 14, color: "var(--sb-ink)", fontWeight: 500 }}>{data.weather}</span>
+          <span style={{ fontSize: 11, color: "var(--sb-muted)", letterSpacing: "0.04em" }}>
+            · {homeCity ? getCityName(homeCity) : "South Bay"}, CA
+          </span>
+          {homeCity && (
+            <button
+              onClick={() => setChangingCity(true)}
+              style={{ marginLeft: "auto", background: "none", border: "none", fontSize: 11, color: "var(--sb-muted)", cursor: "pointer", padding: 0, textDecoration: "underline", textUnderlineOffset: 3 }}
+            >
+              Change city
+            </button>
+          )}
+          {/* Freshness indicator */}
+          {data.freshness.events && (
+            <span style={{
+              marginLeft: homeCity ? 0 : "auto",
+              ...sectionLabel, fontSize: 9, color: "var(--sb-light)",
+              display: "flex", alignItems: "center", gap: 4,
+            }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10B981", display: "inline-block" }} />
+              Updated {formatAge(data.freshness.events)}
+            </span>
+          )}
+        </div>
       )}
 
-      {/* ═══ PHOTO STRIP ═══ */}
-      {!changingCity && <PhotoStrip />}
-
-      {/* ═══ FORECAST STRIP ═══ */}
+      {/* ═══ 5-day forecast ═══ */}
       {data.forecast && data.forecast.length > 0 && !changingCity && (
         <ForecastStrip forecast={data.forecast} />
       )}
 
-      {/* ═══ WHAT'S HAPPENING — time-bucketed events ═══ */}
+      {/* ═══ Photo strip ═══ */}
+      {!changingCity && <PhotoStrip />}
+
+      {/* ═══ Today in [City] / This Weekend — THE MAIN EVENT SECTION ═══ */}
       {!changingCity && data.bucketedEvents.length > 0 && (
         <EventsSection
           buckets={data.bucketedEvents}
@@ -119,213 +144,27 @@ export default function HomepageView({ homeCity, setHomeCity, onNavigate }: Prop
         />
       )}
 
-      {/* ═══ YOUR CITY THIS WEEK ═══ */}
+      {/* ═══ City briefing ═══ */}
       {homeCity && data.cityBriefing && !changingCity && (
         <CityBriefingSection briefing={data.cityBriefing} onNavigate={onNavigate} />
       )}
 
-      {/* ═══ AROUND THE SOUTH BAY ═══ */}
+      {/* ═══ Around the South Bay ═══ */}
       {!changingCity && <AroundTown />}
 
-      {/* ═══ CIVIC WATCH ═══ */}
+      {/* ═══ Civic Watch ═══ */}
       {data.civicHighlights.length > 0 && !changingCity && (
         <CivicWatchSection highlights={data.civicHighlights} onNavigate={onNavigate} />
       )}
 
-      {/* ═══ NEW & NOTABLE ═══ */}
+      {/* ═══ New & Notable ═══ */}
       {data.newNotable.length > 0 && !changingCity && (
         <NewNotableSection items={data.newNotable} onNavigate={onNavigate} />
       )}
 
-      {/* ═══ SPORTS ═══ */}
+      {/* ═══ Sports ═══ */}
       {!changingCity && <SportsView />}
-    </div>
-  );
-}
-
-
-// ═══════════════════════════════════════════════════════════════════════════
-// FRESHNESS + CITY BAR
-// ═══════════════════════════════════════════════════════════════════════════
-
-function FreshnessBar({ homeCity, changingCity, setChangingCity, setHomeCity, freshness, weather }: {
-  homeCity: City | null;
-  changingCity: boolean;
-  setChangingCity: (v: boolean) => void;
-  setHomeCity: (city: City) => void;
-  freshness: { events?: string; meetings?: string; briefings?: string };
-  weather: string | null;
-}) {
-  const age = formatAge(freshness.events);
-
-  return (
-    <div style={{
-      display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap",
-      padding: "10px 0",
-      borderBottom: "2px solid var(--sb-ink)",
-    }}>
-      {/* Weather + city */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, minWidth: 200 }}>
-        {weather && (
-          <span style={{ fontSize: 14, fontWeight: 600, color: "var(--sb-ink)" }}>
-            {weather}
-          </span>
-        )}
-        <button
-          onClick={() => setChangingCity(true)}
-          style={{
-            background: "none", border: "1px solid var(--sb-border)", borderRadius: 100,
-            padding: "3px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer",
-            color: "var(--sb-ink)", fontFamily: "inherit",
-          }}
-        >
-          {homeCity ? getCityName(homeCity) : "Set your city"} ▾
-        </button>
-      </div>
-
-      {/* Freshness */}
-      {age && (
-        <span style={{
-          ...sectionLabel,
-          fontSize: 9,
-          color: "var(--sb-light)",
-          display: "flex", alignItems: "center", gap: 4,
-        }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10B981", display: "inline-block" }} />
-          Updated {age}
-        </span>
-      )}
-    </div>
-  );
-}
-
-
-// ═══════════════════════════════════════════════════════════════════════════
-// THE LEAD — Hero stories
-// ═══════════════════════════════════════════════════════════════════════════
-
-const LEAD_TYPE_LABEL: Record<string, string> = {
-  civic: "Civic Watch",
-  health: "Alert",
-  development: "Development",
-  opening: "New & Notable",
-  event: "Today",
-  weather: "Weather",
-};
-
-function LeadSection({ stories, onNavigate }: { stories: LeadStory[]; onNavigate: (tab: Tab) => void }) {
-  const lead = stories[0];
-  const secondary = stories.slice(1, 4);
-
-  return (
-    <div>
-      {/* Lead story — full-width hero with gradient bg */}
-      <div
-        style={{
-          background: `linear-gradient(135deg, ${lead.accentColor} 0%, ${lead.accentColor}dd 60%, ${lead.accentColor}99 100%)`,
-          borderRadius: CARD_RADIUS,
-          padding: "28px 28px 24px",
-          cursor: lead.tab ? "pointer" : undefined,
-          transition: "transform 0.15s, box-shadow 0.15s",
-          position: "relative",
-          overflow: "hidden",
-        }}
-        onClick={() => lead.tab && onNavigate(lead.tab)}
-        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 30px rgba(0,0,0,0.15)"; }}
-        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "none"; (e.currentTarget as HTMLElement).style.boxShadow = "none"; }}
-      >
-        {/* Decorative large emoji */}
-        <div style={{
-          position: "absolute", top: -10, right: -10, fontSize: 120, opacity: 0.12,
-          lineHeight: 1, pointerEvents: "none",
-        }}>
-          {lead.emoji}
-        </div>
-
-        <div style={{
-          ...sectionLabel,
-          color: "rgba(255,255,255,0.7)",
-          marginBottom: 12,
-          display: "flex", alignItems: "center", gap: 6,
-          position: "relative",
-        }}>
-          <span style={{ fontSize: 14 }}>{lead.emoji}</span>
-          <span>{LEAD_TYPE_LABEL[lead.type] ?? "Signal"}</span>
-        </div>
-        <h2 style={{
-          fontFamily: "var(--sb-serif)",
-          fontWeight: 800,
-          fontSize: 30,
-          lineHeight: 1.12,
-          color: "#fff",
-          margin: "0 0 10px 0",
-          letterSpacing: "-0.02em",
-          position: "relative",
-          maxWidth: "85%",
-        }}>
-          {lead.headline}
-        </h2>
-        <p style={{
-          fontSize: 15,
-          lineHeight: 1.5,
-          color: "rgba(255,255,255,0.85)",
-          margin: 0,
-          position: "relative",
-          maxWidth: "80%",
-        }}>
-          {lead.lede}
-        </p>
-      </div>
-
-      {/* Secondary stories — compact row */}
-      {secondary.length > 0 && (
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${Math.min(secondary.length, 3)}, 1fr)`,
-          gap: 12,
-          marginTop: 12,
-        }}
-        className="sb-lead-grid"
-        >
-          {secondary.map((story, i) => (
-            <div
-              key={i}
-              style={{
-                ...cardBase,
-                borderTop: `3px solid ${story.accentColor}`,
-                padding: "14px 16px",
-                cursor: story.tab ? "pointer" : undefined,
-                transition: "box-shadow 0.15s",
-              }}
-              onClick={() => story.tab && onNavigate(story.tab)}
-              onMouseEnter={(e) => { if (story.tab) (e.currentTarget as HTMLElement).style.boxShadow = "var(--sb-shadow-hover)"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "none"; }}
-            >
-              <div style={{ ...sectionLabel, color: story.accentColor, marginBottom: 6 }}>
-                {story.emoji} {story.type === "development" ? "Development" : story.type === "opening" ? "New Opening" : story.type === "health" ? "Alert" : "Signal"}
-              </div>
-              <div style={{
-                fontFamily: "var(--sb-serif)",
-                fontWeight: 700,
-                fontSize: 15,
-                lineHeight: 1.25,
-                color: "var(--sb-ink)",
-                marginBottom: 4,
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical" as const,
-                overflow: "hidden",
-              }}>
-                {story.headline}
-              </div>
-              <div style={{ fontSize: 12, color: "var(--sb-muted)", lineHeight: 1.4 }}>
-                {story.lede.slice(0, 80)}{story.lede.length > 80 ? "…" : ""}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    </>
   );
 }
 

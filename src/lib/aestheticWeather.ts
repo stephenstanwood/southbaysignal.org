@@ -4,7 +4,7 @@ const WMO: Record<number, [string, string]> = {
   1: ["🌤", "Mostly clear"],
   2: ["⛅", "Partly cloudy"],
   3: ["☁️", "Overcast"],
-  45: ["🌫", "Fog"],
+  45: ["🌫️", "Fog"],
   48: ["🌫", "Freezing fog"],
   51: ["🌦", "Light drizzle"],
   53: ["🌦", "Drizzle"],

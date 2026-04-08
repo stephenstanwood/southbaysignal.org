@@ -274,7 +274,7 @@ type BucketedEvents = Array<{ bucket: TimeBucket; label: string; events: Upcomin
 
 function bucketEvents(events: UpcomingEvent[], homeCity: City | null): BucketedEvents {
   const active = events
-    .filter((e) => e.category !== "sports" && isNotEnded(e.time))
+    .filter((e) => e.category !== "sports" && isNotEnded(e.time) && !BORING_SIGNALS.test(e.title))
     .sort((a, b) => startMinutes(a.time) - startMinutes(b.time));
 
   const groups = new Map<TimeBucket, UpcomingEvent[]>();
@@ -317,7 +317,7 @@ const FAR_FUTURE = /203\d|204\d|long.term/i;
 // Categories that make good hero stories
 const HERO_CATEGORIES = new Set(["music", "arts", "community", "food", "outdoor", "sports", "market"]);
 // Words that signal boring/internal events
-const BORING_SIGNALS = /closed|cancelled|canceled|committee meeting|staff|internal|board of/i;
+const BORING_SIGNALS = /closed|cancelled|canceled|committee meeting|staff|internal|board of|grackle|webinar|101:|professional development/i;
 
 function pickLeadStories(homeCity: City | null, todayMeetings: Array<{ cityName: string; bodyName: string }>, todayEvents: UpcomingEvent[]): LeadStory[] {
   const candidates: Array<LeadStory & { freshness: number }> = [];
