@@ -362,10 +362,10 @@ function buildCandidatePool(
 function priceLevelLabel(level: string): string | null {
   switch (level) {
     case "PRICE_LEVEL_FREE": return "Free";
-    case "PRICE_LEVEL_INEXPENSIVE": return "$ (under $15)";
-    case "PRICE_LEVEL_MODERATE": return "$$ ($15–30)";
-    case "PRICE_LEVEL_EXPENSIVE": return "$$$ ($30–60)";
-    case "PRICE_LEVEL_VERY_EXPENSIVE": return "$$$$ ($60+)";
+    case "PRICE_LEVEL_INEXPENSIVE": return "Under $15/person";
+    case "PRICE_LEVEL_MODERATE": return "$15–30/person";
+    case "PRICE_LEVEL_EXPENSIVE": return "$30–60/person";
+    case "PRICE_LEVEL_VERY_EXPENSIVE": return "$60+/person";
     default: return null;
   }
 }

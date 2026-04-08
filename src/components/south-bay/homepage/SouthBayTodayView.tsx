@@ -351,10 +351,10 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
 
       {/* Loading — single card with verb inside */}
       {loading && cards.length === 0 && (
-        <div style={{ padding: "8px 0 20px" }}>
+        <div style={{ padding: "8px 0 20px", margin: "0 -16px" }}>
           <div style={{ display: "flex", background: "#fff", borderRadius: 10, border: "1px solid #f0f0f0", overflow: "hidden", opacity: 0, animation: "cardAppear 0.4s ease-out 0.1s forwards" }}>
-            <div style={{ width: 5, backgroundImage: "linear-gradient(180deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0)", flexShrink: 0 }} />
-            <div style={{ flex: 1, padding: "22px 20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 20, backgroundImage: "linear-gradient(180deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC)", backgroundSize: "100% 200%", animation: "rainbow 3s ease infinite", flexShrink: 0 }} />
+            <div style={{ flex: 1, padding: "28px 20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <LoadingVerb />
             </div>
           </div>
@@ -363,7 +363,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
 
       {/* ═══ LIST VIEW ═══ */}
       {cards.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, margin: "0 -16px" }}>
           {cards.map((card, i) => {
             const accent = ACCENT_COLORS[i % ACCENT_COLORS.length];
             const emoji = CATEGORY_EMOJI[card.category] || "📍";
@@ -377,7 +377,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
                 <div key={card.id} style={{ display: "flex", background: "#fff", borderRadius: 10, border: "1px dashed #e8e8e8", overflow: "hidden", opacity: 0, animation: "cardAppear 0.35s ease-out forwards" }}>
                   <div style={{ width: 5, background: "#e8e8e8", flexShrink: 0 }} />
                   <div style={{ flex: 1, padding: "14px 16px", display: "flex", alignItems: "center" }}>
-                    <LoadingVerb />
+                    <SwapVerb />
                   </div>
                 </div>
               );
@@ -400,7 +400,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
                 }}
               >
                 {/* Accent bar */}
-                <div style={{ width: 5, background: accent, flexShrink: 0 }} />
+                <div style={{ width: 6, background: accent, flexShrink: 0 }} />
                 {/* Clickable area (whole card except traffic lights) */}
                 {cardUrl ? (
                   <a
@@ -417,10 +417,10 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
                   </div>
                 )}
                 {/* Traffic light actions */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 3, padding: "10px 10px 10px 0", flexShrink: 0, alignItems: "center", justifyContent: "center" }}>
-                  <button onClick={() => handleLock(card.id)} title={card.locked ? "Unlock" : "Lock this"} style={{ width: 28, height: 28, borderRadius: "50%", border: "none", background: card.locked ? "#22c55e" : "#dcfce7", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, padding: 0, color: card.locked ? "#fff" : "#22c55e", fontWeight: 700, transition: "all 0.15s" }}>✓</button>
-                  <button onClick={() => handleDismiss(card.id, "skip")} title="Not today" style={{ width: 28, height: 28, borderRadius: "50%", border: "none", background: "#fef9c3", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, padding: 0, color: "#ca8a04", fontWeight: 700, transition: "all 0.15s" }}>→</button>
-                  <button onClick={() => handleDismiss(card.id, "hide")} title="Never show this" style={{ width: 28, height: 28, borderRadius: "50%", border: "none", background: "#fee2e2", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, padding: 0, color: "#dc2626", fontWeight: 700, transition: "all 0.15s" }}>✕</button>
+                <div style={{ display: "flex", flexDirection: "column", gap: 4, padding: "10px 12px 10px 0", flexShrink: 0, alignItems: "center", justifyContent: "center" }}>
+                  <button onClick={() => handleLock(card.id)} title={card.locked ? "Unlock" : "Lock this"} style={{ width: 32, height: 32, borderRadius: "50%", border: card.locked ? "2px solid #16a34a" : "1.5px solid #bbf7d0", background: card.locked ? "#22c55e" : "#dcfce7", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, padding: 0, color: card.locked ? "#fff" : "#22c55e", fontWeight: 700, transition: "all 0.15s" }}>✓</button>
+                  <button onClick={() => handleDismiss(card.id, "skip")} title="Not today" style={{ width: 32, height: 32, borderRadius: "50%", border: "1.5px solid #fde68a", background: "#fef9c3", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, padding: 0, color: "#ca8a04", fontWeight: 700, transition: "all 0.15s" }}>→</button>
+                  <button onClick={() => handleDismiss(card.id, "hide")} title="Never show this" style={{ width: 32, height: 32, borderRadius: "50%", border: "1.5px solid #fecaca", background: "#fee2e2", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, padding: 0, color: "#dc2626", fontWeight: 700, transition: "all 0.15s" }}>✕</button>
                 </div>
               </div>
             );
@@ -468,6 +468,10 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
             font-size: 36px !important;
             letter-spacing: -1px !important;
           }
+          .sbt-card-thumb {
+            width: 64px !important;
+            height: 64px !important;
+          }
         }
       `}</style>
     </div>
@@ -507,7 +511,7 @@ function CardInner({ card, emoji, accent }: { card: DayCard; emoji: string; acce
       {/* Thumbnail column */}
       <div style={{ flexShrink: 0, margin: "10px 0 10px 12px", display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
         <div style={{
-          width: 72, height: 72, borderRadius: 8, overflow: "hidden",
+          width: 80, height: 80, borderRadius: 8, overflow: "hidden",
           background: card.photoRef
             ? `url(/api/place-photo?ref=${encodeURIComponent(card.photoRef)}&w=200&h=200) center/cover no-repeat, #f0f0f0`
             : unsplash
@@ -521,7 +525,7 @@ function CardInner({ card, emoji, accent }: { card: DayCard; emoji: string; acce
         </div>
         {/* Unsplash attribution — only when using Unsplash photo */}
         {unsplash && !card.photoRef && (
-          <div style={{ width: 72, fontSize: 7, lineHeight: 1.3, color: "#bbb", textAlign: "center" }}>
+          <div style={{ width: 80, fontSize: 7, lineHeight: 1.3, color: "#bbb", textAlign: "center" }}>
             <span role="link" tabIndex={0} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(unsplash.photographerUrl, "_blank", "noopener"); }} style={{ color: "#bbb", cursor: "pointer" }}>{unsplash.photographer}</span>
             {" · "}
             <span role="link" tabIndex={0} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(unsplash.unsplashUrl, "_blank", "noopener"); }} style={{ color: "#bbb", cursor: "pointer" }}>Unsplash</span>
@@ -530,22 +534,22 @@ function CardInner({ card, emoji, accent }: { card: DayCard; emoji: string; acce
       </div>
       {/* Content */}
       <div style={{ flex: 1, minWidth: 0, padding: "10px 12px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 800, color: "#000" }}>{card.timeBlock}</span>
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 700, color: "#999", textTransform: "uppercase" as const, letterSpacing: 1 }}>{card.category}</span>
-          {card.source === "event" && <span style={{ fontSize: 9, fontWeight: 700, color: "#E63946", fontFamily: "'Inter', sans-serif" }}>EVENT</span>}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 800, color: "#000", letterSpacing: -0.2 }}>{card.timeBlock}</span>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 700, color: "#bbb", textTransform: "uppercase" as const, letterSpacing: 1 }}>{card.category}</span>
+          {card.source === "event" && <span style={{ fontSize: 8, fontWeight: 800, color: "#fff", background: "#E63946", padding: "1px 5px", borderRadius: 3, fontFamily: "'Inter', sans-serif", letterSpacing: 0.5 }}>EVENT</span>}
         </div>
-        <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, fontWeight: 900, color: "#000", margin: "0 0 3px", lineHeight: 1.2 }}>{card.name}</h3>
+        <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: 17, fontWeight: 900, color: "#111", margin: "0 0 4px", lineHeight: 1.25 }}>{card.name}</h3>
         {card.source === "event" && card.venue && (
-          <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3 }}>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: "#aaa" }}>{card.venue}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#bbb" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: "#999" }}>{card.venue}</span>
           </div>
         )}
-        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#555", margin: "0 0 3px", lineHeight: 1.4 }}>{card.blurb}</p>
-        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 600, color: accent, margin: 0, lineHeight: 1.3, fontStyle: "italic" }}>{card.why}</p>
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#555", margin: "0 0 4px", lineHeight: 1.45 }}>{card.blurb}</p>
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 600, color: accent, margin: 0, lineHeight: 1.35, fontStyle: "italic" }}>{card.why}</p>
         {(card.costNote || card.cost) && (
-          <span style={{ display: "inline-block", marginTop: 4, fontSize: 11, fontWeight: 600, color: "#aaa", fontFamily: "'Inter', sans-serif" }}>{card.costNote || card.cost}</span>
+          <span style={{ display: "inline-block", marginTop: 5, fontSize: 10, fontWeight: 700, color: "#999", fontFamily: "'Inter', sans-serif", background: "#f5f5f5", padding: "2px 8px", borderRadius: 4 }}>{card.costNote || card.cost}</span>
         )}
       </div>
     </>
@@ -603,7 +607,54 @@ function LoadingVerb() {
   const display = full.slice(0, charIdx);
 
   return (
-    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 15, fontWeight: 600, color: "#ccc", textAlign: "center", margin: 0, minHeight: 22 }}>
+    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 17, fontWeight: 700, color: "#999", textAlign: "center", margin: 0, minHeight: 24 }}>
+      {display}<span style={{ opacity: 0.4, animation: "blink 0.8s step-end infinite" }}>|</span>
+    </p>
+  );
+}
+
+const SWAP_PHRASES = [
+  "Looking for something else",
+  "Finding an alternative",
+  "Checking what's around",
+  "Digging up options",
+  "Scouting a replacement",
+  "How about this?",
+];
+
+function SwapVerb() {
+  const [idx, setIdx] = useState(0);
+  const [charIdx, setCharIdx] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const phrase = SWAP_PHRASES[idx % SWAP_PHRASES.length];
+    const full = `${phrase}...`;
+
+    if (!deleting && charIdx < full.length) {
+      const t = setTimeout(() => setCharIdx((c) => c + 1), 35 + Math.random() * 25);
+      return () => clearTimeout(t);
+    }
+    if (!deleting && charIdx >= full.length) {
+      const t = setTimeout(() => setDeleting(true), 900);
+      return () => clearTimeout(t);
+    }
+    if (deleting && charIdx > 0) {
+      const t = setTimeout(() => setCharIdx((c) => c - 1), 18);
+      return () => clearTimeout(t);
+    }
+    if (deleting && charIdx === 0) {
+      setDeleting(false);
+      setIdx((v) => v + 1);
+    }
+  }, [charIdx, deleting, idx]);
+
+  const phrase = SWAP_PHRASES[idx % SWAP_PHRASES.length];
+  const full = `${phrase}...`;
+  const display = full.slice(0, charIdx);
+
+  return (
+    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, color: "#bbb", textAlign: "center", margin: 0, minHeight: 20, width: "100%" }}>
       {display}<span style={{ opacity: 0.4, animation: "blink 0.8s step-end infinite" }}>|</span>
     </p>
   );
