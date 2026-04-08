@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-08T20:12:30.091Z",
+      "generatedAt": "2026-04-08T23:13:28.108Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,7 +137,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-08T20:12:32.500Z",
+      "generatedAt": "2026-04-08T23:13:30.540Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -151,18 +151,6 @@
       },
       "permits": [
         {
-          "id": "26BLD-00861",
-          "address": "3132 Alexis Dr",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "Res: Temporary power (underground)",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-02",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00847",
           "address": "2353 Webster St",
           "category": "commercial",
@@ -175,8 +163,20 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00872",
-          "address": "841 Ames Av",
+          "id": "26BLD-00861",
+          "address": "3132 Alexis Dr",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "Res: Temporary power (underground)",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-02",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00863",
+          "address": "1221 Hopkins Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -187,8 +187,8 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00896",
-          "address": "3032 Waverley St",
+          "id": "26BLD-00905",
+          "address": "541 Maybell Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -199,8 +199,8 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00905",
-          "address": "541 Maybell Av",
+          "id": "26BLD-00909",
+          "address": "837 Ilima Ct",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -223,6 +223,18 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-00872",
+          "address": "841 Ames Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-02",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-00876",
           "address": "3445 Louis Rd",
           "category": "residential-large",
@@ -235,8 +247,8 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00909",
-          "address": "837 Ilima Ct",
+          "id": "26BLD-00896",
+          "address": "3032 Waverley St",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -244,18 +256,6 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-07",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00863",
-          "address": "1221 Hopkins Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-02",
           "subtype": "Permit Issued"
         },
         {
