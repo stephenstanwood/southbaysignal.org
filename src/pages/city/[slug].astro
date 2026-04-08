@@ -1,0 +1,65 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CityPage from "../../components/south-bay/city/CityPage.tsx";
+import { CITIES } from "../../lib/south-bay/cities";
+
+export function getStaticPaths() {
+  return CITIES.map((city) => ({
+    params: { slug: city.id },
+    props: { cityId: city.id, cityName: city.name },
+  }));
+}
+
+const { cityId, cityName } = Astro.props;
+const title = `${cityName} — The South Bay Signal`;
+const description = `What's happening in ${cityName} today: events, city council meetings, development updates, and local news.`;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  themeColor="#F7F8FA"
+  fontsUrl="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+>
+  <Fragment slot="head">
+    <style is:global>
+      :root {
+        --sb-bg: #FAF9F6;
+        --sb-card: #FFFFFF;
+        --sb-ink: #1A1A1A;
+        --sb-muted: #555555;
+        --sb-light: #888888;
+        --sb-border: #C8C4BC;
+        --sb-border-light: #E5E2DB;
+        --sb-primary: #1A1A1A;
+        --sb-primary-light: #F0EFEC;
+        --sb-accent: #C0392B;
+        --sb-radius: 2px;
+        --sb-shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --sb-max-width: 960px;
+        --sb-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+        --sb-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      }
+      body {
+        font-family: var(--sb-sans);
+        background: var(--sb-bg);
+        color: var(--sb-ink);
+        margin: 0;
+        padding: 0;
+      }
+      .city-container {
+        max-width: var(--sb-max-width);
+        margin: 0 auto;
+        padding: 24px 32px 60px;
+      }
+      @media (max-width: 640px) {
+        .city-container { padding: 16px 16px 40px; }
+        .city-events-grid { grid-template-columns: 1fr !important; }
+      }
+    </style>
+  </Fragment>
+
+  <div class="city-container">
+    <CityPage cityId={cityId} cityName={cityName} client:only="react" />
+  </div>
+</BaseLayout>
