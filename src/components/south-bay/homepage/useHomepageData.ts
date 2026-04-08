@@ -482,12 +482,19 @@ function pickCivicHighlights(homeCity: City | null): CivicHighlight[] {
     ? [homeCity, "san-jose", "sunnyvale", "mountain-view", "palo-alto", "cupertino", "santa-clara", "campbell", "los-gatos", "saratoga"]
     : ["san-jose", "sunnyvale", "mountain-view", "palo-alto", "cupertino", "santa-clara", "campbell", "los-gatos", "saratoga"];
 
+  const MAX_AGE_DAYS = 30;
   const seen = new Set<string>();
   for (const city of cityOrder) {
     if (seen.has(city)) continue;
     seen.add(city);
     const d = digests[city];
     if (!d?.summary) continue;
+    // Skip stale digests — no year-old content on the front page
+    if (d.meetingDateIso || d.meetingDate) {
+      const dateStr = d.meetingDateIso ?? d.meetingDate ?? "";
+      const age = (Date.now() - new Date(dateStr).getTime()) / 86400000;
+      if (age > MAX_AGE_DAYS || isNaN(age)) continue;
+    }
     const topic = d.keyTopics?.find((t) => !isNoisyTopic(t));
     highlights.push({
       cityId: city,
