@@ -40,6 +40,7 @@ interface PlanRequest {
   lockedIds?: string[];
   dismissedIds?: string[];
   currentHour?: number; // 0-23, defaults to now
+  planDate?: string;    // YYYY-MM-DD — plan for a specific date (default: today)
   preferences?: UserPreferences;
 }
 
@@ -323,10 +324,11 @@ function buildCandidatePool(
   kids: boolean,
   dismissedIds: Set<string>,
   lockedIds: Set<string>,
+  targetDate?: string,
 ): Candidate[] {
   const candidates: Candidate[] = [];
   const cityConfig = CITY_MAP[city];
-  const today = todayStr();
+  const today = targetDate || todayStr();
 
   // --- Events happening today or soon, in/near the city ---
   const events = (eventsData as any).events ?? [];
@@ -706,7 +708,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return errJson("Invalid JSON body", 400);
   }
 
-  const { city, kids = false, lockedIds = [], dismissedIds = [], currentHour, preferences } = body;
+  const { city, kids = false, lockedIds = [], dismissedIds = [], currentHour, planDate, preferences } = body;
 
   // Validate city
   if (!city || !VALID_CITIES.has(city)) {
@@ -738,7 +740,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const weatherContext: WeatherContext | null = weatherData.forecast?.[0] ?? null;
 
     // 2. Build candidate pool
-    const allCandidates = buildCandidatePool(city, kids, dismissedSet, lockedSet);
+    const allCandidates = buildCandidatePool(city, kids, dismissedSet, lockedSet, planDate);
 
     // 3. Score candidates
     const scored = scoreCandidates(allCandidates, weatherContext, hour, kids, preferences);

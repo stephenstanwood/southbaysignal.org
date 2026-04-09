@@ -70,6 +70,7 @@ async function generatePlanLinks(candidates) {
           kids: false,
           lockedIds: [eventId],
           currentHour: 9, // always generate full-day plans starting at 9 AM
+          planDate: item.date || undefined, // generate for the event's actual date
         }),
         signal: AbortSignal.timeout(30000),
       });
