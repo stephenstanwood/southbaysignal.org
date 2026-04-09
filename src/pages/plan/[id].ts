@@ -76,7 +76,15 @@ export const GET: APIRoute = async ({ params, url }) => {
     ? `<div style="text-align:center;font-size:12px;color:#bbb;margin-bottom:12px;font-style:italic">Showing ${activeCards.length} upcoming stops${filteredCount > 0 ? ` (${filteredCount} earlier stops already passed)` : ""}</div>`
     : "";
 
-  const title = `My day in ${cityName} — South Bay Today`;
+  // Format date for the title (e.g. "Saturday, April 12")
+  const planDate = new Date(plan.createdAt);
+  const dateStr = planDate.toLocaleDateString("en-US", {
+    timeZone: "America/Los_Angeles",
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+  const title = `${dateStr} — South Bay Today`;
   const cardNames = activeCards.map((c: any) => c.name).slice(0, 4).join(", ");
   const description = activeCards.length > 4
     ? `${cardNames}, and more`
@@ -150,7 +158,7 @@ export const GET: APIRoute = async ({ params, url }) => {
 <div class="container">
   <div class="header">
     <div class="logo">South Bay Today</div>
-    <h1>A day in ${esc(cityName)}</h1>
+    <h1>${esc(dateStr)}</h1>
     <div class="meta">
       ${plan.weather ? `🌤 ${esc(plan.weather)} · ` : ""}${plan.cards.length} stops${plan.kids ? " · Family-friendly" : ""}
     </div>
