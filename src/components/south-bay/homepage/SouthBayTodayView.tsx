@@ -224,12 +224,15 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
     if (homeCity && homeCity !== state.city) setState((s) => ({ ...s, city: homeCity }));
   }, [homeCity]);
 
-  const fetchPlan = useCallback(async (cityOverride?: City) => {
+  const fetchPlan = useCallback(async (cityOverride?: City, extraLockedIds?: string[]) => {
     const id = ++fetchRef.current;
     setLoading(true);
     setError(null);
     setTimeDisplay(formatTime());
     const city = cityOverride || state.city;
+    const allLocked = extraLockedIds
+      ? [...new Set([...state.locked, ...extraLockedIds])]
+      : state.locked;
 
     try {
       const res = await fetch("/api/plan-day", {
@@ -237,7 +240,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           city, kids: state.kids,
-          lockedIds: state.locked,
+          lockedIds: allLocked,
           dismissedIds: Object.keys(state.dismissed),
           currentHour: new Date().getHours(),
           preferences: prefs.totalInteractions >= 5 ? prefs : undefined,
@@ -250,6 +253,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
       }
       const data: PlanResponse = await res.json();
       const sorted = [...data.cards].sort((a, b) => parseTimeBlock(a.timeBlock) - parseTimeBlock(b.timeBlock));
+      // Only show green lock icon for user-explicitly-locked cards, not auto-kept ones
       setCards(sorted.map((c) => ({ ...c, locked: state.locked.includes(c.id) })));
       setReplacedIds(new Set());
       setWeather(data.weather);
@@ -351,20 +355,19 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
       setReplacedIds((prev) => new Set([...prev, cardId]));
     }, 320);
 
+    // Keep all OTHER cards by passing them as extra locked IDs (not stored in state)
+    const keepIds = cards.filter((c) => c.id !== cardId).map((c) => c.id);
+
     const entry: DismissedEntry = type === "hide"
       ? { type: "hide", permanent: true }
       : { type: "skip", until: new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" }) };
-    setState((s) => {
-      const next = {
-        ...s,
-        dismissed: { ...s.dismissed, [cardId]: entry },
-        locked: s.locked.filter((id) => id !== cardId),
-      };
-      // Refetch plan with updated dismissals so a replacement fills the slot
-      // Use ref to avoid stale closure — fetchPlan captures old state.dismissed
-      setTimeout(() => fetchPlanRef.current(), 100);
-      return next;
-    });
+    setState((s) => ({
+      ...s,
+      dismissed: { ...s.dismissed, [cardId]: entry },
+      locked: s.locked.filter((id) => id !== cardId),
+    }));
+    // Refetch with other cards auto-locked so only the dismissed slot changes
+    setTimeout(() => fetchPlanRef.current(undefined, keepIds), 100);
   };
 
   // Tomorrow mode: 6pm for kids, 8pm for adults

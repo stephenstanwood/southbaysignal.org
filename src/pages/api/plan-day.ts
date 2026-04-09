@@ -382,6 +382,19 @@ function buildCandidatePool(
     "live_music_venue", "comedy_club",
   ]);
 
+  // Places that should never appear in day plans
+  const EXCLUDED_TYPES = new Set([
+    "preschool", "child_care_agency", "day_care_center",
+    "school", "primary_school", "secondary_school", "middle_school",
+    "hospital", "doctor", "dentist", "pharmacy", "veterinary_care",
+    "insurance_agency", "lawyer", "accounting", "real_estate_agency",
+    "car_dealer", "car_repair", "car_wash", "gas_station",
+    "funeral_home", "cemetery", "storage", "self_storage",
+    "post_office", "bank", "atm", "laundry", "dry_cleaner",
+    "locksmith", "plumber", "electrician", "roofing_contractor",
+    "moving_company", "travel_agency",
+  ]);
+
   const places = (placesData as any).places ?? [];
   for (const p of places) {
     if (dismissedIds.has(`place:${p.id}`)) continue;
@@ -390,6 +403,11 @@ function buildCandidatePool(
     const primaryType = p.primaryType || "";
     const types: string[] = p.types || [];
     if (VENUE_ONLY_TYPES.has(primaryType) || types.some((t: string) => VENUE_ONLY_TYPES.has(t))) {
+      continue;
+    }
+
+    // Skip places that don't belong in day plans (schools, services, etc.)
+    if (EXCLUDED_TYPES.has(primaryType) || types.some((t: string) => EXCLUDED_TYPES.has(t))) {
       continue;
     }
 
