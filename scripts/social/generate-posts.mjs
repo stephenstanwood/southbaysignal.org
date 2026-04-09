@@ -37,8 +37,8 @@ const PLAN_API_BASE = process.env.SBT_API_BASE || "https://southbaytoday.org";
 async function generatePlanLinks(candidates) {
   let generated = 0;
   for (const item of candidates) {
-    // Only generate plan links for events with a date and city
-    if (item.sourceType !== "event" || !item.date || !item.city) continue;
+    // Need at least a city to generate a plan
+    if (!item.city) continue;
     // Skip if already has a plan URL
     if (item.planUrl) continue;
 

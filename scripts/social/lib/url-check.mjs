@@ -122,6 +122,15 @@ export async function filterByUrl(candidates) {
   const skipped = [];
 
   for (const item of candidates) {
+    // Items with plan links always pass — the plan URL is our own and known-good
+    if (item.planUrl) {
+      // Use the plan URL as the item URL if the original is bad
+      if (!item.url || item.url.trim() === "") {
+        item.url = item.planUrl;
+      }
+      results.push(item);
+      continue;
+    }
     const check = await validateUrl(item.url);
     if (check.ok) {
       results.push(item);
