@@ -100,6 +100,83 @@ function saveState(state: LocalState) {
 }
 
 // ---------------------------------------------------------------------------
+// User preference learning (persisted separately so prefs survive state resets)
+// ---------------------------------------------------------------------------
+
+const PREFS_KEY = "sbt-user-prefs";
+const EMA_ALPHA = 0.3; // exponential moving average weight for new signals
+
+interface UserPreferences {
+  categoryScores: Record<string, number>; // positive = likes, negative = dislikes
+  costBias: number;       // -1 (budget) to +1 (splurge)
+  outdoorBias: number;    // -1 (indoor) to +1 (outdoor)
+  totalInteractions: number;
+}
+
+function defaultPrefs(): UserPreferences {
+  return { categoryScores: {}, costBias: 0, outdoorBias: 0, totalInteractions: 0 };
+}
+
+function loadPrefs(): UserPreferences {
+  try {
+    const raw = localStorage.getItem(PREFS_KEY);
+    if (!raw) return defaultPrefs();
+    return { ...defaultPrefs(), ...JSON.parse(raw) };
+  } catch { return defaultPrefs(); }
+}
+
+function savePrefs(prefs: UserPreferences) {
+  try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch {}
+}
+
+/** EMA update: blends new signal into existing value */
+function ema(current: number, signal: number): number {
+  return current * (1 - EMA_ALPHA) + signal * EMA_ALPHA;
+}
+
+/** Update preferences based on a user action on a card */
+function recordInteraction(
+  prefs: UserPreferences,
+  card: DayCard,
+  action: "lock" | "skip" | "hide",
+): UserPreferences {
+  const next = { ...prefs, categoryScores: { ...prefs.categoryScores } };
+  next.totalInteractions++;
+
+  // Category signal: lock = +1, skip = -0.3, hide = -1
+  const catSignal = action === "lock" ? 1 : action === "skip" ? -0.3 : -1;
+  const prev = next.categoryScores[card.category] ?? 0;
+  next.categoryScores[card.category] = ema(prev, catSignal);
+
+  // Cost signal: lock expensive = +, lock cheap = -, skip expensive = -, skip cheap = +
+  const isExpensive = card.costNote && /\$\$|\$3|\$4|\$5|\$6/.test(card.costNote);
+  const isCheap = card.cost === "free" || (card.costNote && /under|\$1|\$[5-9]\b/.test(card.costNote));
+  if (action === "lock") {
+    if (isExpensive) next.costBias = ema(next.costBias, 0.5);
+    else if (isCheap) next.costBias = ema(next.costBias, -0.3);
+  } else if (action === "skip" || action === "hide") {
+    if (isExpensive) next.costBias = ema(next.costBias, -0.3);
+  }
+
+  // Outdoor signal from card category
+  const isOutdoor = card.category === "outdoor" || card.category === "sports";
+  const isIndoor = card.category === "museum" || card.category === "entertainment";
+  if (action === "lock") {
+    if (isOutdoor) next.outdoorBias = ema(next.outdoorBias, 0.5);
+    else if (isIndoor) next.outdoorBias = ema(next.outdoorBias, -0.3);
+  } else if (action === "hide") {
+    if (isOutdoor) next.outdoorBias = ema(next.outdoorBias, -0.5);
+    else if (isIndoor) next.outdoorBias = ema(next.outdoorBias, 0.3);
+  }
+
+  // Clamp biases to [-1, 1]
+  next.costBias = Math.max(-1, Math.min(1, next.costBias));
+  next.outdoorBias = Math.max(-1, Math.min(1, next.outdoorBias));
+
+  return next;
+}
+
+// ---------------------------------------------------------------------------
 // Props
 // ---------------------------------------------------------------------------
 
@@ -134,6 +211,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
   const [activeCard, setActiveCard] = useState(0);
   const fetchRef = useRef(0);
   const fetchPlanRef = useRef<() => void>(() => {});
+  const [prefs, setPrefs] = useState<UserPreferences>(loadPrefs);
 
   // Keep time display live
   useEffect(() => {
@@ -162,6 +240,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
           lockedIds: state.locked,
           dismissedIds: Object.keys(state.dismissed),
           currentHour: new Date().getHours(),
+          preferences: prefs.totalInteractions >= 5 ? prefs : undefined,
         }),
       });
       if (id !== fetchRef.current) return;
@@ -242,6 +321,13 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
     );
   };
   const handleLock = (cardId: string) => {
+    const card = cards.find((c) => c.id === cardId);
+    if (card && !card.locked) {
+      // Only record preference when locking (not unlocking)
+      const updated = recordInteraction(prefs, card, "lock");
+      setPrefs(updated);
+      savePrefs(updated);
+    }
     setCards((prev) => prev.map((c) => (c.id === cardId ? { ...c, locked: !c.locked } : c)));
     setState((s) => ({
       ...s,
@@ -249,6 +335,12 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
     }));
   };
   const handleDismiss = (cardId: string, type: DismissType) => {
+    const card = cards.find((c) => c.id === cardId);
+    if (card) {
+      const updated = recordInteraction(prefs, card, type === "skip" ? "skip" : "hide");
+      setPrefs(updated);
+      savePrefs(updated);
+    }
     // Immediately start fade-out animation
     setFadingIds((prev) => new Set([...prev, cardId]));
     setSwapLoading(true);
@@ -417,14 +509,21 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
                   </div>
                 )}
                 {/* Traffic light actions */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 4, padding: "10px 12px 10px 0", flexShrink: 0, alignItems: "center", justifyContent: "center" }}>
-                  <button onClick={() => handleLock(card.id)} title={card.locked ? "Unlock" : "Lock this"} style={{ width: 32, height: 32, borderRadius: "50%", border: card.locked ? "2px solid #16a34a" : "1.5px solid #bbf7d0", background: card.locked ? "#22c55e" : "#dcfce7", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, padding: 0, color: card.locked ? "#fff" : "#22c55e", fontWeight: 700, transition: "all 0.15s" }}>✓</button>
-                  <button onClick={() => handleDismiss(card.id, "skip")} title="Not today" style={{ width: 32, height: 32, borderRadius: "50%", border: "1.5px solid #fde68a", background: "#fef9c3", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, padding: 0, color: "#ca8a04", fontWeight: 700, transition: "all 0.15s" }}>→</button>
-                  <button onClick={() => handleDismiss(card.id, "hide")} title="Never show this" style={{ width: 32, height: 32, borderRadius: "50%", border: "1.5px solid #fecaca", background: "#fee2e2", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, padding: 0, color: "#dc2626", fontWeight: 700, transition: "all 0.15s" }}>✕</button>
+                <div className="tl-group">
+                  <button onClick={() => handleLock(card.id)} title={card.locked ? "Unlock" : "Lock this"} className={`tl-btn tl-lock${card.locked ? " tl-lock--active" : ""}`}>✓</button>
+                  <button onClick={() => handleDismiss(card.id, "skip")} title="Not today" className="tl-btn tl-skip">→</button>
+                  <button onClick={() => handleDismiss(card.id, "hide")} title="Never show this" className="tl-btn tl-hide">✕</button>
                 </div>
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Share button */}
+      {cards.length > 1 && !loading && (
+        <div style={{ textAlign: "center", padding: "16px 0 0" }}>
+          <ShareButton cards={cards} city={state.city} kids={state.kids} weather={weather} />
         </div>
       )}
 
@@ -450,7 +549,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
           z-index: 0;
         }
         .sbt-shuffle--loading {
-          background: #e8e8e8;
+          background: #ddd;
           color: #fff;
           cursor: not-allowed;
           animation: none;
@@ -458,16 +557,15 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         .sbt-shuffle--loading::after {
           content: '';
           position: absolute;
-          left: 0; right: 0; bottom: 0;
-          height: 0%;
-          background: linear-gradient(to top, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC);
-          animation: fillUp 4s ease-out forwards;
+          top: 0; left: 0; bottom: 0;
+          width: 0%;
+          background: linear-gradient(90deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC);
+          animation: fillRight 4s ease-out forwards;
           z-index: -1;
-          border-radius: inherit;
         }
-        @keyframes fillUp {
-          0%   { height: 0%; }
-          100% { height: 100%; }
+        @keyframes fillRight {
+          0%   { width: 0%; }
+          100% { width: 100%; }
         }
         @keyframes shimmer {
           0% { background-position: 200% 0; }
@@ -496,6 +594,59 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         @keyframes fadeSlideOut {
           from { opacity: 1; transform: translateY(0) scale(1); max-height: 120px; }
           to { opacity: 0; transform: translateY(-8px) scale(0.97); max-height: 0; padding: 0; margin: 0; }
+        }
+        /* ── Traffic light buttons ── */
+        .tl-group {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          padding: 10px 12px 10px 0;
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: center;
+        }
+        .tl-btn {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 15px;
+          font-weight: 700;
+          padding: 0;
+          transition: all 0.2s ease;
+          animation: tlPulse 0.6s ease-out 0.5s 3;
+        }
+        .tl-lock {
+          border: 1.5px solid #bbf7d0;
+          background: #dcfce7;
+          color: #22c55e;
+        }
+        .tl-lock--active {
+          border: 2px solid #16a34a;
+          background: #22c55e;
+          color: #fff;
+        }
+        .tl-skip {
+          border: 1.5px solid #fde68a;
+          background: #fef9c3;
+          color: #ca8a04;
+        }
+        .tl-hide {
+          border: 1.5px solid #fecaca;
+          background: #fee2e2;
+          color: #dc2626;
+        }
+        .tl-lock:hover { box-shadow: 0 0 12px rgba(34, 197, 94, 0.5); transform: scale(1.12); }
+        .tl-skip:hover { box-shadow: 0 0 12px rgba(202, 138, 4, 0.4); transform: scale(1.12); }
+        .tl-hide:hover { box-shadow: 0 0 12px rgba(220, 38, 38, 0.4); transform: scale(1.12); }
+        .tl-lock--active:hover { box-shadow: 0 0 14px rgba(34, 197, 94, 0.6); }
+        @keyframes tlPulse {
+          0% { box-shadow: 0 0 0 0 rgba(150, 150, 150, 0.3); }
+          70% { box-shadow: 0 0 0 8px rgba(150, 150, 150, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(150, 150, 150, 0); }
         }
         @media (max-width: 640px) {
           .sbt-header {
@@ -696,6 +847,72 @@ function SwapVerb() {
     <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, color: "#bbb", textAlign: "center", margin: 0, minHeight: 20, width: "100%" }}>
       {display}<span style={{ opacity: 0.4, animation: "blink 0.8s step-end infinite" }}>|</span>
     </p>
+  );
+}
+
+function ShareButton({ cards, city, kids, weather }: { cards: DayCard[]; city: string; kids: boolean; weather: string | null }) {
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [sharing, setSharing] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    if (shareUrl) {
+      // Already have a URL — just copy/share it
+      await doShare(shareUrl);
+      return;
+    }
+    setSharing(true);
+    try {
+      const res = await fetch("/api/share-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cards, city, kids, weather }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      const data = await res.json();
+      setShareUrl(data.url);
+      await doShare(data.url);
+    } catch {
+      // Silently fail
+    } finally {
+      setSharing(false);
+    }
+  };
+
+  const doShare = async (url: string) => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "My day plan — South Bay Today", url });
+        return;
+      } catch {}
+    }
+    // Fallback: copy to clipboard
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {}
+  };
+
+  return (
+    <button
+      onClick={handleShare}
+      disabled={sharing}
+      style={{
+        fontFamily: "'Inter', sans-serif",
+        fontSize: 12,
+        fontWeight: 700,
+        padding: "8px 20px",
+        borderRadius: 20,
+        border: "1.5px solid #ddd",
+        background: "#fff",
+        color: copied ? "#16a34a" : "#888",
+        cursor: sharing ? "wait" : "pointer",
+        transition: "all 0.2s",
+      }}
+    >
+      {copied ? "Link copied!" : sharing ? "Creating link..." : "Share this plan ↗"}
+    </button>
   );
 }
 

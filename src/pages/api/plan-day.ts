@@ -27,12 +27,20 @@ import eventsData from "../../data/south-bay/upcoming-events.json";
 // Types
 // ---------------------------------------------------------------------------
 
+interface UserPreferences {
+  categoryScores: Record<string, number>;
+  costBias: number;
+  outdoorBias: number;
+  totalInteractions: number;
+}
+
 interface PlanRequest {
   city: City;
   kids: boolean;
   lockedIds?: string[];
   dismissedIds?: string[];
   currentHour?: number; // 0-23, defaults to now
+  preferences?: UserPreferences;
 }
 
 interface Candidate {
@@ -223,6 +231,7 @@ function scoreCandidates(
   weather: WeatherContext | null,
   hour: number,
   kids: boolean,
+  prefs?: UserPreferences,
 ): Candidate[] {
   for (const c of candidates) {
     let score = 0;
@@ -273,6 +282,26 @@ function scoreCandidates(
 
     // --- Penalize generic neighborhood entries — specific places are always better ---
     if (c.category === "neighborhood") score -= 30;
+
+    // --- User preference adjustments (only when enough signal) ---
+    if (prefs && prefs.totalInteractions >= 5) {
+      // Category affinity: ±15 based on learned preference
+      const catScore = prefs.categoryScores[c.category];
+      if (catScore !== undefined) score += catScore * 15;
+
+      // Cost bias: penalize/boost expensive items
+      if (prefs.costBias !== 0) {
+        const price = (c as any).priceLevel || c.costNote || "";
+        const isExpensive = price === "PRICE_LEVEL_VERY_EXPENSIVE" || price === "$$$$" || price === "PRICE_LEVEL_EXPENSIVE" || price === "$$$";
+        if (isExpensive) score += prefs.costBias * 10; // negative bias → penalty
+      }
+
+      // Outdoor bias
+      if (prefs.outdoorBias !== 0 && c.indoorOutdoor) {
+        if (c.indoorOutdoor === "outdoor") score += prefs.outdoorBias * 10;
+        else if (c.indoorOutdoor === "indoor") score -= prefs.outdoorBias * 10;
+      }
+    }
 
     // --- Small random jitter for variety ---
     score += Math.random() * 10;
@@ -414,6 +443,27 @@ function priceLevelLabel(level: string): string | null {
 // Claude Haiku sequencing
 // ---------------------------------------------------------------------------
 
+/** Build a short natural-language summary of user preferences for the prompt */
+function describePreferences(prefs?: UserPreferences): string {
+  if (!prefs || prefs.totalInteractions < 5) return "";
+  const parts: string[] = [];
+
+  // Top liked/disliked categories
+  const sorted = Object.entries(prefs.categoryScores).sort((a, b) => b[1] - a[1]);
+  const liked = sorted.filter(([, v]) => v > 0.2).slice(0, 2).map(([k]) => k);
+  const disliked = sorted.filter(([, v]) => v < -0.2).slice(0, 2).map(([k]) => k);
+  if (liked.length) parts.push(`enjoys ${liked.join(" and ")}`);
+  if (disliked.length) parts.push(`tends to skip ${disliked.join(" and ")}`);
+
+  if (prefs.outdoorBias > 0.3) parts.push("prefers outdoor activities");
+  else if (prefs.outdoorBias < -0.3) parts.push("prefers indoor activities");
+
+  if (prefs.costBias < -0.3) parts.push("budget-conscious");
+  else if (prefs.costBias > 0.3) parts.push("happy to splurge");
+
+  return parts.length ? `USER PREFERENCES: This person ${parts.join(", ")}.` : "";
+}
+
 async function sequenceWithClaude(
   pool: Candidate[],
   lockedCandidates: Candidate[],
@@ -421,6 +471,7 @@ async function sequenceWithClaude(
   city: City,
   kids: boolean,
   hour: number,
+  prefs?: UserPreferences,
 ): Promise<DayCard[]> {
   const client = new Anthropic({ apiKey: import.meta.env.ANTHROPIC_API_KEY });
   const cityName = getCityName(city);
@@ -467,6 +518,7 @@ async function sequenceWithClaude(
 
 It's ${today}, ${timeSlot} (${hour}:00). ${weather ? `Weather: ${weather}.` : ""}
 ${kids ? "This plan is for a family WITH KIDS. Prioritize kid-friendly activities." : "This plan is for adults WITHOUT KIDS."}
+${describePreferences(prefs)}
 ${lockedSection}
 
 CANDIDATE POOL:
@@ -630,7 +682,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return errJson("Invalid JSON body", 400);
   }
 
-  const { city, kids = false, lockedIds = [], dismissedIds = [], currentHour } = body;
+  const { city, kids = false, lockedIds = [], dismissedIds = [], currentHour, preferences } = body;
 
   // Validate city
   if (!city || !VALID_CITIES.has(city)) {
@@ -646,8 +698,9 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const dismissedSet = new Set(dismissedIds);
   const lockedSet = new Set(lockedIds);
 
-  // Cache hit for default requests (no locks/dismissals)
-  const cacheKey = `${city}:${kids}:${hour}`;
+  // Cache hit for default requests (no locks/dismissals/preferences)
+  const prefsHash = preferences ? Math.round((preferences.outdoorBias || 0) * 10 + (preferences.costBias || 0) * 10) : 0;
+  const cacheKey = `${city}:${kids}:${hour}:${prefsHash}`;
   if (lockedIds.length === 0 && dismissedIds.length === 0) {
     const cached = planCache.get(cacheKey);
     if (cached && Date.now() - cached.ts < CACHE_TTL) {
@@ -664,7 +717,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const allCandidates = buildCandidatePool(city, kids, dismissedSet, lockedSet);
 
     // 3. Score candidates
-    const scored = scoreCandidates(allCandidates, weatherContext, hour, kids);
+    const scored = scoreCandidates(allCandidates, weatherContext, hour, kids, preferences);
 
     // 4. Separate locked items
     const lockedCandidates = scored.filter((c) => lockedSet.has(c.id));
@@ -698,6 +751,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       city,
       kids,
       hour,
+      preferences,
     );
 
     const responseData = {
