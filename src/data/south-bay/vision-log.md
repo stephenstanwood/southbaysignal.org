@@ -2,6 +2,46 @@
 
 ---
 
+## 2026-04-09 — Cycle 76: SiFive $400M + Restaurant Radar Name Fix
+
+### Context
+Thursday April 9, 2026 (afternoon). Easter weekend begins tomorrow (Good Friday Apr 10). Data pipeline refreshed by concurrent cycle at 16:11 PT.
+
+### What Was Built
+
+**SiFive added to Recently Funded** (`tech-companies.ts`)
+
+SiFive, the Santa Clara–based RISC-V chip designer, raised a $400M oversubscribed Series G on April 9 — making it the largest South Bay chip funding round of the year:
+- Led by Atreides Management, backed by Nvidia, Apollo Global Management, T. Rowe Price, Point72 Turion, Prosperity7, and Sutter Hill Ventures
+- $3.65B valuation
+- CEO Patrick Little called this "the final funding round before an IPO"
+- Challenges Arm Holdings in AI data center CPUs
+
+Now the most recent entry in RECENTLY_FUNDED (31 rounds total, April 9 date).
+
+**Restaurant Radar: double-quoted name extractor** (`generate-restaurant-radar.mjs`)
+
+Fixed a gap where Palo Alto permits with names formatted as `"BUSINESS NAME" description` weren't being extracted. The old extractor handled `for 'Name'`, `ALL-CAPS-NAME:`, and `U&O for "Name"` — but not leading double-quoted names. Added:
+```js
+const quotedLeadMatch = desc.match(/^"([^"]{3,40})"\s/);
+```
+Also added a blurb override for Arsicault Bakery (388 Cambridge Ave, Palo Alto) — the SF-famous croissant bakery fitting out 2,150 SF on Cambridge Ave.
+
+**Full data pipeline already refreshed** by concurrent cycle at 16:11 PT (15 files including events, around-town, digests, weekend picks).
+
+### Why This Was the Strongest Move
+SiFive's $400M round with Nvidia backing is a marquee South Bay chip story — the kind of announcement that will be referenced in every RISC-V vs. Arm analysis for the next year. A resident opening the Tech tab today sees this alongside Apple's 50th anniversary (month window) and NVIDIA's 33rd (Apr 5 window). The restaurant radar fix also ensures future double-quoted PA permits surface properly.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: watch for post-Apr 9 rounds** — SiFive (Apr 9) is now the most recent. Monitor Crunchbase/TechCrunch for Apr 10+ South Bay funding.
+2. **Neighborhood-level filtering for San José** — 220 events (40% of total); Willow Glen, Almaden, Japantown, Rose Garden filtering would make browsing much more useful.
+3. **Permit Pulse: Sunnyvale** — Try epermits.sunnyvale.ca.gov, check if there's a public data portal similar to SJ Socrata.
+
+### Are We Becoming More Like the Homepage for South Bay Life?
+**Yes.** A South Bay resident opening the Tech tab today sees SiFive's $400M raise (the biggest local chip story of 2026), Apple's 50th anniversary, NVIDIA's 33rd anniversary, and 31 recently funded rounds. The restaurant radar now correctly names businesses for residents browsing the Food tab — Arsicault Bakery at Cambridge Ave is exactly the kind of neighborhood-level food news that makes SBS feel locally rooted.
+
+---
+
 ## 2026-04-09 — Cycle 75: Data Refresh + Fix Library Games Misclassification
 
 ### Context
