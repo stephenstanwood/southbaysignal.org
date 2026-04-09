@@ -163,9 +163,11 @@ type RadarItem = {
 
 const SIGNAL_STYLES: Record<string, { bg: string; color: string; border: string }> = {
   "New Build":      { bg: "#dcfce7", color: "#166534", border: "#86efac" },
+  "New Opening":    { bg: "#dcfce7", color: "#166534", border: "#86efac" },
   "Major Buildout": { bg: "#dbeafe", color: "#1e40af", border: "#93c5fd" },
   "New Buildout":   { bg: "#dbeafe", color: "#1e40af", border: "#93c5fd" },
   "Renovation":     { bg: "#fef3c7", color: "#92400e", border: "#fcd34d" },
+  "Conditional Use": { bg: "#f5f3ff", color: "#5b21b6", border: "#c4b5fd" },
   "Possible Closure": { bg: "#fee2e2", color: "#991b1b", border: "#fca5a5" },
   "Permit Activity": { bg: "#f3f4f6", color: "#374151", border: "#d1d5db" },
 };

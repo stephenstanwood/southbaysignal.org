@@ -2,6 +2,42 @@
 
 ---
 
+## 2026-04-09 — Cycle 73: Data Refresh + Restaurant Radar Label Fix
+
+### Context
+Thursday April 9, 2026. Spring break week 1 (SJUSD/PAUSD through Apr 10). Easter weekend (Apr 12) approaching. USWNT vs Japan at PayPal Park on Saturday.
+
+### What Was Built
+
+**Restaurant Radar: "New Opening" and "Conditional Use" label colors fixed**
+
+Palo Alto permits labeled "New Opening" (Bistro Demiya, Rikyu) were rendering with gray "Permit Activity" styling because the label wasn't in `SIGNAL_STYLES`. Fixed with a distinct green badge matching "New Build." Added purple styling for "Conditional Use" permits. These labels now visually communicate what they mean: green = opening, purple = conditional/regulatory, gray = generic activity.
+
+**Full data refresh (13+ files):**
+- `upcoming-events.json` — 543 events (106 ongoing), up from 517
+- `around-town.json` — 8 items; San José + Sunnyvale have Apr 9 records
+- `digests.json` — 10 city digests; San José Apr 9, Sunnyvale Apr 9, Los Gatos Apr 7
+- `upcoming-meetings.json` — 7 cities; San José + Palo Alto Apr 13 (next Monday)
+- `tech-briefing.json` — Apr 9–16; $500M Nexthop AI + MatX rounds leading
+- `city-briefings.json` — 10 briefings for Apr 9–16
+- `real-estate.json` — 11 cities; Mountain View fastest (8d), Cupertino +33% YoY
+- `restaurant-radar.json` — 12 signals; Bistro Demiya + Rikyu opening on Lytton Ave PA
+- `scc-food-openings.json` — 12 opened, 12 coming soon (Cedar & Sage, Pepper Lunch-Sunnyvale, Jun Lum Dim Sum)
+- `permit-pulse.json` — SJ 27 notable permits (89 new units), PA 11 notable
+- `spring-break-picks.json` — 12 picks for Apr 9–17 (Sciencepalooza!, USWNT vs Japan, Julius Caesar)
+- `apod.json` — 11 NASA APOD images through Apr 9
+- `air-quality.json`, `outages.json` — refreshed
+
+### Why This Was the Strongest Move
+The scc-food-openings "coming soon" section went from 0 to 12 entries — residents browsing the Food tab during spring break will now see upcoming restaurant openings (Cedar & Sage at Stanford Shopping Center, Pepper Lunch-Sunnyvale, Jun Lum Dim Sum in Milpitas). The label color fix makes Bistro Demiya and Rikyu's "New Opening" badges visually distinct (green, not gray), which is the right signal for residents looking for what's newly open.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED updates** — Add any Apr 8–14 South Bay funding announcements when verified data is available.
+2. **Permit Pulse: add Mountain View or Sunnyvale** — Both city portals are currently inaccessible (connection refused/timeout). Retry periodically.
+3. **Neighborhood-level filtering for San José** — San José has 217 events (40% of total); Willow Glen, Almaden, Japantown, Rose Garden filtering would make browsing much more useful.
+
+---
+
 ## 2026-04-08 — Cycle 72: Events Tab — Weekly Buckets + Date on Cards
 
 ### Context
