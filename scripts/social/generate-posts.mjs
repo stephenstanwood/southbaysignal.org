@@ -69,7 +69,7 @@ async function generatePlanLinks(candidates) {
           city: item.city,
           kids: false,
           lockedIds: [eventId],
-          currentHour: item.time ? parseInt(item.time.match(/\d+/)?.[0] || "17", 10) : 17,
+          currentHour: 9, // always generate full-day plans starting at 9 AM
         }),
         signal: AbortSignal.timeout(30000),
       });
