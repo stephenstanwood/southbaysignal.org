@@ -28,6 +28,67 @@ import { logStep, logScore, logSuccess, logSkip, logError, logItem } from "./lib
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// ── Plan link generation ──────────────────────────────────────────────────
+// For event candidates, pre-generate a day plan with the event locked,
+// then save it to get a shareable plan URL.
+
+const PLAN_API_BASE = process.env.SBT_API_BASE || "https://southbaytoday.org";
+
+async function generatePlanLinks(candidates) {
+  let generated = 0;
+  for (const item of candidates) {
+    // Only generate plan links for events with a date and city
+    if (item.sourceType !== "event" || !item.date || !item.city) continue;
+    // Skip if already has a plan URL
+    if (item.planUrl) continue;
+
+    try {
+      // 1. Generate a plan with this event locked
+      const eventId = `event:${item.id || item.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 40)}`;
+      const planRes = await fetch(`${PLAN_API_BASE}/api/plan-day`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          city: item.city,
+          kids: false,
+          lockedIds: [eventId],
+          currentHour: item.time ? parseInt(item.time.match(/\d+/)?.[0] || "17", 10) : 17,
+        }),
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!planRes.ok) continue;
+      const planData = await planRes.json();
+      if (!planData.cards?.length) continue;
+
+      // 2. Share the plan to get a permalink
+      const shareRes = await fetch(`${PLAN_API_BASE}/api/share-plan`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cards: planData.cards,
+          city: item.city,
+          kids: false,
+          weather: planData.weather,
+        }),
+        signal: AbortSignal.timeout(5000),
+      });
+      if (!shareRes.ok) continue;
+      const shareData = await shareRes.json();
+
+      item.planUrl = shareData.url;
+      generated++;
+      logStep("📅", `Plan link: ${item.title} → ${shareData.url}`);
+
+      // Rate limit — don't hammer the API
+      await new Promise((r) => setTimeout(r, 2000));
+    } catch (err) {
+      // Silently skip — plan links are optional
+      logItem(`Plan link failed for ${item.title}: ${err.message || err}`);
+    }
+  }
+  return generated;
+}
+
 // ── Already-seen filter ────────────────────────────────────────────────────
 // Skip items that are already approved, or were rejected in a previous review.
 
@@ -188,6 +249,11 @@ async function main() {
   logStep("🔗", "Enriching URLs...");
   await enrichUrls(topCandidates);
 
+  // 6b. Generate plan links for events (optional — failures are fine)
+  logStep("📅", "Generating plan links for events...");
+  const planCount = await generatePlanLinks(topCandidates);
+  logStep("📅", `Generated ${planCount} plan links`);
+
   // 7. URL validation — filter out items without good direct links
   logStep("🔗", "Validating URLs...");
   const urlValid = await filterByUrl(topCandidates);
@@ -238,10 +304,11 @@ async function main() {
           score: item.score,
           time: item.time,
           url: item.url,
+          planUrl: item.planUrl || null,
         },
         copy,
         cardPath: null,
-        targetUrl: item.url,
+        targetUrl: item.planUrl || item.url,
       };
 
       // Write individual post JSON

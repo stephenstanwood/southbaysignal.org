@@ -340,7 +340,7 @@ async function main() {
     }
 
     // Fetch og:image from the target URL for richer social cards
-    const targetUrl = item.url || post.targetUrl;
+    const targetUrl = item.planUrl || item.url || post.targetUrl;
     let ogImage = "";
     if (targetUrl) {
       try {

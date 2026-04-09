@@ -38,16 +38,52 @@ export const GET: APIRoute = async ({ params, url }) => {
   }
 
   const cityName = getCityName(plan.city as City);
-  const title = `My day in ${cityName} — South Bay Today`;
-  const cardNames = plan.cards.map((c: any) => c.name).slice(0, 4).join(", ");
-  const description = plan.cards.length > 4
-    ? `${cardNames}, and more`
-    : cardNames;
   const canonical = `${origin}/plan/${id}`;
   const ogImage = `${origin}/images/og-image.png`;
 
+  // Filter out cards whose time block has already ended (PT timezone)
+  const nowPT = new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles", hour: "numeric", minute: "numeric", hour12: false });
+  const [nowH, nowM] = nowPT.split(":").map(Number);
+  const nowMinutes = nowH * 60 + (nowM || 0);
+
+  function parseEndMinutes(timeBlock: string): number | null {
+    // Parse "2:30 PM - 4:00 PM" → end time in minutes since midnight
+    const parts = timeBlock.split(/\s*-\s*/);
+    if (parts.length < 2) return null;
+    const m = parts[1].match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+    if (!m) return null;
+    let h = parseInt(m[1], 10);
+    const min = parseInt(m[2], 10);
+    if (m[3].toUpperCase() === "PM" && h !== 12) h += 12;
+    if (m[3].toUpperCase() === "AM" && h === 12) h = 0;
+    return h * 60 + min;
+  }
+
+  const activeCards = plan.cards.filter((c: any) => {
+    const endMin = parseEndMinutes(c.timeBlock);
+    if (endMin === null) return true; // keep if unparseable
+    return endMin > nowMinutes; // keep if end time is in the future
+  });
+
+  // If all cards are past, redirect to homepage with the city pre-selected
+  if (activeCards.length === 0) {
+    return Response.redirect(`${origin}/?city=${plan.city}`, 302);
+  }
+
+  // Determine if some cards were filtered
+  const filteredCount = plan.cards.length - activeCards.length;
+  const timeNote = filteredCount > 0
+    ? `<div style="text-align:center;font-size:12px;color:#bbb;margin-bottom:12px;font-style:italic">Showing ${activeCards.length} upcoming stops${filteredCount > 0 ? ` (${filteredCount} earlier stops already passed)` : ""}</div>`
+    : "";
+
+  const title = `My day in ${cityName} — South Bay Today`;
+  const cardNames = activeCards.map((c: any) => c.name).slice(0, 4).join(", ");
+  const description = activeCards.length > 4
+    ? `${cardNames}, and more`
+    : cardNames;
+
   // Build card HTML
-  const cardsHtml = plan.cards.map((card: any) => {
+  const cardsHtml = activeCards.map((card: any) => {
     const emoji = CATEGORY_EMOJI[card.category] || "📍";
     const photoHtml = card.photoRef
       ? `<img src="${esc(origin)}/api/place-photo?ref=${encodeURIComponent(card.photoRef)}&w=200&h=200" alt="${esc(card.name)}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;flex-shrink:0">`
@@ -119,9 +155,10 @@ export const GET: APIRoute = async ({ params, url }) => {
       ${plan.weather ? `🌤 ${esc(plan.weather)} · ` : ""}${plan.cards.length} stops${plan.kids ? " · Family-friendly" : ""}
     </div>
   </div>
+  ${timeNote}
   ${cardsHtml}
   <div class="footer">
-    <a href="${esc(origin)}/" class="cta">Build Your Own Day →</a>
+    <a href="${esc(origin)}/?city=${esc(plan.city)}" class="cta">Build Your Own Day →</a>
     <p style="margin-top:16px">Powered by <a href="${esc(origin)}/" style="color:#888">southbaytoday.org</a></p>
   </div>
 </div>

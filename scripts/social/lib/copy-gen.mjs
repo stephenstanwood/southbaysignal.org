@@ -76,6 +76,13 @@ export async function generateSingleItemCopy(item, timeOfDay = "morning") {
     timeStyle: "short",
   });
 
+  // When a plan URL exists, link to the full day plan instead of the raw event URL
+  const postUrl = item.planUrl || item.url;
+  const hasPlanLink = !!item.planUrl;
+  const urlNote = hasPlanLink
+    ? `- URL (MUST include this exact URL): ${postUrl}\n- This URL links to a full day plan built around this event. Frame the link as "here's a whole day plan" or "we built a day around it" — don't just say "get tickets". The plan page shows this event plus surrounding activities.`
+    : `- URL (MUST include this exact URL): ${postUrl}`;
+
   const prompt = `Write a social post about this ONE item. Current time: ${now}. Time of day: ${timeOfDay}.
 
 ITEM:
@@ -87,7 +94,7 @@ ITEM:
 - Category: ${item.category || ""}
 - Summary: ${item.summary ? item.summary.slice(0, 300) : ""}
 - Cost: ${item.cost || ""}
-- URL (MUST include this exact URL): ${item.url}
+${urlNote}
 
 Write four variants:
 1. X (max 270 chars including URL) — punchy, clean, no hashtags
