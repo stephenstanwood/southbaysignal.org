@@ -39,6 +39,7 @@ interface SharedPlan {
   city: string;
   kids: boolean;
   weather: string | null;
+  planDate?: string;
   createdAt: string;
 }
 
@@ -99,6 +100,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     city: body.city,
     kids: body.kids,
     weather: body.weather,
+    planDate: body.planDate || undefined,
     createdAt: new Date().toISOString(),
   };
 

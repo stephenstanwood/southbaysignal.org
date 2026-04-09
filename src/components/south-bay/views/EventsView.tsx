@@ -435,8 +435,88 @@ function UpcomingEventCard({ event, showDate }: { event: UpcomingEvent; showDate
             {event.description}
           </p>
         )}
+
+        {/* Make it a day */}
+        {event.date && event.city && (
+          <MakeItADayButton eventId={event.id} city={event.city} date={event.date} />
+        )}
       </div>
     </div>
+  );
+}
+
+// ── "Make it a day" button ──
+
+function MakeItADayButton({ eventId, city, date }: { eventId: string; city: string; date: string }) {
+  const [state, setState] = useState<"idle" | "loading" | "done">("idle");
+
+  const handleClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (state !== "idle") return;
+    setState("loading");
+
+    try {
+      // 1. Generate a plan with this event locked
+      const planRes = await fetch("/api/plan-day", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          city,
+          kids: false,
+          lockedIds: [`event:${eventId}`],
+          currentHour: 9,
+          planDate: date,
+        }),
+      });
+      if (!planRes.ok) throw new Error("plan failed");
+      const planData = await planRes.json();
+
+      // 2. Save to get a shareable URL
+      const shareRes = await fetch("/api/share-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cards: planData.cards,
+          city,
+          kids: false,
+          weather: planData.weather,
+          planDate: date,
+        }),
+      });
+      if (!shareRes.ok) throw new Error("share failed");
+      const { url } = await shareRes.json();
+
+      setState("done");
+      window.open(url, "_blank");
+    } catch {
+      setState("idle");
+    }
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={state === "loading"}
+      style={{
+        marginTop: 6,
+        padding: "3px 10px",
+        fontSize: 10,
+        fontWeight: 700,
+        fontFamily: "'Space Mono', monospace",
+        letterSpacing: "0.04em",
+        border: "1px solid var(--sb-border-light)",
+        borderRadius: 4,
+        background: state === "loading" ? "#f5f5f5" : "var(--sb-card)",
+        color: state === "done" ? "#16a34a" : "var(--sb-muted)",
+        cursor: state === "loading" ? "wait" : "pointer",
+        transition: "all 0.15s",
+      }}
+      onMouseEnter={(e) => { if (state === "idle") e.currentTarget.style.borderColor = "#999"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--sb-border-light)"; }}
+    >
+      {state === "loading" ? "Building plan..." : state === "done" ? "Plan ready ✓" : "Make it a day →"}
+    </button>
   );
 }
 
