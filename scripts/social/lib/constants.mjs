@@ -114,6 +114,19 @@ export const INTERNAL_EVENT_SIGNALS = [
   "payroll",
   "employee",
   "internal",
+  "off-campus living",
+  "wellness center",
+  "residence hall",
+  "resident advisor",
+  "dining hall",
+  "meal plan",
+  "orientation",
+  "office hours",
+  "campus ministry",
+  "student org",
+  "sorority",
+  "fraternity",
+  "rush week",
 ];
 
 // SBS tab URLs for CTAs (hash-based routing with full tab IDs)
