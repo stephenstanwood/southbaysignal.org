@@ -33,9 +33,26 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // then save it to get a shareable plan URL.
 
 const PLAN_API_BASE = process.env.SBT_API_BASE || "https://southbaytoday.org";
+const SHARED_PLANS_PATH = join(__dirname, "..", "..", "src", "data", "south-bay", "shared-plans.json");
+
+function loadSharedPlans() {
+  try { return JSON.parse(readFileSync(SHARED_PLANS_PATH, "utf8")); } catch { return {}; }
+}
+
+function saveSharedPlans(plans) {
+  writeFileSync(SHARED_PLANS_PATH, JSON.stringify(plans, null, 2) + "\n");
+}
+
+function generatePlanId() {
+  const bytes = new Uint8Array(4);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 async function generatePlanLinks(candidates) {
   let generated = 0;
+  const sharedPlans = loadSharedPlans();
+
   for (const item of candidates) {
     // Need at least a city to generate a plan
     if (!item.city) continue;
@@ -43,7 +60,7 @@ async function generatePlanLinks(candidates) {
     if (item.planUrl) continue;
 
     try {
-      // 1. Generate a plan with this event locked
+      // 1. Generate a plan with this event locked via the prod API
       const eventId = `event:${item.id || item.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 40)}`;
       const planRes = await fetch(`${PLAN_API_BASE}/api/plan-day`, {
         method: "POST",
@@ -60,24 +77,25 @@ async function generatePlanLinks(candidates) {
       const planData = await planRes.json();
       if (!planData.cards?.length) continue;
 
-      // 2. Share the plan to get a permalink
-      const shareRes = await fetch(`${PLAN_API_BASE}/api/share-plan`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          cards: planData.cards,
-          city: item.city,
-          kids: false,
-          weather: planData.weather,
-        }),
-        signal: AbortSignal.timeout(10000),
-      });
-      if (!shareRes.ok) continue;
-      const shareData = await shareRes.json();
+      // 2. Save plan directly to shared-plans.json (persists via git commit)
+      const planId = generatePlanId();
+      sharedPlans[planId] = {
+        cards: planData.cards.map((c) => ({
+          id: c.id, name: c.name, category: c.category, city: c.city,
+          address: c.address, timeBlock: c.timeBlock, blurb: c.blurb, why: c.why,
+          url: c.url || null, mapsUrl: c.mapsUrl || null,
+          cost: c.cost || null, costNote: c.costNote || null,
+          photoRef: c.photoRef || null, venue: c.venue || null, source: c.source,
+        })),
+        city: item.city,
+        kids: false,
+        weather: planData.weather,
+        createdAt: new Date().toISOString(),
+      };
 
-      item.planUrl = shareData.url;
+      item.planUrl = `https://southbaytoday.org/plan/${planId}`;
       generated++;
-      logStep("📅", `Plan link: ${item.title} → ${shareData.url}`);
+      logStep("📅", `Plan link: ${item.title} → ${item.planUrl}`);
 
       // Rate limit — don't hammer the API
       await new Promise((r) => setTimeout(r, 2000));
@@ -86,6 +104,9 @@ async function generatePlanLinks(candidates) {
       logItem(`Plan link failed for ${item.title}: ${err.message || err}`);
     }
   }
+
+  // Write all plans at once
+  saveSharedPlans(sharedPlans);
   return generated;
 }
 

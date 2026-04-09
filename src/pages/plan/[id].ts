@@ -10,6 +10,8 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { getCityName } from "../../lib/south-bay/cities";
 import type { City } from "../../lib/south-bay/types";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -21,25 +23,34 @@ const CATEGORY_EMOJI: Record<string, string> = {
   sports: "⚾", neighborhood: "🏘️",
 };
 
+function loadSharedPlans(): Record<string, any> {
+  try {
+    const path = join(process.cwd(), "src/data/south-bay/shared-plans.json");
+    return JSON.parse(readFileSync(path, "utf-8"));
+  } catch { return {}; }
+}
+
 export const GET: APIRoute = async ({ params, url }) => {
   const id = params.id;
   if (!id) return new Response("Not found", { status: 404 });
 
-  // Fetch plan from the share-plan API (same server)
   const origin = url.origin;
-  let plan: any;
-  try {
-    const res = await fetch(`${origin}/api/share-plan?id=${id}`);
-    if (!res.ok) throw new Error("not found");
-    plan = await res.json();
-  } catch {
-    // Plan expired or not found — redirect to homepage
+
+  // Read plan from shared-plans.json (committed to git, deployed with the site)
+  const plans = loadSharedPlans();
+  const plan = plans[id];
+  if (!plan) {
     return Response.redirect(`${origin}/`, 302);
   }
 
   const cityName = getCityName(plan.city as City);
   const canonical = `${origin}/plan/${id}`;
-  const ogImage = `${origin}/images/og-image.png`;
+
+  // OG image: use first card's Google Places photo if available, else default
+  const firstPhotoRef = plan.cards?.find((c: any) => c.photoRef)?.photoRef;
+  const ogImage = firstPhotoRef
+    ? `${origin}/api/place-photo?ref=${encodeURIComponent(firstPhotoRef)}&w=1200&h=630`
+    : `${origin}/images/og-image.png`;
 
   // Filter out cards whose time block has already ended (PT timezone)
   const nowPT = new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles", hour: "numeric", minute: "numeric", hour12: false });
