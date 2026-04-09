@@ -655,6 +655,27 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
     });
   }, [selectedCities, category, showKidsOnly, search, primary, springBreakMode, todayIso]);
 
+  // ── Per-category counts (all filters applied except category, for pill badges) ──
+  const categoryCounts = useMemo(() => {
+    const allCities = selectedCities.size === 11;
+    const counts: Record<string, number> = {};
+    for (const e of upcomingEvents) {
+      if (!allCities && !selectedCities.has(e.city as City)) continue;
+      if (showKidsOnly && !e.kidFriendly) continue;
+      if (e.date === todayIso && !hasNotStarted(e.time)) continue;
+      if (springBreakMode && (e.date < SB_BREAK_START || e.date > SB_BREAK_END)) continue;
+      if (search) {
+        const q = search.toLowerCase();
+        if (!e.title.toLowerCase().includes(q) && !e.description.toLowerCase().includes(q) &&
+            !e.city.toLowerCase().includes(q) && !e.venue.toLowerCase().includes(q)) continue;
+      }
+      counts[e.category] = (counts[e.category] || 0) + 1;
+    }
+    // "all" = sum of everything
+    counts["all"] = Object.values(counts).reduce((a, b) => a + b, 0);
+    return counts;
+  }, [selectedCities, showKidsOnly, search, springBreakMode, todayIso]);
+
   // ── Recurring events (static, weekly/monthly/seasonal) ──
   const filteredRecurring = useMemo(() => {
     const allCities = selectedCities.size === 11;
@@ -851,6 +872,8 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
         {EVENT_CATEGORIES.map((cat) => {
           const active = category === cat.id;
+          const count = viewMode === "upcoming" ? (categoryCounts[cat.id] ?? 0) : null;
+          const showCount = count !== null && count > 0;
           return (
             <button
               key={cat.id}
@@ -867,6 +890,17 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
             >
               <span>{cat.emoji}</span>
               <span>{cat.label}</span>
+              {showCount && (
+                <span style={{
+                  fontSize: 10, fontWeight: 700,
+                  background: active ? "rgba(255,255,255,0.25)" : "var(--sb-border-light, #f0f0f0)",
+                  color: active ? "#fff" : "var(--sb-muted)",
+                  borderRadius: 100, padding: "0 5px", lineHeight: "16px",
+                  minWidth: 16, textAlign: "center",
+                }}>
+                  {count}
+                </span>
+              )}
             </button>
           );
         })}
