@@ -361,7 +361,8 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         locked: s.locked.filter((id) => id !== cardId),
       };
       // Refetch plan with updated dismissals so a replacement fills the slot
-      setTimeout(() => fetchPlan(), 50);
+      // Use ref to avoid stale closure — fetchPlan captures old state.dismissed
+      setTimeout(() => fetchPlanRef.current(), 100);
       return next;
     });
   };
