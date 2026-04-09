@@ -61,7 +61,9 @@ async function generatePlanLinks(candidates) {
 
     try {
       // 1. Generate a plan with this event locked via the prod API
-      const eventId = `event:${item.id || item.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 40)}`;
+      const rawId = item.id || item.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 40);
+      const eventId = `event:${rawId}`;
+      logItem(`Lock ID: ${eventId} (item.id=${item.id || 'MISSING'})`);
       const planRes = await fetch(`${PLAN_API_BASE}/api/plan-day`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
