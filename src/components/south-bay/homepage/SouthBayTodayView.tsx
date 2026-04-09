@@ -467,9 +467,9 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
             // In-place loading skeleton for dismissed card
             if (isReplaced) {
               return (
-                <div key={card.id} style={{ display: "flex", background: "#fff", borderRadius: 10, border: "1px dashed #e8e8e8", overflow: "hidden", opacity: 0, animation: "cardAppear 0.35s ease-out forwards" }}>
+                <div key={card.id} style={{ display: "flex", background: "#fff", borderRadius: 10, border: "1px dashed #e8e8e8", overflow: "hidden", minHeight: 110, opacity: 0, animation: "cardAppear 0.35s ease-out forwards" }}>
                   <div style={{ width: 5, background: "#e8e8e8", flexShrink: 0 }} />
-                  <div style={{ flex: 1, padding: "14px 16px", display: "flex", alignItems: "center" }}>
+                  <div style={{ flex: 1, padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <SwapVerb />
                   </div>
                 </div>
@@ -845,7 +845,7 @@ function SwapVerb() {
   const display = full.slice(0, charIdx);
 
   return (
-    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, color: "#bbb", textAlign: "center", margin: 0, minHeight: 20, width: "100%" }}>
+    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 18, fontWeight: 700, color: "#ccc", textAlign: "center", margin: 0, minHeight: 24, width: "100%" }}>
       {display}<span style={{ opacity: 0.4, animation: "blink 0.8s step-end infinite" }}>|</span>
     </p>
   );
