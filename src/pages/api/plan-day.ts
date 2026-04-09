@@ -552,7 +552,8 @@ CRITICAL RULES FOR BALANCE:
 - The ideal plan is: activity → food → activity → food → activity. Alternate between doing things and eating.
 
 RULES:
-- Start from NOW (${hour}:00) — don't schedule things in the past
+- For a full day plan, START AT 9:00 AM with breakfast or coffee — a breakfast burrito spot, a fun cafe, a bakery. Every good day starts with food. If the current time is past 9, start from NOW (${hour}:00) instead.
+- Don't schedule things in the past
 - Events with listed times are anchors — schedule around them
 - If an event has no listed time, pick a reasonable slot for it
 - NEVER put two items of the same category back-to-back. No two parks in a row, no two restaurants in a row (unless lunch + dinner). Alternate categories: outdoor → food → museum → entertainment → food, etc.
