@@ -49,6 +49,51 @@ function generatePlanId() {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+// ── Photo enrichment ─────────────────────────────────────────────────────────
+// For event cards missing a photoRef, look up the venue via Google Places
+// text search and attach the first photo ref.
+
+const PLACES_TEXT_SEARCH_URL = "https://places.googleapis.com/v1/places:searchText";
+
+async function fetchVenuePhotoRef(venueName, cityName) {
+  const apiKey = process.env.GOOGLE_PLACES_API_KEY;
+  if (!apiKey || !venueName) return null;
+  try {
+    const query = cityName ? `${venueName} ${cityName}` : venueName;
+    const res = await fetch(PLACES_TEXT_SEARCH_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": apiKey,
+        "X-Goog-FieldMask": "places.photos",
+      },
+      body: JSON.stringify({ textQuery: query, maxResultCount: 1 }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.places?.[0]?.photos?.[0]?.name || null;
+  } catch {
+    return null;
+  }
+}
+
+async function enrichCardPhotos(cards) {
+  const missing = cards.filter((c) => !c.photoRef && (c.venue || c.name));
+  if (!missing.length) return;
+
+  for (const card of missing) {
+    const lookupName = card.venue || card.name;
+    const ref = await fetchVenuePhotoRef(lookupName, card.city);
+    if (ref) {
+      card.photoRef = ref;
+      logItem(`Photo found for "${lookupName}": ${ref.slice(0, 40)}…`);
+    }
+    // Polite delay between Places API calls
+    await new Promise((r) => setTimeout(r, 300));
+  }
+}
+
 async function generatePlanLinks(candidates) {
   let generated = 0;
   const sharedPlans = loadSharedPlans();
@@ -79,7 +124,10 @@ async function generatePlanLinks(candidates) {
       const planData = await planRes.json();
       if (!planData.cards?.length) continue;
 
-      // 2. Save plan directly to shared-plans.json (persists via git commit)
+      // 2. Enrich any cards missing photos via Google Places lookup
+      await enrichCardPhotos(planData.cards);
+
+      // 3. Save plan directly to shared-plans.json (persists via git commit)
       const planId = generatePlanId();
       sharedPlans[planId] = {
         cards: planData.cards.map((c) => ({
