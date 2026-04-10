@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-10T20:07:01.199Z",
+      "generatedAt": "2026-04-10T23:10:10.482Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,7 +137,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-10T20:07:03.553Z",
+      "generatedAt": "2026-04-10T23:10:13.000Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -187,6 +187,18 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-00938",
+          "address": "1234 Pitman Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-09",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-00931",
           "address": "250 Churchill Av",
           "category": "residential-large",
@@ -199,8 +211,8 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00905",
-          "address": "541 Maybell Av",
+          "id": "26BLD-00896",
+          "address": "3032 Waverley St",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -211,8 +223,8 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00896",
-          "address": "3032 Waverley St",
+          "id": "26BLD-00905",
+          "address": "541 Maybell Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -235,30 +247,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00938",
-          "address": "1234 Pitman Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-09",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26PLN-00070",
-          "address": "4035 Transport St",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Over the Counter Architectural Review to install one illuminated channel letter building sign on the rear elevation of the existing commercial building. Sign will be internally illuminated LED channel letters with electrical connection to existing building power. The proposed sign will be two feet tall by 38 feet wide to read, \"Peninsula Land.Com\". Environmental Assessment: Not a Project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-03",
-          "subtype": "Over the Counter Approved"
-        },
-        {
           "id": "26PLN-00077",
           "address": "421 Kipling St",
           "category": "entitlement",
@@ -268,6 +256,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-09",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00074",
+          "address": "1053 E Meadow Cir",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Revision scope includes: Updated utility easement layout and transformer and switch location per Palo Alto utility department requirement. Revising parking table to use 2.64 parking reduction due to losing additional one parking stall (Total reduced parking in project is 2).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-07",
           "subtype": "Over the Counter Approved"
         }
       ]
