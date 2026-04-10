@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://www.southbaytoday.org',
+  site: 'https://southbaytoday.org',
   trailingSlash: 'never',
   output: 'static',
   adapter: vercel(),
