@@ -230,13 +230,16 @@ async function main() {
         year: "numeric", month: "long", day: "numeric",
       });
 
+      // Use meetingType from Stoa (not hardcoded) so mislabeled records are
+      // surfaced rather than masked. Falls back to "City Council" if absent.
+      const bodyLabel = meeting.meetingType ?? "City Council";
       digests[config.city] = {
         city: config.city,
         cityName: config.cityName,
-        body: "City Council",
+        body: bodyLabel,
         meetingDate: meetingDateFormatted,
         meetingDateIso: meeting.date,
-        title: `${config.cityName} City Council — ${meetingDateFormatted}`,
+        title: `${config.cityName} ${bodyLabel} — ${meetingDateFormatted}`,
         summary: parsed.summary ?? "",
         keyTopics: parsed.keyTopics ?? meeting.keywords.slice(0, 5),
         schedule: config.schedule,
