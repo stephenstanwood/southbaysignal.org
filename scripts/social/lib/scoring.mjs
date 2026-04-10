@@ -102,7 +102,8 @@ export function scoreCandidate(item, history = []) {
 
   const titleLower = (item.title || "").toLowerCase();
   const summaryLower = (item.summary || "").toLowerCase();
-  const combined = titleLower + " " + summaryLower;
+  const urlLower = (item.url || "").toLowerCase();
+  const combined = titleLower + " " + summaryLower + " " + urlLower;
 
   // Political/polarizing content — hard block
   for (const kw of POLITICAL_BLOCK) {
@@ -112,10 +113,10 @@ export function scoreCandidate(item, history = []) {
     }
   }
 
-  // Internal/non-public events — heavy penalty
+  // Internal/non-public events — hard block (was penalty, now blocks)
   for (const kw of INTERNAL_EVENT_SIGNALS) {
     if (combined.includes(kw)) {
-      score -= 15;
+      score -= 50;
       break;
     }
   }
