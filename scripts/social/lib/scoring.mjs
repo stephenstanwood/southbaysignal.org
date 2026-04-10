@@ -47,12 +47,14 @@ export function scoreCandidate(item, history = []) {
   }
 
   // ── Timeliness (0-5) ──
+  // Posts are scheduled 2hr+ ahead of event time, so "today" events are often
+  // too late to schedule. Favor 2-7 days out (sweet spot for advance posting).
   const days = daysAway(item.date);
-  if (days === 0) score += 5;
-  else if (days === 1) score += 4;
-  else if (days <= 3) score += 3;
-  else if (days <= 7) score += 2;
-  else if (days <= 14) score += 1;
+  if (days === 0) score += 1;            // today: too late in most cases
+  else if (days === 1) score += 3;       // tomorrow: ok
+  else if (days >= 2 && days <= 7) score += 5; // sweet spot
+  else if (days >= 8 && days <= 14) score += 4; // still good
+  else if (days >= 15 && days <= 21) score += 1;
   // else 0
 
   // ── Usefulness / actionability (0-5) ──

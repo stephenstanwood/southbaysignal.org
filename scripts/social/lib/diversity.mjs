@@ -20,11 +20,14 @@ export function diverseSelect(candidates, targetCount, opts = {}) {
   const minCities = opts.minUniqueCities ?? DIVERSITY.minUniqueCities;
 
   const maxSource = opts.maxSameSource ?? DIVERSITY.maxSameSource ?? Math.max(2, Math.ceil(targetCount * 0.3));
+  // Cap per-day to force date spread. Default: ceil(target/7) + 1 so 20 posts → ~4/day max.
+  const maxPerDay = opts.maxPerDay ?? Math.max(2, Math.ceil(targetCount / 7) + 1);
 
   const selected = [];
   const cityCounts = {};
   const catCounts = {};
   const sourceCounts = {};
+  const dayCounts = {};
   const venuesSeen = new Set();
 
   for (const item of candidates) {
@@ -34,6 +37,7 @@ export function diverseSelect(candidates, targetCount, opts = {}) {
     const cat = item.category || "other";
     const venue = (item.venue || "").toLowerCase();
     const source = (item.source || "unknown").toLowerCase();
+    const day = item.date || "undated";
 
     // Check city cap
     if ((cityCounts[city] || 0) >= maxCity) continue;
@@ -44,6 +48,9 @@ export function diverseSelect(candidates, targetCount, opts = {}) {
     // Check source cap (prevents Meetup or any single source from dominating)
     if ((sourceCounts[source] || 0) >= maxSource) continue;
 
+    // Check per-day cap (spreads posts across days 2-14)
+    if ((dayCounts[day] || 0) >= maxPerDay) continue;
+
     // Skip duplicate venues
     if (venue && venue.length > 3 && venuesSeen.has(venue)) continue;
 
@@ -51,6 +58,7 @@ export function diverseSelect(candidates, targetCount, opts = {}) {
     cityCounts[city] = (cityCounts[city] || 0) + 1;
     catCounts[cat] = (catCounts[cat] || 0) + 1;
     sourceCounts[source] = (sourceCounts[source] || 0) + 1;
+    dayCounts[day] = (dayCounts[day] || 0) + 1;
     if (venue) venuesSeen.add(venue);
   }
 

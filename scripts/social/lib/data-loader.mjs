@@ -283,7 +283,7 @@ export function candidatesForDate(candidates, date) {
 /**
  * Filter candidates happening today or in the future.
  */
-export function upcomingCandidates(candidates, maxDaysAhead = 14) {
+export function upcomingCandidates(candidates, maxDaysAhead = 21) {
   const t = today();
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() + maxDaysAhead);
