@@ -15,8 +15,11 @@ import { DIVERSITY } from "./constants.mjs";
  * @returns {Array} Selected items respecting diversity
  */
 export function diverseSelect(candidates, targetCount, opts = {}) {
-  const maxCity = opts.maxSameCity ?? DIVERSITY.maxSameCity;
-  const maxCat = opts.maxSameCategory ?? DIVERSITY.maxSameCategory;
+  // Scale diversity caps with targetCount so bigger batches get looser limits.
+  // For targetCount=25 this yields maxCity=6, maxCat=7 — enough breathing room
+  // to actually fill the batch without being dominated by one city/category.
+  const maxCity = opts.maxSameCity ?? Math.max(DIVERSITY.maxSameCity, Math.ceil(targetCount / 4));
+  const maxCat = opts.maxSameCategory ?? Math.max(DIVERSITY.maxSameCategory, Math.ceil(targetCount / 3.5));
   const minCities = opts.minUniqueCities ?? DIVERSITY.minUniqueCities;
 
   const maxSource = opts.maxSameSource ?? DIVERSITY.maxSameSource ?? Math.max(2, Math.ceil(targetCount * 0.3));
