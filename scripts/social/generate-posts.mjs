@@ -43,6 +43,14 @@ function saveSharedPlans(plans) {
   writeFileSync(SHARED_PLANS_PATH, JSON.stringify(plans, null, 2) + "\n");
 }
 
+// Append a single plan to shared-plans.json, re-reading disk each time
+// to avoid clobbering concurrent writes from parallel generate-posts runs.
+function appendSharedPlan(planId, plan) {
+  const current = loadSharedPlans();
+  current[planId] = plan;
+  writeFileSync(SHARED_PLANS_PATH, JSON.stringify(current, null, 2) + "\n");
+}
+
 function generatePlanId() {
   const bytes = new Uint8Array(4);
   crypto.getRandomValues(bytes);
@@ -96,7 +104,6 @@ async function enrichCardPhotos(cards) {
 
 async function generatePlanLinks(candidates) {
   let generated = 0;
-  const sharedPlans = loadSharedPlans();
 
   for (const item of candidates) {
     // Need at least a city to generate a plan
@@ -127,9 +134,10 @@ async function generatePlanLinks(candidates) {
       // 2. Enrich any cards missing photos via Google Places lookup
       await enrichCardPhotos(planData.cards);
 
-      // 3. Save plan directly to shared-plans.json (persists via git commit)
+      // 3. Append plan to shared-plans.json using read-modify-write per plan
+      //    so parallel generate-posts runs can't clobber each other.
       const planId = generatePlanId();
-      sharedPlans[planId] = {
+      const plan = {
         cards: planData.cards.map((c) => ({
           id: c.id, name: c.name, category: c.category, city: c.city,
           address: c.address, timeBlock: c.timeBlock, blurb: c.blurb, why: c.why,
@@ -143,6 +151,7 @@ async function generatePlanLinks(candidates) {
         planDate: item.date || new Date().toISOString().split("T")[0],
         createdAt: new Date().toISOString(),
       };
+      appendSharedPlan(planId, plan);
 
       item.planUrl = `https://southbaytoday.org/plan/${planId}`;
       generated++;
@@ -156,8 +165,6 @@ async function generatePlanLinks(candidates) {
     }
   }
 
-  // Write all plans at once
-  saveSharedPlans(sharedPlans);
   return generated;
 }
 
@@ -321,11 +328,6 @@ async function main() {
   logStep("🔗", "Enriching URLs...");
   await enrichUrls(topCandidates);
 
-  // 6b. Generate plan links for events (optional — failures are fine)
-  logStep("📅", "Generating plan links for events...");
-  const planCount = await generatePlanLinks(topCandidates);
-  logStep("📅", `Generated ${planCount} plan links`);
-
   // 7. URL validation — filter out items without good direct links
   logStep("🔗", "Validating URLs...");
   const urlValid = await filterByUrl(topCandidates);
@@ -351,6 +353,12 @@ async function main() {
     logScore(item.title, item.score);
     logItem(`${item.cityName || item.city} · ${item.venue || "no venue"} · ${item.url?.slice(0, 60) || "no url"}`);
   }
+
+  // 8b. Generate plan links for FINAL selection only (not all candidates).
+  //     Done after selection so we don't waste API calls on items we won't post.
+  logStep("📅", "Generating plan links for selected items...");
+  const planCount = await generatePlanLinks(selected);
+  logStep("📅", `Generated ${planCount} plan links`);
 
   // 9. Generate copy for each item individually
   if (!existsSync(OUTPUT_DIR)) mkdirSync(OUTPUT_DIR, { recursive: true });
