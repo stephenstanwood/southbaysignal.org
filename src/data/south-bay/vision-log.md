@@ -2,6 +2,42 @@
 
 ---
 
+## 2026-04-10 — Cycle 77: Easter Weekend UX + Event Categorization Fixes
+
+### Context
+Good Friday, April 10, 2026 (4am PT). Easter weekend (Apr 10–12) underway. Spring break week 2 runs Apr 14–17.
+
+### What Was Built
+
+**Spring Break card: Good Friday now in Easter Weekend bucket**
+
+The overview card was grouping April 10 (Good Friday) under "Week 1" (Apr 3–10) instead of "Easter Weekend." Fixed the bucket boundaries so Easter Weekend covers Apr 10–13 (Fri–Mon). Also added two guards: (1) past weeks (all dates before today) are now hidden entirely, and (2) past-dated picks within the current week are filtered out — so residents no longer see expired events in the "NOW" section.
+
+**Event classifier: 3 bugs fixed**
+
+- "Bedtime Stories" at Mountain View Library was tagged `education` because the description contained the word "class" (in "Grow a Reader class"). Fixed by checking for `\bbedtime\b` in the title first → now correctly `family`.
+- "10AM Mass" (SCU weekly service) was showing in the public events feed. Added pattern `/^\d+(am|pm)\s+mass$/i` to INTERNAL_EVENT_PATTERNS.
+- "11th Hour Prayer Service" (SCU campus prayer gathering) was tagged `education`. Added patterns `/\bprayer\s+service\b/i` and `/\b11th\s+hour\s+(prayer|calling)\b/i` to filter it.
+
+Net: 542 events (-2 from filtered campus services), Bedtime Stories now correctly in Family tab.
+
+### Data Refreshed
+- `upcoming-events.json` — 542 events (107 ongoing), categorization corrected
+- `air-quality.json` — South Bay avg AQI 25 (Good)
+- `outages.json` — 0 active PG&E outages
+
+Other data files (digests, briefings, real estate, permits, restaurant radar) were already refreshed in cycle 76 and unchanged.
+
+### Why This Was the Strongest Move
+Today is Good Friday. A parent opening SBS this morning would have seen the Spring Break card show "Week 1 · NOW" with April 9 events that already happened. Now they see "Easter Weekend · NOW" with today's picks: Friday Fun Legos at Willow Glen Library, Earth Heroes craft at Mountain View Library, Ruth Asawa exhibit at Stanford, Drop-in Drawing at the Anderson. That's exactly the practical utility SBS is trying to deliver.
+
+### Next 3 Strongest Ideas
+1. **Mountain View / Sunnyvale permit data** — Mountain View data.mountainview.gov returns 403. Sunnyvale permits.sunnyvale.ca.gov exists but no public API found. Retry next week.
+2. **Neighborhood-level filtering for San José** — 214 SJ events (~40% of total). Willow Glen, Almaden, Japantown, Rose Garden are distinct communities that residents would filter by.
+3. **Post-spring-break cleanup** — After Apr 17, hide the Spring Break Guide card and evaluate whether to keep the "spring break mode" toggle in Events or retire it until fall break.
+
+---
+
 ## 2026-04-09 — Cycle 76: SiFive $400M + Restaurant Radar Name Fix
 
 ### Context
