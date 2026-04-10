@@ -36,6 +36,23 @@ function loadEnv() {
  */
 export async function factCheck(item, currentTime = new Date()) {
   loadEnv();
+
+  // Hard block: events without a specific start time are untrustworthy for
+  // time-sensitive social posts. Ongoing exhibits (category: exhibit/ongoing)
+  // are the only allowed exception.
+  const timeStr = (item.time || "").trim().toLowerCase();
+  const missingTime = !timeStr || timeStr === "tbd" || timeStr === "tba" || timeStr === "unknown";
+  const isOngoing = /exhibit|ongoing|all day/i.test(item.category || "") ||
+    /ongoing|all day|on view/i.test(item.summary || "");
+  if (missingTime && !isOngoing) {
+    return {
+      ok: false,
+      issues: ["Event has no specific start time (TBD/blank) — can't write time-accurate copy"],
+      severity: "block",
+      item,
+    };
+  }
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     logError("ANTHROPIC_API_KEY not set — skipping fact check");

@@ -52,6 +52,8 @@ THINGS TO NEVER DO:
 - Don't combine multiple unrelated items
 - Don't promote events that have already happened
 - Don't link to generic homepages
+- NEVER say "right now", "happening right now", "right this minute", "as we speak", or any variant. These phrases are banned.
+- NEVER invent specific clock times (e.g. "9 AM", "7 PM") that weren't in the source data.
 
 LINKS:
 - Always use full URLs with https:// — bare domains (e.g. "southbaytoday.org") don't become clickable on Bluesky or Threads
@@ -150,6 +152,22 @@ Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook" — ea
 
   if (!variants.x || !variants.threads || !variants.bluesky || !variants.facebook) {
     throw new Error("Missing platform variant in Claude response");
+  }
+
+  // Banned phrase scrub — retry once if Claude slips past the prompt
+  const BANNED = /\b(right now|happening right now|right this minute|as we speak|this very moment)\b/i;
+  const hasBanned = Object.values(variants).some((v) => BANNED.test(v));
+  if (hasBanned) {
+    // Strip and let downstream decide; log warning
+    for (const key of Object.keys(variants)) {
+      variants[key] = variants[key]
+        .replace(/happening right now[,.]?/gi, "")
+        .replace(/right now[,.]?/gi, "")
+        .replace(/right this minute[,.]?/gi, "")
+        .replace(/as we speak[,.]?/gi, "")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+    }
   }
 
   return variants;

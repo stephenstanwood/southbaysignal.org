@@ -330,9 +330,19 @@ async function main() {
   const openings = loadOpenings();
   logStep("📊", `Loaded ${openings.length} recent restaurant openings`);
 
-  // 2. Filter to ones with blurbs (quality gate)
-  const withBlurbs = openings.filter((r) => r.blurb);
-  logStep("✅", `${withBlurbs.length} have blurbs (quality-gated)`);
+  // 2. Filter to ones with blurbs (quality gate) + chain blocklist
+  const CHAIN_BLOCKLIST = [
+    "sbarro", "starbucks", "subway", "mcdonald", "burger king", "wendy", "taco bell",
+    "chipotle", "panera", "dunkin", "jack in the box", "carl's jr", "popeyes", "kfc",
+    "domino", "pizza hut", "papa john", "little caesars", "panda express", "chick-fil-a",
+    "jersey mike", "jimmy john", "quiznos", "baskin-robbins", "dairy queen", "7-eleven",
+  ];
+  const isChain = (r) => {
+    const name = (r.name || r.title || "").toLowerCase();
+    return CHAIN_BLOCKLIST.some((c) => name.includes(c));
+  };
+  const withBlurbs = openings.filter((r) => r.blurb && !isChain(r));
+  logStep("✅", `${withBlurbs.length} have blurbs (quality-gated, chains excluded)`);
 
   if (withBlurbs.length === 0) {
     logSkip("No restaurant openings with blurbs — nothing to generate");
