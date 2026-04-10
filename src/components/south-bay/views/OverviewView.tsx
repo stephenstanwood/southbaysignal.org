@@ -1103,7 +1103,7 @@ function SpringBreakCard({ todayForecast }: { todayForecast?: ForecastDay | null
 
   // Show from one week before break through end of break
   const today = new Date().toISOString().split("T")[0];
-  const showAfter = "2026-03-28"; // one week before Easter weekend
+  const showAfter = "2026-03-28"; // one week before spring break
   const showUntil = data.breakEnd ?? "2026-04-17";
   if (today < showAfter || today > showUntil) return null;
 
@@ -1159,9 +1159,8 @@ function SpringBreakCard({ todayForecast }: { todayForecast?: ForecastDay | null
       {(() => {
         // Group picks by week
         const weeks = [
-          { label: "Week 1", dateRange: "Apr 3–9", start: "2026-04-03", end: "2026-04-09" },
-          { label: "Easter Weekend", dateRange: "Apr 10–13", start: "2026-04-10", end: "2026-04-13" },
-          { label: "Week 2", dateRange: "Apr 14–17", start: "2026-04-14", end: "2026-04-17" },
+          { label: "Week 1", dateRange: "Apr 3–10", start: "2026-04-03", end: "2026-04-10" },
+          { label: "Week 2", dateRange: "Apr 13–17", start: "2026-04-13", end: "2026-04-17" },
         ];
         // Sort picks by date
         const sorted = [...picks].sort((a, b) => a.date.localeCompare(b.date));

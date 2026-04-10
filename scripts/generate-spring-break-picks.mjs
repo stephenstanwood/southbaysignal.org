@@ -62,10 +62,10 @@ async function callClaude(prompt) {
 async function main() {
   const { events } = JSON.parse(readFileSync(EVENTS_PATH, "utf8"));
 
-  // Cover both spring break windows + Easter weekend
+  // Cover both spring break windows
+  // Easter 2026 was Sunday Apr 5 (Good Friday Apr 3) — already past for most of this window
   // SJUSD/PAUSD/MVWSD/LGSUHSD/MVLA: Apr 6-10
   // FUHSD/CUSD/Campbell USD: Apr 13-17
-  // Easter weekend: Apr 3-5
   const BREAK_START = "2026-04-03";
   const BREAK_END = "2026-04-17";
 
@@ -73,7 +73,7 @@ async function main() {
     (e) => !e.ongoing && e.date >= BREAK_START && e.date <= BREAK_END
   );
 
-  console.log(`Found ${breakEvents.length} events Apr 3-17 (spring break + Easter)`);
+  console.log(`Found ${breakEvents.length} events Apr 3-17 (spring break)`);
 
   // Also include ongoing exhibits (museums, parks) that are active during break
   const ongoingDuring = events.filter(
@@ -103,17 +103,16 @@ async function main() {
 
   const prompt = `You are the editorial voice of South Bay Signal, a local news site for Silicon Valley residents.
 
-Spring break runs April 3–17, 2026. Easter Sunday is April 12. Week 1 (Apr 3–10) is the SJUSD/PAUSD/MVWSD break. Easter Weekend is Apr 11–13 (Good Friday Apr 11, Easter Sunday Apr 12). Week 2 (Apr 14–17) is the FUHSD/Cupertino USD/Campbell USD break. Here are ${sample.length} events and exhibits:
+Spring break runs April 3–17, 2026. Easter Sunday was April 5 (already past). Week 1 (Apr 3–10) is the SJUSD/PAUSD/MVWSD break. Week 2 (Apr 13–17) is the FUHSD/Cupertino USD/Campbell USD break. Here are ${sample.length} events and exhibits:
 
 ${eventList}
 
 Pick exactly 12 things a South Bay family or resident would genuinely enjoy during spring break. Rules:
-- At least 4 picks from Week 1 (Apr 3–10) and at least 4 from Week 2 (Apr 14–17)
-- Include at least 1–2 picks from Easter Weekend (Apr 11–13) — this is the highlight of spring break
+- At least 4 picks from Week 1 (Apr 3–10) and at least 4 from Week 2 (Apr 13–17)
 - Include 2–3 ongoing exhibits/museums that are great for families
 - Family-friendly or all-ages (kids are out of school!)
 - Prefer free or affordable, but don't exclude major events (USWNT soccer, live music, etc.) just because they're paid — note them honestly
-- Mix of types: outdoor, cultural/museum, arts, hands-on/workshop, sports, Easter/seasonal
+- Mix of types: outdoor, cultural/museum, arts, hands-on/workshop, sports
 - Geographic spread: aim for at least 4 different cities
 - Avoid: university admin events, meetings, clinical studies, routine weekly library programs
 
@@ -140,7 +139,7 @@ Return ONLY a JSON array of 12 objects, no other text:
     breakStart: BREAK_START,
     breakEnd: BREAK_END,
     label: "Spring Break 2026",
-    subtitle: "Apr 3–17 · Easter + spring break",
+    subtitle: "Apr 3–17 · spring break",
     generatedAt: new Date().toISOString(),
     picks: picks.map(({ eventIndex, why }) => {
       const e = sample[eventIndex - 1];

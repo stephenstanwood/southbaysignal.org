@@ -642,7 +642,7 @@ const DATE_GROUP_STATIC = ["Today", "Tomorrow", "This Week"];
 
 // ── Spring Break constants ──────────────────────────────────────────────────
 const SB_BANNER_START = "2026-03-29"; // show banner from now through end of break
-const SB_BREAK_START  = "2026-04-03"; // Easter weekend / first district break starts
+const SB_BREAK_START  = "2026-04-03"; // first district break starts (Easter 2026 was Apr 5)
 const SB_BREAK_WK1    = "2026-04-10"; // end of first break window
 const SB_BREAK_END    = "2026-04-17"; // end of second break window
 
@@ -846,21 +846,16 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
   // Group upcoming events by date bucket
   const groupedUpcoming = useMemo(() => {
     if (springBreakMode) {
-      // Spring break: group by week, with Easter weekend as its own group if present
+      // Spring break: group by week
       const groups: Record<string, UpcomingEvent[]> = {};
       for (const e of filteredUpcoming) {
-        let label: string;
-        if (e.date < SB_BREAK_START) {
-          label = "Easter Weekend";
-        } else if (e.date <= SB_BREAK_WK1) {
-          label = "Spring Break · Wk 1 (Apr 3–10)";
-        } else {
-          label = "Spring Break · Wk 2 (Apr 14–17)";
-        }
+        const label = e.date <= SB_BREAK_WK1
+          ? "Spring Break · Wk 1 (Apr 3–10)"
+          : "Spring Break · Wk 2 (Apr 13–17)";
         if (!groups[label]) groups[label] = [];
         groups[label].push(e);
       }
-      const order = ["Easter Weekend", "Spring Break · Wk 1 (Apr 3–10)", "Spring Break · Wk 2 (Apr 14–17)"];
+      const order = ["Spring Break · Wk 1 (Apr 3–10)", "Spring Break · Wk 2 (Apr 13–17)"];
       return order.filter((g) => groups[g]?.length > 0).map((label) => ({ label, events: groups[label], showDate: false }));
     }
 
