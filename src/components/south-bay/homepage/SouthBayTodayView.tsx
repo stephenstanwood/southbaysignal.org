@@ -8,6 +8,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import type { City, Tab } from "../../../lib/south-bay/types";
 import { CITIES, CITY_MAP } from "../../../lib/south-bay/cities";
 import PhotoStrip from "./PhotoStrip";
+import ForecastCard from "../cards/ForecastCard";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -422,6 +423,11 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         {!showMoreCities && (
           <button onClick={() => setShowMoreCities(true)} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 14, border: "1.5px dashed #ccc", background: "#fff", color: "#999", cursor: "pointer", flexShrink: 0 }}>More...</button>
         )}
+      </div>
+
+      {/* Weekly forecast banner */}
+      <div style={{ marginBottom: 14 }}>
+        <ForecastCard homeCity={state.city} />
       </div>
 
       {/* Photo scroll */}
