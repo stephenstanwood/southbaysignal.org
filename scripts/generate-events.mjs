@@ -1347,10 +1347,14 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
         if (!start || start < now) return null;
 
         const end = parseDate(endStr);
-        const branchId = ev.branchId || ev.definition?.branchId;
-        const branch = branchId && entities.branches ? entities.branches[branchId] : null;
+        const branchId = ev.branchId || ev.definition?.branchLocationId;
+        const branchStore = entities.locations || entities.branches;
+        const branch = branchId && branchStore ? branchStore[branchId] : null;
         const branchName = branch?.name || "";
-        const branchAddr = branch?.address || "";
+        const branchAddrObj = branch?.address || {};
+        const branchAddr = branch
+          ? [branchAddrObj.number, branchAddrObj.street, branchAddrObj.city].filter(Boolean).join(" ")
+          : (branch?.address || "");
         const locationCode = ev.definition?.branchLocationId || "";
         const city = cityMapper(branchName, branchAddr, locationCode);
         if (!city) return null;
@@ -1365,7 +1369,9 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
           displayDate: displayDate(start),
           time: displayTime(start),
           endTime: end ? displayTime(end) : null,
-          venue: branchName || libraryName,
+          venue: branchName
+            ? (branchName.toLowerCase().endsWith("library") ? branchName : `${branchName} Library`)
+            : libraryName,
           address: branchAddr,
           city,
           category: inferCategory(title, stripHtml(desc), ev.type || ""),
