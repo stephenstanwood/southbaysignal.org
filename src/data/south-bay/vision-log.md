@@ -2,6 +2,37 @@
 
 ---
 
+## 2026-04-11 — Cycle 81: TODAY Badge in Weekend Picks + Week 2 District Callout
+
+### Context
+Saturday April 11, 2026 — spring break weekend, USWNT vs Japan at PayPal Park (2:30 PM), Sharks vs Canucks (7 PM), Spring Dance Festival at SCU (2 PM), Sciencepalooza at SJSU (11 AM). Last weekend of spring break week 1.
+
+### What Was Built
+
+**WeekendPicksCard: TODAY badge + green highlight**
+
+The "Our Picks" card (shown Fri–Sun) had no visual distinction between today's picks and tomorrow's. When a resident opened the site Saturday morning and saw "USWNT vs Japan · Sat, Apr 11 · 2:30 PM", there was no immediate signal it was happening *today*. 
+
+Added the same TODAY treatment that Spring Break Guide uses: green left border (`#059669`), mint background (`#F0FDF4`), green TODAY badge next to the title. Today's USWNT and Spring Dance Festival picks now visually pop; Julius Caesar (Sunday) remains the standard white card.
+
+**Spring Break Week 2 district callout**
+
+Added an amber callout that appears in the Week 2 section header (Apr 13–17) only while today is before Apr 13. Shows: "🏫 FUHSD · CUSD · Campbell USD start their break Monday, Apr 13". Families in Fremont Union, Cupertino USD, and Campbell USD districts know to look at Week 2 picks for their kids' break week.
+
+**Data refreshed:**
+- `city-briefings.json` — 10 cities, fresh briefings (Sunnyvale skipped — no data)
+- `spring-break-picks.json` — 12 fresh picks for Apr 3–17
+
+### Why This Was the Strongest Move
+On the last weekend before Week 2 break districts kick in, a resident opening the site should immediately see which picks are happening TODAY (with USWNT being the headline event) and know whether their own district's kids are off next week. The TODAY badge is the kind of "oh, this is right now" signal that gets someone to actually act — buy a ticket, head to PayPal Park, plan the afternoon.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED updates** — Last entry: Aria Networks (Apr 7). Watch for Apr 8–14 South Bay funding announcements; a new Q2 round may have closed this week.
+2. **Neighborhood-level filtering for San José** — 217 SJ events. Willow Glen, Almaden, Japantown, Rose Garden filtering would make SJ browsing far more navigable.
+3. **Permit Pulse: Mountain View** — data.mountainview.gov, permits.mountainview.gov, gis.mountainview.gov all inaccessible this cycle. Try cityofmountainview.gov/services/permits directly next cycle.
+
+---
+
 ## 2026-04-10 — Cycle 80: Library Branch Name Fix (300 Events)
 
 ### Context
