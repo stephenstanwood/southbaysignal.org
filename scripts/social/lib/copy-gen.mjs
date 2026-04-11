@@ -72,11 +72,35 @@ export async function generateSingleItemCopy(item, timeOfDay = "morning") {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
 
-  const now = new Date().toLocaleString("en-US", {
+  const nowPT = new Date();
+  const now = nowPT.toLocaleString("en-US", {
     timeZone: "America/Los_Angeles",
     dateStyle: "full",
     timeStyle: "short",
   });
+
+  // Compute relative time distance for the event so we can give the model
+  // explicit guidance about when a bare weekday name is OK vs. ambiguous.
+  const todayStr = nowPT.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  let dateContext = "";
+  if (item.date) {
+    const eventD = new Date(item.date + "T12:00:00");
+    const todayD = new Date(todayStr + "T12:00:00");
+    const daysOut = Math.round((eventD - todayD) / 86400000);
+    const eventWeekday = eventD.toLocaleDateString("en-US", { weekday: "long", timeZone: "America/Los_Angeles" });
+    const eventMonthDay = eventD.toLocaleDateString("en-US", { month: "long", day: "numeric", timeZone: "America/Los_Angeles" });
+    if (daysOut === 0) {
+      dateContext = `The event is TODAY (${eventWeekday}, ${eventMonthDay}). Use "today" or "tonight".`;
+    } else if (daysOut === 1) {
+      dateContext = `The event is TOMORROW (${eventWeekday}, ${eventMonthDay}). Use "tomorrow".`;
+    } else if (daysOut >= 2 && daysOut <= 7) {
+      dateContext = `The event is ${daysOut} days away, on ${eventWeekday}, ${eventMonthDay}. You MAY use the bare weekday name "${eventWeekday}" (it's the next ${eventWeekday} from today). Also fine: "this ${eventWeekday}" or "${eventMonthDay}".`;
+    } else if (daysOut >= 8 && daysOut <= 14) {
+      dateContext = `The event is ${daysOut} days away, on ${eventWeekday}, ${eventMonthDay}. This is NEXT week's ${eventWeekday}, NOT this week's — so the bare word "${eventWeekday}" is ambiguous and FORBIDDEN. You MUST qualify it as "next ${eventWeekday}", "${eventWeekday} the ${eventD.getDate()}th", or just "${eventMonthDay}".`;
+    } else {
+      dateContext = `The event is ${daysOut} days away, on ${eventWeekday}, ${eventMonthDay}. Use the specific date "${eventMonthDay}" — bare weekday names are too ambiguous this far out.`;
+    }
+  }
 
   // When a plan URL exists, link to the full day plan instead of the raw event URL
   const postUrl = item.planUrl || item.url;
@@ -86,6 +110,8 @@ export async function generateSingleItemCopy(item, timeOfDay = "morning") {
     : `- URL (MUST include this exact URL): ${postUrl}`;
 
   const prompt = `Write a social post about this ONE item. Current time: ${now}. Time of day: ${timeOfDay}.
+
+DATE CONTEXT: ${dateContext}
 
 ITEM:
 - Title: ${item.title}
@@ -108,8 +134,9 @@ Each variant must include the exact URL provided above.
 
 TIME ACCURACY (critical):
 - ONLY reference a time of day ("morning", "afternoon", "evening", "9 AM", "tonight") if the Time field above has a specific time. NEVER invent one.
-- If Time is empty, omit time-of-day references entirely. Frame by date only ("Tuesday", "this weekend", "April 14").
-- If Date is today's date, you can say "today"; if tomorrow, "tomorrow"; otherwise use the weekday ("Tuesday", "Saturday") or specific date. Do NOT say "this week" for events 4+ days out.
+- If Time is empty, omit time-of-day references entirely. Frame by date only.
+- FOLLOW THE DATE CONTEXT above exactly. A bare weekday name (e.g. "Saturday") refers ONLY to the NEXT occurrence of that weekday — at most 7 days away. If the event is 8+ days away, you MUST qualify it ("next Saturday", "Saturday the 18th", or "April 18"). Saying "Saturday" to mean "Saturday a week from now" is WRONG and forbidden.
+- Do NOT say "this week" for events 4+ days out.
 - Never fabricate opening hours, start times, or end times not present in the data.
 
 HASHTAG RULES (for Bluesky and Threads only):
