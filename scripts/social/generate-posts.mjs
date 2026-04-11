@@ -17,6 +17,7 @@ import { fileURLToPath } from "node:url";
 import { loadAllCandidates, upcomingCandidates } from "./lib/data-loader.mjs";
 import { scoreAndRank } from "./lib/scoring.mjs";
 import { diverseSelect } from "./lib/diversity.mjs";
+import { editorialFilter } from "./lib/editorial-filter.mjs";
 import { recentHistory, flattenHistory } from "./lib/dedup.mjs";
 import { enrichUrls } from "./lib/url-enrich.mjs";
 import { filterByUrl } from "./lib/url-check.mjs";
@@ -327,9 +328,15 @@ async function main() {
   const dropped = scored.length - viable.length;
   if (dropped > 0) logStep("🚫", `Dropped ${dropped} candidates with negative score (blocked)`);
 
-  // 5. Diverse selection (more than we need, to allow for URL/fact-check failures)
-  const topCandidates = diverseSelect(viable, maxPosts * 3);
-  logStep("📈", `Top ${topCandidates.length} diverse candidates by score`);
+  // 5. Diverse selection (oversample — editorial filter will cut)
+  const diversePool = diverseSelect(viable, maxPosts * 4);
+  logStep("📈", `Top ${diversePool.length} diverse candidates by score`);
+
+  // 5b. Editorial pre-filter — one Claude call picks the top (maxPosts * 1.5)
+  //     items genuinely worth writing about, rejects boring/narrow/bureaucratic
+  //     things that score fine on heuristics but are bad social posts.
+  logStep("🎯", "Editorial filter...");
+  const topCandidates = await editorialFilter(diversePool, Math.ceil(maxPosts * 1.5));
 
   // 6. URL enrichment — find better URLs for generic/missing links
   logStep("🔗", "Enriching URLs...");
