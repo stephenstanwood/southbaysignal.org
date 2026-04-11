@@ -330,7 +330,12 @@ async function main() {
   const openings = loadOpenings();
   logStep("📊", `Loaded ${openings.length} recent restaurant openings`);
 
-  // 2. Filter to ones with blurbs (quality gate) + chain blocklist
+  // 2. Filter to ones with blurbs (quality gate) + chain/restaurant blocklist
+  // Add IDs here to permanently suppress a specific restaurant (e.g. user feedback)
+  const BLOCKED_IDS = new Set([
+    "opened-SR0881234", // Itaiwan Food — user feedback: do not suggest
+  ]);
+
   const CHAIN_BLOCKLIST = [
     "sbarro", "starbucks", "subway", "mcdonald", "burger king", "wendy", "taco bell",
     "chipotle", "panera", "dunkin", "jack in the box", "carl's jr", "popeyes", "kfc",
@@ -341,7 +346,7 @@ async function main() {
     const name = (r.name || r.title || "").toLowerCase();
     return CHAIN_BLOCKLIST.some((c) => name.includes(c));
   };
-  const withBlurbs = openings.filter((r) => r.blurb && !isChain(r));
+  const withBlurbs = openings.filter((r) => r.blurb && !isChain(r) && !BLOCKED_IDS.has(r.id));
   logStep("✅", `${withBlurbs.length} have blurbs (quality-gated, chains excluded)`);
 
   if (withBlurbs.length === 0) {
