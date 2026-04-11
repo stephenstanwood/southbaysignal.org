@@ -21,3 +21,6 @@ src/data/south-bay/social-replies.json
 
 # Dev/build caches
 src/data/south-bay/.dev-status-cache.json
+
+# Social URL rejection cache — regenerates from failed URLs, not worth tracking
+src/data/south-bay/social-url-rejects.json

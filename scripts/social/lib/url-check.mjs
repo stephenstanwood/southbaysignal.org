@@ -3,7 +3,42 @@
 // Verifies URLs are specific, reachable, and not generic homepages
 // ---------------------------------------------------------------------------
 
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { logStep, logSkip, logError } from "./logger.mjs";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const URL_REJECT_CACHE = join(__dirname, "..", "..", "..", "src", "data", "south-bay", "social-url-rejects.json");
+
+// Persistent cache of URLs that failed validation. Entries expire after
+// `URL_REJECT_TTL_MS` so sites that come back online aren't penalized forever.
+const URL_REJECT_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+function loadUrlRejectCache() {
+  if (!existsSync(URL_REJECT_CACHE)) return {};
+  try {
+    const raw = JSON.parse(readFileSync(URL_REJECT_CACHE, "utf8"));
+    const now = Date.now();
+    const fresh = {};
+    for (const [url, entry] of Object.entries(raw)) {
+      if (entry && entry.at && now - entry.at < URL_REJECT_TTL_MS) {
+        fresh[url] = entry;
+      }
+    }
+    return fresh;
+  } catch {
+    return {};
+  }
+}
+
+function saveUrlRejectCache(cache) {
+  try {
+    writeFileSync(URL_REJECT_CACHE, JSON.stringify(cache, null, 2) + "\n");
+  } catch (err) {
+    logError(`Failed to write URL reject cache: ${err.message}`);
+  }
+}
 
 // Patterns that indicate a generic homepage / useless landing
 const HOMEPAGE_PATTERNS = [
@@ -120,6 +155,8 @@ export async function validateUrl(url) {
 export async function filterByUrl(candidates) {
   const results = [];
   const skipped = [];
+  const cache = loadUrlRejectCache();
+  let cacheDirty = false;
 
   for (const item of candidates) {
     // Items with plan links always pass — the plan URL is our own and known-good
@@ -131,17 +168,29 @@ export async function filterByUrl(candidates) {
       results.push(item);
       continue;
     }
+    // Persistent cache: skip URLs that have failed recently
+    if (item.url && cache[item.url]) {
+      skipped.push({ title: item.title, reason: `cached reject: ${cache[item.url].reason}` });
+      logSkip(`URL cached-reject: ${item.title} — ${cache[item.url].reason}`);
+      continue;
+    }
     const check = await validateUrl(item.url);
     if (check.ok) {
       results.push(item);
     } else {
       skipped.push({ title: item.title, reason: check.reason });
       logSkip(`URL rejected: ${item.title} — ${check.reason}`);
+      if (item.url) {
+        cache[item.url] = { at: Date.now(), reason: check.reason };
+        cacheDirty = true;
+      }
     }
 
     // Small delay to be polite
     await new Promise((r) => setTimeout(r, 200));
   }
+
+  if (cacheDirty) saveUrlRejectCache(cache);
 
   if (skipped.length > 0) {
     logStep("🔗", `URL check: ${results.length} passed, ${skipped.length} skipped`);
