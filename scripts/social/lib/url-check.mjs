@@ -15,7 +15,7 @@ const URL_REJECT_CACHE = join(__dirname, "..", "..", "..", "src", "data", "south
 // `URL_REJECT_TTL_MS` so sites that come back online aren't penalized forever.
 const URL_REJECT_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-function loadUrlRejectCache() {
+export function loadUrlRejectCache() {
   if (!existsSync(URL_REJECT_CACHE)) return {};
   try {
     const raw = JSON.parse(readFileSync(URL_REJECT_CACHE, "utf8"));

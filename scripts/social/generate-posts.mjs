@@ -20,7 +20,7 @@ import { diverseSelect } from "./lib/diversity.mjs";
 import { editorialFilter } from "./lib/editorial-filter.mjs";
 import { recentHistory, flattenHistory } from "./lib/dedup.mjs";
 import { enrichUrls } from "./lib/url-enrich.mjs";
-import { filterByUrl } from "./lib/url-check.mjs";
+import { filterByUrl, loadUrlRejectCache } from "./lib/url-check.mjs";
 import { factCheckAll } from "./lib/fact-check.mjs";
 import { generateSingleItemCopy } from "./lib/copy-gen.mjs";
 import { generateAndSaveCard } from "./lib/card-gen.mjs";
@@ -317,9 +317,16 @@ async function main() {
   const fresh = filterAlreadySeen(timely, seen);
   logStep("👀", `${fresh.length} fresh candidates (${timely.length - fresh.length} already reviewed/queued)`);
 
+  // 3c. Drop items whose URL was recently rejected (401, 404, cancelled, etc.)
+  //     so they don't keep consuming editorial-filter and Claude-call budget.
+  const urlRejectCache = loadUrlRejectCache();
+  const prereject = fresh.filter((c) => !c.url || !urlRejectCache[c.url]);
+  const cachedKilled = fresh.length - prereject.length;
+  if (cachedKilled > 0) logStep("🚫", `Dropped ${cachedKilled} candidates with cached URL rejects`);
+
   // 4. Score with dedup history
   const history = flattenHistory(recentHistory(7));
-  const scored = scoreAndRank(fresh, history);
+  const scored = scoreAndRank(prereject, history);
 
   // 4b. Hard cutoff: drop anything with a negative score. A negative score
   //     means an INTERNAL_EVENT_SIGNALS, political, or blacklist hit — those
