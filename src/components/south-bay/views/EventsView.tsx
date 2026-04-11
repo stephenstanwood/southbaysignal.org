@@ -846,16 +846,20 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
   // Group upcoming events by date bucket
   const groupedUpcoming = useMemo(() => {
     if (springBreakMode) {
-      // Spring break: group by week
+      // Spring break: group by week, with a dedicated bucket for the Apr 11–12 weekend
+      const SB_WEEKEND_START = "2026-04-11";
+      const SB_WEEKEND_END   = "2026-04-12";
       const groups: Record<string, UpcomingEvent[]> = {};
       for (const e of filteredUpcoming) {
         const label = e.date <= SB_BREAK_WK1
           ? "Spring Break · Wk 1 (Apr 3–10)"
-          : "Spring Break · Wk 2 (Apr 13–17)";
+          : e.date <= SB_WEEKEND_END
+            ? "Weekend — Apr 11–12"
+            : "Spring Break · Wk 2 (Apr 13–17)";
         if (!groups[label]) groups[label] = [];
         groups[label].push(e);
       }
-      const order = ["Spring Break · Wk 1 (Apr 3–10)", "Spring Break · Wk 2 (Apr 13–17)"];
+      const order = ["Spring Break · Wk 1 (Apr 3–10)", "Weekend — Apr 11–12", "Spring Break · Wk 2 (Apr 13–17)"];
       return order.filter((g) => groups[g]?.length > 0).map((label) => ({ label, events: groups[label], showDate: false }));
     }
 
