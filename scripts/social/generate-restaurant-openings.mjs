@@ -334,6 +334,7 @@ async function main() {
   // Add IDs here to permanently suppress a specific restaurant (e.g. user feedback)
   const BLOCKED_IDS = new Set([
     "opened-SR0881234", // Itaiwan Food — user feedback: do not suggest
+    "opened-SR0883358", // Blendid At City Sports MV — inside a gym, not standalone
   ]);
 
   const CHAIN_BLOCKLIST = [

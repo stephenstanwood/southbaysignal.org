@@ -232,7 +232,7 @@ if (!process.env.ANTHROPIC_API_KEY) {
 
 const OUTPUT_DIR = "/tmp/sbs-social";
 const args = process.argv.slice(2);
-const maxPosts = parseInt(args.find((a, i) => args[i - 1] === "--max") || "5");
+const maxPosts = parseInt(args.find((a, i) => args[i - 1] === "--max") || "20");
 
 // ── Time awareness ──────────────────────────────────────────────────────────
 

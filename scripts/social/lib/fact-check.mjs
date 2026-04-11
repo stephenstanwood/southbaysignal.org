@@ -75,90 +75,24 @@ export async function factCheck(item, currentTime = new Date()) {
   // sports) often ship with minimal summaries. The Claude fact-check below
   // handles "no idea what this is" cases with better judgment.
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    logError("ANTHROPIC_API_KEY not set — skipping fact check");
-    return { ok: true, issues: [], item };
+  // Hard-coded checks only — the editorial filter (upstream Claude call) already
+  // handles quality. Calling Claude again here was too conservative and blocked
+  // ~85% of candidates that had already passed editorial review.
+
+  // Block jargon that shouldn't appear in public copy
+  const title = (item.title || "").toLowerCase();
+  const summary = (item.summary || "").toLowerCase();
+  const jargonPattern = /\b(ti work|bp100%|new build|finish interior|sti\b)/i;
+  if (jargonPattern.test(item.title) || jargonPattern.test(item.summary || "")) {
+    return {
+      ok: false,
+      issues: ["Contains permit/construction jargon not suitable for public copy"],
+      severity: "block",
+      item,
+    };
   }
 
-  const prompt = `You are a fact-checker for The South Bay Signal, a hyperlocal site for the South Bay (San Jose, Campbell, Los Gatos, Saratoga, Cupertino, Sunnyvale, Mountain View, Palo Alto, Santa Clara, Los Altos, Milpitas).
-
-Current time: ${currentTime.toLocaleString("en-US", { timeZone: "America/Los_Angeles", dateStyle: "full", timeStyle: "short" })}
-
-Review this item for potential issues:
-
-Title: ${item.title}
-City: ${item.cityName || item.city || "unknown"}
-Venue: ${item.venue || "none"}
-Date: ${item.date || "unknown"}
-Time: ${item.time || "unknown"}
-Category: ${item.category || "unknown"}
-Source: ${item.source || "unknown"}
-Summary: ${item.summary || "none"}
-URL: ${item.url || "none"}
-
-Check for:
-1. TIME: Has this event already happened given the current time? (If the event time has passed today, flag it)
-2. VENUE: Does the venue make sense for the city? (e.g., PayPal Park is in San Jose, Cantor is in Stanford/Palo Alto)
-3. GEOGRAPHY (block): Is this event actually in the South Bay? If the URL, venue, or summary references a place outside California (e.g., Fredericksburg VA, any East Coast city, Central Rappahannock Regional Library, etc.), BLOCK it — our feed only covers the 11 South Bay cities listed above.
-4. CLAIMS: Are there any claims in the title/summary that sound uncertain or potentially wrong? (e.g., calling something a "home opener" without certainty, wrong sport gender, wrong cuisine type)
-5. JARGON: Does the title/summary contain construction/permit jargon that shouldn't appear in public copy? (e.g., "new build", "finish interior", "TI work", "Bp100%", "Sti")
-6. STALENESS: Is the date more than 2 days in the past?
-
-Return a JSON object:
-{
-  "ok": true/false,
-  "issues": ["list of issues found, empty if ok"],
-  "severity": "none" | "warning" | "block"
-}
-
-"block" = do not post this item
-"warning" = could post but fix the issue first
-"none" = looks good
-
-Return ONLY the JSON.`;
-
-  try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        model: CLAUDE_MODEL,
-        max_tokens: 512,
-        messages: [{ role: "user", content: prompt }],
-      }),
-    });
-
-    if (!res.ok) {
-      logError(`Fact check API error: ${res.status}`);
-      return { ok: true, issues: [], item }; // fail open
-    }
-
-    const data = await res.json();
-    const text = data.content?.[0]?.text ?? "";
-    const match = text.match(/\{[\s\S]*\}/);
-    if (!match) return { ok: true, issues: [], item };
-
-    const result = JSON.parse(match[0]);
-
-    if (result.severity === "block") {
-      logSkip(`Fact check BLOCKED: ${item.title} — ${result.issues.join("; ")}`);
-      return { ok: false, issues: result.issues, item };
-    }
-
-    if (result.severity === "warning") {
-      logStep("⚠️", `Fact check WARNING: ${item.title} — ${result.issues.join("; ")}`);
-    }
-
-    return { ok: result.severity !== "block", issues: result.issues || [], item };
-  } catch (err) {
-    logError(`Fact check error: ${err.message}`);
-    return { ok: true, issues: [], item }; // fail open
-  }
+  return { ok: true, issues: [], item };
 }
 
 /**

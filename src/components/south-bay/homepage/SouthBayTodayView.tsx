@@ -750,7 +750,6 @@ function CardInner({ card, emoji, accent }: { card: DayCard; emoji: string; acce
           </div>
         )}
         <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: "#555", margin: "0 0 4px", lineHeight: 1.45 }}>{card.blurb}</p>
-        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 600, color: accent, margin: 0, lineHeight: 1.35, fontStyle: "italic" }}>{card.why}</p>
         {(card.costNote || card.cost) && (
           <span style={{ display: "inline-block", marginTop: 5, fontSize: 10, fontWeight: 700, color: "#999", fontFamily: "'Inter', sans-serif", background: "#f5f5f5", padding: "2px 8px", borderRadius: 4 }}>{card.costNote || card.cost}</span>
         )}

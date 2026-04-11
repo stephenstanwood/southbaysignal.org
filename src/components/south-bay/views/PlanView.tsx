@@ -264,17 +264,7 @@ function StopCard({ stop }: { stop: PlanStop }) {
               )}
             </div>
 
-            {/* Why note */}
-            <p
-              style={{
-                fontSize: 13,
-                color: "var(--sb-muted)",
-                lineHeight: 1.6,
-                margin: 0,
-              }}
-            >
-              {stop.why}
-            </p>
+            {/* Why note — hidden; AI rationale is internal only */}
           </div>
         </div>
       </div>
