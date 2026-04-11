@@ -442,6 +442,30 @@ async function main() {
         continue;
       }
     }
+    // Relative-date drift: copy says "today"/"tonight" but event is not today,
+    // or says "tomorrow" but event is not +1 day. Happens when a post sits in
+    // the queue longer than its relative framing tolerates.
+    if (eventDate) {
+      const daysOut = Math.round(
+        (new Date(eventDate + "T12:00:00") - new Date(guardToday + "T12:00:00")) / 86400000,
+      );
+      const sayToday = /\b(today|tonight|this (morning|afternoon|evening))\b/i.test(firstCopy);
+      const sayTomorrow = /\btomorrow\b/i.test(firstCopy);
+      if (sayToday && daysOut !== 0) {
+        console.log(`      ⛔ PRE-PUBLISH GUARD: copy says "today/tonight" but event is ${daysOut} days out — skipping`);
+        post.published = true;
+        post.publishedAt = new Date().toISOString();
+        post.publishResult = "expired-guard-today-drift";
+        continue;
+      }
+      if (sayTomorrow && daysOut !== 1) {
+        console.log(`      ⛔ PRE-PUBLISH GUARD: copy says "tomorrow" but event is ${daysOut} days out — skipping`);
+        post.published = true;
+        post.publishedAt = new Date().toISOString();
+        post.publishResult = "expired-guard-tomorrow-drift";
+        continue;
+      }
+    }
 
     // Publish to each platform
     const platforms = ["x", "bluesky", "threads", "facebook"];
