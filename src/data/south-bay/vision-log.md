@@ -2,6 +2,40 @@
 
 ---
 
+## 2026-04-10 — Cycle 80: Library Branch Name Fix (300 Events)
+
+### Context
+Good Friday, April 10, 2026 (late night PT). Data quality cycle.
+
+### What Was Built
+
+**Correct branch-level names for all SJPL and Palo Alto City Library events**
+
+Root cause: `fetchBiblioEvents()` in `scripts/generate-events.mjs` was referencing the wrong BiblioCommons API field names. The function looked for `ev.definition?.branchId` (doesn't exist) and `entities.branches` (doesn't exist) — so branch lookup always returned null, and all 150 SJPL events and 150 PA Library events fell back to the generic library name.
+
+The actual BiblioCommons API uses:
+- `ev.definition?.branchLocationId` (not `branchId`)
+- `entities.locations` (not `entities.branches`)
+- `branch.address` is an object `{number, street, city, ...}` (not a string)
+
+Three fixes applied:
+1. `branchId` lookup: `ev.definition?.branchLocationId`
+2. Branch store: `entities.locations || entities.branches`
+3. Address building: `[number, street, city].filter(Boolean).join(" ")`
+4. Venue name: append " Library" if branch name doesn't already end in "Library"
+
+Verified via direct API test: 19/20 SJPL events resolve to specific branches (Evergreen, Bascom, Willow Glen, Cambrian, King, Santa Teresa, etc.).
+
+### Why This Was the Strongest Move
+300 library events now show the specific branch (Evergreen Library, Mitchell Park Library, Downtown Library, etc.) instead of generic "San Jose Public Library" or "Palo Alto City Library". Residents searching for events near their neighborhood library now get accurate information — this is a daily-use feature for families planning around spring break week.
+
+### Next 3 Strongest Ideas
+1. **Neighborhood-level filtering for San José** — 217 SJ events (~50% of total). Willow Glen, Almaden, Japantown, Rose Garden are distinct communities. Now that branches are named correctly, a "near me" filter becomes much more useful.
+2. **Post-spring-break cleanup** — After Apr 17, hide the Spring Break Guide card; evaluate retiring spring break mode toggle until fall.
+3. **Mountain View permit data** — All portal URLs return HTTP 000 (connection refused). Retry after Easter weekend.
+
+---
+
 ## 2026-04-10 — Cycle 79: Ticketmaster URL Fix (28 Events)
 
 ### Context
