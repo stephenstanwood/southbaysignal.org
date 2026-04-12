@@ -527,7 +527,7 @@ export const SCC_SPOTLIGHT: SccTechSpotlight[] = [
     city: "Sunnyvale",
     category: "chip",
     stage: "growth",
-    tagline: "Wafer-scale AI processor — a single chip the size of a dinner plate. Fastest inference around.",
+    tagline: "Wafer-scale AI processor — a single chip the size of a dinner plate — the fastest AI inference hardware available. Raised $1B Series H in Feb 2026 at a $23B valuation and is targeting a Nasdaq IPO in 2026.",
     color: "#FF4D00",
     url: "https://cerebras.ai",
     employeesNote: "500 employees",
@@ -1387,6 +1387,30 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     color: "#0f172a",
     url: "https://articul8.ai",
   },
+  {
+    id: "upscale-ai",
+    name: "Upscale AI",
+    city: "Santa Clara",
+    category: "network",
+    round: "Series A",
+    amount: "$200M",
+    date: "2026-01-21",
+    tagline: "Pure-play AI networking infrastructure that links GPUs, accelerators, memory, storage, and networking into one synchronized system for large-scale AI clusters — taking on Cisco and Broadcom from Santa Clara. Oversubscribed Series A hit unicorn status in months.",
+    color: "#0369a1",
+    url: "https://upscale.ai",
+  },
+  {
+    id: "etched",
+    name: "Etched",
+    city: "Cupertino",
+    category: "chip",
+    round: "Series B",
+    amount: "$500M",
+    date: "2026-01-13",
+    tagline: "AI inference chips purpose-built for transformer models — the 'Sohu' chip delivers dramatic efficiency gains over general-purpose GPUs by doing only what transformers need. $5B valuation; founded 2022 by two Harvard dropouts. Going after Nvidia from Cupertino.",
+    color: "#7c3aed",
+    url: "https://etched.com",
+  },
 ];
 
 // Pulse stats for the header strip
@@ -1402,9 +1426,9 @@ export const TECH_PULSE = [
     note: "25K local jobs each at Googleplex & Apple Park",
   },
   {
-    value: "$5B+",
+    value: "$6B+",
     label: "Raised in Q1–Q2 2026",
-    note: "32 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
+    note: "34 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
   },
   {
     value: "Chip equipment",
