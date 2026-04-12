@@ -401,7 +401,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
     <div style={{ maxWidth: 800, margin: "0 auto", padding: "0 16px 80px" }}>
       {/* Header */}
       <div className="sbt-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 0 10px", gap: 12, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+        <div className="sbt-time-row" style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
           <div className="sbt-time-display" style={{ fontFamily: "'Inter', sans-serif", fontSize: 48, fontWeight: 900, letterSpacing: -2, color: "#000", lineHeight: 1 }}>{timeDisplay}</div>
           <div>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, fontWeight: 700, color: "#333" }}>{headline}</div>
@@ -716,15 +716,33 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
           .sbt-header {
             flex-direction: column !important;
             align-items: flex-start !important;
-            gap: 8px !important;
+            gap: 10px !important;
+          }
+          .sbt-time-row {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 4px !important;
           }
           .sbt-time-display {
-            font-size: 36px !important;
+            font-size: 40px !important;
             letter-spacing: -1px !important;
           }
           .sbt-card-thumb {
             width: 64px !important;
             height: 64px !important;
+          }
+          .sbt-forecast-cell {
+            padding: 8px 2px 6px !important;
+          }
+          .sbt-forecast-temp {
+            font-size: 22px !important;
+          }
+          .sbt-forecast-emoji {
+            font-size: 16px !important;
+            margin-bottom: 4px !important;
+          }
+          .sbt-forecast-low {
+            font-size: 9px !important;
           }
         }
       `}</style>

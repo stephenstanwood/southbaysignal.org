@@ -70,6 +70,7 @@ export default function ForecastCard({ homeCity }: Props) {
           return (
             <div
               key={day.date}
+              className="sbt-forecast-cell"
               style={{
                 padding: "12px 4px 10px",
                 textAlign: "center",
@@ -86,8 +87,8 @@ export default function ForecastCard({ homeCity }: Props) {
               }}>
                 {label}
               </div>
-              <div style={{ fontSize: 22, lineHeight: 1, marginBottom: 6 }}>{day.emoji}</div>
-              <div style={{
+              <div className="sbt-forecast-emoji" style={{ fontSize: 22, lineHeight: 1, marginBottom: 6 }}>{day.emoji}</div>
+              <div className="sbt-forecast-temp" style={{
                 fontSize: isToday ? 42 : 32,
                 fontWeight: 800,
                 lineHeight: 1,
@@ -98,7 +99,7 @@ export default function ForecastCard({ homeCity }: Props) {
               }}>
                 {day.high}°
               </div>
-              <div style={{
+              <div className="sbt-forecast-low" style={{
                 fontSize: 11, color: "var(--sb-muted)",
                 fontVariantNumeric: "tabular-nums",
               }}>
