@@ -42,8 +42,12 @@ function loadBotToken() {
   return null;
 }
 
-const QUEUE_THRESHOLD = 50;
-const GENERATE_BATCH = 25;
+// Target: approved_unpublished + drafts_to_review >= QUEUE_TARGET at all times.
+// This lets Stephen open the swiper and reliably keep 100+ approved even after
+// rejecting a chunk in one sitting.
+const QUEUE_TARGET = 120;
+const MIN_BATCH = 25;      // never generate fewer than this when topping up
+const BUFFER = 10;         // overshoot the target by this much to absorb rejects
 
 function loadQueue() {
   if (!existsSync(QUEUE_FILE)) return [];
@@ -95,12 +99,8 @@ async function main() {
   const pendingDrafts = countPendingDrafts();
   const now = new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles", dateStyle: "short", timeStyle: "short" });
 
-  console.log(`[${now}] Queue: ${queue.length} approved (unpublished) | Drafts pending: ${pendingDrafts}`);
-
-  if (queue.length >= QUEUE_THRESHOLD) {
-    console.log("Queue is healthy, no action needed.");
-    return;
-  }
+  const reviewable = queue.length + pendingDrafts;
+  console.log(`[${now}] Approved unpublished: ${queue.length} | Drafts to review: ${pendingDrafts} | Total reviewable: ${reviewable} (target ${QUEUE_TARGET})`);
 
   // Always check for SV History milestones (date-sensitive, runs regardless of queue health)
   console.log("Checking for SV History milestones...");
@@ -116,28 +116,38 @@ async function main() {
     console.error("SV History generation failed:", err.message);
   }
 
-  // Queue is low — generate drafts if we don't already have some waiting
-  if (pendingDrafts < 10) {
-    console.log(`Generating ${GENERATE_BATCH} new drafts...`);
-    try {
-      const nodePath = process.execPath;
-      const envFile = join(__dirname, "..", "..", ".env.local");
-      execFileSync(nodePath, ["--env-file=" + envFile, join(__dirname, "generate-posts.mjs"), "--max", String(GENERATE_BATCH)], {
-        cwd: join(__dirname, "..", ".."),
-        timeout: 300_000,
-        stdio: "inherit",
-      });
-    } catch (err) {
-      console.error("Generation failed:", err.message);
-    }
+  if (reviewable >= QUEUE_TARGET) {
+    console.log("Queue is healthy, no top-up needed.");
+    return;
+  }
+
+  // Top up until we cross the target (plus buffer). Don't short-circuit on
+  // pending drafts — if there are already 30 drafts but only 10 approved, we
+  // still need to keep filling.
+  const deficit = QUEUE_TARGET - reviewable + BUFFER;
+  const batchSize = Math.max(MIN_BATCH, deficit);
+
+  console.log(`Generating ${batchSize} new drafts to close deficit of ${deficit}...`);
+  try {
+    const nodePath = process.execPath;
+    const envFile = join(__dirname, "..", "..", ".env.local");
+    execFileSync(nodePath, ["--env-file=" + envFile, join(__dirname, "generate-posts.mjs"), "--max", String(batchSize)], {
+      cwd: join(__dirname, "..", ".."),
+      timeout: 600_000,
+      stdio: "inherit",
+    });
+  } catch (err) {
+    console.error("Generation failed:", err.message);
   }
 
   const newDraftCount = countPendingDrafts();
+  const newReviewable = queue.length + newDraftCount;
 
   // DM Stephen
   const msg = `📬 **South Bay Today — Queue Check**\n` +
-    `Approved queue: **${queue.length}** (threshold: ${QUEUE_THRESHOLD})\n` +
-    `Drafts ready to review: **${newDraftCount}**\n\n` +
+    `Approved unpublished: **${queue.length}**\n` +
+    `Drafts to review: **${newDraftCount}**\n` +
+    `Total reviewable: **${newReviewable}** (target ${QUEUE_TARGET})\n\n` +
     `Swiper: http://10.0.0.234:3456 (or Tailscale: http://100.117.24.89:3456)`;
 
   console.log("Sending Discord DM...");
