@@ -1469,18 +1469,6 @@ export const TECH_MILESTONES: TechMilestone[] = [
     chmExhibit: "Apple at 50",
   },
   {
-    id: "netscape",
-    company: "Netscape",
-    city: "Mountain View",
-    foundedYear: 1994,
-    month: 4,
-    day: 4,
-    tagline: "The web browser that brought the internet to the masses — founded in Mountain View.",
-    anniversaryNote: "On April 4, 1994, Jim Clark and Marc Andreessen incorporated Mosaic Communications — soon renamed Netscape — in Mountain View. Navigator was the first browser ordinary people could actually use. Netscape's 1995 IPO launched the dot-com era, and its open-source codebase lived on as Mozilla Firefox.",
-    url: "https://en.wikipedia.org/wiki/Netscape",
-    defunct: true,
-  },
-  {
     id: "nvidia",
     company: "NVIDIA",
     city: "Santa Clara",
@@ -1648,7 +1636,7 @@ export const TECH_MILESTONES: TechMilestone[] = [
     defunct: true,
   },
   {
-    id: "yahoo",
+    id: "yahoo-ipo",
     company: "Yahoo",
     city: "Sunnyvale",
     foundedYear: 1995,
