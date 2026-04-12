@@ -2664,6 +2664,237 @@ async function fetchMeetupEvents() {
   return events;
 }
 
+// ── Bookstores ──
+
+// Shared Squarespace event fetcher — works for any site that exposes ?format=json
+async function fetchSquarespaceEvents(pageUrl, source, defaultCity, defaultVenue, defaultAddress) {
+  console.log(`  ⏳ ${source}...`);
+  try {
+    const url = `${pageUrl}?format=json`;
+    const res = await fetch(url, { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(15_000) });
+    if (!res.ok) throw new Error(`${res.status}`);
+    const data = await res.json();
+    const items = data.upcoming || data.items || [];
+    const now = new Date();
+
+    const events = items
+      .map((item) => {
+        if (!item.startDate || !item.title) return null;
+        const start = new Date(item.startDate);
+        if (start < now) return null;
+        const end = item.endDate ? new Date(item.endDate) : null;
+        const loc = item.location || {};
+        const venue = loc.addressTitle || defaultVenue;
+        const addr = loc.addressLine1
+          ? `${loc.addressLine1}, ${loc.addressLine2 || ""}`.trim()
+          : defaultAddress;
+        const desc = item.excerpt
+          ? stripHtml(item.excerpt)
+          : (item.body ? truncate(stripHtml(item.body)) : "");
+        const fullUrl = item.fullUrl
+          ? (item.fullUrl.startsWith("http") ? item.fullUrl : pageUrl.replace(/\/[^/]*$/, "") + item.fullUrl)
+          : pageUrl;
+
+        return {
+          id: h(source.toLowerCase().replace(/[^a-z]/g, ""), fullUrl, isoDate(start)),
+          title: item.title.trim(),
+          date: isoDate(start),
+          displayDate: displayDate(start),
+          time: displayTime(start),
+          endTime: end ? displayTime(end) : null,
+          venue,
+          address: addr,
+          city: defaultCity,
+          category: inferCategory(item.title, desc, ""),
+          cost: "paid",
+          description: desc,
+          url: fullUrl,
+          source,
+          kidFriendly: /\b(kids|children|family|toddler|baby|storytime)\b/i.test(item.title + " " + desc),
+        };
+      })
+      .filter(Boolean);
+
+    console.log(`  ✅ ${source}: ${events.length} events`);
+    return events;
+  } catch (err) {
+    console.log(`  ⚠️  ${source}: ${err.message}`);
+    return [];
+  }
+}
+
+async function fetchEastWestBookshopEvents() {
+  return fetchSquarespaceEvents(
+    "https://www.eastwestbooks.org/events",
+    "East West Bookshop",
+    "mountain-view",
+    "East West Bookshop",
+    "324 Castro St, Mountain View, CA 94041",
+  );
+}
+
+async function fetchKeplersEvents() {
+  return fetchSquarespaceEvents(
+    "https://www.keplers.org/upcoming-events-internal",
+    "Kepler's Books",
+    "palo-alto",
+    "Kepler's Books",
+    "1010 El Camino Real, Menlo Park, CA 94025",
+  );
+}
+
+// Hicklebee's (IndieCommerce / Drupal) — HTML parse
+async function fetchHicklebeesEvents() {
+  console.log("  ⏳ Hicklebee's...");
+  try {
+    const BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15";
+    const res = await fetch("https://www.hicklebees.com/event", {
+      headers: { "User-Agent": BROWSER_UA },
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!res.ok) throw new Error(`${res.status}`);
+    const html = await res.text();
+
+    const events = [];
+    const now = new Date();
+    const currentYear = now.getFullYear();
+
+    // Split on event-block class
+    const blocks = html.split(/class="event-block/).slice(1);
+    for (const block of blocks) {
+      const titleMatch = block.match(/event-block__title[^>]*>(.*?)<\//s);
+      const monthMatch = block.match(/event__month event__month--start[^>]*>(.*?)<\//s);
+      const dayMatch = block.match(/event__day event__day--start[^>]*>(.*?)<\//s);
+      const linkMatch = block.match(/href="(\/event\/[^"]+)"/);
+
+      const title = titleMatch?.[1]?.replace(/<[^>]+>/g, "").trim();
+      const month = monthMatch?.[1]?.trim();
+      const day = dayMatch?.[1]?.trim();
+      if (!title || !month || !day) continue;
+
+      const monthNames = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+      const monthNum = monthNames[month];
+      if (monthNum === undefined) continue;
+
+      let year = currentYear;
+      const candidate = new Date(year, monthNum, parseInt(day));
+      if (candidate < new Date(now.getTime() - 30 * 86400000)) year++;
+      const start = new Date(year, monthNum, parseInt(day), 12, 0); // noon default
+
+      const eventUrl = linkMatch
+        ? `https://www.hicklebees.com${linkMatch[1]}`
+        : "https://www.hicklebees.com/event";
+
+      events.push({
+        id: h("hicklebees", title, isoDate(start)),
+        title,
+        date: isoDate(start),
+        displayDate: displayDate(start),
+        time: null,
+        endTime: null,
+        venue: "Hicklebee's",
+        address: "1378 Lincoln Ave, San Jose, CA 95125",
+        city: "san-jose",
+        category: inferCategory(title, "", ""),
+        cost: "free",
+        description: "",
+        url: eventUrl,
+        source: "Hicklebee's",
+        kidFriendly: true, // it's a children's bookstore
+      });
+    }
+
+    console.log(`  ✅ Hicklebee's: ${events.length} events`);
+    return events;
+  } catch (err) {
+    console.log(`  ⚠️  Hicklebee's: ${err.message}`);
+    return [];
+  }
+}
+
+// Linden Tree Books (Los Altos) — hand-coded HTML, events in <h3> tags
+async function fetchLindenTreeEvents() {
+  console.log("  ⏳ Linden Tree Books...");
+  try {
+    const BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15";
+    const res = await fetch("https://www.lindentreebooks.com/events-calendar", {
+      headers: { "User-Agent": BROWSER_UA },
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!res.ok) throw new Error(`${res.status}`);
+    const html = await res.text();
+
+    const events = [];
+    const now = new Date();
+    const currentYear = now.getFullYear();
+
+    // Events are in <h3> tags containing <b> with title + date info
+    // Pattern: "Event Title<br/>Day, Month DD, Time"
+    const h3Blocks = html.split(/<h3[^>]*>/i).slice(1);
+    for (const block of h3Blocks) {
+      const content = block.split(/<\/h3>/i)[0] || "";
+      const cleaned = content.replace(/<[^>]+>/g, "\n").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ");
+      const lines = cleaned.split("\n").map((l) => l.trim()).filter(Boolean);
+      if (lines.length < 2) continue;
+
+      const title = lines[0];
+      if (!title || title.length < 5) continue;
+
+      // Look for a date line: "Saturday, April 19, 2:00pm" or "Sunday, April 20"
+      const monthNames = { January: 0, February: 1, March: 2, April: 3, May: 4, June: 5, July: 6, August: 7, September: 8, October: 9, November: 10, December: 11 };
+      let eventDate = null;
+      let eventTime = null;
+      for (const line of lines.slice(1)) {
+        const dateMatch = line.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})/i);
+        if (dateMatch) {
+          const monthNum = monthNames[dateMatch[1]];
+          const day = parseInt(dateMatch[2]);
+          let year = currentYear;
+          const candidate = new Date(year, monthNum, day);
+          if (candidate < new Date(now.getTime() - 30 * 86400000)) year++;
+          eventDate = new Date(year, monthNum, day, 12, 0);
+
+          // Extract time if present: "2:00pm", "10:30 AM"
+          const timeMatch = line.match(/(\d{1,2}(?::\d{2})?\s*(?:am|pm))/i);
+          if (timeMatch) {
+            eventTime = timeMatch[1].toUpperCase().replace(/\s+/g, " ");
+          }
+          break;
+        }
+      }
+      if (!eventDate || eventDate < now) continue;
+
+      // Look for a link in the original block
+      const linkMatch = block.match(/href="(https?:\/\/[^"]+)"/);
+      const url = linkMatch?.[1] || "https://www.lindentreebooks.com/events-calendar";
+
+      events.push({
+        id: h("lindentree", title, isoDate(eventDate)),
+        title,
+        date: isoDate(eventDate),
+        displayDate: displayDate(eventDate),
+        time: eventTime,
+        endTime: null,
+        venue: "Linden Tree Books",
+        address: "170 State St, Los Altos, CA 94022",
+        city: "los-altos",
+        category: inferCategory(title, "", ""),
+        cost: "free",
+        description: lines.slice(1).join(" ").slice(0, 200),
+        url,
+        source: "Linden Tree Books",
+        kidFriendly: true, // children's bookstore
+      });
+    }
+
+    console.log(`  ✅ Linden Tree Books: ${events.length} events`);
+    return events;
+  } catch (err) {
+    console.log(`  ⚠️  Linden Tree Books: ${err.message}`);
+    return [];
+  }
+}
+
 // ── Main ──
 
 async function main() {
@@ -2705,6 +2936,10 @@ async function main() {
     fetchLgChamberEvents,
     fetchMiscHardcodedEvents,
     fetchMeetupEvents,
+    fetchEastWestBookshopEvents,
+    fetchKeplersEvents,
+    fetchHicklebeesEvents,
+    fetchLindenTreeEvents,
   ];
 
   const results = await Promise.allSettled(sources.map((fn) => fn()));
