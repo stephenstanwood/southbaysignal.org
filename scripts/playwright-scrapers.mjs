@@ -329,28 +329,41 @@ async function scrapeLibCal(page, config) {
 
       const raw = await page.evaluate(() => {
         const events = [];
-        // LibCal v2 common selectors
-        const cards = document.querySelectorAll(
-          ".s-lc-ea-item, .s-lc-ea-event, .event-item, " +
-          "[class*='event-card'], [class*='cal-event'], " +
-          ".s-lc-content .card, #s-lc-ea-events-list .row"
-        );
-        for (const card of cards) {
-          const titleEl = card.querySelector(
-            ".s-lc-ea-ttl, .s-lc-ea-event-title, h3, h4, a[class*='title'], [class*='event-name']"
-          );
-          const dateEl = card.querySelector(
-            ".s-lc-ea-date, time, [class*='date'], [datetime]"
-          );
-          const timeEl = card.querySelector(
-            ".s-lc-ea-time, [class*='time']"
-          );
-          const title = titleEl?.textContent?.trim();
+
+        // Strategy 1: LibCal event links (h3 a[href*="/event/"])
+        const eventLinks = document.querySelectorAll('h3 a[href*="/event/"], a[class*="s-lc-event-category"]');
+        for (const a of eventLinks) {
+          const title = a.textContent?.trim();
+          // Walk up to find the date container
+          const row = a.closest("tr, .row, div[class*='event'], li, [class*='s-lc']") || a.parentElement?.parentElement;
+          const dateEl = row?.querySelector("time, [class*='date'], td:first-child, .s-lc-ea-date");
+          const timeEl = row?.querySelector("[class*='time'], .s-lc-ea-time");
           const date = dateEl?.getAttribute("datetime") || dateEl?.textContent?.trim();
           const time = timeEl?.textContent?.trim();
-          const link = titleEl?.closest("a")?.href || card.querySelector("a")?.href;
-          if (title && title.length > 3) events.push({ title, date, time, link });
+          if (title && title.length > 3) events.push({ title, date, time, link: a.href });
         }
+
+        // Strategy 2: Fallback to card-based selectors
+        if (events.length === 0) {
+          const cards = document.querySelectorAll(
+            ".s-lc-ea-item, .s-lc-ea-event, .event-item, " +
+            "[class*='event-card'], [class*='cal-event'], " +
+            ".s-lc-content .card, #s-lc-ea-events-list .row"
+          );
+          for (const card of cards) {
+            const titleEl = card.querySelector(
+              ".s-lc-ea-ttl, .s-lc-ea-event-title, h3, h4, a[class*='title'], [class*='event-name']"
+            );
+            const dateEl = card.querySelector(".s-lc-ea-date, time, [class*='date'], [datetime]");
+            const timeEl = card.querySelector(".s-lc-ea-time, [class*='time']");
+            const title = titleEl?.textContent?.trim();
+            const date = dateEl?.getAttribute("datetime") || dateEl?.textContent?.trim();
+            const time = timeEl?.textContent?.trim();
+            const link = titleEl?.closest("a")?.href || card.querySelector("a")?.href;
+            if (title && title.length > 3) events.push({ title, date, time, link });
+          }
+        }
+
         return events;
       });
 
@@ -390,6 +403,10 @@ async function scrapeLibCal(page, config) {
 // ── San Jose Jazz ──
 
 async function scrapeSJJazz(page) {
+  // SJ Jazz returns 403 to headless browsers — evade detection
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "webdriver", { get: () => false });
+  });
   const allEvents = [];
   for (let p = 1; p <= 6; p++) {
     const url = p === 1
@@ -561,17 +578,28 @@ async function scrapeHicklebees(page) {
 
   const raw = await page.evaluate(() => {
     const events = [];
+    // Hicklebee's uses article.event-list and article.event-block (IndieLite/IndieCommerce)
     const cards = document.querySelectorAll(
-      "[class*='event-block'], [class*='event-item'], .event, article, " +
-      ".views-row, [class*='node--event']"
+      "article.event-list, article.event-block, " +
+      "[class*='event-block'], [class*='event-item'], article[class*='event']"
     );
     for (const card of cards) {
       const titleEl = card.querySelector("h2, h3, h4, [class*='title'], a[class*='title']");
       const dateEl = card.querySelector("time, [class*='date'], [datetime]");
       const title = titleEl?.textContent?.trim();
       const date = dateEl?.getAttribute("datetime") || dateEl?.textContent?.trim();
-      const link = titleEl?.closest("a")?.href || card.querySelector("a")?.href;
+      const link = titleEl?.closest("a")?.href || card.querySelector("a[href*='/event/']")?.href || card.querySelector("a")?.href;
       if (title && title.length > 3) events.push({ title, date, link });
+    }
+    // Fallback: look for event links directly
+    if (events.length === 0) {
+      const links = document.querySelectorAll("a[href*='/event/']");
+      for (const a of links) {
+        const title = a.textContent?.trim();
+        // Extract date from URL pattern /event/YYYY-MM-DD/
+        const dateMatch = a.href?.match(/\/event\/(\d{4}-\d{2}-\d{2})\//);
+        if (title && title.length > 3) events.push({ title, date: dateMatch?.[1], link: a.href });
+      }
     }
     return events;
   });
@@ -804,9 +832,9 @@ async function scrape3Below(page) {
 
 async function scrapeCityLights(page) {
   const urls = [
-    "https://cltc.org/shows/",
-    "https://cltc.org/season/",
     "https://cltc.org/",
+    "https://cltc.org/whats-playing/",
+    "https://cltc.org/season/",
   ];
   for (const url of urls) {
     try {
@@ -864,7 +892,8 @@ async function scrapeCityLights(page) {
 
 async function scrapeICASanJose(page) {
   const urls = [
-    "https://www.icasanjose.org/exhibitions",
+    "https://www.icasanjose.org/exhibitions/current-exhibitions/",
+    "https://www.icasanjose.org/exhibitions/upcoming-exhibitions/",
     "https://www.icasanjose.org/events",
     "https://www.icasanjose.org/programs",
   ];
@@ -985,7 +1014,8 @@ const BOOKS_INC_SB_STORES = new Map([
 ]);
 
 async function scrapeBooksInc(page) {
-  await page.goto("https://booksinc.net/events", { waitUntil: "networkidle", timeout: 30_000 });
+  // Domain moved from booksinc.net to booksinc.com in 2026
+  await page.goto("https://www.booksinc.com/events", { waitUntil: "networkidle", timeout: 30_000 });
   await page.waitForTimeout(3000); // Shopify hydration
 
   const raw = await page.evaluate(() => {
@@ -1026,7 +1056,7 @@ async function scrapeBooksInc(page) {
       venue: `Books Inc ${r.location || ""}`.trim(),
       address: "",
       city,
-      url: r.link || "https://booksinc.net/events",
+      url: r.link || "https://booksinc.com/events",
       source: "Books Inc",
       category: "arts",
       cost: "free",
