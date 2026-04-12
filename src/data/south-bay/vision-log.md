@@ -3806,3 +3806,40 @@ Events that are mislabeled as "sports" show up in the Sports section — which r
 1. **RECENTLY_FUNDED updates** — Check for Apr 8–14 South Bay funding announcements.
 2. **Permit Pulse: add Mountain View** — Try alternative MV permit portals next cycle (data.mountainview.gov doesn't resolve, try permits.mountainview.gov or cityofmountainview.gov/services/permits).
 3. **Neighborhood-level filtering for San José** — Sub-city browsing would make SJ events (214 events, ~40% of total) much more navigable. Willow Glen, Almaden, Japantown, Rose Garden are distinct communities.
+
+---
+
+## 2026-04-12 — Cycle 70: Data Refresh + Milestone ID Deduplication
+
+### Context
+Easter Sunday, April 12, 2026. Spring break week 2 continues through Apr 17 (SJUSD/FUHSD/CUSD/Campbell). Yahoo IPO 30th anniversary milestone is live on Tech tab today (Apr 12, 1996 → Apr 12, 2026). Tech tab "SV History" is in window for Yahoo IPO + Moore's Law (coming Apr 19).
+
+### What Was Built
+
+**Tech tab: Fixed duplicate milestone IDs (`netscape` + `yahoo`)**
+
+Two milestone entries had duplicate `id` fields, causing React key warnings and unpredictable rendering:
+
+- **Netscape** — had two entries both with `id: "netscape"` and `month: 4, day: 4`. The first (shorter) entry was removed; the second (more detailed, with full founding story) was kept.
+- **Yahoo** — had two entries both with `id: "yahoo"`: one for the March 2 founding date, one for the April 12 IPO date. The IPO entry was renamed to `id: "yahoo-ipo"` to preserve both milestones. Today (Apr 12) is the Yahoo IPO 30th anniversary — this milestone is now correctly rendering.
+
+**RECENTLY_FUNDED check: Apr 9–12 window was thin**
+
+Researched new South Bay funding rounds for Apr 9–12. Only confirmed new entry was SiFive ($400M Series G, Apr 9, Santa Clara) — already in the database. Aria Networks ($125M, Apr 7, Palo Alto) also already present. No new companies added.
+
+**Data refreshed (8 files):**
+- `upcoming-events.json` — 635 events (112 ongoing) from 32 sources
+- `around-town.json` — 8 items; San José senior housing + infrastructure backlog, Milpitas federal housing plan
+- `digests.json` — 11 city digests (Santa Clara Apr 7, Milpitas Apr 7, Palo Alto Mar 31)
+- `upcoming-meetings.json` — 9 cities; San José Apr 13 (infrastructure backlog study session), Mountain View Apr 14 (CIP + teen month)
+- `city-briefings.json` — 10 briefings; David Byrne at Frost, SCU Queer Film Festival, Los Altos Books to Blooms
+- `weekend-picks.json` — 3 picks for Apr 10–12 (Easter weekend): SJSU Opera Double Bill, Julius Caesar, Saul Williams poetry
+- `tech-briefing.json` — Apr 12–19 summary; SiFive/Ayar/Nexthop leads; 2 companies trimming
+
+### Why This Was the Strongest Move
+The Yahoo IPO milestone fix means the 30th anniversary card (Yahoo went public April 12, 1996) now renders correctly on today's Tech tab instead of potentially conflicting with the Yahoo founding entry. A resident opening the Tech tab on Easter Sunday sees a genuinely interesting local history note tied to today's date. The data refresh keeps all 10 tabs current for the second week of spring break.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 14+ watch** — No new South Bay rounds Apr 9–12. Next window to watch: Apr 13–19. SiFive IPO timeline expected H2 2026.
+2. **Permit Pulse: Mountain View** — data.mountainview.gov doesn't resolve. Try cityofmountainview.gov/city-hall/departments/community-development/planning-and-permits.
+3. **Neighborhood-level filtering for San José** — 635 total events, ~40% SJ. Willow Glen, Almaden, Japantown, Rose Garden filtering would make SJ much more navigable.
