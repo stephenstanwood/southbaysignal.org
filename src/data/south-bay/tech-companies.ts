@@ -1256,6 +1256,18 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     url: "https://imperativecare.com",
   },
   {
+    id: "genspark",
+    name: "Genspark",
+    city: "Palo Alto",
+    category: "ai",
+    round: "Series B ext.",
+    amount: "$110M",
+    date: "2026-04-04",
+    tagline: "AI agent startup expanding the same Series B from $275M to $385M total at a $1.6B valuation — roughly 20 employees generating $200M+ ARR. Founded by ex-Baidu execEric Jing, who previously sold iQIYI to Baidu for $2.4B. Flagship product: Genspark Super Agent, an agentic AI browser assistant.",
+    color: "#7c3aed",
+    url: "https://genspark.ai",
+  },
+  {
     id: "sifive",
     name: "SiFive",
     city: "Santa Clara",
