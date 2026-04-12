@@ -292,10 +292,32 @@ function buildDateOptions() {
 
 const DATE_OPTIONS = buildDateOptions();
 
+// Parse "9:00 AM" / "2:30 PM" → minutes since midnight
+function parseTimeToMinutes(t: string): number | null {
+  const m = t.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+  if (!m) return null;
+  let hrs = parseInt(m[1]);
+  const mins = parseInt(m[2]);
+  const ampm = m[3].toUpperCase();
+  if (ampm === "PM" && hrs !== 12) hrs += 12;
+  if (ampm === "AM" && hrs === 12) hrs = 0;
+  return hrs * 60 + mins;
+}
+
 export default function PlanView({ homeCity }: { homeCity: string | null }) {
-  const [step, setStep] = useState<Step>("form");
+  const isAnonymous = !homeCity;
+  const [step, setStep] = useState<Step>(isAnonymous ? "result" : "form");
   const [weather, setWeather] = useState<string>("70°F partly cloudy");
-  const [plan, setPlan] = useState<DayPlan | null>(null);
+  const [plan, setPlan] = useState<DayPlan | null>(() => {
+    // Anonymous visitors get an instant default plan — no form, no loading
+    if (isAnonymous) {
+      return buildDayPlan(
+        { who: "couple", duration: "full-day", vibe: "mix", budget: "anything", date: new Date() },
+        "70°F partly cloudy",
+      );
+    }
+    return null;
+  });
 
   // Form state with sensible defaults
   const [who, setWho] = useState<Who>("family-young");
@@ -304,15 +326,24 @@ export default function PlanView({ homeCity }: { homeCity: string | null }) {
   const [budget, setBudget] = useState<BudgetType>("anything");
   const [selectedDateIdx, setSelectedDateIdx] = useState<number>(0);
 
-  // Fetch weather silently on mount
+  // Fetch weather silently on mount — also rebuild anonymous plan with real weather
   useEffect(() => {
     fetch("/api/weather")
       .then((r) => r.json())
       .then((d) => {
-        if (d.weather) setWeather(d.weather);
+        if (d.weather) {
+          setWeather(d.weather);
+          // Rebuild anonymous plan with actual weather data
+          if (isAnonymous) {
+            setPlan(buildDayPlan(
+              { who: "couple", duration: "full-day", vibe: "mix", budget: "anything", date: new Date() },
+              d.weather,
+            ));
+          }
+        }
       })
       .catch(() => {});
-  }, []);
+  }, [isAnonymous]);
 
   function handleBuild() {
     setStep("building");
@@ -328,6 +359,15 @@ export default function PlanView({ homeCity }: { homeCity: string | null }) {
     setStep("form");
     setPlan(null);
   }
+
+  // For anonymous visitors, filter out stops whose time has already passed
+  const nowMinutes = new Date().getHours() * 60 + new Date().getMinutes();
+  const visibleStops = plan?.stops.filter((stop) => {
+    if (!isAnonymous) return true; // customized plans show everything
+    const stopMin = parseTimeToMinutes(stop.time);
+    if (stopMin === null) return true; // keep stops without parseable time
+    return stopMin >= nowMinutes - 30; // 30min grace window
+  }) ?? [];
 
   // ── Form ────────────────────────────────────────────────────────────────────
 
@@ -484,7 +524,7 @@ export default function PlanView({ homeCity }: { homeCity: string | null }) {
 
       {/* Stops */}
       <div style={{ marginTop: 28 }}>
-        {plan.stops.length === 0 ? (
+        {visibleStops.length === 0 ? (
           <p
             style={{
               color: "var(--sb-muted)",
@@ -492,11 +532,12 @@ export default function PlanView({ homeCity }: { homeCity: string | null }) {
               fontSize: 14,
             }}
           >
-            No matching options found for those preferences. Try adjusting your
-            filters.
+            {isAnonymous
+              ? "Today's plan is winding down. Set your city for a personalized day tomorrow."
+              : "No matching options found for those preferences. Try adjusting your filters."}
           </p>
         ) : (
-          plan.stops.map((stop, i) => (
+          visibleStops.map((stop, i) => (
             <StopCard key={`${stop.title}-${i}`} stop={stop} />
           ))
         )}
@@ -514,9 +555,15 @@ export default function PlanView({ homeCity }: { homeCity: string | null }) {
           borderTop: "1px solid var(--sb-border-light)",
         }}
       >
-        <button onClick={handleReset} className="plan-cta plan-cta--secondary">
-          ← Start over
-        </button>
+        {isAnonymous ? (
+          <button onClick={() => { setStep("form"); setPlan(null); }} className="plan-cta plan-cta--secondary">
+            Customize your day →
+          </button>
+        ) : (
+          <button onClick={handleReset} className="plan-cta plan-cta--secondary">
+            ← Start over
+          </button>
+        )}
         <span
           style={{
             fontSize: 12,
@@ -524,7 +571,9 @@ export default function PlanView({ homeCity }: { homeCity: string | null }) {
             lineHeight: 1.5,
           }}
         >
-          Based on today's events, weather, and your preferences.
+          {isAnonymous
+            ? "A curated South Bay day based on today's real events and weather."
+            : "Based on today's events, weather, and your preferences."}
         </span>
       </div>
     </div>
