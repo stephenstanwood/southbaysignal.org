@@ -183,10 +183,10 @@ function openRangesToday(hours: Record<string, string> | null | undefined): Arra
 
 /**
  * Check whether the given [startH, endH] block fits entirely within any of
- * the venue's open ranges today. Unknown hours = assume open (return true).
+ * the venue's open ranges today. Unknown hours = default 9 AM–8 PM window.
  */
 function fitsInOpenRange(hours: Record<string, string> | null | undefined, startH: number, endH: number): boolean {
-  if (!hours) return true;
+  if (!hours) return startH >= 9 && endH <= 20; // default 9 AM–8 PM for unknown hours
   const ranges = openRangesToday(hours);
   if (ranges.length === 0) return false; // closed today
   for (const [o, c] of ranges) {
@@ -583,11 +583,15 @@ async function sequenceWithClaude(
       // Only include places that are actually open. If hours data is present
       // and there's no entry for today, skip entirely (closed today).
       const hoursObj = (c as any).hours as Record<string, string> | null | undefined;
+      const fmt = (h: number) => (h > 12 ? `${h - 12} PM` : h === 12 ? "12 PM" : h === 0 ? "12 AM" : `${h} AM`);
       if (hoursObj) {
         const ranges = openRangesToday(hoursObj);
         if (ranges.length === 0) return null; // closed today — omit from prompt
-        const fmt = (h: number) => (h > 12 ? `${h - 12} PM` : h === 12 ? "12 PM" : h === 0 ? "12 AM" : `${h} AM`);
         parts.push(`hours: ${ranges.map(([o, c2]) => `${fmt(o)}–${fmt(c2)}`).join(", ")}`);
+      } else {
+        // No hours data — apply sensible default so Claude doesn't schedule
+        // a bakery at 7 PM or a bar at 8 AM
+        parts.push(`hours: ${fmt(9)}–${fmt(20)} (estimated)`);
       }
       return parts.join(" | ");
     })

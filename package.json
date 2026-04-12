@@ -23,6 +23,8 @@
     "generate-tech-briefing": "node scripts/generate-tech-briefing.mjs",
     "generate-apod": "node scripts/generate-apod.mjs",
     "generate-places": "node scripts/generate-places.mjs",
+    "generate-bookstore-events": "node scripts/generate-bookstore-events.mjs",
+    "playwright-scrape": "node scripts/playwright-scrapers.mjs",
     "health-report": "node scripts/health-report.mjs",
     "generate-scc-food-openings": "node scripts/generate-scc-food-openings.mjs",
     "social:publish": "node scripts/social/publish.mjs",

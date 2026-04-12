@@ -48,6 +48,8 @@ export const ARTIFACTS = {
   shortUrls:        join(DATA_DIR, "short-urls.json"),
   schoolCalendar:   join(DATA_DIR, "school-calendar.json"),
   places:           join(DATA_DIR, "places.json"),
+  bookstoreEvents:  join(DATA_DIR, "bookstore-events.json"),  // legacy, superseded by playwrightEvents
+  playwrightEvents: join(DATA_DIR, "playwright-events.json"),
 };
 
 // ---------------------------------------------------------------------------

@@ -62,6 +62,8 @@ if (existsSync(envLocalPath)) {
 }
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "upcoming-events.json");
 const BLACKLIST_PATH = join(__dirname, "..", "src", "data", "south-bay", "social-blacklist.json");
+const BOOKSTORE_EVENTS_PATH = join(__dirname, "..", "src", "data", "south-bay", "bookstore-events.json");
+const PLAYWRIGHT_EVENTS_PATH = join(__dirname, "..", "src", "data", "south-bay", "playwright-events.json");
 
 // Load dynamic blacklist from social review pipeline (venues, sources, titles)
 let _blacklist;
@@ -2280,6 +2282,59 @@ function fetchScccfdEvents() {
   return events;
 }
 
+function fetchFarmersMarketEvents() {
+  console.log("  ⏳ Farmers markets...");
+  const markets = [
+    { title: "Mountain View Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM", venue: "Caltrain Station", address: "600 W Evelyn Ave, Mountain View", city: "mountain-view", url: "https://cafarmersmkts.com/mountain-view-market", season: [1, 12] },
+    { title: "Los Gatos Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM", venue: "Town Park Plaza", address: "50 University Ave, Los Gatos", city: "los-gatos", url: "https://www.losgatos.ca.gov/1411/Farmers-Market", season: [5, 10] },
+    { title: "Saratoga Farmers Market", day: 6, time: "9:00 AM", endTime: "1:00 PM", venue: "West Valley College", address: "14000 Fruitvale Ave, Saratoga", city: "saratoga", url: "https://cafarmersmkts.com/saratoga-market", season: [5, 11] },
+    { title: "Santana Row Farmers Market", day: 3, time: "11:00 AM", endTime: "3:00 PM", venue: "Santana Row", address: "377 Santana Row, San Jose", city: "san-jose", url: "https://www.santanarow.com/events", season: [1, 12] },
+    { title: "Campbell Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM", venue: "Downtown Campbell", address: "Campbell Ave, Campbell", city: "campbell", url: "https://www.downtowncampbell.com/farmers-market", season: [1, 12] },
+    { title: "Sunnyvale Farmers Market", day: 6, time: "9:00 AM", endTime: "1:00 PM", venue: "Murphy Avenue", address: "Murphy Ave, Sunnyvale", city: "sunnyvale", url: "https://urbanvillageonline.com/markets/sunnyvale", season: [1, 12] },
+    { title: "Cupertino Farmers Market", day: 5, time: "9:00 AM", endTime: "1:00 PM", venue: "Oaks Shopping Center", address: "21275 Stevens Creek Blvd, Cupertino", city: "cupertino", url: "https://cafarmersmkts.com/cupertino-market", season: [1, 12] },
+    { title: "California Ave Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM", venue: "California Avenue", address: "California Ave, Palo Alto", city: "palo-alto", url: "https://www.cityofpaloalto.org/Departments/Community-Services/Arts-Sciences/Farmers-Market", season: [1, 12] },
+  ];
+
+  const events = [];
+  const now = new Date();
+  const today = now.toISOString().split("T")[0];
+  // Generate instances for the next 90 days
+  for (let offset = 0; offset <= 90; offset++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() + offset);
+    const dayOfWeek = d.getDay(); // 0=Sun
+    const month = d.getMonth() + 1; // 1-indexed
+    const dateStr = d.toISOString().split("T")[0];
+    if (dateStr < today) continue;
+
+    for (const m of markets) {
+      if (dayOfWeek !== m.day) continue;
+      if (month < m.season[0] || month > m.season[1]) continue;
+
+      const dateObj = new Date(`${dateStr}T12:00:00-07:00`);
+      events.push({
+        id: h("farmersmarket", m.title, dateStr),
+        title: m.title,
+        date: dateStr,
+        displayDate: displayDate(dateObj),
+        time: m.time,
+        endTime: m.endTime,
+        venue: m.venue,
+        address: m.address,
+        city: m.city,
+        category: "food",
+        cost: "free",
+        description: "Weekly open-air farmers market featuring local produce, artisan goods, and prepared foods.",
+        url: m.url,
+        source: "South Bay Signal",
+        kidFriendly: true,
+      });
+    }
+  }
+  console.log(`  ✅ Farmers markets: ${events.length} events`);
+  return events;
+}
+
 function fetchMiscHardcodedEvents() {
   console.log("  ⏳ Misc hardcoded events...");
   const raw = [
@@ -3047,6 +3102,32 @@ async function fetchJamsjEvents() {
   );
 }
 
+// ── Playwright-scraped events (pre-scraped by playwright-scrapers.mjs on Mini) ──
+// Covers: CivicPlus cities, LibCal libraries, The Tech, bookstores,
+// and robust replacements for fragile HTML scrapers (SJ Jazz, SJMA, etc.)
+
+function fetchPlaywrightEvents() {
+  console.log("  ⏳ Playwright-scraped events...");
+  try {
+    // Try unified file first, fall back to legacy bookstore-only file
+    const path = existsSync(PLAYWRIGHT_EVENTS_PATH) ? PLAYWRIGHT_EVENTS_PATH
+      : existsSync(BOOKSTORE_EVENTS_PATH) ? BOOKSTORE_EVENTS_PATH
+      : null;
+    if (!path) {
+      console.log("  ⚠️  Playwright events: no data file (run playwright-scrapers.mjs on Mini)");
+      return [];
+    }
+    const { events } = JSON.parse(readFileSync(path, "utf8"));
+    const today = new Date().toISOString().split("T")[0];
+    const filtered = (events || []).filter((e) => e.date >= today);
+    console.log(`  ✅ Playwright events: ${filtered.length} events (from ${path.split("/").pop()})`);
+    return filtered;
+  } catch (err) {
+    console.log(`  ⚠️  Playwright events: ${err.message}`);
+    return [];
+  }
+}
+
 // ── History San Jose (WordPress HTML scrape) ──
 
 async function fetchHistorySanJoseEvents() {
@@ -3055,7 +3136,6 @@ async function fetchHistorySanJoseEvents() {
     const BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15";
     const events = [];
     const now = new Date();
-    const currentYear = now.getFullYear();
 
     for (let page = 1; page <= 4; page++) {
       const url = page === 1
@@ -3065,40 +3145,60 @@ async function fetchHistorySanJoseEvents() {
       if (!res.ok) break;
       const html = await res.text();
 
-      // Events are in article/card blocks with h2 titles
-      const articles = html.split(/<article/i).slice(1);
-      for (const article of articles) {
-        const titleMatch = article.match(/<h[23][^>]*>(.*?)<\/h[23]>/s);
-        const linkMatch = article.match(/href="(https:\/\/historysanjose\.org\/[^"]*event[^"]*)"/i)
-          || article.match(/href="(https:\/\/historysanjose\.org\/[^"]*program[^"]*)"/i);
+      // Events are in <div class="event-box event_all_box"> blocks
+      const blocks = html.split(/event_all_box/).slice(1);
+      for (const block of blocks) {
+        const titleMatch = block.match(/<h[23][^>]*>(.*?)<\/h[23]>/s);
         if (!titleMatch) continue;
 
         const title = titleMatch[1].replace(/<[^>]+>/g, "").replace(/\*/g, "").trim();
         if (!title || title.length < 5) continue;
 
-        // Try to find a date in the article text
-        const text = article.replace(/<[^>]+>/g, " ");
-        const monthNames = { January: 0, February: 1, March: 2, April: 3, May: 4, June: 5, July: 6, August: 7, September: 8, October: 9, November: 10, December: 11 };
-        const dateMatch = text.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})(?:,?\s+(\d{4}))?/i);
+        // Dates are MM/DD/YYYY inside a <p> tag in .event-content
+        const dateMatch = block.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
         if (!dateMatch) continue;
 
-        const month = monthNames[dateMatch[1]];
+        const month = parseInt(dateMatch[1]) - 1; // 0-indexed
         const day = parseInt(dateMatch[2]);
-        const year = dateMatch[3] ? parseInt(dateMatch[3]) : currentYear;
-        const start = new Date(year, month, day, 12, 0);
-        if (start < now) continue;
+        const year = parseInt(dateMatch[3]);
 
+        // For date ranges (e.g. "11/22/2025 – 12/21/2026"), use the start date
+        const start = new Date(year, month, day, 12, 0);
+        // Check if there's an end date — skip if the end date is in the past
+        const endDateMatch = block.match(/\d{1,2}\/\d{1,2}\/\d{4}[^<]*?(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (endDateMatch) {
+          const endDate = new Date(parseInt(endDateMatch[3]), parseInt(endDateMatch[1]) - 1, parseInt(endDateMatch[2]));
+          if (endDate < now) continue;
+        } else if (start < now) {
+          continue;
+        }
+
+        // Extract time from <span class="eventtime">
+        const timeMatch = block.match(/<span class="eventtime">\s*([\d:]+\s*[ap]m)\s*<\/span>/i);
+        const endTimeMatch = block.match(/<span class="eventtime">[\s\S]*?<span class="eventtime">\s*([\d:]+\s*[ap]m)\s*<\/span>/i);
+        const time = timeMatch ? timeMatch[1].trim() : null;
+        const endTime = endTimeMatch ? endTimeMatch[1].trim() : null;
+
+        // Link: prefer backend-button href, fall back to any link
+        const linkMatch = block.match(/<a[^>]*class="[^"]*backend-button[^"]*"[^>]*href="([^"]+)"/i)
+          || block.match(/href="(https?:\/\/[^"]+)"/i);
         const eventUrl = linkMatch?.[1] || "https://historysanjose.org/programs-events/";
+
+        // Location from <span class="eventlocation">
+        const locMatch = block.match(/<span class="eventlocation">\s*(.*?)\s*<\/span>/i);
+        const location = locMatch ? locMatch[1].replace(/<[^>]+>/g, "").trim() : "History Park";
+        const venue = location.split("|")[0].trim() || "History Park";
+        const address = location.includes("|") ? location.split("|")[1].trim() : "635 Phelan Ave, San Jose, CA 95112";
 
         events.push({
           id: h("historysj", title, isoDate(start)),
           title,
           date: isoDate(start),
           displayDate: displayDate(start),
-          time: null,
-          endTime: null,
-          venue: "History Park",
-          address: "635 Phelan Ave, San Jose, CA 95112",
+          time,
+          endTime,
+          venue,
+          address,
           city: "san-jose",
           category: inferCategory(title, "", ""),
           cost: "paid",
@@ -3158,6 +3258,7 @@ async function main() {
     fetchShorelineEvents,
     fetchScccfdEvents,
     fetchLgChamberEvents,
+    fetchFarmersMarketEvents,
     fetchMiscHardcodedEvents,
     fetchMeetupEvents,
     fetchEastWestBookshopEvents,
@@ -3168,6 +3269,7 @@ async function main() {
     fetchSjMuseumOfArtEvents,
     fetchJamsjEvents,
     fetchHistorySanJoseEvents,
+    fetchPlaywrightEvents,
   ];
 
   const results = await Promise.allSettled(sources.map((fn) => fn()));
