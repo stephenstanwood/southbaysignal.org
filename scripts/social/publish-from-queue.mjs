@@ -238,12 +238,20 @@ async function main() {
   // ── Slotted path (preferred): find posts pre-assigned to the current slot
   //    by the slot-scheduler. If any exist, publish those and skip reactive
   //    scoring entirely. Falls back to reactive if nothing is slotted.
+  //
+  //    Slot roles:
+  //      07:15  Signature  — flagship "here's what to do today" post, images prioritized
+  //      11:45  Tonight    — single best thing to do tonight, images prioritized
+  //      16:30  Wildcard   — restaurant openings, SV history, local data
+  let _currentSlot = null;
   try {
-    const { postsForCurrentSlot, currentPublishSlot } = await import("./lib/slot-scheduler.mjs");
+    const { postsForCurrentSlot, currentPublishSlot, SLOT_ROLES } = await import("./lib/slot-scheduler.mjs");
     const slot = currentPublishSlot();
+    _currentSlot = slot;
+    const role = slot ? SLOT_ROLES[slot] : null;
     const slotted = postsForCurrentSlot(relevant, { today, slot });
     if (slotted.length > 0) {
-      console.log(`\n📅 Slotted path: ${slotted.length} post(s) assigned to ${today} @ ${slot}`);
+      console.log(`\n📅 Slotted path: ${slotted.length} post(s) assigned to ${today} @ ${slot} [${role}]`);
       for (const p of slotted.slice(0, 3)) {
         console.log(`   ✓ ${(p.item?.title || "").slice(0, 55)} (${getEventDate(p)})`);
       }
@@ -251,7 +259,7 @@ async function main() {
       relevant.length = 0;
       relevant.push(...slotted);
     } else if (slot) {
-      console.log(`\n   No posts slotted for ${today} @ ${slot} — falling back to reactive scoring`);
+      console.log(`\n   No posts slotted for ${today} @ ${slot} [${role}] — falling back to reactive scoring`);
     }
   } catch (err) {
     console.warn(`   ⚠️  slot scheduler path failed: ${err.message} — falling back to reactive`);
@@ -334,6 +342,25 @@ async function main() {
   }
   if (relevant.length > 5) console.log(`   ... and ${relevant.length - 5} more`);
   console.log();
+
+  // ── Slot-role filter (reactive fallback) ──────────────────────────────────
+  // Prefer posts that match the current slot's editorial role. Falls back to
+  // the full pool if no role-matched posts are available (e.g., no restaurant
+  // openings queued for the 4:30 wildcard slot).
+  try {
+    const { SLOT_ROLES, slotRole: classifyPost } = await import("./lib/slot-scheduler.mjs");
+    const role = _currentSlot ? SLOT_ROLES[_currentSlot] : null;
+    if (role && role !== "disabled") {
+      const matched = relevant.filter((p) => classifyPost(p) === role);
+      if (matched.length > 0) {
+        console.log(`   🎯 Slot role [${role}]: ${matched.length}/${relevant.length} posts match — narrowing pool`);
+        relevant.length = 0;
+        relevant.push(...matched);
+      } else {
+        console.log(`   🎯 Slot role [${role}]: no matching posts — using full pool`);
+      }
+    }
+  } catch { /* best-effort */ }
 
   // Filter out low-relevance posts — they'll score better later in the week
   const MIN_TIMING_SCORE = 30;

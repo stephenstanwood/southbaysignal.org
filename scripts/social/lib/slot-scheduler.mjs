@@ -4,11 +4,37 @@
 // event date, quality, and current queue occupancy. Replaces the reactive
 // "score at publish time" model with explicit scheduling.
 //
-// Publish slots (local America/Los_Angeles, matches launchd cron):
-//   07:15, 09:30, 11:45, 14:10, 16:30, 18:45
+// Three primary publish slots (America/Los_Angeles, matches launchd cron):
+//   07:15  Signature   — flagship "here's what to do today" post, best graphic
+//   11:45  Tonight     — single best thing to do tonight, best graphic
+//   16:30  Wildcard    — restaurant openings, SV history, local data, evergreen
+//
+// Three secondary slots are defined but DISABLED (launchd does not fire them):
+//   09:30  disabled
+//   14:10  disabled
+//   18:45  disabled
 // ---------------------------------------------------------------------------
 
 export const SLOTS = ["07:15", "09:30", "11:45", "14:10", "16:30", "18:45"];
+
+/**
+ * Editorial role for each slot. "disabled" slots are defined here for
+ * reference but the launchd plist does not fire them. Primary slots only:
+ * 07:15, 11:45, 16:30.
+ */
+export const SLOT_ROLES = {
+  "07:15": "signature",  // Flagship: best plan for the day, images prioritized
+  "09:30": "disabled",
+  "11:45": "tonight",    // Tonight pick: single best evening event, images prioritized
+  "14:10": "disabled",
+  "16:30": "wildcard",   // Wildcard: restaurant openings, SV history, local data
+  "18:45": "disabled",
+};
+
+/** The three active publish slots (launchd fires at these times). */
+export const PRIMARY_SLOTS = Object.entries(SLOT_ROLES)
+  .filter(([, role]) => role !== "disabled")
+  .map(([slot]) => slot); // ["07:15", "11:45", "16:30"]
 
 /** Return today's date in Pacific Time as YYYY-MM-DD. */
 export function todayPT() {
@@ -50,6 +76,51 @@ export function daysBetween(a, b) {
  */
 export function getEventDate(post) {
   return post?.item?.date || post?.date || null;
+}
+
+/**
+ * Classify a post's editorial role to match it to the right publish slot.
+ *
+ * Returns one of: "wildcard" | "tonight" | "signature"
+ *
+ * - wildcard (16:30): restaurant openings, evergreen content, non-urgent posts
+ * - tonight (11:45): evening events framed as "tonight", or events starting ≥5 PM
+ * - signature (07:15): everything else — the flagship daily post
+ */
+export function slotRole(post) {
+  // Restaurant openings are always wildcard content
+  if (post.postType === "restaurant_opening") return "wildcard";
+
+  // Check copy for "tonight" / "this evening" framing → tonight slot
+  const copyText = JSON.stringify(post.copy || {}).toLowerCase();
+  if (/\btonight\b|\bthis evening\b/.test(copyText)) return "tonight";
+
+  // Events with an evening start time (≥5 PM) → tonight slot
+  const eventHour = parseItemHour(post.item?.time || "");
+  if (eventHour !== null && eventHour >= 17) return "tonight";
+
+  return "signature";
+}
+
+/** Parse hour from time strings like "7:00 PM", "19:00", "2pm", etc. */
+function parseItemHour(timeStr) {
+  if (!timeStr) return null;
+  const lower = timeStr.toLowerCase().trim();
+  const match = lower.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/);
+  if (!match) return null;
+  let hour = parseInt(match[1]);
+  const ampm = match[3];
+  if (ampm === "pm" && hour !== 12) hour += 12;
+  if (ampm === "am" && hour === 12) hour = 0;
+  return hour;
+}
+
+/**
+ * Return the primary slot time string for a given role, or null if not found.
+ */
+function roleToSlot(role) {
+  const entry = Object.entries(SLOT_ROLES).find(([, r]) => r === role);
+  return entry ? entry[0] : null;
 }
 
 /**
@@ -104,25 +175,27 @@ export function computePreferredDates(eventDate, today = todayPT()) {
 }
 
 /**
- * Within a given publish date, return slot times in order of preference
- * based on how the copy will frame the event.
+ * Within a given publish date, return PRIMARY slot times in order of preference
+ * based on how far the event is from publish day.
+ *
+ * Only returns primary slots (07:15, 11:45, 16:30).
  */
 export function preferredSlotsForDate(publishDate, eventDate) {
   const daysUntil = daysBetween(publishDate, eventDate);
   if (daysUntil === 0) {
-    // Same day as event: prefer morning slot so it's seen before the event
-    return ["07:15", "09:30", "11:45", "14:10", "16:30", "18:45"];
+    // Same day: morning flagship first so it's seen before the event
+    return ["07:15", "11:45", "16:30"];
   }
   if (daysUntil === 1) {
-    // Publishing day before: evening slots work great for "tomorrow" framing
-    return ["16:30", "18:45", "14:10", "11:45", "09:30", "07:15"];
+    // Day before: wildcard slot works for "tomorrow" teases; morning as backup
+    return ["16:30", "11:45", "07:15"];
   }
   if (daysUntil >= 2 && daysUntil <= 3) {
-    // A couple days ahead: mid-day slots catch the lunch audience
-    return ["11:45", "14:10", "09:30", "16:30", "07:15", "18:45"];
+    // A couple days ahead: midday works for advance notice
+    return ["11:45", "07:15", "16:30"];
   }
   // Further out: morning slots — fresh-morning scroll
-  return ["09:30", "07:15", "11:45", "14:10", "16:30", "18:45"];
+  return ["07:15", "11:45", "16:30"];
 }
 
 /**
@@ -149,10 +222,17 @@ export function isSlotInPast(date, slot, today = todayPT(), nowHHMM = nowHHMM_PT
 }
 
 /**
- * Assign a publish slot to a post based on its event date and the
- * current state of the queue.
+ * Assign a publish slot to a post based on its event date, editorial role,
+ * and the current state of the queue.
  *
- * Returns { date, time, assignedAt } or null if no suitable slot exists.
+ * Only assigns to PRIMARY_SLOTS (07:15, 11:45, 16:30). Secondary slots
+ * (09:30, 14:10, 18:45) are disabled and will never be assigned.
+ *
+ * Role-matching: the post's slotRole() is used to prefer the matching slot
+ * (signature→07:15, tonight→11:45, wildcard→16:30). Falls back to other
+ * primary slots if the preferred one is occupied.
+ *
+ * Returns { date, time, assignedAt, role } or null if no suitable slot exists.
  *
  * @param {object} post - Queue item with item.date set
  * @param {Array} queue - Full approved queue (to check slot occupancy)
@@ -171,33 +251,48 @@ export function assignSlot(post, queue, opts = {}) {
   const preferredDates = computePreferredDates(eventDate, today);
   if (preferredDates.length === 0) return null; // past event
 
+  const role = slotRole(post);
+  const roleSlot = roleToSlot(role); // preferred slot for this post's role
+
   for (const date of preferredDates) {
     // Skip if date is in the past (shouldn't happen but guard anyway)
     if (date < today) continue;
 
-    const slotOrder = preferredSlotsForDate(date, eventDate);
+    // Get time-appropriate slot order (primary slots only), then push the
+    // role-matching slot to the front so it's tried first.
+    const timeSlots = preferredSlotsForDate(date, eventDate);
+    const slotOrder = roleSlot
+      ? [roleSlot, ...timeSlots.filter((s) => s !== roleSlot)]
+      : timeSlots;
+
     for (const slot of slotOrder) {
       if (isSlotInPast(date, slot, today, nowHHMM)) continue;
       if (isSlotOccupied(queue, date, slot)) continue;
       return {
         date,
         time: slot,
+        role,
         assignedAt: new Date().toISOString(),
       };
     }
   }
 
   // All preferred slots are full or in the past — spill to any available
-  // slot between today and event date.
+  // primary slot between today and event date.
   const event = eventDate;
   let cursor = today;
   while (cursor <= event) {
-    for (const slot of SLOTS) {
+    // Role slot first, then remaining primary slots
+    const spillOrder = roleSlot
+      ? [roleSlot, ...PRIMARY_SLOTS.filter((s) => s !== roleSlot)]
+      : PRIMARY_SLOTS;
+    for (const slot of spillOrder) {
       if (isSlotInPast(cursor, slot, today, nowHHMM)) continue;
       if (isSlotOccupied(queue, cursor, slot)) continue;
       return {
         date: cursor,
         time: slot,
+        role,
         assignedAt: new Date().toISOString(),
         fallback: true,
       };
@@ -210,14 +305,14 @@ export function assignSlot(post, queue, opts = {}) {
 
 /**
  * Find the current publish slot: given `nowHHMM`, return the slot time
- * string the cron is most likely firing for (the slot whose scheduled
+ * string the cron is most likely firing for (the primary slot whose scheduled
  * time is closest to now, within a ±30 min window).
  */
 export function currentPublishSlot(nowHHMM = nowHHMM_PT()) {
   const nowMin = hhmmToMinutes(nowHHMM);
   let best = null;
   let bestDelta = Infinity;
-  for (const slot of SLOTS) {
+  for (const slot of PRIMARY_SLOTS) {
     const delta = Math.abs(hhmmToMinutes(slot) - nowMin);
     if (delta < bestDelta && delta <= 30) {
       best = slot;
