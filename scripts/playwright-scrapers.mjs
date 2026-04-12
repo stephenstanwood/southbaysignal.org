@@ -301,21 +301,11 @@ const LIBCAL_LIBRARIES = [
     name: "Los Gatos Library",
     urls: [
       "https://losgatosca.libcal.com/calendar",
-      "https://losgatosca.libcal.com/events",
-      "https://sccl.libcal.com/calendar?lid=6930", // SCCL Los Gatos branch
     ],
     city: "los-gatos",
     address: "110 E Main St, Los Gatos, CA 95030",
   },
-  {
-    name: "Milpitas Library",
-    urls: [
-      "https://sccl.libcal.com/calendar",          // SCCL main (includes Milpitas branch events)
-      "https://milpitas.libcal.com/calendar",
-    ],
-    city: "milpitas",
-    address: "160 N Main St, Milpitas, CA 95035",
-  },
+  // Milpitas: SCCL LibCal returns 404; covered by SCCL BiblioCommons in generate-events.mjs
 ];
 
 async function scrapeLibCal(page, config) {
@@ -333,19 +323,23 @@ async function scrapeLibCal(page, config) {
         const currentYear = now.getFullYear();
 
         // Strategy 1: LibCal eventcard layout (Los Gatos style)
-        // Cards have .s-lc-eventcard with date in heading, title in .s-lc-eventcard-body a
+        // Cards have .s-lc-eventcard with h2.s-lc-eventcard-title containing the title link
         const cards = document.querySelectorAll(".s-lc-eventcard");
+        const seenTitles = new Set();
         for (const card of cards) {
-          const titleLink = card.querySelector(".s-lc-eventcard-body a[href*='/event/']");
+          // Title is in h2.s-lc-eventcard-title > a, or .s-lc-eventcard-body > a
+          const titleLink = card.querySelector(".s-lc-eventcard-title a[href*='/event/'], .s-lc-eventcard-body a[href*='/event/']");
           if (!titleLink) continue;
           const title = titleLink.textContent?.trim();
-          if (!title || title.length < 3 || title === "More" || title === "Show more dates ››") continue;
-          // Date is in the card heading like "Apr\n13"
-          const heading = card.querySelector(".s-lc-eventcard-heading, .s-lc-eventcard-date");
-          const dateText = heading?.textContent?.trim()?.replace(/\s+/g, " "); // "Apr 13"
-          // Time is in the card content like "Mon, 11:00am - 12:00pm"
-          const timeText = card.textContent?.match(/\d{1,2}:\d{2}\s*[ap]m/i)?.[0];
-          events.push({ title, date: dateText ? `${dateText}, ${currentYear}` : null, time: timeText, link: titleLink.href });
+          if (!title || title.length < 3 || /^(More|Show more|Register)/.test(title)) continue;
+          if (seenTitles.has(title)) continue;
+          seenTitles.add(title);
+          // Date is in the card heading: div with text like "Apr\n13"
+          const heading = card.querySelector(".s-lc-eventcard-heading");
+          const rawDate = heading?.textContent?.trim()?.replace(/\s+/g, " "); // "Apr 13"
+          // Time is in the card text like "Mon, 11:00am - 12:00pm"
+          const timeMatch = card.textContent?.match(/\d{1,2}:\d{2}\s*[ap]m/i);
+          events.push({ title, date: rawDate ? `${rawDate}, ${currentYear}` : null, time: timeMatch?.[0], link: titleLink.href });
         }
 
         // Strategy 2: LibCal media-body layout (Mountain View style)
@@ -523,41 +517,53 @@ async function scrapeSJMuseumOfArt(page) {
 // ── Linden Tree Books ──
 
 async function scrapeLindenTree(page) {
+  // Linden Tree times out on networkidle due to slow resources — use domcontentloaded
   await page.goto("https://www.lindentreebooks.com/events-calendar", {
-    waitUntil: "networkidle", timeout: 25_000,
+    waitUntil: "domcontentloaded", timeout: 20_000,
   });
+  await page.waitForTimeout(3000); // let main content render
 
   const raw = await page.evaluate(() => {
     const events = [];
-    // Linden Tree uses hand-coded HTML with events in headings + date text
-    const headings = document.querySelectorAll("h3, h2, [class*='event']");
-    for (const heading of headings) {
-      const titleEl = heading.querySelector("b, strong") || heading;
-      const title = titleEl?.textContent?.trim();
+    const currentYear = new Date().getFullYear();
+
+    // Linden Tree has h3 elements containing: "Title + Day, Month DD at time"
+    // e.g. "Book Launch with Marissa Meyer & Tamara MossTuesday, April 7 at 6pm"
+    const headings = document.querySelectorAll("h3");
+    for (const h of headings) {
+      const text = h.textContent?.trim();
+      if (!text || text.length < 10) continue;
+
+      // Try to split on day name (Monday, Tuesday, etc.)
+      const dayMatch = text.match(/(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})\s+at\s+(\d{1,2}(?::\d{2})?\s*[ap]m)/i);
+      if (!dayMatch) continue;
+
+      // Title is everything before the day name
+      const dayIdx = text.indexOf(dayMatch[1]);
+      const title = text.slice(0, dayIdx).trim();
       if (!title || title.length < 5) continue;
 
-      // Date is usually in the same block or following text
-      const block = heading.closest("div, article, section, li") || heading.parentElement;
-      const text = block?.textContent || "";
-      // Try multiple date patterns
-      const datePatterns = [
-        /(\w+day),?\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})(?:,?\s+(\d{4}))?/i,
-        /(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})(?:,?\s+(\d{4}))?/i,
-        /(\d{1,2})\/(\d{1,2})\/(\d{4})/,
-      ];
-      let dateStr = null;
-      for (const pat of datePatterns) {
-        const m = text.match(pat);
-        if (m) { dateStr = m[0]; break; }
-      }
+      const month = dayMatch[2];
+      const day = dayMatch[3];
+      const time = dayMatch[4];
+      const dateStr = `${month} ${day}, ${currentYear}`;
 
-      // Time pattern
-      const timeMatch = text.match(/(\d{1,2}(?::\d{2})?\s*[ap]\.?m\.?)/i);
-      const time = timeMatch ? timeMatch[1].replace(/\./g, "") : null;
-
-      const link = block?.querySelector("a")?.href;
+      const link = h.querySelector("a")?.href || h.parentElement?.querySelector("a")?.href;
       events.push({ title, date: dateStr, time, link });
     }
+
+    // Also check the text-based listing before the h3s
+    // Format: "Day, Month DD at time: Title" in the body text
+    if (events.length === 0) {
+      const bodyText = document.body?.innerText || "";
+      const eventPattern = /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})\s+at\s+(\d{1,2}(?::\d{2})?\s*[ap]m):\s*(.+?)(?=\n|$)/gi;
+      let match;
+      while ((match = eventPattern.exec(bodyText)) !== null) {
+        const dateStr = `${match[2]} ${match[3]}, ${currentYear}`;
+        events.push({ title: match[5].trim(), date: dateStr, time: match[4], link: null });
+      }
+    }
+
     return events;
   });
 
