@@ -1390,9 +1390,9 @@ export const TECH_PULSE = [
     note: "25K local jobs each at Googleplex & Apple Park",
   },
   {
-    value: "$4.6B+",
+    value: "$5B+",
     label: "Raised in Q1–Q2 2026",
-    note: "30 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
+    note: "31 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
   },
   {
     value: "Chip equipment",
