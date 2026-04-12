@@ -1404,7 +1404,7 @@ export const TECH_PULSE = [
   {
     value: "$5B+",
     label: "Raised in Q1–Q2 2026",
-    note: "31 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
+    note: "32 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
   },
   {
     value: "Chip equipment",
