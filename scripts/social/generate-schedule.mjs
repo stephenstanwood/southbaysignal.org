@@ -207,23 +207,28 @@ function pickTonightEvent(candidates, dateStr) {
   const dateEvents = candidates.filter((c) => c.date === dateStr);
   if (dateEvents.length === 0) return null;
 
-  // Only events starting at 5 PM or later qualify as "tonight"
+  // Boring event patterns — skip these as tonight picks
+  const BORING_TONIGHT = /\b(board of|trustees|commission|committee|council meeting|task force|budget hearing|town hall meeting|book club|chess club|book sale)\b/i;
+
+  // Only events starting at 5 PM or later, not boring government/library stuff
   const evening = dateEvents.filter((c) => {
     const hour = parseHour(c.time);
-    // No time = skip (don't assume evening)
     if (hour === null) return false;
-    return hour >= 17;
+    if (hour < 17) return false;
+    const title = (c.title || c.name || "").toLowerCase();
+    if (BORING_TONIGHT.test(title)) return false;
+    if (c.category === "government") return false;
+    return true;
   });
 
   if (evening.length === 0) return null;
 
-  // Score and pick best
+  // Score and pick from top candidates with some randomness
   const scored = evening.map((c) => ({
     ...c,
     _score: (c.score || 0) + (c.category === "arts" ? 3 : 0) + (c.category === "food" ? 2 : 0) + (c.venue ? 2 : 0),
   }));
-  scored.sort((a, b) => b._score - a._score);
-  return scored[0];
+  return weightedRandomPick(scored);
 }
 
 /** Find wildcard content for a given date. Avoids repeating recent picks. */
