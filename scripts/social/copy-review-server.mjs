@@ -1595,6 +1595,17 @@ const server = createServer((req, res) => {
           return;
         }
 
+        // Load env for Blob token
+        if (!process.env.BLOB_READ_WRITE_TOKEN) {
+          try {
+            const lines = readFileSync(ENV_FILE, "utf8").split("\n");
+            for (const line of lines) {
+              const m = line.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/);
+              if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+            }
+          } catch {}
+        }
+
         // Upload to Vercel Blob
         const { put } = await import("@vercel/blob");
         const ext = mimeType.includes("png") ? "png" : "jpg";
