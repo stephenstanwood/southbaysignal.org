@@ -127,73 +127,6 @@ function createSharedPlanUrl(plan, dateStr) {
   return `https://southbaytoday.org/plan/${planId}`;
 }
 
-// ── Venue Photo Lookup ───────────────────────────────────────────────────
-// For tonight-pick and wildcard slots, look up a venue photo via Google Places
-// and upload to Vercel Blob so it's ready for social publishing.
-
-const PLACES_TEXT_SEARCH_URL = "https://places.googleapis.com/v1/places:searchText";
-
-async function fetchVenuePhotoRef(venueName, cityName) {
-  const apiKey = process.env.GOOGLE_PLACES_API_KEY;
-  if (!apiKey || !venueName) return null;
-  try {
-    const query = cityName ? `${venueName} ${cityName}` : venueName;
-    const res = await fetch(PLACES_TEXT_SEARCH_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-Api-Key": apiKey,
-        "X-Goog-FieldMask": "places.photos",
-      },
-      body: JSON.stringify({ textQuery: query, maxResultCount: 1 }),
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.places?.[0]?.photos?.[0]?.name || null;
-  } catch {
-    return null;
-  }
-}
-
-async function fetchAndUploadVenuePhoto(item, dateStr, slotType) {
-  const apiKey = process.env.GOOGLE_PLACES_API_KEY;
-  if (!apiKey) return null;
-
-  const venueName = item.venue || item.title || item.name;
-  if (!venueName) return null;
-
-  try {
-    const photoRef = await fetchVenuePhotoRef(venueName, item.cityName || item.city);
-    if (!photoRef) return null;
-
-    // Download the photo at 1080x1350 (4:5 portrait, same as Recraft posters)
-    const photoUrl = `https://places.googleapis.com/v1/${photoRef}/media?maxWidthPx=1080&maxHeightPx=1350&key=${apiKey}`;
-    const photoRes = await fetch(photoUrl, { redirect: "follow", signal: AbortSignal.timeout(10000) });
-    if (!photoRes.ok) return null;
-
-    const buffer = Buffer.from(await photoRes.arrayBuffer());
-    const contentType = photoRes.headers.get("content-type") || "image/jpeg";
-    const ext = contentType.includes("png") ? "png" : "jpg";
-
-    // Upload to Vercel Blob
-    const { put } = await import("@vercel/blob");
-    const pathname = `posters/${dateStr}-${slotType}-venue.${ext}`;
-    const result = await put(pathname, buffer, {
-      access: "public",
-      contentType,
-      allowOverwrite: true,
-      token: process.env.BLOB_READ_WRITE_TOKEN,
-    });
-
-    console.log(`    📷 Venue photo: ${venueName} → ${result.url.slice(0, 60)}...`);
-    return result.url;
-  } catch (err) {
-    console.log(`    📷 Venue photo failed: ${err.message}`);
-    return null;
-  }
-}
-
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 /** Pick the best plan for a given date, rotating through cities. */
@@ -433,10 +366,6 @@ async function main() {
         } else {
           try {
             const copy = await generateTonightPickCopy(tonight);
-
-            // Look up venue photo for social image
-            const venuePhotoUrl = await fetchAndUploadVenuePhoto(tonight, dateStr, "tonight-pick");
-
             day["tonight-pick"] = {
               status: "draft",
               slotType: "tonight-pick",
@@ -447,10 +376,10 @@ async function main() {
                 url: tonight.url, cost: tonight.cost, costNote: tonight.costNote,
               },
               copy,
-              imageUrl: venuePhotoUrl || null,
-              imageStyle: venuePhotoUrl ? "venue-photo" : null,
+              imageUrl: null,
+              imageStyle: null,
               copyApprovedAt: null,
-              imageApprovedAt: venuePhotoUrl ? new Date().toISOString() : null,
+              imageApprovedAt: null,
               generatedAt: new Date().toISOString(),
             };
             generated++;
@@ -476,10 +405,6 @@ async function main() {
         } else {
           try {
             const copy = await generateWildcardCopy(wild.item, wild.subtype);
-
-            // Look up venue photo for social image
-            const wildPhotoUrl = await fetchAndUploadVenuePhoto(wild.item, dateStr, "wildcard");
-
             day["wildcard"] = {
               status: "draft",
               slotType: "wildcard",
@@ -493,10 +418,10 @@ async function main() {
                 company: wild.item.company, foundedYear: wild.item.foundedYear,
               },
               copy,
-              imageUrl: wildPhotoUrl || null,
-              imageStyle: wildPhotoUrl ? "venue-photo" : null,
+              imageUrl: null,
+              imageStyle: null,
               copyApprovedAt: null,
-              imageApprovedAt: wildPhotoUrl ? new Date().toISOString() : null,
+              imageApprovedAt: null,
               generatedAt: new Date().toISOString(),
             };
             generated++;
