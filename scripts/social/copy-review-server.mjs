@@ -1225,6 +1225,10 @@ function renderExpandedSlot(dateStr, slotType, slot) {
   if (slot.imageUrl && !slot.imageApprovedAt) {
     html += '<button class="btn-approve-image" onclick="calAction(\\'' + dateStr + '\\', \\'' + slotType + '\\', \\'approve-image\\'); event.stopPropagation();">Approve Image</button>';
   }
+  // Approve Both — when copy is approved and image needs approval, or both need approval
+  if (slot.imageUrl && (!slot.copyApprovedAt || !slot.imageApprovedAt) && !(slot.copyApprovedAt && slot.imageApprovedAt)) {
+    html += '<button style="background:#059669;color:#fff;border-color:#059669" onclick="calApproveBoth(\\'' + dateStr + '\\', \\'' + slotType + '\\'); event.stopPropagation();">Approve Both</button>';
+  }
   // Image gen / regen for all slot types
   html += '<button class="btn-regen" onclick="calAction(\\'' + dateStr + '\\', \\'' + slotType + '\\', \\'regen-image\\'); event.stopPropagation();">' + (slot.imageUrl ? 'Regen Image' : 'Gen Image') + '</button>';
   // Regen plan button for day-plan slots
@@ -1293,6 +1297,10 @@ async function calAction(dateStr, slotType, action) {
     alert('Action failed: ' + err.message);
     renderCalendar();
   }
+}
+
+async function calApproveBoth(dateStr, slotType) {
+  calAction(dateStr, slotType, 'approve-both');
 }
 
 async function calEditCopy(dateStr, slotType) {
@@ -1674,7 +1682,7 @@ const server = createServer((req, res) => {
     return;
   }
 
-  const scheduleMatch = req.url?.match(/^\/api\/schedule\/(\d{4}-\d{2}-\d{2})\/(day-plan|tonight-pick|wildcard)\/(approve-copy|approve-image|regen-image|regen-plan|edit-copy)$/);
+  const scheduleMatch = req.url?.match(/^\/api\/schedule\/(\d{4}-\d{2}-\d{2})\/(day-plan|tonight-pick|wildcard)\/(approve-copy|approve-image|approve-both|regen-image|regen-plan|edit-copy)$/);
   if (req.method === "POST" && scheduleMatch) {
     const [, date, slotType, action] = scheduleMatch;
     let body = "";
@@ -1737,6 +1745,47 @@ const server = createServer((req, res) => {
           slot.imageApprovedAt = new Date().toISOString();
           slot.status = "image-approved";
           console.log(`  ✅ Image approved: ${date} ${slotType}`);
+          saveScheduleFile(schedule);
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ ok: true, schedule }));
+          return;
+        }
+
+        if (action === "approve-both") {
+          const now = new Date().toISOString();
+          if (!slot.copyApprovedAt) {
+            slot.copyApprovedAt = now;
+            console.log(`  ✅ Copy approved: ${date} ${slotType}`);
+
+            // Generate image if none exists (same logic as approve-copy)
+            if (!slot.imageUrl) {
+              try {
+                const { pickStyle, dayPlanPrompt, buildImagePrompt } = await import("./lib/poster-styles.mjs");
+                const { generateAndUpload } = await import("./lib/recraft.mjs");
+                const pathname = `posters/${date}-${slotType}-${Date.now()}.png`;
+                if (slotType === "day-plan" && slot.plan) {
+                  const style = pickStyle();
+                  const prompt = dayPlanPrompt(slot.plan, date, style.style);
+                  const { url } = await generateAndUpload({ prompt, pathname, colors: style.colors || undefined });
+                  slot.imageUrl = url;
+                  slot.imageStyle = style.id;
+                } else {
+                  const prompt = await buildImagePrompt(slot.copy?.x || "", slot.item?.category || "");
+                  const { url } = await generateAndUpload({ prompt, pathname });
+                  slot.imageUrl = url;
+                  slot.imageStyle = "abstract";
+                }
+                console.log(`  🎨 Image generated: ${slot.imageUrl.slice(0, 60)}`);
+              } catch (err) {
+                console.error(`  ⚠️  Image gen failed: ${err.message}`);
+              }
+            }
+          }
+          if (slot.imageUrl) {
+            slot.imageApprovedAt = now;
+          }
+          slot.status = slot.imageApprovedAt ? "image-approved" : "copy-approved";
+          console.log(`  ✅ Both approved: ${date} ${slotType}`);
           saveScheduleFile(schedule);
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ ok: true, schedule }));
