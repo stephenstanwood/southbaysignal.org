@@ -144,6 +144,10 @@ export const INTERNAL_EVENT_SIGNALS = [
   "admitted students",
   "prospective students",
   "commencement rehearsal",
+  "living with ocd",
+  "support group",
+  "counseling",
+  "therapy group",
 ];
 
 // SBS tab URLs for CTAs (hash-based routing with full tab IDs)

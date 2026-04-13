@@ -226,8 +226,8 @@ function pickTonightEvent(candidates, dateStr) {
   return scored[0];
 }
 
-/** Find wildcard content for a given date. */
-function pickWildcard(candidates, dateStr) {
+/** Find wildcard content for a given date. Avoids repeating recent picks. */
+function pickWildcard(candidates, dateStr, recentTitles = new Set()) {
   // 1. Check for SV history anniversary
   const date = new Date(dateStr + "T12:00:00");
   const month = date.getMonth() + 1;
@@ -277,27 +277,47 @@ function pickWildcard(candidates, dateStr) {
   } catch {}
 
   // 3. Fall back to general event — prefer events 1-3 days out from post date
-  //    (the 4:30 PM wildcard slot benefits from a little lead time)
+  //    Skip events already used in recent days (dedup)
   const postDate = new Date(dateStr + "T12:00:00");
   const nearFuture = candidates.filter((c) => {
     if (c.sourceType !== "event" || !c.date) return false;
+    // Skip if we already posted about this recently
+    const title = (c.title || c.name || "").toLowerCase();
+    if (recentTitles.has(title)) return false;
     const eventDate = new Date(c.date + "T12:00:00");
     const daysOut = Math.round((eventDate - postDate) / 86400000);
     return daysOut >= 0 && daysOut <= 3;
   });
   if (nearFuture.length > 0) {
-    nearFuture.sort((a, b) => (b.score || 0) - (a.score || 0));
-    return { subtype: "general", item: nearFuture[0] };
+    return { subtype: "general", item: weightedRandomPick(nearFuture) };
   }
 
-  // 4. Same-date events as fallback
-  const dateItems = candidates.filter((c) => c.date === dateStr && c.sourceType === "event");
+  // 4. Same-date events as fallback (also deduped)
+  const dateItems = candidates.filter((c) => {
+    if (c.date !== dateStr || c.sourceType !== "event") return false;
+    const title = (c.title || c.name || "").toLowerCase();
+    return !recentTitles.has(title);
+  });
   if (dateItems.length > 0) {
-    dateItems.sort((a, b) => (b.score || 0) - (a.score || 0));
-    return { subtype: "general", item: dateItems[0] };
+    return { subtype: "general", item: weightedRandomPick(dateItems) };
   }
 
   return null;
+}
+
+/** Pick from top candidates with weighted randomness — top 5 eligible, weighted by score. */
+function weightedRandomPick(items) {
+  items.sort((a, b) => (b.score || 0) - (a.score || 0));
+  const pool = items.slice(0, Math.min(5, items.length));
+  // Weight: first gets 5, second 4, etc.
+  const weights = pool.map((_, i) => pool.length - i);
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < pool.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return pool[i];
+  }
+  return pool[0];
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────
@@ -321,6 +341,10 @@ async function main() {
 
   let generated = 0;
   let skipped = 0;
+
+  // Track recent wildcard/tonight titles to avoid repeats across days
+  const recentWildcardTitles = new Set();
+  const recentTonightTitles = new Set();
 
   for (let offset = 0; offset < daysAhead; offset++) {
     const dateStr = addDays(today, offset);
@@ -438,7 +462,7 @@ async function main() {
 
     // ── Wildcard (4:30 PM) ──────────────────────────────────────────────
     if (!day["wildcard"] || day["wildcard"].status === "draft") {
-      const wild = pickWildcard(scored, dateStr);
+      const wild = pickWildcard(scored, dateStr, recentWildcardTitles);
       if (wild) {
         if (dryRun) {
           console.log(`    🎲 Wildcard: [${wild.subtype}] ${wild.item.title?.slice(0, 50) || wild.item.name?.slice(0, 50)} [dry run]`);
@@ -465,6 +489,7 @@ async function main() {
               generatedAt: new Date().toISOString(),
             };
             generated++;
+            recentWildcardTitles.add((wild.item.title || wild.item.name || "").toLowerCase());
             console.log(`    🎲 Wildcard: [${wild.subtype}] ${(wild.item.title || wild.item.name || "").slice(0, 50)} ✅`);
           } catch (err) {
             console.log(`    🎲 Wildcard: ❌ ${err.message}`);
@@ -475,6 +500,9 @@ async function main() {
       }
     } else {
       skipped++;
+      // Track existing wildcard title for dedup
+      const existingTitle = day["wildcard"]?.item?.title || day["wildcard"]?.item?.name || "";
+      if (existingTitle) recentWildcardTitles.add(existingTitle.toLowerCase());
       console.log(`    🎲 Wildcard: already ${day["wildcard"].status}`);
     }
 
