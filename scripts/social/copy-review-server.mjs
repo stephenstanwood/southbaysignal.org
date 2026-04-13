@@ -696,24 +696,28 @@ function switchTab(tab) {
   document.getElementById('tab-replies').className = 'tab-btn' + (tab === 'replies' ? ' active' : '');
   document.getElementById('calendar-view').style.display = tab === 'calendar' ? '' : 'none';
   if (tab === 'calendar') loadCalendar();
-  document.getElementById('review-tab').style.display = tab === 'review' ? '' : 'none';
   document.getElementById('replies-view').style.display = tab === 'replies' ? '' : 'none';
   if (tab === 'replies') loadReplies();
 }
 
 function updateTabCounts(draftCount, repliesNewCount) {
-  document.getElementById('tab-review-count').textContent = draftCount > 0 ? '(' + draftCount + ' drafts)' : '';
-  document.getElementById('tab-replies-count').textContent = repliesNewCount > 0 ? '(' + repliesNewCount + ' new)' : '';
+  const rc = document.getElementById('tab-replies-count');
+  if (rc) rc.textContent = repliesNewCount > 0 ? '(' + repliesNewCount + ' new)' : '';
 }
 
 function updateQueueBadge(size) {
   queueSize = size;
   const el = document.getElementById('queue-badge');
-  el.textContent = size + ' approved, unpublished';
-  el.className = 'queue-badge' + (size < 40 ? ' low' : size < 60 ? ' mid' : '');
+  if (el) {
+    el.textContent = size + ' approved, unpublished';
+    el.className = 'queue-badge' + (size < 40 ? ' low' : size < 60 ? ' mid' : '');
+  }
 }
 
 async function init() {
+  // Load calendar immediately since it's the default tab
+  loadCalendar();
+
   const res = await fetch('/api/posts');
   const data = await res.json();
   posts = data.posts;
