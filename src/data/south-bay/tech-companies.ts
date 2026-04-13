@@ -1423,6 +1423,18 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     color: "#7c3aed",
     url: "https://etched.com",
   },
+  {
+    id: "qualified-health",
+    name: "Qualified Health",
+    city: "Palo Alto",
+    category: "medtech",
+    round: "Series B",
+    amount: "$125M",
+    date: "2026-03-25",
+    tagline: "Enterprise AI platform for health systems — a secure operating layer that unifies workflows, AI models, and governance across hospital networks. 500K users at 16 health systems including Mercy, Emory, and UT System. Co-founded by Beau Norgeot (former VP of AI at Elevance) and Nirav Shah (Stanford Medicine). NEA-led $125M round brings total raised to $155M.",
+    color: "#0369a1",
+    url: "https://www.qualifiedhealthai.com",
+  },
 ];
 
 // Pulse stats for the header strip
@@ -1440,7 +1452,7 @@ export const TECH_PULSE = [
   {
     value: "$6B+",
     label: "Raised in Q1–Q2 2026",
-    note: "34 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
+    note: "35 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
   },
   {
     value: "Chip equipment",
