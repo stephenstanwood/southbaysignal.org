@@ -250,3 +250,32 @@ ${styleDirection}
 
 NOT a photograph — graphic design poster. All text must be spelled correctly and fully legible.`;
 }
+
+// ── Abstract image prompts (no text, no people) ─────────────────────────
+// Used for tonight-pick and wildcard slots — mood/concept imagery only.
+
+/**
+ * Build an abstract Recraft prompt from social post copy.
+ * @param {string} postCopy - The social post text (X variant works well)
+ * @param {string} category - Event category hint (arts, food, tech, etc.)
+ * @returns {string}
+ */
+export function abstractImagePrompt(postCopy, category) {
+  const moodHints = {
+    arts: "sound waves, stage lighting, flowing rhythm, performance energy",
+    music: "sound waves, equalizer bars, vinyl grooves, sonic ripples",
+    food: "warm gradients, organic shapes, steam wisps, kitchen textures",
+    tech: "circuit patterns, data streams, pixel grids, digital geometry",
+    sports: "motion lines, dynamic angles, kinetic energy, arena lights",
+    community: "interlocking shapes, gathering patterns, warm mosaic, connected forms",
+    education: "book spines, knowledge trees, layered pages, discovery spirals",
+  };
+  const mood = moodHints[category] || "geometric patterns, color fields, bold shapes, visual rhythm";
+
+  return `Abstract, graphic design illustration. NO PEOPLE — no faces, no hands, no human figures. NO TEXT — no words, no typography, no logos, no watermarks.
+
+Inspired by this social post (for mood/concept only, do NOT render the words):
+"${postCopy.slice(0, 200)}"
+
+Create a bold, stylized composition using abstract shapes, color fields, and visual metaphors. Think: ${mood}. Modern editorial illustration — between a gig poster background and album art. Rich saturated colors, strong composition, visually striking at thumbnail size. 4:5 portrait ratio.`;
+}

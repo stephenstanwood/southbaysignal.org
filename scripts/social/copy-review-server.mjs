@@ -646,6 +646,8 @@ const HTML = `<!DOCTYPE html>
   .cal-slot.empty .cal-slot-title { color: #bbb; font-style: italic; }
 
   /* Calendar expanded slot */
+  .cal-slot.approved-collapsed .cal-slot-header { opacity: 0.6; }
+  .cal-slot.approved-collapsed:hover .cal-slot-header { opacity: 1; }
   .cal-expanded {
     padding: 16px 20px 20px; background: #faf9f6;
   }
@@ -1054,6 +1056,7 @@ document.addEventListener('keydown', (e) => {
 // --- Calendar ---
 
 let scheduleData = {};
+let expandedSlots = {};
 
 const SLOT_META = {
   'day-plan': { label: '7:15 AM — Day Plan', icon: '\\ud83d\\udccb', color: '#d4a017', hour: 7, minute: 15 },
@@ -1114,20 +1117,30 @@ function renderCalendar() {
     const isToday = dateStr === today;
     const dayData = days[dateStr] || {};
 
+    // Skip entire day if all slots are missed
+    const activeSlots = SLOT_ORDER.filter(st => !slotIsMissed(dateStr, st, dayData[st]));
+    if (activeSlots.length === 0) continue;
+
+    // Collect slot badges for the day header
+    let headerBadges = '';
+    for (const st of SLOT_ORDER) {
+      const s = dayData[st];
+      if (!s || slotIsMissed(dateStr, st, s)) continue;
+      const fullyApproved = s.copyApprovedAt && s.imageApprovedAt;
+      const slotLabel = SLOT_META[st].icon;
+      if (s.status === 'published') {
+        headerBadges += '<span class="cal-badge published" style="margin-left:6px">' + slotLabel + ' Published</span>';
+      } else if (fullyApproved) {
+        headerBadges += '<span class="cal-badge copy-approved" style="margin-left:6px">' + slotLabel + ' Ready</span>';
+      }
+    }
+
     html += '<div class="cal-day' + (isToday ? ' today' : '') + '">';
     html += '<div class="cal-day-header">';
     html += '<h3>' + dayName + (isToday ? ' (Today)' : '') + '</h3>';
-    html += '<span class="cal-date">' + monthDay + '</span>';
+    html += '<div style="display:flex;align-items:center;gap:4px"><span class="cal-date">' + monthDay + '</span>' + headerBadges + '</div>';
     html += '</div>';
     html += '<div class="cal-slots">';
-
-    // Skip entire day if all slots are missed
-    const activeSlots = SLOT_ORDER.filter(st => !slotIsMissed(dateStr, st, dayData[st]));
-    if (activeSlots.length === 0) {
-      // Close the day div without rendering slots
-      html += '</div></div>';
-      continue;
-    }
 
     for (const slotType of SLOT_ORDER) {
       const slot = dayData[slotType];
@@ -1138,9 +1151,10 @@ function renderCalendar() {
       if (missed) continue;
 
       const isEmpty = !slot;
+      const fullyApproved = slot && slot.copyApprovedAt && slot.imageApprovedAt && slot.status !== 'published';
 
-      html += '<div class="cal-slot' + (isEmpty ? ' empty' : '') + '">';
-      html += '<div class="cal-slot-header">';
+      html += '<div class="cal-slot' + (isEmpty ? ' empty' : '') + (fullyApproved ? ' approved-collapsed' : '') + '">';
+      html += '<div class="cal-slot-header"' + (fullyApproved ? ' onclick="toggleCalSlot(\\'' + dateStr + '\\', \\'' + slotType + '\\')" style="cursor:pointer"' : '') + '>';
       html += '<div class="cal-slot-type ' + slotType + '">' + meta.icon + ' ' + meta.label + '</div>';
 
       if (slot) {
@@ -1163,8 +1177,8 @@ function renderCalendar() {
 
       html += '</div>'; // close cal-slot-header
 
-      // Always show expanded content
-      if (slot) {
+      // Collapse fully-approved slots — show expanded only if not approved or force-expanded
+      if (slot && (!fullyApproved || expandedSlots[dateStr + ':' + slotType])) {
         html += renderExpandedSlot(dateStr, slotType, slot);
       }
 
@@ -1228,7 +1242,7 @@ function renderExpandedSlot(dateStr, slotType, slot) {
 
   // Edit area
   html += '<div class="cal-edit-area">';
-  html += '<input class="cal-edit-input" id="cal-edit-' + dateStr + '-' + slotType + '" placeholder="Edit instructions..." onclick="event.stopPropagation()">';
+  html += '<input class="cal-edit-input" id="cal-edit-' + dateStr + '-' + slotType + '" placeholder="Edit instructions..." onclick="event.stopPropagation()" onkeydown="if(event.key===\\'Enter\\'){calEditCopy(\\'' + dateStr + '\\', \\'' + slotType + '\\'); event.preventDefault();}">';
   html += '<button style="margin-top:6px;padding:6px 14px;border-radius:6px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer" onclick="calEditCopy(\\'' + dateStr + '\\', \\'' + slotType + '\\'); event.stopPropagation();">Submit Edits</button>';
   html += '</div>';
 
@@ -1236,7 +1250,11 @@ function renderExpandedSlot(dateStr, slotType, slot) {
   return html;
 }
 
-// All slots render expanded by default — no toggle needed
+function toggleCalSlot(dateStr, slotType) {
+  const key = dateStr + ':' + slotType;
+  expandedSlots[key] = !expandedSlots[key];
+  renderCalendar();
+}
 
 async function calAction(dateStr, slotType, action) {
   try {
@@ -1619,7 +1637,7 @@ const server = createServer((req, res) => {
 
         slot.imageUrl = result.url;
         slot.imageStyle = "upload";
-        slot.imageApprovedAt = null; // reset for re-approval
+        slot.imageApprovedAt = new Date().toISOString(); // auto-approve uploads
         console.log(`  📤 Image uploaded: ${date} ${slotType} → ${result.url.slice(0, 60)}...`);
 
         saveScheduleFile(schedule);
@@ -1654,29 +1672,38 @@ const server = createServer((req, res) => {
           slot.status = "copy-approved";
           console.log(`  ✅ Copy approved: ${date} ${slotType}`);
 
-          // Trigger Recraft poster generation (day-plan only)
-          // Tonight pick and wildcard use venue photos instead
-          if (slotType === "day-plan") {
-          try {
-            const { pickStyle, dayPlanPrompt } = await import("./lib/poster-styles.mjs");
+          // Trigger Recraft image generation — skip if image already approved
+          if (slot.imageApprovedAt) {
+            console.log(`  ⏭️  Image already approved — keeping existing`);
+          } else try {
+            const { pickStyle, dayPlanPrompt, abstractImagePrompt } = await import("./lib/poster-styles.mjs");
             const { generateAndUpload } = await import("./lib/recraft.mjs");
-            const style = pickStyle();
             let prompt;
-            if (slot.plan) {
+
+            if (slotType === "day-plan" && slot.plan) {
+              // Day plan: text-heavy poster with style
+              const style = pickStyle();
               prompt = dayPlanPrompt(slot.plan, date, style.style);
-            }
-            if (prompt) {
-              console.log(`  🎨 Generating Recraft image (${style.id})...`);
+              console.log(`  🎨 Generating day plan poster (${style.id})...`);
               const pathname = `posters/${date}-${slotType}.png`;
               const { url } = await generateAndUpload({ prompt, pathname, colors: style.colors || undefined });
               slot.imageUrl = url;
               slot.imageStyle = style.id;
-              console.log(`  ✅ Image generated: ${url.slice(0, 80)}`);
+            } else {
+              // Tonight pick / wildcard: abstract design, no text, no people
+              const postCopy = slot.copy?.x || "";
+              const category = slot.item?.category || "";
+              prompt = abstractImagePrompt(postCopy, category);
+              console.log(`  🎨 Generating abstract image for ${slotType}...`);
+              const pathname = `posters/${date}-${slotType}.png`;
+              const { url } = await generateAndUpload({ prompt, pathname });
+              slot.imageUrl = url;
+              slot.imageStyle = "abstract";
             }
+            console.log(`  ✅ Image generated: ${slot.imageUrl.slice(0, 80)}`);
           } catch (err) {
             console.error(`  ⚠️  Recraft generation failed: ${err.message}`);
           }
-          } // end day-plan image gen
 
           saveScheduleFile(schedule);
           res.writeHead(200, { "Content-Type": "application/json" });
