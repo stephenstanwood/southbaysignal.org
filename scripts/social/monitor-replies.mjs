@@ -1,7 +1,7 @@
 #!/usr/bin/env /opt/homebrew/bin/node
 // ---------------------------------------------------------------------------
-// South Bay Signal — Reply Monitor & Auto-Interaction
-// Monitors replies on Bluesky, Threads, Facebook, and X (Twitter).
+// South Bay Today — Reply Monitor & Auto-Interaction
+// Monitors replies on Bluesky, Threads, Facebook, X, Instagram, and Mastodon.
 // Classifies replies with Claude Haiku and auto-acts on simple ones.
 //
 // Usage: node scripts/social/monitor-replies.mjs [--dry-run]
@@ -21,6 +21,9 @@ const BSKY_API = "https://bsky.social/xrpc";
 const THREADS_API = "https://graph.threads.net/v1.0";
 const FB_API = "https://graph.facebook.com/v25.0";
 const X_API = "https://api.twitter.com";
+const IG_API = "https://graph.instagram.com/v25.0";
+const MASTODON_INSTANCE = process.env.MASTODON_INSTANCE || "https://mastodon.social";
+const MASTODON_API = `${MASTODON_INSTANCE}/api/v1`;
 const LOOKBACK_DAYS = 7;
 
 // Load env
@@ -575,6 +578,212 @@ async function threadsReply(text, replyToId) {
   return true;
 }
 
+// ── Instagram: fetch comments ───────────────────────────────────────────
+
+async function fetchInstagramReplies(published) {
+  const token = process.env.INSTAGRAM_ACCESS_TOKEN;
+  if (!token) {
+    console.log("   instagram: skipped (no INSTAGRAM_ACCESS_TOKEN)");
+    return [];
+  }
+
+  const allReplies = [];
+
+  for (const post of published) {
+    const igEntry = post.publishedTo.find((e) => e.platform === "instagram" && e.ok && (e.postId || e.id));
+    if (!igEntry) continue;
+
+    const mediaId = igEntry.postId || igEntry.id;
+    const title = post.item?.title || "Untitled";
+
+    try {
+      const fields = "id,text,username,timestamp";
+      const res = await fetch(
+        `${IG_API}/${mediaId}/comments?fields=${fields}&access_token=${token}`
+      );
+      if (!res.ok) {
+        const body = await res.text();
+        console.log(`   instagram comments failed for "${title}" (${res.status}): ${body.slice(0, 120)}`);
+        continue;
+      }
+      const data = await res.json();
+      for (const comment of data.data || []) {
+        allReplies.push({
+          id: `ig-${comment.id}`,
+          platform: "instagram",
+          postTitle: title,
+          postId: mediaId,
+          author: comment.username || "unknown",
+          text: comment.text || "",
+          timestamp: comment.timestamp || new Date().toISOString(),
+          permalink: `https://www.instagram.com/p/${igEntry.shortcode || mediaId}/`,
+          igCommentId: comment.id,
+          classified: null,
+          responded: false,
+          liked: false,
+          action: null,
+          actionNote: null,
+        });
+      }
+    } catch (err) {
+      console.log(`   instagram error for "${title}": ${err.message}`);
+    }
+
+    await sleep(200);
+  }
+
+  return allReplies;
+}
+
+// ── Mastodon: fetch replies & mentions ──────────────────────────────────
+
+async function fetchMastodonReplies(published) {
+  const token = process.env.MASTODON_ACCESS_TOKEN;
+  if (!token) {
+    console.log("   mastodon: skipped (no MASTODON_ACCESS_TOKEN)");
+    return [];
+  }
+
+  const headers = { Authorization: `Bearer ${token}` };
+  const allReplies = [];
+  const cutoff = Date.now() - LOOKBACK_DAYS * 24 * 60 * 60 * 1000;
+
+  // 1. Check thread replies on our published posts
+  for (const post of published) {
+    const mastoEntry = post.publishedTo.find((e) => e.platform === "mastodon" && e.ok && (e.postId || e.id));
+    if (!mastoEntry) continue;
+
+    const statusId = mastoEntry.postId || mastoEntry.id;
+    const title = post.item?.title || "Untitled";
+
+    try {
+      const res = await fetch(`${MASTODON_API}/statuses/${statusId}/context`, { headers });
+      if (!res.ok) {
+        console.log(`   mastodon context failed for "${title}" (${res.status})`);
+        continue;
+      }
+      const data = await res.json();
+      for (const reply of data.descendants || []) {
+        if (new Date(reply.created_at).getTime() < cutoff) continue;
+        // Skip our own replies
+        const ourAccount = process.env.MASTODON_ACCOUNT_ID;
+        if (ourAccount && reply.account?.id === ourAccount) continue;
+
+        allReplies.push({
+          id: `mastodon-${reply.id}`,
+          platform: "mastodon",
+          postTitle: title,
+          postId: statusId,
+          author: reply.account?.acct || reply.account?.username || "unknown",
+          text: reply.content?.replace(/<[^>]+>/g, "") || "",
+          timestamp: reply.created_at || new Date().toISOString(),
+          permalink: reply.url || reply.uri || "",
+          mastodonStatusId: reply.id,
+          classified: null,
+          responded: false,
+          liked: false,
+          action: null,
+          actionNote: null,
+        });
+      }
+    } catch (err) {
+      console.log(`   mastodon error for "${title}": ${err.message}`);
+    }
+
+    await sleep(200);
+  }
+
+  // 2. Check notifications for mentions
+  try {
+    const res = await fetch(
+      `${MASTODON_API}/notifications?types[]=mention&limit=40`,
+      { headers }
+    );
+    if (res.ok) {
+      const notifications = await res.json();
+      for (const notif of notifications) {
+        if (new Date(notif.created_at).getTime() < cutoff) continue;
+        const status = notif.status;
+        if (!status) continue;
+
+        const id = `mastodon-notif-${status.id}`;
+        if (allReplies.some((r) => r.mastodonStatusId === status.id)) continue;
+
+        // Try to match to a published post
+        let postTitle = "(mention)";
+        if (status.in_reply_to_id) {
+          for (const post of published) {
+            const entry = post.publishedTo?.find((e) => e.platform === "mastodon" && e.ok);
+            const pid = entry?.postId || entry?.id;
+            if (pid === status.in_reply_to_id) {
+              postTitle = post.item?.title || "Untitled";
+              break;
+            }
+          }
+        }
+
+        allReplies.push({
+          id,
+          platform: "mastodon",
+          postTitle,
+          postId: status.in_reply_to_id || status.id,
+          author: status.account?.acct || status.account?.username || "unknown",
+          text: status.content?.replace(/<[^>]+>/g, "") || "",
+          timestamp: status.created_at || new Date().toISOString(),
+          permalink: status.url || status.uri || "",
+          mastodonStatusId: status.id,
+          classified: null,
+          responded: false,
+          liked: false,
+          action: null,
+          actionNote: null,
+        });
+      }
+    }
+  } catch (err) {
+    console.log(`   mastodon notifications error: ${err.message}`);
+  }
+
+  return allReplies;
+}
+
+// ── Mastodon: interaction helpers ───────────────────────────────────────
+
+async function mastodonFavourite(statusId) {
+  const token = process.env.MASTODON_ACCESS_TOKEN;
+  if (!token) throw new Error("Missing MASTODON_ACCESS_TOKEN");
+  const res = await fetch(`${MASTODON_API}/statuses/${statusId}/favourite`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Mastodon favourite failed (${res.status}): ${body}`);
+  }
+  return true;
+}
+
+async function mastodonReply(text, inReplyToId) {
+  const token = process.env.MASTODON_ACCESS_TOKEN;
+  if (!token) throw new Error("Missing MASTODON_ACCESS_TOKEN");
+  const res = await fetch(`${MASTODON_API}/statuses`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      status: text,
+      in_reply_to_id: inReplyToId,
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Mastodon reply failed (${res.status}): ${body}`);
+  }
+  return true;
+}
+
 // ── Claude classification ────────────────────────────────────────────────
 
 async function classifyReply(reply) {
@@ -809,9 +1018,19 @@ async function main() {
   console.log("   x...");
   const xReplies = await fetchXMentions(published);
   console.log(`   x: ${xReplies.length} total replies`);
+  await sleep(500);
+
+  console.log("   instagram...");
+  const igReplies = await fetchInstagramReplies(published);
+  console.log(`   instagram: ${igReplies.length} total replies`);
+  await sleep(500);
+
+  console.log("   mastodon...");
+  const mastodonReplies = await fetchMastodonReplies(published);
+  console.log(`   mastodon: ${mastodonReplies.length} total replies`);
 
   // De-duplicate: only add new replies
-  const allNew = [...bskyReplies, ...threadsReplies, ...fbReplies, ...xReplies];
+  const allNew = [...bskyReplies, ...threadsReplies, ...fbReplies, ...xReplies, ...igReplies, ...mastodonReplies];
   const newReplies = allNew.filter((r) => !existingIds.has(r.id));
 
   console.log(`\n   ${allNew.length} total fetched, ${newReplies.length} new`);
@@ -892,6 +1111,22 @@ async function main() {
               } catch (err) {
                 console.log(`   [x] like failed: ${err.message}`);
               }
+            }
+          }
+        } else if (reply.platform === "instagram") {
+          reply.actionNote = "would_like (IG comment like needs ig_manage_comments)";
+          console.log(`   [instagram] skipped like (needs permission) for @${reply.author}`);
+        } else if (reply.platform === "mastodon" && reply.mastodonStatusId) {
+          if (dryRun) {
+            console.log(`   [mastodon] would favourite @${reply.author}'s reply`);
+          } else {
+            try {
+              await mastodonFavourite(reply.mastodonStatusId);
+              reply.liked = true;
+              console.log(`   [mastodon] favourited @${reply.author}'s reply`);
+              stats.liked++;
+            } catch (err) {
+              console.log(`   [mastodon] favourite failed: ${err.message}`);
             }
           }
         }
@@ -995,6 +1230,33 @@ async function main() {
           reply.actionNote = `would_respond: ${responseText}`;
           console.log(`   [facebook] drafted reply to @${reply.author}: "${responseText.slice(0, 80)}"`);
           stats.drafted++;
+        } else if (reply.platform === "instagram") {
+          reply.actionNote = `would_respond: ${responseText}`;
+          console.log(`   [instagram] drafted reply to @${reply.author}: "${responseText.slice(0, 80)}" (needs ig_manage_comments)`);
+          stats.drafted++;
+        } else if (reply.platform === "mastodon" && reply.mastodonStatusId) {
+          if (dryRun) {
+            console.log(`   [mastodon] would reply to @${reply.author}: "${responseText.slice(0, 80)}"`);
+            stats.drafted++;
+          } else {
+            try {
+              await mastodonReply(responseText, reply.mastodonStatusId);
+              reply.responded = true;
+              reply.actionNote = responseText;
+              console.log(`   [mastodon] replied to @${reply.author}: "${responseText.slice(0, 80)}"`);
+              stats.responded++;
+              await sleep(200);
+              // Also favourite the reply
+              try {
+                await mastodonFavourite(reply.mastodonStatusId);
+                reply.liked = true;
+              } catch {}
+            } catch (err) {
+              console.log(`   [mastodon] reply failed: ${err.message}`);
+              reply.actionNote = `draft: ${responseText} (send failed: ${err.message})`;
+              stats.drafted++;
+            }
+          }
         }
 
         // Flag actionable factual corrections for follow-up
