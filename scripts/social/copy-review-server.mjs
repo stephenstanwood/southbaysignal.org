@@ -1051,10 +1051,30 @@ document.addEventListener('keydown', (e) => {
 let scheduleData = {};
 
 const SLOT_META = {
-  'day-plan': { label: '7:15 AM — Day Plan', icon: '\\ud83d\\udccb', color: '#d4a017' },
-  'tonight-pick': { label: '11:45 AM — Tonight Pick', icon: '\\ud83c\\udf19', color: '#8b5cf6' },
-  'wildcard': { label: '4:30 PM — Wildcard', icon: '\\ud83c\\udfb2', color: '#059669' },
+  'day-plan': { label: '7:15 AM — Day Plan', icon: '\\ud83d\\udccb', color: '#d4a017', hour: 7, minute: 15 },
+  'tonight-pick': { label: '11:45 AM — Tonight Pick', icon: '\\ud83c\\udf19', color: '#8b5cf6', hour: 11, minute: 45 },
+  'wildcard': { label: '4:30 PM — Wildcard', icon: '\\ud83c\\udfb2', color: '#059669', hour: 16, minute: 30 },
 };
+
+function nowPT() {
+  return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+}
+
+function slotIsMissed(dateStr, slotType, slot) {
+  // Already published — always show
+  if (slot?.status === 'published') return false;
+  const now = nowPT();
+  const today = todayStr();
+  // Past days — all slots missed
+  if (dateStr < today) return true;
+  // Future days — nothing missed
+  if (dateStr > today) return false;
+  // Today — check if publish window has passed
+  const meta = SLOT_META[slotType];
+  const slotMinutes = meta.hour * 60 + meta.minute;
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+  return nowMinutes > slotMinutes;
+}
 
 const SLOT_ORDER = ['day-plan', 'tonight-pick', 'wildcard'];
 const DAY_NAMES_CAL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -1096,9 +1116,22 @@ function renderCalendar() {
     html += '</div>';
     html += '<div class="cal-slots">';
 
+    // Skip entire day if all slots are missed
+    const activeSlots = SLOT_ORDER.filter(st => !slotIsMissed(dateStr, st, dayData[st]));
+    if (activeSlots.length === 0) {
+      // Close the day div without rendering slots
+      html += '</div></div>';
+      continue;
+    }
+
     for (const slotType of SLOT_ORDER) {
       const slot = dayData[slotType];
       const meta = SLOT_META[slotType];
+      const missed = slotIsMissed(dateStr, slotType, slot);
+
+      // Hide missed slots entirely
+      if (missed) continue;
+
       const isEmpty = !slot;
 
       html += '<div class="cal-slot' + (isEmpty ? ' empty' : '') + '">';
