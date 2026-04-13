@@ -1813,9 +1813,14 @@ const server = createServer((req, res) => {
             try {
               const repoRoot = join(__dirname, "..", "..");
               const { execSync } = await import("node:child_process");
-              execSync("git add src/data/south-bay/shared-plans.json", { cwd: repoRoot, stdio: "pipe" });
-              execSync('git commit -m "data: update shared plans from schedule regen"', { cwd: repoRoot, stdio: "pipe" });
-              execSync("git push", { cwd: repoRoot, stdio: "pipe" });
+              const opts = { cwd: repoRoot, stdio: "pipe" };
+              execSync("git add src/data/south-bay/shared-plans.json", opts);
+              execSync('git commit -m "data: update shared plans from schedule regen"', opts);
+              // Pull first in case remote is ahead, then push
+              try { execSync("git stash", opts); } catch {}
+              try { execSync("git pull --rebase origin main", opts); } catch {}
+              try { execSync("git stash pop", opts); } catch {}
+              execSync("git push origin main", opts);
               console.log("  📎 shared-plans.json committed and pushed");
             } catch (e) {
               console.warn(`  ⚠️  Failed to auto-push shared-plans.json: ${e.message}`);
