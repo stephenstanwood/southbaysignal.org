@@ -64,6 +64,7 @@ const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "upcoming-eve
 const BLACKLIST_PATH = join(__dirname, "..", "src", "data", "south-bay", "social-blacklist.json");
 const BOOKSTORE_EVENTS_PATH = join(__dirname, "..", "src", "data", "south-bay", "bookstore-events.json");
 const PLAYWRIGHT_EVENTS_PATH = join(__dirname, "..", "src", "data", "south-bay", "playwright-events.json");
+const INBOUND_EVENTS_PATH = join(__dirname, "..", "src", "data", "south-bay", "inbound-events.json");
 
 // Load dynamic blacklist from social review pipeline (venues, sources, titles)
 let _blacklist;
@@ -3142,6 +3143,66 @@ function fetchPlaywrightEvents() {
   }
 }
 
+// ── Inbound-email events (extracted from city newsletters by /api/admin/events/intake) ──
+// The webhook on Vercel writes to Vercel Blob; pull-inbound-events.mjs on the Mini
+// mirrors Blob → inbound-events.json, which this function then merges in.
+
+function fetchInboundEvents() {
+  console.log("  ⏳ Inbound-email events...");
+  try {
+    if (!existsSync(INBOUND_EVENTS_PATH)) {
+      console.log("  ⚠️  Inbound events: no data file (run pull-inbound-events.mjs on Mini)");
+      return [];
+    }
+    const { events } = JSON.parse(readFileSync(INBOUND_EVENTS_PATH, "utf8"));
+    const today = new Date().toISOString().split("T")[0];
+
+    const out = [];
+    for (const e of events || []) {
+      if (!e.startsAt || !e.title) continue;
+      if (e.status === "rejected") continue;
+
+      const dateKey = e.startsAt.slice(0, 10);
+      if (dateKey < today) continue;
+      if (!e.cityKey) continue; // Skip events we couldn't geo-place
+
+      const startDate = new Date(e.startsAt);
+      if (isNaN(startDate.getTime())) continue;
+
+      // Extract a human time string from the ISO timestamp in PT
+      const time = startDate.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: "America/Los_Angeles",
+      }).toLowerCase();
+
+      out.push({
+        id: h("inbound", e.id, dateKey, e.title),
+        title: e.title,
+        date: dateKey,
+        displayDate: displayDate(startDate),
+        time,
+        endTime: null,
+        venue: e.location ?? "",
+        address: e.location ?? "",
+        city: e.cityKey,
+        category: "community",
+        cost: null,
+        description: e.description ?? "",
+        url: e.sourceUrl ?? "",
+        source: "City Newsletter",
+        kidFriendly: false,
+      });
+    }
+    console.log(`  ✅ Inbound events: ${out.length} events`);
+    return out;
+  } catch (err) {
+    console.log(`  ⚠️  Inbound events: ${err.message}`);
+    return [];
+  }
+}
+
 // ── History San Jose (WordPress HTML scrape) ──
 
 async function fetchHistorySanJoseEvents() {
@@ -3284,6 +3345,7 @@ async function main() {
     fetchJamsjEvents,
     fetchHistorySanJoseEvents,
     fetchPlaywrightEvents,
+    fetchInboundEvents,
   ];
 
   const results = await Promise.allSettled(sources.map((fn) => fn()));
