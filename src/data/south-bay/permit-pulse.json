@@ -1,31 +1,19 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-13T23:10:01.355Z",
+      "generatedAt": "2026-04-14T11:12:33.954Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Apr 6 – Apr 13",
+      "dateRange": "Apr 7 – Apr 14",
       "stats": {
-        "total": 393,
-        "notable": 23,
-        "newUnits": 11,
-        "totalValuation": 28372650
+        "total": 308,
+        "notable": 18,
+        "newUnits": 4,
+        "totalValuation": 21879580
       },
       "permits": [
-        {
-          "id": "2026-109968-MF",
-          "address": "0 Seely Av",
-          "category": "multi-family-new",
-          "categoryLabel": "New Multi-Family",
-          "workType": "New Construction",
-          "description": "Trimble Summerhill Build a New 6-Plex",
-          "valuation": 2069400,
-          "units": 6,
-          "issueDate": "2026-04-07",
-          "subtype": "Townhouse"
-        },
         {
           "id": "2024-113033-RS",
           "address": "3327 Delta Rd",
@@ -75,18 +63,6 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2024-113797-RS",
-          "address": "1971 Camargo Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "New Detached adu",
-          "valuation": 53263,
-          "units": 1,
-          "issueDate": "2026-04-07",
-          "subtype": "2nd Unit Added"
-        },
-        {
           "id": "2026-112055-CI",
           "address": "1768 Automation Py",
           "category": "commercial-large",
@@ -133,33 +109,81 @@
           "units": 0,
           "issueDate": "2026-04-08",
           "subtype": "R & D Lab"
+        },
+        {
+          "id": "2026-111087-CI",
+          "address": "5079 Disk Dr",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Ti Rack Lab",
+          "valuation": 425000,
+          "units": 0,
+          "issueDate": "2026-04-08",
+          "subtype": "R & D Lab"
+        },
+        {
+          "id": "2026-111618-CI",
+          "address": "3062 Story Rd",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Karavan Coffee ti",
+          "valuation": 350000,
+          "units": 0,
+          "issueDate": "2026-04-10",
+          "subtype": "Restaurant"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-13T23:10:03.729Z",
+      "generatedAt": "2026-04-14T11:12:36.306Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Apr 6 – Apr 13",
+      "dateRange": "Apr 7 – Apr 14",
       "stats": {
-        "total": 113,
-        "notable": 11,
+        "total": 129,
+        "notable": 13,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
         {
-          "id": "26BLD-00894",
-          "address": "2487 Burnham Wy",
+          "id": "26BLD-00912",
+          "address": "697 Florales Dr",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "Res: EV charger installation",
+          "description": "200 Amp upgrade in the same location",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-06",
+          "issueDate": "2026-04-08",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00940",
+          "address": "350 Campesino Av",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "RES Reroute kitchen and laundry sewer drain via open trench. Approx 50'. All on property.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-09",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00954",
+          "address": "3179 Stockton Pl",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-10",
           "subtype": "Permit Issued"
         },
         {
@@ -175,20 +199,8 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00896",
-          "address": "3032 Waverley St",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-07",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00909",
-          "address": "837 Ilima Ct",
+          "id": "26BLD-00905",
+          "address": "541 Maybell Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -211,18 +223,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00931",
-          "address": "250 Churchill Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-09",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00957",
           "address": "1066 Maddux Dr",
           "category": "residential-large",
@@ -235,8 +235,20 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00905",
-          "address": "541 Maybell Av",
+          "id": "26BLD-00931",
+          "address": "250 Churchill Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-09",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00909",
+          "address": "837 Ilima Ct",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
@@ -247,28 +259,16 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00954",
-          "address": "3179 Stockton Pl",
+          "id": "26BLD-00896",
+          "address": "3032 Waverley St",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-10",
+          "issueDate": "2026-04-07",
           "subtype": "Permit Issued"
-        },
-        {
-          "id": "26PLN-00077",
-          "address": "421 Kipling St",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for an Over the Counter Architectural Review to install a new six foot tall white fence along the drive aisle of the property leading to the rear parking lot.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-09",
-          "subtype": "Over the Counter Approved"
         }
       ]
     }

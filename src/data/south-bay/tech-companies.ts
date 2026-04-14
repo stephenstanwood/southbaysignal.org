@@ -1435,6 +1435,30 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     color: "#0369a1",
     url: "https://www.qualifiedhealthai.com",
   },
+  {
+    id: "ricursive-intelligence",
+    name: "Ricursive Intelligence",
+    city: "Palo Alto",
+    category: "chip",
+    round: "Series A",
+    amount: "$300M",
+    date: "2026-01-26",
+    tagline: "AI platform that automates semiconductor design — a recursive self-improvement loop where AI designs the chips that power the next generation of AI. Founded by ex-Google Brain researchers Anna Goldie and Azalia Mirhoseini less than two months before closing this round at a $4B valuation. Lightspeed led; DST Global, Nvidia NVentures, Felicis, and Sequoia participated.",
+    color: "#7c3aed",
+    url: "https://www.ricursive.com",
+  },
+  {
+    id: "ethernovia",
+    name: "Ethernovia",
+    city: "San Jose",
+    category: "chip",
+    round: "Series B",
+    amount: "$90M+",
+    date: "2026-01-20",
+    tagline: "Ethernet-based packet processors that act as the nervous system for physical AI — collecting and routing sensor data in real time for autonomous vehicles, robots, and intelligent machines. Backed by Maverick Silicon, Porsche SE, and Qualcomm Ventures. The company targets the latency and bandwidth demands of next-gen ADAS and robotic perception systems.",
+    color: "#0f766e",
+    url: "https://www.ethernovia.com",
+  },
 ];
 
 // Pulse stats for the header strip
@@ -1452,7 +1476,7 @@ export const TECH_PULSE = [
   {
     value: "$6B+",
     label: "Raised in Q1–Q2 2026",
-    note: "35 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
+    note: "38 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
   },
   {
     value: "Chip equipment",
