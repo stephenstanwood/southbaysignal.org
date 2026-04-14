@@ -518,6 +518,13 @@ function isPublicEvent(title, source, description, venue) {
 // Add entries here when a source consistently sends bad data.
 const TITLE_FIXES = {
   "Fun Runa": "Fun Run",
+  // These match AFTER the all-caps regex runs (NITE→Nite, JOSE→Jose via 4+ regex, but HIP/HOP/IN/SAN survive)
+  "HIP HOP NITE": "Hip Hop Nite",   // pre-regex fallback
+  "HIP HOP Nite": "Hip Hop Nite",   // post-regex: NITE→Nite but HIP/HOP (3-letter) survive
+  " IN SAN JOSE": " in San Jose",   // pre-regex fallback
+  " IN SAN Jose": " in San Jose",   // post-regex: JOSE→Jose but IN/SAN (2-3 letter) survive
+  " IN SAN JOSE,": " in San Jose,",
+  " IN SAN Jose,": " in San Jose,",
 };
 
 function cleanTitle(title) {
@@ -535,9 +542,15 @@ function cleanTitle(title) {
       "",
     )
     .trim();
-  // Downcase ALL-CAPS words that aren't acronyms (5+ letters, e.g. SPECIAL → Special)
-  const KEEP_UPPER = new Set(["ICYMI", "LGBTQ", "LGBTQIA", "BIPOC", "STEAM", "LEGO"]);
-  t = t.replace(/\b[A-Z]{5,}\b/g, (w) => KEEP_UPPER.has(w) ? w : w[0] + w.slice(1).toLowerCase());
+  // Downcase ALL-CAPS words that aren't known acronyms (4+ letters, e.g. SPECIAL → Special, TOUR → Tour)
+  // 4-letter threshold also catches common stylistic-caps words: LIVE, TOUR, NITE, FEST, JAZZ, etc.
+  const KEEP_UPPER = new Set([
+    "ICYMI", "LGBTQ", "LGBTQIA", "BIPOC", "STEAM", "LEGO",
+    // 4-letter acronyms to preserve
+    "SJSU", "SJPD", "SJFD", "FIFA", "UEFA", "ESPN", "STEM", "AAPI", "ACLU",
+    "NASA", "IEEE", "YMCA", "YWCA", "ROTC", "FEMA", "NOAA", "WWII", "UCLA",
+  ]);
+  t = t.replace(/\b[A-Z]{4,}\b/g, (w) => KEEP_UPPER.has(w) ? w : w[0] + w.slice(1).toLowerCase());
   // Fix pipes without surrounding spaces: "Foo |Bar" → "Foo | Bar"
   t = t.replace(/\s*\|\s*/g, " | ");
   // Strip non-Latin (CJK, etc.) prefix before English content:
