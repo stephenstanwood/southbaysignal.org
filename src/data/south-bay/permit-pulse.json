@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-14T11:12:33.954Z",
+      "generatedAt": "2026-04-14T19:09:11.273Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,7 +137,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-14T11:12:36.306Z",
+      "generatedAt": "2026-04-14T19:09:13.862Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -151,18 +151,6 @@
       },
       "permits": [
         {
-          "id": "26BLD-00912",
-          "address": "697 Florales Dr",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "200 Amp upgrade in the same location",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-08",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00940",
           "address": "350 Campesino Av",
           "category": "commercial",
@@ -175,6 +163,42 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-00912",
+          "address": "697 Florales Dr",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "200 Amp upgrade in the same location",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-08",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00896",
+          "address": "3032 Waverley St",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-07",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00909",
+          "address": "837 Ilima Ct",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-07",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-00954",
           "address": "3179 Stockton Pl",
           "category": "residential-large",
@@ -184,6 +208,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-10",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00959",
+          "address": "4216 Manuela Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-11",
           "subtype": "Permit Issued"
         },
         {
@@ -211,30 +247,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00959",
-          "address": "4216 Manuela Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-11",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00957",
-          "address": "1066 Maddux Dr",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-10",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00931",
           "address": "250 Churchill Av",
           "category": "residential-large",
@@ -247,27 +259,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00909",
-          "address": "837 Ilima Ct",
+          "id": "26BLD-00957",
+          "address": "1066 Maddux Dr",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-07",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00896",
-          "address": "3032 Waverley St",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-07",
+          "issueDate": "2026-04-10",
           "subtype": "Permit Issued"
         }
       ]

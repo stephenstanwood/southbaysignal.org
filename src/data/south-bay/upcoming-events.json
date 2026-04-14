@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-14T17:05:26.738Z",
-  "eventCount": 664,
+  "generatedAt": "2026-04-14T19:10:09.438Z",
+  "eventCount": 666,
   "sources": [
     "Stanford Events",
     "SJSU Events",
@@ -21,6 +21,7 @@
     "Ticketmaster",
     "Palo Alto City Library",
     "MACLA",
+    "Heritage Theatre",
     "Shoreline Amphitheatre",
     "SC County Fire Dept",
     "LG Chamber of Commerce",
@@ -512,7 +513,8 @@
       "description": "Artists: Yvonne Escalante and Lauren O'Connor-Korb",
       "url": "https://events.scu.edu/arts-and-sciences/event/346643-state-of-illusion-exhibition",
       "source": "Santa Clara University",
-      "kidFriendly": false
+      "kidFriendly": false,
+      "ongoing": true
     },
     {
       "id": "scu-4e7a6adf857232ab",
@@ -532,8 +534,8 @@
       "kidFriendly": false
     },
     {
-      "id": "scu-062bcde4d3b2054f",
-      "title": "Accessible Word Documents 101: Using the Check Accessibility Tool",
+      "id": "scu-1aada1939ead5b2b",
+      "title": "Jessica Monette: Root Me in the Soil, In the Wake and the Becoming (Project Room Exhibition)",
       "date": "2026-04-14",
       "displayDate": "Tue, Apr 14",
       "time": "10:00 AM",
@@ -541,10 +543,10 @@
       "venue": "Santa Clara University",
       "address": "",
       "city": "santa-clara",
-      "category": "education",
+      "category": "arts",
       "cost": "free",
-      "description": "Jump into a 60-minute deep dive into Microsoft Word's accessibility tool. Take an MS Word document source and turn it into a compliant, screen-reader-friendly PDF with just a few clicks.",
-      "url": "https://events.scu.edu/technology-training/event/452174-accessible-word-documents-101-using-the-check-accessi",
+      "description": "The de Saisset Museum presents its second project room exhibition, featuring Jessica Monette's exploration of familial memory, presence & absence, and place.",
+      "url": "https://events.scu.edu/de-saisset/event/351715-jessica-monette-root-me-in-the-soil-in-the-wake",
       "source": "Santa Clara University",
       "kidFriendly": false
     },
@@ -762,24 +764,6 @@
       "ongoing": true
     },
     {
-      "id": "sccl-693778316f926136000a010e",
-      "title": "Baby Bouncers Lapsit for Prewalkers",
-      "date": "2026-04-14",
-      "displayDate": "Tue, Apr 14",
-      "time": "11:30 AM",
-      "endTime": "11:45 AM",
-      "venue": "Santa Clara County Library",
-      "address": "",
-      "city": "milpitas",
-      "category": "family",
-      "cost": "free",
-      "description": "Join us on Tuesday mornings for Baby Bouncers Lapsit (for non-walking babies) up to 12 months old. This is a baby and caregivers program with an early literacy focus on traditional nursery rhymes,…",
-      "url": "https://sccl.bibliocommons.com/events/693778316f926136000a010e",
-      "source": "Santa Clara County Library",
-      "kidFriendly": true,
-      "ongoing": true
-    },
-    {
       "id": "sccl-69c305cbdb57df0442976b55",
       "title": "Paint-A-Rock",
       "date": "2026-04-14",
@@ -829,24 +813,6 @@
       "url": "https://sccl.bibliocommons.com/events/693777fb6724c63d00e5fadb",
       "source": "Santa Clara County Library",
       "kidFriendly": true
-    },
-    {
-      "id": "sccl-6930d7dcc9f69536007762b1",
-      "title": "ESL Conversation Club at the Cupertino Library",
-      "date": "2026-04-14",
-      "displayDate": "Tue, Apr 14",
-      "time": "10:30 AM",
-      "endTime": "12:00 PM",
-      "venue": "Santa Clara County Library",
-      "address": "",
-      "city": "cupertino",
-      "category": "education",
-      "cost": "free",
-      "description": "ESL Conversation Club continues at Cupertino Library this year. Please join us for this fun sharing experience. Improve your English listening and speaking skills and learn about other cultures in a…",
-      "url": "https://sccl.bibliocommons.com/events/6930d7dcc9f69536007762b1",
-      "source": "Santa Clara County Library",
-      "kidFriendly": false,
-      "ongoing": true
     },
     {
       "id": "sccl-692f56f07eb3e43000271744",
@@ -1225,23 +1191,6 @@
       "description": "free performance, no ticket purchase necessary. View on site | Email this event",
       "url": "https://events.sjsu.edu/event/josh-kwan-senior-percussion-recital",
       "source": "SJSU Events",
-      "kidFriendly": false
-    },
-    {
-      "id": "scu-b721af91c15ad9d7",
-      "title": "State of Illusion Exhibition",
-      "date": "2026-04-15",
-      "displayDate": "Wed, Apr 15",
-      "time": null,
-      "endTime": null,
-      "venue": "Santa Clara University",
-      "address": "",
-      "city": "santa-clara",
-      "category": "arts",
-      "cost": "free",
-      "description": "Artists: Yvonne Escalante and Lauren O'Connor-Korb",
-      "url": "https://events.scu.edu/arts-and-sciences/event/346643-state-of-illusion-exhibition",
-      "source": "Santa Clara University",
       "kidFriendly": false
     },
     {
@@ -2146,24 +2095,6 @@
       "kidFriendly": false
     },
     {
-      "id": "sjda-a0953e5002c304ef",
-      "title": "Dial M For Murder",
-      "date": "2026-04-16",
-      "displayDate": "Thu, Apr 16",
-      "time": null,
-      "endTime": "11:59 PM",
-      "venue": "City Lights Theater Company",
-      "address": "529 S 2nd St, San Jose",
-      "city": "san-jose",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sjdowntown.com/event/dial-m-for-murder-2/2026-04-16/",
-      "source": "SJDA",
-      "kidFriendly": false,
-      "ongoing": true
-    },
-    {
       "id": "sjda-1eea9ccb400679fe",
       "title": "San Jose Downtown Happy Hour",
       "date": "2026-04-16",
@@ -2177,6 +2108,23 @@
       "cost": "paid",
       "description": "",
       "url": "https://sjdowntown.com/event/san-jose-downtown-happy-hour/",
+      "source": "SJDA",
+      "kidFriendly": false
+    },
+    {
+      "id": "sjda-699ae2f1f2116038",
+      "title": "Matute – Disco Stereo Tour",
+      "date": "2026-04-16",
+      "displayDate": "Thu, Apr 16",
+      "time": "7:00 PM",
+      "endTime": "9:00 PM",
+      "venue": "San Jose Civic",
+      "address": "135 W San Carlos St, San Jose",
+      "city": "san-jose",
+      "category": "music",
+      "cost": "paid",
+      "description": "",
+      "url": "https://sjdowntown.com/event/matute-disco-stereo-tour/",
       "source": "SJDA",
       "kidFriendly": false
     },
@@ -3612,6 +3560,42 @@
       "url": "https://sccl.bibliocommons.com/events/69b835ce2866a5b488426be4",
       "source": "Santa Clara County Library",
       "kidFriendly": true
+    },
+    {
+      "id": "sccl-693778316f926136000a010f",
+      "title": "Baby Bouncers Lapsit for Prewalkers",
+      "date": "2026-04-21",
+      "displayDate": "Tue, Apr 21",
+      "time": "11:30 AM",
+      "endTime": "11:45 AM",
+      "venue": "Santa Clara County Library",
+      "address": "",
+      "city": "milpitas",
+      "category": "family",
+      "cost": "free",
+      "description": "Join us on Tuesday mornings for Baby Bouncers Lapsit (for non-walking babies) up to 12 months old. This is a baby and caregivers program with an early literacy focus on traditional nursery rhymes,…",
+      "url": "https://sccl.bibliocommons.com/events/693778316f926136000a010f",
+      "source": "Santa Clara County Library",
+      "kidFriendly": true,
+      "ongoing": true
+    },
+    {
+      "id": "sccl-6930d81d2c65973d0010fdad",
+      "title": "ESL Conversation Club at the Cupertino Library",
+      "date": "2026-04-21",
+      "displayDate": "Tue, Apr 21",
+      "time": "10:30 AM",
+      "endTime": "12:00 PM",
+      "venue": "Santa Clara County Library",
+      "address": "",
+      "city": "cupertino",
+      "category": "education",
+      "cost": "free",
+      "description": "ESL Conversation Club continues at Cupertino Library this year. Please join us for this fun sharing experience. Improve your English listening and speaking skills and learn about other cultures in a…",
+      "url": "https://sccl.bibliocommons.com/events/6930d81d2c65973d0010fdad",
+      "source": "Santa Clara County Library",
+      "kidFriendly": false,
+      "ongoing": true
     },
     {
       "id": "sccl-69b453338089f23c6761e256",
@@ -6972,6 +6956,23 @@
       "kidFriendly": false
     },
     {
+      "id": "sccl-69698c9030cbd582eff52716",
+      "title": "Stay and Play Cafe for Ages 0-5",
+      "date": "2026-05-08",
+      "displayDate": "Fri, May 8",
+      "time": "11:15 AM",
+      "endTime": "12:00 PM",
+      "venue": "Santa Clara County Library",
+      "address": "",
+      "city": "milpitas",
+      "category": "family",
+      "cost": "free",
+      "description": "Come enjoy stories, songs, and interactive play! Stay, play and learn with music, toys, and snacks. It is a wonderful opportunity for both children and parents to socialize while enjoying a fresh cup…",
+      "url": "https://sccl.bibliocommons.com/events/69698c9030cbd582eff52716",
+      "source": "Santa Clara County Library",
+      "kidFriendly": true
+    },
+    {
       "id": "sjz-skylar-tang-2026-05-08",
       "title": "Skylar Tang — San Jose Jazz",
       "date": "2026-05-08",
@@ -8040,7 +8041,7 @@
       "city": "palo-alto",
       "category": "community",
       "cost": "paid",
-      "description": "Is AI dragging us into a utopian future or dragging us toward existential ruin? Josh Tyrangiel of The Atlantic makes the case for how artificial intelligence, in itself a neutral tool, can be used for good in the here and now.",
+      "description": "Is AI ushering us into a utopian future or dragging us toward existential ruin? Josh Tyrangiel of The Atlantic makes the case for how artificial intelligence, in itself a neutral tool, can be used for good in the here and now.",
       "url": "https://www.keplers.org/upcoming-events-internal/josh-tyrangiel",
       "source": "Kepler's Books",
       "kidFriendly": false
@@ -9763,6 +9764,23 @@
       "kidFriendly": false
     },
     {
+      "id": "sjda-b0c115b82ba36ce6",
+      "title": "Candlelight: The Best of Joe Hisaishi",
+      "date": "2026-06-12",
+      "displayDate": "Fri, Jun 12",
+      "time": "8:45 PM",
+      "endTime": "10:00 PM",
+      "venue": "Hammer Theatre Center",
+      "address": "101 Paseo De San Antonio, San Jose",
+      "city": "san-jose",
+      "category": "arts",
+      "cost": "paid",
+      "description": "",
+      "url": "https://sjdowntown.com/event/candlelight-the-best-of-joe-hisaishi/2026-06-12/",
+      "source": "SJDA",
+      "kidFriendly": false
+    },
+    {
       "id": "los-gatos-21d61ce261d7b292",
       "title": "Muse Markets",
       "date": "2026-06-13",
@@ -9811,6 +9829,23 @@
       "description": "Protect your home from wildfire risk during drought and extreme heat. Learn how to identify landscape vulnerabilities, maintain healthy soil moisture, and use fire-resistant, water-wise planting…",
       "url": "https://paloalto.bibliocommons.com/events/69b448848089f23c6761dee4",
       "source": "Palo Alto City Library",
+      "kidFriendly": false
+    },
+    {
+      "id": "heritage-G5vYZ_d4WY4fV",
+      "title": "Stayin' Alive: One Night of the Bee Gees",
+      "date": "2026-06-13",
+      "displayDate": "Sat, Jun 13",
+      "time": "7:30 PM",
+      "endTime": null,
+      "venue": "Heritage Theatre",
+      "address": "1 W Campbell Ave, Campbell, CA 95008",
+      "city": "campbell",
+      "category": "community",
+      "cost": "paid",
+      "description": "",
+      "url": "http://heritagetheatre.showare.com/StayinAliveOneNightoftheBeeGees",
+      "source": "Heritage Theatre",
       "kidFriendly": false
     },
     {
