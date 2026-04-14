@@ -2,6 +2,34 @@
 
 ---
 
+## 2026-04-14 — Cycle 75: Startup World Cup SV Added to Tech Tab
+
+### Context
+Tuesday April 14, 2026 (evening). Spring break ongoing through Apr 17 (FUHSD/CUSD/Campbell USD). No new verified South Bay funding rounds found for Apr 10-14 window.
+
+### What Was Built
+
+**Tech tab: Added Startup World Cup Silicon Valley 2026 to Annual Conferences**
+
+Added entry for the Startup World Cup Silicon Valley regional qualifier (May 7 at Computer History Museum, Mountain View) to `TECH_CONFERENCES` in `tech-companies.ts`. It will now surface as "Coming Up" in the Tech tab's Annual Conferences section since May 7 is within the 90-day window.
+
+Key details included:
+- Organizer: Pegasus Tech Ventures
+- Venue: Computer History Museum, Mountain View
+- 15 selected startups pitch live before investors; winner advances to Grand Finale (Nov 6, SF) for $1M prize
+- Apply by April 26 deadline noted in description
+- Scale: "regional"
+
+### Why This Was the Strongest Move
+All data pipelines were already refreshed earlier today. No new funding rounds confirmed. Adding the Startup World Cup regional gives local founders a time-sensitive, actionable opportunity visible immediately in the Tech tab's upcoming events section — application deadline (April 26) is less than 2 weeks away.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 14–20 watch** — Crunchbase weekly article for Apr 11-17 expected Friday/Monday. Check back next cycle.
+2. **School calendar teacher workdays** — Districts often have extra no-school days not in current entries. Need verified per-district 2025-26 dates.
+3. **Permit Pulse: Mountain View** — All known MV permit portals remain blocked. Monitor cityofmountainview.gov for changes.
+
+---
+
 ## 2026-04-14 — Cycle 74: Food Tab Blurb Fix
 
 ### Context
