@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-15T17:04:54.478Z",
-  "eventCount": 679,
+  "generatedAt": "2026-04-15T19:10:20.241Z",
+  "eventCount": 683,
   "sources": [
     "Stanford Events",
     "SJSU Events",
@@ -28,12 +28,14 @@
     "South Bay Signal",
     "East West Bookshop",
     "Kepler's Books",
+    "Hicklebee's",
     "Linden Tree Books",
     "SJDA",
     "San Jose Museum of Art",
     "Japanese American Museum SJ",
     "History San Jose",
-    "Mountain View Public Library"
+    "Mountain View Public Library",
+    "City Newsletter"
   ],
   "events": [
     {
@@ -671,8 +673,8 @@
       "kidFriendly": false
     },
     {
-      "id": "scu-60236b6c46c40408",
-      "title": "Music@Noon – Sora Music Society",
+      "id": "scu-8fd3358459cb619f",
+      "title": "Faculty Lunch Time Conversation with Assistant Professor Daniel B. Summerhill",
       "date": "2026-04-15",
       "displayDate": "Wed, Apr 15",
       "time": "12:00 PM",
@@ -680,10 +682,10 @@
       "venue": "Santa Clara University",
       "address": "",
       "city": "santa-clara",
-      "category": "music",
+      "category": "arts",
       "cost": "free",
-      "description": "Wildly diverse and enriching concerts are presented as a part of the Music@Noon class, which is also open to the public. Take a lunch break to enjoy this fresh series!",
-      "url": "https://events.scu.edu/arts-and-sciences/event/372662-musicnoon-sora-music-society",
+      "description": "Join Assistant Professor Daniel B. Summerhill (English) in a walk through of Jonathan Calm's exhibition To Wherever, Forever",
+      "url": "https://events.scu.edu/de-saisset/event/371078-faculty-lunch-time-conversation-with-assistant-profes",
       "source": "Santa Clara University",
       "kidFriendly": false
     },
@@ -1001,23 +1003,6 @@
       "kidFriendly": true
     },
     {
-      "id": "sccl-696930b5707481383706c3fd",
-      "title": "Lil' Athletes for Ages 18 Months - 4 Years",
-      "date": "2026-04-15",
-      "displayDate": "Wed, Apr 15",
-      "time": "11:00 AM",
-      "endTime": "12:00 PM",
-      "venue": "Santa Clara County Library",
-      "address": "",
-      "city": "milpitas",
-      "category": "family",
-      "cost": "free",
-      "description": "Stories, stretches, and sports-themed activities for tots on the move! Parents/caregivers must stay and participate with their children. This program is for children between 18 months and 4 years…",
-      "url": "https://sccl.bibliocommons.com/events/696930b5707481383706c3fd",
-      "source": "Santa Clara County Library",
-      "kidFriendly": true
-    },
-    {
       "id": "sccl-68c1e5eb9b6a35582f705ab5",
       "title": "Homework Help K-6 grade",
       "date": "2026-04-15",
@@ -1192,24 +1177,6 @@
       "url": "https://www.ticketweb.com/event/open-mic-at-the-san-san-jose-improv-tickets/14054234",
       "source": "Ticketmaster",
       "kidFriendly": false
-    },
-    {
-      "id": "paloalto-68faea6a06078d3600744974",
-      "title": "Learn English: Online Conversation Group",
-      "date": "2026-04-15",
-      "displayDate": "Wed, Apr 15",
-      "time": "11:00 AM",
-      "endTime": "12:00 PM",
-      "venue": "Palo Alto City Library",
-      "address": "",
-      "city": "palo-alto",
-      "category": "education",
-      "cost": "free",
-      "description": "Our ESL (English as a Second Language) / Learn English conversation group program is a friendly and informal environment for adults (18 years old and older) to practice speaking and listening in…",
-      "url": "https://paloalto.bibliocommons.com/events/68faea6a06078d3600744974",
-      "source": "Palo Alto City Library",
-      "kidFriendly": false,
-      "ongoing": true
     },
     {
       "id": "paloalto-693b4d847ed7c62f00aa0f42",
@@ -1553,6 +1520,23 @@
       "cost": "free",
       "description": "West Coast Conference (WCC) Dual",
       "url": "https://events.scu.edu/bronco-athletics/event/372268-santa-clara-university-womens-tennis-vs-washington",
+      "source": "Santa Clara University",
+      "kidFriendly": false
+    },
+    {
+      "id": "scu-a7d86fcec13e07f1",
+      "title": "Thriving Through Change",
+      "date": "2026-04-16",
+      "displayDate": "Thu, Apr 16",
+      "time": "1:00 PM",
+      "endTime": null,
+      "venue": "Santa Clara University",
+      "address": "",
+      "city": "santa-clara",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://events.scu.edu/human-resources/event/372925-thriving-through-change",
       "source": "Santa Clara University",
       "kidFriendly": false
     },
@@ -2718,6 +2702,23 @@
       "kidFriendly": false
     },
     {
+      "id": "sjda-f83ebccba59fbf00",
+      "title": "Stationery Depot",
+      "date": "2026-04-18",
+      "displayDate": "Sat, Apr 18",
+      "time": "12:00 PM",
+      "endTime": "5:00 PM",
+      "venue": "Downtown San Jose",
+      "address": ", San Jose",
+      "city": "san-jose",
+      "category": "family",
+      "cost": "paid",
+      "description": "",
+      "url": "https://sjdowntown.com/event/stationery-depot/",
+      "source": "SJDA",
+      "kidFriendly": true
+    },
+    {
       "id": "sjda-6f6f2e7836192073",
       "title": "Miguel Novelo: Inframundo Exhibition Opening",
       "date": "2026-04-18",
@@ -2818,6 +2819,24 @@
       "url": "https://fareharbor.com/embeds/book/historysanjose/items/708590/calendar/2026/04/?full-items=yes",
       "source": "History San Jose",
       "kidFriendly": false
+    },
+    {
+      "id": "inbound-f44abb2d6332c9e8",
+      "title": "Saratoga Farmers Market",
+      "date": "2026-04-18",
+      "displayDate": "Sat, Apr 18",
+      "time": "9:00 am",
+      "endTime": null,
+      "venue": "West Valley College parking lot, 14000 Fruitvale Ave, Saratoga, CA 95070",
+      "address": "West Valley College parking lot, 14000 Fruitvale Ave, Saratoga, CA 95070",
+      "city": "saratoga",
+      "category": "community",
+      "cost": null,
+      "description": "Weekly farmers market featuring fresh local produce, live music, and coffee. Free to attend, dogs welcome.",
+      "url": "https://saratogafarmersmarket.com/",
+      "source": "City Newsletter",
+      "kidFriendly": false,
+      "ongoing": true
     },
     {
       "id": "sjpl-69cf1e05b48451fc3c0d0e16",
@@ -3391,22 +3410,21 @@
       "ongoing": true
     },
     {
-      "id": "sccl-6930d81d2c65973d0010fdad",
-      "title": "ESL Conversation Club at the Cupertino Library",
+      "id": "sccl-69c0471767801235ed73d237",
+      "title": "Band Jam: Guitar & Ukulele",
       "date": "2026-04-21",
       "displayDate": "Tue, Apr 21",
       "time": "10:30 AM",
-      "endTime": "12:00 PM",
+      "endTime": "11:30 AM",
       "venue": "Santa Clara County Library",
       "address": "",
-      "city": "cupertino",
-      "category": "education",
+      "city": "saratoga",
+      "category": "music",
       "cost": "free",
-      "description": "ESL Conversation Club continues at Cupertino Library this year. Please join us for this fun sharing experience. Improve your English listening and speaking skills and learn about other cultures in a…",
-      "url": "https://sccl.bibliocommons.com/events/6930d81d2c65973d0010fdad",
+      "description": "Grab your guitar, grab your ukulele - let's jam! Join us every week, singing and strumming along with popular songs in a fun, easy-going environment. Meet people who are also working on their music…",
+      "url": "https://sccl.bibliocommons.com/events/69c0471767801235ed73d237",
       "source": "Santa Clara County Library",
-      "kidFriendly": false,
-      "ongoing": true
+      "kidFriendly": false
     },
     {
       "id": "sccl-69b453338089f23c6761e256",
@@ -5323,6 +5341,23 @@
       "kidFriendly": true
     },
     {
+      "id": "sccl-6930d862caa2e62f001e9a20",
+      "title": "ESL Conversation Club at the Cupertino Library",
+      "date": "2026-04-28",
+      "displayDate": "Tue, Apr 28",
+      "time": "10:30 AM",
+      "endTime": "12:00 PM",
+      "venue": "Santa Clara County Library",
+      "address": "",
+      "city": "cupertino",
+      "category": "education",
+      "cost": "free",
+      "description": "ESL Conversation Club continues at Cupertino Library this year. Please join us for this fun sharing experience. Improve your English listening and speaking skills and learn about other cultures in a…",
+      "url": "https://sccl.bibliocommons.com/events/6930d862caa2e62f001e9a20",
+      "source": "Santa Clara County Library",
+      "kidFriendly": false
+    },
+    {
       "id": "sccl-692f568bd923da4200b35c0f",
       "title": "Los Altos Adult Book Discussion",
       "date": "2026-04-28",
@@ -6199,24 +6234,6 @@
       "kidFriendly": false
     },
     {
-      "id": "farmersmarket-90092daefc28ba9e",
-      "title": "Saratoga Farmers Market",
-      "date": "2026-05-02",
-      "displayDate": "Sat, May 2",
-      "time": "9:00 AM",
-      "endTime": "1:00 PM",
-      "venue": "West Valley College",
-      "address": "14000 Fruitvale Ave, Saratoga",
-      "city": "saratoga",
-      "category": "food",
-      "cost": "free",
-      "description": "Weekly open-air farmers market featuring local produce, artisan goods, and prepared foods.",
-      "url": "https://cafarmersmkts.com/saratoga-market",
-      "source": "South Bay Signal",
-      "kidFriendly": true,
-      "ongoing": true
-    },
-    {
       "id": "sjma-3d9968a39fa59fec",
       "title": "Bank of America Museums on Us Weekend",
       "date": "2026-05-02",
@@ -6509,6 +6526,23 @@
       "kidFriendly": false
     },
     {
+      "id": "sccl-6930d8b02c65973d0010fde8",
+      "title": "ESL Conversation Club at the Cupertino Library",
+      "date": "2026-05-05",
+      "displayDate": "Tue, May 5",
+      "time": "10:30 AM",
+      "endTime": "12:00 PM",
+      "venue": "Santa Clara County Library",
+      "address": "",
+      "city": "cupertino",
+      "category": "education",
+      "cost": "free",
+      "description": "ESL Conversation Club continues at Cupertino Library this year. Please join us for this fun sharing experience. Improve your English listening and speaking skills and learn about other cultures in a…",
+      "url": "https://sccl.bibliocommons.com/events/6930d8b02c65973d0010fde8",
+      "source": "Santa Clara County Library",
+      "kidFriendly": false
+    },
+    {
       "id": "sccl-69713c291e64afd01e55c810",
       "title": "LEGO Club",
       "date": "2026-05-05",
@@ -6698,6 +6732,24 @@
       "url": "https://www.ticketweb.com/event/jimbos-joan-can-we-laugh-san-jose-improv-tickets/14745033",
       "source": "Ticketmaster",
       "kidFriendly": false
+    },
+    {
+      "id": "paloalto-68faea6a06078d3600744977",
+      "title": "Learn English: Online Conversation Group",
+      "date": "2026-05-06",
+      "displayDate": "Wed, May 6",
+      "time": "11:00 AM",
+      "endTime": "12:00 PM",
+      "venue": "Palo Alto City Library",
+      "address": "",
+      "city": "palo-alto",
+      "category": "education",
+      "cost": "free",
+      "description": "Our ESL (English as a Second Language) / Learn English conversation group program is a friendly and informal environment for adults (18 years old and older) to practice speaking and listening in…",
+      "url": "https://paloalto.bibliocommons.com/events/68faea6a06078d3600744977",
+      "source": "Palo Alto City Library",
+      "kidFriendly": false,
+      "ongoing": true
     },
     {
       "id": "7eb0c52066cd",
@@ -7198,6 +7250,23 @@
       "url": "https://sccl.bibliocommons.com/events/6986861a81b67dfe32a4ce67",
       "source": "Santa Clara County Library",
       "kidFriendly": false
+    },
+    {
+      "id": "sccl-69d02d1bb6c4ac1fedca0ba7",
+      "title": "Fancy Nancy Tea Party",
+      "date": "2026-05-09",
+      "displayDate": "Sat, May 9",
+      "time": "10:30 AM",
+      "endTime": "11:30 AM",
+      "venue": "Santa Clara County Library",
+      "address": "",
+      "city": "los-altos",
+      "category": "family",
+      "cost": "free",
+      "description": "Ooh la la! You are invited to a Fancy Nancy tea party! Enjoy special treats along with a read-aloud of \"Fancy Nancy, Bonjour Butterfly\". Learn a few fancy French words, and create a beautiful craft…",
+      "url": "https://sccl.bibliocommons.com/events/69d02d1bb6c4ac1fedca0ba7",
+      "source": "Santa Clara County Library",
+      "kidFriendly": true
     },
     {
       "id": "sjz-mimi-fox-amp-pamela-rose-acoustic-sister-2026-05-09",

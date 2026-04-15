@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-15T17:11:02.633Z",
+      "generatedAt": "2026-04-15T19:09:33.945Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,7 +137,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-15T17:11:05.097Z",
+      "generatedAt": "2026-04-15T19:09:36.440Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -150,6 +150,30 @@
         "totalValuation": 0
       },
       "permits": [
+        {
+          "id": "26BLD-00976",
+          "address": "365 College Av",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "RES: Main panel upgrade from 100A to 200A  in the same location",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-13",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00912",
+          "address": "697 Florales Dr",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "200 Amp upgrade in the same location",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-08",
+          "subtype": "Permit Issued"
+        },
         {
           "id": "26BLD-00915",
           "address": "3421 Orinda St",
@@ -175,30 +199,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00912",
-          "address": "697 Florales Dr",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "200 Amp upgrade in the same location",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-08",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00976",
-          "address": "365 College Av",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "RES: Main panel upgrade from 100A to 200A  in the same location",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-13",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00983",
           "address": "824 Bryant St",
           "category": "commercial",
@@ -208,6 +208,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-14",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00957",
+          "address": "1066 Maddux Dr",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-10",
           "subtype": "Permit Issued"
         },
         {
@@ -244,18 +256,6 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-09",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00957",
-          "address": "1066 Maddux Dr",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-10",
           "subtype": "Permit Issued"
         },
         {
