@@ -4036,3 +4036,38 @@ Ricursive Intelligence's founding story (ex-Google Brain researchers, $4B valuat
 1. **RECENTLY_FUNDED: Apr 14–20 watch** — Continue scanning for new rounds. Nothing confirmed yet for this exact date range.
 2. **School calendar: teacher workdays/PD days** — Districts often have 1–2 extra no-school days not in the current calendar. Need verified 2025-26 dates per district.
 3. **Permit Pulse: Mountain View** — All known MV permit portals remain blocked. Monitor cityofmountainview.gov for changes.
+
+---
+
+## 2026-04-15 — Cycle 77: nEye.ai + Full Data Refresh
+
+### Context
+Wednesday April 15, 2026 (Tax Day). Spring break week 2 continues for FUHSD, CUSD, Campbell USD through Apr 17. Palo Alto and Saratoga have council meetings today. Events coverage at 671 total (109 ongoing).
+
+### What Was Built
+
+**Tech tab: Added nEye.ai to RECENTLY_FUNDED**
+
+nEye.ai (Santa Clara) raised an $80M Series C on April 14, 2026 — the most recent confirmed South Bay funding as of this cycle. The company builds Optical Circuit Switches using silicon photonics + MEMS technology, replacing electrical switches with light in AI data center fabrics. Backed by Sutter Hill Ventures, CapitalG (Google's growth fund), M12 (Microsoft), and Socratic Partners. Headquartered at 4555 Great America Parkway in Santa Clara.
+
+RECENTLY_FUNDED now 42 rounds total. TECH_PULSE stat updated to 42. Tech briefing regenerated.
+
+**Data refreshed (all core pipelines):**
+- `upcoming-events.json` — 671 events (109 ongoing), 33 sources
+- `around-town.json` — 8 items
+- `digests.json` — 10 city digests (Palo Alto and Saratoga have meetings today)
+- `upcoming-meetings.json` — Palo Alto + Saratoga today, Campbell + Milpitas Apr 21
+- `weekend-picks.json` — 3 picks for Apr 17–19 (420 in the Park, Palo Alto Earth Day, Randy Ribay book launch)
+- `real-estate.json` — 10 cities, Mountain View still below 15 inventory threshold
+- `permit-pulse.json` — 14 notable PA permits (sewer, electrical upgrades)
+- `restaurant-radar.json` — New PA entries: Bistro Demiya, Bon Broth SF, Arsicault Bakery on Cambridge Ave
+- `scc-food-openings.json` — Fresh openings: King's Jok-Bal (Santa Clara), Chick-fil-A (Milpitas), Blendid (MV)
+- `tech-briefing.json` — Updated to 42 rounds
+
+### Why This Was the Strongest Move
+nEye.ai's round (April 14) is the most current South Bay funding signal available — adding it the day after announcement keeps the Tech tab as a leading indicator. Optical networking is increasingly critical infrastructure for AI data centers, and the Google/Microsoft backer roster signals this is a company to watch.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 15–21 watch** — Check Crunchbase weekly roundup (published Fridays) for week of Apr 12–18.
+2. **School calendar: teacher workday/PD days** — Districts often have 1–2 additional no-school days not in current calendar. Need verified 2025-26 dates per district.
+3. **Permit Pulse: Mountain View** — All known MV permit portals remain blocked/ECONNREFUSED. Monitor cityofmountainview.gov for changes.
