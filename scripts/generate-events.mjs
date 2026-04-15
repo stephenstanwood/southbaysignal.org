@@ -1359,7 +1359,7 @@ async function fetchCupertinoEvents() {
   );
 }
 
-// ── CivicPlus RSS for cities that don't expose an iCal (Milpitas, Morgan Hill) ──
+// ── CivicPlus RSS for cities that don't expose an iCal (Milpitas) ──
 // Same shape as fetchCampbellEvents — they all use calendarEvent:EventDates +
 // calendarEvent:EventTimes fields. Refactored into a generic helper so adding
 // another CivicPlus city is a one-liner.
@@ -1410,14 +1410,6 @@ async function fetchMilpitasEvents() {
     "City of Milpitas",
     "https://www.milpitas.gov/RSSFeed.aspx?ModID=58&CID=All-calendar.xml",
     "milpitas",
-  );
-}
-
-async function fetchMorganHillEvents() {
-  return fetchCivicPlusRssCity(
-    "City of Morgan Hill",
-    "https://www.morganhill.ca.gov/RSSFeed.aspx?ModID=58&CID=All-calendar.xml",
-    "morgan-hill",
   );
 }
 
@@ -1918,6 +1910,58 @@ async function fetchShorelineEvents() {
 }
 
 // ── NHL: San Jose Sharks ──
+
+// ── G League: Santa Cruz Warriors ──
+// Affiliate of Golden State Warriors. Plays at Kaiser Permanente Arena in
+// downtown Santa Cruz. Season runs Nov–Apr. Off-season: returns []. ESPN
+// doesn't always have venue/address in the team schedule, so they're hardcoded.
+
+async function fetchSantaCruzWarriorsSchedule() {
+  console.log("  ⏳ SC Warriors (ESPN G League)...");
+  try {
+    const res = await fetch(
+      "https://site.api.espn.com/apis/site/v2/sports/basketball/nba-development/teams/20/schedule",
+      { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(15_000) },
+    );
+    if (!res.ok) throw new Error(`${res.status}`);
+    const data = await res.json();
+    const today = new Date().toISOString().split("T")[0];
+    const events = (data.events || []).map((e) => {
+      const comp = e.competitions?.[0];
+      if (!comp) return null;
+      const start = new Date(e.date);
+      const dateStr = isoDate(start);
+      if (!dateStr || dateStr < today) return null;
+      const home = comp.competitors?.find((c) => c.homeAway === "home");
+      if (!home?.team?.displayName?.toLowerCase().includes("santa cruz")) return null;
+      const away = comp.competitors?.find((c) => c.homeAway === "away");
+      const opponent = away?.team?.displayName || "Opponent";
+      return {
+        id: h("sc-warriors", String(e.id)),
+        title: `Santa Cruz Warriors vs. ${opponent}`,
+        date: dateStr,
+        displayDate: displayDate(start),
+        time: displayTime(start),
+        endTime: null,
+        venue: "Kaiser Permanente Arena",
+        address: "140 Front St, Santa Cruz, CA 95060",
+        city: "santa-cruz",
+        category: "sports",
+        cost: "paid",
+        costNote: "From $15",
+        description: `Santa Cruz Warriors home game vs. ${opponent} at Kaiser Permanente Arena.`,
+        url: "https://santacruz.gleague.nba.com/schedule/",
+        source: "G League",
+        kidFriendly: true,
+      };
+    }).filter(Boolean);
+    console.log(`  ✅ SC Warriors: ${events.length} home games`);
+    return events;
+  } catch (err) {
+    console.log(`  ⚠️  SC Warriors: ${err.message}`);
+    return [];
+  }
+}
 
 async function fetchSharksSchedule() {
   console.log("  ⏳ Sharks (NHL API)...");
@@ -2649,10 +2693,11 @@ function meetupCitySlug(city) {
 }
 
 // South Bay / Silicon Valley cities we accept (exclude events too far out)
+// Morgan Hill + Gilroy excluded — outside our geo area as of 2026-04-15.
 const MEETUP_ACCEPTED_CITIES = new Set([
   "san-jose", "mountain-view", "sunnyvale", "campbell", "los-gatos",
   "saratoga", "los-altos", "milpitas", "santa-clara", "cupertino",
-  "morgan-hill", "gilroy", "palo-alto", "menlo-park",
+  "palo-alto", "menlo-park",
 ]);
 
 async function fetchMeetupEvents() {
@@ -3229,6 +3274,15 @@ function fetchPlaywrightEvents() {
 // The webhook on Vercel writes to Vercel Blob; pull-inbound-events.mjs on the Mini
 // mirrors Blob → inbound-events.json, which this function then merges in.
 
+// Cities we cover. Inbound events outside this set are dropped — second line
+// of defense after the extractor's allow-list, in case Claude tags an event
+// with a city we don't cover.
+const INBOUND_ACCEPTED_CITIES = new Set([
+  "san-jose", "mountain-view", "sunnyvale", "campbell", "los-gatos",
+  "saratoga", "los-altos", "milpitas", "santa-clara", "cupertino",
+  "palo-alto", "monte-sereno",
+]);
+
 function fetchInboundEvents() {
   console.log("  ⏳ Inbound-email events...");
   try {
@@ -3240,13 +3294,18 @@ function fetchInboundEvents() {
     const today = new Date().toISOString().split("T")[0];
 
     const out = [];
+    let skipBlocked = 0, skipCity = 0, skipPast = 0;
     for (const e of events || []) {
       if (!e.startsAt || !e.title) continue;
       if (e.status === "rejected") continue;
 
+      // Defense in depth — block list applies to extracted events too
+      if (isBlockedEvent(e.title)) { skipBlocked++; continue; }
+
       const dateKey = e.startsAt.slice(0, 10);
-      if (dateKey < today) continue;
-      if (!e.cityKey) continue; // Skip events we couldn't geo-place
+      if (dateKey < today) { skipPast++; continue; }
+      if (!e.cityKey) { skipCity++; continue; } // Skip events we couldn't geo-place
+      if (!INBOUND_ACCEPTED_CITIES.has(e.cityKey)) { skipCity++; continue; }
 
       const startDate = new Date(e.startsAt);
       if (isNaN(startDate.getTime())) continue;
@@ -3259,6 +3318,15 @@ function fetchInboundEvents() {
         timeZone: "America/Los_Angeles",
       }).toLowerCase();
 
+      // Real category inference instead of hardcoded "community" — this is
+      // what makes newsletter events show up on the right tabs (Tech, Sports,
+      // Arts, Food, etc) instead of just being lumped into Events.
+      const category = inferCategory(e.title, e.description ?? "", "");
+      const titleLower = e.title.toLowerCase();
+      const descLower = (e.description ?? "").toLowerCase();
+      const kidFriendly = /\b(kid|family|children|child|story\s?time|youth|teen|easter\s?egg|egg\s?hunt|preschool)\b/i.test(titleLower)
+        || /\b(kid|family|children|story\s?time)\b/i.test(descLower);
+
       out.push({
         id: h("inbound", e.id, dateKey, e.title),
         title: e.title,
@@ -3269,15 +3337,15 @@ function fetchInboundEvents() {
         venue: e.location ?? "",
         address: e.location ?? "",
         city: e.cityKey,
-        category: "community",
+        category,
         cost: null,
         description: e.description ?? "",
         url: e.sourceUrl ?? "",
         source: "City Newsletter",
-        kidFriendly: false,
+        kidFriendly,
       });
     }
-    console.log(`  ✅ Inbound events: ${out.length} events`);
+    console.log(`  ✅ Inbound events: ${out.length} events (skipped ${skipBlocked} blocked, ${skipCity} out-of-area, ${skipPast} past)`);
     return out;
   } catch (err) {
     console.log(`  ⚠️  Inbound events: ${err.message}`);
@@ -3388,7 +3456,6 @@ async function main() {
     fetchChmEvents,
     fetchCampbellEvents,
     fetchMilpitasEvents,
-    fetchMorganHillEvents,
     fetchLosGatosEvents,
     fetchSaratogaEvents,
     fetchLosAltosEvents,
@@ -3410,6 +3477,7 @@ async function main() {
     fetchSJGiantsSchedule,
     fetchTicketmasterEvents,
     fetchSharksSchedule,
+    fetchSantaCruzWarriorsSchedule,
     fetchMvplEvents,
     // fetchSunnyvaleLibraryEvents, — 403 (Events feature disabled on their BiblioCommons); covered by SCCL
     fetchPaloAltoLibraryEvents,

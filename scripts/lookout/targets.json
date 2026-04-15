@@ -16,7 +16,6 @@
     { "id": "los-gatos-notifyme", "name": "Town of Los Gatos Notify Me", "signupUrl": "https://www.losgatosca.gov/list.aspx", "city": "los-gatos", "category": "city", "provider": "civicplus_notifyme", "priority": 1 },
     { "id": "los-gatos-mayor-moore", "name": "Mayor Rob Moore Newsletter (Los Gatos)", "signupUrl": "https://robforlosgatos.com", "city": "los-gatos", "category": "city", "provider": "unknown", "priority": 1, "notes": "Monthly newsletter from rob@robforlosgatos.com — distinguish events from announcements when ingesting." },
     { "id": "gilroy-notifyme", "name": "City of Gilroy Notify Me", "signupUrl": "https://www.cityofgilroy.org/list.aspx", "city": "gilroy", "category": "city", "provider": "civicplus_notifyme", "priority": 2 },
-    { "id": "morgan-hill-notifyme", "name": "City of Morgan Hill Notify Me", "signupUrl": "https://www.morganhill.ca.gov/list.aspx", "city": "morgan-hill", "category": "city", "provider": "civicplus_notifyme", "priority": 2 },
     { "id": "monte-sereno-notifyme", "name": "City of Monte Sereno Notify Me", "signupUrl": "https://www.montesereno.org/list.aspx", "city": "monte-sereno", "category": "city", "provider": "civicplus_notifyme", "priority": 3 },
     { "id": "milpitas-notifyme", "name": "City of Milpitas Notify Me", "signupUrl": "https://www.milpitas.gov/list.aspx", "city": "milpitas", "category": "city", "provider": "civicplus_notifyme", "priority": 2 },
 
@@ -57,7 +56,6 @@
     { "id": "cupertino-chamber", "name": "Cupertino Chamber", "signupUrl": "https://cupertino-chamber.org/", "city": "cupertino", "category": "chamber", "provider": "unknown", "priority": 2 },
     { "id": "milpitas-chamber", "name": "Milpitas Chamber", "signupUrl": "https://www.milpitaschamber.com/", "city": "milpitas", "category": "chamber", "provider": "unknown", "priority": 3 },
     { "id": "gilroy-chamber", "name": "Gilroy Chamber", "signupUrl": "https://gilroy.org/", "city": "gilroy", "category": "chamber", "provider": "unknown", "priority": 3 },
-    { "id": "morgan-hill-chamber", "name": "Morgan Hill Chamber", "signupUrl": "https://www.morganhill.org/", "city": "morgan-hill", "category": "chamber", "provider": "unknown", "priority": 3 },
     { "id": "los-altos-chamber", "name": "Los Altos Chamber", "signupUrl": "https://www.losaltoschamber.org/", "city": "los-altos", "category": "chamber", "provider": "unknown", "priority": 3 },
 
     { "id": "downtown-san-jose", "name": "Downtown San Jose (SJDA)", "signupUrl": "https://sjdowntown.com/", "city": "san-jose", "category": "business-district", "provider": "unknown", "priority": 2 },
@@ -148,7 +146,6 @@
     { "id": "cooper-garrod", "name": "Cooper-Garrod Estate Vineyards", "signupUrl": "https://cgv.com/", "city": "saratoga", "category": "food", "provider": "unknown", "priority": 3 },
     { "id": "fogarty-winery", "name": "Thomas Fogarty Winery", "signupUrl": "https://www.fogartywinery.com/", "city": "los-gatos", "category": "food", "provider": "unknown", "priority": 3 },
     { "id": "savannah-chanelle", "name": "Savannah-Chanelle Vineyards", "signupUrl": "https://savannahchanelle.com/", "city": "saratoga", "category": "food", "provider": "unknown", "priority": 3 },
-    { "id": "guglielmo-winery", "name": "Guglielmo Winery", "signupUrl": "https://www.guglielmowinery.com/", "city": "morgan-hill", "category": "food", "provider": "unknown", "priority": 3 },
 
     { "id": "hermitage-brewing", "name": "Hermitage Brewing Company", "signupUrl": "https://hermitagebrewing.com/", "city": "san-jose", "category": "food", "provider": "unknown", "priority": 3 },
     { "id": "strike-brewing", "name": "Strike Brewing Company", "signupUrl": "https://strikebrewingco.com/", "city": "san-jose", "category": "food", "provider": "unknown", "priority": 3 },

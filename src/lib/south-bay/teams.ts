@@ -71,6 +71,23 @@ export const SOUTH_BAY_TEAMS: SouthBayTeam[] = [
     textColor: "#00AAB5",
     primary: true,
   },
+  {
+    // Santa Cruz Warriors — NBA G League affiliate of Golden State Warriors.
+    // Plays at Kaiser Permanente Arena in downtown Santa Cruz. Not technically
+    // South Bay, but Stephen wants them surfaced (case-by-case Santa Cruz pick
+    // — see vote candidates list 2026-04-15).
+    key: "sc-warriors",
+    name: "Santa Cruz Warriors",
+    shortName: "SC Warriors",
+    league: "gleague",
+    espnPath: "basketball/nba-development",
+    abbreviation: "SCW",
+    displayNameMatch: "santa cruz",
+    fallbackLogoUrl: "https://a.espncdn.com/i/teamlogos/nba_dleague/500/santa-cruz.png",
+    color: "#1D428A",
+    textColor: "#4477CC",
+    primary: true,
+  },
 
   // Secondary — Bay Area pro teams
   {
@@ -129,15 +146,16 @@ interface LeagueMeta {
 }
 
 export const LEAGUE_META: Record<string, LeagueMeta> = {
-  nhl:  { key: "nhl",  label: "NHL",  espnPath: "hockey/nhl",                       order: 1 },
-  ahl:  { key: "ahl",  label: "AHL",  espnPath: "hockey/ahl",                       order: 2 },
-  nba:  { key: "nba",  label: "NBA",  espnPath: "basketball/nba",                   order: 3 },
-  wnba: { key: "wnba", label: "WNBA", espnPath: "basketball/wnba",                  order: 4 },
-  mlb:  { key: "mlb",  label: "MLB",  espnPath: "baseball/mlb",                     order: 5 },
-  milb: { key: "milb", label: "MiLB", espnPath: "",                                 order: 6 },
-  mls:  { key: "mls",  label: "MLS",  espnPath: "soccer/usa.1",                     order: 7 },
-  nwsl: { key: "nwsl", label: "NWSL", espnPath: "soccer/usa.nwsl",                  order: 8 },
-  nfl:  { key: "nfl",  label: "NFL",  espnPath: "football/nfl",                     order: 9 },
+  nhl:     { key: "nhl",     label: "NHL",      espnPath: "hockey/nhl",                  order: 1 },
+  ahl:     { key: "ahl",     label: "AHL",      espnPath: "hockey/ahl",                  order: 2 },
+  nba:     { key: "nba",     label: "NBA",      espnPath: "basketball/nba",              order: 3 },
+  gleague: { key: "gleague", label: "G League", espnPath: "basketball/nba-development",  order: 4 },
+  wnba:    { key: "wnba",    label: "WNBA",     espnPath: "basketball/wnba",             order: 5 },
+  mlb:     { key: "mlb",     label: "MLB",      espnPath: "baseball/mlb",                order: 6 },
+  milb:    { key: "milb",    label: "MiLB",     espnPath: "",                            order: 7 },
+  mls:     { key: "mls",     label: "MLS",      espnPath: "soccer/usa.1",                order: 8 },
+  nwsl:    { key: "nwsl",    label: "NWSL",     espnPath: "soccer/usa.nwsl",             order: 9 },
+  nfl:     { key: "nfl",     label: "NFL",      espnPath: "football/nfl",                order: 10 },
 };
 
 // ── ESPN helpers ──
@@ -162,6 +180,8 @@ const LEAGUE_ACTIVE_MONTHS: Partial<Record<LeagueKey, number[]>> = {
   ahl: [1, 2, 3, 4, 5, 6, 10, 11, 12],
   // NBA: Oct(10) – Jun(6)
   nba: [1, 2, 3, 4, 5, 6, 10, 11, 12],
+  // G League: Nov(11) – Apr(4)
+  gleague: [1, 2, 3, 4, 11, 12],
   // WNBA: May(5) – Sep(9)
   wnba: [5, 6, 7, 8, 9],
 };

@@ -42,6 +42,7 @@ export type LeagueKey =
   | "nhl"
   | "ahl"
   | "nba"
+  | "gleague"
   | "wnba"
   | "mlb"
   | "milb"
