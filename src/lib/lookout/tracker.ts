@@ -257,7 +257,10 @@ async function readBlobJson(pathname: string): Promise<string | null> {
     // For public blobs we can fetch the URL directly; for private we need token.
     const meta = await head(pathname, { token });
     if (!meta?.url) return null;
-    const res = await fetch(meta.url, { cache: "no-store" });
+    // Cache-bust the fetch: the same URL is reused across writes and Vercel's
+    // edge cache will happily serve stale content for minutes otherwise.
+    const cacheBuster = `?_cb=${Date.now()}`;
+    const res = await fetch(meta.url + cacheBuster, { cache: "no-store" });
     if (!res.ok) throw new Error(`fetch ${res.status}`);
     return await res.text();
   } catch (err) {
@@ -276,6 +279,10 @@ async function writeBlobJson(pathname: string, json: string): Promise<void> {
     allowOverwrite: true,
     contentType: "application/json",
     token,
+    // Disable CDN caching so updates are immediately visible to the
+    // poller. Without this, overwrites at the same URL are served stale
+    // from Vercel's edge cache for minutes.
+    cacheControlMaxAge: 0,
   });
 }
 

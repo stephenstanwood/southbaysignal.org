@@ -117,7 +117,7 @@ async function readBlobJson(pathname: string): Promise<string | null> {
   try {
     const meta = await head(pathname, { token });
     if (!meta?.url) return null;
-    const res = await fetch(meta.url, { cache: "no-store" });
+    const res = await fetch(`${meta.url}?_cb=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) throw new Error(`fetch ${res.status}`);
     return await res.text();
   } catch (err) {
@@ -136,6 +136,7 @@ async function writeBlobJson(pathname: string, json: string): Promise<void> {
     allowOverwrite: true,
     contentType: "application/json",
     token,
+    cacheControlMaxAge: 0,
   });
 }
 

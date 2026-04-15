@@ -44,7 +44,7 @@ let raw = null;
 try {
   const meta = await head(BLOB_KEY, { token });
   if (meta?.url) {
-    const res = await fetch(meta.url, { cache: "no-store" });
+    const res = await fetch(`${meta.url}?_cb=${Date.now()}`, { cache: "no-store" });
     if (res.ok) raw = await res.text();
   }
 } catch (err) {

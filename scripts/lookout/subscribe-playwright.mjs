@@ -66,7 +66,7 @@ async function readTracker() {
   try {
     const meta = await head(TRACKER_BLOB_KEY, { token: BLOB_TOKEN });
     if (!meta?.url) return { version: 1, updatedAt: new Date().toISOString(), targets: [] };
-    const res = await fetch(meta.url, { cache: "no-store" });
+    const res = await fetch(`${meta.url}?_cb=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) throw new Error(`fetch ${res.status}`);
     return JSON.parse(await res.text());
   } catch (err) {
@@ -86,6 +86,7 @@ async function writeTracker(doc) {
     allowOverwrite: true,
     contentType: "application/json",
     token: BLOB_TOKEN,
+    cacheControlMaxAge: 0,
   });
 }
 
