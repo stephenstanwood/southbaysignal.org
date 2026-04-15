@@ -1280,6 +1280,18 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     url: "https://genspark.ai",
   },
   {
+    id: "neye-ai",
+    name: "nEye.ai",
+    city: "Santa Clara",
+    category: "network",
+    round: "Series C",
+    amount: "$80M",
+    date: "2026-04-14",
+    tagline: "Optical Circuit Switches (OCS) for AI data center networking — combining silicon photonics and MEMS technology to replace electrical switches with light, delivering lower latency, higher bandwidth, and dramatically less power. Backed by Sutter Hill Ventures, CapitalG (Google), M12 (Microsoft), and Socratic Partners.",
+    color: "#0ea5e9",
+    url: "https://neye.ai",
+  },
+  {
     id: "sifive",
     name: "SiFive",
     city: "Santa Clara",
@@ -1512,7 +1524,7 @@ export const TECH_PULSE = [
   {
     value: "$6B+",
     label: "Raised in Q1–Q2 2026",
-    note: "41 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
+    note: "42 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
   },
   {
     value: "Chip equipment",

@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-15T11:10:09.586Z",
+      "generatedAt": "2026-04-15T11:20:09.795Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,7 +137,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-15T11:10:12.646Z",
+      "generatedAt": "2026-04-15T11:20:11.591Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -151,18 +151,6 @@
       },
       "permits": [
         {
-          "id": "26BLD-00983",
-          "address": "824 Bryant St",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "COM emergency sewer replacement to planter strip. (SEPARATE PERMIT FROM PUBLIC WORKS REQUIRED)",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-14",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00915",
           "address": "3421 Orinda St",
           "category": "commercial",
@@ -172,30 +160,6 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-08",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00912",
-          "address": "697 Florales Dr",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "200 Amp upgrade in the same location",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-08",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00940",
-          "address": "350 Campesino Av",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "RES Reroute kitchen and laundry sewer drain via open trench. Approx 50'. All on property.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-09",
           "subtype": "Permit Issued"
         },
         {
@@ -211,27 +175,39 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00938",
-          "address": "1234 Pitman Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
+          "id": "26BLD-00983",
+          "address": "824 Bryant St",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "COM emergency sewer replacement to planter strip. (SEPARATE PERMIT FROM PUBLIC WORKS REQUIRED)",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-14",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00940",
+          "address": "350 Campesino Av",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "RES Reroute kitchen and laundry sewer drain via open trench. Approx 50'. All on property.",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-09",
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00954",
-          "address": "3179 Stockton Pl",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
+          "id": "26BLD-00912",
+          "address": "697 Florales Dr",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "200 Amp upgrade in the same location",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-10",
+          "issueDate": "2026-04-08",
           "subtype": "Permit Issued"
         },
         {
@@ -247,12 +223,36 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-00938",
+          "address": "1234 Pitman Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-09",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-00957",
           "address": "1066 Maddux Dr",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Kitchen or Bath Remodel",
           "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-10",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00954",
+          "address": "3179 Stockton Pl",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-10",
