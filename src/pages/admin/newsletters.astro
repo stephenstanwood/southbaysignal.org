@@ -51,6 +51,17 @@ function statusColor(s: SubscribeStatus): string {
   }
 }
 
+function cityLabel(key: string | undefined): string {
+  if (!key) return "";
+  return key.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function googleSearchUrl(name: string, city: string | undefined): string {
+  const loc = cityLabel(city) || "south bay";
+  const q = `${name} ${loc} newsletter email signup`;
+  return `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+}
+
 function relativeTime(iso: string | undefined): string {
   if (!iso) return "—";
   const then = new Date(iso).getTime();
@@ -252,7 +263,7 @@ const summary = {
                   {items.sort((a, b) => a.name.localeCompare(b.name)).map((t) => (
                     <tr data-target-id={t.id}>
                       <td>
-                        <div class="name"><a href={t.signupUrl} target="_blank">{t.name}</a></div>
+                        <div class="name"><a href={googleSearchUrl(t.name, t.city)} target="_blank" rel="noopener">{t.name}</a></div>
                         <div class="provider">{t.provider}</div>
                         {t.notes && <div class="meta">{t.notes}</div>}
                       </td>

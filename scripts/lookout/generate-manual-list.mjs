@@ -15,6 +15,17 @@ const __dirname = dirname(__filename);
 
 const { targets } = JSON.parse(readFileSync(join(__dirname, "targets.json"), "utf8"));
 
+function cityLabel(key) {
+  if (!key) return "";
+  return key.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function googleSearchUrl(name, city) {
+  const loc = cityLabel(city) || "south bay";
+  const q = `${name} ${loc} newsletter email signup`;
+  return `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+}
+
 const byPriority = { 1: [], 2: [], 3: [] };
 for (const t of targets) {
   const p = t.priority || 3;
@@ -73,7 +84,7 @@ for (const p of [1, 2, 3]) {
     lines.push("");
     for (const t of items) {
       const notes = t.notes ? ` — _${t.notes}_` : "";
-      lines.push(`- [ ] [${t.name}](${t.signupUrl})${notes}`);
+      lines.push(`- [ ] [${t.name}](${googleSearchUrl(t.name, t.city)})${notes}`);
     }
     lines.push("");
   }
