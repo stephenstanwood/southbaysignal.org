@@ -375,7 +375,18 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
         color: white;
         text-transform: lowercase;
         letter-spacing: 0.02em;
+        border: 0;
+        font-family: inherit;
       }
+      .status-pill.clickable {
+        cursor: pointer;
+        transition: transform 80ms, box-shadow 140ms;
+      }
+      .status-pill.clickable:hover {
+        transform: scale(1.05);
+        box-shadow: 0 2px 10px rgba(245, 158, 11, 0.45);
+      }
+      .status-pill.clickable:active { transform: scale(0.96); }
       .undo-btn {
         display: inline-flex;
         align-items: center;
@@ -559,7 +570,12 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
                           <td class="meta">{cityLabel(t.city) || "—"}</td>
                           <td>
                             <span class="status-wrap">
-                              <span class="status-pill" style={`background: ${statusColor(t.status)}`}>{statusLabel(t.status)}</span>
+                              <button
+                                class={`status-pill ${t.status === "needs-manual" ? "clickable" : ""}`}
+                                style={`background: ${statusColor(t.status)}`}
+                                data-id={t.id}
+                                title={t.status === "needs-manual" ? "Click to mark as signed up" : ""}
+                              >{statusLabel(t.status)}</button>
                               {(t.status === "signup-posted" || t.status === "confirmed") && (
                                 <button
                                   class="undo-btn"
@@ -664,6 +680,51 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
             return;
           }
 
+          // Click a "ready" pill → mark as signed up
+          const readyPill = e.target.closest(".status-pill.clickable");
+          if (readyPill) {
+            const id = readyPill.dataset.id;
+            readyPill.disabled = true;
+            try {
+              const res = await fetch(
+                `/api/admin/newsletters/mark?id=${encodeURIComponent(id)}&status=signup-posted&key=${encodeURIComponent(providedKey)}`,
+                { method: "POST" }
+              );
+              if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                alert(`mark failed: ${err.error || res.status}`);
+                readyPill.disabled = false;
+                return;
+              }
+              const row = readyPill.closest("tr");
+              if (row) {
+                row.className = "status-signup-posted";
+                readyPill.textContent = "signed up";
+                readyPill.style.background = "#a855f7";
+                readyPill.classList.remove("clickable");
+                readyPill.title = "";
+                // Add an undo X after the pill
+                const wrap = row.querySelector(".status-wrap");
+                if (wrap && !wrap.querySelector(".undo-btn")) {
+                  const btn = document.createElement("button");
+                  btn.className = "undo-btn";
+                  btn.dataset.id = id;
+                  btn.title = "Undo — reset to ready";
+                  btn.setAttribute("aria-label", "Reset to ready");
+                  btn.textContent = "✕";
+                  wrap.appendChild(btn);
+                }
+                row.classList.remove("just-updated");
+                void row.offsetWidth;
+                row.classList.add("just-updated");
+              }
+            } catch (err) {
+              alert("mark error: " + err.message);
+              readyPill.disabled = false;
+            }
+            return;
+          }
+
           // Undo — reset a row back to needs-manual ("ready")
           const undoBtn = e.target.closest(".undo-btn");
           if (undoBtn) {
@@ -687,6 +748,8 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
                 if (pill) {
                   pill.textContent = "ready";
                   pill.style.background = "#f59e0b";
+                  pill.classList.add("clickable");
+                  pill.title = "Click to mark as signed up";
                 }
                 // Remove the undo button itself
                 undoBtn.remove();
@@ -778,6 +841,13 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
             if (pill) {
               pill.textContent = STATUS_LABEL[t.status] ?? t.status;
               pill.style.background = STATUS_COLOR[t.status] ?? "#64748b";
+              if (t.status === "needs-manual") {
+                pill.classList.add("clickable");
+                pill.title = "Click to mark as signed up";
+              } else {
+                pill.classList.remove("clickable");
+                pill.title = "";
+              }
             }
             // Add/remove the undo X depending on new status
             const wrap = tr.querySelector(".status-wrap");
