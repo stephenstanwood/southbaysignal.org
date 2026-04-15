@@ -2,6 +2,48 @@
 
 ---
 
+## 2026-04-15 — Cycle 81: City Briefings Regeneration + Full Refresh
+
+### Context
+Wednesday April 15, 2026 (Tax Day, late afternoon). Spring break ongoing through Apr 17 (FUHSD/CUSD/Campbell USD). First full week back for SJUSD/PAUSD/MVWSD/MVLA.
+
+### What Was Built
+
+**Full data pipeline refresh — 10 data files updated, city briefings regenerated**
+
+- `upcoming-events.json`: 678 events (111 ongoing), 33 sources
+- `around-town.json`: 8 items through Apr 14 (Mountain View capital improvement, Sunnyvale tenant protection)
+- `digests.json`: 10 city digests — San José + Santa Clara meetings today (Apr 15)
+- `upcoming-meetings.json`: Palo Alto + Saratoga today, Campbell + Milpitas Apr 21, Los Altos Apr 28
+- `air-quality.json`: AQI 41 — Good (avg, 11 cities)
+- `outages.json`: 0 active PG&E outages
+- `real-estate.json`: 10 cities refreshed
+- `tech-briefing.json`: $4B+ across 24 rounds in past 6 weeks; AI + semiconductors dominant
+- `health-scores.json`: includes Apr 13 inspections
+- `scc-food-openings.json`: 12 opened items — King's Jok-Bal, Chick-fil-A, Alpha Tea, Blendid, Sakura Market Ramen
+
+**City briefings: Regenerated all 11 city summaries with current local events**
+
+Highlights baked into briefings:
+- **Palo Alto**: David Byrne at Frost Amphitheatre tonight; Earth Day festival this weekend
+- **Sunnyvale**: Tenant protection amendments passed this week
+- **Saratoga**: Montalvo Arts Center reopened after renovation + library book sale
+- **San José**: Earth Day events, Mexican Heritage Plaza programming, city council today
+
+**RECENTLY_FUNDED: No new rounds found for Apr 15–21**
+
+Searched for new South Bay funding rounds — all candidates found (Collaborative Robotics, Auradine, EnCharge AI) were from 2024/early 2025, not current. Database remains at 42 rounds. Crunchbase weekly roundup for Apr 12–18 publishes Friday Apr 18; check next cycle.
+
+### Why This Was the Strongest Move
+City briefings are the highest-visibility content on the site — they appear above the fold on every city page. Regenerating them with hyperlocal content (named venues, specific ordinances, event dates) transforms them from generic filler into genuinely useful daily context for residents.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 18 Crunchbase roundup** — Weekly roundup for Apr 12–18 publishes Friday. Check for new South Bay rounds.
+2. **SCUSD last day verification** — Conflicting sources (May 27 vs June 5). Try a different URL or PDF calendar.
+3. **Restaurant radar: Asia Live (Santa Clara), Zareen's (Sunnyvale)** — Confirmed open from news; need manual override (won't appear in permit data).
+
+---
+
 ## 2026-04-15 — Cycle 80: Permit Pulse Refresh + RECENTLY_FUNDED Watch
 
 ### Context
