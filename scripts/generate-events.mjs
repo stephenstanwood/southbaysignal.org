@@ -650,8 +650,11 @@ function inferCategory(title, desc, type, venue = "") {
   // Must run BEFORE the sports check because "transportation" contains "sport" as substring.
   if (/\b(commission|committee|council|board)\s+(meeting|hearing|session)\b/i.test(title) ||
       /\b(city council|town council|planning commission|city manager|public works)\b/i.test(title)) return "community";
+  // Yoga, pilates, and wellness classes are community, not sports — check before sports block
+  // (event type fields from sources like SJDA can include "Sports & Activities" even for yoga)
+  if (/\b(yoga|pilates|meditation|mindfulness|tai chi)\b/.test(t)) return "community";
   // Board games, card games, tabletop games and D&D are community, not sports
-  const isBoardGame = /\b(board game|card game|tabletop|dungeons.{0,5}dragons|d&d|rpg club|wargame)\b/.test(t);
+  const isBoardGame = /\b(board games?|card games?|tabletop|dungeons.{0,5}dragons|d&d|rpg club|wargame)\b/.test(t);
   // "Games, crafts, and activities" in library/family program descriptions is not sports.
   // Protects against events like "Fabulous Friday: games, crafts, activities" being misclassified.
   const isLibraryActivityGames = /\bgames[,;]?\s*(crafts?|activities|bubbles|more)/i.test(t) ||
