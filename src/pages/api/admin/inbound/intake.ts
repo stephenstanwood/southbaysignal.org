@@ -33,8 +33,8 @@ import {
   generateInboundEventId,
   dedupHashFor,
 } from "../../../../lib/lookout/storage.ts";
-import { tryAutoConfirm, looksLikeConfirmation, looksLikeAck } from "../../../../lib/lookout/confirm.ts";
-import { noteInboundFromSender, noteConfirmationClicked } from "../../../../lib/lookout/tracker.ts";
+import { looksLikeConfirmation, looksLikeAck } from "../../../../lib/lookout/confirm.ts";
+import { noteInboundFromSender } from "../../../../lib/lookout/tracker.ts";
 import type { InboundEmail, InboundEvent, InboundIntakeLog } from "../../../../lib/lookout/types.ts";
 
 /** Internal shape — InboundEmail plus raw html for confirmation link parsing. */
@@ -99,8 +99,11 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // 4.5. Confirmation handling — short-circuit confirmation + ack emails
-  //      before the extractor eats the LLM budget. Also auto-click the
-  //      confirm link when we find one, so bulk subscribe flows are unattended.
+  //      before the extractor eats the LLM budget.
+  //      NOTE: auto-click is DISABLED — Stephen clicks confirm links manually
+  //      to avoid bot-flagging the sandcathype@gmail.com address. We still
+  //      detect confirmation subjects and skip the extractor, but we don't
+  //      follow the link.
   //      IMPORTANT: this block runs BEFORE the generic tracker update so
   //      confirmation/ack emails don't get counted toward receivedCount.
   if (looksLikeAck(email.subject)) {
@@ -117,47 +120,18 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   if (looksLikeConfirmation(email.subject)) {
-    const result = await tryAutoConfirm(email);
-    if (result.kind === "clicked") {
-      console.log(
-        `[intake] confirmation-clicked — ${email.from} "${email.subject.slice(0, 60)}" → HTTP ${result.status}`
-      );
-      // Promote the matching tracker row from signup-posted → confirmed
-      try {
-        await noteConfirmationClicked(email.from);
-      } catch (err) {
-        console.error("[intake] tracker confirm update failed:", (err as Error).message);
-      }
-      await appendLog(log, {
-        dedupHash: hash,
-        receivedAt: email.receivedAt,
-        from: email.from,
-        subject: email.subject,
-        outcome: "confirmation-clicked",
-        eventCount: 0,
-      });
-      return Response.json({ ok: true, outcome: "confirmation-clicked", url: result.url, status: result.status });
-    }
-    if (result.kind === "click-failed") {
-      console.error(
-        `[intake] confirmation-failed — ${email.from} "${email.subject.slice(0, 60)}" url=${result.url} err=${result.error}`
-      );
-      await appendLog(log, {
-        dedupHash: hash,
-        receivedAt: email.receivedAt,
-        from: email.from,
-        subject: email.subject,
-        outcome: "confirmation-failed",
-        eventCount: 0,
-        error: result.error,
-      });
-      // Still 2xx — we don't want Resend retrying indefinitely
-      return Response.json({ ok: true, outcome: "confirmation-failed" });
-    }
-    if (result.kind === "no-link-found") {
-      console.warn(`[intake] confirmation subject but no link — "${email.subject.slice(0, 60)}"`);
-      // Fall through to extractor — maybe the email has events anyway
-    }
+    console.log(
+      `[intake] confirmation-pending (manual) — ${email.from} "${email.subject.slice(0, 60)}"`
+    );
+    await appendLog(log, {
+      dedupHash: hash,
+      receivedAt: email.receivedAt,
+      from: email.from,
+      subject: email.subject,
+      outcome: "confirmation-pending",
+      eventCount: 0,
+    });
+    return Response.json({ ok: true, outcome: "confirmation-pending" });
   }
 
   // 4.7. Real-newsletter path: bump tracker receivedCount / lastReceivedAt and

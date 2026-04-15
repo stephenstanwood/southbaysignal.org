@@ -64,6 +64,7 @@ export interface InboundIntakeLog {
     | "duplicate"
     | "confirmation-clicked"
     | "confirmation-failed"
+    | "confirmation-pending"
     | "ack-ignored";
   eventCount: number;
   error?: string;
