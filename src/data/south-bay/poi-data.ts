@@ -810,4 +810,41 @@ export const SOUTH_BAY_POIS: POI[] = [
     indoorOutdoor: "indoor",
     bestSlots: ["afternoon", "evening"],
   },
+
+  // ── SANTA CRUZ PICKS (case-by-case, not full coverage) ─────────────────────
+
+  {
+    id: "mystery-spot",
+    title: "The Mystery Spot",
+    city: "santa-cruz",
+    venue: "The Mystery Spot",
+    category: "outdoor",
+    cost: "paid",
+    costNote: "$10",
+    kidFriendly: true,
+    description:
+      "A gravity-defying roadside attraction in the redwoods where balls roll uphill and people lean at impossible angles. Kitsch, fun, and surprisingly worth it.",
+    why: "A Santa Cruz rite of passage — weird, fun, and genuinely delightful for kids and adults",
+    emoji: "🌀",
+    url: "https://www.mysteryspot.com",
+    indoorOutdoor: "outdoor",
+    bestSlots: ["morning", "afternoon"],
+  },
+  {
+    id: "henry-cowell-redwoods",
+    title: "Henry Cowell Redwoods State Park",
+    city: "santa-cruz",
+    venue: "Henry Cowell Redwoods State Park",
+    category: "outdoor",
+    cost: "low",
+    costNote: "$10 parking",
+    kidFriendly: true,
+    description:
+      "Old-growth redwood grove with an easy 0.8-mile loop trail through towering trees. The San Lorenzo River runs through the park with swimming holes in summer.",
+    why: "The most accessible old-growth redwoods near the Bay — 30 min from Los Gatos over 17",
+    emoji: "🌲",
+    url: "https://www.parks.ca.gov/?page_id=546",
+    indoorOutdoor: "outdoor",
+    bestSlots: ["morning", "afternoon"],
+  },
 ];

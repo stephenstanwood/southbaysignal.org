@@ -24,6 +24,8 @@ export const CITIES: CityConfig[] = [
   { id: "santa-clara",   name: "Santa Clara",   website: "https://www.santaclaraca.gov",    lat: 37.3541, lon: -121.9552 },
   { id: "los-altos",     name: "Los Altos",     website: "https://www.losaltosca.gov",      lat: 37.3852, lon: -122.1141 },
   { id: "milpitas",      name: "Milpitas",      website: "https://www.milpitas.gov",        lat: 37.4323, lon: -121.8996 },
+  // Case-by-case picks only — not full coverage. Excluded from plan-day VALID_CITIES.
+  { id: "santa-cruz",    name: "Santa Cruz",    website: "https://www.cityofsantacruz.com",  lat: 36.9741, lon: -122.0308 },
 ];
 
 export const CITY_MAP = Object.fromEntries(

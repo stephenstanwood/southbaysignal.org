@@ -13,7 +13,8 @@ export type City =
   | "santa-clara"
   | "los-altos"
   | "palo-alto"
-  | "milpitas";
+  | "milpitas"
+  | "santa-cruz"; // case-by-case picks only, not full coverage
 
 export type Category = "sports" | "events" | "government" | "technology" | "plan" | "development" | "transit" | "weather" | "food" | "camps";
 

@@ -94,7 +94,9 @@ interface DayCard {
 // Constants
 // ---------------------------------------------------------------------------
 
-const VALID_CITIES = new Set(Object.keys(CITY_MAP));
+// santa-cruz is in CITY_MAP for POI/event display but excluded from plan-day
+// (case-by-case picks only, not full coverage with enough POIs to fill a plan)
+const VALID_CITIES = new Set(Object.keys(CITY_MAP).filter((c) => c !== "santa-cruz"));
 const MAX_CARDS = 6;
 const CANDIDATE_POOL_SIZE = 25; // fewer = faster Haiku response
 
