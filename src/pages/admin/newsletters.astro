@@ -98,26 +98,83 @@ const summary = {
         background: var(--bg);
         color: var(--fg);
         margin: 0;
-        padding: 24px 16px;
+        padding: 0;
         line-height: 1.5;
       }
-      .container { max-width: 1100px; margin: 0 auto; }
+      .container { max-width: 1100px; margin: 0 auto; padding: 0 16px 32px; }
       h1 { font-size: 24px; margin: 0 0 4px; }
-      .sub { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+      .sub { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+
+      /* Floating header */
+      .sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(250, 250, 249, 0.95);
+        backdrop-filter: saturate(1.4) blur(10px);
+        -webkit-backdrop-filter: saturate(1.4) blur(10px);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 16px;
+        margin-bottom: 16px;
+      }
+      .sticky-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 16px;
+        align-items: center;
+      }
+      .title-block { flex: 0 0 auto; }
+      .title-block h1 { font-size: 18px; margin: 0; }
+      .title-block .sub { font-size: 11px; color: var(--muted); margin: 0; }
+
+      .copy-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        background: #111827;
+        color: white;
+        border: 0;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 120ms, transform 80ms;
+        flex: 0 0 auto;
+      }
+      .copy-button:hover { background: #1f2937; }
+      .copy-button:active { transform: scale(0.97); }
+      .copy-button code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12px;
+        background: rgba(255,255,255,0.15);
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+      .copy-button.copied { background: #16a34a; }
+
       .summary {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 8px;
-        margin-bottom: 24px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        flex: 1 1 auto;
+        justify-content: flex-end;
       }
       .stat {
         background: var(--card);
         border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 12px 16px;
+        border-radius: 6px;
+        padding: 6px 10px;
+        display: flex;
+        gap: 6px;
+        align-items: baseline;
+        font-size: 12px;
       }
-      .stat .num { font-size: 22px; font-weight: 600; }
-      .stat .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+      .stat .num { font-size: 15px; font-weight: 600; }
+      .stat .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
       h2 { font-size: 16px; margin: 24px 0 8px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
       table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
       th, td { text-align: left; padding: 8px 12px; font-size: 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
@@ -132,9 +189,33 @@ const summary = {
       .unauth { max-width: 400px; margin: 80px auto; text-align: center; }
       .unauth input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; width: 100%; font-size: 14px; }
       .unauth button { margin-top: 8px; padding: 8px 16px; background: #2563eb; color: white; border: 0; border-radius: 6px; font-size: 14px; cursor: pointer; }
+      .delete-btn { background: transparent; border: 1px solid var(--border); color: #b91c1c; border-radius: 4px; font-size: 11px; padding: 3px 8px; cursor: pointer; font-family: inherit; }
+      .delete-btn:hover { background: #fef2f2; border-color: #fca5a5; }
+      .delete-btn:disabled { opacity: 0.5; cursor: wait; }
     </style>
   </head>
   <body>
+    {authed && !loadError && (
+      <header class="sticky-header">
+        <div class="sticky-inner">
+          <div class="title-block">
+            <h1>Newsletter tracker</h1>
+            <p class="sub">{targets.length} targets • updated {doc && relativeTime(doc.updatedAt)}</p>
+          </div>
+          <button class="copy-button" id="copyEmailBtn" type="button">
+            📋 Copy <code>sandcathype@gmail.com</code>
+          </button>
+          <div class="summary">
+            <div class="stat"><span class="num">{summary.receiving}</span><span class="lbl">receiving</span></div>
+            <div class="stat"><span class="num">{summary.signupPosted}</span><span class="lbl">awaiting</span></div>
+            <div class="stat"><span class="num">{summary.confirmed}</span><span class="lbl">confirmed</span></div>
+            <div class="stat"><span class="num">{summary.notAttempted}</span><span class="lbl">new</span></div>
+            <div class="stat"><span class="num">{summary.needsManual}</span><span class="lbl">manual</span></div>
+            <div class="stat"><span class="num">{summary.failed}</span><span class="lbl">failed</span></div>
+          </div>
+        </div>
+      </header>
+    )}
     <div class="container">
       {!authed ? (
         <div class="unauth">
@@ -152,18 +233,6 @@ const summary = {
         </div>
       ) : (
         <>
-          <h1>Newsletter tracker</h1>
-          <p class="sub">Last updated {doc && relativeTime(doc.updatedAt)} • {targets.length} targets</p>
-
-          <div class="summary">
-            <div class="stat"><div class="num">{summary.receiving}</div><div class="lbl">receiving</div></div>
-            <div class="stat"><div class="num">{summary.signupPosted}</div><div class="lbl">awaiting first email</div></div>
-            <div class="stat"><div class="num">{summary.confirmed}</div><div class="lbl">confirmed</div></div>
-            <div class="stat"><div class="num">{summary.notAttempted}</div><div class="lbl">not attempted</div></div>
-            <div class="stat"><div class="num">{summary.needsManual}</div><div class="lbl">needs manual</div></div>
-            <div class="stat"><div class="num">{summary.failed}</div><div class="lbl">failed</div></div>
-          </div>
-
           {Object.entries(grouped).sort().map(([category, items]) => (
             <>
               <h2>{category}</h2>
@@ -176,11 +245,12 @@ const summary = {
                     <th>Last received</th>
                     <th>Count</th>
                     <th>Attempted</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   {items.sort((a, b) => a.name.localeCompare(b.name)).map((t) => (
-                    <tr>
+                    <tr data-target-id={t.id}>
                       <td>
                         <div class="name"><a href={t.signupUrl} target="_blank">{t.name}</a></div>
                         <div class="provider">{t.provider}</div>
@@ -191,6 +261,7 @@ const summary = {
                       <td class="meta">{relativeTime(t.lastReceivedAt)}</td>
                       <td class="meta">{t.receivedCount ?? 0}</td>
                       <td class="meta">{relativeTime(t.attemptedAt)}</td>
+                      <td><button class="delete-btn" data-id={t.id} data-name={t.name}>delete</button></td>
                     </tr>
                   ))}
                 </tbody>
@@ -200,5 +271,55 @@ const summary = {
         </>
       )}
     </div>
+    {authed && (
+      <script is:inline define:vars={{ providedKey }}>
+        // Copy email button
+        document.getElementById("copyEmailBtn")?.addEventListener("click", async (e) => {
+          const btn = e.currentTarget;
+          const email = "sandcathype@gmail.com";
+          try {
+            await navigator.clipboard.writeText(email);
+            const prev = btn.innerHTML;
+            btn.classList.add("copied");
+            btn.innerHTML = "✓ Copied!";
+            setTimeout(() => {
+              btn.classList.remove("copied");
+              btn.innerHTML = prev;
+            }, 1400);
+          } catch (err) {
+            alert("couldn't copy — " + err.message);
+          }
+        });
+
+        // Delete row handler
+        document.addEventListener("click", async (e) => {
+          const btn = e.target.closest(".delete-btn");
+          if (!btn) return;
+          const id = btn.dataset.id;
+          const name = btn.dataset.name || id;
+          if (!confirm(`Delete "${name}"?`)) return;
+          btn.disabled = true;
+          btn.textContent = "deleting…";
+          try {
+            const res = await fetch(`/api/admin/newsletters/delete?id=${encodeURIComponent(id)}&key=${encodeURIComponent(providedKey)}`, {
+              method: "DELETE",
+            });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              alert(`delete failed: ${err.error || res.status}`);
+              btn.disabled = false;
+              btn.textContent = "delete";
+              return;
+            }
+            const row = btn.closest("tr");
+            if (row) row.remove();
+          } catch (err) {
+            alert(`delete error: ${err.message}`);
+            btn.disabled = false;
+            btn.textContent = "delete";
+          }
+        });
+      </script>
+    )}
   </body>
 </html>

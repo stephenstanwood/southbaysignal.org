@@ -98,6 +98,8 @@ export interface NewsletterTrackerDoc {
   version: 1;
   updatedAt: string;
   targets: NewsletterTarget[];
+  /** Target ids the user has explicitly deleted — don't re-add them on re-seed. */
+  deletedIds?: string[];
 }
 
 // ── Public API ──────────────────────────────────────────────────────────────
@@ -207,7 +209,19 @@ export async function upsertTarget(
 // ── Storage helpers ─────────────────────────────────────────────────────────
 
 function emptyDoc(): NewsletterTrackerDoc {
-  return { version: 1, updatedAt: new Date().toISOString(), targets: [] };
+  return { version: 1, updatedAt: new Date().toISOString(), targets: [], deletedIds: [] };
+}
+
+/**
+ * Mark an id as explicitly deleted (permanent blocklist).
+ * Subscribe scripts should refuse to re-add anything in this list.
+ */
+export async function markDeleted(id: string): Promise<void> {
+  const doc = await readTracker();
+  doc.deletedIds = doc.deletedIds ?? [];
+  if (!doc.deletedIds.includes(id)) doc.deletedIds.push(id);
+  doc.targets = doc.targets.filter((t) => t.id !== id);
+  await writeTracker(doc);
 }
 
 async function readBlobJson(pathname: string): Promise<string | null> {

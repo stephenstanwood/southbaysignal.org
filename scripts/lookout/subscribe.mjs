@@ -328,8 +328,13 @@ async function main() {
     console.error(`❌ targets file not found: ${TARGETS_PATH}`);
     process.exit(1);
   }
-  const { targets } = JSON.parse(readFileSync(TARGETS_PATH, "utf8"));
+  const { targets: rawTargets } = JSON.parse(readFileSync(TARGETS_PATH, "utf8"));
   const doc = await readTracker();
+  const deletedIds = new Set(doc.deletedIds ?? []);
+  const targets = rawTargets.filter((t) => !deletedIds.has(t.id));
+  if (deletedIds.size > 0) {
+    console.log(`ℹ️  skipping ${deletedIds.size} user-deleted targets`);
+  }
 
   // Seed: ensure every target exists in the tracker
   for (const t of targets) {

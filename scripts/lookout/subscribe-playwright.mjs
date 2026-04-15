@@ -308,8 +308,15 @@ async function subscribeOne(browser, target) {
 // ── Main ───────────────────────────────────────────────────────────────────
 
 async function main() {
-  const { targets } = JSON.parse(readFileSync(TARGETS_PATH, "utf8"));
+  const { targets: rawTargets } = JSON.parse(readFileSync(TARGETS_PATH, "utf8"));
   const doc = await readTracker();
+  const deletedIds = new Set(doc.deletedIds ?? []);
+
+  // Filter out anything the user has explicitly deleted from the tracker
+  const targets = rawTargets.filter((t) => !deletedIds.has(t.id));
+  if (deletedIds.size > 0) {
+    console.log(`ℹ️  skipping ${deletedIds.size} user-deleted targets`);
+  }
 
   // Seed every target into the tracker (upsert)
   for (const t of targets) {
