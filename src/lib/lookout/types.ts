@@ -1,8 +1,9 @@
 /**
  * Types for the inbound-email event intake pipeline.
  *
- * Cities email newsletters to in@lookout.southbaytoday.org. Resend delivers
- * them, a webhook lands at /api/admin/events/intake, and an LLM extracts
+ * Cities email newsletters to events@in.southbaytoday.org (or any address
+ * on in.southbaytoday.org — catch-all inbox). Resend delivers
+ * them, a webhook lands at /api/admin/inbound/intake, and an LLM extracts
  * concrete events into InboundEvent records stored in Vercel Blob.
  */
 
