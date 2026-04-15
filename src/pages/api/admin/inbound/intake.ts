@@ -1,15 +1,19 @@
 /**
- * Inbound-email event intake webhook.
+ * Inbound-email intake webhook.
  *
- * Wired to Resend inbound on `lookout.southbaytoday.org`. Resend POSTs
+ * Wired to Resend inbound on `in.southbaytoday.org` (catch-all subdomain;
+ * use any local part — e.g. events@in..., tips@in...). Resend POSTs
  * `email.received` events here, signed with Svix headers. The payload is
  * METADATA ONLY — we fetch the full body via GET /emails/receiving/{id}.
  *
+ * Current use: extract community events from city newsletters. Future uses
+ * (tips, press releases, etc.) can branch off the same endpoint.
+ *
  * IMPORTANT GOTCHAS (see LOOKOUT_INBOUND_HANDOFF.md):
  *   - Resend webhooks do NOT follow redirects. Point the webhook at
- *     https://www.southbaytoday.org/api/admin/events/intake (canonical host).
+ *     https://www.southbaytoday.org/api/admin/inbound/intake (canonical host).
  *   - The default Resend API key is send-only. Create a Full access key.
- *   - Do not enable receiving on the apex domain — use lookout subdomain.
+ *   - Do not enable receiving on the apex domain — use a subdomain.
  *
  * Env vars required:
  *   RESEND_API_KEY            full-access key
