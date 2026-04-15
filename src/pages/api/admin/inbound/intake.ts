@@ -34,7 +34,7 @@ import {
   dedupHashFor,
 } from "../../../../lib/lookout/storage.ts";
 import { tryAutoConfirm, looksLikeConfirmation, looksLikeAck } from "../../../../lib/lookout/confirm.ts";
-import { noteInboundFromSender } from "../../../../lib/lookout/tracker.ts";
+import { noteInboundFromSender, noteConfirmationClicked } from "../../../../lib/lookout/tracker.ts";
 import type { InboundEmail, InboundEvent, InboundIntakeLog } from "../../../../lib/lookout/types.ts";
 
 /** Internal shape — InboundEmail plus raw html for confirmation link parsing. */
@@ -98,18 +98,11 @@ export const POST: APIRoute = async ({ request }) => {
     return jsonError(502, "failed to fetch email body");
   }
 
-  // 4.4. Update the newsletter tracker — any inbound from a tracked sender
-  //      bumps lastReceivedAt and (if applicable) moves status to "receiving".
-  //      Wrapped in try/catch because a tracker failure shouldn't block intake.
-  try {
-    await noteInboundFromSender(email.from, email.receivedAt);
-  } catch (err) {
-    console.error("[intake] tracker update failed:", (err as Error).message);
-  }
-
   // 4.5. Confirmation handling — short-circuit confirmation + ack emails
   //      before the extractor eats the LLM budget. Also auto-click the
   //      confirm link when we find one, so bulk subscribe flows are unattended.
+  //      IMPORTANT: this block runs BEFORE the generic tracker update so
+  //      confirmation/ack emails don't get counted toward receivedCount.
   if (looksLikeAck(email.subject)) {
     console.log(`[intake] ack-ignored — ${email.from} "${email.subject.slice(0, 60)}"`);
     await appendLog(log, {
@@ -129,6 +122,12 @@ export const POST: APIRoute = async ({ request }) => {
       console.log(
         `[intake] confirmation-clicked — ${email.from} "${email.subject.slice(0, 60)}" → HTTP ${result.status}`
       );
+      // Promote the matching tracker row from signup-posted → confirmed
+      try {
+        await noteConfirmationClicked(email.from);
+      } catch (err) {
+        console.error("[intake] tracker confirm update failed:", (err as Error).message);
+      }
       await appendLog(log, {
         dedupHash: hash,
         receivedAt: email.receivedAt,
@@ -159,6 +158,15 @@ export const POST: APIRoute = async ({ request }) => {
       console.warn(`[intake] confirmation subject but no link — "${email.subject.slice(0, 60)}"`);
       // Fall through to extractor — maybe the email has events anyway
     }
+  }
+
+  // 4.7. Real-newsletter path: bump tracker receivedCount / lastReceivedAt and
+  //      promote signup-posted/confirmed → receiving. This runs AFTER the
+  //      confirmation short-circuits so opt-in emails don't skew counts.
+  try {
+    await noteInboundFromSender(email.from, email.receivedAt);
+  } catch (err) {
+    console.error("[intake] tracker update failed:", (err as Error).message);
   }
 
   // 5. Run the extractor

@@ -143,29 +143,32 @@ export async function writeTracker(doc: NewsletterTrackerDoc): Promise<void> {
   writeFileSync(TRACKER_PATH, json);
 }
 
+function findTrackerMatch(doc: NewsletterTrackerDoc, fromEmail: string): NewsletterTarget | null {
+  if (!fromEmail) return null;
+  const addr = fromEmail.toLowerCase().trim();
+  const domain = addr.split("@")[1] ?? "";
+  return (
+    doc.targets.find((t) => {
+      if ((t.seenFromAddresses ?? []).some((a) => a.toLowerCase() === addr)) return true;
+      if ((t.seenFromDomains ?? []).some((d) => d.toLowerCase() === domain)) return true;
+      return false;
+    }) ?? null
+  );
+}
+
 /**
- * Called by the intake webhook when any new inbound email arrives. Updates
- * the tracker row whose from-address or from-domain matches the sender.
+ * Called by the intake webhook when a REAL newsletter email arrives.
+ * Bumps lastReceivedAt + receivedCount and promotes signup-posted/confirmed → receiving.
  *
- * If the match succeeds and status is currently "signup-posted" or "confirmed",
- * we advance it to "receiving" and bump lastReceivedAt / receivedCount.
- *
- * Returns the matched target id (or null if no match).
+ * Do NOT call this for confirmation or ack emails — those go through
+ * noteConfirmationClicked() instead so they don't skew receivedCount.
  */
 export async function noteInboundFromSender(
   fromEmail: string,
   receivedAt: string
 ): Promise<string | null> {
-  if (!fromEmail) return null;
   const doc = await readTracker();
-  const addr = fromEmail.toLowerCase().trim();
-  const domain = addr.split("@")[1] ?? "";
-
-  const match = doc.targets.find((t) => {
-    if (t.seenFromAddresses.some((a) => a.toLowerCase() === addr)) return true;
-    if (t.seenFromDomains.some((d) => d.toLowerCase() === domain)) return true;
-    return false;
-  });
+  const match = findTrackerMatch(doc, fromEmail);
   if (!match) return null;
 
   match.lastReceivedAt = receivedAt;
@@ -173,11 +176,33 @@ export async function noteInboundFromSender(
   if (match.status === "signup-posted" || match.status === "confirmed") {
     match.status = "receiving";
   }
-  // Record the exact address if we haven't already (auto-expands matching)
+  const addr = fromEmail.toLowerCase().trim();
   if (!match.seenFromAddresses.includes(addr)) {
     match.seenFromAddresses.push(addr);
   }
 
+  await writeTracker(doc);
+  return match.id;
+}
+
+/**
+ * Called when the webhook auto-clicks a confirmation/opt-in link.
+ * Promotes the matched target from signup-posted → confirmed (if applicable)
+ * WITHOUT touching receivedCount or lastReceivedAt — a confirmation email
+ * isn't a newsletter, just an opt-in step.
+ */
+export async function noteConfirmationClicked(fromEmail: string): Promise<string | null> {
+  const doc = await readTracker();
+  const match = findTrackerMatch(doc, fromEmail);
+  if (!match) return null;
+
+  if (match.status === "signup-posted" || match.status === "needs-manual" || match.status === "not-attempted") {
+    match.status = "confirmed";
+  }
+  const addr = fromEmail.toLowerCase().trim();
+  if (!match.seenFromAddresses.includes(addr)) {
+    match.seenFromAddresses.push(addr);
+  }
   await writeTracker(doc);
   return match.id;
 }
