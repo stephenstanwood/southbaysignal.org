@@ -1,30 +1,30 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-14T23:09:07.711Z",
+      "generatedAt": "2026-04-15T11:10:09.586Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Apr 7 – Apr 14",
+      "dateRange": "Apr 8 – Apr 15",
       "stats": {
-        "total": 308,
-        "notable": 18,
-        "newUnits": 4,
-        "totalValuation": 21879580
+        "total": 298,
+        "notable": 20,
+        "newUnits": 8,
+        "totalValuation": 12619776
       },
       "permits": [
         {
-          "id": "2024-113033-RS",
-          "address": "3327 Delta Rd",
+          "id": "2025-141396-RS",
+          "address": "911 Dry Creek Rd #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "New 2 Sty Sfr",
-          "valuation": 722275,
+          "description": "Epr Preapproved adu Site Specific Livelarge Home 795 Sq Ft Hcd adu",
+          "valuation": 134427,
           "units": 1,
-          "issueDate": "2026-04-08",
-          "subtype": "Single-Family"
+          "issueDate": "2026-04-13",
+          "subtype": "2nd Unit Added"
         },
         {
           "id": "2025-125966-RS",
@@ -36,6 +36,18 @@
           "valuation": 126648,
           "units": 1,
           "issueDate": "2026-04-10",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-131785-RS",
+          "address": "1767 Curtner Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Attached adu",
+          "valuation": 84376,
+          "units": 1,
+          "issueDate": "2026-04-13",
           "subtype": "2nd Unit Added"
         },
         {
@@ -51,6 +63,18 @@
           "subtype": "2nd Unit Added"
         },
         {
+          "id": "2025-143337-RS",
+          "address": "647 N 11th St #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Detached adu",
+          "valuation": 75752,
+          "units": 1,
+          "issueDate": "2026-04-13",
+          "subtype": "2nd Unit Added"
+        },
+        {
           "id": "2025-120222-RS",
           "address": "1391 Bretmoor Wy #2",
           "category": "residential-new",
@@ -63,16 +87,28 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2026-112055-CI",
-          "address": "1768 Automation Py",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "(Bem 100%) Tenant Improvement",
-          "valuation": 7429350,
-          "units": 0,
-          "issueDate": "2026-04-08",
-          "subtype": "Manufacturing"
+          "id": "2025-146910-RS",
+          "address": "4450 Silva Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Veev Attached Jadu",
+          "valuation": 59012,
+          "units": 1,
+          "issueDate": "2026-04-13",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-146918-RS",
+          "address": "5870 Cabral Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Veev Attached Jadu",
+          "valuation": 59012,
+          "units": 1,
+          "issueDate": "2026-04-13",
+          "subtype": "2nd Unit Added"
         },
         {
           "id": "2026-112160-CI",
@@ -87,69 +123,57 @@
           "subtype": "Office"
         },
         {
-          "id": "2026-111483-CI",
-          "address": "3098 Olsen Dr",
+          "id": "2026-111802-CI",
+          "address": "3545 N 1st St",
           "category": "commercial-large",
           "categoryLabel": "Commercial Project",
           "workType": "Tenant Improvement",
-          "description": "Cisco (Bemp100%) 3rd Floor Office ti",
-          "valuation": 1250000,
+          "description": "(Be 100%) Exterior Patio Renovation",
+          "valuation": 625000,
           "units": 0,
-          "issueDate": "2026-04-08",
-          "subtype": "R & D Lab"
-        },
-        {
-          "id": "2026-111486-CI",
-          "address": "3098 Olsen Dr",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Cisco (Bemp100%) 4th Floor Office ti",
-          "valuation": 1250000,
-          "units": 0,
-          "issueDate": "2026-04-08",
-          "subtype": "R & D Lab"
-        },
-        {
-          "id": "2026-111087-CI",
-          "address": "5079 Disk Dr",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Ti Rack Lab",
-          "valuation": 425000,
-          "units": 0,
-          "issueDate": "2026-04-08",
-          "subtype": "R & D Lab"
-        },
-        {
-          "id": "2026-111618-CI",
-          "address": "3062 Story Rd",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Karavan Coffee ti",
-          "valuation": 350000,
-          "units": 0,
-          "issueDate": "2026-04-10",
-          "subtype": "Restaurant"
+          "issueDate": "2026-04-13",
+          "subtype": "Office"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-14T23:09:10.070Z",
+      "generatedAt": "2026-04-15T11:10:12.646Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Apr 7 – Apr 14",
+      "dateRange": "Apr 8 – Apr 15",
       "stats": {
-        "total": 129,
-        "notable": 13,
+        "total": 120,
+        "notable": 14,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
+        {
+          "id": "26BLD-00983",
+          "address": "824 Bryant St",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "COM emergency sewer replacement to planter strip. (SEPARATE PERMIT FROM PUBLIC WORKS REQUIRED)",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-14",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00915",
+          "address": "3421 Orinda St",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "RES MEP : sewer repair like for like before sidewalk on property line. will tunnel slightly under sidewalk. no concrete cutting of city sidewalk",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-08",
+          "subtype": "Permit Issued"
+        },
         {
           "id": "26BLD-00912",
           "address": "697 Florales Dr",
@@ -175,27 +199,27 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00959",
-          "address": "4216 Manuela Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "id": "26BLD-00976",
+          "address": "365 College Av",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "RES: Main panel upgrade from 100A to 200A  in the same location",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-11",
+          "issueDate": "2026-04-13",
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00909",
-          "address": "837 Ilima Ct",
+          "id": "26BLD-00938",
+          "address": "1234 Pitman Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-07",
+          "issueDate": "2026-04-09",
           "subtype": "Permit Issued"
         },
         {
@@ -211,15 +235,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00905",
-          "address": "541 Maybell Av",
+          "id": "26BLD-00959",
+          "address": "4216 Manuela Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-07",
+          "issueDate": "2026-04-11",
           "subtype": "Permit Issued"
         },
         {
@@ -241,30 +265,6 @@
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
           "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-09",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00896",
-          "address": "3032 Waverley St",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-07",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00938",
-          "address": "1234 Pitman Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-09",
