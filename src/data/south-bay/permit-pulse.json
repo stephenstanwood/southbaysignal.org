@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-16T11:13:18.633Z",
+      "generatedAt": "2026-04-16T19:09:49.081Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,7 +137,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-16T11:13:20.303Z",
+      "generatedAt": "2026-04-16T19:09:51.215Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -150,6 +150,30 @@
         "totalValuation": 0
       },
       "permits": [
+        {
+          "id": "26BLD-00969",
+          "address": "180 El Camino Real",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "COM: 'J.CREW' Space #CC1240: Temporary construction barricade - 12' Parapet Option w/ Scrim, associated master barricade permit under 26MRP-00003.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-13",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00940",
+          "address": "350 Campesino Av",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "RES Reroute kitchen and laundry sewer drain via open trench. Approx 50'. All on property.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-09",
+          "subtype": "Finaled"
+        },
         {
           "id": "26BLD-00971",
           "address": "690 Wildwood Ln",
@@ -175,36 +199,12 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00940",
-          "address": "350 Campesino Av",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "RES Reroute kitchen and laundry sewer drain via open trench. Approx 50'. All on property.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-09",
-          "subtype": "Finaled"
-        },
-        {
           "id": "26BLD-00976",
           "address": "365 College Av",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
           "description": "RES: Main panel upgrade from 100A to 200A  in the same location",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-13",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00969",
-          "address": "180 El Camino Real",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "COM: 'J.CREW' Space #CC1240: Temporary construction barricade - 12' Parapet Option w/ Scrim, associated master barricade permit under 26MRP-00003.",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-13",
@@ -223,6 +223,18 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-00959",
+          "address": "4216 Manuela Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-11",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-00931",
           "address": "250 Churchill Av",
           "category": "residential-large",
@@ -235,15 +247,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00938",
-          "address": "1234 Pitman Av",
+          "id": "26BLD-00957",
+          "address": "1066 Maddux Dr",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-09",
+          "issueDate": "2026-04-10",
           "subtype": "Permit Issued"
         },
         {
@@ -253,18 +265,6 @@
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
           "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-10",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00957",
-          "address": "1066 Maddux Dr",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-10",
