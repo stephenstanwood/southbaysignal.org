@@ -2,6 +2,30 @@
 
 ---
 
+## 2026-04-15 — Cycle 82: Scraper Artifact Fix + Navigation Filter Hardening
+
+### Context
+Wednesday April 15, 2026 (late evening). Continuation cycle after context compaction. Spring break ongoing through Apr 17.
+
+### What Was Built
+
+**Bug fix: "Skip to main content" scraping artifact removed**
+
+- Removed bad event `id: 8deb70a54a3e` ("Skip to main content", Apr 17, Montalvo Arts Center) from `upcoming-events.json` — events now: 693
+- Root cause: Montalvo DOM fallback in `playwright-scrapers.mjs` used only `title.length > 3` to accept events, allowing HTML navigation elements through
+- Fix 1: Tightened DOM fallback check to `title.length > 5 && !NAV_JUNK.test(title)` where NAV_JUNK covers "skip to", "back to top", "navigation", "breadcrumb", "close menu", etc.
+- Fix 2: Added 11 navigation-text patterns to `INTERNAL_EVENT_PATTERNS` in `generate-events.mjs` as defense-in-depth: `skip to (main) content`, `back to top`, `navigation`, `breadcrumb`, `close menu/modal/dialog`, `view all events`, `load more`, `show more`, `read more`, `next/previous page`
+
+### Why This Was the Strongest Move
+A fabricated event titled "Skip to main content" would confuse residents if seen in the events feed. Removing it protects trust in the events data, and adding the filter patterns prevents the same class of issue from recurring across any scraper that feeds into the pipeline.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 18 Crunchbase roundup** — Weekly roundup for Apr 12–18 publishes Friday. Check for new South Bay rounds.
+2. **SCUSD last day verification** — Conflicting sources (May 27 vs June 5). Try a different URL or PDF calendar.
+3. **Restaurant radar: Asia Live (Santa Clara), Zareen's (Sunnyvale)** — Confirmed open from news; need manual override.
+
+---
+
 ## 2026-04-15 — Cycle 81: City Briefings Regeneration + Full Refresh
 
 ### Context
