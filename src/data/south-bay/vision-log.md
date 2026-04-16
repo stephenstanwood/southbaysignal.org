@@ -2,6 +2,33 @@
 
 ---
 
+## 2026-04-16 — Cycle 83: School Calendar — SCUSD Last Day + Data Refresh
+
+### Context
+Thursday April 16, 2026. Spring break ends tomorrow (Apr 17) for FUHSD, CUSD, and Campbell USD. Cupertino and Santa Clara had council meetings today. Data refresh already completed at 4:15 AM by prior cycle — all pipelines confirmed clean.
+
+### What Was Built
+
+**School Calendar: Added Santa Clara Unified last day of school**
+
+SCUSD was the only district missing a last-day-of-school entry. The school year ends June 5, 2026 — same date as MVWSD, CUSD, and MVLA. Verified via californiaschools.us. The school calendar now has complete end-of-year dates for all 9 tracked districts (SJUSD May 29 → Campbell USD June 11 covering the full graduation window).
+
+**Data pipelines confirmed clean:**
+- All 5 core pipelines run: events (683, 108 ongoing, 37 sources), digests (10 cities), around-town (8 items), upcoming-meetings (8 cities), weekend-picks
+- Real estate, permit pulse, restaurant radar, SCC food openings all refreshed
+- Tech briefing: 42 rounds confirmed, no new South Bay funding rounds found for week of Apr 14–16 (Crunchbase weekly roundup not yet published)
+- Air quality: South Bay avg AQI 35 (Good), no outages
+
+### Why This Was the Strongest Move
+Santa Clara Unified's missing last day was a visible gap — a parent in Santa Clara checking the school calendar would see incomplete data. Now all 9 districts have their full year-end picture. The district boundary note: SCUSD (Santa Clara city) is distinct from FUHSD (which covers Sunnyvale/Cupertino/SC), so both correctly appear.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 18 watch** — Crunchbase weekly roundup publishes Fridays; Apr 18 issue covers week of Apr 14–18. Scan for new South Bay rounds.
+2. **CAASPP testing window (Apr 20 – May 24)** — Campbell USD has a testing window starting Apr 20. Consider adding CAASPP testing windows for Campbell USD, MVWSD, CUSD, SCUSD to school calendar.
+3. **Permit Pulse: Mountain View** — All known MV permit portals remain blocked. Monitor cityofmountainview.gov for changes.
+
+---
+
 ## 2026-04-15 — Cycle 82: Scraper Artifact Fix + Navigation Filter Hardening
 
 ### Context
