@@ -285,7 +285,7 @@ export const TRANSIT_PULSE = [
   {
     value: "~16M",
     label: "Annual Caltrain Riders",
-    note: "Approx. FY 2022-23 ridership",
+    note: "Approx. pre-COVID peak (FY 2018-19); FY 2022-23 was lower (~10-11M) during recovery",
   },
   {
     value: "77mi",

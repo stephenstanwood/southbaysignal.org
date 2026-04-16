@@ -47,6 +47,11 @@ export interface SBEvent {
   url?: string;
   emoji: string;
   featured?: boolean;
+  /**
+   * ISO date string (YYYY-MM-DD). If set, the event is not displayed before this date.
+   * Use for venues temporarily closed (renovation, seasonal open, etc.).
+   */
+  startDate?: string;
 }
 
 export const SOUTH_BAY_EVENTS: SBEvent[] = [
@@ -960,11 +965,13 @@ export function getEventsForCity(
   currentMonth?: number,
 ): SBEvent[] {
   const month = currentMonth ?? new Date().getMonth() + 1;
+  const today = new Date().toISOString().slice(0, 10);
 
   return SOUTH_BAY_EVENTS.filter((e) => {
     if (city !== "all" && e.city !== city) return false;
     if (category !== "all" && e.category !== category) return false;
     if (e.months && !e.months.includes(month)) return false;
+    if (e.startDate && e.startDate > today) return false;
     return true;
   });
 }
