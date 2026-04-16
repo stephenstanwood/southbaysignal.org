@@ -2,6 +2,35 @@
 
 ---
 
+## 2026-04-16 — Cycle 84: Event Pipeline Bug Fixes — Farmers Market + Inbound Events
+
+### Context
+Thursday April 16, 2026 (continuation cycle). Spring break ends tomorrow (Apr 17). Two events recently entered via the inbound email pipeline: Saratoga Farmers Market (Apr 18) and ArtNow 2026 Awards Ceremony (May 2).
+
+### What Was Built
+
+**4 bugs fixed in `scripts/generate-events.mjs`:**
+
+1. **Farmers market category misprioritization** — `inferCategory` checked `title.includes("music")` before `title.includes("market")`. Event descriptions that mention "live music" (as farmers markets often do) caused the market to be categorized as "music" instead of "food". Fixed by inserting a farmers market early-return check (`/\bfarmers?\s+market\b/`) before the arts/music checks. Saratoga Farmers Market now correctly shows under the Food tab.
+
+2. **Saratoga Farmers Market season too narrow** — Had `season: [5, 11]` (May–November), missing April. The inbound email confirmed the market starts April 18. Fixed to `[4, 11]`.
+
+3. **Inbound events always had `endTime: null`** — `fetchInboundEvents` parsed `e.startsAt` but ignored `e.endsAt`. Fixed by adding end time extraction with proper LA timezone formatting. ArtNow 2026 Awards now shows `endTime: "6:00 pm"`.
+
+4. **Inbound events used full address string as venue name** — `venue: e.location` set venue to the full "West Valley College parking lot, 14000 Fruitvale Ave, Saratoga, CA 95070" string. Fixed by extracting just the first comma-delimited segment as the venue name.
+
+**Rebuilt upcoming-events.json:** 686 events (108 ongoing) from 38 sources.
+
+### Why This Was the Strongest Move
+A resident looking up the Saratoga Farmers Market on the Food tab would have seen it categorized as music — or worse, missing entirely because April was out of season. All four bugs were triggered by real inbound events that exposed silent failures in the pipeline. Fixing root causes means future inbound submissions also benefit.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 18 watch** — Crunchbase weekly roundup publishes Fridays; Apr 18 issue covers week of Apr 14–18. Scan for new South Bay rounds.
+2. **CAASPP testing window (Apr 20 – May 24)** — Campbell USD has a testing window starting Apr 20. Consider adding CAASPP testing windows to school calendar.
+3. **Permit Pulse: Mountain View** — All known MV permit portals remain blocked. Monitor cityofmountainview.gov for changes.
+
+---
+
 ## 2026-04-16 — Cycle 83: School Calendar — SCUSD Last Day + Data Refresh
 
 ### Context
