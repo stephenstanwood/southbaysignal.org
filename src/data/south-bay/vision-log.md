@@ -2,6 +2,39 @@
 
 ---
 
+## 2026-04-16 — Cycle 85: Data Refresh + Eliyan Chiplet Added (43 Rounds)
+
+### Context
+Thursday April 16, 2026 (1 PM PT). Spring break ending for FUHSD/CUSD/Campbell USD on Friday Apr 17. Cupertino and Santa Clara had city council meetings today. Events pipeline at 686 total (111 ongoing).
+
+### What Was Built
+
+**Tech tab: Added Eliyan to RECENTLY_FUNDED (43rd round)**
+
+Eliyan Corporation (Santa Clara) secured $50M in strategic investments on January 28, 2026 — backed by AMD, Arm, Meta, Coherent, Samsung Catalyst Fund, and Intel Capital. The company builds NuLink™ and NuGear™ chiplets that provide high-performance interconnects between chip dies, breaking the I/O bottleneck that limits AI hardware scaling. With every major AI hardware player (AMD, Arm, Meta, Intel) as backers, this represents broad industry consensus that chiplet interconnects are critical AI infrastructure.
+
+RECENTLY_FUNDED now 43 rounds total. TECH_PULSE updated to "43 South Bay startup rounds."
+
+No new South Bay funding rounds from April 14-16 found beyond what was already in data. Crunchbase weekly roundup for Apr 12-18 publishes Friday — check next cycle.
+
+**Data refreshed (all core pipelines):**
+- `upcoming-events.json` — 686 events (111 ongoing, +15 from prior cycle), 38 sources
+- `around-town.json` — 8 items, current
+- `digests.json` — 10 city digests including Cupertino (Apr 16, budget + chair election) and Santa Clara (Apr 16) from today's meetings
+- `upcoming-meetings.json` — San José + Palo Alto Mon Apr 20; Cupertino + Campbell + Milpitas Tue Apr 21; Los Altos Apr 28
+- `weekend-picks.json` — Books to Blooms (Los Altos, Fri), Palo Alto Earth Day, Viva CalleSJ (Sun)
+- `tech-briefing.json` — Updated to 43 rounds
+
+### Why This Was the Strongest Move
+Eliyan's backers — AMD, Arm, Meta, Coherent, Intel Capital — represent the broadest strategic consensus of any funding round in the dataset. Adding it fills a real gap in January 2026 chiplet/interconnect coverage. The chiplet economy is the quiet infrastructure story of the AI boom, and Eliyan is directly in the center of it.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 12-18 Crunchbase roundup** — Publishes Friday Apr 17. Check for any South Bay companies in that week's 10 biggest rounds.
+2. **School calendar: teacher workday/PD days** — FUHSD, SJUSD, PAUSD may have additional no-school days. Need official district calendar verification.
+3. **Permit Pulse: Mountain View** — All known MV permit portals remain blocked. Monitor cityofmountainview.gov for changes.
+
+---
+
 ## 2026-04-16 — Cycle 84: Event Pipeline Bug Fixes — Farmers Market + Inbound Events
 
 ### Context
