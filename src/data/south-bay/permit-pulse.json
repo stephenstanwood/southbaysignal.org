@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-15T23:09:37.207Z",
+      "generatedAt": "2026-04-16T11:12:05.089Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Apr 8 – Apr 15",
+      "dateRange": "Apr 9 – Apr 16",
       "stats": {
-        "total": 298,
-        "notable": 20,
+        "total": 331,
+        "notable": 19,
         "newUnits": 8,
-        "totalValuation": 12619776
+        "totalValuation": 8718644
       },
       "permits": [
         {
@@ -111,18 +111,6 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2026-112160-CI",
-          "address": "4000 N 1st St",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Figure Ai (Bemp100%) 2nd Fl - Office ti",
-          "valuation": 4100000,
-          "units": 0,
-          "issueDate": "2026-04-09",
-          "subtype": "Office"
-        },
-        {
           "id": "2026-111802-CI",
           "address": "3545 N 1st St",
           "category": "commercial-large",
@@ -133,18 +121,30 @@
           "units": 0,
           "issueDate": "2026-04-13",
           "subtype": "Office"
+        },
+        {
+          "id": "2026-112305-CI",
+          "address": "2855 Stevens Creek Bl",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "(Bemp100%) Na Hoku ti #1339",
+          "valuation": 560000,
+          "units": 0,
+          "issueDate": "2026-04-13",
+          "subtype": "Retail"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-15T23:09:39.600Z",
+      "generatedAt": "2026-04-16T11:12:07.490Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Apr 8 – Apr 15",
+      "dateRange": "Apr 9 – Apr 16",
       "stats": {
-        "total": 120,
+        "total": 115,
         "notable": 14,
         "newUnits": 0,
         "totalValuation": 0
@@ -160,30 +160,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-09",
-          "subtype": "Permit Issued"
+          "subtype": "Finaled"
         },
         {
-          "id": "26BLD-00912",
-          "address": "697 Florales Dr",
+          "id": "26BLD-00969",
+          "address": "180 El Camino Real",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "200 Amp upgrade in the same location",
+          "description": "COM: 'J.CREW' Space #CC1240: Temporary construction barricade - 12' Parapet Option w/ Scrim, associated master barricade permit under 26MRP-00003.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-08",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00915",
-          "address": "3421 Orinda St",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "RES MEP : sewer repair like for like before sidewalk on property line. will tunnel slightly under sidewalk. no concrete cutting of city sidewalk",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-08",
+          "issueDate": "2026-04-13",
           "subtype": "Permit Issued"
         },
         {
@@ -199,6 +187,18 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-00945",
+          "address": "754 Southampton Dr",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "RES MEP:  Main Panel Upgrade to 200 Amps with 200A MCB",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-10",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-00976",
           "address": "365 College Av",
           "category": "commercial",
@@ -211,27 +211,27 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00957",
-          "address": "1066 Maddux Dr",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "id": "26BLD-00971",
+          "address": "690 Wildwood Ln",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "Res: Replace valve, expansion tanks, and reinstall laundry box.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-10",
+          "issueDate": "2026-04-13",
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00959",
-          "address": "4216 Manuela Av",
+          "id": "26BLD-00938",
+          "address": "1234 Pitman Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-11",
+          "issueDate": "2026-04-09",
           "subtype": "Permit Issued"
         },
         {
@@ -247,24 +247,24 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-00957",
+          "address": "1066 Maddux Dr",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-10",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-00931",
           "address": "250 Churchill Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
           "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-09",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00938",
-          "address": "1234 Pitman Av",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-09",
