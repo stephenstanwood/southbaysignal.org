@@ -1,8 +1,8 @@
 {
   "_meta": {
-    "pulledAt": "2026-04-16T19:10:05.959Z",
-    "totalInBlob": 6,
-    "freshCount": 6
+    "pulledAt": "2026-04-16T23:09:56.589Z",
+    "totalInBlob": 7,
+    "freshCount": 7
   },
   "events": [
     {
@@ -93,6 +93,21 @@
       "sourceUrl": "http://connect.cdm.org/site/R?i=Uua7P1a-Ij9Bk2DgAlQgVe3NVT4PpjUkDU51MXDSpq_PnexWr4_ITA",
       "cityKey": "san-jose",
       "cityName": "San Jose",
+      "status": "new"
+    },
+    {
+      "id": "inbound_mo1zs23h_wmzu3h",
+      "receivedAt": "2026-04-16 21:29:03.00816+00",
+      "fromEmail": "events@in.southbaytoday.org",
+      "emailSubject": "THE LIST IS UP!",
+      "title": "2026 Salon Artists Reception",
+      "startsAt": "2026-05-16T12:00:00-07:00",
+      "endsAt": "2026-05-16T14:00:00-07:00",
+      "location": "Triton Museum of Art, 1505 Warburton Avenue, Santa Clara, CA 95050",
+      "description": "Awards announcement and reception for the 2026 Salon exhibition featuring 117 selected artworks from over 2,500 submissions. Includes presentation of awards for each category and The Best of Show.",
+      "sourceUrl": "https://tritonmuseum.org/upcoming-exhibitions",
+      "cityKey": "santa-clara",
+      "cityName": "Santa Clara",
       "status": "new"
     }
   ]
