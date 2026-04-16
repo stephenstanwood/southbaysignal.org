@@ -440,6 +440,17 @@ const INTERNAL_EVENT_PATTERNS = [
   /\bcommemorative\s+(magnet|pin|coin|lanyard)\b/i,
   // Cancelled events (anywhere in title, not just start)
   /\bcancell?ed\b/i,
+  // Web page navigation elements accidentally scraped (not events)
+  /^skip\s+to\s+(main\s+)?content$/i,
+  /^back\s+to\s+top$/i,
+  /^(main\s+)?navigation$/i,
+  /^breadcrumb/i,
+  /^close\s+(menu|modal|dialog)$/i,
+  /^(view|see)\s+all\s+events?$/i,
+  /^load\s+more$/i,
+  /^show\s+more$/i,
+  /^read\s+more$/i,
+  /^(next|previous)\s+page$/i,
 ];
 
 // Detect away games: "[School] at [Away Opponent/Location]"

@@ -765,7 +765,8 @@ async function scrapeMontalvo(page) {
         const title = titleEl?.textContent?.trim();
         const date = dateEl?.getAttribute("datetime") || dateEl?.textContent?.trim();
         const link = card.querySelector("a")?.href;
-        if (title && title.length > 3) events.push({ title, date, link });
+        const NAV_JUNK = /^(skip\s+to|back\s+to\s+top|navigation|breadcrumb|close\s+menu|view\s+all|load\s+more|show\s+more|read\s+more)/i;
+        if (title && title.length > 5 && !NAV_JUNK.test(title)) events.push({ title, date, link });
       }
     }
 
