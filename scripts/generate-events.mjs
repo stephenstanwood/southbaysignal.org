@@ -1260,7 +1260,7 @@ async function fetchCampbellEvents() {
         description: truncate(stripHtml(item.description)),
         url: item.link,
         source: "City of Campbell",
-        kidFriendly: item.title.toLowerCase().includes("kid") || item.title.toLowerCase().includes("family") || item.title.toLowerCase().includes("story") || item.title.toLowerCase().includes("youth"),
+        kidFriendly: /\b(kid|family|story|youth|grade|ages?\s*\d|children|toddler|baby|preschool)\b/i.test(item.title),
       };
     }).filter(Boolean);
     console.log(`  ✅ Campbell: ${events.length} events`);
@@ -1408,7 +1408,7 @@ async function fetchCivicPlusRssCity(name, url, defaultCity) {
         description: truncate(stripHtml(item.description)),
         url: item.link,
         source: name,
-        kidFriendly: titleLower.includes("kid") || titleLower.includes("family") || titleLower.includes("story") || titleLower.includes("youth"),
+        kidFriendly: /\b(kid|family|story|youth|grade|ages?\s*\d|children|toddler|baby|preschool)\b/i.test(titleLower),
       };
     }).filter(Boolean);
     console.log(`  ✅ ${name}: ${events.length} events`);
@@ -1545,7 +1545,7 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
           kidFriendly: (ev.audiences || []).some((a) => {
             const name = typeof a === "string" ? a : a?.name || "";
             return /child|teen|family|baby|toddler/i.test(name);
-          }) || /\b(ages?\s+\d|children|kids|family|toddler|baby|preschool|puppet show)\b/i.test(title + " " + stripHtml(desc)),
+          }) || /\b(ages?\s+\d|children|kids|family|toddler|baby|preschool|puppet show|grade|youth)\b/i.test(title + " " + stripHtml(desc)),
         };
       })
       .filter(Boolean);
@@ -1641,7 +1641,7 @@ async function fetchScclEvents() {
           kidFriendly: (ev.audiences || []).some((a) => {
             const name = typeof a === "string" ? a : a?.name || "";
             return /child|teen|family|baby|toddler/i.test(name);
-          }) || /\b(ages?\s+\d|children|kids|family|toddler|baby|preschool|puppet show)\b/i.test(title + " " + stripHtml(desc)),
+          }) || /\b(ages?\s+\d|children|kids|family|toddler|baby|preschool|puppet show|grade|youth)\b/i.test(title + " " + stripHtml(desc)),
         });
       }
     }
@@ -3279,19 +3279,25 @@ async function fetchSjMuseumOfArtEvents() {
       const start = new Date(dateStr);
       if (isNaN(start.getTime()) || start < now) continue;
 
-      const title = titleMatch[1].replace(/<[^>]+>/g, "").trim();
+      const rawTitle = titleMatch[1].replace(/<[^>]+>/g, "").trim();
+      // Normalize "Sjma" → "SJMA" (Drupal sometimes lowercases the acronym)
+      const title = rawTitle.replace(/\bSjma\b/g, "SJMA");
       if (!title || /registration|camp/i.test(title)) continue;
 
       const url = linkMatch
         ? `https://sjmusart.org${linkMatch[1]}`
         : "https://sjmusart.org/calendar";
 
+      // SJMA Drupal stores all-day events as UTC noon (2026-04-19T12:00:00Z = 5am PDT).
+      // Treat any SJMA event before 7am local as "no specific time" rather than 5am.
+      const ptHour = parseInt(start.toLocaleTimeString("en-US", { hour: "2-digit", hour12: false, timeZone: "America/Los_Angeles" }));
+      const sjmaTime = ptHour < 7 ? null : displayTime(start);
       events.push({
         id: h("sjma", url, isoDate(start)),
         title,
         date: isoDate(start),
         displayDate: displayDate(start),
-        time: displayTime(start),
+        time: sjmaTime,
         endTime: null,
         venue: "San Jose Museum of Art",
         address: "110 S Market St, San Jose, CA 95113",
@@ -3301,7 +3307,7 @@ async function fetchSjMuseumOfArtEvents() {
         description: "",
         url,
         source: "San Jose Museum of Art",
-        kidFriendly: /\b(kids|children|family)\b/i.test(title),
+        kidFriendly: /\b(kids|children|family|youth|toddler|baby|preschool|grade|ages?\s*\d)\b/i.test(title),
       });
     }
 
@@ -3529,7 +3535,7 @@ async function fetchHistorySanJoseEvents() {
           description: "",
           url: eventUrl,
           source: "History San Jose",
-          kidFriendly: /\b(kids|children|family)\b/i.test(title),
+          kidFriendly: /\b(kids|children|family|youth|toddler|baby|preschool|grade|ages?\s*\d)\b/i.test(title),
         });
       }
       await new Promise((r) => setTimeout(r, 300));
