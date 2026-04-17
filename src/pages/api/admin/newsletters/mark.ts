@@ -20,6 +20,7 @@ const VALID: SubscribeStatus[] = [
   "confirmed",
   "receiving",
   "needs-manual",
+  "retry",
   "blocked",
   "failed",
 ];

@@ -36,6 +36,7 @@ export type SubscribeStatus =
   | "receiving" // at least one real newsletter has arrived
   | "failed" // subscribe attempt failed
   | "needs-manual" // requires a human click — CAPTCHA, multi-step, SSO, etc.
+  | "retry" // signup attempted but failed (CC throttle, form error, etc.) — come back to this later
   | "blocked"; // site refused / terms-incompatible
 
 export type ProviderType =

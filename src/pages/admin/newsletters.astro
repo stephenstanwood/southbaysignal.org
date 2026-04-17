@@ -53,6 +53,7 @@ function statusLabel(s: SubscribeStatus): string {
     case "receiving": return "live";
     case "failed": return "failed";
     case "needs-manual": return "ready";
+    case "retry": return "retry";
     case "blocked": return "blocked";
   }
 }
@@ -64,6 +65,7 @@ function statusColor(s: SubscribeStatus): string {
     case "signup-posted": return "#a855f7";
     case "not-attempted": return "#94a3b8";
     case "needs-manual": return "#f59e0b";
+    case "retry": return "#3b82f6";
     case "failed": return "#dc2626";
     case "blocked": return "#7c2d12";
   }
@@ -111,6 +113,7 @@ const summary = {
   signupPosted: targets.filter((t) => t.status === "signup-posted" || t.status === "confirmed").length,
   notAttempted: targets.filter((t) => t.status === "not-attempted").length,
   needsManual: targets.filter((t) => t.status === "needs-manual").length,
+  retry: targets.filter((t) => t.status === "retry").length,
   failed: targets.filter((t) => t.status === "failed").length,
 };
 
@@ -350,6 +353,8 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
       tbody tr.status-receiving:hover { background: #bbf7d0; }
       tbody tr.status-signup-posted { background: #ede9fe; }
       tbody tr.status-signup-posted:hover { background: #ddd6fe; }
+      tbody tr.status-retry { background: #dbeafe; }
+      tbody tr.status-retry:hover { background: #bfdbfe; }
       tbody tr.fading { opacity: 0; transform: translateX(-10px); transition: opacity 300ms, transform 300ms; }
       @keyframes flashUpdate {
         0% { background: rgba(139, 92, 246, 0.35); }
@@ -505,6 +510,7 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
             <div class="summary">
               <div class="stat"><span class="num" style="color:#16a34a">{summary.receiving}</span><span class="lbl">live</span></div>
               <div class="stat"><span class="num" style="color:#a855f7">{summary.signupPosted}</span><span class="lbl">signed up</span></div>
+              <div class="stat"><span class="num" style="color:#3b82f6">{summary.retry}</span><span class="lbl">retry</span></div>
               <div class="stat"><span class="num" style="color:#f59e0b">{summary.needsManual}</span><span class="lbl">ready</span></div>
               <div class="stat"><span class="num">{summary.notAttempted}</span><span class="lbl">new</span></div>
             </div>
@@ -576,12 +582,17 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
                           <td>
                             <span class="status-wrap">
                               <button
-                                class={`status-pill ${t.status === "needs-manual" ? "clickable" : ""}`}
+                                class={`status-pill ${(t.status === "needs-manual" || t.status === "signup-posted" || t.status === "confirmed" || t.status === "retry") ? "clickable" : ""}`}
                                 style={`background: ${statusColor(t.status)}`}
                                 data-id={t.id}
-                                title={t.status === "needs-manual" ? "Click to mark as signed up" : ""}
+                                data-status={t.status}
+                                title={
+                                  t.status === "needs-manual" ? "Click: mark as signed up" :
+                                  (t.status === "signup-posted" || t.status === "confirmed") ? "Click: flag for retry" :
+                                  t.status === "retry" ? "Click: back to ready" : ""
+                                }
                               >{statusLabel(t.status)}</button>
-                              {(t.status === "signup-posted" || t.status === "confirmed") && (
+                              {(t.status === "signup-posted" || t.status === "confirmed" || t.status === "retry") && (
                                 <button
                                   class="undo-btn"
                                   data-id={t.id}
@@ -670,6 +681,20 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
                 if (pill) {
                   pill.textContent = "signed up";
                   pill.style.background = "#a855f7";
+                  pill.dataset.status = "signup-posted";
+                  pill.classList.add("clickable");
+                  pill.title = "Click: flag for retry";
+                }
+                // Ensure an undo ✕ exists so user can reset back to ready
+                const wrap = row.querySelector(".status-wrap");
+                if (wrap && !wrap.querySelector(".undo-btn")) {
+                  const btn = document.createElement("button");
+                  btn.className = "undo-btn";
+                  btn.dataset.id = id;
+                  btn.title = "Undo — reset to ready";
+                  btn.setAttribute("aria-label", "Reset to ready");
+                  btn.textContent = "✕";
+                  wrap.appendChild(btn);
                 }
               }
               openBtn.textContent = "✓ posted";
@@ -685,32 +710,50 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
             return;
           }
 
-          // Click a "ready" pill → mark as signed up
-          const readyPill = e.target.closest(".status-pill.clickable");
-          if (readyPill) {
-            const id = readyPill.dataset.id;
-            readyPill.disabled = true;
+          // Click a status pill → cycle: ready → signed up → retry → ready
+          const pill = e.target.closest(".status-pill.clickable");
+          if (pill) {
+            const id = pill.dataset.id;
+            const current = pill.dataset.status;
+            const next =
+              current === "needs-manual" ? "signup-posted" :
+              (current === "signup-posted" || current === "confirmed") ? "retry" :
+              current === "retry" ? "needs-manual" :
+              null;
+            if (!next) return;
+            pill.disabled = true;
             try {
               const res = await fetch(
-                `/api/admin/newsletters/mark?id=${encodeURIComponent(id)}&status=signup-posted&key=${encodeURIComponent(providedKey)}`,
+                `/api/admin/newsletters/mark?id=${encodeURIComponent(id)}&status=${next}&key=${encodeURIComponent(providedKey)}`,
                 { method: "POST" }
               );
               if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
                 alert(`mark failed: ${err.error || res.status}`);
-                readyPill.disabled = false;
+                pill.disabled = false;
                 return;
               }
-              const row = readyPill.closest("tr");
+              const row = pill.closest("tr");
               if (row) {
-                row.className = "status-signup-posted";
-                readyPill.textContent = "signed up";
-                readyPill.style.background = "#a855f7";
-                readyPill.classList.remove("clickable");
-                readyPill.title = "";
-                // Add an undo X after the pill
+                const labels = { "needs-manual": "ready", "signup-posted": "signed up", "retry": "retry" };
+                const colors = { "needs-manual": "#f59e0b", "signup-posted": "#a855f7", "retry": "#3b82f6" };
+                const titles = {
+                  "needs-manual": "Click: mark as signed up",
+                  "signup-posted": "Click: flag for retry",
+                  "retry": "Click: back to ready",
+                };
+                row.className = `status-${next}`;
+                pill.textContent = labels[next];
+                pill.style.background = colors[next];
+                pill.dataset.status = next;
+                pill.title = titles[next];
+                pill.disabled = false;
+                // Ensure undo ✕ exists for non-ready states; remove for ready
                 const wrap = row.querySelector(".status-wrap");
-                if (wrap && !wrap.querySelector(".undo-btn")) {
+                let undo = wrap?.querySelector(".undo-btn");
+                if (next === "needs-manual") {
+                  undo?.remove();
+                } else if (wrap && !undo) {
                   const btn = document.createElement("button");
                   btn.className = "undo-btn";
                   btn.dataset.id = id;
@@ -725,7 +768,7 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
               }
             } catch (err) {
               alert("mark error: " + err.message);
-              readyPill.disabled = false;
+              pill.disabled = false;
             }
             return;
           }
@@ -753,8 +796,9 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
                 if (pill) {
                   pill.textContent = "ready";
                   pill.style.background = "#f59e0b";
+                  pill.dataset.status = "needs-manual";
                   pill.classList.add("clickable");
-                  pill.title = "Click to mark as signed up";
+                  pill.title = "Click: mark as signed up";
                 }
                 // Remove the undo button itself
                 undoBtn.remove();
@@ -820,6 +864,7 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
           "receiving": "live",
           "failed": "failed",
           "needs-manual": "ready",
+          "retry": "retry",
           "blocked": "blocked",
         };
         const STATUS_COLOR = {
@@ -829,7 +874,15 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
           "receiving": "#16a34a",
           "failed": "#dc2626",
           "needs-manual": "#f59e0b",
+          "retry": "#3b82f6",
           "blocked": "#7c2d12",
+        };
+        const CLICKABLE_STATUSES = new Set(["needs-manual", "signup-posted", "confirmed", "retry"]);
+        const PILL_TITLES = {
+          "needs-manual": "Click: mark as signed up",
+          "signup-posted": "Click: flag for retry",
+          "confirmed": "Click: flag for retry",
+          "retry": "Click: back to ready",
         };
 
         function relativeTime(iso) {
@@ -855,9 +908,10 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
             if (pill) {
               pill.textContent = STATUS_LABEL[t.status] ?? t.status;
               pill.style.background = STATUS_COLOR[t.status] ?? "#64748b";
-              if (t.status === "needs-manual") {
+              pill.dataset.status = t.status;
+              if (CLICKABLE_STATUSES.has(t.status)) {
                 pill.classList.add("clickable");
-                pill.title = "Click to mark as signed up";
+                pill.title = PILL_TITLES[t.status] ?? "";
               } else {
                 pill.classList.remove("clickable");
                 pill.title = "";
@@ -866,7 +920,7 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
             // Add/remove the undo X depending on new status
             const wrap = tr.querySelector(".status-wrap");
             const existingUndo = wrap?.querySelector(".undo-btn");
-            const shouldShowUndo = t.status === "signup-posted" || t.status === "confirmed";
+            const shouldShowUndo = t.status === "signup-posted" || t.status === "confirmed" || t.status === "retry";
             if (shouldShowUndo && !existingUndo && wrap) {
               const btn = document.createElement("button");
               btn.className = "undo-btn";
@@ -908,7 +962,7 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
         function updateSummary(targets) {
           const counts = {
             total: targets.length,
-            receiving: 0, signupPosted: 0,
+            receiving: 0, signupPosted: 0, retry: 0,
             notAttempted: 0, needsManual: 0, failed: 0,
           };
           for (const t of targets) {
@@ -917,17 +971,19 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
               // Legacy "confirmed" rolls into signup-posted (deprecated status)
               case "signup-posted":
               case "confirmed": counts.signupPosted++; break;
+              case "retry": counts.retry++; break;
               case "not-attempted": counts.notAttempted++; break;
               case "needs-manual": counts.needsManual++; break;
               case "failed": counts.failed++; break;
             }
           }
           const stats = document.querySelectorAll(".sticky-header .stat .num");
-          if (stats.length >= 4) {
+          if (stats.length >= 5) {
             stats[0].textContent = String(counts.receiving);
             stats[1].textContent = String(counts.signupPosted);
-            stats[2].textContent = String(counts.needsManual);
-            stats[3].textContent = String(counts.notAttempted);
+            stats[2].textContent = String(counts.retry);
+            stats[3].textContent = String(counts.needsManual);
+            stats[4].textContent = String(counts.notAttempted);
           }
 
           // Progress bar
