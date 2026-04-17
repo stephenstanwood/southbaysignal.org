@@ -102,7 +102,11 @@ Other rules:
 - If the city is Morgan Hill or Gilroy, return cityName: null (we don't cover those).
 - Return ONLY the JSON object, no markdown code fences, no commentary.
 
-FLYER PARSING — chamber newsletters often include event flyers with details laid out in tables or side-by-side cells (date on one side, time + address on the other). When you see a flyer-style block for an event, pull the time and location from the adjacent cells, not just the headline. Ribbon cuttings, grand openings, and mixers usually have a specific street address AND a specific time (e.g. "3:00 PM / 45 W Main Street, Los Gatos, CA") — do not return null for location/startsAt time when the flyer shows them. If a time is given, include it in startsAt as "T15:00:00-07:00" (or the correct offset), not "T00:00:00".`;
+FLYER PARSING — chamber newsletters often include event flyers. Details can appear in two places:
+  1. HTML tables / side-by-side cells (date on one side, time + address on the other) — pull the time and location from the adjacent cells, not just the headline.
+  2. **EMBEDDED IMAGES** — ribbon cuttings, grand openings, and mixers are frequently rendered entirely as a flyer image, with the date/time/address/venue name baked into the image. The message includes these images after the text block. READ THEM. Match each image to its event by surrounding context (adjacent RSVP links, "Ribbon Cutting" headers, nearby dates). If a flyer image shows "3:00 PM / 45 W Main Street, Los Gatos, CA", use those values — do NOT return null for location or leave startsAt at T00:00:00.
+
+If a time is given anywhere (HTML or image), include it in startsAt as "T15:00:00-07:00" (or the correct offset), never "T00:00:00".`;
 
 export async function extractEvents(
   email: InboundEmail,
@@ -117,17 +121,32 @@ export async function extractEvents(
     ? `HTML (structure preserved; strip styling but read cell adjacency):\n${truncate(htmlForModel, 60_000)}`
     : `BODY:\n${truncate(email.body, 30_000)}`;
 
-  const userContent = `FROM: ${email.from}
+  const textBlock = `FROM: ${email.from}
 SUBJECT: ${email.subject}
 RECEIVED: ${email.receivedAt}
 
 ${bodyBlock}`;
 
+  // Pull embedded flyer images so the model can OCR ribbon cuttings /
+  // grand openings where all the date/time/address info is baked into an
+  // image rather than HTML text. Capped to keep token cost bounded.
+  const imageUrls = email.html ? extractFlyerImageUrls(email.html) : [];
+
+  const userBlocks: Anthropic.MessageParam["content"] = [
+    { type: "text", text: textBlock },
+  ];
+  for (const url of imageUrls) {
+    userBlocks.push({
+      type: "image",
+      source: { type: "url", url },
+    });
+  }
+
   const response = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 4096,
     system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userContent }],
+    messages: [{ role: "user", content: userBlocks }],
   });
 
   const text = response.content
@@ -146,7 +165,57 @@ ${bodyBlock}`;
   }
 
   const events = Array.isArray(parsed.events) ? parsed.events : [];
-  return events.filter(isValidExtractedEvent);
+  return events.filter(isValidExtractedEvent).map(sanitizeExtractedEvent);
+}
+
+/**
+ * Null out tracker / click-redirect sourceUrls that sneak past the prompt.
+ * These URLs break our "sourceUrl must be a public event page" invariant
+ * and can expire when the campaign ends.
+ */
+const TRACKER_HOST_RE = /\b(cc\.rs6\.net|ccsend\.com|constantcontact\.com|click\.mlsend\.com|mailchi\.mp|click\.mailerlite\.com|utm_|trk\.klclick|links\.mkt|click\.e\.|eml\.|t\.co)\b/i;
+
+function sanitizeExtractedEvent(e: ExtractedEvent): ExtractedEvent {
+  const cleaned = { ...e };
+  if (cleaned.sourceUrl) {
+    if (TRACKER_HOST_RE.test(cleaned.sourceUrl) || cleaned.sourceUrl.startsWith("mailto:")) {
+      cleaned.sourceUrl = null;
+    }
+  }
+  return cleaned;
+}
+
+/**
+ * Pull <img src> URLs from the email HTML that are plausibly event flyers.
+ * Skips tiny tracking pixels, data: URIs, icons, and known non-flyer assets.
+ * Caps the list so we don't blow token budget on a newsletter with 40+ images.
+ */
+function extractFlyerImageUrls(html: string): string[] {
+  const urls: string[] = [];
+  const seen = new Set<string>();
+  const re = /<img\b[^>]*?\ssrc=["']([^"']+)["'][^>]*>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html)) !== null) {
+    const tag = m[0];
+    const url = m[1].trim();
+    if (!url || seen.has(url)) continue;
+    if (url.startsWith("data:")) continue;
+    if (!/^https?:\/\//i.test(url)) continue;
+
+    // Skip obvious non-flyers: tracking pixels, logos, social icons, spacers.
+    if (/\b(pixel|tracker|open\.gif|spacer|logo|icon|social|facebook|twitter|instagram|linkedin|youtube)\b/i.test(url)) continue;
+
+    // Heuristic: tiny declared dimensions → tracking pixel or spacer.
+    const wMatch = tag.match(/\bwidth=["']?(\d+)/i);
+    const hMatch = tag.match(/\bheight=["']?(\d+)/i);
+    if (wMatch && parseInt(wMatch[1], 10) > 0 && parseInt(wMatch[1], 10) < 80) continue;
+    if (hMatch && parseInt(hMatch[1], 10) > 0 && parseInt(hMatch[1], 10) < 80) continue;
+
+    seen.add(url);
+    urls.push(url);
+    if (urls.length >= 8) break;
+  }
+  return urls;
 }
 
 function isValidExtractedEvent(e: unknown): e is ExtractedEvent {
