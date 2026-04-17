@@ -22,6 +22,7 @@ export interface POI {
   featuredPlace?: string; // specific place to go (e.g. "La Fiorentina"), used as stop title in Plan My Day
   emoji: string;
   url?: string;
+  photoRef?: string;
   indoorOutdoor: "indoor" | "outdoor" | "both";
   bestSlots: TimeSlotKey[];
 }
@@ -60,6 +61,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🦆",
     url: "https://www.sccgov.org/sites/parks/Pages/Vasona-Lake.aspx",
     indoorOutdoor: "outdoor",
+    photoRef: "places/ChIJ24fHtb81joARJByKotZNf3k/photos/AU_ZVEHwazi-sRBl0d8deXFapgMco9h5CpAxtu-vGxfFtfeA-iA_MkNuWZdIei3D7tMln_MkeKxqFJyeZiIlm-Xq0NzD-ByP2tTDQ9jHaXaB62jnIJa17hP83AC00NN7wb06HZ5r7d26hElJY9386A1s8jZgLtjfK5hqkPS3PG5VRRf5o5P2yNyW0GDUENLu8cLkLkM9qZ1CIKmMmXZAiHzHvWXqxsFHXOqXw2ZCpqaZAPnGP0SDJKtFHWoDb7Fg_uaVU21bYaTFDqFPUk-4Ke5wc8AOw1LFw5g0bl9yZ4limrbpOH2x5Gw56M5sUo2GeJPBkCJpTIONSA6RKprKcUSm03hi-v9zKBXh5qR3fv8hrTRXNQm9Lc_TDFo_nhLrvMgIY1TYNASxTzM19gg6FrttL2a_BVvLUjfUYQ1L2S6oERORDzdunEgbz0C-VkdLWKOL",
     bestSlots: ["morning", "afternoon"],
   },
   {
@@ -91,6 +93,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     why: "Easy, shaded, and peaceful — perfect for a morning walk or bike ride along the creek",
     emoji: "🚴",
     indoorOutdoor: "outdoor",
+    photoRef: "places/ChIJk5Bi-hs2joAR6L7xwyeXAh8/photos/AU_ZVEGsltQ8TWIl6ofTtWd-aCfIbr0UtYnoqP6YtnwJMs0YrrzbgX6hSlzGAn3x-L2lf4VgxrCrh6C5jVzAvj3XBOsu82eM_E4nvtHwu9TAPXewc9GsScleLqy0LsaUC0l-yffDoYQK4qrP5_rFhOfjyY0N2u9F6rRTfdg8tw3toEB1H8u0IfSqLOybpNcdpzTnVyjKdaXHr8fJ4P_L7JOZuuNVpV0otpsOWdb0wKRprKUVkMnz9TfnAn9qJ3PXgdUZk5ASZvvanCOhLU7EUMCJmxBTMgk-S7Gl-U_hHYXPsrkLMI5cAqAdJG4W-PK1rTthL2jN_H4dRtDG8dBQO1tSqN5rT135dx6NV2wcve8yNeqDkQ--Yfm8ajs7sS0SRgy_F_VhMl88X-2M-zbZRYGk-S_Rwlu6ZP8HzSYqyQ0NjrpbLWMNHfi5EJv7hsWOcWX9",
     bestSlots: ["morning", "afternoon"],
   },
   {
@@ -123,6 +126,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🌲",
     url: "https://www.sanjoseca.gov/your-government/departments-offices/parks-recreation-neighborhood-services/parks/alum-rock-park",
     indoorOutdoor: "outdoor",
+    photoRef: "places/ChIJ-ZogKrvMj4ARKrML-5D1a88/photos/AU_ZVEH9jw8gubUUgYIW1cHFuaXfXpBimYNEQTxtjJxW-os5ckdaD6MnX_HxkxD-8C6mQOmyiWHkBJFo-S3yWuPd79DgXaDc9btz1ZBB2kYQlVrzbNl_WjCqIjrn2ysiAMg3E1eCTIy0vWyOF_3sUJGtcOBQrbZFkxYIBffcSXKxqEamCi5-RMK-traxPc-qGG2BbQKwSrXxVqF6XhsbxMkGKH9DBI-_hRGomBMvnkeI1nnH7v_sRALHkGbpgUmAWgTVyYdNK_9KqRqGcWH7U0aRY3O0_f3pBmYDGtCGvbgg-eUYVk8el5qFRlPey4Jg1dPCvGVfO1ajX6OcEvSt6cC5H4yxtFEO7D6tPfuwXZyOC0loDcjmcYq_AoY2_T6w3ddvVMfbDRv51SRDmS9VFX7NB6qJ_CHgkAKk_GupnNnhQug",
     bestSlots: ["morning", "afternoon"],
   },
   {
@@ -171,6 +175,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     why: "Flat, scenic, and easy — great for strollers, bikes, or a casual morning walk",
     emoji: "🛤️",
     indoorOutdoor: "outdoor",
+    photoRef: "places/ChIJyY2YFsq3j4ARqe46wAhtELk/photos/AU_ZVEHppbl923TyF5f6FLCPXBSkmqx18VZGyYwh_4qhFApABRnODy_BX2xlzHCGnkHvuXFfEPa4SATROES2vtDo9duQ1KTW2cS2ZRh35HrGRfsCvJWDFxtuUFSanyVJEdBpZnx2wdaDN2bLQmyEFIBm2ul_NnpXIxJDJYgQo3A74TvZ1QP05ptsRFeEXC8hBU0BuzLF1xz5YAdfsFjcOLokVV7WXJ3UbvFD1EZgL444lO9xcW595qXxLQOB9zUrw58xVM9yJcmWMn7RHiF-GuVHJidBpeaePsp4W7q5Ex4PEdbARAA3GtooXqrp7WfeSdCYy3gZWAHh__d0OC8qar9lKtfosE2mFM0nICfIU5Lb-sq4d0WULF7kRQ-tIEm0BjwdfvaTnuCUMODxbF4BPg6-43z15ETJVgImzWlIWKAJesd_0xfo",
     bestSlots: ["morning", "afternoon"],
   },
   {
@@ -218,6 +223,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     why: "A real beach in the South Bay — free swimming in summer, relaxed walking year-round",
     emoji: "🏖️",
     indoorOutdoor: "outdoor",
+    photoRef: "places/ChIJ-ZogKrvMj4ARfjcGfUkMHxY/photos/AU_ZVEE97pGRpGqvAx2PyEQQy0wAFvqiDWKBDH36p3tXUaUVYQ3QWeFk4P_cbUivUbbvgUEYwPhBlv35hF6DdxteShS3BpANBVWd9duJNX5eQVRiaL6xbT6foxD6WqXKic1BysfMBCYv2um_XTtijyj1rTfkJ7hrFuhvlZ-qSWqIPVmzBbSLCEivO7uAMH_e0w_3jZiT4e1xLtFQUj3UkSUWu5qXTCGX5c41Wf-AFsYBobau4HCMyshyKJURvQ2AWrJWcnCv_0lp76pzF9ZLrfQ3NFjHenAGwhc7y6sMUmnUhKt4GGBA2O3EdcklhTRKKsbexb9rfPhh8muutolYt8uwatmqGMhutkViJAOVL5t4CcI0fH8D9Fe6AyJj1eagRA1Zzt3fqYGtsNkuhH1oatB1u9I0y7P1LUFI3S--fUs7ad2pgp4G",
     bestSlots: ["morning", "afternoon"],
   },
   {
@@ -270,6 +276,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "💾",
     url: "https://computerhistory.org",
     indoorOutdoor: "indoor",
+    photoRef: "places/ChIJm7NJkla3j4AR8vR-HWRxgOo/photos/AU_ZVEH3q7Gc4Nuk_VtGcF3CSk6hswYs4ks5tycZ_RYBpr867NzpRBuIIu89yU6HV9tK8A25kb-m7gHrBcL30Fz2FDytwkylZgHwN5attRqfgy1REMG2999Fc8lN7n_1mLE4EOjdS9RBzgJfuWUXDUhLY4-cevnyEMrJTObEsHoB3n5e1Onn20ixvG4FXON2-lYy69_DsaaqAVnalyIAajielxd2kwRiCVJWLSV2GJ_gy99o3YxS0bEuoRGHw52rOiiHa_c87588oii7MqDxLwotA_QLwbskq5LNRQLM329Xdxfgyw",
     bestSlots: ["morning", "afternoon"],
   },
   {
@@ -287,6 +294,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🔬",
     url: "https://thetech.org",
     indoorOutdoor: "indoor",
+    photoRef: "places/ChIJR8HI1brMj4ARBnFq5rlvpx4/photos/AU_ZVEGNCTJmpEgRbe-6n2AoSvFmcQZwuDI0WVOQIhuFeZedugn0ijzSIMsPxR41W0wRJ_5_OvRSxwaAx7NKqkrP-zuuKgiKTHRDFGCd7rE3cBFzzTriqhgwSK6rH71TLC_lSMaHMBfzkBm-USYrpCUdclrpYX0lULjTJhdp6R19Cj15zVQDps1O8FmYmyAQHld90Bzw_2c8Uft9CET3IcffXmTJYWmgKxk9FmviIbSKzOjDoY0USxaovkNN_hFAohqa-c0kLraE9C6a-Hh9KtQXd-Z3HLjUadxKGHa8GyCtBh5J503lkfTUHfbinJMJHvjJvjAxonGHVVDScnBSF7WFU_ILQbCZn1-xRu0xBF--QTj8PVIle148JbSlHv_fNX2hqfHeMdxDJ-T8YAqw4pjOYI6aw9k1dM-502eE_T_CaLBxKvX0",
     bestSlots: ["morning", "afternoon"],
   },
   {
@@ -337,6 +345,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🖼️",
     url: "https://sjmusart.org",
     indoorOutdoor: "indoor",
+    photoRef: "places/ChIJVx91TrvMj4ARzWqeIcRwuXs/photos/AU_ZVEFnJk369-yFQ-tQpY1Vg80VwOPYAdoH6GP85qNN7IEmkQRCdmeIVojdjTJLmUcsf-Ap_zqO5qZaDiGgTvpNjviiXXGwXdeR4m1MJaie0COoWzgPiN4CUiliUCzhSD5oJyXbBDi8zY_r3LgWibqs1UYsB1ABFJJEIUKdGXaZbxD6maQHXoudPcdOVvmwrLNDYas4Y-tD0IZXrc8Twr8doMGTru3HFbdyge2G41LxA8JP_NYblmmk7q_uf6Kzogfzwf6Jt-_0x2zYKI2PX74qdnhS5SYGgvrMWEZOH4_1hjNhIPh1zGqKMpjuo-nUmlqlIlf0cdUojdufh9BIFPV6tfydhOvERdRf0DJelJPLarirlOLEdl6Il5PXyFlNNvwJun31dYtazBf9v3J2wcDDaVbhguFNj-fVX3Vl0DguPv7Lbw",
     bestSlots: ["afternoon"],
   },
   {
@@ -354,6 +363,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🏺",
     url: "https://egyptianmuseum.org",
     indoorOutdoor: "both",
+    photoRef: "places/ChIJ1UbraGvLj4ARkgVRgqtwO4E/photos/AU_ZVEHKR4X-sBUozKu38QJ5YpZZXjI09otxdtSG5yWLIW6-XqfmFon4eFw03exkIEuYFGocb4nUtNugErGt1J4k3d4TiDUds0mOezanXCS-g_ZZ7V4Z1lMdoz6tr08Qxpt3DmLC4q_Sdevorzd4pzlOLc2I4_imuoniPejVSH0fFdvWVsvrlwL6unPpZRsFGwiQZSrLqYLLJYv89rrPf3f9CljFILo7ZWa4vg8vQmawBjprOvR-UT9vwC7zf-zGTYrKyb4Gf3J6JvAyPH8gm2HiIdbfQwr4g4_30XMstsdR74uF8w",
     bestSlots: ["morning", "afternoon"],
   },
   {
@@ -370,6 +380,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🎨",
     url: "https://tritonmuseum.org",
     indoorOutdoor: "both",
+    photoRef: "places/ChIJGWxtr0nKj4ARGHKbY2HbPUw/photos/AU_ZVEHGybCmYfRPCQ9L5WvlIPgUdovulEAI70WZeN0L6Gm8ZNS-f4qQ-hMu4ndOxBvrsLbyJSkjLV7nkk6Xl2ODntbuQvfo9qOJrAffhGFPiPEk9xMApEDt6NhBMEy6PBz4FosTfiiJSkCgOI3vvmAwrVZ2HG3kG7909F7DYmB2lmXNG8cxnbOvRqOBavQiCJpvxjE2omijWOlwvgPHh6sheSB-N-52zirc_f0ckvRXne_nCrFchUVzUbS0R6G4bnszaMipUCwiNjpo8llVtY0tlvfV_Y26lmt8Spt5fP6KCxSyJdk78p_gYPSt_Hsw_VG_s_pBP95nKPvd5CinrUyh9Lpyu8F_PLdFECQo-q2LVZ1tjKU-xcuEtIQ1jcJ0aPb8mPtW828EfeUfUaFFP2qBlUapCM_pCFkY--Op3lgxWFc",
     bestSlots: ["morning", "afternoon"],
   },
   {
@@ -405,6 +416,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🎼",
     url: "https://www.operasj.org",
     indoorOutdoor: "indoor",
+    photoRef: "places/ChIJwTUa-q_Mj4ARmwd8pIYvf7c/photos/AU_ZVEFxbbhhLq6v2cSIECrlENBIG1q3RizVamAR2TrIuO2hQC7tlhYnT81LjP8zCRD-GmPG0hFQcYlUzFzhrsce9JMyllUP3gqouQX-PSMzMQlos_x0_-OyCi9bx7Z4MJdHubCE2_F6ml1nwgeoQMO9AZ1_SmCr70ilFWYpzkClGx5cPgNN2TDw3zyV2oqD_XLxeIe8WBcLWTns8azRn7_htmGz3u5PCndRdeghu_Ry12zjHN3Rsj1PWQqRXOsqa0VmcI-rpf8taC7wfm6ueVOEdWkygRq_WvTK4sp7_i8M3EE2g1-EmbcAbwbBjWqRiPDM9UOfX1aedGBkprtKsPXcAwqd7-bmlVUgBdDssI10Tfm9JPZGjhKjHR5CQ5CSLdoyYcwwIqDnD6uEnjXPVfmfi65qXMpgOQ4nzJoZVu_r39beBWY6",
     bestSlots: ["evening"],
   },
   {
@@ -421,6 +433,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🎭",
     url: "https://www.theatreworks.org",
     indoorOutdoor: "indoor",
+    photoRef: "places/ChIJodN_GTO3j4ARPZ4IQhXfanU/photos/AU_ZVEG0SDRBFlKLjYK0wuXBGpEuiDtVvtek2Y8Lt53ZpaOzg18bYodvxA0dvzpxmIFu9sIA30X9knJjM23cqv_ifMP7PGlyEPV64ia6Sn_4YVKfZJhk0G8huLu5TXL8O-ibfO_jkXumX4Ju1zvCO9WCYtYuQB-JV6NZBUMDZGPjWKZDSEjQpLChW--GLqpH8SDfGrIWohz3fJT8vE7Xz0K4SFCBZ1VIoah4XOQKyoa4JZYUa4o2-yEqCsbwwVDN1_8XS9N8Y4G47p1-nchFN373mwfraEojMA9pC__GNtkOAJFVgvbyrMiX8-0OfH1XM8UtbsJpth4FNKFCDcRkcs2fzWiw1v7YtjDjvM9udBLrh6HJtmDNfoAftZ8SKwJOgZMJd5QHNWCWkfYgsiA8urb_LmXQwAPLPXVnbSeIx7OWZi-L90PGvFcYlPb3YudR9g",
     bestSlots: ["evening"],
   },
   {
@@ -438,6 +451,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🎶",
     url: "https://montalvoarts.org",
     indoorOutdoor: "both",
+    photoRef: "places/ChIJ4YSL3_tKjoARpGsLdUkxppM/photos/AU_ZVEEq-OBUKBJL3oGGZO4gAIjlWY7vZuHnrqLRP6ZhBK5fNLI13yShxgPoMQHlDuXsD6HQ95q2Q4B7vUkiJWjE-okaTanl9Z32yCQvf5ze9-GmxpgI6sVsnibq6fhAaWLmlKucYsoTXGhAArecWTnKD-mMhBJ1T7-kbauEMC4AIq_VBByLZ37PUxggo1ALqlapNsKA2mKwKO0vzXuOPxccYbNkaFrF-OR7a4g7uZyAWTnM572GDd1cOivPhMTB1ob0hUCGdSr6vBvdUSta-j1h951FmMAsc3Bvjd7N6pRqrpbqXFj5H6nGqgmRcbPiF8qszlia1A7wtv2EV3Hya8B660RDt1AmSOJQfKlP9k62kOwTOailrRFj87UlL1lvWY3CoXCSuZaJVrNuaSd0dd7CnMk9p-h6gRQkx7qp79S6vxv1FdLJ7wKJnIHNCrIMb_ql",
     bestSlots: ["afternoon", "evening"],
   },
   {
@@ -454,6 +468,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🎸",
     url: "https://www.livenation.com/venue/KovZ917ANhB/shoreline-amphitheatre-events",
     indoorOutdoor: "outdoor",
+    photoRef: "places/ChIJZeH1dve5j4ARPT9VG0oB3x0/photos/AU_ZVEHqPuAT8bHx0N8Ap9XUGToeXU7mJj9qm2E8v6yZX8w-Gz9ToDVVKefbmk3JyTa8zwZhFQ5iDnLKTDzCBGlMRE1CgihDD2g5e0hXoECnLudtZqMH8QC-3TJFFBzatS5F4Em8mWwFV1iuwbo6itUokuO-mtX5ehHc4-bd1kgTa5EpyYUZ5jMbSM-xfQ8oeTVKFc1g-S24sLdBTMSuwW9Sn_A7WtU4bThbi2FVe_OnzleAXhQao-bwreSSFQxSiTi3HtxkZkhGtjdH4Ys8L2Qpv2UyjIiCBR0GoLkv6uf-52nKDafwBBnvuv2KiFVmyl0FJ8HFIw9WFqXo4xuXty3Gpz_1T4VdYiK_AbJnt1qoNi8_SYEvTK_psOQdy2TB3mEo68IprTKg8s53lx7EW6aBoxIzGhuqBJGa0XkQMb2aeiM",
     bestSlots: ["evening"],
   },
 
@@ -490,6 +505,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🛍️",
     url: "https://www.santanarow.com",
     indoorOutdoor: "both",
+    photoRef: "places/ChIJKbQHeyDLj4ARDY5fLdwueaM/photos/AU_ZVEFko8FTvkYdCobX9Yu-grUqjEIjJ--S7wigS028SzAliDMZ29GoICNRbl9A6OWx9TCnMekEsuye1FwIiqMyQr_78worAVvqAg63mkLm4IRY78-36xUexOSgP69bNJMa9uktx4c7wWtDK7P580wBxAgsvkaDUA76KjHVIOwzybUjEpxL9njaGLYHl21Yzh-B2NBr1NcU-RIDbbPv8-A1zFqsilDQhzarIwmV2IKI11USUx0-n2k1zgh01GBa9oxgUqTJkftFuLEZ_jzXCWYnCI06D3AJoiZh97fAdrM3uGbyg7Ld60Ol_y0evnJu-eBrUyI9LYdXsSJCzEuhTeaIPoAt7-tahwZK_wXX2Bl4Wz8Gp411hcr1NLra-aVPd1QSlcH4QnDD31XmLTlbncTFrN5qRhgPt2f4a-LR01ORexSdDA",
     bestSlots: ["afternoon", "evening"],
   },
   {
@@ -538,6 +554,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🍱",
     url: "https://www.sanpedrosquaremarket.com",
     indoorOutdoor: "both",
+    photoRef: "places/ChIJgxS1DqPMj4ARcXC8uguCrbU/photos/AU_ZVEHNf9cwlW09ObZboDdi2weSQjlv3uj2yGj4z4-vSCYm8wBkgEa8RYWb25fDCe0k3seX1e-ICp9JUxBkvtqivj9J7uW28pF7rzNIPuNetOM3L4NYXrtGbMIpK4ksi-LdbbuOAWoNQg4Igzl0G619za-2s3iEjUq_-S9krfE_Zey5nV-irtsNncjp36Jqu9uyewlEtsjVhxVWFrd6VvlJWJYHKaZWBrp_9gzFdglaR7S1FVgBuOse9QP39Z_UoA3HBsoY7fUMUxWp3M6hpres_yndxfd7ejA7Z6v-qZpjTHcvrakfGuRJjbbh-_sRn4Pl9K1eVXc3nciUzS9vESe48edS3m9UgLOKM6TJ_pcXwQZNdwW1Ho09KrJnLCgzCjvAR4wqCTz0eq-VJEJUfzu8RDREQV8EUoJO7fQZmVRmn_q_Kr6A",
     bestSlots: ["afternoon", "evening"],
   },
   {
@@ -620,6 +637,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🍎",
     url: "https://www.mainstreetcupertino.com",
     indoorOutdoor: "both",
+    photoRef: "places/ChIJASO65Z21j4ARKODIVSbFa-8/photos/AU_ZVEHE_UYFgTQd7xtBdE9Gef1llJHfGObOgnRC0UgX0bxR4c96VSdrgb2mHhcifvI8hH92acbDc1r9J-qv_-5sxTYSYFHb9W1YfKOiojfJIuF0SPD_RTN7deTI8hvrOdNs0Mg4AvoIE14ZRiWv5xMby8VtSorlDMrXxDIqFoPJR11GTS_vNl-5vAcUzUJh8lVnprFLWcJrwx15I4TP4IRtWYunZMt5UhBidyWMClgFalFJl3YWOh9RIVKv0sJRSBHxRnShMrPwPG0sLEWthvt0m3JgP8Zk33jx1krnTs-2vIRqnz_21pxx1c3SIrMp-37iYlrO5WsQOWayRgpEtYPermM7xMqVypF_0q1ZYB0NwXN1YWzM4YuhXqhMsLPPjnlV3MF6bdyDxwmb0ahePSdad4s8XRDxXw9qnGMNaibiOAcXRLzm",
     bestSlots: ["afternoon", "evening"],
   },
   {
@@ -740,6 +758,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🧆",
     url: "https://www.orenshummus.com",
     indoorOutdoor: "indoor",
+    photoRef: "places/ChIJ361H6jm7j4ARk1vmz_dEqwE/photos/AU_ZVEE97FankRlNpzqgasbtF1EbnlBHLG6uGXqu4mC6z1UToMQdogTZpboBL-gHnd1DfdBspJj-fjR4-1sU-G35OFEub-CPgtrKLZ4bITiJfUfRp88jW2AEb3DhRRawSULxGUsUqo8oZg4W5EqiTEMrUvrpHgmvbu1JEA6Tk604dhksjm2mEYLIDGD9g0oPujr7MzkX4sK9hF7aqpAWeK31Fj_C_dIwtMjtBaQWhE0fw6VaalxRSJBaR6VnSiSRE_6YChAQ0-QJARa1j57i-9xZYw-Ix7vMJmq9SP8Yi5AMryZHhlnl0f16b68e43STKRkb3crX9DvheSyNWv6-IDGBfZg7erIWCTEjHlgNxuW5kopQ5w8ym0afztK2xGe7hbjV6qpukd6wrIUAgUK983KuaJw6z1DB7itLNvPfzTrn2J8fRw",
     bestSlots: ["afternoon"],
   },
   {
@@ -757,6 +776,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🍖",
     url: "https://www.smokingpigbbq.net",
     indoorOutdoor: "indoor",
+    photoRef: "places/ChIJeQ-ozuLKj4ARMQNfslZXl1c/photos/AU_ZVEEdjDBdPGX_DCue9HU_8gF_3id0L4izC4VtcxJXvyUgGVe29ME4nJezISm44jAhlXvZlZUAzcCbpW1ZKcXeFoid1pqwJNTEFOLYKxWWYKcJNxwHKqn7jYufc1SgLug-0gSpdrfGDOru344M58Nu0yD2QvkOwcyork3EK6TRism1ka4wQyc1hyEArRPVP0l8My9JW7k8q802XnFzASlQ4z42j6oUOW8A1XtxVrq8VYMzbTx5rac2qwpRd0TLg90zkll4hTrFhcuDlMzNo12kvfepH1ZZu8NQ5RESlGzEw_g9g7hlXgnNOPqSPyuS07z8OQduwik8Rv7EnqkxD7HU3TTpBh_crzN-CdfdkPpldLc2J3TGsauXXSOSN7F36yazkWp6R0Ov8GfJ0W28jY0JObHa_DzDnRxmfjleu3PPdJ_HLpA",
     bestSlots: ["afternoon", "evening"],
   },
   {
@@ -791,6 +811,7 @@ export const SOUTH_BAY_POIS: POI[] = [
     emoji: "🍷",
     url: "https://www.diodeka.com",
     indoorOutdoor: "both",
+    photoRef: "places/ChIJO3zvn9I1joARJ2I0JIM_FtU/photos/AU_ZVEECVN-DFcf8Rlwq0lqgud84OW_lpPds9L1gsuCw-LsRvu1IqYcu3jbEkin77dB3_lpJl_BaeKLFhqEKNBqaQgcK143GQzfXQshGjocJfXNPx9-ECpgRkpEoKJOZ_1uUjn3HdQtVWwtIW36sb-0P9xFmWhlR0X78LjItwx_VYX8h49UJHZRX9cUKAl58ayg50yu8uNAwFARQjxWSbRzGSxeYTrA0X35BGSnSStzKuFHh_fsZKec3nEAQ5Qa0bbwHKOZ9hh8-KmI2ADV6H9mD3nb1SY1mO4yx0UCwaoIRvAYWWA",
     bestSlots: ["evening"],
   },
   {

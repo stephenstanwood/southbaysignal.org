@@ -85,27 +85,18 @@ function OptionPill({
   );
 }
 
-// ── Unsplash photo type ───────────────────────────────────────────────────────
-
-interface UnsplashPhoto {
-  url: string;
-  photographer: string;
-  photographerUrl: string;
-  unsplashUrl: string;
-}
-
 // ── Stop card ─────────────────────────────────────────────────────────────────
 
 function StopCard({ stop }: { stop: PlanStop }) {
   const badge = costBadge(stop.cost, stop.costNote);
-  const [unsplash, setUnsplash] = useState<UnsplashPhoto | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`/api/unsplash-photo?query=${encodeURIComponent(stop.category)}`)
-      .then((r) => r.json())
-      .then((d: UnsplashPhoto) => { if (d.url) setUnsplash(d); })
-      .catch(() => {});
-  }, [stop.category]);
+    if (stop.photoRef) {
+      // Google Places photo — real photo of the actual venue
+      setPhotoUrl(`/api/place-photo?ref=${encodeURIComponent(stop.photoRef)}&w=144&h=144`);
+    }
+  }, [stop.photoRef]);
 
   return (
     <div style={{ marginBottom: 24 }}>
@@ -143,30 +134,15 @@ function StopCard({ stop }: { stop: PlanStop }) {
           <div style={{ flexShrink: 0, margin: "12px 14px 12px 12px", display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
             <div style={{
               width: 72, height: 72, borderRadius: 8, overflow: "hidden",
-              background: unsplash ? "transparent" : "var(--sb-bg)",
+              background: photoUrl ? "transparent" : "var(--sb-bg)",
               display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28,
               flexShrink: 0,
             }}>
-              {unsplash
-                ? <img src={unsplash.url} alt={stop.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              {photoUrl
+                ? <img src={photoUrl} alt={stop.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} onError={() => setPhotoUrl(null)} />
                 : <span>{stop.emoji}</span>
               }
             </div>
-            {unsplash && (
-              <div style={{ width: 72, fontSize: 7, lineHeight: 1.3, color: "#bbb", textAlign: "center" }}>
-                <span
-                  role="link" tabIndex={0}
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(unsplash.photographerUrl, "_blank", "noopener"); }}
-                  style={{ color: "#bbb", cursor: "pointer" }}
-                >{unsplash.photographer}</span>
-                {" · "}
-                <span
-                  role="link" tabIndex={0}
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(unsplash.unsplashUrl, "_blank", "noopener"); }}
-                  style={{ color: "#bbb", cursor: "pointer" }}
-                >Unsplash</span>
-              </div>
-            )}
           </div>
           <div style={{ flex: 1, minWidth: 0, paddingTop: 12, paddingRight: 12 }}>
             {/* Title + today badge */}

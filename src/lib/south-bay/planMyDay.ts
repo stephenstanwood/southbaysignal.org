@@ -53,6 +53,7 @@ export interface PlanStop {
   why: string;
   emoji: string;
   category: string; // e.g. "food", "outdoor", "arts" — for image lookup
+  photoRef?: string; // Google Places photo reference (place stops only)
   url?: string;
   isEvent: boolean;
   isTodaySpecial: boolean; // event active today
@@ -86,6 +87,7 @@ interface Candidate {
   hasDayRestriction: boolean; // event has specific days[] — only show when active
   indoorOutdoor: "indoor" | "outdoor" | "both";
   category: string;
+  photoRef?: string;
   bestSlots: TimeSlot[];
   eventTime?: string; // actual time like "5:00 PM" from upcoming events
 }
@@ -354,6 +356,7 @@ function buildCandidates(date: Date): Candidate[] {
       hasDayRestriction: false,
       indoorOutdoor: p.indoorOutdoor,
       category: p.category,
+      photoRef: p.photoRef,
       bestSlots: p.bestSlots,
     });
   }
@@ -547,6 +550,7 @@ export function buildDayPlan(input: PlanInput, weatherRaw: string): DayPlan {
       why: winner.why,
       emoji: winner.emoji,
       category: winner.category,
+      photoRef: winner.photoRef,
       url: winner.url,
       isEvent: winner.isEvent,
       isTodaySpecial: winner.isTodaySpecial,
