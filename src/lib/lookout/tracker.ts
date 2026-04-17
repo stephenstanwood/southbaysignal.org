@@ -15,7 +15,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import { put, head } from "@vercel/blob";
+import { put, head, del } from "@vercel/blob";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -192,50 +192,121 @@ function parseFromHeader(raw: string): { address: string; displayName: string; d
   return { address, displayName, domain };
 }
 
-function rootHost(host: string): string {
-  const h = host.toLowerCase().replace(/^www\./, "");
-  // Keep last two labels for most domains (e.g. sjsu.edu from news.sjsu.edu).
-  // Not perfect for .co.uk etc., but good enough for our use case.
-  const parts = h.split(".");
-  return parts.length >= 2 ? parts.slice(-2).join(".") : h;
+// ── Matching ────────────────────────────────────────────────────────────────
+// Senders rarely come from the signup domain — they come from the mailing
+// platform's infrastructure (ccsend.com, libraryaware.com, list-manage.com,
+// etc.) with the org identity embedded in a subdomain or display name.
+// So we score multiple signals and pick the best match above a threshold.
+
+/** Collapse a string to alphanumerics only, lowercase. "Los Gatos Chamber" → "losgatoschamber". */
+function normalizeKey(s: string): string {
+  return (s || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
+
+/** Tokens of length ≥ 4, excluding generic mailer/tld noise. */
+const STOPWORDS = new Set([
+  "www", "mail", "mailer", "mails", "email", "emails", "news", "newsletter",
+  "info", "hello", "contact", "subscribe", "updates", "update", "noreply",
+  "donotreply", "bounces", "list", "lists", "campaign", "campaigns", "relay",
+  "smtp", "ccsend", "mailchimpapp", "mailgun", "sendgrid", "sparkpost",
+  "constantcontact", "hubspot", "klaviyo", "mailjet", "mandrill", "postmark",
+  "squarespace", "wix", "civicplus", "opengov", "libraryaware",
+  "com", "org", "net", "edu", "gov", "info", "biz", "co",
+  "city", "town", "county", "the", "and", "for", "inc",
+]);
+function tokenize(s: string): string[] {
+  return (s || "").toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length >= 4 && !STOPWORDS.has(t));
+}
+
+/** Meaningful subdomain fragments: strip www/mail/etc., also strip the TLD. */
+function senderIdentityFragments(domain: string): string[] {
+  const parts = domain.toLowerCase().split(".").filter(Boolean);
+  const skip = new Set(["www", "mail", "mailer", "news", "email", "em", "m", "smtp", "relay", "ccsend", "ccsend2", "list-manage", "list", "lt", "campaign", "go", "click", "e"]);
+  const filtered = parts.filter((p) => !skip.has(p));
+  // Drop final TLD-looking part (usually last) so we end up with org-ish tokens
+  if (filtered.length > 1) filtered.pop();
+  return filtered;
+}
+
+interface SenderInfo {
+  address: string;
+  displayName: string;
+  domain: string;
+}
+
+function scoreMatch(target: NewsletterTarget, s: SenderInfo): number {
+  // Exact prior-seen address / domain — canonical matches.
+  if ((target.seenFromAddresses ?? []).some((a) => a.toLowerCase() === s.address)) return 1000;
+  if (s.domain && (target.seenFromDomains ?? []).some((d) => d.toLowerCase() === s.domain)) return 900;
+
+  // Signup URL host — exact match only. Tempting to collapse to last-2-labels
+  // (e.g. "sunnyvale.ca.gov" → "ca.gov"), but that falsely matches any
+  // *.ca.gov sender to any *.ca.gov target, since ".ca.gov" is a state-wide
+  // registrar shared by independent entities. Fragment/token scoring below
+  // catches the common "org slug in mailer subdomain" case.
+  if (target.signupUrl) {
+    try {
+      const host = new URL(target.signupUrl).hostname.toLowerCase().replace(/^www\./, "");
+      if (host === s.domain) return 850;
+    } catch {
+      /* ignore */
+    }
+  }
+
+  const targetKey = normalizeKey(target.name);
+  const targetIdKey = normalizeKey(target.id);
+
+  // Senders routed through a mailing platform embed the org slug in the
+  // subdomain — e.g. "losgatoschamber.ccsend.com" for Los Gatos Chamber.
+  // Also check display name and address local-part.
+  const fragments = [
+    ...senderIdentityFragments(s.domain),
+    normalizeKey(s.displayName),
+    normalizeKey((s.address.split("@")[0] || "")),
+  ].filter((f) => f.length >= 5);
+
+  let best = 0;
+  for (const frag of fragments) {
+    const fragKey = normalizeKey(frag);
+    if (!fragKey) continue;
+    if (fragKey === targetKey || fragKey === targetIdKey) best = Math.max(best, 700);
+    else if (targetKey.includes(fragKey) || fragKey.includes(targetKey)) best = Math.max(best, 650);
+    else if (targetIdKey.includes(fragKey) || fragKey.includes(targetIdKey)) best = Math.max(best, 600);
+  }
+  if (best > 0) return best;
+
+  // Multi-token overlap (distinct, ≥ 4 chars, non-stopword) — guards against
+  // accidental matches like "center" matching 20 orgs.
+  const senderTokens = new Set<string>([
+    ...tokenize(s.displayName),
+    ...tokenize(s.domain),
+    ...tokenize(s.address.split("@")[0] || ""),
+  ]);
+  const targetTokens = new Set<string>([...tokenize(target.name), ...tokenize(target.id)]);
+  let overlap = 0;
+  for (const t of senderTokens) if (targetTokens.has(t)) overlap++;
+  if (overlap >= 2) return 450 + overlap * 20;
+
+  return 0;
+}
+
+const MATCH_THRESHOLD = 450;
 
 function findTrackerMatch(doc: NewsletterTrackerDoc, fromEmail: string): NewsletterTarget | null {
   if (!fromEmail) return null;
-  const { address, domain } = parseFromHeader(fromEmail);
-  if (!address) return null;
-  const senderRoot = rootHost(domain);
+  const sender = parseFromHeader(fromEmail);
+  if (!sender.address) return null;
 
-  return (
-    doc.targets.find((t) => {
-      if ((t.seenFromAddresses ?? []).some((a) => a.toLowerCase() === address)) return true;
-      if ((t.seenFromDomains ?? []).some((d) => d.toLowerCase() === domain)) return true;
-      // New: match by signup URL host (exact or root-domain). This auto-links
-      // senders to their target without needing prior manual seeding.
-      if (t.signupUrl) {
-        try {
-          const signupHost = new URL(t.signupUrl).hostname.toLowerCase().replace(/^www\./, "");
-          if (signupHost === domain) return true;
-          if (rootHost(signupHost) === senderRoot) return true;
-        } catch {
-          /* malformed URL — skip */
-        }
-      }
-      return false;
-    }) ?? null
-  );
-}
-
-function autoIdFromDomain(domain: string): string {
-  const slug = domain.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 50);
-  return `auto-${slug || "sender"}`;
-}
-
-function prettyNameFromDomain(domain: string): string {
-  // e.g. "mailer.hammertheatre.sjsu.edu" → "Hammertheatre Sjsu"
-  const parts = domain.toLowerCase().split(".").filter((p) => !["www", "mail", "mailer", "news", "email", "em", "m", "smtp", "relay"].includes(p));
-  const core = parts.slice(0, Math.max(1, parts.length - 1)).join(" ");
-  return core.replace(/\b\w/g, (c) => c.toUpperCase()) || domain;
+  let bestScore = 0;
+  let best: NewsletterTarget | null = null;
+  for (const t of doc.targets) {
+    const s = scoreMatch(t, sender);
+    if (s > bestScore) {
+      bestScore = s;
+      best = t;
+    }
+  }
+  return bestScore >= MATCH_THRESHOLD ? best : null;
 }
 
 /**
@@ -285,41 +356,15 @@ export async function noteInboundFromSender(
     return match.id;
   }
 
-  // Don't auto-add rows for known non-newsletter domains: our own forwarding
-  // infrastructure, Stephen's personal domains, and Gmail (which shows up
-  // whenever sandcathype forwards or when a human replies directly).
-  const AUTO_ADD_BLOCKLIST = new Set([
-    "gmail.com",
-    "in.southbaytoday.org",
-    "southbaytoday.org",
-    "stanwood.dev",
-    "sandcathype.com",
-  ]);
-  if (AUTO_ADD_BLOCKLIST.has(domain)) return null;
-
-  // No match — auto-add a new row as "receiving" so the sender shows up in
-  // the admin tracker. User can rename / delete / re-categorize from the UI.
-  const id = autoIdFromDomain(domain || address);
-  const tombstones = new Set(doc.deletedIds ?? []);
-  if (tombstones.has(id)) return null; // respect prior user deletion
-  const name = displayName || prettyNameFromDomain(domain) || address;
-  const newTarget: NewsletterTarget = {
-    id,
-    name,
-    signupUrl: "",
-    category: "other",
-    provider: "unknown",
-    priority: 3,
-    status: "receiving",
-    receivedCount: 1,
-    lastReceivedAt: receivedAt,
-    seenFromAddresses: [address],
-    seenFromDomains: domain ? [domain] : [],
-    notes: "Auto-discovered from inbound email; no signup URL on file.",
-  };
-  doc.targets.push(newTarget);
-  await writeTracker(doc);
-  return id;
+  // No match above the score threshold. Don't auto-add — 95% of real
+  // inbound is from a list we already have in the tracker; if it isn't
+  // matching, the right answer is to improve matching or manually link it,
+  // not to clutter the tracker with junk rows. Log so it's visible in
+  // Vercel function logs.
+  console.warn(
+    `[tracker] unmatched inbound sender: ${fromEmail} (address=${address}, domain=${domain}, displayName=${JSON.stringify(displayName)})`
+  );
+  return null;
 }
 
 /**
@@ -409,15 +454,29 @@ async function readBlobJson(pathname: string): Promise<string | null> {
 async function writeBlobJson(pathname: string, json: string): Promise<void> {
   const token = getBlobToken();
   if (!token) throw new Error("BLOB_READ_WRITE_TOKEN not available");
+  // Vercel Blob's CDN caches GETs by URL. When you put() to the same pathname,
+  // the URL is reused but the CDN keeps serving stale content for minutes even
+  // with cacheControlMaxAge: 0 (observed 2026-04-17 — schrodinger reads where
+  // different edges return different content for the same URL within seconds
+  // of a write). Deleting before put forces the CDN to invalidate the cached
+  // object at that URL. put() recreates it immediately after.
+  try {
+    await del(pathname, { token });
+  } catch (err) {
+    // If the blob doesn't exist yet, del() throws — safe to ignore.
+    const msg = (err as Error).message ?? "";
+    if (!/not.found|404/i.test(msg) && (err as Error).name !== "BlobNotFoundError") {
+      // Real error — continue to put anyway; worst case write succeeds and
+      // we've just lost the CDN invalidation benefit for this one write.
+      console.warn(`[tracker] del() before put failed: ${msg}`);
+    }
+  }
   await put(pathname, json, {
     access: "public",
     addRandomSuffix: false,
     allowOverwrite: true,
     contentType: "application/json",
     token,
-    // Disable CDN caching so updates are immediately visible to the
-    // poller. Without this, overwrites at the same URL are served stale
-    // from Vercel's edge cache for minutes.
     cacheControlMaxAge: 0,
   });
 }

@@ -378,7 +378,10 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
 
       .status-wrap { display: inline-flex; align-items: center; gap: 4px; }
       .status-pill {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 72px;
         padding: 3px 10px;
         border-radius: 999px;
         font-size: 11px;
@@ -388,6 +391,7 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
         letter-spacing: 0.02em;
         border: 0;
         font-family: inherit;
+        box-sizing: border-box;
       }
       .status-pill.clickable {
         cursor: pointer;
