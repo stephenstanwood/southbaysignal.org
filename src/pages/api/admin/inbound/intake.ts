@@ -35,6 +35,7 @@ import {
 } from "../../../../lib/lookout/storage.ts";
 import { looksLikeConfirmation, looksLikeAck } from "../../../../lib/lookout/confirm.ts";
 import { noteInboundFromSender } from "../../../../lib/lookout/tracker.ts";
+import { classifyCivic, forwardToStoa } from "../../../../lib/lookout/civic-classifier.ts";
 import type { InboundEmail, InboundEvent, InboundIntakeLog } from "../../../../lib/lookout/types.ts";
 
 /** Internal shape — InboundEmail plus raw html for confirmation link parsing. */
@@ -163,6 +164,28 @@ export const POST: APIRoute = async ({ request }) => {
     await noteInboundFromSender(email.from, email.receivedAt);
   } catch (err) {
     console.error("[intake] tracker update failed:", (err as Error).message);
+  }
+
+  // 4.8. Civic classification + optional forward to Stoa.
+  //      Many city newsletter lists (CivicPlus NotifyMe, Granicus, etc.)
+  //      double as governance feeds — council agendas, planning commission
+  //      updates, public hearing notices, RFPs. Those belong in Stoa's
+  //      pipeline too. Forward is fire-and-forget; never blocks the
+  //      primary webhook response or prevents event extraction below.
+  const civic = classifyCivic(email.from, email.subject);
+  if (civic.isCivic) {
+    console.log(`[intake] civic→stoa — ${email.from} "${email.subject.slice(0, 60)}" (${civic.reason})`);
+    // Intentionally not awaited — fire-and-forget.
+    void forwardToStoa({
+      from: email.from,
+      to: email.to,
+      subject: email.subject,
+      body: email.body,
+      html: email.html,
+      receivedAt: email.receivedAt,
+      messageId: email.messageId,
+      classification: civic.reason,
+    });
   }
 
   // 5. Run the extractor
