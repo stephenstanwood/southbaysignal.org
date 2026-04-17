@@ -15,7 +15,8 @@ export type TechCategory =
   | "social"
   | "hardware"
   | "saas"
-  | "robotics";
+  | "robotics"
+  | "ai";
 
 export const CATEGORY_LABELS: Record<TechCategory, string> = {
   chip: "Chips",
@@ -29,6 +30,7 @@ export const CATEGORY_LABELS: Record<TechCategory, string> = {
   hardware: "Hardware",
   saas: "SaaS",
   robotics: "Robotics",
+  ai: "AI",
 };
 
 export type TechTrend = "up" | "flat" | "down";
@@ -1275,7 +1277,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     round: "Series B ext.",
     amount: "$110M",
     date: "2026-04-04",
-    tagline: "AI agent startup expanding the same Series B from $275M to $385M total at a $1.6B valuation — roughly 20 employees generating $200M+ ARR. Founded by ex-Baidu execEric Jing, who previously sold iQIYI to Baidu for $2.4B. Flagship product: Genspark Super Agent, an agentic AI browser assistant.",
+    tagline: "AI agent startup expanding the same Series B from $275M to $385M total at a $1.6B valuation — roughly 20 employees generating $200M+ ARR. Founded by ex-Baidu exec Eric Jing, who previously sold iQIYI to Baidu for $2.4B. Flagship product: Genspark Super Agent, an agentic AI browser assistant.",
     color: "#7c3aed",
     url: "https://genspark.ai",
   },
