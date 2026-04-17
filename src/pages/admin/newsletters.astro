@@ -76,7 +76,6 @@ const CATEGORY_EMOJI: Record<string, string> = {
   "museum": "🎨",
   "arts": "🎭",
   "venue": "🎪",
-  "news": "📰",
   "business-district": "🏪",
   "parks": "🌳",
   "nature": "🦌",
@@ -120,7 +119,7 @@ const doneCount = summary.receiving + summary.signupPosted;
 const donePct = targets.length > 0 ? Math.round((doneCount / targets.length) * 100) : 0;
 
 // Category ordering for the grid
-const categoryOrder = ["city", "chamber", "library", "museum", "arts", "venue", "news", "business-district", "parks", "nature", "food", "school", "transit", "other"];
+const categoryOrder = ["library", "museum", "arts", "venue", "business-district", "parks", "nature", "food", "school", "transit", "other", "city", "chamber"];
 const orderedCategories = Object.keys(grouped).sort((a, b) => {
   const ai = categoryOrder.indexOf(a);
   const bi = categoryOrder.indexOf(b);
