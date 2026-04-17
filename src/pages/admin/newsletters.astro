@@ -328,7 +328,17 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
         box-shadow: 0 1px 3px rgba(0,0,0,0.04);
       }
 
-      table { width: 100%; border-collapse: collapse; }
+      table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+      /* Fixed column widths so every per-category table aligns vertically
+         and status pills line up regardless of which rows have ✕ undo buttons. */
+      table col.col-name { width: auto; }
+      table col.col-city { width: 16%; }
+      table col.col-status { width: 120px; }
+      table col.col-received { width: 110px; }
+      table col.col-count { width: 64px; }
+      table col.col-actions { width: 180px; }
+      td, th { overflow: hidden; }
+      td.meta { white-space: nowrap; text-overflow: ellipsis; }
       th, td {
         text-align: left;
         padding: 10px 14px;
@@ -561,6 +571,14 @@ const orderedCategories = Object.keys(grouped).sort((a, b) => {
                 </div>
                 <div class="card">
                   <table>
+                    <colgroup>
+                      <col class="col-name" />
+                      <col class="col-city" />
+                      <col class="col-status" />
+                      <col class="col-received" />
+                      <col class="col-count" />
+                      <col class="col-actions" />
+                    </colgroup>
                     <thead>
                       <tr>
                         <th>Name</th>
