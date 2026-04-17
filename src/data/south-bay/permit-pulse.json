@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-17T14:16:41.559Z",
+      "generatedAt": "2026-04-17T17:06:57.361Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,7 +137,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-17T14:16:43.947Z",
+      "generatedAt": "2026-04-17T17:06:59.910Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -163,18 +163,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00971",
-          "address": "690 Wildwood Ln",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "Res: Replace valve, expansion tanks, and reinstall laundry box.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-13",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00983",
           "address": "824 Bryant St",
           "category": "commercial",
@@ -187,12 +175,12 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00969",
-          "address": "180 El Camino Real",
+          "id": "26BLD-00971",
+          "address": "690 Wildwood Ln",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "COM: 'J.CREW' Space #CC1240: Temporary construction barricade - 12' Parapet Option w/ Scrim, associated master barricade permit under 26MRP-00003.",
+          "description": "Res: Replace valve, expansion tanks, and reinstall laundry box.",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-13",
@@ -211,15 +199,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00954",
-          "address": "3179 Stockton Pl",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
+          "id": "26BLD-00969",
+          "address": "180 El Camino Real",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "COM: 'J.CREW' Space #CC1240: Temporary construction barricade - 12' Parapet Option w/ Scrim, associated master barricade permit under 26MRP-00003.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-10",
+          "issueDate": "2026-04-13",
           "subtype": "Permit Issued"
         },
         {
@@ -244,6 +232,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-11",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00954",
+          "address": "3179 Stockton Pl",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-10",
           "subtype": "Permit Issued"
         },
         {
