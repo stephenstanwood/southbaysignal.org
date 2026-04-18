@@ -2605,6 +2605,26 @@ function fetchMiscHardcodedEvents() {
       url: "https://gostanford.com",
       description: "#2 Stanford hosts rival #4 Cal in the Big Splash. Senior Day — free admission.",
     },
+    {
+      title: "Sunnyvale Art & Wine Festival",
+      date: "2026-06-06", time: "11:00 AM",
+      venue: "Downtown Sunnyvale", address: "W Washington Ave & S Murphy Ave, Sunnyvale", city: "sunnyvale",
+      cost: "free", costNote: null,
+      category: "arts",
+      url: "https://www.sunnyvaleartandwine.com",
+      description: "The 50th annual Sunnyvale Art & Wine Festival returns to downtown Sunnyvale with 200+ artists, live music, local food, and wine. Saturday hours 11 AM–7 PM.",
+      kidFriendly: true,
+    },
+    {
+      title: "Sunnyvale Art & Wine Festival",
+      date: "2026-06-07", time: "10:00 AM",
+      venue: "Downtown Sunnyvale", address: "W Washington Ave & S Murphy Ave, Sunnyvale", city: "sunnyvale",
+      cost: "free", costNote: null,
+      category: "arts",
+      url: "https://www.sunnyvaleartandwine.com",
+      description: "The 50th annual Sunnyvale Art & Wine Festival continues in downtown Sunnyvale with 200+ artists, live music, local food, and wine. Sunday hours 10 AM–5 PM.",
+      kidFriendly: true,
+    },
   ];
   const today = new Date().toISOString().split("T")[0];
   const events = raw
@@ -2627,7 +2647,7 @@ function fetchMiscHardcodedEvents() {
         description: e.description ?? "",
         url: e.url,
         source: "South Bay Signal",
-        kidFriendly: false,
+        kidFriendly: e.kidFriendly ?? false,
       };
     });
   console.log(`  ✅ Misc hardcoded: ${events.length} events`);
