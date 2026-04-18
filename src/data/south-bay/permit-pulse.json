@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-17T23:13:09.290Z",
+      "generatedAt": "2026-04-18T19:09:55.263Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Apr 10 – Apr 17",
+      "dateRange": "Apr 11 – Apr 18",
       "stats": {
-        "total": 324,
-        "notable": 20,
-        "newUnits": 8,
-        "totalValuation": 8893287
+        "total": 398,
+        "notable": 25,
+        "newUnits": 11,
+        "totalValuation": 160414694
       },
       "permits": [
         {
@@ -36,6 +36,18 @@
           "valuation": 134427,
           "units": 1,
           "issueDate": "2026-04-13",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-130149-RS",
+          "address": "3092 Allenwood Dr #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Attached adu",
+          "valuation": 126818,
+          "units": 1,
+          "issueDate": "2026-04-16",
           "subtype": "2nd Unit Added"
         },
         {
@@ -87,6 +99,18 @@
           "subtype": "2nd Unit Added"
         },
         {
+          "id": "2025-145960-RS",
+          "address": "3068 Flater Dr #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Garage Conversion to New Jadu",
+          "valuation": 70172,
+          "units": 1,
+          "issueDate": "2026-04-16",
+          "subtype": "2nd Unit Added"
+        },
+        {
           "id": "2025-146910-RS",
           "address": "4450 Silva Av #2",
           "category": "residential-new",
@@ -109,43 +133,19 @@
           "units": 1,
           "issueDate": "2026-04-13",
           "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2026-112675-CI",
-          "address": "2855 Stevens Creek Bl",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "(Bemp100%) Cider ti #2411",
-          "valuation": 1100000,
-          "units": 0,
-          "issueDate": "2026-04-15",
-          "subtype": "Retail"
-        },
-        {
-          "id": "2025-106919-CI",
-          "address": "3011 N 1st St",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Intermolecular (Bem100%) Humidity Control & Ceiling Modifications",
-          "valuation": 950000,
-          "units": 0,
-          "issueDate": "2026-04-15",
-          "subtype": "R & D Lab"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-17T23:13:11.591Z",
+      "generatedAt": "2026-04-18T19:09:57.770Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Apr 10 – Apr 17",
+      "dateRange": "Apr 11 – Apr 18",
       "stats": {
-        "total": 104,
-        "notable": 10,
+        "total": 99,
+        "notable": 8,
         "newUnits": 0,
         "totalValuation": 0
       },
@@ -187,15 +187,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00945",
-          "address": "754 Southampton Dr",
+          "id": "26BLD-00975",
+          "address": "1036 Colorado Av",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "RES MEP:  Main Panel Upgrade to 200 Amps with 200A MCB",
+          "description": "MFR Replace (4) apartment units sewer connection. Re route 2' kitchen line to 6\" sewer main in landscape area",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-10",
+          "issueDate": "2026-04-13",
           "subtype": "Permit Issued"
         },
         {
@@ -211,18 +211,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00957",
-          "address": "1066 Maddux Dr",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-10",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00959",
           "address": "4216 Manuela Av",
           "category": "residential-large",
@@ -232,18 +220,6 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-11",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00954",
-          "address": "3179 Stockton Pl",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Heat Pump Mechanical",
-          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 2 heat pump space conditioning systems(s).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-10",
           "subtype": "Permit Issued"
         },
         {
