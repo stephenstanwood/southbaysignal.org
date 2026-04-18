@@ -2,6 +2,41 @@
 
 ---
 
+## 2026-04-18 — Cycle 89: HYFIX Drone Chip Seed + Cerebras IPO Filing + Data Refresh
+
+### Context
+Saturday April 18, 2026 (Earth Day weekend). Events pipeline at 698 total (109 ongoing), up from 552 at last check. Crunchbase Apr 17 weekly roundup published — no new South Bay rounds beyond nEye.ai (already in DB). HYFIX Spatial Intelligence found via DRONELIFE/Fortune (Apr 15).
+
+### What Was Built
+
+**Tech tab: HYFIX Spatial Intelligence added to RECENTLY_FUNDED (46 total)**
+
+HYFIX Spatial Intelligence (Santa Clara) raised a $15M Seed on April 15, 2026 — the first South Bay drone/defense chip company in the list. Building an American-made SoC that integrates flight control, GPS-resilient positioning, communications, and onboard compute into one chip for drones and robots. Backed by Craft Ventures and Sky Dayton (EarthLink founder), with Catapult Ventures, Multicoin Capital, and Finality Capital. Confirmed via Fortune exclusive and DRONELIFE.
+
+**Tech tab: Cerebras Systems tagline updated**
+
+Cerebras filed publicly for a Nasdaq IPO on April 17, 2026 (CNBC, Bloomberg). Updated tagline in TECH_COMPANIES from "targeting a Nasdaq IPO in 2026" to note the actual April 17 filing date.
+
+**TECH_PULSE: Updated to 46 South Bay startup rounds** (was stale at 43 since cycle 84).
+
+**Data refreshed (all core pipelines):**
+- `upcoming-events.json` — 698 events (109 ongoing), 38 sources (up 146 from 552)
+- `around-town.json` — 8 items (MV capital improvement, Sunnyvale tenant protections, SJ library plan, PA historic bonus floors, PA mixed-use San Antonio, MV 333 Franklin zoning, Los Gatos QLM contract, SJ Mexican Heritage Plaza grant)
+- `digests.json` — 10 cities (Cupertino, Santa Clara, Palo Alto, Los Gatos, San José, Mountain View, Sunnyvale, Milpitas most recent)
+- `upcoming-meetings.json` — Palo Alto Apr 20, Cupertino + Campbell + Milpitas Apr 21, Los Altos Apr 28, Saratoga May 6
+- `weekend-picks.json` — Updated: Palo Alto Earth Day, Viva CalleSJ East Side Quest, Huu Bac Quintet (SJ Jazz)
+- `tech-briefing.json` — 46 rounds, updated Cerebras
+
+### Why This Was the Strongest Move
+HYFIX is a story no one in local news is covering — a 3-day-old Seed round for an American-made drone chip company headquartered in Santa Clara. The defense + drone tech angle is exactly the type of "company about to matter" signal that differentiates SBS from generic tech coverage. The Cerebras IPO filing update reflects news from 1 day ago.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 18–24 watch** — Crunchbase weekly roundup for Apr 18–24 publishes Friday Apr 25. Monitor for new South Bay rounds.
+2. **Sunnyvale events** — Research Sunnyvale's summer lineup: Concerts in the Park, remaining festivals.
+3. **Permit Pulse: Mountain View** — All known MV permit portals remain blocked. Monitor cityofmountainview.gov.
+
+---
+
 ## 2026-04-18 — Cycle 88: Sunnyvale Art & Wine Festival Added
 
 ### Context
