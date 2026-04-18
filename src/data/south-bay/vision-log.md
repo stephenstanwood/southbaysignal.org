@@ -2,6 +2,31 @@
 
 ---
 
+## 2026-04-18 — Cycle 88: Sunnyvale Art & Wine Festival Added
+
+### Context
+Saturday April 18, 2026 (Earth Day weekend). Events pipeline at 692 total (108 ongoing). No new South Bay funding rounds found for Apr 14–18 window. Both Sunnyvale city iCal and BiblioCommons feeds remain 403 blocked.
+
+### What Was Built
+
+**Sunnyvale Art & Wine Festival added to `fetchMiscHardcodedEvents()`**
+
+The 50th annual Sunnyvale Art & Wine Festival (June 6–7, 2026) was missing from the events database despite being one of the largest annual events in Sunnyvale — 200+ artists, free admission, downtown Washington Ave & Murphy Ave. Added two entries (Saturday 11 AM–7 PM, Sunday 10 AM–5 PM) to `generate-events.mjs`. Also fixed `kidFriendly` hardcoded `false` in the misc events `.map()` — now uses `e.kidFriendly ?? false` from the raw data.
+
+Sunnyvale city count: 1 → 3 (was just Farmers Market; now includes both festival days).
+
+**Tech briefing regenerated** for the week of Apr 18–25. 45 RECENTLY_FUNDED rounds. Crunchbase Apr 11–17 roundup checked — nEye.ai ($80M, Apr 14) was already in DB; no new rounds verified for this cycle.
+
+### Why This Was the Strongest Move
+Sunnyvale has near-zero event coverage due to both city feeds being blocked. Adding a major annual festival with 50-year history and free admission is exactly the kind of discovery a resident would value — something real, coming up, and completely absent from the site.
+
+### Next 3 Strongest Ideas
+1. **More Sunnyvale events** — Research Sunnyvale's summer lineup: Concerts in the Park, Art & Wine (done), other festivals.
+2. **RECENTLY_FUNDED: next Crunchbase roundup** — Apr 18–24 roundup publishes Friday Apr 25.
+3. **Permit Pulse: Mountain View** — All known MV permit portals remain blocked. Monitor cityofmountainview.gov.
+
+---
+
 ## 2026-04-16 — Cycle 87: AM/PM Casing Fixed at Source + Gas Station Filter
 
 ### Context
