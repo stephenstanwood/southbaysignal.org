@@ -529,7 +529,7 @@ export const SCC_SPOTLIGHT: SccTechSpotlight[] = [
     city: "Sunnyvale",
     category: "chip",
     stage: "growth",
-    tagline: "Wafer-scale AI processor — a single chip the size of a dinner plate — the fastest AI inference hardware available. Raised $1B Series H in Feb 2026 at a $23B valuation and is targeting a Nasdaq IPO in 2026.",
+    tagline: "Wafer-scale AI processor — a single chip the size of a dinner plate — the fastest AI inference hardware available. Raised $1B Series H in Feb 2026 at a $23B valuation; filed publicly for a Nasdaq IPO April 17, 2026.",
     color: "#FF4D00",
     url: "https://cerebras.ai",
     employeesNote: "500 employees",
@@ -1545,6 +1545,18 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     color: "#7c3aed",
     url: "https://primemas.com",
   },
+  {
+    id: "hyfix",
+    name: "HYFIX Spatial Intelligence",
+    city: "Santa Clara",
+    category: "chip",
+    round: "Seed",
+    amount: "$15M",
+    date: "2026-04-15",
+    tagline: "American-made system-on-a-chip for autonomous drones and robots — integrates flight control, positioning, communications, and onboard computing into one platform. Built to operate when GPS fails. Backed by Craft Ventures and Sky Dayton (EarthLink founder).",
+    color: "#1d4ed8",
+    url: "https://hyfix.ai",
+  },
 ];
 
 // Pulse stats for the header strip
@@ -1562,7 +1574,7 @@ export const TECH_PULSE = [
   {
     value: "$6B+",
     label: "Raised in Q1–Q2 2026",
-    note: "43 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
+    note: "46 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
   },
   {
     value: "Chip equipment",
