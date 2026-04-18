@@ -2,6 +2,33 @@
 
 ---
 
+## 2026-04-18 — Cycle 91: Sonire Therapeutics $18M Added to RECENTLY_FUNDED
+
+### Context
+Saturday April 18, 2026 (~4:30 PM PDT). Weekend data was already refreshed by a 16:25 data pipeline run. Searched for new South Bay funding rounds from Apr 14–18, 2026 not yet in database.
+
+### What Was Built
+
+**Tech tab: Sonire Therapeutics added to RECENTLY_FUNDED (48 total)**
+
+Sonire Therapeutics (Palo Alto) raised $18M Series A on April 15, 2026, for its non-invasive HIFU therapy system targeting pancreatic cancer. FDA Breakthrough Device Designation in 2024. Round led by Santé Ventures with Japanese co-investors. Founded in Tokyo, now HQ'd in Palo Alto. This is a genuine Palo Alto medtech story that was not in the database.
+
+HYFIX ($15M Seed, Santa Clara, Apr 15) was already in the database.
+
+**TECH_PULSE stat updated:** 47 → 48 rounds.
+
+**Data pipelines re-run:** generate-events (320 events, 26 sources), generate-around-town (8 items), generate-upcoming-meetings (9 cities), generate-digests (10 cities). These matched the d2b8ac2 data refresh already committed at 16:25, so no net delta.
+
+### Why This Was the Strongest Move
+Sonire is exactly the kind of small South Bay company that local residents wouldn't see covered elsewhere. A Palo Alto cancer-treatment startup with an FDA Breakthrough designation and a $18M round closed this week — that's a real story.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 17–21 watch** — Weekend roundup not yet published. Monitor for new South Bay AI/chip/robotics rounds.
+2. **School calendar: teacher workday/PD days** — SCUSD PD days are all past; check May/June PD days for other districts (SJUSD, PAUSD).
+3. **Permit Pulse: Mountain View** — All known MV permit portals remain blocked/ECONNREFUSED. Monitor cityofmountainview.gov for changes.
+
+---
+
 ## 2026-04-18 — Cycle 90: Zūm $100M Added to RECENTLY_FUNDED
 
 ### Context
