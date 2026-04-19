@@ -26,6 +26,7 @@ function dataPath(name: string): string {
 
 const TRACKER_PATH = dataPath("newsletter-tracker.json");
 const TRACKER_BLOB_KEY = "lookout/newsletter-tracker.json";
+const AUDIT_BLOB_PREFIX = "lookout/tracker-audit/";
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -450,10 +451,50 @@ function emptyDoc(): NewsletterTrackerDoc {
  */
 export async function markDeleted(id: string): Promise<void> {
   const doc = await readTracker();
+  const prior = doc.targets.find((t) => t.id === id);
   doc.deletedIds = doc.deletedIds ?? [];
   if (!doc.deletedIds.includes(id)) doc.deletedIds.push(id);
   doc.targets = doc.targets.filter((t) => t.id !== id);
+  await writeAuditEntry({ at: new Date().toISOString(), action: "delete", id, fromStatus: prior?.status });
   await writeTracker(doc);
+}
+
+// ── Audit log ───────────────────────────────────────────────────────────────
+// Every user-initiated mutation (status change, delete) is written as its
+// own blob under lookout/tracker-audit/<ts>-<action>-<id>.json BEFORE the
+// main tracker blob is updated. Per-entry blobs sidestep the read/modify/
+// write race that wiped the tracker on 2026-04-19 — each click is its own
+// independent object, so concurrent writers can never clobber each other.
+//
+// Replay with scripts/lookout/replay-audit.mjs: list the prefix, fetch each
+// entry in timestamp order, re-apply to the live tracker. This is the
+// recovery path of last resort if the tracker blob is ever wiped again.
+
+export interface AuditEntry {
+  at: string;
+  action: "status-change" | "delete";
+  id: string;
+  fromStatus?: SubscribeStatus;
+  toStatus?: SubscribeStatus;
+}
+
+export async function writeAuditEntry(entry: AuditEntry): Promise<void> {
+  const token = getBlobToken();
+  if (!token) return;
+  const safeTs = entry.at.replace(/[:.]/g, "-");
+  const safeId = entry.id.replace(/[^a-z0-9_-]/gi, "_");
+  const key = `${AUDIT_BLOB_PREFIX}${safeTs}-${entry.action}-${safeId}.json`;
+  try {
+    await put(key, JSON.stringify(entry), {
+      access: "public",
+      addRandomSuffix: true,
+      contentType: "application/json",
+      cacheControlMaxAge: 0,
+      token,
+    });
+  } catch (err) {
+    console.warn(`[tracker] audit write failed: ${(err as Error).message ?? err}`);
+  }
 }
 
 async function readBlobJson(pathname: string): Promise<string | null> {
