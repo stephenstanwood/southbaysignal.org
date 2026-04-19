@@ -20,6 +20,7 @@ import { scoreAndRank } from "./lib/scoring.mjs";
 import { generateDayPlanCopy, generateTonightPickCopy, generateWildcardCopy } from "./lib/copy-gen.mjs";
 import { SLOT_TYPES, TYPED_SLOTS, todayPT, addDays } from "./lib/slot-scheduler.mjs";
 import { CITY_NAMES } from "./lib/constants.mjs";
+import { runQualityReview } from "./lib/post-gen-review.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SCHEDULE_FILE = join(__dirname, "..", "..", "src", "data", "south-bay", "social-schedule.json");
@@ -356,23 +357,12 @@ function weightedRandomPick(items) {
 
 // ── Main ──────────────────────────────────────────────────────────────────
 
-async function main() {
+/** One pass of generation over `daysAhead` days.
+ *  Mutates `schedule` in place. Callable multiple times: the second call will
+ *  regen any slot that was deleted between calls (e.g. by the quality review).
+ */
+async function runGenerationPass(schedule, plansData, scored, { passLabel = "pass" } = {}) {
   const today = todayPT();
-  console.log(`\n📅 Schedule generator — ${today} (${daysAhead} days ahead)`);
-
-  const schedule = loadSchedule();
-  const plansData = loadDefaultPlans();
-  const allCandidates = loadAllCandidates();
-  const upcoming = upcomingCandidates(allCandidates, daysAhead + 7);
-
-  // Score candidates for ranking
-  let scored;
-  try {
-    scored = scoreAndRank(upcoming);
-  } catch {
-    scored = upcoming;
-  }
-
   let generated = 0;
   let skipped = 0;
 
@@ -380,11 +370,7 @@ async function main() {
   const recentWildcardTitles = new Set();
   const recentTonightTitles = new Set();
   const recentTonightVenues = new Set();
-  // Track every POI name we've featured in a day plan this run — once used,
-  // a spot can't anchor another plan for the rest of the generated window.
   const usedDayPlanNames = new Set();
-  // Collect names already used for tonight/wildcard — day plans should also
-  // avoid featuring something the same week is recommending as an event.
   const seedUsedFromSchedule = () => {
     for (const d of Object.keys(schedule.days)) {
       const day = schedule.days[d];
@@ -401,6 +387,11 @@ async function main() {
         const v = (tp.item.venue || "").trim().toLowerCase();
         if (t) recentTonightTitles.add(t);
         if (v) recentTonightVenues.add(v);
+      }
+      const wc = day["wildcard"];
+      if (wc?.item) {
+        const t = (wc.item.title || wc.item.name || "").trim().toLowerCase();
+        if (t) recentWildcardTitles.add(t);
       }
     }
   };
@@ -616,6 +607,55 @@ async function main() {
     }
   }
 
+  return { generated, skipped };
+}
+
+async function main() {
+  const today = todayPT();
+  console.log(`\n📅 Schedule generator — ${today} (${daysAhead} days ahead)`);
+
+  const schedule = loadSchedule();
+  const plansData = loadDefaultPlans();
+  const allCandidates = loadAllCandidates();
+  const upcoming = upcomingCandidates(allCandidates, daysAhead + 7);
+
+  let scored;
+  try { scored = scoreAndRank(upcoming); } catch { scored = upcoming; }
+
+  // ── Pass 1: initial generation ─────────────────────────────────────────
+  const p1 = await runGenerationPass(schedule, plansData, scored, { passLabel: "initial" });
+  console.log(`\n▶︎ Pass 1: ${p1.generated} generated, ${p1.skipped} preserved`);
+
+  // ── Quality review ────────────────────────────────────────────────────
+  if (!dryRun) {
+    console.log(`\n🔍 Running quality review...`);
+    const review = runQualityReview(schedule, { resetFlaggedToDraft: true });
+    for (const a of review.autoFixed) {
+      console.log(`   🔧 auto-fix [${a.date} ${a.slotType}] ${a.kind}: ${a.details}`);
+    }
+    for (const f of review.flagged) {
+      console.log(`   🚩 flag [${f.date} ${f.slotType}] ${f.reason} — will regen`);
+    }
+
+    // ── Pass 2: regenerate flagged slots (flagged slots were deleted) ────
+    if (review.flagged.length) {
+      console.log(`\n🔁 Pass 2: regenerating ${review.flagged.length} flagged slot(s)...`);
+      const p2 = await runGenerationPass(schedule, plansData, scored, { passLabel: "regen" });
+      console.log(`✅ Pass 2: ${p2.generated} regenerated`);
+
+      // Re-run the deterministic portion of the review (terminology,
+      // chronological sort) on the newly-regenerated slots. Don't reset
+      // flags this time — avoid regen loops.
+      const review2 = runQualityReview(schedule, { resetFlaggedToDraft: false });
+      for (const a of review2.autoFixed) {
+        console.log(`   🔧 auto-fix [${a.date} ${a.slotType}] ${a.kind}: ${a.details}`);
+      }
+      for (const f of review2.flagged) {
+        console.log(`   ⚠️  still flagged [${f.date} ${f.slotType}] ${f.reason} (keeping — regen didn't resolve)`);
+      }
+    }
+  }
+
   // Clean up old dates (more than 2 days in the past)
   const cutoff = addDays(today, -2);
   for (const dateStr of Object.keys(schedule.days)) {
@@ -626,7 +666,7 @@ async function main() {
 
   if (!dryRun) {
     saveSchedule(schedule);
-    console.log(`\n✅ Schedule saved: ${generated} new entries, ${skipped} preserved`);
+    console.log(`\n✅ Schedule saved`);
 
     // Auto-commit shared-plans.json so plan pages are live by the time posts publish
     try {
@@ -642,7 +682,7 @@ async function main() {
       console.warn("   ⚠️  Failed to auto-push shared-plans.json:", e.message);
     }
   } else {
-    console.log(`\n🏜️  Dry run: would generate ${generated} entries`);
+    console.log(`\n🏜️  Dry run`);
   }
 }
 
