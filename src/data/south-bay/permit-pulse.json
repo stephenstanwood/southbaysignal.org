@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-19T12:06:28.141Z",
+      "generatedAt": "2026-04-19T12:53:03.907Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,7 +137,7 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-19T12:06:30.498Z",
+      "generatedAt": "2026-04-19T12:53:06.298Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
@@ -151,12 +151,12 @@
       },
       "permits": [
         {
-          "id": "26BLD-00975",
-          "address": "1036 Colorado Av",
+          "id": "26BLD-00971",
+          "address": "690 Wildwood Ln",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "MFR Replace (4) apartment units sewer connection. Re route 2' kitchen line to 6\" sewer main in landscape area",
+          "description": "Res: Replace valve, expansion tanks, and reinstall laundry box.",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-13",
@@ -175,30 +175,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00969",
-          "address": "180 El Camino Real",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "COM: 'J.CREW' Space #CC1240: Temporary construction barricade - 12' Parapet Option w/ Scrim, associated master barricade permit under 26MRP-00003.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-13",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00971",
-          "address": "690 Wildwood Ln",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "Res: Replace valve, expansion tanks, and reinstall laundry box.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-13",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-00983",
           "address": "824 Bryant St",
           "category": "commercial",
@@ -211,16 +187,28 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26PLN-00081",
-          "address": "650 San Antonio Rd",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Over the Counter Retroactive tree removal  of (8)  failed trees to be replaced with seven (7) 36-inch box trees and nine (9) 24-inch box trees.",
+          "id": "26BLD-00969",
+          "address": "180 El Camino Real",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "COM: 'J.CREW' Space #CC1240: Temporary construction barricade - 12' Parapet Option w/ Scrim, associated master barricade permit under 26MRP-00003.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-14",
-          "subtype": "Over the Counter Approved"
+          "issueDate": "2026-04-13",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00975",
+          "address": "1036 Colorado Av",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "MFR Replace (4) apartment units sewer connection. Re route 2' kitchen line to 6\" sewer main in landscape area",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-13",
+          "subtype": "Permit Issued"
         },
         {
           "id": "26PLN-00084",
@@ -229,6 +217,18 @@
           "categoryLabel": "Entitlement / Zoning",
           "workType": "Entitlement",
           "description": "Request for an Over the Counter Architectural Review to remove three Blue Gum trees due to declining health and decay. Nine 15 gallon Island Live Oak trees will be planted onsite as replacement trees. Environmental Assessment: Not a Project. For more information, contact Bryan Boozari at bryan.boozari@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-14",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00081",
+          "address": "650 San Antonio Rd",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Over the Counter Retroactive tree removal  of (8)  failed trees to be replaced with seven (7) 36-inch box trees and nine (9) 24-inch box trees.",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-14",
