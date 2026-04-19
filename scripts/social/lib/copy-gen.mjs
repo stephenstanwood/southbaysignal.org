@@ -7,7 +7,7 @@
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CLAUDE_MODEL, CONFIG } from "./constants.mjs";
+import { CLAUDE_COPY_MODEL, CONFIG } from "./constants.mjs";
 import { mentionInstructions } from "./handle-lookup.mjs";
 
 const __copygen_dirname = dirname(fileURLToPath(import.meta.url));
@@ -167,7 +167,7 @@ Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook", "inst
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      model: CLAUDE_MODEL,
+      model: CLAUDE_COPY_MODEL,
       max_tokens: 2048,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: prompt }],
@@ -303,7 +303,7 @@ Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook" — ea
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      model: CLAUDE_MODEL,
+      model: CLAUDE_COPY_MODEL,
       max_tokens: 2048,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: prompt }],
@@ -480,7 +480,7 @@ Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook", "inst
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      model: CLAUDE_MODEL,
+      model: CLAUDE_COPY_MODEL,
       max_tokens: 2048,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: prompt }],
@@ -553,7 +553,7 @@ Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook", "inst
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      model: CLAUDE_MODEL,
+      model: CLAUDE_COPY_MODEL,
       max_tokens: 2048,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: prompt }],

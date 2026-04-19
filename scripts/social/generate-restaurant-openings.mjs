@@ -18,7 +18,7 @@ import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from 
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomBytes } from "node:crypto";
-import { CLAUDE_MODEL } from "./lib/constants.mjs";
+import { CLAUDE_COPY_MODEL } from "./lib/constants.mjs";
 import { logStep, logSuccess, logSkip, logError, logItem } from "./lib/logger.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -234,7 +234,7 @@ Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook" — ea
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      model: CLAUDE_MODEL,
+      model: CLAUDE_COPY_MODEL,
       max_tokens: 1024,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: prompt }],

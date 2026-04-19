@@ -9,7 +9,7 @@ export const prerender = false;
 //
 // 1. Load places + today's events + weather
 // 2. Score & filter a candidate pool (~25 items)
-// 3. Call Claude Haiku to sequence into a 5-6 card day plan
+// 3. Call Claude Sonnet to sequence into a 5-6 card day plan
 // ---------------------------------------------------------------------------
 
 import type { APIRoute } from "astro";
@@ -424,6 +424,16 @@ function buildCandidatePool(
     const isOngoingPastStart = evt.ongoing && evt.date && evt.date <= today;
     if (!isToday && !isOngoingExhibition && !isOngoingPastStart) continue;
 
+    // Weekly-recurring guard: if an ongoing event has a past start date, it's a
+    // weekly-recurring slot (farmers markets, weekly meetups, etc.) — only
+    // include if today is the same day-of-week. Without this, a Sunday farmers
+    // market shows up in a Wednesday plan. (noon UTC avoids TZ edge cases.)
+    if (isOngoingPastStart && !isToday) {
+      const origDow = new Date(`${evt.date}T12:00:00Z`).getUTCDay();
+      const todayDow = new Date(`${today}T12:00:00Z`).getUTCDay();
+      if (origDow !== todayDow) continue;
+    }
+
     // Must be in our city or a nearby city
     const evtCity = evt.city as City;
     if (evtCity !== city) {
@@ -672,7 +682,7 @@ RULES:
 - Don't schedule things in the past
 - Events with listed times are anchors — schedule around them
 - If an event has no listed time, pick a reasonable slot for it
-- NEVER put two items of the same category back-to-back. No two parks in a row, no two restaurants in a row (unless lunch + dinner). Alternate categories: outdoor → food → museum → entertainment → food, etc.
+- NEVER put two items of the same category back-to-back. No two parks in a row, no two food stops in a row. The only food-after-food that's OK is lunch + dinner with at least 3 hours between them — eating a sit-down meal and then immediately going to another restaurant is a nonsense plan ("have lunch, then go eat crab" is the kind of thing you must never ship).
 - Max 2 of any single category in the entire plan. A day with 3 parks is a bad day plan.
 - Geographic clustering — don't zigzag across the region
 - Time blocks should be realistic (meals: 1-1.5hr, museums: 2hr, parks: 1-2hr, events: per schedule)
@@ -900,22 +910,92 @@ Return ONLY the JSON array. No explanation.`;
     }
   }
 
-  // Post-process: fix same-category back-to-back by swapping with nearest non-adjacent different-category card
-  for (let i = 1; i < cards.length; i++) {
-    if (cards[i].category === cards[i - 1].category && !cards[i].locked && !cards[i - 1].locked) {
-      // Find the nearest later card with a different category to swap with
-      let swapIdx = -1;
-      for (let j = i + 1; j < cards.length; j++) {
-        if (cards[j].category !== cards[i - 1].category && !cards[j].locked) {
-          swapIdx = j;
-          break;
+  // Post-process: eliminate same-category back-to-back runs.
+  //
+  // Food+food within 3 hours is the nightmare case ("have lunch, then go eat
+  // crab"). For any same-category back-to-back pair, try to replace the second
+  // card with a different-category candidate from the pool that fits the time
+  // slot. Special rule for food: lunch + dinner is fine (gap >= 3 hours);
+  // anything tighter is a planning failure and must be replaced.
+  {
+    const usedIds = new Set(cards.map((c) => c.id));
+    const poolById = new Map(topPool.map((c) => [c.id, c]));
+
+    for (let i = 1; i < cards.length; i++) {
+      const prev = cards[i - 1];
+      const cur = cards[i];
+      if (cur.locked || prev.locked) continue;
+      if (cur.category !== prev.category) continue;
+
+      // For food, allow if the two meals are at least 3 hours apart
+      // (lunch + dinner), otherwise treat as same-category back-to-back.
+      if (cur.category === "food") {
+        const prevStart = parseHour(prev.timeBlock.split(/\s*-\s*/)[0] || "") ?? -1;
+        const curStart = parseHour(cur.timeBlock.split(/\s*-\s*/)[0] || "") ?? -1;
+        if (prevStart >= 0 && curStart >= 0 && curStart - prevStart >= 3) continue;
+      }
+
+      // Find a replacement candidate: different from prev's category, not
+      // already in the plan, and (if hours known) open during cur's slot.
+      const [startStr, endStr] = cur.timeBlock.split(/\s*-\s*/);
+      const slotStart = parseHour(startStr || "");
+      const slotEnd = parseHour(endStr || "") ?? (slotStart !== null ? slotStart + 1 : null);
+
+      let replacement: Candidate | null = null;
+      for (const cand of topPool) {
+        if (usedIds.has(cand.id)) continue;
+        if (cand.category === prev.category) continue;
+        if (cand.category === "neighborhood") continue;
+        const hoursObj = (cand as any).hours as Record<string, string> | null | undefined;
+        if (hoursObj && slotStart !== null && slotEnd !== null) {
+          if (!fitsInOpenRange(hoursObj, slotStart, slotEnd)) continue;
         }
+        replacement = cand;
+        break;
       }
-      if (swapIdx !== -1) {
-        [cards[i], cards[swapIdx]] = [cards[swapIdx], cards[i]];
+
+      if (!replacement) {
+        // Couldn't find a pool replacement — drop the offending card rather
+        // than ship "lunch then crab". A shorter plan > a dumb plan.
+        console.log(`[plan-day] dropping back-to-back ${cur.category}: ${cur.name} after ${prev.name}`);
+        cards.splice(i, 1);
+        i--;
+        continue;
       }
+
+      console.log(`[plan-day] replacing back-to-back ${cur.category}: ${cur.name} → ${replacement.name}`);
+      usedIds.delete(cur.id);
+      usedIds.add(replacement.id);
+      cards[i] = {
+        id: replacement.id,
+        name: replacement.name,
+        category: replacement.category,
+        city: replacement.city,
+        address: replacement.address,
+        timeBlock: cur.timeBlock,
+        blurb: replacement.description?.slice(0, 160) || `Swing by ${replacement.name} and see what's going on.`,
+        why: replacement.why || "A solid pick to break up the day.",
+        url: replacement.url ?? null,
+        mapsUrl: replacement.mapsUrl ?? null,
+        cost: replacement.cost ?? null,
+        costNote: kids && replacement.kidsCostNote ? replacement.kidsCostNote : (replacement.costNote ?? null),
+        kidsCostNote: replacement.kidsCostNote ?? null,
+        photoRef: (replacement as any).photoRef || null,
+        venue: replacement.venue || null,
+        source: replacement.source,
+        locked: false,
+      };
+      void poolById; // reserved for future lookups
     }
   }
+
+  // Final safety sort — guarantees chronological order regardless of what
+  // post-processing steps above did.
+  cards.sort((a, b) => {
+    const aH = parseHour(a.timeBlock.split(/\s*-\s*/)[0]) ?? 99;
+    const bH = parseHour(b.timeBlock.split(/\s*-\s*/)[0]) ?? 99;
+    return aH - bH;
+  });
 
   return cards;
 }

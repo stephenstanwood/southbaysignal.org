@@ -18,8 +18,13 @@ export const CONFIG = {
   SBS_BASE_URL: "https://southbaytoday.org",
 };
 
-// Use Haiku for now — can upgrade to Sonnet when API key permits
+// Haiku for cheap bulk work: classifier, fact-check, editorial filter, reply triage.
 export const CLAUDE_MODEL = "claude-haiku-4-5-20251001";
+
+// Sonnet for user-facing copy generation (day-plan social posts, tonight picks,
+// wildcards, restaurant opening blurbs). Haiku produced noticeably blander copy
+// on these and they're the thing Stephen is reviewing — worth the extra cost.
+export const CLAUDE_COPY_MODEL = "claude-sonnet-4-6";
 
 // Scoring weights
 export const SCORE_WEIGHTS = {

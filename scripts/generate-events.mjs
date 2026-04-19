@@ -1981,10 +1981,12 @@ function fetchSantaCruzPicks() {
     { title: "Father's Day BBQ & Steam Train", date: "2026-06-21", time: "11:00 AM", venue: "Roaring Camp Railroads", address: "5401 Graham Hill Rd, Felton, CA 95018", url: "https://roaringcamp.com/events", description: "BBQ lunch plus steam train ride up Bear Mountain. A signature Roaring Camp family tradition.", costNote: "From $45" },
     { title: "4th of July Fireworks Train", date: "2026-07-04", time: "6:00 PM", venue: "Roaring Camp Railroads", address: "5401 Graham Hill Rd, Felton, CA 95018", url: "https://roaringcamp.com/events", description: "Evening steam train ride ending with fireworks over the redwoods.", costNote: "From $40" },
 
-    // ── Santa Cruz Shakespeare — Monday Night Revels + 2026 summer season ──
-    // Summer rep runs in the Grove at DeLaveaga Park. Specific plays + show
-    // dates update when SCS publishes the 2026 schedule — swap in titles here.
-    { title: "Monday Night Revels (Santa Cruz Shakespeare)", date: "2026-04-22", time: "7:00 PM", venue: "The Grove at DeLaveaga Park", address: "501 Upper Park Rd, Santa Cruz, CA 95065", url: "https://santacruzshakespeare.org", description: "One-night-only performance from the Monday Night Revels series — tribute bands, comedy, drag, and local artistic collaborations." },
+    // ── Santa Cruz Shakespeare — 2026 summer season ──
+    // Summer rep runs in the Grove at DeLaveaga Park (Jun–Aug). Specific plays
+    // + show dates update when SCS publishes the 2026 schedule — swap titles
+    // in here. Monday Night Revels dates are NOT hardcoded because the SCS
+    // 2026 Revels schedule isn't posted yet; guessing dates leads to bad
+    // downstream plans (e.g. a "Monday Night" event appearing on a Wednesday).
     { title: "Santa Cruz Shakespeare 2026 Summer Season Opens", date: "2026-06-22", time: "7:30 PM", venue: "The Grove at DeLaveaga Park", address: "501 Upper Park Rd, Santa Cruz, CA 95065", url: "https://santacruzshakespeare.org", description: "Opening night of Santa Cruz Shakespeare's outdoor summer rep season at the Grove at DeLaveaga Park. Season runs through late August." },
   ];
   const today = new Date().toISOString().split("T")[0];
