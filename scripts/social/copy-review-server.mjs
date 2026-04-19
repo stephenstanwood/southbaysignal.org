@@ -1196,6 +1196,10 @@ function renderCalendar() {
   }
 
   grid.innerHTML = html;
+  // Autosize all visible copy textareas so full text is visible without scrolling.
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.cal-copy-textarea').forEach((ta) => calAutosize(ta));
+  });
 }
 
 function renderExpandedSlot(dateStr, slotType, slot) {
@@ -1219,9 +1223,9 @@ function renderExpandedSlot(dateStr, slotType, slot) {
           '<button class="btn-save-copy" data-pending="0" style="margin-left:8px;padding:3px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;font-size:11px;cursor:pointer" onclick="calSaveCopy(\\'' + dateStr + '\\', \\'' + slotType + '\\', \\'' + p + '\\'); event.stopPropagation();">Save</button></span>' +
         '</div>' +
         '<textarea id="' + textareaId + '" data-limit="' + limit + '" class="cal-copy-textarea" ' +
-          'style="width:100%;min-height:80px;font-family:inherit;font-size:13px;line-height:1.45;padding:6px 8px;border:1px solid #E5E2DB;border-radius:6px;background:#fafaf7;box-sizing:border-box;resize:vertical" ' +
+          'style="width:100%;min-height:80px;font-family:inherit;font-size:13px;line-height:1.45;padding:6px 8px;border:1px solid #E5E2DB;border-radius:6px;background:#fafaf7;box-sizing:border-box;resize:vertical;field-sizing:content;overflow:hidden" ' +
           'onclick="event.stopPropagation()" ' +
-          'oninput="calUpdateCount(\\'' + textareaId + '\\')">' + escapeHtml(slot.copy[p]) + '</textarea>' +
+          'oninput="calUpdateCount(\\'' + textareaId + '\\'); calAutosize(this)">' + escapeHtml(slot.copy[p]) + '</textarea>' +
       '</div>';
     }
     html += '</div>';
@@ -1318,9 +1322,16 @@ async function calApproveBoth(dateStr, slotType) {
   calAction(dateStr, slotType, 'approve-both');
 }
 
+function calAutosize(ta) {
+  if (!ta) return;
+  ta.style.height = 'auto';
+  ta.style.height = (ta.scrollHeight + 2) + 'px';
+}
+
 function calUpdateCount(textareaId) {
   const ta = document.getElementById(textareaId);
   if (!ta) return;
+  calAutosize(ta);
   const countEl = document.getElementById(textareaId + '-count');
   const limit = parseInt(ta.dataset.limit || '500');
   const len = ta.value.length;
