@@ -1,8 +1,41 @@
 {
-  "generatedAt": "2026-04-17T23:11:35.207Z",
+  "generatedAt": "2026-04-19T12:10:14.717Z",
   "lookbackDays": 45,
   "sourceUrl": "https://data.sccgov.org/resource/skd7-7ix3",
   "opened": [
+    {
+      "id": "opened-SR0875664",
+      "name": "Rambia Sushi & Cafe",
+      "address": "3540 La Rambia Ave., Ste. 106",
+      "cityId": "santa-clara",
+      "cityName": "SANTA CLARA",
+      "date": "2026-04-16",
+      "status": "opened",
+      "sourceId": "SR0875664",
+      "blurb": "Fresh sushi rolls and Japanese comfort food just opened in Santa Clara."
+    },
+    {
+      "id": "opened-SR0884181",
+      "name": "The Goods @Bay Club Santa Clara",
+      "address": "3250 Central Expwy",
+      "cityId": "santa-clara",
+      "cityName": "SANTA CLARA",
+      "date": "2026-04-16",
+      "status": "opened",
+      "sourceId": "SR0884181",
+      "blurb": "New spot at Bay Club serving up great food for the whole crew."
+    },
+    {
+      "id": "opened-SR0884042",
+      "name": "Hashi Market Bakery",
+      "address": "25 N Milpitas Blvd",
+      "cityId": "milpitas",
+      "cityName": "MILPITAS",
+      "date": "2026-04-16",
+      "status": "opened",
+      "sourceId": "SR0884042",
+      "blurb": "Milpitas has a new Japanese bakery with fresh pastries and baked goods."
+    },
     {
       "id": "opened-SR0879599",
       "name": "Joy Cafe T-Go Restaurant",
@@ -12,7 +45,29 @@
       "date": "2026-04-15",
       "status": "opened",
       "sourceId": "SR0879599",
-      "blurb": "Authentic Vietnamese comfort food that'll make you feel right at home."
+      "blurb": "Cozy new cafe in Milpitas perfect for tea, coffee, and casual bites."
+    },
+    {
+      "id": "opened-SR0882015",
+      "name": "Bloom",
+      "address": "225 W Santa Clara St",
+      "cityId": "san-jose",
+      "cityName": "SAN JOSE",
+      "date": "2026-04-15",
+      "status": "opened",
+      "sourceId": "SR0882015",
+      "blurb": "Beautiful new restaurant downtown San Jose worth checking out this week."
+    },
+    {
+      "id": "opened-SR0882706",
+      "name": "Whole Foods Market - Stevens Creek",
+      "address": "20955 Stevens Creek Blvd",
+      "cityId": "cupertino",
+      "cityName": "CUPERTINO",
+      "date": "2026-04-15",
+      "status": "opened",
+      "sourceId": "SR0882706",
+      "blurb": "New Whole Foods location in Cupertino brings organic groceries to Stevens Creek."
     },
     {
       "id": "opened-SR0884051",
@@ -23,7 +78,7 @@
       "date": "2026-04-14",
       "status": "opened",
       "sourceId": "SR0884051",
-      "blurb": "Creamy, customizable bubble tea that hits the spot every single time."
+      "blurb": "Mountain View's newest bubble tea and hot pot spot is now open."
     },
     {
       "id": "opened-SR0883588",
@@ -34,7 +89,7 @@
       "date": "2026-04-10",
       "status": "opened",
       "sourceId": "SR0883588",
-      "blurb": "Korean comfort dishes done right—warming bowls worth the trip to Santa Clara."
+      "blurb": "Korean jok and comfort food just opened on Santa Clara's El Camino."
     },
     {
       "id": "opened-SR0882358",
@@ -45,18 +100,7 @@
       "date": "2026-04-10",
       "status": "opened",
       "sourceId": "SR0882358",
-      "blurb": "Quick, reliable chicken sandwiches perfect for a satisfying weekday lunch break."
-    },
-    {
-      "id": "opened-SR0883358",
-      "name": "Blendid",
-      "address": "1040 Grant Rd.., Ste. 165",
-      "cityId": "mountain-view",
-      "cityName": "MOUNTAIN VIEW",
-      "date": "2026-04-09",
-      "status": "opened",
-      "sourceId": "SR0883358",
-      "blurb": "Fresh smoothies and blended drinks that taste like pure deliciousness."
+      "blurb": "Milpitas got its new Chick-fil-A on Calaveras—chicken sandwiches are calling."
     },
     {
       "id": "opened-SR0881812",
@@ -67,7 +111,18 @@
       "date": "2026-04-09",
       "status": "opened",
       "sourceId": "SR0881812",
-      "blurb": "Silky smooth milk teas and boba drinks you'll crave regularly."
+      "blurb": "Fresh bubble tea destination just opened in San Jose near Lundy Avenue."
+    },
+    {
+      "id": "opened-SR0883358",
+      "name": "Blendid",
+      "address": "1040 Grant Rd.., Ste. 165",
+      "cityId": "mountain-view",
+      "cityName": "MOUNTAIN VIEW",
+      "date": "2026-04-09",
+      "status": "opened",
+      "sourceId": "SR0883358",
+      "blurb": "Mountain View's new smoothie and blended drink spot is ready to refresh."
     },
     {
       "id": "opened-SR0876717",
@@ -78,75 +133,64 @@
       "date": "2026-04-08",
       "status": "opened",
       "sourceId": "SR0876717",
-      "blurb": "Slurp-worthy Japanese ramen with rich broths that warm your soul instantly."
-    },
-    {
-      "id": "opened-SR0883940",
-      "name": "Tojo Coffee Tea House",
-      "address": "980 S Winchester Blvd Ste. 20",
-      "cityId": "san-jose",
-      "cityName": "SAN JOSE",
-      "date": "2026-04-07",
-      "status": "opened",
-      "sourceId": "SR0883940",
-      "blurb": "Cozy spot for excellent coffee and tea with genuine neighborhood charm."
-    },
-    {
-      "id": "opened-SR0882635",
-      "name": "Bikanervala",
-      "address": "1155 Reed Ave., Ste. A",
-      "cityId": "sunnyvale",
-      "cityName": "SUNNYVALE",
-      "date": "2026-04-07",
-      "status": "opened",
-      "sourceId": "SR0882635",
-      "blurb": "Authentic Indian breads, sweets, and savories that transport you straight to India."
-    },
-    {
-      "id": "opened-SR0881234",
-      "name": "Itaiwan Food",
-      "address": "20385 Stevens Creek Blvd",
-      "cityId": "cupertino",
-      "cityName": "CUPERTINO",
-      "date": "2026-04-07",
-      "status": "opened",
-      "sourceId": "SR0881234",
-      "blurb": "Vibrant Taiwanese flavors and classics that deserve a spot in your rotation."
-    },
-    {
-      "id": "opened-SR0882563",
-      "name": "Adamson's French Dip",
-      "address": "969 W Bascom Ave",
-      "cityId": "san-jose",
-      "cityName": "SAN JOSE",
-      "date": "2026-04-07",
-      "status": "opened",
-      "sourceId": "SR0882563",
-      "blurb": "Juicy French dips and classics—old-school sandwich shop done beautifully."
-    },
-    {
-      "id": "opened-SR0883804",
-      "name": "Sbarro Oakridge",
-      "address": "925 Blossom Hill Rd",
-      "cityId": "san-jose",
-      "cityName": "SAN JOSE",
-      "date": "2026-04-03",
-      "status": "opened",
-      "sourceId": "SR0883804",
-      "blurb": "Wood-fired pizzas and Italian favorites that satisfy every craving perfectly."
+      "blurb": "Downtown San Jose got authentic Japanese ramen at this brand new spot."
     }
   ],
   "comingSoon": [
     {
-      "id": "soon-SR0884106",
-      "name": "Gozen Kamicha",
-      "address": "10445 S De Anza Blvd., #103",
+      "id": "soon-SR0883251",
+      "name": "Sana'a Cafe - Mezzanine",
+      "address": "1 E San Fernando St",
+      "cityId": "san-jose",
+      "cityName": "SAN JOSE",
+      "date": "2026-04-16",
+      "status": "coming-soon",
+      "sourceId": "SR0883251",
+      "blurb": null
+    },
+    {
+      "id": "soon-SR0883385",
+      "name": "Sap Center Phase Concession",
+      "address": "525 W Santa Clara St",
+      "cityId": "san-jose",
+      "cityName": "SAN JOSE",
+      "date": "2026-04-16",
+      "status": "coming-soon",
+      "sourceId": "SR0883385",
+      "blurb": "Game day eats just got a serious upgrade near the arena."
+    },
+    {
+      "id": "soon-SR0884332",
+      "name": "Xpp Claypot New Equipment",
+      "address": "20950 Stevens Creek Blvd",
       "cityId": "cupertino",
       "cityName": "CUPERTINO",
-      "date": "2026-04-15",
+      "date": "2026-04-16",
       "status": "coming-soon",
-      "sourceId": "SR0884106",
-      "blurb": "Japanese ramen excellence is finally coming to Cupertino's De Anza Boulevard."
+      "sourceId": "SR0884332",
+      "blurb": "Authentic claypot cooking is heading to Stevens Creek in Cupertino."
+    },
+    {
+      "id": "soon-SR0884604",
+      "name": "Genji Sushi Lgt",
+      "address": "15650 Los Gatos Blvd",
+      "cityId": "los-gatos",
+      "cityName": "LOS GATOS",
+      "date": "2026-04-16",
+      "status": "coming-soon",
+      "sourceId": "SR0884604",
+      "blurb": "Fresh sushi artistry coming soon to Los Gatos Boulevard!"
+    },
+    {
+      "id": "soon-SR0880082",
+      "name": "Supreme Crab Restaurant",
+      "address": "625 Coleman Ave",
+      "cityId": "san-jose",
+      "cityName": "SAN JOSE",
+      "date": "2026-04-16",
+      "status": "coming-soon",
+      "sourceId": "SR0880082",
+      "blurb": "Craving fresh crab? San Jose's newest seafood spot opens soon."
     },
     {
       "id": "soon-SR0880573",
@@ -157,7 +201,7 @@
       "date": "2026-04-15",
       "status": "coming-soon",
       "sourceId": "SR0880573",
-      "blurb": "Another Molly Tea location means more accessible bubble tea for Cupertino."
+      "blurb": "Molly Tea doubles down on Cupertino with Stevens Creek location."
     },
     {
       "id": "soon-SR0884303",
@@ -168,7 +212,18 @@
       "date": "2026-04-15",
       "status": "coming-soon",
       "sourceId": "SR0884303",
-      "blurb": "Creamy boba dreams are about to open right here in Cupertino."
+      "blurb": "Another boba destination hitting Cupertino—we're here for it!"
+    },
+    {
+      "id": "soon-SR0884106",
+      "name": "Gozen Kamicha",
+      "address": "10445 S De Anza Blvd., #103",
+      "cityId": "cupertino",
+      "cityName": "CUPERTINO",
+      "date": "2026-04-15",
+      "status": "coming-soon",
+      "sourceId": "SR0884106",
+      "blurb": "Japanese ramen innovation arriving at De Anza soon, friends."
     },
     {
       "id": "soon-SR0884317",
@@ -182,17 +237,6 @@
       "blurb": null
     },
     {
-      "id": "soon-SR0884270",
-      "name": "Bleni Blend Smoothie Machine",
-      "address": "3250 Central Expwy",
-      "cityId": "santa-clara",
-      "cityName": "SANTA CLARA",
-      "date": "2026-04-13",
-      "status": "coming-soon",
-      "sourceId": "SR0884270",
-      "blurb": "Fresh, blended smoothies are coming to Santa Clara's Central Expressway soon."
-    },
-    {
       "id": "soon-SR0884217",
       "name": "Breakfast Club",
       "address": "545 San Antonio Rd",
@@ -201,7 +245,7 @@
       "date": "2026-04-13",
       "status": "coming-soon",
       "sourceId": "SR0884217",
-      "blurb": "Morning cravings will be satisfied when Breakfast Club opens in Mountain View."
+      "blurb": "Morning vibes and brunch are landing on San Antonio Road!"
     },
     {
       "id": "soon-SR0884293",
@@ -212,7 +256,7 @@
       "date": "2026-04-10",
       "status": "coming-soon",
       "sourceId": "SR0884293",
-      "blurb": "BBQ fans rejoice—Famous Dave's is bringing legendary ribs to San Jose."
+      "blurb": "BBQ legends bringing legendary smoked meats to San Jose soon."
     },
     {
       "id": "soon-SR0879164",
@@ -223,51 +267,7 @@
       "date": "2026-04-10",
       "status": "coming-soon",
       "sourceId": "SR0879164",
-      "blurb": "Seafood lovers are counting down the days until Sea Restaurant opens."
-    },
-    {
-      "id": "soon-SR0884208",
-      "name": "Wyndham Oaks",
-      "address": "1400 Four Oaks Circle",
-      "cityId": "san-jose",
-      "cityName": "SAN JOSE",
-      "date": "2026-04-10",
-      "status": "coming-soon",
-      "sourceId": "SR0884208",
-      "blurb": "San Jose's newest dining destination promises sophisticated comfort and great food."
-    },
-    {
-      "id": "soon-SR0883509",
-      "name": "Tisane Expansion",
-      "address": "2980 E Capitol Expwy., Ste. 40",
-      "cityId": "san-jose",
-      "cityName": "SAN JOSE",
-      "date": "2026-04-10",
-      "status": "coming-soon",
-      "sourceId": "SR0883509",
-      "blurb": "More tea perfection coming to San Jose as Tisane expands east."
-    },
-    {
-      "id": "soon-SR0884214",
-      "name": "Angry Chickz",
-      "address": "3001 Meridian Ave",
-      "cityId": "san-jose",
-      "cityName": "SAN JOSE",
-      "date": "2026-04-08",
-      "status": "coming-soon",
-      "sourceId": "SR0884214",
-      "blurb": "Spicy chicken sandwiches are heading to San Jose very soon now."
-    },
-    {
-      "id": "soon-SR0879467",
-      "name": "Cedar & Sage (Stanford Shopping Center)",
-      "address": "180 El Camino Real #1301",
-      "cityId": "palo-alto",
-      "cityName": "PALO ALTO",
-      "date": "2026-04-06",
-      "status": "coming-soon",
-      "sourceId": "SR0879467",
-      "blurb": "Wine bar from the team behind The Winery — 250-bottle program, live music nightly, heated patio."
+      "blurb": "Seafood excellence is swimming into Milpitas on Calaveras Boulevard."
     }
   ]
 }
