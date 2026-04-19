@@ -465,9 +465,15 @@ async function main() {
       console.log(`    🌙 Tonight: already ${day["tonight-pick"].status}`);
     }
 
-    // ── Wildcard (4:30 PM) ──────────────────────────────────────────────
+    // ── Wildcard (4:30 PM) — SV History only ────────────────────────────
+    // General/restaurant wildcards are paused; only create the slot on
+    // anniversary dates that match a SV tech milestone.
     if (!day["wildcard"] || day["wildcard"].status === "draft") {
-      const wild = pickWildcard(scored, dateStr, recentWildcardTitles);
+      const wildRaw = pickWildcard(scored, dateStr, recentWildcardTitles);
+      const wild = wildRaw && wildRaw.subtype === "sv-history" ? wildRaw : null;
+      if (!wild && wildRaw) {
+        console.log(`    🎲 Wildcard: skipping ${wildRaw.subtype} (paused — SV history only)`);
+      }
       if (wild) {
         if (dryRun) {
           console.log(`    🎲 Wildcard: [${wild.subtype}] ${wild.item.title?.slice(0, 50) || wild.item.name?.slice(0, 50)} [dry run]`);

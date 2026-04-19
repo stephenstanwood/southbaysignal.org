@@ -383,9 +383,25 @@ function buildCandidatePool(
   const today = targetDate || todayStr();
 
   // --- Events happening today or soon, in/near the city ---
+  // Defensive title blocklist — upstream generate-events.mjs should catch these,
+  // but enforce again here so any slip-through never lands in a day plan.
+  const PLAN_TITLE_BLOCKLIST = [
+    /\bpractice\b/i,
+    /\brehearsal\b/i,
+    /\bboard meeting\b/i,
+    /\bstaff meeting\b/i,
+    /\bcommittee meeting\b/i,
+    /\bcommission\b.*\bmeeting\b/i,
+    /\bregular meeting\b/i,
+    /\bspecial meeting\b/i,
+    /\bsubcommittee\b/i,
+    /\bstudy session\b/i,
+    /\bstorytime\b/i,
+  ];
   const events = (eventsData as any).events ?? [];
   for (const evt of events) {
     if (dismissedIds.has(`event:${evt.id}`)) continue;
+    if (evt.title && PLAN_TITLE_BLOCKLIST.some((re) => re.test(evt.title))) continue;
 
     // Only today's events — ongoing exhibitions ok, but skip future single-day events
     const isToday = evt.date === today;

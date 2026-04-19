@@ -165,6 +165,11 @@ const TITLE_BLOCKLIST = [
   /\bboard meeting\b/i,   // internal board meetings
   /\bstaff meeting\b/i,   // internal staff meetings
   /\bcommittee meeting\b/i, // internal committee meetings
+  /\bcommission\b.*\bmeeting\b/i, // city commission meetings (Planning, Arts, Science/Tech, etc.)
+  /\bregular meeting\b/i, // generic "Regular Meeting" (council/commission/board)
+  /\bspecial meeting\b/i, // generic "Special Meeting"
+  /\bsubcommittee\b/i,    // internal subcommittees
+  /\bstudy session\b/i,   // council study sessions
   /\bclosed\s+(for|—|–|-)/i, // closure notices
   /\bcancelled?\b/i,      // cancelled events
   /\bIndustry Insights with Alumni\b/i, // Stanford affiliates only
