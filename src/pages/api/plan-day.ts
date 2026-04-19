@@ -42,6 +42,10 @@ interface PlanRequest {
   currentHour?: number; // 0-23, defaults to now
   planDate?: string;    // YYYY-MM-DD — plan for a specific date (default: today)
   preferences?: UserPreferences;
+  /** Lowercase POI/event names to hard-exclude from this plan. Used by the
+   *  schedule generator to prevent the same venue anchoring multiple days in
+   *  the same week. */
+  blockedNames?: string[];
 }
 
 interface Candidate {
@@ -97,11 +101,15 @@ interface DayCard {
 // santa-cruz is in CITY_MAP for POI/event display but excluded from plan-day
 // (case-by-case picks only, not full coverage with enough POIs to fill a plan)
 const VALID_CITIES = new Set(Object.keys(CITY_MAP).filter((c) => c !== "santa-cruz"));
-const MAX_CARDS = 6;
-const CANDIDATE_POOL_SIZE = 25; // fewer = faster Haiku response
+const MAX_CARDS = 7;
+const CANDIDATE_POOL_SIZE = 35; // expanded region = bigger pool, more variety
 
-// Distance threshold in km for "nearby" places
-const NEARBY_KM = 8; // ~5 miles — reasonable driving distance
+// Distance threshold in km for "nearby" places. The anchor city provides
+// flavor/centering, but stops can span neighboring cities — the whole south
+// bay reads as one region. 20km covers SJ ↔ Sunnyvale, Mountain View, Los
+// Altos, Cupertino — all reasonable driving distance. The prompt still
+// enforces geographic clustering so plans don't zigzag.
+const NEARBY_KM = 20;
 
 // In-memory plan cache: city:kids:hour → { data, ts }
 const planCache = new Map<string, { data: any; ts: number }>();
@@ -377,10 +385,16 @@ function buildCandidatePool(
   dismissedIds: Set<string>,
   lockedIds: Set<string>,
   targetDate?: string,
+  blockedNames?: Set<string>,
 ): Candidate[] {
   const candidates: Candidate[] = [];
   const cityConfig = CITY_MAP[city];
   const today = targetDate || todayStr();
+  const isBlocked = (name: string | null | undefined) => {
+    if (!blockedNames || blockedNames.size === 0) return false;
+    const n = (name || "").trim().toLowerCase();
+    return !!n && blockedNames.has(n);
+  };
 
   // --- Events happening today or soon, in/near the city ---
   // Defensive title blocklist — upstream generate-events.mjs should catch these,
@@ -402,6 +416,7 @@ function buildCandidatePool(
   for (const evt of events) {
     if (dismissedIds.has(`event:${evt.id}`)) continue;
     if (evt.title && PLAN_TITLE_BLOCKLIST.some((re) => re.test(evt.title))) continue;
+    if (isBlocked(evt.title) || isBlocked(evt.venue)) continue;
 
     // Only today's events — ongoing exhibitions ok, but skip future single-day events
     const isToday = evt.date === today;
@@ -469,6 +484,7 @@ function buildCandidatePool(
   const places = (placesData as any).places ?? [];
   for (const p of places) {
     if (dismissedIds.has(`place:${p.id}`)) continue;
+    if (isBlocked(p.name)) continue;
 
     // Skip venue-only places — these need a specific event to be useful
     const primaryType = p.primaryType || "";
@@ -616,7 +632,7 @@ async function sequenceWithClaude(
     .filter((line): line is string => line !== null)
     .join("\n");
 
-  const prompt = `You are the day-planning engine for South Bay Today, a local guide for ${cityName}, California.
+  const prompt = `You are the day-planning engine for South Bay Today, a local guide for the South Bay region of California. Today's plan is anchored around ${cityName}, but the candidate pool pulls from the whole South Bay — stops in adjacent cities (Santa Clara, Campbell, Sunnyvale, Mountain View, Cupertino, Los Gatos, etc.) are totally fine when they cluster geographically.
 
 It's ${today}, ${timeSlot} (${hour}:00). ${weather ? `Weather: ${weather}.` : ""}
 ${kids ? "This plan is for a family WITH KIDS. Prioritize kid-friendly activities." : "This plan is for adults WITHOUT KIDS."}
@@ -626,7 +642,25 @@ ${lockedSection}
 CANDIDATE POOL:
 ${poolText}
 
-TASK: Pick 5-7 items from the pool (including all locked items) and sequence them into a full day plan that fills the remaining hours with no big gaps. Return a JSON array. Every 1-2 hour block from NOW until bedtime should have something. Err on the side of MORE suggestions — a packed day is better than a sparse one. Do NOT suggest things for "tomorrow."
+TASK: Build a FULL-DAY plan with 6-7 stops that fills morning through evening with no big gaps. Return a JSON array. Every 1-2 hour block should have something. A packed day is better than a sparse one — 3-4 stops is NOT a full day plan, reject that instinct.
+
+DO NOT suggest things for "tomorrow."
+
+GEOGRAPHIC CLUSTERING (critical):
+- Anchor the plan around ${cityName}, but feel free to include stops in adjacent South Bay cities if they fit geographically.
+- Don't zigzag across the whole region. If you start in San Jose, don't send someone to Mountain View for lunch and back to SJ for dinner. Pick a cluster and stay in it — one or two neighboring cities max.
+- A tight 15-minute-drive radius is ideal. People can drive a little, but chaos plans that cross 30 miles between stops are broken.
+
+FULL-DAY SHAPE (non-negotiable when hour <= 10):
+1. Breakfast/coffee (start 8:30–10 AM) — cafe, bakery, breakfast spot
+2. Morning activity (10 AM–12 PM) — museum, park, walk, shopping
+3. Lunch (12–2 PM) — sit-down or casual spot
+4. Afternoon activity (2–5 PM) — different category from morning
+5. Happy hour / aperitivo / snack (5–6 PM) — optional but great
+6. Dinner (6–8 PM) — restaurant
+7. Evening activity (8–10 PM) — show, bar, late dessert, event
+
+The plan MUST have at least 6 cards. 3-4 cards is a failure mode — the user sees a sparse plan and churns. If you can't find 6 good picks, pack in a coffee stop, a second activity, or a dessert spot to hit 6.
 
 CRITICAL RULES FOR BALANCE:
 - Items marked "EVENT TODAY" are specific things happening today. Include 1-2 if any exist in the pool, but NEVER make the entire plan just events. A good day is activities + food + maybe an event.
@@ -634,7 +668,7 @@ CRITICAL RULES FOR BALANCE:
 - The ideal plan is: activity → food → activity → food → activity. Alternate between doing things and eating.
 
 RULES:
-- For a full day plan, START AT 9:00 AM with breakfast or coffee — a breakfast burrito spot, a fun cafe, a bakery. Every good day starts with food. If the current time is past 9, start from NOW (${hour}:00) instead.
+- For a full day plan, START AT 9:00 AM (or earlier, never later than 10 AM) with breakfast or coffee — a breakfast burrito spot, a fun cafe, a bakery. Every good day starts with food. If the current time is past 9, start from NOW (${hour}:00) instead.
 - Don't schedule things in the past
 - Events with listed times are anchors — schedule around them
 - If an event has no listed time, pick a reasonable slot for it
@@ -677,7 +711,7 @@ Return ONLY the JSON array. No explanation.`;
 
   const response = await client.messages.create({
     model: CLAUDE_SONNET,
-    max_tokens: 1500,
+    max_tokens: 2500,
     messages: [{ role: "user", content: prompt }],
   });
 
@@ -901,7 +935,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return errJson("Invalid JSON body", 400);
   }
 
-  const { city, kids = false, lockedIds = [], dismissedIds = [], currentHour, planDate, preferences } = body;
+  const { city, kids = false, lockedIds = [], dismissedIds = [], currentHour, planDate, preferences, blockedNames = [] } = body;
+  const blockedSet = new Set(blockedNames.map((n) => (n || "").trim().toLowerCase()).filter(Boolean));
 
   // Validate city
   if (!city || !VALID_CITIES.has(city)) {
@@ -917,10 +952,10 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const dismissedSet = new Set(dismissedIds);
   const lockedSet = new Set(lockedIds);
 
-  // Cache hit for default requests (no locks/dismissals/preferences)
+  // Cache hit for default requests (no locks/dismissals/preferences/blocks)
   const prefsHash = preferences ? Math.round((preferences.outdoorBias || 0) * 10 + (preferences.costBias || 0) * 10) : 0;
-  const cacheKey = `${city}:${kids}:${hour}:${prefsHash}`;
-  if (lockedIds.length === 0 && dismissedIds.length === 0) {
+  const cacheKey = `${city}:${kids}:${hour}:${prefsHash}:${planDate || ""}`;
+  if (lockedIds.length === 0 && dismissedIds.length === 0 && blockedSet.size === 0) {
     const cached = planCache.get(cacheKey);
     if (cached && Date.now() - cached.ts < CACHE_TTL) {
       return okJson(cached.data, { "Cache-Control": "private, no-store" });
@@ -933,7 +968,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const weatherContext: WeatherContext | null = weatherData.forecast?.[0] ?? null;
 
     // 2. Build candidate pool
-    const allCandidates = buildCandidatePool(city, kids, dismissedSet, lockedSet, planDate);
+    const allCandidates = buildCandidatePool(city, kids, dismissedSet, lockedSet, planDate, blockedSet);
 
     // 3. Score candidates
     const scored = scoreCandidates(allCandidates, weatherContext, hour, kids, preferences);
@@ -1033,7 +1068,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     };
 
     // Cache default requests for 5 min
-    if (lockedIds.length === 0 && dismissedIds.length === 0) {
+    if (lockedIds.length === 0 && dismissedIds.length === 0 && blockedSet.size === 0) {
       planCache.set(cacheKey, { data: responseData, ts: Date.now() });
       // Evict old entries
       if (planCache.size > 100) {

@@ -102,7 +102,8 @@ async function enrichCardPhotos(cards) {
 }
 
 /** Call the plan API for a specific city + date. Returns plan data or null. */
-async function fetchPlanFromApi(city, dateStr) {
+async function fetchPlanFromApi(city, dateStr, opts = {}) {
+  const { blockedNames = [] } = opts;
   try {
     const res = await fetch(`${PLAN_API_BASE}/api/plan-day`, {
       method: "POST",
@@ -110,10 +111,11 @@ async function fetchPlanFromApi(city, dateStr) {
       body: JSON.stringify({
         city,
         kids: false,
-        currentHour: 9,
+        currentHour: 7, // start with breakfast — enforced by plan-day prompt
         planDate: dateStr,
+        blockedNames,
       }),
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(45000),
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -123,6 +125,26 @@ async function fetchPlanFromApi(city, dateStr) {
     console.log(`      ⚠️  Plan API failed: ${err.message}`);
     return null;
   }
+}
+
+/** Check whether a plan qualifies — full-day arc + no in-week overlap. */
+function planPassesQuality(plan, usedNames) {
+  if (!plan?.cards?.length) return { ok: false, reason: "empty" };
+  const cards = plan.cards;
+  // Require at least 5 stops
+  if (cards.length < 5) return { ok: false, reason: `only ${cards.length} stops` };
+  // Require a morning stop (starts <= 11 AM)
+  const firstHour = parseHour(cards[0].timeBlock?.split("-")[0]);
+  if (firstHour === null || firstHour > 11) {
+    return { ok: false, reason: `starts too late (${cards[0].timeBlock})` };
+  }
+  // Reject if >= 2 anchor POIs repeat a previously-used name this run
+  const names = cards.map((c) => (c.name || "").trim().toLowerCase()).filter(Boolean);
+  const overlap = names.filter((n) => usedNames.has(n));
+  if (overlap.length >= 2) {
+    return { ok: false, reason: `${overlap.length} repeats: ${overlap.slice(0, 3).join(", ")}` };
+  }
+  return { ok: true };
 }
 
 function loadSharedPlans() {
@@ -202,13 +224,17 @@ function parseHour(timeStr) {
   return null;
 }
 
-/** Find the best evening event for a given date. Must start at 5 PM or later. */
-function pickTonightEvent(candidates, dateStr) {
+/** Find the best evening event for a given date. Must start at 5 PM or later.
+ *  Dedups against recent venues + titles used earlier in the run — once an
+ *  artist or venue shows up once in a week, it can't show again. */
+function pickTonightEvent(candidates, dateStr, recentVenues = new Set(), recentTitles = new Set()) {
   const dateEvents = candidates.filter((c) => c.date === dateStr);
   if (dateEvents.length === 0) return null;
 
   // Boring event patterns — skip these as tonight picks
   const BORING_TONIGHT = /\b(board of|trustees|commission|committee|council meeting|task force|budget hearing|town hall meeting|book club|chess club|book sale)\b/i;
+
+  const norm = (s) => (s || "").trim().toLowerCase();
 
   // Only events starting at 5 PM or later, not boring government/library stuff
   const evening = dateEvents.filter((c) => {
@@ -218,6 +244,9 @@ function pickTonightEvent(candidates, dateStr) {
     const title = (c.title || c.name || "").toLowerCase();
     if (BORING_TONIGHT.test(title)) return false;
     if (c.category === "government") return false;
+    // Dedup within the week — venue OR title already used
+    if (recentVenues.has(norm(c.venue))) return false;
+    if (recentTitles.has(norm(c.title || c.name))) return false;
     return true;
   });
 
@@ -350,6 +379,32 @@ async function main() {
   // Track recent wildcard/tonight titles to avoid repeats across days
   const recentWildcardTitles = new Set();
   const recentTonightTitles = new Set();
+  const recentTonightVenues = new Set();
+  // Track every POI name we've featured in a day plan this run — once used,
+  // a spot can't anchor another plan for the rest of the generated window.
+  const usedDayPlanNames = new Set();
+  // Collect names already used for tonight/wildcard — day plans should also
+  // avoid featuring something the same week is recommending as an event.
+  const seedUsedFromSchedule = () => {
+    for (const d of Object.keys(schedule.days)) {
+      const day = schedule.days[d];
+      const dp = day["day-plan"];
+      if (dp?.plan?.cards) {
+        for (const c of dp.plan.cards) {
+          const n = (c.name || "").trim().toLowerCase();
+          if (n) usedDayPlanNames.add(n);
+        }
+      }
+      const tp = day["tonight-pick"];
+      if (tp?.item) {
+        const t = (tp.item.title || tp.item.name || "").trim().toLowerCase();
+        const v = (tp.item.venue || "").trim().toLowerCase();
+        if (t) recentTonightTitles.add(t);
+        if (v) recentTonightVenues.add(v);
+      }
+    }
+  };
+  seedUsedFromSchedule();
 
   for (let offset = 0; offset < daysAhead; offset++) {
     const dateStr = addDays(today, offset);
@@ -362,7 +417,9 @@ async function main() {
 
     // ── Day Plan (7:15 AM) ──────────────────────────────────────────────
     if (!day["day-plan"] || day["day-plan"].status === "draft") {
-      // Rotate city based on day-of-year
+      // Anchor city rotates by day-of-year for flavor. The plan-day API
+      // pulls candidates from the full South Bay region (20km radius), so
+      // the "city" is more of a center-of-gravity than a hard filter.
       const cityKeys = Object.keys(CITY_NAMES);
       const dayOfYear = Math.floor(
         (new Date(dateStr + "T12:00:00") - new Date(dateStr.split("-")[0] + "-01-01T00:00:00")) / 86400000
@@ -373,32 +430,53 @@ async function main() {
       if (dryRun) {
         console.log(`    📋 Day Plan: ${cityName} [dry run]`);
       } else {
+        let plan = null;
+        let lastReason = null;
+
+        console.log(`    📋 Fetching plan for ${cityName} on ${dateStr}...`);
         try {
-          // Call the plan API for a date-specific plan
-          console.log(`    📋 Fetching plan for ${cityName} on ${dateStr}...`);
-          let plan = await fetchPlanFromApi(citySlug, dateStr);
-
-          // Fallback to default-plans.json if API is down
-          if (!plan) {
-            const fallback = pickPlanForDate(plansData, dateStr);
-            if (fallback) {
-              plan = fallback.plan;
-              console.log(`      ↩ Fell back to default plan`);
-            }
-          }
-
-          // Enrich cards missing venue photos (for in-app display)
-          if (plan?.cards?.length) {
-            await enrichCardPhotos(plan.cards);
-          }
-
-          if (!plan || !plan.cards?.length) {
-            console.log(`    📋 Day Plan: no plan available — skipping`);
+          const blockedNames = Array.from(usedDayPlanNames);
+          const candidate = await fetchPlanFromApi(citySlug, dateStr, { blockedNames });
+          if (!candidate) {
+            lastReason = "api returned nothing";
           } else {
-            // Create a shared plan entry and get a shareable URL
-            const planUrl = createSharedPlanUrl(plan, dateStr);
-            console.log(`    📎 Plan link: ${planUrl}`);
+            const quality = planPassesQuality(candidate, usedDayPlanNames);
+            if (!quality.ok) {
+              console.log(`      ⚠️  Quality warning: ${quality.reason} — accepting anyway`);
+            }
+            plan = candidate;
+          }
+        } catch (err) {
+          lastReason = err.message;
+          console.log(`      ⚠️  ${cityName} plan fetch error: ${err.message}`);
+        }
 
+        // Fall back to default plan only if the API gave us nothing
+        if (!plan) {
+          const fallback = pickPlanForDate(plansData, dateStr);
+          if (fallback) {
+            plan = fallback.plan;
+            console.log(`      ↩ Fell back to default plan after: ${lastReason}`);
+          }
+        }
+
+        if (!plan || !plan.cards?.length) {
+          console.log(`    📋 Day Plan: no acceptable plan — skipping (${lastReason})`);
+        } else {
+          // Enrich cards missing venue photos (for in-app display)
+          await enrichCardPhotos(plan.cards);
+
+          // Register every featured POI as used for the rest of this run
+          for (const c of plan.cards) {
+            const n = (c.name || "").trim().toLowerCase();
+            if (n) usedDayPlanNames.add(n);
+          }
+
+          // Create a shared plan entry and get a shareable URL
+          const planUrl = createSharedPlanUrl(plan, dateStr);
+          console.log(`    📎 Plan link: ${planUrl}`);
+
+          try {
             const copy = await generateDayPlanCopy(plan, dateStr, planUrl);
             day["day-plan"] = {
               status: "draft",
@@ -416,25 +494,35 @@ async function main() {
             };
             generated++;
             console.log(`    📋 Day Plan: ${cityName} (${plan.cards.length} stops) ✅`);
-          }
           } catch (err) {
             console.log(`    📋 Day Plan: ${cityName} ❌ ${err.message}`);
           }
         }
+      }
     } else {
       skipped++;
       console.log(`    📋 Day Plan: already ${day["day-plan"].status}`);
+      // Still register its cards so future days dedup against it
+      const existing = day["day-plan"].plan?.cards || [];
+      for (const c of existing) {
+        const n = (c.name || "").trim().toLowerCase();
+        if (n) usedDayPlanNames.add(n);
+      }
     }
 
     // ── Tonight Pick (11:45 AM) ─────────────────────────────────────────
     if (!day["tonight-pick"] || day["tonight-pick"].status === "draft") {
-      const tonight = pickTonightEvent(scored, dateStr);
+      const tonight = pickTonightEvent(scored, dateStr, recentTonightVenues, recentTonightTitles);
       if (tonight) {
         if (dryRun) {
           console.log(`    🌙 Tonight: ${tonight.title?.slice(0, 50)} [dry run]`);
         } else {
           try {
             const copy = await generateTonightPickCopy(tonight);
+            const tTitle = (tonight.title || tonight.name || "").trim().toLowerCase();
+            const tVenue = (tonight.venue || "").trim().toLowerCase();
+            if (tTitle) recentTonightTitles.add(tTitle);
+            if (tVenue) recentTonightVenues.add(tVenue);
             day["tonight-pick"] = {
               status: "draft",
               slotType: "tonight-pick",
@@ -462,6 +550,11 @@ async function main() {
       }
     } else {
       skipped++;
+      const existing = day["tonight-pick"].item || {};
+      const t = (existing.title || existing.name || "").trim().toLowerCase();
+      const v = (existing.venue || "").trim().toLowerCase();
+      if (t) recentTonightTitles.add(t);
+      if (v) recentTonightVenues.add(v);
       console.log(`    🌙 Tonight: already ${day["tonight-pick"].status}`);
     }
 
