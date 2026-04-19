@@ -680,7 +680,6 @@ const HTML = `<!DOCTYPE html>
 </div>
 
 <div id="calendar-view">
-  <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button onclick="openAllDayPlans()" style="padding:6px 12px;border:1px solid #1a1a1a;background:#fff;border-radius:999px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;cursor:pointer">Open all day plans ↗</button></div>
   <div id="calendar-grid"></div>
 </div>
 
