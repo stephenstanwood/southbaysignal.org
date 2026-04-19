@@ -1151,6 +1151,9 @@ function renderCalendar() {
       // Hide missed slots entirely
       if (missed) continue;
 
+      // Hide empty wildcard slots (paused — only SV history on applicable days)
+      if (!slot && slotType === 'wildcard') continue;
+
       const isEmpty = !slot;
       const isPublished = slot && slot.status === 'published';
       const fullyApproved = slot && slot.copyApprovedAt && slot.imageApprovedAt && !isPublished;
