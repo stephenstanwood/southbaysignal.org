@@ -1258,7 +1258,7 @@ async function fetchCampbellEvents() {
         displayDate: displayDate(start),
         time: timeStr,
         endTime: null,
-        venue: (item.location || "Campbell").replace(/Campbell,?\s*CA\s*\d*/i, "").trim() || "Campbell",
+        venue: cleanVenue(item.location || "") || "Campbell",
         address: "",
         city: "campbell",
         category: inferCategory(item.title, item.description, ""),
@@ -1397,7 +1397,7 @@ async function fetchCivicPlusRssCity(name, url, defaultCity) {
         || parseDate(item.pubDate);
       if (!start || start < now) return null;
       const timeStr = parseCivicPlusEventTime(item.eventTimes);
-      const venueLabel = (item.location || "").replace(new RegExp(`${defaultCity},?\\s*CA\\s*\\d*`, "i"), "").trim();
+      const venueLabel = cleanVenue(item.location || "");
       const titleLower = item.title.toLowerCase();
       return {
         id: h(defaultCity, item.link || item.title, item.eventDates || item.pubDate),
