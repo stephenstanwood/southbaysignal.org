@@ -2,6 +2,27 @@
 
 ---
 
+## 2026-04-19 — Cycle 93: Food Openings Data Quality Pass
+
+### Context
+Saturday April 19, 2026. All pipelines refreshed. No new South Bay funding rounds for Apr 17–19. Focused on `generate-scc-food-openings.mjs` data quality.
+
+### What Was Built
+
+**`scripts/generate-scc-food-openings.mjs` — multiple cleanName() fixes + SOURCE_ID_SKIP expansion**
+
+Fixed several name-cleaning gaps and false positives in the food openings pipeline:
+
+1. **`cleanName()` dash-separator strip**: Added `Lvl`, `Level` suffixes — fixes "Sana'a Cafe - Lvl" → "Sana'a Cafe"
+2. **`cleanName()` no-dash strip**: Added `Lgt`, `Light Equipment`, `New Equipment`, `New Build` — fixes "Genji Sushi Lgt" → "Genji Sushi"
+3. **`cleanName()` Phase strip**: Added `Phase (Concession|Construction|...)` pattern for arena/construction permit names
+4. **SOURCE_ID_SKIP expanded**: Added SR0884332 (XPP Claypot — existing restaurant, equipment-only permit), SR0883385/SR0883386/SR0883387 (three SAP Center arena permits — concession, south concourse bar, press box kitchenette — none are public restaurant openings)
+5. **BLURB_OVERRIDES added**: SR0879467 (The Winery wine bar), SR0883252 (Sana'a Cafe Yemeni coffee), SR0880573 (Molly Tea Rivermark), SR0884317 (Molly Tea Stevens Creek) — fixed incorrect AI-generated blurbs
+
+Result: 24 recently opened, 42 coming soon (cleaned of arena/non-public entries).
+
+---
+
 ## 2026-04-18 — Cycle 92: Strip Bare URLs from Event Descriptions
 
 ### Context

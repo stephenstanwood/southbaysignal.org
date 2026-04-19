@@ -56,11 +56,18 @@ const TENANT_IMPROVEMENT_PATTERN = /tenant improvement|TENANT IMPROV/i;
 // Use when AI-generated blurbs are generic or when we have specific local knowledge
 const BLURB_OVERRIDES = {
   "SR0879467": "Wine bar from the team behind The Winery — 250-bottle program, live music nightly, heated patio.",
+  "SR0883252": "Popular Yemeni coffee chain expanding to downtown San Jose — cardamom-spiced brews and pastries.",
+  "SR0880573": "Molly Tea opening a second South Bay location at Rivermark in Santa Clara.",
+  "SR0884317": "Molly Tea's Stevens Creek location brings more bubble tea options to South Bay.",
 };
 
-// Source IDs to explicitly skip — non-public venues (apartment amenity kitchens, etc.)
+// Source IDs to explicitly skip — non-public venues, existing restaurants with equipment-only permits, etc.
 const SOURCE_ID_SKIP = new Set([
   "SR0881556", // Palo Alto Central — apartment complex amenity kitchen, not a public restaurant
+  "SR0884332", // XPP Claypot — existing restaurant at 20950 Stevens Creek; permit is for new equipment only
+  "SR0883385", // SAP Center Phase Concession — arena concession permit, not a public restaurant opening
+  "SR0883386", // SAP Center South Concourse Bar — arena bar permit, not a public restaurant opening
+  "SR0883387", // SAP Center Press Box Kitchenette — arena internal kitchen, not a public restaurant opening
 ]);
 
 // Map city names to our city IDs
@@ -98,10 +105,13 @@ function cleanName(raw) {
 
   // Strip trailing permit artifact suffixes like "- 3 Comp Sink Install", "- TI", "- Remodel", "- Hood Install"
   s = s.replace(/\s+-\s+\d+\s+Comp\s+Sink.*$/i, "").trim();
-  s = s.replace(/\s+-\s+(TI|Remodel|Hood\s+Install|Plumbing|Electrical|Fire\s+Suppression|Grease\s+Trap|Ansul|Ventilation|Sprinkler|Build[-\s]?Out|Buildout|Renovation|Expansion|Addition|Alteration|Conversion|New\s+Construction|Plan\s+Check|Permit|Install|Upgrade|Oil\s+Tank|Grease\s+Tank|Underground\s+Tank|Tank\s+Install|Tank\s+Removal|Tank\s+Replace)(\s+\d+)?$/i, "").trim();
+  s = s.replace(/\s+-\s+(TI|Remodel|Hood\s+Install|Plumbing|Electrical|Fire\s+Suppression|Grease\s+Trap|Ansul|Ventilation|Sprinkler|Build[-\s]?Out|Buildout|Renovation|Expansion|Addition|Alteration|Conversion|New\s+Construction|Plan\s+Check|Permit|Install|Upgrade|Oil\s+Tank|Grease\s+Tank|Underground\s+Tank|Tank\s+Install|Tank\s+Removal|Tank\s+Replace|Lvl|Level|Lgt|Light|Concession(\s+\w+)?)(\s+\d+)?$/i, "").trim();
 
   // Strip trailing equipment-only descriptors without dash separator (e.g. "Chick Fil A Oil Tank")
-  s = s.replace(/\s+(Oil\s+Tank|Grease\s+Tank|Underground\s+Tank|Tank\s+Install|Tank\s+Removal|Grease\s+Trap\s+Install|Hood\s+Install|Ansul\s+System|Fire\s+Suppression\s+System|Minor\s+Equipment\s+Change|Machine\s+Replacement|Equipment\s+Change|Equipment\s+Replacement|Equipment\s+Install|Equipment\s+Upgrade)\s*$/i, "").trim();
+  s = s.replace(/\s+(Oil\s+Tank|Grease\s+Tank|Underground\s+Tank|Tank\s+Install|Tank\s+Removal|Grease\s+Trap\s+Install|Hood\s+Install|Ansul\s+System|Fire\s+Suppression\s+System|Minor\s+Equipment\s+Change|Machine\s+Replacement|Equipment\s+Change|Equipment\s+Replacement|Equipment\s+Install|Equipment\s+Upgrade|New\s+Equipment|Lgt|Light\s+Equipment|New\s+Build)\s*$/i, "").trim();
+
+  // Strip "Phase [noun]" permit phase descriptors (e.g. "Phase Concession", "Phase 1 Construction")
+  s = s.replace(/\s+Phase\s+(Concession|Construction|Renovation|Buildout|Build\s*Out|Install|Equipment|Remodel|Plumbing)\s*$/i, "").trim();
 
   // Strip " At [Venue City]" location descriptors — e.g. "Blendid At City Sports Mountain View"
   // These appear when a kiosk is located inside another business
