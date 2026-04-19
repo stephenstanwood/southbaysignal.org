@@ -780,6 +780,7 @@ function render() {
     { key: 'bluesky', label: 'Bluesky', icon: '\\ud83e\\udd8b', maxChars: 300 },
     { key: 'facebook', label: 'Facebook', icon: '\\ud83d\\udcd8', maxChars: 500 },
     { key: 'instagram', label: 'Instagram', icon: '\\ud83d\\udcf7', maxChars: 2200 },
+    { key: 'mastodon', label: 'Mastodon', icon: '\\ud83d\\udc18', maxChars: 500 },
   ];
 
   let cardsHtml = '';
@@ -1201,7 +1202,7 @@ function renderExpandedSlot(dateStr, slotType, slot) {
   const CHAR_LIMITS = { x: 280, threads: 500, bluesky: 300, facebook: 500, instagram: 2200, mastodon: 500 };
   if (slot.copy) {
     html += '<div class="cal-expanded-platforms">';
-    const platforms = ['x', 'threads', 'bluesky', 'facebook', 'instagram'];
+    const platforms = ['x', 'threads', 'bluesky', 'facebook', 'instagram', 'mastodon'];
     for (const p of platforms) {
       if (!slot.copy[p]) continue;
       const len = slot.copy[p].length;
