@@ -587,6 +587,18 @@ function truncate(text, len = 200) {
   return text.substring(0, len).replace(/\s+\S*$/, "") + "…";
 }
 
+// Strip bare URLs and common scraper artifacts from description text.
+// CivicPlus iCal and some RSS feeds append calendar URLs and UI text to descriptions.
+function stripBareUrls(text) {
+  return text
+    .replace(/https?:\/\/\S+/g, "")
+    .replace(/\bView on site\b\s*\|?\s*/gi, "")
+    .replace(/\bEmail this event\b\s*/gi, "")
+    .replace(/^\*This event \w+ (organized|hosted) by [^.]+\.?\s*/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /**
  * Clean a raw iCal LOCATION field into a display-friendly venue name.
  * iCal LOCATION blobs often contain "- Venue Name  City CA 95000" or similar.
@@ -876,7 +888,7 @@ async function fetchSjsuEvents() {
         city: "san-jose",
         category: inferCategory(item.title, item.description, ""),
         cost: "free",
-        description: truncate(stripHtml(item.description)),
+        description: truncate(stripBareUrls(stripHtml(item.description))),
         url: item.link,
         source: "SJSU Events",
         kidFriendly: false,
@@ -1315,7 +1327,7 @@ async function fetchCivicPlusIcal(name, url, defaultCity, defaultCost = "free") 
           city,
           category: inferCategory(ev.summary, ev.description || "", ""),
           cost: defaultCost,
-          description: descIsUrl ? "" : descText,
+          description: descIsUrl ? "" : stripBareUrls(descText),
           url: eventUrl,
           source: name,
           kidFriendly: ev.summary.toLowerCase().includes("kid") || ev.summary.toLowerCase().includes("family"),

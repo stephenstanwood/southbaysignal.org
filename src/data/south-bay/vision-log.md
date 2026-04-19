@@ -2,6 +2,42 @@
 
 ---
 
+## 2026-04-18 — Cycle 92: Strip Bare URLs from Event Descriptions
+
+### Context
+Saturday April 18, 2026 (~5:30 PM PDT). Data pipeline already refreshed. Searched for new South Bay funding rounds from Apr 17–18 — no new confirmed rounds found beyond the 48 already in database. Shifted focus to data quality.
+
+### What Was Built
+
+**Events pipeline: `stripBareUrls()` added to `generate-events.mjs`**
+
+CivicPlus iCal feeds (Los Gatos, Saratoga) append `*This event is organized by X. https://...` text to DESCRIPTION fields. SJSU RSS appends `https://... View on site | Email this event` UI chrome. `stripHtml()` strips HTML tags but leaves plain-text URLs intact, so these artifacts were bleeding into displayed descriptions.
+
+Added `stripBareUrls()` function that:
+- Strips bare `http://` / `https://` URLs
+- Removes "View on site | Email this event" boilerplate
+- Removes `*This event {verb} (organized|hosted) by X.` prefixes
+
+Applied to both the SJSU RSS scraper and the `fetchCivicPlusIcal()` helper. Also patched 7 events directly in `upcoming-events.json` to match.
+
+Events fixed:
+1. Football – San Jose State (SJSU): removed trailing URL + "View on site | Email this event"
+2. Spring Wine Walk (Los Gatos): removed "organized by" prefix + URL
+3. Lgpns Big Truck Day (Los Gatos): removed "hosted by" prefix + URL
+4. Mayor's Office Hours @ Saratoga Farmers' Market (×2): removed trailing calendar URL
+5. Girls on the Run 5K: removed "organized by" prefix + URL
+6. Muse Markets: removed "organized by" prefix + URL
+
+### Why This Was the Strongest Move
+Event descriptions with raw URLs and "Email this event" boilerplate look broken to real users. This is visible on every event card — a quality fix with immediate user-facing impact across all CivicPlus and SJSU-sourced events going forward.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 19–21 watch** — Weekend roundup not yet published. Monitor for new South Bay AI/chip/robotics rounds.
+2. **School calendar: teacher workday/PD days** — Check May/June PD days for SJUSD, PAUSD, and other districts.
+3. **Permit Pulse: Mountain View** — All known MV permit portals remain blocked/ECONNREFUSED. Monitor cityofmountainview.gov for changes.
+
+---
+
 ## 2026-04-18 — Cycle 91: Sonire Therapeutics $18M Added to RECENTLY_FUNDED
 
 ### Context
