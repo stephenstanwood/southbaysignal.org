@@ -10,14 +10,25 @@
 ## 📌 Update — 2026-04-19, third session
 
 **Shipped this session:**
-- **Tier 3.1** — Review portal surfaces `runQualityReview` output inline. `GET /api/schedule` runs the review on a deep-cloned schedule (so auto-fix mutations don't leak to disk) and attaches `_review: {autoFixed, flagged}` to the response. The calendar renders red/amber/green banners next to each affected slot, plus a colored dot in the slot-type header so hard-blocks are visible even on collapsed approved slots.
-- **Tier 3.3** — Race guard on `saveScheduleFile()`. Server tracks the `mtimeMs` it last observed; before every write it re-stats the file, and if the disk mtime is newer (external script, surgery, cron), it merges missing days/slots from disk into the in-memory copy before writing. Eliminates the "review-server clobbers surgery script" class of bug.
-- **Tier 4.1** — `canonicalizeCard()` helper at `src/lib/south-bay/canonicalizeCard.mjs`. Every writer to `shared-plans.json` now goes through it: `share-plan.ts`, `copy-review-server.mjs` regen-plan, `generate-posts.mjs`, `generate-schedule.mjs`, `surgery-round2.mjs`, `surgery-2026-04-19.mjs`, `backfill-plan-photos.mjs`. The `/plan/[id]` renderer also runs `canonicalizePlanCards()` at read time as belt-and-suspenders and hardened `esc()` to accept `unknown`. No more 500s on thin cards.
+- **Tier 2.1** — Context-aware padding. New `padWithClaude()` in `plan-day.ts`: when `sequenceWithClaude` returns <6 cards, a second Claude call fills the gaps with proper blurbs. Shows the model the partial plan + remaining pool + specific gap hints ("missing breakfast", "missing dinner"). No more generic "Saratoga pick worth the stop" padding.
+- **Tier 3.1** — Review portal surfaces `runQualityReview` output inline. `GET /api/schedule` runs the review on a deep-cloned schedule and attaches `_review: {autoFixed, flagged}` to the response. The calendar renders red/amber/green banners next to each affected slot, plus a colored dot in the slot-type header so hard-blocks are visible even on collapsed slots.
+- **Tier 3.2** — Per-card Swap button in expanded day-plan view. `GET /api/schedule/:date/day-plan/swap-candidates?cardIndex=N` returns 8 filtered alternatives (category match, within 20km of anchor, open during timeBlock). `POST /api/schedule/:date/day-plan/swap-card` replaces the card, re-canonicalizes + writes shared-plans.json, regenerates copy. Stephen can fix a bad card without pinging Claude.
+- **Tier 3.3** — Race guard on `saveScheduleFile()`. Server tracks observed mtime, re-stats before every write; if disk mtime is newer, merges missing days/slots from disk into the in-memory copy before writing.
+- **Tier 3.4** — Rationale breadcrumb on every card. `DayCard.rationale` is populated in `sequenceWithClaude` (`claude:pool-rank-12/35 | rating=4.6`), force-insert, pad, and swap. `/plan/:id?debug=1` renders each card's rationale as a monospace debug block. `canonicalizeCard` passes rationale through.
+- **Tier 4.1** — `canonicalizeCard()` helper at `src/lib/south-bay/canonicalizeCard.mjs`. Every writer to `shared-plans.json` goes through it (7 writer sites). `/plan/[id]` also runs it at read time. No more 500s on thin cards.
+- **Tier 4.4** — Structured decision log at `src/lib/south-bay/decisionLog.mjs`. `logDecision({script, action, target, reason, meta})` appends one JSON line to `~/Library/Logs/social-pipeline-decisions.log` (override via `DECISION_LOG_PATH` env). Wired into `plan-day` (pick/force-insert/drop/pad) and `post-gen-review` (autofix + flag + hard-block). Silent on failure.
+- **Kepler's policy** — Stephen's call: treat Kepler's Books as in-area (`palo-alto`). Added `BORDER_VENUE_ALLOWLIST` in `content-rules.mjs`; short-circuits out-of-area check in both `post-gen-review` and `audit-events`. Audit now flags only 2 leftover santa-cruz entries.
 
-**Still outstanding:** Tier 2.1 (context-aware padding), Tier 3.2 (quick-swap button), Tier 3.4 (decision rationale + debug route), Tier 4.4 (structured decision logs).
+**Still outstanding:** nothing major. Remaining `santa-cruz` event policy (12 entries in `upcoming-events.json`); Stephen hasn't decided.
 
-**Open policy question (unchanged):** 25 Kepler's Books events at 1010 El Camino Real Menlo Park tagged `palo-alto`.
-**Policy also outstanding (unchanged):** 12 `santa-cruz` + `santa-clara-county` slug events in `upcoming-events.json`.
+**End-of-session state:** all tier 1–4 items are either shipped or explicitly deferred/declined. The pipeline now:
+- Pads thin plans with context-aware Claude calls (not generic placeholders)
+- Surfaces quality-review flags in the portal UI
+- Supports per-card swaps without Claude sessions
+- Guards against review-server race with external scripts
+- Carries rationale breadcrumbs end-to-end (plan-day → schedule → shared-plans → /plan/:id?debug=1)
+- Canonicalizes shared-plan card shape at every write + read
+- Logs structured decisions to disk for offline grep
 
 ---
 
@@ -287,7 +298,7 @@ Checked boxes are now **enforced by code** (normalizer, validator, or test). Unc
 - [x] Zero venue repeats across consecutive days in the batch *(post-gen-review + normalizeName catches "&/and" dedup drift)*
 - [x] Zero DOW mismatches in blurbs ("Sunday afternoon" on a Monday plan) *(regex now handles whitespace; regression test in place)*
 - [x] `weekContext` (anchorCities + category saturation) passed into plan-day so batches diversify
-- [ ] Every day-plan has 6+ stops with breakfast before 10 AM and an evening activity after 6 PM *(prompt mandates it but thin-plan still possible → Tier 2.1 padding call)*
+- [x] Every day-plan has 6+ stops with breakfast before 10 AM and an evening activity after 6 PM *(Tier 2.1 — padWithClaude second-pass when thin)*
 - [ ] Zero bare `https://southbaytoday.org` URLs in copy (all are full `/plan/XXX`)
 - [x] Review portal shows issues visually so Stephen doesn't have to read every copy variant *(Tier 3.1 — banners + flag dots, live on GET /api/schedule)*
 - [x] `/plan/XXX` URLs return 200 for every generated plan *(Tier 4.1 — canonicalize at every write site + read-time re-canonicalize)*

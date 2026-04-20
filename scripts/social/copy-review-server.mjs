@@ -17,6 +17,7 @@ import crypto from "node:crypto";
 import { generateDayPlanCopy } from "./lib/copy-gen.mjs";
 import { runQualityReview } from "./lib/post-gen-review.mjs";
 import { canonicalizePlanCards } from "../../src/lib/south-bay/canonicalizeCard.mjs";
+import { findSwapCandidates } from "./lib/swap-candidates.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = 3456;
@@ -739,6 +740,30 @@ const HTML = `<!DOCTYPE html>
   .cal-slot-flag-dot.flag-hard { background: #b91c1c; }
   .cal-slot-flag-dot.flag-soft { background: #b45309; }
   .cal-slot-flag-dot.autofix { background: #047857; }
+
+  /* Day-plan card list (swap UI) */
+  .cal-plan-cards { padding: 8px 12px; background: #fafaf7; border: 1px solid #e8e5dc; border-radius: 6px; margin-bottom: 10px; }
+  .cal-plan-card { display: flex; align-items: center; gap: 10px; padding: 6px 4px; border-bottom: 1px solid #eee; }
+  .cal-plan-card:last-child { border-bottom: 0; }
+  .cal-plan-card-time { font-family: monospace; font-size: 11px; color: #555; min-width: 88px; flex-shrink: 0; }
+  .cal-plan-card-body { flex: 1; min-width: 0; }
+  .cal-plan-card-name { font-size: 13px; font-weight: 600; color: #222; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cal-plan-card-meta { font-size: 11px; color: #999; text-transform: capitalize; }
+  .cal-plan-card-swap { padding: 3px 10px; font-size: 11px; border-radius: 4px; border: 1px solid #ccd; background: #fff; cursor: pointer; color: #4338ca; }
+  .cal-plan-card-swap:hover { background: #eef2ff; }
+
+  /* Swap picker modal */
+  .swap-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .swap-modal { background: #fff; border-radius: 10px; max-width: 560px; width: 100%; max-height: 80vh; overflow-y: auto; padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+  .swap-modal h3 { margin: 0 0 12px; font-size: 16px; }
+  .swap-modal-sub { font-size: 12px; color: #888; margin-bottom: 12px; }
+  .swap-candidate { display: flex; align-items: center; gap: 10px; padding: 8px; border: 1px solid #eee; border-radius: 6px; margin-bottom: 6px; cursor: pointer; }
+  .swap-candidate:hover { background: #f9fafb; border-color: #c7d2fe; }
+  .swap-candidate-body { flex: 1; min-width: 0; }
+  .swap-candidate-name { font-size: 13px; font-weight: 600; color: #222; }
+  .swap-candidate-meta { font-size: 11px; color: #777; }
+  .swap-candidate-pick { padding: 4px 10px; font-size: 11px; border-radius: 4px; border: 1px solid #c7d2fe; background: #eef2ff; color: #4338ca; }
+  .swap-modal-close { float: right; border: 0; background: transparent; font-size: 20px; color: #888; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -1330,6 +1355,28 @@ function renderCalendar() {
 function renderExpandedSlot(dateStr, slotType, slot) {
   let html = '<div class="cal-expanded">';
 
+  // Day-plan: render the card list with per-card Swap buttons so Stephen can
+  // fix a bad card without pinging Claude.
+  if (slotType === 'day-plan' && slot.plan && Array.isArray(slot.plan.cards) && slot.plan.cards.length) {
+    html += '<div class="cal-plan-cards">';
+    html += '<div style="font-size:11px;font-weight:700;color:#888;margin-bottom:6px;letter-spacing:0.5px">PLAN STOPS (' + slot.plan.cards.length + ')</div>';
+    slot.plan.cards.forEach((card, i) => {
+      const name = (card.name || '').replace(/</g, '&lt;');
+      const tb = (card.timeBlock || '').replace(/</g, '&lt;');
+      const cat = (card.category || '').replace(/</g, '&lt;');
+      const city = (card.city || '').replace(/</g, '&lt;');
+      html += '<div class="cal-plan-card" data-idx="' + i + '">' +
+        '<span class="cal-plan-card-time">' + tb + '</span>' +
+        '<div class="cal-plan-card-body">' +
+          '<div class="cal-plan-card-name">' + name + '</div>' +
+          '<div class="cal-plan-card-meta">' + cat + ' · ' + city + '</div>' +
+        '</div>' +
+        '<button class="cal-plan-card-swap" onclick="openSwapPicker(\\'' + dateStr + '\\', ' + i + '); event.stopPropagation();">Swap</button>' +
+      '</div>';
+    });
+    html += '</div>';
+  }
+
   // Platform copy — full text with char counts
   const CHAR_LIMITS = { x: 280, threads: 500, bluesky: 300, facebook: 500, instagram: 2200, mastodon: 500 };
   if (slot.copy) {
@@ -1402,6 +1449,85 @@ function toggleCalSlot(dateStr, slotType) {
   const key = dateStr + ':' + slotType;
   expandedSlots[key] = !expandedSlots[key];
   renderCalendar();
+}
+
+async function openSwapPicker(dateStr, cardIndex) {
+  // Build + show a modal with 8 swap candidates for the given card.
+  const existing = document.getElementById('swap-modal-backdrop');
+  if (existing) existing.remove();
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'swap-modal-backdrop';
+  backdrop.id = 'swap-modal-backdrop';
+  backdrop.onclick = (e) => { if (e.target === backdrop) backdrop.remove(); };
+
+  const modal = document.createElement('div');
+  modal.className = 'swap-modal';
+  modal.innerHTML = '<button class="swap-modal-close" onclick="document.getElementById(\\'swap-modal-backdrop\\').remove()">×</button>' +
+                    '<h3>Loading candidates…</h3>';
+  backdrop.appendChild(modal);
+  document.body.appendChild(backdrop);
+
+  try {
+    const res = await fetch('/api/schedule/' + dateStr + '/day-plan/swap-candidates?cardIndex=' + cardIndex);
+    const data = await res.json();
+    if (!data.ok) {
+      modal.innerHTML = '<button class="swap-modal-close" onclick="document.getElementById(\\'swap-modal-backdrop\\').remove()">×</button>' +
+                        '<h3>Swap failed</h3><p style="color:#c0392b">' + (data.error || 'unknown error') + '</p>';
+      return;
+    }
+    const c = data.card || {};
+    const cands = data.candidates || [];
+    let html = '<button class="swap-modal-close" onclick="document.getElementById(\\'swap-modal-backdrop\\').remove()">×</button>' +
+               '<h3>Swap ' + (c.name || 'card') + '</h3>' +
+               '<div class="swap-modal-sub">' + (c.timeBlock || '') + ' · ' + (c.category || '') + ' · ' + dateStr + '</div>';
+    if (!cands.length) {
+      html += '<p style="color:#888">No candidates found (may be too restrictive — try a different category or anchor city).</p>';
+    } else {
+      for (const cand of cands) {
+        const meta = (cand.category || '') + ' · ' + (cand.city || '') +
+                     (cand.rating ? ' · ★ ' + cand.rating : '') +
+                     (cand._distKm ? ' · ' + cand._distKm + 'km' : '');
+        html += '<div class="swap-candidate" onclick="pickSwap(\\'' + dateStr + '\\', ' + cardIndex + ', \\'' + (cand.id || '').replace(/\\'/g, "\\\\'") + '\\', this)">' +
+                  '<div class="swap-candidate-body">' +
+                    '<div class="swap-candidate-name">' + (cand.name || '').replace(/</g, '&lt;') + '</div>' +
+                    '<div class="swap-candidate-meta">' + meta.replace(/</g, '&lt;') + '</div>' +
+                  '</div>' +
+                  '<button class="swap-candidate-pick">Pick</button>' +
+                '</div>';
+      }
+    }
+    modal.innerHTML = html;
+  } catch (err) {
+    modal.innerHTML = '<button class="swap-modal-close" onclick="document.getElementById(\\'swap-modal-backdrop\\').remove()">×</button>' +
+                      '<h3>Swap failed</h3><p style="color:#c0392b">' + err.message + '</p>';
+  }
+}
+
+async function pickSwap(dateStr, cardIndex, newCardId, el) {
+  if (el) { el.style.opacity = '0.5'; el.style.pointerEvents = 'none'; }
+  try {
+    const res = await fetch('/api/schedule/' + dateStr + '/day-plan/swap-card', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cardIndex, newCardId }),
+    });
+    const data = await res.json();
+    if (!data.ok) {
+      alert('Swap failed: ' + (data.error || 'unknown'));
+      return;
+    }
+    const backdrop = document.getElementById('swap-modal-backdrop');
+    if (backdrop) backdrop.remove();
+    if (data.schedule) {
+      scheduleData = data.schedule;
+      renderCalendar();
+    } else {
+      await loadCalendar();
+    }
+  } catch (err) {
+    alert('Swap failed: ' + err.message);
+  }
 }
 
 function disableButtons(dateStr, slotType) {
@@ -1926,6 +2052,144 @@ const server = createServer((req, res) => {
         console.error(`  ⚠️  Upload failed: ${e.message}`);
         res.writeHead(500, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ ok: false, error: e.message }));
+      }
+    });
+    return;
+  }
+
+  // GET swap candidates for one card in a day-plan.
+  // /api/schedule/:date/day-plan/swap-candidates?cardIndex=N
+  const swapCandidatesMatch = req.url?.match(/^\/api\/schedule\/(\d{4}-\d{2}-\d{2})\/day-plan\/swap-candidates\?cardIndex=(\d+)$/);
+  if (req.method === "GET" && swapCandidatesMatch) {
+    const [, date, idxStr] = swapCandidatesMatch;
+    const cardIndex = parseInt(idxStr, 10);
+    try {
+      const schedule = loadSchedule();
+      const slot = schedule.days?.[date]?.["day-plan"];
+      if (!slot?.plan?.cards?.[cardIndex]) {
+        res.writeHead(404, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: false, error: "Card not found" }));
+        return;
+      }
+      const card = slot.plan.cards[cardIndex];
+      const candidates = findSwapCandidates({
+        anchorCity: slot.city || card.city || "san-jose",
+        category: card.category,
+        timeBlock: card.timeBlock,
+        planDate: date,
+        excludeIds: slot.plan.cards.map((c) => c.id),
+        limit: 8,
+      });
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ ok: true, candidates, card: { id: card.id, name: card.name, timeBlock: card.timeBlock, category: card.category } }));
+    } catch (err) {
+      console.error(`[swap-candidates] failed: ${err.message}`);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ ok: false, error: err.message }));
+    }
+    return;
+  }
+
+  // POST swap a card in a day-plan.
+  // /api/schedule/:date/day-plan/swap-card  body: { cardIndex, newCardId }
+  const swapCardMatch = req.url?.match(/^\/api\/schedule\/(\d{4}-\d{2}-\d{2})\/day-plan\/swap-card$/);
+  if (req.method === "POST" && swapCardMatch) {
+    const [, date] = swapCardMatch;
+    let body = "";
+    req.on("data", (c) => (body += c));
+    req.on("end", async () => {
+      try {
+        const { cardIndex, newCardId } = JSON.parse(body || "{}");
+        if (typeof cardIndex !== "number" || !newCardId) {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ ok: false, error: "Missing cardIndex or newCardId" }));
+          return;
+        }
+        const schedule = loadSchedule();
+        const slot = schedule.days?.[date]?.["day-plan"];
+        if (!slot?.plan?.cards?.[cardIndex]) {
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ ok: false, error: "Card not found" }));
+          return;
+        }
+        const oldCard = slot.plan.cards[cardIndex];
+
+        // Re-resolve the new candidate by id so we get fresh, canonical fields.
+        const pool = findSwapCandidates({
+          anchorCity: slot.city || oldCard.city || "san-jose",
+          category: oldCard.category,
+          timeBlock: oldCard.timeBlock,
+          planDate: date,
+          excludeIds: slot.plan.cards.filter((_, i) => i !== cardIndex).map((c) => c.id),
+          limit: 20,
+        });
+        const chosen = pool.find((c) => c.id === newCardId);
+        if (!chosen) {
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ ok: false, error: "newCardId not in candidate pool" }));
+          return;
+        }
+
+        // Build the replacement card — inherits timeBlock + blurb/why scaffolding
+        // from the old card, but we'll regenerate copy below so the blurb matches
+        // the new venue.
+        const newCard = {
+          id: chosen.id,
+          name: chosen.name,
+          category: chosen.category,
+          city: chosen.city,
+          address: chosen.address || "",
+          timeBlock: oldCard.timeBlock,
+          blurb: `Stop by ${chosen.name}.`, // placeholder — regen-copy replaces it
+          why: "Swapped in as a fresh pick for this slot.",
+          url: chosen.url || "",
+          mapsUrl: chosen.mapsUrl || null,
+          cost: null,
+          costNote: chosen.costNote || null,
+          photoRef: chosen.photoRef || null,
+          venue: chosen.venue || chosen.name,
+          source: chosen.source,
+          rationale: `swap:manual | was=${oldCard.name}`,
+        };
+
+        slot.plan.cards[cardIndex] = newCard;
+
+        // Re-sync shared-plans.json so /plan/:id reflects the swap immediately.
+        if (slot.planUrl) {
+          try {
+            const planId = slot.planUrl.split("/").pop();
+            let sharedPlans = {};
+            try { sharedPlans = JSON.parse(readFileSync(SHARED_PLANS_FILE, "utf8")); } catch {}
+            if (sharedPlans[planId]) {
+              sharedPlans[planId].cards = canonicalizePlanCards(slot.plan.cards);
+              sharedPlans[planId].updatedAt = new Date().toISOString();
+              writeFileSync(SHARED_PLANS_FILE, JSON.stringify(sharedPlans, null, 2) + "\n");
+            }
+          } catch (e) {
+            console.warn(`[swap-card] shared-plans sync failed: ${e.message}`);
+          }
+        }
+
+        // Regenerate day-plan copy so blurbs reflect the new card.
+        try {
+          const copy = await generateDayPlanCopy(slot.plan, date, slot.planUrl || "");
+          slot.copy = copy;
+          slot.copyApprovedAt = null;
+          slot.imageUrl = null;
+          slot.imageApprovedAt = null;
+          slot.status = "draft";
+        } catch (e) {
+          console.warn(`[swap-card] copy regen failed: ${e.message}`);
+        }
+
+        console.log(`  🔄 Swapped ${date} card[${cardIndex}]: ${oldCard.name} → ${newCard.name}`);
+        saveScheduleFile(schedule);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: true, schedule }));
+      } catch (err) {
+        console.error(`[swap-card] failed: ${err.message}`);
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: false, error: err.message }));
       }
     });
     return;
