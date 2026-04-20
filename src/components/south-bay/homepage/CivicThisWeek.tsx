@@ -11,12 +11,18 @@ import { TODAY_ISO, NEXT_DAYS } from "../../../lib/south-bay/timeHelpers";
 import upcomingMeetingsJson from "../../../data/south-bay/upcoming-meetings.json";
 import aroundTownJson from "../../../data/south-bay/around-town.json";
 
+type AgendaItem = {
+  title: string;
+  sequence: number;
+};
+
 type MeetingEntry = {
   date: string;
   displayDate: string;
   bodyName: string;
   location?: string;
   url?: string;
+  agendaItems?: AgendaItem[];
 };
 
 type AroundTownItem = {
@@ -50,8 +56,8 @@ export default function CivicThisWeek({ onNavigate }: { onNavigate: (tab: Tab) =
       ...m,
     }));
 
-  // Recent civic actions (from around-town, last 3 days)
-  const cutoff3d = new Date(Date.now() - 3 * 86400000).toISOString().split("T")[0];
+  // Recent civic actions (from around-town, last 14 days — meeting minutes typically processed with delay)
+  const cutoff3d = new Date(Date.now() - 14 * 86400000).toISOString().split("T")[0];
   const recentActions = ((aroundTownJson as { items: AroundTownItem[] }).items ?? [])
     .filter((item) => item.date >= cutoff3d)
     .slice(0, 3);
@@ -137,29 +143,47 @@ export default function CivicThisWeek({ onNavigate }: { onNavigate: (tab: Tab) =
             {upcomingMeetings.map((m) => {
               const dayLabel = new Date(m.date + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
               const accent = CITY_ACCENT[m.cityId] ?? "var(--sb-primary)";
+              const SKIP_PATTERNS = /consent calendar|closed session|special meeting|proclamation|recognition|ceremonial|invocation|^roll call|^pledge|public comment|oral communications/i;
+              const keyItems = (m.agendaItems ?? [])
+                .filter((ai) => !SKIP_PATTERNS.test(ai.title))
+                .slice(0, 3);
               return (
-                <div key={m.cityId} style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 0", borderBottom: "1px solid var(--sb-border-light)" }}>
-                  <span style={{
-                    fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 3,
-                    background: accent + "15", color: accent,
-                  }}>
-                    {m.cityName}
-                  </span>
-                  <span style={{ fontSize: 12, color: "var(--sb-ink)", fontWeight: 500, flex: 1 }}>
-                    {m.bodyName}
-                  </span>
-                  <span style={{ fontSize: 11, color: "var(--sb-muted)", fontFamily: "'Space Mono', monospace" }}>
-                    {dayLabel}
-                  </span>
-                  {m.url && (
-                    <a
-                      href={m.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ fontSize: 10, color: accent, textDecoration: "none", fontWeight: 600 }}
-                    >
-                      Agenda
-                    </a>
+                <div key={m.cityId} style={{ padding: "8px 0", borderBottom: "1px solid var(--sb-border-light)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: keyItems.length > 0 ? 6 : 0 }}>
+                    <span style={{
+                      fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 3,
+                      background: accent + "15", color: accent,
+                    }}>
+                      {m.cityName}
+                    </span>
+                    <span style={{ fontSize: 12, color: "var(--sb-ink)", fontWeight: 500, flex: 1 }}>
+                      {m.bodyName}
+                    </span>
+                    <span style={{ fontSize: 11, color: "var(--sb-muted)", fontFamily: "'Space Mono', monospace" }}>
+                      {dayLabel}
+                    </span>
+                    {m.url && (
+                      <a
+                        href={m.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontSize: 10, color: accent, textDecoration: "none", fontWeight: 600 }}
+                      >
+                        Agenda
+                      </a>
+                    )}
+                  </div>
+                  {keyItems.length > 0 && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 2, paddingLeft: 4 }}>
+                      {keyItems.map((ai, idx) => (
+                        <div key={idx} style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
+                          <span style={{ color: accent, fontSize: 10, lineHeight: 1.4 }}>›</span>
+                          <span style={{ fontSize: 11, color: "var(--sb-muted)", lineHeight: 1.4 }}>
+                            {ai.title.replace(/\.$/, "")}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               );
