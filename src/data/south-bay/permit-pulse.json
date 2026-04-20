@@ -1,19 +1,31 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-20T02:56:10.509Z",
+      "generatedAt": "2026-04-20T11:15:23.150Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Apr 12 – Apr 19",
+      "dateRange": "Apr 13 – Apr 20",
       "stats": {
-        "total": 384,
-        "notable": 25,
-        "newUnits": 11,
-        "totalValuation": 160330554
+        "total": 368,
+        "notable": 18,
+        "newUnits": 8,
+        "totalValuation": 157481397
       },
       "permits": [
+        {
+          "id": "2025-137777-RS",
+          "address": "528 N 11th St #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Basement Converted to adu",
+          "valuation": 170781,
+          "units": 1,
+          "issueDate": "2026-04-17",
+          "subtype": "2nd Unit Added"
+        },
         {
           "id": "2023-126747-RS",
           "address": "275 S 23rd St #2",
@@ -24,18 +36,6 @@
           "valuation": 169090,
           "units": 1,
           "issueDate": "2026-04-15",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-141396-RS",
-          "address": "911 Dry Creek Rd #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Epr Preapproved adu Site Specific Livelarge Home 795 Sq Ft Hcd adu",
-          "valuation": 134427,
-          "units": 1,
-          "issueDate": "2026-04-13",
           "subtype": "2nd Unit Added"
         },
         {
@@ -51,6 +51,18 @@
           "subtype": "2nd Unit Added"
         },
         {
+          "id": "2025-128347-RS",
+          "address": "769 N Bayshore West #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached adu",
+          "valuation": 118363,
+          "units": 1,
+          "issueDate": "2026-04-17",
+          "subtype": "2nd Unit Added"
+        },
+        {
           "id": "2025-145841-RS",
           "address": "468 Pocatello Dr #2",
           "category": "residential-new",
@@ -60,18 +72,6 @@
           "valuation": 100101,
           "units": 1,
           "issueDate": "2026-04-15",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-131785-RS",
-          "address": "1767 Curtner Av #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Attached adu",
-          "valuation": 84376,
-          "units": 1,
-          "issueDate": "2026-04-13",
           "subtype": "2nd Unit Added"
         },
         {
@@ -87,18 +87,6 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-143337-RS",
-          "address": "647 N 11th St #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Detached adu",
-          "valuation": 75752,
-          "units": 1,
-          "issueDate": "2026-04-13",
-          "subtype": "2nd Unit Added"
-        },
-        {
           "id": "2025-145960-RS",
           "address": "3068 Flater Dr #2",
           "category": "residential-new",
@@ -111,57 +99,57 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-146910-RS",
-          "address": "4450 Silva Av #2",
+          "id": "2024-102289-RS",
+          "address": "4023 Loganberry Dr #3",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Veev Attached Jadu",
-          "valuation": 59012,
+          "description": "Garage Conversion to Jadu W/ Storage",
+          "valuation": 54109,
           "units": 1,
-          "issueDate": "2026-04-13",
+          "issueDate": "2026-04-16",
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-146918-RS",
-          "address": "5870 Cabral Av #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Veev Attached Jadu",
-          "valuation": 59012,
-          "units": 1,
-          "issueDate": "2026-04-13",
-          "subtype": "2nd Unit Added"
+          "id": "2026-113083-CI",
+          "address": "5853 Rue Ferrari",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Pld Athena ti R&D Facility",
+          "valuation": 150000000,
+          "units": 0,
+          "issueDate": "2026-04-16",
+          "subtype": "R & D Lab"
+        },
+        {
+          "id": "2026-112675-CI",
+          "address": "2855 Stevens Creek Bl",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "(Bemp100%) Cider ti #2411",
+          "valuation": 1100000,
+          "units": 0,
+          "issueDate": "2026-04-15",
+          "subtype": "Retail"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-20T02:56:13.008Z",
+      "generatedAt": "2026-04-20T11:15:25.442Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Apr 12 – Apr 19",
+      "dateRange": "Apr 13 – Apr 20",
       "stats": {
-        "total": 101,
-        "notable": 7,
+        "total": 106,
+        "notable": 8,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
-        {
-          "id": "26BLD-00969",
-          "address": "180 El Camino Real",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "COM: 'J.CREW' Space #CC1240: Temporary construction barricade - 12' Parapet Option w/ Scrim, associated master barricade permit under 26MRP-00003.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-13",
-          "subtype": "Permit Issued"
-        },
         {
           "id": "26BLD-00976",
           "address": "365 College Av",
@@ -172,18 +160,6 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-13",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00983",
-          "address": "824 Bryant St",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "COM emergency sewer replacement to planter strip. (SEPARATE PERMIT FROM PUBLIC WORKS REQUIRED)",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-14",
           "subtype": "Permit Issued"
         },
         {
@@ -211,16 +187,40 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26PLN-00081",
-          "address": "650 San Antonio Rd",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Over the Counter Retroactive tree removal  of (8)  failed trees to be replaced with seven (7) 36-inch box trees and nine (9) 24-inch box trees.",
+          "id": "26BLD-00969",
+          "address": "180 El Camino Real",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "COM: 'J.CREW' Space #CC1240: Temporary construction barricade - 12' Parapet Option w/ Scrim, associated master barricade permit under 26MRP-00003.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-13",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00983",
+          "address": "824 Bryant St",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "COM emergency sewer replacement to planter strip. (SEPARATE PERMIT FROM PUBLIC WORKS REQUIRED)",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-14",
-          "subtype": "Over the Counter Approved"
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-01021",
+          "address": "957 Colonial Ln",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-19",
+          "subtype": "Permit Issued"
         },
         {
           "id": "26PLN-00084",
@@ -229,6 +229,18 @@
           "categoryLabel": "Entitlement / Zoning",
           "workType": "Entitlement",
           "description": "Request for an Over the Counter Architectural Review to remove three Blue Gum trees due to declining health and decay. Nine 15 gallon Island Live Oak trees will be planted onsite as replacement trees. Environmental Assessment: Not a Project. For more information, contact Bryan Boozari at bryan.boozari@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-14",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00081",
+          "address": "650 San Antonio Rd",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Over the Counter Retroactive tree removal  of (8)  failed trees to be replaced with seven (7) 36-inch box trees and nine (9) 24-inch box trees.",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-14",

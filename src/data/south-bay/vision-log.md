@@ -2,6 +2,43 @@
 
 ---
 
+## 2026-04-20 — Cycle 95: Fix Sunnyvale Commission Meeting Bug + Full Data Refresh
+
+### Context
+Easter Monday April 20, 2026. Full data refresh cycle. Discovered a data quality bug: Stoa.works mislabels all Sunnyvale commission meetings as `meetingType: "City Council"`, causing the Sunnyvale digest to show the April 14 Housing and Human Services Commission meeting instead of the April 7 actual City Council meeting. The issue likely affects other cities too.
+
+### What Was Built
+
+**`scripts/generate-digests.mjs` — title-based commission filter**
+
+Added 2-line filter after the `meetingType` check at line 193:
+```js
+const titleLower = (r.title || "").toLowerCase();
+if (titleLower.includes("commission") && !titleLower.includes("council")) continue;
+if (titleLower.includes("board of") && !titleLower.includes("council")) continue;
+```
+This skips records Stoa mislabels as City Council when they are actually commission or board meetings, falling back to the real council meeting.
+
+**Full data refresh:**
+- `digests.json` — 10 cities refreshed; Sunnyvale now shows April 7 (was April 14 commission)
+- `weekend-picks.json` — April 24–26: Morgan Hill Earth Day, Independent Bookstore Day (Kepler's), Nikkei Matsuri
+- `upcoming-meetings.json` — 9 cities, Apr 21–29
+- `tech-briefing.json` — Apr 20–27; Nexthop AI $500M, Rhoda AI $450M, SiFive $400M, Mind Robotics $500M
+- `scc-food-openings.json` — 12 new entries: Jollibee SJ, Whole Foods Stevens Creek, Bloom SJ
+- `restaurant-radar.json` — 9 signals inc. Firehouse No.1 possible closure, Bistro Demiya opening (PA)
+- `permit-pulse.json` — 368 SJ permits, 22 PA permits
+- `around-town.json` — 8 items
+
+### Why This Was the Strongest Move
+Sunnyvale is one of the largest South Bay cities (~155K residents). Showing the Housing Commission meeting as "City Council" was actively misleading — someone checking on city hall business would see the wrong agenda. The fix is data-agnostic (title heuristic) so it protects all future records, not just this week.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 19–21 watch** — No new South Bay rounds found for Apr 17–20. Monitor for Tuesday/Wednesday post-holiday announcements.
+2. **Campbell staleness** — Stoa only has data through Feb 3 for Campbell. Investigate whether Campbell uses a different meeting source (CivicEngage vs Legistar).
+3. **Los Altos gap** — No Stoa data at all for Los Altos. Consider adding a fallback scrape from `losaltos-ca.municodemeetings.com`.
+
+---
+
 ## 2026-04-19 — Cycle 94: Fix UTC Event Cutoff (Events Now Survive Until Midnight Pacific)
 
 ### Context

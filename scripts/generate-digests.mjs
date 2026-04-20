@@ -191,6 +191,10 @@ async function main() {
   for (const r of records) {
     if (r.date > today) continue;
     if (r.meetingType !== "City Council") continue;
+    // Stoa mislabels some commission meetings as "City Council" — skip them
+    const titleLower = (r.title || "").toLowerCase();
+    if (titleLower.includes("commission") && !titleLower.includes("council")) continue;
+    if (titleLower.includes("board of") && !titleLower.includes("council")) continue;
     const existing = byCity[r.city];
     // Prefer records with real content; among those, take most recent
     const rReal = hasRealContent(r);
