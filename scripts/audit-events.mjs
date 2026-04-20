@@ -23,6 +23,7 @@ import {
   VIRTUAL_TITLE_SIGNALS,
   VIRTUAL_ADDRESS_SIGNALS,
   MEETING_TITLE_PATTERNS,
+  BORDER_VENUE_ALLOWLIST,
 } from "./social/lib/content-rules.mjs";
 
 const ROOT = resolve(new URL("..", import.meta.url).pathname);
@@ -101,21 +102,28 @@ function classify(event) {
 
   // Out-of-area event tagged as in-area.
   const locLower = loc.toLowerCase();
-  for (const ooaCity of OUT_OF_AREA_CITIES) {
-    const re = new RegExp(`\\b${ooaCity}\\b`, "i");
-    if (re.test(locLower)) {
-      // Tolerate out-of-area city names that appear inside a recognizable
-      // address for an in-area city (rare, but possible for street names).
-      const tokens = city ? SLUG_TO_CITY_TOKENS[city] : null;
-      const inAreaHit = tokens && tokens.some(t => locLower.includes(t));
-      if (!inAreaHit) {
-        findings.push({
-          severity: "hard",
-          reason: "out-of-area",
-          detail: `location mentions "${ooaCity}" with no in-area city token`,
-        });
+  const titleLower = title.toLowerCase();
+  const venueLower = (event.venue || "").toLowerCase();
+  const borderAllowed = BORDER_VENUE_ALLOWLIST.some((needle) =>
+    titleLower.includes(needle) || venueLower.includes(needle) || locLower.includes(needle)
+  );
+  if (!borderAllowed) {
+    for (const ooaCity of OUT_OF_AREA_CITIES) {
+      const re = new RegExp(`\\b${ooaCity}\\b`, "i");
+      if (re.test(locLower)) {
+        // Tolerate out-of-area city names that appear inside a recognizable
+        // address for an in-area city (rare, but possible for street names).
+        const tokens = city ? SLUG_TO_CITY_TOKENS[city] : null;
+        const inAreaHit = tokens && tokens.some(t => locLower.includes(t));
+        if (!inAreaHit) {
+          findings.push({
+            severity: "hard",
+            reason: "out-of-area",
+            detail: `location mentions "${ooaCity}" with no in-area city token`,
+          });
+        }
+        break;
       }
-      break;
     }
   }
 

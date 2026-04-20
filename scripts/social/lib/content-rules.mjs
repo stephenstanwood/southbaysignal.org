@@ -45,6 +45,29 @@ export const OUT_OF_AREA_CITIES = [
   "half moon bay", "gilroy", "morgan hill", "watsonville",
 ];
 
+// Venues on the border of the coverage area that we allow to ship as in-area
+// even though their address falls in an OUT_OF_AREA_CITIES city. These pass
+// the editorial bar (cultural quality, Stephen-approved) and functionally
+// serve the coverage area.
+// Matched case-insensitively against venue/title/name strings.
+export const BORDER_VENUE_ALLOWLIST = [
+  "kepler's books", // 1010 El Camino Real, Menlo Park → slugged palo-alto
+  "keplers books",  // apostrophe-dropped variant
+];
+
+export function isBorderAllowedVenue(slot) {
+  const fields = [
+    slot?.item?.venue,
+    slot?.item?.title,
+    slot?.item?.name,
+    slot?.venue,
+    slot?.title,
+    slot?.name,
+  ].filter(Boolean).map((s) => String(s).toLowerCase()).join(" | ");
+  if (!fields) return false;
+  return BORDER_VENUE_ALLOWLIST.some((needle) => fields.includes(needle));
+}
+
 // Non-CA US state codes — appearing in an address is always a contamination
 // signal for a place tagged as in-area.
 export const NON_CA_STATES = new Set([

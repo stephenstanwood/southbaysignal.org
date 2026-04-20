@@ -20,6 +20,7 @@ import {
   IN_AREA_CITIES,
   OUT_OF_AREA_CITIES,
   VIRTUAL_SIGNALS,
+  isBorderAllowedVenue,
 } from "./content-rules.mjs";
 
 const DOW_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -223,6 +224,9 @@ function dowMismatch(dateStr, copyText) {
 }
 
 function outOfArea(slot) {
+  // Allowlisted border venues (e.g. Kepler's Books) ship as in-area even
+  // though their address falls in an out-of-area city.
+  if (isBorderAllowedVenue(slot)) return null;
   // Do NOT scan the summary — third-party references leak through (e.g.
   // "...formerly of the San Francisco Chronicle..." is talking about a
   // speaker's old job, not the event location). Stick to fields that
