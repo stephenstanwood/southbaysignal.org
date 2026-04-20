@@ -13,6 +13,7 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { errJson, okJson } from "../../lib/apiHelpers";
 import { rateLimit, rateLimitResponse } from "../../lib/rateLimit";
+import { canonicalizePlanCards } from "../../lib/south-bay/canonicalizeCard.mjs";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -76,23 +77,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return errJson("Missing cards or city", 400);
   }
 
-  const cards: SharedPlanCard[] = body.cards.slice(0, 10).map((c) => ({
-    id: c.id,
-    name: c.name,
-    category: c.category,
-    city: c.city,
-    address: c.address,
-    timeBlock: c.timeBlock,
-    blurb: c.blurb,
-    why: c.why,
-    url: c.url || null,
-    mapsUrl: c.mapsUrl || null,
-    cost: c.cost || null,
-    costNote: c.costNote || null,
-    photoRef: c.photoRef || null,
-    venue: c.venue || null,
-    source: c.source,
-  }));
+  const cards: SharedPlanCard[] = canonicalizePlanCards(body.cards.slice(0, 10)) as SharedPlanCard[];
+  if (!cards.length) return errJson("No renderable cards", 400);
 
   const id = generateId();
   const plan: SharedPlan = {

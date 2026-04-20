@@ -22,6 +22,7 @@ import { SLOT_TYPES, TYPED_SLOTS, todayPT, addDays } from "./lib/slot-scheduler.
 import { CITY_NAMES } from "./lib/constants.mjs";
 import { runQualityReview } from "./lib/post-gen-review.mjs";
 import { normalizeName } from "./lib/normalizeName.mjs";
+import { canonicalizePlanCards } from "../../src/lib/south-bay/canonicalizeCard.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SCHEDULE_FILE = join(__dirname, "..", "..", "src", "data", "south-bay", "social-schedule.json");
@@ -168,13 +169,7 @@ function generatePlanId() {
 function createSharedPlanUrl(plan, dateStr) {
   const planId = generatePlanId();
   const entry = {
-    cards: plan.cards.map((c) => ({
-      id: c.id, name: c.name, category: c.category, city: c.city,
-      address: c.address, timeBlock: c.timeBlock, blurb: c.blurb, why: c.why,
-      url: c.url || null, mapsUrl: c.mapsUrl || null,
-      cost: c.cost || null, costNote: c.costNote || null,
-      photoRef: c.photoRef || null, venue: c.venue || null, source: c.source,
-    })),
+    cards: canonicalizePlanCards(plan.cards),
     city: plan.cards[0]?.city || "san-jose",
     kids: false,
     weather: plan.weather,

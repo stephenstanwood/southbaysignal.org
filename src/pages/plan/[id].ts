@@ -10,11 +10,14 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { getCityName } from "../../lib/south-bay/cities";
 import type { City } from "../../lib/south-bay/types";
+import { canonicalizePlanCards } from "../../lib/south-bay/canonicalizeCard.mjs";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-function esc(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function esc(s: unknown): string {
+  if (s === undefined || s === null) return "";
+  const str = typeof s === "string" ? s : String(s);
+  return str.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 const CATEGORY_EMOJI: Record<string, string> = {
@@ -42,6 +45,10 @@ export const GET: APIRoute = async ({ params, url }) => {
   if (!plan) {
     return Response.redirect(`${origin}/`, 302);
   }
+
+  // Canonicalize every card at read-time as belt-and-suspenders — if any writer
+  // drifts from the canonical shape, we still render (and drop truly broken ones).
+  plan.cards = canonicalizePlanCards(plan.cards);
 
   const cityName = getCityName(plan.city as City);
   const canonical = `${origin}/plan/${id}`;

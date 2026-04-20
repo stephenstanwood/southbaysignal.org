@@ -4,6 +4,7 @@
 // Usage: node scripts/social/backfill-plan-photos.mjs [--dry-run]
 
 import { readFileSync, writeFileSync } from "node:fs";
+import { canonicalizePlanCards } from "../../src/lib/south-bay/canonicalizeCard.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -91,6 +92,11 @@ for (const [planId, plan] of Object.entries(plans)) {
     // Polite delay
     await new Promise((r) => setTimeout(r, 300));
   }
+}
+
+// Canonicalize every plan's cards on write so drift across plans heals over time.
+for (const id of Object.keys(plans)) {
+  if (plans[id]?.cards) plans[id].cards = canonicalizePlanCards(plans[id].cards);
 }
 
 if (!dryRun) {

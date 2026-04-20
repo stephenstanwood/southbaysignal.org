@@ -6,7 +6,7 @@
 // Auto-regenerates next batch when current batch is finished.
 // ---------------------------------------------------------------------------
 
-import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, unlinkSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, unlinkSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
@@ -15,6 +15,8 @@ import { processComment } from "./lib/action-commands.mjs";
 
 import crypto from "node:crypto";
 import { generateDayPlanCopy } from "./lib/copy-gen.mjs";
+import { runQualityReview } from "./lib/post-gen-review.mjs";
+import { canonicalizePlanCards } from "../../src/lib/south-bay/canonicalizeCard.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = 3456;
@@ -88,13 +90,55 @@ function saveReplies(replies) {
   writeFileSync(REPLIES_FILE, JSON.stringify(replies, null, 2) + "\n");
 }
 
+// Race guard: track the mtime we last observed so we can detect concurrent writes
+// from surgery scripts / cron jobs that edit social-schedule.json directly.
+let lastObservedScheduleMtime = 0;
+
 function loadSchedule() {
   if (!existsSync(SCHEDULE_FILE)) return { days: {} };
-  try { return JSON.parse(readFileSync(SCHEDULE_FILE, "utf8")); } catch { return { days: {} }; }
+  try {
+    lastObservedScheduleMtime = statSync(SCHEDULE_FILE).mtimeMs;
+    return JSON.parse(readFileSync(SCHEDULE_FILE, "utf8"));
+  } catch {
+    return { days: {} };
+  }
 }
 
 function saveScheduleFile(schedule) {
+  // If the file changed on disk since we loaded it, some external script (surgery,
+  // cron, manual edit) wrote to it in parallel. Blind-writing our in-memory copy
+  // would clobber their changes — so we reload, merge their days[] in, then write.
+  try {
+    if (existsSync(SCHEDULE_FILE)) {
+      const diskMtime = statSync(SCHEDULE_FILE).mtimeMs;
+      if (lastObservedScheduleMtime && diskMtime > lastObservedScheduleMtime + 10) {
+        console.warn(`[race-guard] schedule.json changed on disk (mtime +${Math.round(diskMtime - lastObservedScheduleMtime)}ms). Merging external edits before write.`);
+        try {
+          const disk = JSON.parse(readFileSync(SCHEDULE_FILE, "utf8"));
+          // Our in-memory slots are authoritative for slots we've touched, but any
+          // days/slots that exist on disk and NOT in memory (e.g. a newly padded
+          // plan from surgery) must be preserved.
+          if (disk && disk.days) {
+            for (const [date, dayOnDisk] of Object.entries(disk.days)) {
+              if (!schedule.days[date]) {
+                schedule.days[date] = dayOnDisk;
+              } else {
+                for (const slotType of Object.keys(dayOnDisk)) {
+                  if (!schedule.days[date][slotType]) schedule.days[date][slotType] = dayOnDisk[slotType];
+                }
+              }
+            }
+          }
+        } catch (e) {
+          console.error(`[race-guard] failed to re-read disk state: ${e.message}. Writing in-memory state anyway.`);
+        }
+      }
+    }
+  } catch (e) {
+    console.error(`[race-guard] stat check failed: ${e.message}`);
+  }
   writeFileSync(SCHEDULE_FILE, JSON.stringify(schedule, null, 2) + "\n");
+  try { lastObservedScheduleMtime = statSync(SCHEDULE_FILE).mtimeMs; } catch {}
 }
 
 // Rewrite all platform copy variants based on edit instructions
@@ -669,6 +713,32 @@ const HTML = `<!DOCTYPE html>
     width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px;
     font-size: 13px; font-family: inherit; resize: vertical; min-height: 40px;
   }
+
+  /* Review flags / auto-fix notes */
+  .cal-review-stack {
+    padding: 6px 20px 0; display: flex; flex-direction: column; gap: 4px;
+  }
+  .cal-review-banner {
+    padding: 6px 10px; border-radius: 6px; font-size: 12px; line-height: 1.35;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .cal-review-banner .tag {
+    font-weight: 700; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.4px; padding: 1px 6px; border-radius: 4px; flex-shrink: 0;
+  }
+  .cal-review-banner.flag-hard { background: #fee2e2; color: #7f1d1d; border: 1px solid #fca5a5; }
+  .cal-review-banner.flag-hard .tag { background: #b91c1c; color: #fff; }
+  .cal-review-banner.flag-soft { background: #fef3c7; color: #78350f; border: 1px solid #fde68a; }
+  .cal-review-banner.flag-soft .tag { background: #b45309; color: #fff; }
+  .cal-review-banner.autofix { background: #d1fae5; color: #064e3b; border: 1px solid #86efac; }
+  .cal-review-banner.autofix .tag { background: #047857; color: #fff; }
+  .cal-slot-flag-dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    margin-left: 4px; vertical-align: middle;
+  }
+  .cal-slot-flag-dot.flag-hard { background: #b91c1c; }
+  .cal-slot-flag-dot.flag-soft { background: #b45309; }
+  .cal-slot-flag-dot.autofix { background: #047857; }
 </style>
 </head>
 <body>
@@ -1102,10 +1172,58 @@ function todayStr() {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
 }
 
+// Build a {date:slot -> {flags:[], autofixes:[]}} lookup from scheduleData._review.
+function buildReviewLookup() {
+  const out = {};
+  const review = scheduleData && scheduleData._review;
+  if (!review) return out;
+  const put = (date, slot, bucket, entry) => {
+    const k = date + ':' + (slot || '_day');
+    if (!out[k]) out[k] = { flags: [], autofixes: [] };
+    out[k][bucket].push(entry);
+  };
+  for (const f of review.flagged || []) put(f.date, f.slotType, 'flags', f);
+  for (const a of review.autoFixed || []) put(a.date, a.slotType, 'autofixes', a);
+  return out;
+}
+
+function renderReviewBanners(lookup, dateStr, slotType) {
+  const e = lookup[dateStr + ':' + slotType];
+  if (!e) return '';
+  let html = '';
+  for (const f of e.flags) {
+    const cls = f.hardBlock ? 'flag-hard' : 'flag-soft';
+    const tag = f.hardBlock ? 'BLOCK' : 'FLAG';
+    html += '<div class="cal-review-banner ' + cls + '">' +
+      '<span class="tag">' + tag + '</span>' +
+      '<span>' + escapeHtml(f.reason || '') + '</span>' +
+    '</div>';
+  }
+  for (const a of e.autofixes) {
+    html += '<div class="cal-review-banner autofix">' +
+      '<span class="tag">AUTO</span>' +
+      '<span>' + escapeHtml(a.kind || '') + ': ' + escapeHtml(a.details || '') + '</span>' +
+    '</div>';
+  }
+  if (!html) return '';
+  return '<div class="cal-review-stack">' + html + '</div>';
+}
+
+function renderFlagDot(lookup, dateStr, slotType) {
+  const e = lookup[dateStr + ':' + slotType];
+  if (!e) return '';
+  const hard = e.flags.some(f => f.hardBlock);
+  if (hard) return '<span class="cal-slot-flag-dot flag-hard" title="Hard block"></span>';
+  if (e.flags.length) return '<span class="cal-slot-flag-dot flag-soft" title="Flagged for review"></span>';
+  if (e.autofixes.length) return '<span class="cal-slot-flag-dot autofix" title="Auto-fix applied"></span>';
+  return '';
+}
+
 function renderCalendar() {
   const grid = document.getElementById('calendar-grid');
   const today = todayStr();
   const days = scheduleData.days || {};
+  const reviewLookup = buildReviewLookup();
 
   // Generate 10 days starting from today
   let html = '';
@@ -1165,7 +1283,7 @@ function renderCalendar() {
 
       html += '<div class="cal-slot' + (isEmpty ? ' empty' : '') + (shouldCollapse ? ' approved-collapsed' : '') + '">';
       html += '<div class="cal-slot-header"' + (shouldCollapse ? ' onclick="toggleCalSlot(\\'' + dateStr + '\\', \\'' + slotType + '\\')" style="cursor:pointer"' : '') + '>';
-      html += '<div class="cal-slot-type ' + slotType + '">' + meta.icon + ' ' + meta.label + '</div>';
+      html += '<div class="cal-slot-type ' + slotType + '">' + meta.icon + ' ' + meta.label + renderFlagDot(reviewLookup, dateStr, slotType) + '</div>';
 
       if (slot) {
         // Title + badges inline
@@ -1186,6 +1304,9 @@ function renderCalendar() {
       }
 
       html += '</div>'; // close cal-slot-header
+
+      // Review banners — always visible (even on collapsed slots) so blocks don't hide.
+      html += renderReviewBanners(reviewLookup, dateStr, slotType);
 
       // Collapse approved/published slots — click to expand
       if (slot && (!shouldCollapse || expandedSlots[dateStr + ':' + slotType])) {
@@ -1706,8 +1827,17 @@ const server = createServer((req, res) => {
 
   if (req.method === "GET" && req.url === "/api/schedule") {
     const schedule = loadSchedule();
+    // Deep-clone before review so auto-fix mutations don't leak to disk state.
+    // GET is surface-only — flags/auto-fix notes render in the UI.
+    let review = { autoFixed: [], flagged: [] };
+    try {
+      const cloned = JSON.parse(JSON.stringify(schedule));
+      review = runQualityReview(cloned, { resetFlaggedToDraft: false });
+    } catch (err) {
+      console.error("[review] failed:", err.message);
+    }
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(schedule));
+    res.end(JSON.stringify({ ...schedule, _review: review }));
     return;
   }
 
@@ -2025,13 +2155,7 @@ const server = createServer((req, res) => {
             // Save to shared-plans.json
             const planId = Array.from(crypto.getRandomValues(new Uint8Array(4)), b => b.toString(16).padStart(2, "0")).join("");
             const entry = {
-              cards: planData.cards.map(c => ({
-                id: c.id, name: c.name, category: c.category, city: c.city,
-                address: c.address, timeBlock: c.timeBlock, blurb: c.blurb, why: c.why,
-                url: c.url || null, mapsUrl: c.mapsUrl || null,
-                cost: c.cost || null, costNote: c.costNote || null,
-                photoRef: c.photoRef || null, venue: c.venue || null, source: c.source,
-              })),
+              cards: canonicalizePlanCards(planData.cards),
               city, kids: false, weather: planData.weather,
               planDate: date, createdAt: new Date().toISOString(),
             };

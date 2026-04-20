@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { runQualityReview } from './lib/post-gen-review.mjs';
 import { generateDayPlanCopy, generateTonightPickCopy } from './lib/copy-gen.mjs';
+import { canonicalizePlanCards } from '../../src/lib/south-bay/canonicalizeCard.mjs';
 
 const ROOT = process.cwd();
 const SCHEDULE = path.join(ROOT, 'src/data/south-bay/social-schedule.json');
@@ -143,7 +144,7 @@ for (const date of dates) {
     // Also update shared-plans.json if the plan is shared
     const planId = dp.planId || dp.plan?.planId;
     if (planId && shared[planId]) {
-      shared[planId].cards = dp.plan.cards;
+      shared[planId].cards = canonicalizePlanCards(dp.plan.cards);
       shared[planId].updatedAt = new Date().toISOString();
     }
   } else {

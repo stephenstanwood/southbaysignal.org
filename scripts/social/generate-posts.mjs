@@ -26,6 +26,7 @@ import { generateSingleItemCopy } from "./lib/copy-gen.mjs";
 import { generateAndSaveCard } from "./lib/card-gen.mjs";
 import { CONFIG } from "./lib/constants.mjs";
 import { logStep, logScore, logSuccess, logSkip, logError, logItem } from "./lib/logger.mjs";
+import { canonicalizePlanCards } from "../../src/lib/south-bay/canonicalizeCard.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -139,13 +140,7 @@ async function generatePlanLinks(candidates) {
       //    so parallel generate-posts runs can't clobber each other.
       const planId = generatePlanId();
       const plan = {
-        cards: planData.cards.map((c) => ({
-          id: c.id, name: c.name, category: c.category, city: c.city,
-          address: c.address, timeBlock: c.timeBlock, blurb: c.blurb, why: c.why,
-          url: c.url || null, mapsUrl: c.mapsUrl || null,
-          cost: c.cost || null, costNote: c.costNote || null,
-          photoRef: c.photoRef || null, venue: c.venue || null, source: c.source,
-        })),
+        cards: canonicalizePlanCards(planData.cards),
         city: item.city,
         kids: false,
         weather: planData.weather,

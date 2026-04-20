@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { generateDayPlanCopy } from './lib/copy-gen.mjs';
+import { canonicalizePlanCards } from '../../src/lib/south-bay/canonicalizeCard.mjs';
 
 const ROOT = process.cwd();
 const SCHEDULE = path.join(ROOT, 'src/data/south-bay/social-schedule.json');
@@ -225,7 +226,7 @@ for (const date of datesTouched) {
   if (!dp?.planUrl) continue;
   const planId = dp.planUrl.split('/').pop();
   if (shared[planId]) {
-    shared[planId].cards = dp.plan.cards;
+    shared[planId].cards = canonicalizePlanCards(dp.plan.cards);
     shared[planId].updatedAt = new Date().toISOString();
     console.log(`  synced ${planId} (${date})`);
   }

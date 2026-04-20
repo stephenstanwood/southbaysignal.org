@@ -1,9 +1,23 @@
 # Handoff: Social Pipeline Hardening
 
 **Written:** 2026-04-19, end-of-day
-**Updated:** 2026-04-19 (second pass — tier 1, 1.3, 2.2, 2.3, 4.2, 4.3 now shipped)
+**Updated:** 2026-04-19 (third pass — tier 3.1, 3.3, 4.1 now shipped)
 **For:** the next Claude session digging into `southbaytoday.org`'s social post generation pipeline
 **Goal:** make this system robust enough that Stephen spends ~10 minutes reviewing, not ~8 hours fighting.
+
+---
+
+## 📌 Update — 2026-04-19, third session
+
+**Shipped this session:**
+- **Tier 3.1** — Review portal surfaces `runQualityReview` output inline. `GET /api/schedule` runs the review on a deep-cloned schedule (so auto-fix mutations don't leak to disk) and attaches `_review: {autoFixed, flagged}` to the response. The calendar renders red/amber/green banners next to each affected slot, plus a colored dot in the slot-type header so hard-blocks are visible even on collapsed approved slots.
+- **Tier 3.3** — Race guard on `saveScheduleFile()`. Server tracks the `mtimeMs` it last observed; before every write it re-stats the file, and if the disk mtime is newer (external script, surgery, cron), it merges missing days/slots from disk into the in-memory copy before writing. Eliminates the "review-server clobbers surgery script" class of bug.
+- **Tier 4.1** — `canonicalizeCard()` helper at `src/lib/south-bay/canonicalizeCard.mjs`. Every writer to `shared-plans.json` now goes through it: `share-plan.ts`, `copy-review-server.mjs` regen-plan, `generate-posts.mjs`, `generate-schedule.mjs`, `surgery-round2.mjs`, `surgery-2026-04-19.mjs`, `backfill-plan-photos.mjs`. The `/plan/[id]` renderer also runs `canonicalizePlanCards()` at read time as belt-and-suspenders and hardened `esc()` to accept `unknown`. No more 500s on thin cards.
+
+**Still outstanding:** Tier 2.1 (context-aware padding), Tier 3.2 (quick-swap button), Tier 3.4 (decision rationale + debug route), Tier 4.4 (structured decision logs).
+
+**Open policy question (unchanged):** 25 Kepler's Books events at 1010 El Camino Real Menlo Park tagged `palo-alto`.
+**Policy also outstanding (unchanged):** 12 `santa-cruz` + `santa-clara-county` slug events in `upcoming-events.json`.
 
 ---
 
@@ -275,8 +289,8 @@ Checked boxes are now **enforced by code** (normalizer, validator, or test). Unc
 - [x] `weekContext` (anchorCities + category saturation) passed into plan-day so batches diversify
 - [ ] Every day-plan has 6+ stops with breakfast before 10 AM and an evening activity after 6 PM *(prompt mandates it but thin-plan still possible → Tier 2.1 padding call)*
 - [ ] Zero bare `https://southbaytoday.org` URLs in copy (all are full `/plan/XXX`)
-- [ ] Review portal shows issues visually so Stephen doesn't have to read every copy variant *(Tier 3.1)*
-- [ ] `/plan/XXX` URLs return 200 for every generated plan *(Tier 4.1 canonicalize-at-write-time)*
+- [x] Review portal shows issues visually so Stephen doesn't have to read every copy variant *(Tier 3.1 — banners + flag dots, live on GET /api/schedule)*
+- [x] `/plan/XXX` URLs return 200 for every generated plan *(Tier 4.1 — canonicalize at every write site + read-time re-canonicalize)*
 
 Each unchecked box is a concrete thing to work on.
 
