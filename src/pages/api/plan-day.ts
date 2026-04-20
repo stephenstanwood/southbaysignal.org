@@ -77,6 +77,7 @@ interface Candidate {
   hours?: Record<string, string> | null;
   venue?: string | null;
   photoRef?: string | null;
+  displayType?: string | null;
   source: "event" | "place";
   eventDate?: string;
   eventTime?: string | null;
@@ -501,8 +502,9 @@ function buildCandidatePool(
   // Venue-only types: only useful if there's an actual event today
   const VENUE_ONLY_TYPES = new Set([
     "performing_arts_theater", "concert_hall", "amphitheatre",
-    "event_venue", "convention_center", "stadium", "arena",
-    "live_music_venue", "comedy_club",
+    "auditorium", "opera_house", "philharmonic_hall",
+    "event_venue", "banquet_hall", "convention_center",
+    "stadium", "arena", "live_music_venue", "comedy_club",
   ]);
 
   // Places that should never appear in day plans
@@ -510,8 +512,11 @@ function buildCandidatePool(
     "preschool", "child_care_agency", "day_care_center",
     "school", "primary_school", "secondary_school", "middle_school",
     "hospital", "doctor", "dentist", "pharmacy", "veterinary_care",
+    "dental_clinic", "medical_lab", "urgent_care_clinic",
+    "chiropractor", "physiotherapist", "psychologist",
     "insurance_agency", "lawyer", "accounting", "real_estate_agency",
     "car_dealer", "car_repair", "car_wash", "gas_station",
+    "electric_vehicle_charging_station", "auto_parts_store",
     "funeral_home", "cemetery", "storage", "self_storage",
     "post_office", "bank", "atm", "laundry", "dry_cleaner",
     "locksmith", "plumber", "electrician", "roofing_contractor",
@@ -563,6 +568,7 @@ function buildCandidatePool(
       mapsUrl: p.mapsUrl,
       photoRef: p.photoRef || null,
       hours: p.hours,
+      displayType: p.displayType || null,
       source: "place",
       score: 0,
       ...(p.curated ? { curated: true, bestSlots: p.bestSlots } : {}),
@@ -646,6 +652,7 @@ async function sequenceWithClaude(
     .map((c, i) => {
       const parts = [`${i + 1}. [${c.id}] ${c.name}`];
       parts.push(`category: ${c.category}`);
+      if (c.displayType) parts.push(`type: ${c.displayType}`);
       parts.push(`city: ${c.city}`);
       if (c.address) parts.push(`address: ${c.address}`);
       if (c.source === "event" && !c.ongoing) parts.push(`EVENT TODAY`);
