@@ -57,8 +57,30 @@ const TENANT_IMPROVEMENT_PATTERN = /tenant improvement|TENANT IMPROV/i;
 const BLURB_OVERRIDES = {
   "SR0879467": "Wine bar from the team behind The Winery — 250-bottle program, live music nightly, heated patio.",
   "SR0883252": "Popular Yemeni coffee chain expanding to downtown San Jose — cardamom-spiced brews and pastries.",
-  "SR0880573": "Molly Tea opening a second South Bay location at Rivermark in Santa Clara.",
-  "SR0884317": "Molly Tea's Stevens Creek location brings more bubble tea options to South Bay.",
+  "SR0883251": "Yemeni coffee and pastries in downtown San Jose — mezzanine-level location at 1 E San Fernando St.",
+  "SR0880573": "Molly Tea opening a second South Bay location at Rivermark Plaza in Santa Clara.",
+  "SR0884317": "Molly Tea's Stevens Creek location — bubble tea and snacks in Cupertino's Stevens Creek corridor.",
+  // April 2026 openings
+  "SR0877677": "Filipino fast-food chain known for Chickenjoy fried chicken and Jolly Spaghetti — new South San Jose location.",
+  "SR0882706": "New Cupertino Whole Foods at 20955 Stevens Creek Blvd — long-awaited grocery anchor for the Stevens Creek corridor.",
+  "SR0882358": "New Milpitas location for the popular chicken sandwich chain at 755 E Calaveras Blvd.",
+  "SR0882635": "North Indian sweets, snacks, and vegetarian food from the century-old New Delhi-based chain — first Sunnyvale location.",
+  "SR0883358": "Robotic smoothie kiosk at Grant Rd and El Camino Real in Mountain View.",
+  "SR0883588": "Korean braised pork knuckle specialist at El Camino Real in Santa Clara.",
+  "SR0876718": "Boba tea and Japanese-inspired drinks near South First Street in downtown San Jose.",
+  "SR0883940": "Coffee and tea shop at S Winchester Blvd in San Jose's Cambrian neighborhood.",
+  "SR0882015": "New restaurant at 225 W Santa Clara St in downtown San Jose.",
+  "SR0879599": "Taiwanese tea and light food in Milpitas.",
+  "SR0884051": "Boba tea shop at San Antonio Rd in Mountain View.",
+  // Coming soon — April 2026
+  "SR0884604": "Sushi restaurant opening at 15650 Los Gatos Blvd in Los Gatos.",
+  "SR0880082": "Seafood restaurant focusing on crab dishes — coming to 625 Coleman Ave in San Jose.",
+  "SR0884303": "Boba tea shop opening at De Anza Blvd in Cupertino's shopping district.",
+  "SR0884106": "Japanese restaurant opening at 10445 S De Anza Blvd in Cupertino.",
+  "SR0884217": "Breakfast and brunch spot coming to 545 San Antonio Rd in Mountain View.",
+  "SR0879164": "Seafood restaurant opening on E Calaveras Blvd in Milpitas.",
+  "SR0884293": "Classic American BBQ chain with smoked meats — returning to San Jose at 61 Curtner Ave.",
+  "SR0883509": "Tisane tea house opening a new location at 2980 E Capitol Expwy in San Jose.",
 };
 
 // Source IDs to explicitly skip — non-public venues, existing restaurants with equipment-only permits, etc.
@@ -225,9 +247,14 @@ async function generateBlurbs(items) {
   const client = new Anthropic({ apiKey });
   const list = items.map((i) => `- ${i.name} at ${i.address ?? "unknown address"}, ${i.cityName}`).join("\n");
 
-  const prompt = `You are writing micro-blurbs for a local news site about newly opened restaurants in Silicon Valley's South Bay.
+  const prompt = `You are a local journalist writing one-line descriptions for a South Bay residents' news site.
 
-For each restaurant below, write a single sentence (max 12 words) that sounds like a friendly neighborhood tip — something a local food lover might say to a friend. Don't start with the restaurant name. Be specific if the name hints at a cuisine. Keep it warm and welcoming.
+For each newly opened restaurant below, write one concise factual sentence (max 12 words) describing what kind of food or experience it offers. Focus on cuisine type, chain background, or what makes it distinctive. No exclamation points, no hype. Don't start with the restaurant name.
+
+Examples of good blurbs:
+- "Filipino chain known for Chickenjoy fried chicken, now in South San Jose."
+- "Korean braised pork knuckle specialist on El Camino Real."
+- "Robotic smoothie kiosk at Grant Rd and El Camino Real."
 
 Restaurants:
 ${list}
@@ -267,9 +294,14 @@ async function generateComingSoonBlurbs(items) {
   const client = new Anthropic({ apiKey });
   const list = items.map((i) => `- ${i.name} at ${i.address ?? "unknown address"}, ${i.cityName}`).join("\n");
 
-  const prompt = `You are writing micro-blurbs for a local news site about restaurants coming soon to Silicon Valley's South Bay.
+  const prompt = `You are a local journalist writing one-line descriptions for a South Bay residents' news site.
 
-For each restaurant below, write a single sentence (max 12 words) that builds anticipation — like a local food lover who can't wait for it to open. Don't start with the restaurant name. Be specific if the name hints at a cuisine. Keep it enthusiastic and neighborly.
+For each "coming soon" restaurant below, write one concise factual sentence (max 12 words) describing what kind of food or experience it will offer. Focus on cuisine type, chain background, or location context. No exclamation points, no hype. Don't start with the restaurant name.
+
+Examples of good blurbs:
+- "BBQ chain with smoked ribs and wings, opening on Curtner Ave."
+- "Breakfast and brunch spot coming to San Antonio Rd in Mountain View."
+- "Sushi restaurant opening on Los Gatos Blvd."
 
 Restaurants:
 ${list}
