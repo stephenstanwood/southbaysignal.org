@@ -2,6 +2,33 @@
 
 ---
 
+## 2026-04-21 — Cycle 96: Earth Day Callout — FUHSD Climate Showcase Added
+
+### Context
+Tuesday April 21, 2026. Earth Day tomorrow. All data pipelines were fresh (run 4–6 AM today). Primary focus: strengthen the Earth Day callout with a high-quality local event that wasn't in the list.
+
+### What Was Built
+
+**`src/components/south-bay/views/OverviewView.tsx` — new EARTH_DAY_EVENTS entry**
+
+Added `ed-fuhsd-chm`: FUHSD Earth Day Celebration — Student Climate Showcase at the Computer History Museum, Mountain View, April 22 from 4:00–8:00 PM. Free and open to the public. Hosted by the FUHSD Climate Collective, featuring Congressman Ro Khanna, 70+ student projects, 400+ presenters from Fremont Union high schools (Cupertino, Homestead, Fremont, Lynbrook, Monta Vista).
+
+The event was inserted between the SJSU board games event (10:30 AM Apr 22) and the Morgan Hill festival (Apr 25), maintaining chronological order within the Apr 22 Earth Day slot.
+
+### Why This Was the Strongest Move
+The Computer History Museum is a recognizable South Bay landmark. An event with a sitting Congressman + 400+ student presenters is exactly the kind of civic/community content that makes the Earth Day callout feel real and local — not just generic greenery. Mountain View is well-represented in site traffic, and FUHSD covers ~10K students across 5 high schools that many readers have kids at.
+
+### Also Investigated
+- **New funding rounds (Apr 17–21)**: No confirmed new South Bay rounds found. Upscale AI (Santa Clara) reportedly "in talks" for ~$200M at $2B valuation (Bloomberg Apr 16) but not closed — not added.
+- **All core pipeline data**: Fresh as of this morning. No regeneration needed.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 21–28 watch** — Monitor for Upscale AI confirmation + any new rounds from post-Earth Day news cycle.
+2. **Campbell staleness** — Stoa only has data through Feb 3. Investigate alternative meeting source.
+3. **Los Altos gap** — No Stoa data at all. Consider fallback scrape from `losaltos-ca.municodemeetings.com`.
+
+---
+
 ## 2026-04-20 — Cycle 95: Fix Sunnyvale Commission Meeting Bug + Full Data Refresh
 
 ### Context
