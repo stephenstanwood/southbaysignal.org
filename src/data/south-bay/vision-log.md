@@ -2,6 +2,35 @@
 
 ---
 
+## 2026-04-21 — Cycle 98: Food Blurbs, School Calendar, Around Town
+
+### Context
+Tuesday April 21, 2026. San José city council meets today. Focus: fix missing food opening blurbs, refresh around-town items, add school calendar events.
+
+### What Was Built
+
+**`scripts/generate-scc-food-openings.mjs` — 3 new BLURB_OVERRIDES**
+- `SR0878726`: T&T Supermarket at Westgate Mall (major Canadian Asian grocery, fresh produce/seafood/imported goods)
+- `SR0884181`: Health-focused cafe inside Bay Club Santa Clara
+- `SR0876717`: Sakura Ramen at 180 S. Market St, downtown San Jose
+
+**`src/data/south-bay/scc-food-openings.json`** — regenerated with new blurbs applied
+
+**`src/data/south-bay/around-town.json`** — 8 fresh items: SJ affordability housing (Apr 21 council), MV capital improvement, Sunnyvale tenant protections, PA historic expansion, PA San Antonio mixed-use, MV zoning postponed, Los Gatos QLM
+
+**`src/data/south-bay/digests.json`** — all 10 cities refreshed; San José has today's meeting (Apr 21)
+
+**`src/data/south-bay/city-briefings.json`** — 11 briefings refreshed
+
+**`src/data/south-bay/school-calendar.json`** — added 2 PAUSD Early Release Days (June 2–3, 2026), confirmed from official PAUSD calendar PDF
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 21–28 watch** — Crunchbase Apr 18–24 roundup publishes ~Apr 25; check for Upscale AI + any new South Bay rounds
+2. **Campbell staleness** — Consider Playwright-based scrape of campbellca.gov Agenda Center as fallback
+3. **Los Altos gap** — No Stoa data at all; investigate losaltos-ca.municodemeetings.com as fallback source
+
+---
+
 ## 2026-04-21 — Cycle 97: Full Pipeline Refresh — Weekend Picks, Around Town, Meetings
 
 ### Context
