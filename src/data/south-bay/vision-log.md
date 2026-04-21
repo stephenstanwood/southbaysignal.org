@@ -2,6 +2,30 @@
 
 ---
 
+## 2026-04-21 — Cycle 97: Full Pipeline Refresh — Weekend Picks, Around Town, Meetings
+
+### Context
+Tuesday April 21, 2026. Earth Day tomorrow. Continued from Cycle 96. Primary task: verify no new South Bay funding rounds existed for Apr 17–21 and deliver a full pipeline refresh for the weekend.
+
+### What Was Built
+
+**Data pipelines regenerated (all fresh as of this cycle):**
+- `src/data/south-bay/weekend-picks.json` — 3 picks for Apr 24–26: "Stroll Down Penny Lane" (Beatles tribute, Campbell), Morgan Hill Earth Day Festival, Bay Area Printers' Fair & Wayzgoose (San Jose)
+- `src/data/south-bay/around-town.json` — 8 items from council sources: SJ affordable housing protections, MV capital improvement, Sunnyvale tenant protections, Palo Alto historic density bonus, Palo Alto mixed-use on San Antonio Rd, Los Gatos QLM contract
+- `src/data/south-bay/upcoming-meetings.json` — 6 cities refreshed: SJ (Apr 28), Campbell (Apr 21), Saratoga (May 6), Los Altos (Apr 28), Milpitas (Apr 21), Los Gatos (Apr 21 fallback)
+- `src/data/south-bay/digests.json` — all 10 cities refreshed (Campbell stuck at Feb 3 — Stoa has no data past that date)
+
+### Also Investigated
+- **New funding rounds (Apr 17–21)**: Exhaustive search of Crunchbase weekly roundups through Apr 17. No new South Bay rounds confirmed. Apr 18–24 weekly roundup won't publish until ~Apr 25. Upscale AI (~$200M rumored) still unconfirmed.
+- **Campbell staleness**: Root cause confirmed — Stoa's council-meetings.json has no Campbell data past Feb 3, 2026. campbellca.gov Agenda Center requires JavaScript rendering. Unsolvable without Playwright access.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 21–28 watch** — Crunchbase Apr 18–24 roundup publishes ~Apr 25; check for Upscale AI + any new South Bay rounds.
+2. **Campbell staleness** — Consider Playwright-based scrape of campbellca.gov Agenda Center as a fallback.
+3. **Los Altos gap** — No Stoa data at all. Investigate `losaltos-ca.municodemeetings.com` as fallback source.
+
+---
+
 ## 2026-04-21 — Cycle 96: Earth Day Callout — FUHSD Climate Showcase Added
 
 ### Context
