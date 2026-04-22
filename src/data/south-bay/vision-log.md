@@ -2,6 +2,38 @@
 
 ---
 
+## 2026-04-22 — Cycle 102: Sticky Category Filter Bar + Data Refresh
+
+### Context
+Wednesday April 22, 2026 (~10 AM PDT). Data pipelines last ran at 4 AM. Earth Day. 675 events (108 ongoing) in the pipeline. No new South Bay funding rounds confirmed since NeoCognition/Simile (Apr 21-22). Next Crunchbase weekly roundup ~Apr 25.
+
+### What Was Built
+
+**Events tab UX: Sticky category filter bar**
+
+The category chip row in the Events tab (675 events, 108 ongoing) was buried at the top of the page. After scrolling through a few date groups, users had to scroll all the way back to the top to switch categories (e.g., from "All" to "Music"). Now fixed: the category pill strip uses `position: sticky; top: 36px` (just below the tab nav) with full-bleed background, so the filter bar stays visible as you scroll through the event list.
+
+Implementation:
+- `index.astro`: Added `.sb-events-sticky-filter` CSS class — `position: sticky; top: 36px; z-index: 10; background: var(--sb-bg)` with negative margins to extend edge-to-edge within `.sb-main` content padding. Mobile breakpoint: `top: 35px`, `-16px` margins.
+- `EventsView.tsx`: Wrapped category pills `<div>` in `<div className="sb-events-sticky-filter">`.
+
+**Data refreshed (5 files):**
+- `upcoming-events.json` — 675 events (108 ongoing), 38 sources (down from 688 as post-noon events filtered out)
+- `around-town.json` — 8 items, 10-day lookback, refreshed Apr 22 17:11 UTC
+- `digests.json` — 10 cities, San José most recent (Apr 21)
+- `upcoming-meetings.json` — SJ + Los Altos Apr 28, others early May
+- `weekend-picks.json` — Penny Lane tribute (Campbell, Sat free), Morgan Hill Earth Day Festival (Sat free), Independent Bookstore Day at Kepler's (PA, Sat 2-5:30 PM with Laura Dave)
+
+### Why This Was the Strongest Move
+With 675+ events, the category filter is the most-used control in the Events tab — toggling between Music, Arts, Family, Outdoor is exactly how people browse. Before this fix, a user who selected "Arts" and then wanted to switch to "Family" had to scroll past 50+ cards to get back to the filter. Now the filter floats in place as you browse, making the tab genuinely usable on mobile where scrolling is the primary interaction.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 25 watch** — Crunchbase weekly roundup for Apr 18–25 publishes Friday. Check for new South Bay rounds.
+2. **Campbell staleness** — Stoa has no Campbell council data past Feb 3, 2026. Playwright scrape of campbellca.gov Agenda Center as fallback.
+3. **SJ neighborhood filter: sticky too** — The SJ neighborhood chips (shown when San José is selected) have the same scroll-back problem. Same sticky treatment could apply.
+
+---
+
 ## 2026-04-22 — Cycle 101: Simile Added to RECENTLY_FUNDED, Tech Briefing Fix
 
 ### Context

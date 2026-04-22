@@ -1043,45 +1043,47 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
         />
       </div>
 
-      {/* Category pills — single-row horizontal scroll */}
-      <div style={{
-        display: "flex", gap: 6, overflowX: "auto", marginBottom: 6, paddingBottom: 4,
-        scrollbarWidth: "none" as React.CSSProperties["scrollbarWidth"],
-      }}>
-        {EVENT_CATEGORIES.map((cat) => {
-          const active = category === cat.id;
-          const count = viewMode === "upcoming" ? (categoryCounts[cat.id] ?? 0) : null;
-          const showCount = count !== null && count > 0;
-          return (
-            <button
-              key={cat.id}
-              onClick={() => setCategory(cat.id as EventCategory | "all")}
-              style={{
-                display: "flex", alignItems: "center", gap: 4, flexShrink: 0,
-                padding: "4px 10px",
-                border: `1.5px solid ${active ? "var(--sb-primary)" : "var(--sb-border)"}`,
-                borderRadius: 100, background: active ? "var(--sb-primary)" : "#fff",
-                color: active ? "#fff" : "var(--sb-muted)",
-                fontSize: 12, fontWeight: active ? 600 : 400,
-                cursor: "pointer", fontFamily: "inherit", transition: "all 0.12s",
-              }}
-            >
-              <span>{cat.emoji}</span>
-              <span>{cat.label}</span>
-              {showCount && (
-                <span style={{
-                  fontSize: 10, fontWeight: 700,
-                  background: active ? "rgba(255,255,255,0.25)" : "var(--sb-border-light, #f0f0f0)",
+      {/* Category pills — sticky below nav */}
+      <div className="sb-events-sticky-filter">
+        <div style={{
+          display: "flex", gap: 6, overflowX: "auto", paddingBottom: 4,
+          scrollbarWidth: "none" as React.CSSProperties["scrollbarWidth"],
+        }}>
+          {EVENT_CATEGORIES.map((cat) => {
+            const active = category === cat.id;
+            const count = viewMode === "upcoming" ? (categoryCounts[cat.id] ?? 0) : null;
+            const showCount = count !== null && count > 0;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setCategory(cat.id as EventCategory | "all")}
+                style={{
+                  display: "flex", alignItems: "center", gap: 4, flexShrink: 0,
+                  padding: "4px 10px",
+                  border: `1.5px solid ${active ? "var(--sb-primary)" : "var(--sb-border)"}`,
+                  borderRadius: 100, background: active ? "var(--sb-primary)" : "#fff",
                   color: active ? "#fff" : "var(--sb-muted)",
-                  borderRadius: 100, padding: "0 5px", lineHeight: "16px",
-                  minWidth: 16, textAlign: "center",
-                }}>
-                  {count}
-                </span>
-              )}
-            </button>
-          );
-        })}
+                  fontSize: 12, fontWeight: active ? 600 : 400,
+                  cursor: "pointer", fontFamily: "inherit", transition: "all 0.12s",
+                }}
+              >
+                <span>{cat.emoji}</span>
+                <span>{cat.label}</span>
+                {showCount && (
+                  <span style={{
+                    fontSize: 10, fontWeight: 700,
+                    background: active ? "rgba(255,255,255,0.25)" : "var(--sb-border-light, #f0f0f0)",
+                    color: active ? "#fff" : "var(--sb-muted)",
+                    borderRadius: 100, padding: "0 5px", lineHeight: "16px",
+                    minWidth: 16, textAlign: "center",
+                  }}>
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Kids toggle + event count */}

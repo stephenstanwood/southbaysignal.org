@@ -255,6 +255,27 @@ const title = "South Bay Today";
         font-weight: 600;
       }
 
+      /* ── Events: sticky category filter bar ── */
+      .sb-events-sticky-filter {
+        position: sticky;
+        top: 36px;
+        background: var(--sb-bg);
+        z-index: 10;
+        margin-left: -24px;
+        margin-right: -24px;
+        padding: 8px 24px 4px;
+        border-bottom: 1px solid var(--sb-border-light, #e8e4dc);
+        margin-bottom: 10px;
+      }
+      @media (max-width: 640px) {
+        .sb-events-sticky-filter {
+          top: 35px;
+          margin-left: -16px;
+          margin-right: -16px;
+          padding: 8px 16px 4px;
+        }
+      }
+
       /* ── Content area ── */
       .sb-main {
         max-width: var(--sb-max-width);
