@@ -171,7 +171,7 @@ ${content}
 Return a JSON array (may be empty if nothing is interesting). Each item:
 {
   "date": "YYYY-MM-DD",
-  "headline": "short plain-English headline (max 12 words, no jargon)",
+  "headline": "short plain-English headline (max 12 words, no jargon). NEVER start a number with $; fiscal years like 2026-27 must be written as 'FY 2026-27', not '$2026-27'.",
   "summary": "1-2 sentences. What happened, why it matters. Written for a resident. NEVER use relative time words (tonight, today, this week) — use date or day name."
 }
 

@@ -617,9 +617,13 @@ function stripBareUrls(text) {
  */
 function cleanVenue(raw) {
   if (!raw) return raw;
-  let v = raw.replace(/<[^>]+>/g, "").trim();
+  let v = raw.replace(/<[^>]+>/g, "").replace(/&[a-zA-Z]+;|&#\d+;/g, " ").replace(/\s+/g, " ").trim();
   // Remove leading "- " dash artifact from CivicPlus iCal
   v = v.replace(/^-\s+/, "");
+  // If the string is meeting directions ("Meet at...", "Check in at..."), not a venue name
+  if (/^(meet|check\s+in)\s+(at|in)\s+/i.test(v)) return "";
+  // If the entire string is just "City, CA Zip" or "City CA Zip" (no venue name), return empty
+  if (/^[A-Za-z][a-zA-Z\s]+,?\s+CA\s+\d{5}/.test(v) && v.split(",").length <= 3) return "";
   // Remove trailing "  City ST zip" pattern (double-space before city)
   v = v.replace(/\s{2,}[A-Za-z][A-Za-z\s]+[A-Z]{2}\s+\d{5}.*$/, "");
   // Remove trailing ", City, CA 9xxxx" or " City CA 9xxxx" pattern (handles commas too)
