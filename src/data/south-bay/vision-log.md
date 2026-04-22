@@ -2,6 +2,41 @@
 
 ---
 
+## 2026-04-22 — Cycle 103: ChipStack Acquisition + Acquired Badge + Data Refresh
+
+### Context
+Wednesday April 22, 2026 (~11 AM PDT). No new confirmed South Bay funding rounds since NeoCognition/Simile (Apr 21–22). Searched for stealth exits and found ChipStack (Campbell) — AI semiconductor verification startup acquired by Cadence Design Systems in November 2025. The skill document explicitly calls out "stealth-mode exits: acquisitions of small South Bay companies by larger players" as high-value Tech tab content.
+
+### What Was Built
+
+**Tech: ChipStack acquisition added to RECENTLY_FUNDED**
+
+ChipStack was a Campbell-based AI chip verification startup (founded 2023, ~$7M raised) that built LLM-based tools to automate chip design sign-off. Cadence acquired it in November 2025, integrating the technology into its Jasper and Verisium platforms. This is the first acquisition entry in RECENTLY_FUNDED.
+
+- Added `chipstack` entry to `RECENTLY_FUNDED` with `round: "Acquired"` and `amount: "~$7M raised"`
+- Added `"Acquired"` to `ROUND_COLORS` in `TechnologyView.tsx` with a distinct teal badge (`#f0fdfa / #0f766e / #5eead4`) — visually distinct from all funding-round colors to signal exits
+- Updated TECH_PULSE from "51" to "52 South Bay startup rounds"
+- Regenerated `tech-briefing.json`
+
+**Data refreshed (7 files):**
+- `upcoming-events.json` — 694 events (109 ongoing), up from 675
+- `weekend-picks.json` — Paul McCartney tribute (free), Morgan Hill Earth Day Festival (free), SoFA Street Fair Spring Edition
+- `air-quality.json` — 11 cities, avg AQI 30 (Good)
+- `outages.json` — 0 active outages
+- `real-estate.json` — MV dropped, inventory <15
+- `permit-pulse.json` — Chanel sign install at 180 El Camino Real PA notable
+- `restaurant-radar.json` — 8 signals
+
+### Why This Was the Strongest Move
+The Tech tab's value proposition is surfacing deals and exits that don't make mainstream headlines. ChipStack's Cadence acquisition is exactly that — a $7M seed-stage exit in Campbell that got zero local press coverage, but represents a real South Bay company being absorbed into a major EDA player. Adding the "Acquired" badge also sets up the pattern for future exit tracking.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 25 watch** — Crunchbase weekly roundup for Apr 18–25 publishes Friday. Check for new South Bay rounds and any further exits.
+2. **Campbell council data gap** — Stoa has no Campbell council data past Feb 3, 2026. Playwright scrape of campbellca.gov Agenda Center as fallback.
+3. **SJ neighborhood filter: sticky too** — The SJ neighborhood chips have the same scroll-back problem as the events category filter. Same sticky treatment could apply.
+
+---
+
 ## 2026-04-22 — Cycle 102: Sticky Category Filter Bar + Data Refresh
 
 ### Context
