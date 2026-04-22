@@ -19,13 +19,43 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "default-plans.json");
+const CITIES_PATH = join(__dirname, "..", "src", "lib", "south-bay", "cities.ts");
 
 // ---------------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------------
 
 const API_BASE = process.env.SBT_API_BASE || "https://southbaytoday.org";
-const FEATURED_CITIES = ["campbell", "los-gatos", "mountain-view", "san-jose", "palo-alto"];
+
+/**
+ * Pull the canonical city list from cities.ts so adding a new city anywhere
+ * in the app automatically gets a pre-generated default plan. santa-cruz is
+ * excluded from plan-day VALID_CITIES so we skip it here too.
+ */
+function loadFeaturedCities() {
+  try {
+    const src = readFileSync(CITIES_PATH, "utf8");
+    const ids = [];
+    for (const m of src.matchAll(/id:\s*"([^"]+)"/g)) {
+      if (m[1] !== "santa-cruz") ids.push(m[1]);
+    }
+    if (ids.length === 0) throw new Error("no city ids parsed");
+    return ids;
+  } catch (err) {
+    console.warn(`  ⚠️  falling back to hardcoded city list: ${err.message}`);
+    return ["campbell", "cupertino", "los-altos", "los-gatos", "milpitas", "mountain-view", "palo-alto", "san-jose", "santa-clara", "saratoga", "sunnyvale"];
+  }
+}
+
+const FEATURED_CITIES = loadFeaturedCities();
+/**
+ * Anchor hours: first-visit users land in one of these buckets based on wall
+ * time. Homepage loader picks the nearest-but-not-future anchor (9 for 8–12,
+ * 13 for 12–16, 17 for 16–20) so the plan shape matches their time of day.
+ * Anchor cards before the user's current time get filtered client-side as a
+ * final belt-and-suspenders pass.
+ */
+const ANCHOR_HOURS = [9, 13, 17];
 const DELAY_MS = 3000; // polite delay between API calls
 
 // ---------------------------------------------------------------------------
@@ -36,9 +66,9 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-async function fetchPlan(city, kids) {
+async function fetchPlan(city, kids, anchorHour) {
   const url = `${API_BASE}/api/plan-day`;
-  console.log(`  → ${city} (kids=${kids})...`);
+  console.log(`  → ${city} (kids=${kids}, anchor=${anchorHour}:00)...`);
 
   const res = await fetch(url, {
     method: "POST",
@@ -48,7 +78,8 @@ async function fetchPlan(city, kids) {
       kids,
       lockedIds: [],
       dismissedIds: [],
-      currentHour: 9, // generate plan starting at 9 AM
+      currentHour: anchorHour,
+      currentMinute: 0,
     }),
     signal: AbortSignal.timeout(30000),
   });
@@ -66,31 +97,37 @@ async function fetchPlan(city, kids) {
 // ---------------------------------------------------------------------------
 
 async function main() {
-  console.log("generate-default-plans: building plans for", FEATURED_CITIES.length, "cities");
+  console.log(`generate-default-plans: ${FEATURED_CITIES.length} cities × 2 kids × ${ANCHOR_HOURS.length} anchors = ${FEATURED_CITIES.length * 2 * ANCHOR_HOURS.length} plans`);
   console.log(`  API: ${API_BASE}`);
+  console.log(`  anchors: ${ANCHOR_HOURS.map(h => `${h}:00`).join(", ")}`);
 
   const plans = {};
   let errors = 0;
 
   for (const city of FEATURED_CITIES) {
     for (const kids of [false, true]) {
-      const key = `${city}:${kids ? "kids" : "adults"}`;
-      try {
-        const data = await fetchPlan(city, kids);
-        plans[key] = {
-          cards: data.cards || [],
-          weather: data.weather || null,
-          city,
-          kids,
-          generatedAt: new Date().toISOString(),
-          poolSize: data.poolSize || 0,
-        };
-        console.log(`  ✓ ${key}: ${plans[key].cards.length} cards`);
-      } catch (err) {
-        console.error(`  ✗ ${key}: ${err.message}`);
-        errors++;
+      for (const anchor of ANCHOR_HOURS) {
+        // Key shape: "city:kids|adults:h9" — homepage loader parses the
+        // anchor suffix and picks the nearest-but-not-future anchor.
+        const key = `${city}:${kids ? "kids" : "adults"}:h${anchor}`;
+        try {
+          const data = await fetchPlan(city, kids, anchor);
+          plans[key] = {
+            cards: data.cards || [],
+            weather: data.weather || null,
+            city,
+            kids,
+            anchorHour: anchor,
+            generatedAt: new Date().toISOString(),
+            poolSize: data.poolSize || 0,
+          };
+          console.log(`  ✓ ${key}: ${plans[key].cards.length} cards`);
+        } catch (err) {
+          console.error(`  ✗ ${key}: ${err.message}`);
+          errors++;
+        }
+        await sleep(DELAY_MS);
       }
-      await sleep(DELAY_MS);
     }
   }
 
@@ -104,6 +141,7 @@ async function main() {
       generatedAt: new Date().toISOString(),
       generator: "generate-default-plans",
       cities: FEATURED_CITIES,
+      anchorHours: ANCHOR_HOURS,
       planCount: Object.keys(plans).length,
       errors,
     },
@@ -112,7 +150,7 @@ async function main() {
 
   writeFileSync(OUT_PATH, JSON.stringify(output, null, 2));
   console.log(`\nWrote ${Object.keys(plans).length} plans to default-plans.json`);
-  if (errors > 0) console.warn(`  (${errors} errors — some cities may be missing)`);
+  if (errors > 0) console.warn(`  (${errors} errors — some cities/anchors may be missing)`);
 }
 
 main().catch((err) => {

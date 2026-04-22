@@ -106,19 +106,41 @@ function pickRandomAnchor(exclude?: City | null): City {
   return pool[Math.floor(Math.random() * pool.length)]!;
 }
 
+/** Pick the nearest-but-not-future anchor hour from the available set.
+ *  e.g. at 3:53 PM → returns 13 (1 PM plan, not the 17:00 one which is future). */
+function pickNearestAnchor(availableAnchors: number[], nowHour: number): number {
+  const past = availableAnchors.filter((h) => h <= nowHour).sort((a, b) => b - a);
+  if (past.length > 0) return past[0];
+  // Before earliest anchor — use the earliest.
+  return availableAnchors.slice().sort((a, b) => a - b)[0];
+}
+
 /** Load a pre-generated plan from default-plans.json for instant display.
  *  Picks a random anchor city so first-visit users see variety, not always Campbell.
- *  Returns { cards, anchor } so caller can remember the anchor used. */
+ *  Picks the nearest-but-not-future anchor HOUR so users landing at 4 PM don't
+ *  see a 9-AM-shaped plan. Returns { cards, anchor } so caller can remember. */
 function loadDefaultPlan(kids: boolean): { cards: DayCard[]; anchor: City | null } {
   try {
-    const plans = (defaultPlansJson as any).plans || {};
-    const anchor = pickRandomAnchor();
-    const key = `${anchor}:${kids ? "kids" : "adults"}`;
-    const plan = plans[key];
+    const json = defaultPlansJson as any;
+    const plans = json.plans || {};
+    const anchorHours: number[] = Array.isArray(json._meta?.anchorHours) && json._meta.anchorHours.length
+      ? json._meta.anchorHours
+      : [9]; // legacy default-plans.json without anchor suffix
+    const now = new Date();
+    const nowHour = now.getHours();
+    const chosenAnchor = pickNearestAnchor(anchorHours, nowHour);
+    const city = pickRandomAnchor();
+    const kidsSuffix = kids ? "kids" : "adults";
+
+    // Try anchored key first, fall back to legacy un-anchored key.
+    const anchoredKey = `${city}:${kidsSuffix}:h${chosenAnchor}`;
+    const legacyKey = `${city}:${kidsSuffix}`;
+    const plan = plans[anchoredKey] || plans[legacyKey];
     if (!plan?.cards?.length) return { cards: [], anchor: null };
 
-    // Filter out cards whose timeBlock is in the past
-    const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
+    // Filter out cards whose timeBlock is in the past (belt + suspenders —
+    // the anchor bucket already gets us close, this strips any straggler).
+    const nowMin = nowHour * 60 + now.getMinutes();
     const cards = plan.cards.filter((c: DayCard) => {
       const m = c.timeBlock?.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
       if (!m) return true;
@@ -127,7 +149,7 @@ function loadDefaultPlan(kids: boolean): { cards: DayCard[]; anchor: City | null
       if (m[3].toUpperCase() === "AM" && hrs === 12) hrs = 0;
       return hrs * 60 + parseInt(m[2]) >= nowMin - 30;
     });
-    return { cards, anchor };
+    return { cards, anchor: city };
   } catch {
     return { cards: [], anchor: null };
   }
@@ -238,8 +260,18 @@ export default function SouthBayTodayView({ homeCity }: Props) {
   const [weather, setWeather] = useState<string | null>(() => {
     if (!hasDefaultPlan || !initialPlan.current?.anchor) return null;
     try {
-      const plans = (defaultPlansJson as any).plans || {};
-      return plans[`${initialPlan.current.anchor}:adults`]?.weather || null;
+      const json = defaultPlansJson as any;
+      const plans = json.plans || {};
+      const anchor = initialPlan.current.anchor;
+      // Match whatever key we used for the cards — try every anchored key
+      // for this city first, then the legacy un-anchored key.
+      const anchorHours: number[] = Array.isArray(json._meta?.anchorHours)
+        ? json._meta.anchorHours : [9];
+      for (const h of anchorHours) {
+        const w = plans[`${anchor}:adults:h${h}`]?.weather;
+        if (w) return w;
+      }
+      return plans[`${anchor}:adults`]?.weather || null;
     } catch { return null; }
   });
   const [loading, setLoading] = useState(!hasDefaultPlan);
