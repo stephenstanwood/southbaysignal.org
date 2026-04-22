@@ -31,10 +31,50 @@ if (!existsSync(DATA_FILE)) {
 
 const photos = JSON.parse(readFileSync(DATA_FILE, "utf8"));
 
+// Seed votes from the canonical approved/rejected sources so the Unvoted
+// filter actually shows fresh photos, not ones Stephen has already triaged.
+//   approved → src/data/south-bay/curated-photos.json (ids already in the site)
+//   rejected → scripts/blocked-photos.mjs BLOCKED_IDS (hard-blocked)
+function readSeedVotes() {
+  const approved = new Set();
+  const rejected = new Set();
+  try {
+    const curated = JSON.parse(readFileSync(join(ROOT, "src/data/south-bay/curated-photos.json"), "utf8"));
+    for (const p of curated.photos || []) if (p.id) approved.add(p.id);
+  } catch {}
+  try {
+    const src = readFileSync(join(ROOT, "scripts/blocked-photos.mjs"), "utf8");
+    for (const m of src.matchAll(/"([^"\n]+)"/g)) rejected.add(m[1]);
+  } catch {}
+  return { approved, rejected };
+}
+
 function loadVotes() {
-  if (!existsSync(VOTES_FILE)) return { approved: [], rejected: [] };
-  try { return JSON.parse(readFileSync(VOTES_FILE, "utf8")); }
-  catch { return { approved: [], rejected: [] }; }
+  const seed = readSeedVotes();
+  let saved = { approved: [], rejected: [] };
+  if (existsSync(VOTES_FILE)) {
+    try { saved = JSON.parse(readFileSync(VOTES_FILE, "utf8")); } catch {}
+  }
+  // Union saved + seed so in-session edits persist but we never re-show a
+  // photo that's already approved-on-site or hard-blocked.
+  const approved = new Set([...(saved.approved || []), ...seed.approved]);
+  const rejected = new Set([...(saved.rejected || []), ...seed.rejected]);
+
+  // Cutoff-based auto-reject: Stephen's initial approve/deny run landed on
+  // 2026-03-30 (commit "158 curated photos"). Anything in today's photo-data
+  // that isn't approved was almost certainly already rejected back then. Treat
+  // every un-approved, un-rejected photo as rejected so the Unvoted filter
+  // surfaces ONLY genuinely new photos (those pulled in by future photo-review
+  // runs from Flickr/Wikimedia/etc).
+  for (const p of photos) {
+    if (!approved.has(p.id) && !rejected.has(p.id)) rejected.add(p.id);
+  }
+
+  return {
+    approved: [...approved],
+    rejected: [...rejected],
+    lastUpdated: saved.lastUpdated,
+  };
 }
 
 function saveVotes(votes) {
