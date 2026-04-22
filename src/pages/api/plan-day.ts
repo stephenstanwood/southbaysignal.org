@@ -89,6 +89,10 @@ interface Candidate {
   source: "event" | "place";
   eventDate?: string;
   eventTime?: string | null;
+  eventEndTime?: string | null;
+  /** Event duration in minutes. Derived from eventTime/eventEndTime when both
+   *  are parseable. null = unknown (e.g. ongoing exhibits, missing endTime). */
+  eventDurationMin?: number | null;
   ongoing?: boolean;
   score: number;
 }
@@ -254,6 +258,29 @@ function parseHour(timeStr: string): number | null {
 
 const KIDS_CURFEW_HOUR = 20; // 8 PM — nothing starting at or after this
 
+/** Convert "9:30 PM" / "21:30" / "9:30" into minutes-since-midnight. */
+function parseClockToMinutes(t: string | null | undefined): number | null {
+  if (!t) return null;
+  const m = t.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+  if (!m) return null;
+  let h = parseInt(m[1], 10);
+  const min = parseInt(m[2], 10);
+  const ampm = (m[3] || "").toUpperCase();
+  if (ampm === "PM" && h !== 12) h += 12;
+  if (ampm === "AM" && h === 12) h = 0;
+  if (!ampm && h < 8) h += 12; // heuristic: 7:30 without AM/PM in evening events → 19:30
+  return h * 60 + min;
+}
+
+/** Duration in minutes between start and end clock strings, or null if unparseable. */
+function computeDurationMin(start: string | null | undefined, end: string | null | undefined): number | null {
+  const a = parseClockToMinutes(start);
+  const b = parseClockToMinutes(end);
+  if (a === null || b === null) return null;
+  const d = b - a;
+  return d > 0 ? d : null;
+}
+
 /**
  * Round the plan's START time to the next :00 or :30 so users get a clean
  * clock-aligned start with a small buffer. If the current minute is already
@@ -392,6 +419,13 @@ function scoreCandidates(
     // --- Dial down wellness/spa — they crowd out more interesting picks ---
     if (c.category === "wellness") score -= 20;
 
+    // --- Duration-aware penalty: a 6-hour festival starting at 4 PM leaves
+    //     only room for ~1 more stop. Demote very long events when we're
+    //     already late in the day so they don't hog the plan. ---
+    if (c.source === "event" && c.eventDurationMin && c.eventDurationMin > 240) {
+      if (hour >= 15) score -= 15; // after 3 PM, long events crowd the plan
+    }
+
     // --- User preference adjustments (only when enough signal) ---
     if (prefs && prefs.totalInteractions >= 5) {
       // Category affinity: ±15 based on learned preference
@@ -517,6 +551,8 @@ function buildCandidatePool(
       source: "event",
       eventDate: evt.date,
       eventTime: evt.time,
+      eventEndTime: evt.endTime,
+      eventDurationMin: computeDurationMin(evt.time, evt.endTime),
       ongoing: evt.ongoing ?? false,
       score: 0,
     });
@@ -701,7 +737,19 @@ async function sequenceWithClaude(
       if (c.address) parts.push(`address: ${c.address}`);
       if (c.source === "event" && !c.ongoing) parts.push(`EVENT TODAY`);
       if (c.source === "event" && c.ongoing) parts.push(`ongoing exhibition (daytime hours only — must end by 5 PM)`);
-      if (c.eventTime) parts.push(`time: ${c.eventTime}`);
+      if (c.eventTime) {
+        // Include both start and end (or explicit duration) so Claude can
+        // size the timeBlock realistically. Without this, a 6-hour festival
+        // gets planned like a 1-hour talk and overlaps later cards.
+        const timeStr = c.eventEndTime
+          ? `${c.eventTime}–${c.eventEndTime}`
+          : c.eventTime;
+        parts.push(`time: ${timeStr}`);
+        if (c.eventDurationMin) {
+          const hrs = Math.round(c.eventDurationMin / 60 * 10) / 10;
+          parts.push(`duration: ${hrs}h`);
+        }
+      }
       if (c.rating) parts.push(`rating: ${c.rating}`);
       if (c.cost) parts.push(`cost: ${c.cost}`);
       if (c.costNote) parts.push(`price: ${c.costNote}`);
