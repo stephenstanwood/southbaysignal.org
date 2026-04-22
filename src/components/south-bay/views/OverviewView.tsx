@@ -1129,7 +1129,7 @@ function SpringBreakCard({ todayForecast }: { todayForecast?: ForecastDay | null
     if (isRainy) {
       weatherTip = {
         emoji: "🌧️",
-        text: `Rainy today (${high}°F, ${rainPct}% rain chance) — library events and indoor activities are your best bet.`,
+        text: `Rainy today (${high}°F, ${rainPct}% chance of rain) — library events and indoor activities are your best bet.`,
         bg: "#EFF6FF",
         border: "#BFDBFE",
       };

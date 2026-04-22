@@ -42,6 +42,7 @@ interface PlanRequest {
   lockedIds?: string[];
   dismissedIds?: string[];
   currentHour?: number; // 0-23, defaults to now
+  currentMinute?: number; // 0-59, used with currentHour to round start time to next :00/:30
   planDate?: string;    // YYYY-MM-DD — plan for a specific date (default: today)
   preferences?: UserPreferences;
   /** Lowercase POI/event names to hard-exclude from this plan. Used by the
@@ -246,6 +247,26 @@ function parseHour(timeStr: string): number | null {
 
 const KIDS_CURFEW_HOUR = 20; // 8 PM — nothing starting at or after this
 
+/**
+ * Round the plan's START time to the next :00 or :30 so users get a clean
+ * clock-aligned start with a small buffer. If the current minute is already
+ * on :00 or :30, add another 30 minutes. Examples:
+ *   10:00 → 10:30  |  10:15 → 10:30  |  10:30 → 11:00  |  10:45 → 11:00
+ *   15:53 → 16:00
+ * Returns { startHour (0-23), startMinute (0 or 30), formatted (e.g. "4:00 PM") }.
+ */
+function computeStartTime(hour: number, minute: number): { startHour: number; startMinute: number; formatted: string } {
+  const total = hour * 60 + minute;
+  let rounded = Math.ceil(total / 30) * 30;
+  if (total % 30 === 0) rounded += 30;
+  const startHour = Math.floor(rounded / 60) % 24;
+  const startMinute = rounded % 60;
+  const ampm = startHour >= 12 ? "PM" : "AM";
+  const h12 = startHour === 0 ? 12 : startHour > 12 ? startHour - 12 : startHour;
+  const formatted = `${h12}:${String(startMinute).padStart(2, "0")} ${ampm}`;
+  return { startHour, startMinute, formatted };
+}
+
 // ---------------------------------------------------------------------------
 // Weather fetch (internal, same-origin)
 // ---------------------------------------------------------------------------
@@ -283,7 +304,7 @@ async function fetchWeather(city: City): Promise<{ weather: string | null; forec
     const isNice = !isRainy && !isHot && !isCold;
 
     return {
-      weather: `${temp}°F, high ${high}°F${rainPct >= 5 ? `, ${rainPct}% rain chance` : ""}`,
+      weather: `${temp}°F, high ${high}°F${rainPct >= 5 ? `, ${rainPct}% chance of rain` : ""}`,
       forecast: [{ high, low, rainPct, isRainy, isHot, isCold, isNice, weatherCode }],
     };
   } catch {
@@ -360,6 +381,9 @@ function scoreCandidates(
 
     // --- Penalize generic neighborhood entries — specific places are always better ---
     if (c.category === "neighborhood") score -= 30;
+
+    // --- Dial down wellness/spa — they crowd out more interesting picks ---
+    if (c.category === "wellness") score -= 20;
 
     // --- User preference adjustments (only when enough signal) ---
     if (prefs && prefs.totalInteractions >= 5) {
@@ -543,6 +567,11 @@ function buildCandidatePool(
     // Skip places that are closed today
     if (!isOpenToday(p.hours)) continue;
 
+    // Skip generic "Downtown X" / neighborhood tiles — Stephen has asked for
+    // specific restaurants/shops as plan cards, not vague neighborhood names.
+    // Score penalty alone wasn't enough because the curated boost (+25) offset it.
+    if ((p.category || "").toLowerCase() === "neighborhood") continue;
+
     // Filter to city or nearby
     if (p.city !== city) {
       if (!p.lat || !p.lng || !cityConfig) continue;
@@ -624,6 +653,7 @@ async function sequenceWithClaude(
   prefs?: UserPreferences,
   targetDate?: string,
   weekContext?: { anchorCities?: string[]; categorySaturation?: Record<string, number> },
+  startTime?: { startHour: number; startMinute: number; formatted: string },
 ): Promise<DayCard[]> {
   const client = new Anthropic({ apiKey: import.meta.env.ANTHROPIC_API_KEY });
   const cityName = getCityName(city);
@@ -639,6 +669,10 @@ async function sequenceWithClaude(
   });
 
   const timeSlot = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
+  // Fallback: if caller didn't pass a computed start time, round the hour
+  // ourselves so the prompt never says "15:00" when it's actually 3:53 PM.
+  const start = startTime ?? computeStartTime(hour, 0);
+  const startH = start.startHour;
 
   // Format locked items. Avoid the word "LOCKED" in the section header
   // because the model has echoed it back as a literal timeBlock value.
@@ -707,7 +741,7 @@ async function sequenceWithClaude(
 
   const prompt = `You are the day-planning engine for South Bay Today, a local guide for the South Bay region of California. Today's plan is anchored around ${cityName}, but the candidate pool pulls from the whole South Bay — stops in adjacent cities (Santa Clara, Campbell, Sunnyvale, Mountain View, Cupertino, Los Gatos, etc.) are totally fine when they cluster geographically.
 
-It's ${today}, ${timeSlot} (${hour}:00). ${weather ? `Weather: ${weather}.` : ""}
+It's ${today}, ${timeSlot}. The user is reading this at roughly ${start.formatted} — that's when the plan should START. ${weather ? `Weather: ${weather}.` : ""}
 ${kids ? "This plan is for a family WITH KIDS. Prioritize kid-friendly activities." : "This plan is for adults WITHOUT KIDS."}
 ${describePreferences(prefs)}
 ${lockedSection}${weekContextSection}
@@ -715,7 +749,7 @@ ${lockedSection}${weekContextSection}
 CANDIDATE POOL:
 ${poolText}
 
-TASK: Build a FULL-DAY plan with 6-7 stops that fills morning through evening with no big gaps. Return a JSON array. Every 1-2 hour block should have something. A packed day is better than a sparse one — 3-4 stops is NOT a full day plan, reject that instinct.
+TASK: Build a plan that starts at ${start.formatted} and fills the rest of the day until ~10 PM. The FIRST card's timeBlock MUST start at ${start.formatted} or later — nothing earlier. The user is reading this right now and cannot time-travel. Return a JSON array.
 
 DO NOT suggest things for "tomorrow."
 
@@ -724,16 +758,31 @@ GEOGRAPHIC CLUSTERING (critical):
 - Don't zigzag across the whole region. If you start in San Jose, don't send someone to Mountain View for lunch and back to SJ for dinner. Pick a cluster and stay in it — one or two neighboring cities max.
 - A tight 15-minute-drive radius is ideal. People can drive a little, but chaos plans that cross 30 miles between stops are broken.
 
-FULL-DAY SHAPE (non-negotiable when hour <= 10):
-1. Breakfast/coffee (start 8:30–10 AM) — cafe, bakery, breakfast spot
-2. Morning activity (10 AM–12 PM) — museum, park, walk, shopping
-3. Lunch (12–2 PM) — sit-down or casual spot
-4. Afternoon activity (2–5 PM) — different category from morning
-5. Happy hour / aperitivo / snack (5–6 PM) — optional but great
-6. Dinner (6–8 PM) — restaurant
-7. Evening activity (8–10 PM) — show, bar, late dessert, event
+SHAPE — scale the plan to the remaining day, starting at ${start.formatted}:
+${startH < 10 ? `Full day ahead — target 6–7 cards:
+1. Breakfast/coffee (${start.formatted}–10 AM)
+2. Morning activity (10 AM–12 PM)
+3. Lunch (12–2 PM)
+4. Afternoon activity (2–5 PM)
+5. Happy hour / snack (5–6 PM, optional)
+6. Dinner (6–8 PM)
+7. Evening activity (8–10 PM)` : startH < 13 ? `Late morning start — target 5–6 cards. Skip breakfast:
+1. Brunch or early lunch at ${start.formatted}
+2. Afternoon activity (2–5 PM)
+3. Happy hour / snack (5–6 PM, optional)
+4. Dinner (6–8 PM)
+5. Evening activity (8–10 PM)` : startH < 16 ? `Afternoon start — target 4–5 cards. No breakfast, no brunch:
+1. First stop at ${start.formatted} — afternoon activity, late lunch, or café
+2. Another activity or happy hour (5–6 PM)
+3. Dinner (6–8 PM)
+4. Evening activity (8–10 PM)` : startH < 19 ? `Early evening start — target 3–4 cards:
+1. First stop at ${start.formatted} — happy hour, pre-dinner activity, or dinner itself
+2. Dinner (6–8 PM) if not already the first slot
+3. Evening activity (8–10 PM)` : `Evening start — target 2–3 cards:
+1. First stop at ${start.formatted} — dinner, drinks, or an event tonight
+2. Late activity (9–10 PM) — dessert, late bar, show`}
 
-The plan MUST have at least 6 cards. 3-4 cards is a failure mode — the user sees a sparse plan and churns. If you can't find 6 good picks, pack in a coffee stop, a second activity, or a dessert spot to hit 6.
+The plan MUST honor the target card count for the time window. Don't force 6+ cards when only a few hours of day remain — a short realistic plan beats a fake full-day plan.
 
 CRITICAL RULES FOR BALANCE:
 - Items marked "EVENT TODAY" are specific things happening today. Include 1-2 if any exist in the pool, but NEVER make the entire plan just events. A good day is activities + food + maybe an event.
@@ -741,7 +790,7 @@ CRITICAL RULES FOR BALANCE:
 - The ideal plan is: activity → food → activity → food → activity. Alternate between doing things and eating.
 
 RULES:
-- For a full day plan, START AT 9:00 AM (or earlier, never later than 10 AM) with breakfast or coffee — a breakfast burrito spot, a fun cafe, a bakery. Every good day starts with food. If the current time is past 9, start from NOW (${hour}:00) instead.
+- The FIRST card's timeBlock MUST start at ${start.formatted} or later. Never schedule anything before ${start.formatted}.
 - Don't schedule things in the past
 - Events with listed times are anchors — schedule around them
 - If an event has no listed time, pick a reasonable slot for it
@@ -921,6 +970,39 @@ Return ONLY the JSON array. No explanation.`;
     const bH = parseHour(b.timeBlock.split(/\s*-\s*/)[0]) ?? 99;
     return aH - bH;
   });
+
+  // Post-process: strip any card whose timeBlock starts before the plan's
+  // computed start time. Claude occasionally disregards the prompt and tries
+  // to fill a "full day" shape even when we asked for current-time-through-EOD.
+  if (startTime) {
+    const before = cards.length;
+    const startTotalMin = startTime.startHour * 60 + startTime.startMinute;
+    for (let i = cards.length - 1; i >= 0; i--) {
+      if (cards[i].locked) continue;
+      const tb = cards[i].timeBlock.split(/\s*-\s*/)[0];
+      // Reuse parseHour, but we need minutes too — parse manually
+      const m = tb.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+      if (!m) continue;
+      let h = parseInt(m[1], 10);
+      const min = parseInt(m[2], 10);
+      const pm = m[3].toUpperCase() === "PM";
+      if (pm && h !== 12) h += 12;
+      if (!pm && h === 12) h = 0;
+      if (h * 60 + min < startTotalMin) {
+        logDecision({
+          script: "plan-day",
+          action: "dropped",
+          target: `${cards[i].name} (${cards[i].id})`,
+          reason: `starts at ${tb} — before plan start time ${startTime.formatted}`,
+          meta: { city, targetDate, startHour: startTime.startHour },
+        });
+        cards.splice(i, 1);
+      }
+    }
+    if (cards.length < before) {
+      console.log(`[plan-day] past-start filter: dropped ${before - cards.length} card(s) starting before ${startTime.formatted}`);
+    }
+  }
 
   // Post-process: enforce kids curfew — drop any card starting at or after 8 PM
   if (kids) {
@@ -1123,8 +1205,10 @@ async function padWithClaude(args: {
   kids: boolean;
   weather: string | null;
   targetDate?: string;
+  startHour?: number;
+  startFormatted?: string;
 }): Promise<DayCard[]> {
-  const { partial, pool, targetTotal, city, kids, weather, targetDate } = args;
+  const { partial, pool, targetTotal, city, kids, weather, targetDate, startHour = 0, startFormatted } = args;
   const needed = targetTotal - partial.length;
   if (needed <= 0 || pool.length === 0) return [];
 
@@ -1144,19 +1228,19 @@ async function padWithClaude(args: {
     .map((c) => `  • ${c.timeBlock} — ${c.name} (${c.category}, ${c.city})`)
     .join("\n");
 
-  // Identify the time gaps. Simple version: if there's no card before 11 AM
-  // flag "needs breakfast/morning"; if nothing after 6 PM flag "needs evening".
+  // Identify the time gaps — but only for slots that are still in the future
+  // relative to the plan's startHour. Don't ask for breakfast when it's 4 PM.
   const startHours = partial
     .map((c) => parseHour(c.timeBlock.split(/\s*-\s*/)[0]))
     .filter((h): h is number => h !== null);
-  const earliest = startHours.length ? Math.min(...startHours) : 12;
-  const latest = startHours.length ? Math.max(...startHours) : 12;
+  const earliest = startHours.length ? Math.min(...startHours) : 99;
+  const latest = startHours.length ? Math.max(...startHours) : 0;
   const gapHints: string[] = [];
-  if (earliest > 10) gapHints.push("Plan is missing a breakfast/morning-coffee stop (before 10 AM).");
-  if (latest < 13) gapHints.push("Plan is missing lunch (12–2 PM).");
-  if (latest < 18 && !kids) gapHints.push("Plan is missing dinner / evening activity (6–9 PM).");
-  if (!partial.some((c) => c.category === "food")) gapHints.push("Plan has no food stops at all — add at least one meal.");
-  if (gapHints.length === 0) gapHints.push(`Plan has ${partial.length} stops; extend the timeline naturally.`);
+  if (startHour < 10 && earliest > 10) gapHints.push("Plan is missing a breakfast/morning-coffee stop (before 10 AM).");
+  if (startHour < 13 && latest < 13) gapHints.push("Plan is missing lunch (12–2 PM).");
+  if (startHour < 18 && latest < 18 && !kids) gapHints.push("Plan is missing dinner / evening activity (6–9 PM).");
+  if (startHour < 19 && !partial.some((c) => c.category === "food")) gapHints.push("Plan has no food stops at all — add at least one meal that's still in the future.");
+  if (gapHints.length === 0) gapHints.push(`Plan has ${partial.length} stops; extend the timeline forward from the last existing stop, never backward.`);
 
   // Pool text with ids so the model returns real candidates.
   const topPool = pool.slice(0, CANDIDATE_POOL_SIZE);
@@ -1173,7 +1257,7 @@ async function padWithClaude(args: {
 
   const prompt = `You are padding an incomplete day plan for South Bay Today. The partial plan already has ${partial.length} stops — your job is to ADD ${needed} more stops that fill the gaps. DO NOT change or repeat the existing stops.
 
-It's ${today}. Anchor: ${cityName}. ${weather ? `Weather: ${weather}.` : ""}
+It's ${today}.${startFormatted ? ` The user is reading this at roughly ${startFormatted} — NOTHING can be scheduled before ${startFormatted}.` : ""} Anchor: ${cityName}. ${weather ? `Weather: ${weather}.` : ""}
 
 EXISTING STOPS (already locked in — do not return these):
 ${existingText}
@@ -1187,6 +1271,7 @@ ${poolText}
 RULES:
 - Return exactly ${needed} new stops, no more.
 - Use ids from the pool. Do not invent ids.
+${startFormatted ? `- Every new stop's timeBlock MUST start at ${startFormatted} or later. Never schedule anything before ${startFormatted}, even if the existing stops leave a "gap" earlier in the day — that gap is the past and cannot be filled.` : ""}
 - Each new stop needs a timeBlock that fits between/around the existing stops without overlapping them.
 - Cluster geographically with the existing cards; don't send the user across the region for a single stop.
 - NEVER pick the same category as an adjacent existing stop.
@@ -1272,7 +1357,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return errJson("Invalid JSON body", 400);
   }
 
-  const { city, kids = false, lockedIds = [], dismissedIds = [], currentHour, planDate, preferences, blockedNames = [], weekContext } = body;
+  const { city, kids = false, lockedIds = [], dismissedIds = [], currentHour, currentMinute, planDate, preferences, blockedNames = [], weekContext, noCache = false } = body;
   const blockedSet = new Set(blockedNames.map((n) => normalizeName(n)).filter(Boolean));
 
   // Validate city
@@ -1286,13 +1371,17 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   }
 
   const hour = typeof currentHour === "number" ? currentHour : Number(currentPTHour());
+  const minute = typeof currentMinute === "number" ? currentMinute : 0;
+  const startTime = computeStartTime(hour, minute);
   const dismissedSet = new Set(dismissedIds);
   const lockedSet = new Set(lockedIds);
 
-  // Cache hit for default requests (no locks/dismissals/preferences/blocks)
+  // Cache hit for default requests (no locks/dismissals/preferences/blocks).
+  // noCache=true forces a fresh plan — used by the SHUFFLE button so the
+  // user always sees a new plan even if they happen to hit the same anchor.
   const prefsHash = preferences ? Math.round((preferences.outdoorBias || 0) * 10 + (preferences.costBias || 0) * 10) : 0;
   const cacheKey = `${city}:${kids}:${hour}:${prefsHash}:${planDate || ""}`;
-  if (lockedIds.length === 0 && dismissedIds.length === 0 && blockedSet.size === 0) {
+  if (!noCache && lockedIds.length === 0 && dismissedIds.length === 0 && blockedSet.size === 0) {
     const cached = planCache.get(cacheKey);
     if (cached && Date.now() - cached.ts < CACHE_TTL) {
       return okJson(cached.data, { "Cache-Control": "private, no-store" });
@@ -1373,7 +1462,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
     // Fill remaining slots with diverse non-food places
     const catCounts: Record<string, number> = {};
-    const CAT_CAPS: Record<string, number> = { outdoor: 3, museum: 2, entertainment: 3, wellness: 2, shopping: 2 };
+    const CAT_CAPS: Record<string, number> = { outdoor: 3, museum: 2, entertainment: 3, wellness: 1, shopping: 2 };
     for (const c of otherPlaces) {
       const count = catCounts[c.category] || 0;
       const maxForCat = CAT_CAPS[c.category] ?? 3;
@@ -1395,12 +1484,19 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       preferences,
       planDate,
       weekContext,
+      startTime,
     );
 
     // 6b. Context-aware padding (Tier 2.1): if sequenceWithClaude returned a
     // thin plan, call Claude again with the partial + remaining pool to fill
     // the gaps with proper blurbs instead of generic padding picks.
-    const MIN_STOPS = 6;
+    // Target scales with the remaining day — at 5 PM we don't want 7 cards.
+    const MIN_STOPS =
+      startTime.startHour < 10 ? 6 :
+      startTime.startHour < 13 ? 5 :
+      startTime.startHour < 16 ? 4 :
+      startTime.startHour < 19 ? 3 :
+      2;
     if (cards.length < MIN_STOPS) {
       const usedIds = new Set(cards.map((c) => c.id));
       const remainingPool = diversePool.filter((c) => !usedIds.has(c.id));
@@ -1410,11 +1506,13 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           const padded = await padWithClaude({
             partial: cards,
             pool: remainingPool,
-            targetTotal: MIN_STOPS + 1,
+            targetTotal: MIN_STOPS,
             city,
             kids,
             weather: weatherData.weather,
             targetDate: planDate,
+            startHour: startTime.startHour,
+            startFormatted: startTime.formatted,
           });
           if (padded.length > 0) {
             cards = [...cards, ...padded].sort((a, b) => {

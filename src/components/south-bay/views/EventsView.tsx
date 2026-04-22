@@ -1211,7 +1211,7 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
               <span style={{ fontSize: 18, lineHeight: 1 }}>🌧️</span>
               <div style={{ flex: 1, minWidth: 180 }}>
                 <span style={{ fontWeight: 700, fontSize: 13, color: "var(--sb-ink)", fontFamily: "var(--sb-sans)" }}>
-                  Rainy today ({high}°F, {rainPct}% rain chance)
+                  Rainy today ({high}°F, {rainPct}% chance of rain)
                 </span>
                 <span style={{ fontSize: 12, color: "var(--sb-muted)", marginLeft: 6 }}>
                   — great day for a library program or indoor event.

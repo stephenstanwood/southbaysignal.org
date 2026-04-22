@@ -6,7 +6,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { City, Tab } from "../../../lib/south-bay/types";
-import { CITIES, CITY_MAP } from "../../../lib/south-bay/cities";
+import { CITIES } from "../../../lib/south-bay/cities";
 import PhotoStrip from "./PhotoStrip";
 import ForecastCard from "../cards/ForecastCard";
 import defaultPlansJson from "../../../data/south-bay/default-plans.json";
@@ -52,7 +52,6 @@ interface DismissedEntry {
 }
 
 interface LocalState {
-  city: City;
   kids: boolean;
   dismissed: Record<string, DismissedEntry>;
   locked: string[];
@@ -94,24 +93,33 @@ function loadState(): LocalState {
 }
 
 function defaultState(): LocalState {
-  return { city: "campbell", kids: false, dismissed: {}, locked: [], viewMode: "list" };
+  return { kids: false, dismissed: {}, locked: [], viewMode: "list" };
 }
 
-function isFirstVisit(): boolean {
-  try { return !localStorage.getItem(STORAGE_KEY); } catch { return true; }
+const PLAN_ANCHORS: City[] = CITIES
+  .filter((c) => c.id !== "santa-cruz")
+  .map((c) => c.id);
+
+/** Pick a random plan anchor, preferring one that isn't the last one used. */
+function pickRandomAnchor(exclude?: City | null): City {
+  const pool = exclude ? PLAN_ANCHORS.filter((c) => c !== exclude) : PLAN_ANCHORS;
+  return pool[Math.floor(Math.random() * pool.length)]!;
 }
 
-/** Load a pre-generated plan from default-plans.json for instant display */
-function loadDefaultPlan(city: City, kids: boolean): DayCard[] {
+/** Load a pre-generated plan from default-plans.json for instant display.
+ *  Picks a random anchor city so first-visit users see variety, not always Campbell.
+ *  Returns { cards, anchor } so caller can remember the anchor used. */
+function loadDefaultPlan(kids: boolean): { cards: DayCard[]; anchor: City | null } {
   try {
     const plans = (defaultPlansJson as any).plans || {};
-    const key = `${city}:${kids ? "kids" : "adults"}`;
+    const anchor = pickRandomAnchor();
+    const key = `${anchor}:${kids ? "kids" : "adults"}`;
     const plan = plans[key];
-    if (!plan?.cards?.length) return [];
+    if (!plan?.cards?.length) return { cards: [], anchor: null };
 
     // Filter out cards whose timeBlock is in the past
     const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
-    return plan.cards.filter((c: DayCard) => {
+    const cards = plan.cards.filter((c: DayCard) => {
       const m = c.timeBlock?.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
       if (!m) return true;
       let hrs = parseInt(m[1]);
@@ -119,8 +127,9 @@ function loadDefaultPlan(city: City, kids: boolean): DayCard[] {
       if (m[3].toUpperCase() === "AM" && hrs === 12) hrs = 0;
       return hrs * 60 + parseInt(m[2]) >= nowMin - 30;
     });
+    return { cards, anchor };
   } catch {
-    return [];
+    return { cards: [], anchor: null };
   }
 }
 
@@ -215,33 +224,22 @@ type Props = {
   onNavigate: (tab: Tab) => void;
 };
 
-const FEATURED_CITIES: City[] = ["campbell", "los-gatos", "mountain-view", "san-jose", "palo-alto"];
-
 // ---------------------------------------------------------------------------
 // Main component
 // ---------------------------------------------------------------------------
 
-export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
-  const [state, setState] = useState<LocalState>(() => {
-    const loaded = loadState();
-    if (homeCity) loaded.city = homeCity;
-    return loaded;
-  });
-  // Load pre-generated plan for instant display — same quality as the API,
-  // generated at 2 AM. Falls back to API fetch if no pre-generated plan exists.
-  const [isFirstVisitUser] = useState(isFirstVisit);
-  const [defaultCards] = useState<DayCard[]>(() => {
-    const city = homeCity || "campbell";
-    return loadDefaultPlan(city, false);
-  });
-  const hasDefaultPlan = defaultCards.length > 0;
-  const [cards, setCards] = useState<DayCard[]>(defaultCards);
+export default function SouthBayTodayView({ homeCity }: Props) {
+  const [state, setState] = useState<LocalState>(() => loadState());
+  // Random anchor for initial render so first-visit users see variety.
+  const initialPlan = useRef<{ cards: DayCard[]; anchor: City | null } | null>(null);
+  if (initialPlan.current === null) initialPlan.current = loadDefaultPlan(false);
+  const hasDefaultPlan = initialPlan.current.cards.length > 0;
+  const [cards, setCards] = useState<DayCard[]>(initialPlan.current.cards);
   const [weather, setWeather] = useState<string | null>(() => {
-    if (!hasDefaultPlan) return null;
+    if (!hasDefaultPlan || !initialPlan.current?.anchor) return null;
     try {
       const plans = (defaultPlansJson as any).plans || {};
-      const city = homeCity || "campbell";
-      return plans[`${city}:adults`]?.weather || null;
+      return plans[`${initialPlan.current.anchor}:adults`]?.weather || null;
     } catch { return null; }
   });
   const [loading, setLoading] = useState(!hasDefaultPlan);
@@ -249,13 +247,14 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
   const [replacedIds, setReplacedIds] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const [timeDisplay, setTimeDisplay] = useState(() => formatTime());
-  const [showMoreCities, setShowMoreCities] = useState(false);
-  const [geoLoading, setGeoLoading] = useState(false);
-  const [geoActive, setGeoActive] = useState(false);
-  const [activeCard, setActiveCard] = useState(0);
   const fetchRef = useRef(0);
-  const fetchPlanRef = useRef<(cityOverride?: City, extraLockedIds?: string[]) => void>(() => {});
+  const lastAnchorRef = useRef<City | null>(initialPlan.current.anchor);
+  const fetchPlanRef = useRef<(extraLockedIds?: string[], noCache?: boolean) => void>(() => {});
   const [prefs, setPrefs] = useState<UserPreferences>(loadPrefs);
+
+  // Display city for forecast + weather label — user's persisted home city,
+  // or san-jose (center of south bay) as a neutral default.
+  const displayCity: City = homeCity || "san-jose";
 
   // Keep time display live
   useEffect(() => {
@@ -264,16 +263,16 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
   }, []);
 
   useEffect(() => { saveState(state); }, [state]);
-  useEffect(() => {
-    if (homeCity && homeCity !== state.city) setState((s) => ({ ...s, city: homeCity }));
-  }, [homeCity]);
 
-  const fetchPlan = useCallback(async (cityOverride?: City, extraLockedIds?: string[]) => {
+  const fetchPlan = useCallback(async (extraLockedIds?: string[], noCache = false) => {
     const id = ++fetchRef.current;
     setLoading(true);
     setError(null);
     setTimeDisplay(formatTime());
-    const city = cityOverride || state.city;
+    // Pick a fresh random anchor, avoiding the last-used one so SHUFFLE
+    // always visibly shifts the plan to a different part of the south bay.
+    const anchor = pickRandomAnchor(lastAnchorRef.current);
+    lastAnchorRef.current = anchor;
     const allLocked = extraLockedIds
       ? [...new Set([...state.locked, ...extraLockedIds])]
       : state.locked;
@@ -283,11 +282,13 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          city, kids: state.kids,
+          city: anchor, kids: state.kids,
           lockedIds: allLocked,
           dismissedIds: Object.keys(state.dismissed),
           currentHour: new Date().getHours(),
+          currentMinute: new Date().getMinutes(),
           preferences: prefs.totalInteractions >= 5 ? prefs : undefined,
+          noCache,
         }),
       });
       if (id !== fetchRef.current) return;
@@ -301,7 +302,6 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
       setCards(sorted.map((c) => ({ ...c, locked: state.locked.includes(c.id) })));
       setReplacedIds(new Set());
       setWeather(data.weather);
-      setActiveCard(0);
     } catch (err) {
       if (id === fetchRef.current) setError(err instanceof Error ? err.message : "Failed to plan your day");
     } finally {
@@ -310,46 +310,23 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
         setSwapLoading(false);
       }
     }
-  }, [state.city, state.kids, state.dismissed, state.locked]);
+  }, [state.kids, state.dismissed, state.locked]);
 
   // Skip API call if we have a pre-generated plan (first-visit or cached).
-  // The API call fires when they pick a city or hit SHUFFLE.
+  // The API call fires when they toggle KIDS or hit SHUFFLE.
   useEffect(() => { if (!hasDefaultPlan) fetchPlan(); }, []);
 
   // Keep fetchPlanRef current so callers always invoke the latest version
   useEffect(() => { fetchPlanRef.current = fetchPlan; }, [fetchPlan]);
 
   // Actions
-  const handleCityChange = (city: City) => {
-    setState((s) => ({ ...s, city }));
-    setHomeCity(city);
-    fetchPlan(city);
-  };
   const handleKidsToggle = () => {
     setState((s) => ({ ...s, kids: !s.kids }));
     // Use fetchPlanRef so we invoke the latest fetchPlan after the state
     // update lands, not a stale closure bound to the previous `kids` value.
     setTimeout(() => fetchPlanRef.current?.(), 50);
   };
-  const handleNewPlan = () => fetchPlan();
-  const handleGeolocate = () => {
-    if (!navigator.geolocation) return;
-    setGeoLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        let nearest: City = "campbell", minDist = Infinity;
-        for (const c of CITIES) {
-          const d = Math.sqrt((c.lat - pos.coords.latitude) ** 2 + (c.lon - pos.coords.longitude) ** 2);
-          if (d < minDist) { minDist = d; nearest = c.id; }
-        }
-        setGeoLoading(false);
-        setGeoActive(true);
-        handleCityChange(nearest);
-      },
-      () => setGeoLoading(false),
-      { timeout: 8000 },
-    );
-  };
+  const handleNewPlan = () => fetchPlan(undefined, true);
   const handleLock = (cardId: string) => {
     const card = cards.find((c) => c.id === cardId);
     if (card && !card.locked) {
@@ -388,7 +365,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
       locked: s.locked.filter((id) => id !== cardId),
     }));
     // Refetch with other cards auto-locked so only the dismissed slot changes
-    setTimeout(() => fetchPlanRef.current(undefined, keepIds), 100);
+    setTimeout(() => fetchPlanRef.current(keepIds), 100);
   };
 
   // Tomorrow mode: 6pm for kids, 8pm for adults
@@ -401,7 +378,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
     <div style={{ maxWidth: 800, margin: "0 auto", padding: "0 16px 80px" }}>
       {/* Weekly forecast banner */}
       <div style={{ marginBottom: 0, paddingTop: 12 }}>
-        <ForecastCard homeCity={state.city} />
+        <ForecastCard homeCity={displayCity} />
       </div>
 
       {/* Header */}
@@ -410,69 +387,18 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
           <div className="sbt-time-display" style={{ fontFamily: "'Inter', sans-serif", fontSize: 48, fontWeight: 900, letterSpacing: -2, color: "#000", lineHeight: 1 }}>{timeDisplay}</div>
           <div>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, fontWeight: 700, color: "#333" }}>{headline}</div>
-            {weather && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: "#888", marginTop: 2 }}>🌤 {weather} · {CITY_MAP[state.city]?.name}</div>}
+            {weather && <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: "#888", marginTop: 2 }}>🌤 {weather}</div>}
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {/* Kids toggle */}
           <div style={{ display: "flex", borderRadius: 14, border: "2px solid #000", overflow: "hidden" }}>
-            <button onClick={() => { if (state.kids) handleKidsToggle(); }} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, padding: "4px 10px", border: "none", background: !state.kids ? "#000" : "#fff", color: !state.kids ? "#fff" : "#888", cursor: "pointer", transition: "all 0.15s" }}>No Kids</button>
-            <button onClick={() => { if (!state.kids) handleKidsToggle(); }} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, padding: "4px 10px", border: "none", borderLeft: "2px solid #000", background: state.kids ? "#000" : "#fff", color: state.kids ? "#fff" : "#888", cursor: "pointer", transition: "all 0.15s" }}>Kids</button>
+            <button onClick={() => { if (state.kids) handleKidsToggle(); }} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 900, padding: "4px 10px", border: "none", background: !state.kids ? "#000" : "#fff", color: !state.kids ? "#fff" : "#888", cursor: "pointer", transition: "all 0.15s", textTransform: "uppercase", letterSpacing: 1 }}>No Kids</button>
+            <button onClick={() => { if (!state.kids) handleKidsToggle(); }} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 900, padding: "4px 10px", border: "none", borderLeft: "2px solid #000", background: state.kids ? "#000" : "#fff", color: state.kids ? "#fff" : "#888", cursor: "pointer", transition: "all 0.15s", textTransform: "uppercase", letterSpacing: 1 }}>Kids</button>
           </div>
           {/* New Plan */}
           <button onClick={handleNewPlan} disabled={loading && !swapLoading} className={(loading && !swapLoading) ? "sbt-shuffle sbt-shuffle--loading" : "sbt-shuffle"}>Shuffle ↻</button>
         </div>
-      </div>
-
-      {/* City pills */}
-      <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "0 0 12px", flexWrap: "wrap" }}>
-        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 600, color: "#bbb", marginRight: 2 }}>Starting in</span>
-        {/* Geolocation — first option, to the left of CAMPBELL */}
-        <button
-          onClick={handleGeolocate}
-          disabled={geoLoading}
-          title="Use my location"
-          style={{
-            width: 28,
-            height: 28,
-            borderRadius: "50%",
-            border: geoActive ? "2px solid #1A5AFF" : "1.5px solid #ddd",
-            background: geoActive ? "#1A5AFF" : "#fff",
-            cursor: geoLoading ? "wait" : "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 0,
-            flexShrink: 0,
-          }}
-        >
-          {geoLoading ? (
-            <span style={{ fontSize: 12, color: "#aaa" }}>...</span>
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={geoActive ? "#fff" : "#4A90D9"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="4" />
-              <line x1="12" y1="2" x2="12" y2="6" />
-              <line x1="12" y1="18" x2="12" y2="22" />
-              <line x1="2" y1="12" x2="6" y2="12" />
-              <line x1="18" y1="12" x2="22" y2="12" />
-            </svg>
-          )}
-        </button>
-        {FEATURED_CITIES.map((id) => (
-          <button key={id} onClick={() => { setGeoActive(false); handleCityChange(id); }} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: state.city === id ? 800 : 500, padding: "4px 10px", borderRadius: 14, border: state.city === id ? "2px solid #000" : "1.5px solid #ddd", background: state.city === id ? "#000" : "#fff", color: state.city === id ? "#fff" : "#777", cursor: "pointer", transition: "all 0.15s" }}>{CITY_MAP[id].name}</button>
-        ))}
-        {showMoreCities ? (
-          CITIES.filter((c) => !FEATURED_CITIES.includes(c.id)).map((c) => (
-            <button key={c.id} onClick={() => { setGeoActive(false); handleCityChange(c.id); setShowMoreCities(false); }} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: state.city === c.id ? 800 : 500, padding: "4px 10px", borderRadius: 14, border: state.city === c.id ? "2px solid #000" : "1.5px solid #ddd", background: state.city === c.id ? "#000" : "#fff", color: state.city === c.id ? "#fff" : "#777", cursor: "pointer" }}>{c.name}</button>
-          ))
-        ) : (
-          <>
-            {!FEATURED_CITIES.includes(state.city) && <button style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 800, padding: "4px 10px", borderRadius: 14, border: "2px solid #000", background: "#000", color: "#fff", cursor: "default" }}>{CITY_MAP[state.city]?.name}</button>}
-          </>
-        )}
-        {!showMoreCities && (
-          <button onClick={() => setShowMoreCities(true)} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 600, padding: "4px 10px", borderRadius: 14, border: "1.5px dashed #ccc", background: "#fff", color: "#999", cursor: "pointer", flexShrink: 0 }}>More...</button>
-        )}
       </div>
 
       {/* Photo scroll */}
@@ -587,7 +513,7 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
       {/* Share button */}
       {cards.length > 1 && !loading && (
         <div style={{ textAlign: "center", padding: "16px 0 0" }}>
-          <ShareButton cards={cards} city={state.city} kids={state.kids} weather={weather} />
+          <ShareButton cards={cards} city={displayCity} kids={state.kids} weather={weather} />
         </div>
       )}
 
@@ -595,11 +521,11 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
       <style>{`
         .sbt-shuffle {
           font-family: 'Inter', sans-serif;
-          font-size: 12px;
+          font-size: 11px;
           font-weight: 900;
-          padding: 5px 16px;
+          padding: 4px 14px;
           border-radius: 14px;
-          border: 2.5px solid #000;
+          border: 2px solid #000;
           background: linear-gradient(135deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC);
           background-size: 200% 200%;
           animation: rainbow 3s ease infinite;
@@ -713,6 +639,9 @@ export default function SouthBayTodayView({ homeCity, setHomeCity }: Props) {
           100% { box-shadow: 0 0 0 0 rgba(150, 150, 150, 0); }
         }
         @media (max-width: 640px) {
+          .loading-verb {
+            font-size: 20px !important;
+          }
           .sbt-header {
             flex-direction: column !important;
             align-items: flex-start !important;
@@ -878,7 +807,7 @@ function LoadingVerb() {
   const display = full.slice(0, charIdx);
 
   return (
-    <p className="loading-verb" style={{ fontSize: 28, fontWeight: 900, textAlign: "center", margin: 0, minHeight: 36, background: "linear-gradient(90deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC, #FF6B35)", backgroundSize: "200% 100%", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", animation: "rainbow 3s ease infinite", fontFamily: "'Inter', sans-serif", letterSpacing: -0.5 }}>
+    <p className="loading-verb" style={{ fontSize: 28, fontWeight: 900, textAlign: "center", margin: 0, minHeight: 36, background: "linear-gradient(90deg, #FF6B35, #E63946, #7B2FBE, #1A5AFF, #06D6A0, #FF3CAC, #FF6B35)", backgroundSize: "200% 100%", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", animation: "rainbow 3s ease infinite", fontFamily: "'Inter', sans-serif", letterSpacing: -0.5, whiteSpace: "nowrap" }}>
       {display}<span style={{ WebkitTextFillColor: "#ccc", animation: "blink 0.8s step-end infinite" }}>|</span>
     </p>
   );
