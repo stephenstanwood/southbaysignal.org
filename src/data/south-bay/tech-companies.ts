@@ -1617,6 +1617,18 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     color: "#4f46e5",
     url: "https://simile.ai",
   },
+  {
+    id: "chipstack",
+    name: "ChipStack",
+    city: "Campbell",
+    category: "chips",
+    round: "Acquired",
+    amount: "~$7M raised",
+    date: "2025-11-01",
+    tagline: "AI-driven semiconductor verification startup founded in 2023 — built tools to automate chip design sign-off using LLMs, slashing the manual effort that typically bottlenecks tape-out. Acquired by Cadence Design Systems in November 2025, folding its technology into Cadence's Jasper and Verisium verification platforms.",
+    color: "#0ea5e9",
+    url: "https://www.cadence.com",
+  },
 ];
 
 // Pulse stats for the header strip
@@ -1634,7 +1646,7 @@ export const TECH_PULSE = [
   {
     value: "$6B+",
     label: "Raised in Q1–Q2 2026",
-    note: "51 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
+    note: "52 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
   },
   {
     value: "Chip equipment",

@@ -1,19 +1,91 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-22T02:15:20.818Z",
+      "generatedAt": "2026-04-22T20:12:28.795Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Apr 14 – Apr 21",
+      "dateRange": "Apr 15 – Apr 22",
       "stats": {
-        "total": 283,
-        "notable": 17,
-        "newUnits": 8,
-        "totalValuation": 156748827
+        "total": 311,
+        "notable": 23,
+        "newUnits": 18,
+        "totalValuation": 156857122
       },
       "permits": [
+        {
+          "id": "2026-112444-RS",
+          "address": "1502 Sherly Pl",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Sherly Place (Bemp 100%) Lot 3",
+          "valuation": 570127,
+          "units": 1,
+          "issueDate": "2026-04-20",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-112434-RS",
+          "address": "1500 Sherly Pl",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Sherly Place (Bemp 100%) Lot 2",
+          "valuation": 496413,
+          "units": 1,
+          "issueDate": "2026-04-20",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-112438-RS",
+          "address": "1504 Sherly Pl",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Sherly Place (Bemp 100%) Lot 4",
+          "valuation": 496413,
+          "units": 1,
+          "issueDate": "2026-04-20",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-112473-RS",
+          "address": "1506 Sherly Pl",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Sherly Place (Bemp 100%) Lot 5",
+          "valuation": 484906,
+          "units": 1,
+          "issueDate": "2026-04-20",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-112282-RS",
+          "address": "1665 Lincoln Av",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Sherly Place (Bemp 100%) Lot 1",
+          "valuation": 447134,
+          "units": 1,
+          "issueDate": "2026-04-20",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2024-112980-RS",
+          "address": "2942 Edison Dr #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached adu",
+          "valuation": 202401,
+          "units": 1,
+          "issueDate": "2026-04-20",
+          "subtype": "2nd Unit Added"
+        },
         {
           "id": "2025-137777-RS",
           "address": "528 N 11th St #2",
@@ -27,15 +99,27 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2023-126747-RS",
-          "address": "275 S 23rd St #2",
+          "id": "2025-122435-RS",
+          "address": "3081 Wall St",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Hud Approved Detached adu",
+          "description": "New Detached adu",
           "valuation": 169090,
           "units": 1,
-          "issueDate": "2026-04-15",
+          "issueDate": "2026-04-20",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2026-112521-RS",
+          "address": "1665 Lincoln Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "1655 Lincoln Unit 2 (Bemp 100%) New Attached adu",
+          "valuation": 135103,
+          "units": 1,
+          "issueDate": "2026-04-20",
           "subtype": "2nd Unit Added"
         },
         {
@@ -49,107 +133,47 @@
           "units": 1,
           "issueDate": "2026-04-16",
           "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-128347-RS",
-          "address": "769 N Bayshore West #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "New Detached adu",
-          "valuation": 118363,
-          "units": 1,
-          "issueDate": "2026-04-17",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-145841-RS",
-          "address": "468 Pocatello Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Attached adu",
-          "valuation": 100101,
-          "units": 1,
-          "issueDate": "2026-04-15",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2026-099125-RS",
-          "address": "3305 Mt Wilson Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Garage Conversion to adu",
-          "valuation": 82178,
-          "units": 1,
-          "issueDate": "2026-04-15",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-145960-RS",
-          "address": "3068 Flater Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Garage Conversion to New Jadu",
-          "valuation": 70172,
-          "units": 1,
-          "issueDate": "2026-04-16",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2024-102289-RS",
-          "address": "4023 Loganberry Dr #3",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Garage Conversion to Jadu W/ Storage",
-          "valuation": 54109,
-          "units": 1,
-          "issueDate": "2026-04-16",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2026-113083-CI",
-          "address": "5853 Rue Ferrari",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Pld Athena ti R&D Facility",
-          "valuation": 150000000,
-          "units": 0,
-          "issueDate": "2026-04-16",
-          "subtype": "R & D Lab"
-        },
-        {
-          "id": "2026-112675-CI",
-          "address": "2855 Stevens Creek Bl",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "(Bemp100%) Cider ti #2411",
-          "valuation": 1100000,
-          "units": 0,
-          "issueDate": "2026-04-15",
-          "subtype": "Retail"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-22T02:15:23.135Z",
+      "generatedAt": "2026-04-22T20:12:31.126Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Apr 14 – Apr 21",
+      "dateRange": "Apr 15 – Apr 22",
       "stats": {
-        "total": 87,
-        "notable": 6,
+        "total": 107,
+        "notable": 10,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
+        {
+          "id": "26BLD-00993",
+          "address": "180 El Camino Real",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "COM: 'CHANEL'  Install two illuminated signs. Sign 1: (1) set of 9 1/4” (H) reverse channel lettering, with satin painted face and returns, frosted acrylic halo back and internal LED illumination. Sign 2. (1) set of 12 3/8” (H) reverse channel lettering, with satin painted face and returns, frosted acrylic halo back and internal LED illumination.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-15",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-00990",
+          "address": "2680 Ramona St",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "RES MEP: 15 duct supply & 1 duct return c/o.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-15",
+          "subtype": "Permit Issued"
+        },
         {
           "id": "26BLD-00996",
           "address": "1655 Middlefield Rd",
@@ -160,6 +184,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-15",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-01024",
+          "address": "3790 Ross Rd",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "Res: Install EV charger (24-amp / level 2) at the driveway.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-20",
           "subtype": "Permit Issued"
         },
         {
@@ -175,15 +211,27 @@
           "subtype": "Finaled"
         },
         {
-          "id": "26BLD-00990",
-          "address": "2680 Ramona St",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "RES MEP: 15 duct supply & 1 duct return c/o.",
+          "id": "26BLD-01043",
+          "address": "365 College Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-15",
+          "issueDate": "2026-04-21",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-01044",
+          "address": "631 Saint Claire Dr",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-21",
           "subtype": "Permit Issued"
         },
         {
