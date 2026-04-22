@@ -2,6 +2,44 @@
 
 ---
 
+## 2026-04-22 — Cycle 104: SJ Neighborhood Filter Sticky + Data Refresh
+
+### Context
+Wednesday April 22, 2026 (~4 PM PDT). Cycle 103 noted the SJ neighborhood filter had the same scroll-back problem as the category filter. Category filter was made sticky in cycle 102. Completing the same fix for the SJ area chips this cycle. Also: Crunchbase weekly roundup for Apr 11-17 published Friday Apr 17 — no new South Bay rounds in top 10 beyond nEye.ai (already in DB from cycle 103).
+
+### What Was Built
+
+**Events tab UX: SJ neighborhood filter now sticks with category pills**
+
+The "Area:" chips (Downtown SJ, East San José, Willow Glen, etc.) were previously rendered below the Kids toggle — requiring scroll-to-top to change neighborhood after scrolling through the event list. Fixed by moving the neighborhood chip row INSIDE the `.sb-events-sticky-filter` container, immediately below the category pills. Now both filters stick together below the tab nav when scrolling.
+
+Implementation:
+- `EventsView.tsx`: Moved SJ neighborhood `<div>` from after the Kids toggle into the sticky container wrapper, with `paddingTop: 6` to separate it from the category row above. Removed the old standalone conditional render.
+
+**No new tech funding this cycle**
+
+Confirmed via Crunchbase weekly roundup (Apr 11-17): no new South Bay companies in the top 10 beyond nEye.ai (already in DB). Week of Apr 17-22 roundup not yet published (publishes Friday Apr 25).
+
+**Data refreshed (8 files):**
+- `upcoming-events.json` — 698 events (108 ongoing), updated 23:06 UTC
+- `around-town.json` — 8 items, refreshed Apr 22
+- `digests.json` — 10 cities
+- `upcoming-meetings.json` — 6 cities; Los Gatos fallback May 5
+- `real-estate.json` — 10 cities
+- `outages.json` — 0 active outages
+- `weekend-picks.json` — 3 picks: Paul McCartney tribute (Campbell, free), Los Gatos Wine Walk, Nikkei Matsuri free admission
+- `air-quality.json` — 11 cities, avg AQI 37 (Good)
+
+### Why This Was the Strongest Move
+The SJ area filter is the most granular browsing tool in the Events tab — users filtering by "East San José" or "Willow Glen" are exactly the kind of high-intent residents SBS is built for. Before this fix, changing the neighborhood selection after scrolling through 20+ events required scrolling all the way back up. Now both filter rows stick together, completing the UX work started in cycle 102.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 25 watch** — Crunchbase weekly roundup for Apr 18-25 publishes Friday. Check for new South Bay rounds.
+2. **Campbell council data gap** — Stoa has no Campbell council data past Feb 3, 2026. Playwright scrape of campbellca.gov Agenda Center as fallback.
+3. **Weekend picks freshness** — Weekend picks currently regenerated ad-hoc. Consider adding a daily scheduled run (Sat/Sun picks refresh Thu/Fri each week).
+
+---
+
 ## 2026-04-22 — Cycle 103: ChipStack Acquisition + Acquired Badge + Data Refresh
 
 ### Context

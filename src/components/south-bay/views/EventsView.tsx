@@ -1043,7 +1043,7 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
         />
       </div>
 
-      {/* Category pills — sticky below nav */}
+      {/* Category pills + SJ neighborhood filter — sticky below nav */}
       <div className="sb-events-sticky-filter">
         <div style={{
           display: "flex", gap: 6, overflowX: "auto", paddingBottom: 4,
@@ -1084,6 +1084,55 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
             );
           })}
         </div>
+
+        {/* San José neighborhood filter — shown when SJ is the only selected city */}
+        {selectedCities.size === 1 && selectedCities.has("san-jose") && viewMode === "upcoming" && (
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", paddingTop: 6, paddingBottom: 2, alignItems: "center" }}>
+            <span style={{
+              fontSize: 9, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+              letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--sb-muted)",
+              flexShrink: 0, paddingTop: 2,
+            }}>
+              Area:
+            </span>
+            <button
+              onClick={() => setSjNeighborhood(null)}
+              style={{
+                padding: "3px 10px", fontSize: 11, cursor: "pointer", fontFamily: "inherit",
+                border: `1.5px solid ${sjNeighborhood === null ? "var(--sb-primary)" : "var(--sb-border)"}`,
+                borderRadius: 100,
+                background: sjNeighborhood === null ? "var(--sb-primary)" : "#fff",
+                color: sjNeighborhood === null ? "#fff" : "var(--sb-muted)",
+                fontWeight: sjNeighborhood === null ? 600 : 400,
+                transition: "all 0.12s",
+              }}
+            >
+              All SJ
+            </button>
+            {SJ_NEIGHBORHOODS.map((n) => {
+              const active = sjNeighborhood === n.id;
+              return (
+                <button
+                  key={n.id}
+                  onClick={() => setSjNeighborhood(active ? null : n.id)}
+                  style={{
+                    padding: "3px 10px", fontSize: 11, cursor: "pointer", fontFamily: "inherit",
+                    border: `1.5px solid ${active ? "var(--sb-primary)" : "var(--sb-border)"}`,
+                    borderRadius: 100,
+                    background: active ? "var(--sb-primary)" : "#fff",
+                    color: active ? "#fff" : "var(--sb-muted)",
+                    fontWeight: active ? 600 : 400,
+                    transition: "all 0.12s",
+                    display: "flex", alignItems: "center", gap: 4,
+                  }}
+                >
+                  <span>{n.emoji}</span>
+                  <span>{n.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Kids toggle + event count */}
@@ -1098,55 +1147,6 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
           </span>
         )}
       </div>
-
-      {/* San José neighborhood filter — shown when SJ is the only selected city */}
-      {selectedCities.size === 1 && selectedCities.has("san-jose") && viewMode === "upcoming" && (
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10, alignItems: "center" }}>
-          <span style={{
-            fontSize: 9, fontWeight: 700, fontFamily: "'Space Mono', monospace",
-            letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--sb-muted)",
-            flexShrink: 0, paddingTop: 2,
-          }}>
-            Area:
-          </span>
-          <button
-            onClick={() => setSjNeighborhood(null)}
-            style={{
-              padding: "3px 10px", fontSize: 11, cursor: "pointer", fontFamily: "inherit",
-              border: `1.5px solid ${sjNeighborhood === null ? "var(--sb-primary)" : "var(--sb-border)"}`,
-              borderRadius: 100,
-              background: sjNeighborhood === null ? "var(--sb-primary)" : "#fff",
-              color: sjNeighborhood === null ? "#fff" : "var(--sb-muted)",
-              fontWeight: sjNeighborhood === null ? 600 : 400,
-              transition: "all 0.12s",
-            }}
-          >
-            All SJ
-          </button>
-          {SJ_NEIGHBORHOODS.map((n) => {
-            const active = sjNeighborhood === n.id;
-            return (
-              <button
-                key={n.id}
-                onClick={() => setSjNeighborhood(active ? null : n.id)}
-                style={{
-                  padding: "3px 10px", fontSize: 11, cursor: "pointer", fontFamily: "inherit",
-                  border: `1.5px solid ${active ? "var(--sb-primary)" : "var(--sb-border)"}`,
-                  borderRadius: 100,
-                  background: active ? "var(--sb-primary)" : "#fff",
-                  color: active ? "#fff" : "var(--sb-muted)",
-                  fontWeight: active ? 600 : 400,
-                  transition: "all 0.12s",
-                  display: "flex", alignItems: "center", gap: 4,
-                }}
-              >
-                <span>{n.emoji}</span>
-                <span>{n.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      )}
 
       {/* Spring Break banner */}
       {showSpringBreakBanner && viewMode === "upcoming" && (
