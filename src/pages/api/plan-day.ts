@@ -59,11 +59,13 @@ interface PlanRequest {
    *  schedule generator to prevent the same venue anchoring multiple days in
    *  the same week. */
   blockedNames?: string[];
-  /** Card ids the client has shown the user on recent shuffles — the scorer
-   *  penalizes these so consecutive clicks don't re-surface the same picks.
-   *  Soft signal (-20), not a hard exclude. Managed client-side by the
-   *  homepage variety ledger (last ~10 ids). */
-  recentlyShown?: string[];
+  /** Recently-shown ids/names the client has served. The scorer applies a
+   *  graduated penalty so the same venue doesn't anchor every day: today
+   *  is hardest, last-week fades to a nudge. Strings are treated as today's
+   *  picks; objects carry name + daysAgo so by-name matches (same venue,
+   *  different id record) get penalized too. Managed client-side by the
+   *  homepage ledger (localStorage, ~120 entries, 7-day window). */
+  recentlyShown?: Array<string | { id?: string; name?: string; daysAgo?: number }>;
   /** City anchors used on recent shuffles — same shape/purpose as
    *  recentlyShown but for anchor selection diversity. Currently informational
    *  (client picks the anchor); kept here for future server-side use. */
@@ -555,13 +557,30 @@ interface WeatherContext {
   isNice: boolean;
 }
 
+interface RecentPenaltyInput {
+  byId: Map<string, number>;
+  byName: Map<string, number>;
+}
+
+/** Score penalty for a card we've already shown the user. Today's picks
+ *  are punished hard enough to push them out of the top-35 pool entirely
+ *  (base scores for a curated 4.7 kid-friendly outdoor park top out near
+ *  ~85, so -45 drops them below most in-pool competitors even with max
+ *  jitter). The penalty fades over a week so the pool eventually forgets. */
+function recentPenalty(daysAgo: number): number {
+  if (daysAgo <= 0) return 45;
+  if (daysAgo <= 2) return 25;
+  if (daysAgo <= 7) return 10;
+  return 0;
+}
+
 function scoreCandidates(
   candidates: Candidate[],
   weather: WeatherContext | null,
   hour: number,
   kids: boolean,
   prefs?: UserPreferences,
-  recentlyShown?: Set<string>,
+  recent?: RecentPenaltyInput,
 ): Candidate[] {
   for (const c of candidates) {
     let score = 0;
@@ -574,8 +593,13 @@ function scoreCandidates(
     }
 
     // --- Rating boost ---
-    if (c.rating && c.rating >= 4.5) score += 15;
-    else if (c.rating && c.rating >= 4.0) score += 5;
+    // Softened from +15/+5 → +10/+3. Curated places without a numeric
+    // rating (Rose Garden, Hakone, Shoreline, etc.) used to fall ~15
+    // points behind rated curated picks and systematically lost; they
+    // now get a parity baseline so the rotation actually rotates.
+    if (c.rating && c.rating >= 4.5) score += 10;
+    else if (c.rating && c.rating >= 4.0) score += 3;
+    else if ((c as any).curated && (!c.rating || c.rating === 0)) score += 7;
 
     // --- Curated places are premium ---
     if ((c as any).curated) score += 25;
@@ -655,15 +679,22 @@ function scoreCandidates(
       }
     }
 
-    // --- Recently-shown penalty: consecutive shuffles shouldn't resurface
-    //     the same picks. -20 is soft enough that a truly dominant candidate
-    //     still survives, but enough to flip the ranking when scores are
-    //     comparable. Client-side ledger (SouthBayTodayView) tracks up to
-    //     10 ids across recent fetches. ---
-    if (recentlyShown && recentlyShown.has(c.id)) score -= 20;
+    // --- Recently-shown penalty (graduated). A 7-day ledger persists on
+    //     the client, so the same venue can't anchor every day. Today's
+    //     picks get -25 (hard enough to displace a dominant candidate),
+    //     last-2-days -15, last-week -7. Also matches by normalized
+    //     name so multi-record places (e.g. 6 "Los Gatos Creek Trail"
+    //     entries across cities) all get penalized together. ---
+    if (recent) {
+      const idPenalty = recent.byId.get(c.id) ?? 0;
+      const nameKey = (c.name || "").toLowerCase().replace(/\s+/g, " ").trim();
+      const namePenalty = nameKey ? (recent.byName.get(nameKey) ?? 0) : 0;
+      score -= Math.max(idPenalty, namePenalty);
+    }
 
-    // --- Small random jitter for variety ---
-    score += Math.random() * 10;
+    // --- Random jitter for variety. Widened from ±10 to ±25 so close
+    //     top-of-pool candidates actually reshuffle between loads. ---
+    score += Math.random() * 25;
 
     c.score = score;
   }
@@ -1870,9 +1901,28 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // 2. Build candidate pool — pass startTime so past-today events get dropped
     const allCandidates = buildCandidatePool(city, kids, dismissedSet, lockedSet, planDate, blockedSet, startTime);
 
-    // 3. Score candidates
-    const recentlyShownSet = new Set(recentlyShown);
-    const scored = scoreCandidates(allCandidates, weatherContext, hour, kids, preferences, recentlyShownSet);
+    // 3. Score candidates. Graduated variety penalty: each entry in the
+    // ledger comes with daysAgo so today's picks bite hardest and last
+    // week's fade to a nudge. Backward-compatible with legacy string[].
+    const recentById = new Map<string, number>();
+    const recentByName = new Map<string, number>();
+    for (const entry of recentlyShown) {
+      if (typeof entry === "string") {
+        recentById.set(entry, Math.max(recentById.get(entry) ?? 0, recentPenalty(0)));
+        continue;
+      }
+      if (!entry) continue;
+      const days = typeof entry.daysAgo === "number" ? entry.daysAgo : 0;
+      const penalty = recentPenalty(days);
+      if (penalty <= 0) continue;
+      if (entry.id) recentById.set(entry.id, Math.max(recentById.get(entry.id) ?? 0, penalty));
+      if (entry.name) {
+        const key = entry.name.toLowerCase().replace(/\s+/g, " ").trim();
+        if (key) recentByName.set(key, Math.max(recentByName.get(key) ?? 0, penalty));
+      }
+    }
+    const recent: RecentPenaltyInput = { byId: recentById, byName: recentByName };
+    const scored = scoreCandidates(allCandidates, weatherContext, hour, kids, preferences, recent);
 
     // 4. Separate locked items. Any id the client sent that's NOT in the
     // current pool is stale (event cancelled, place archived) — return

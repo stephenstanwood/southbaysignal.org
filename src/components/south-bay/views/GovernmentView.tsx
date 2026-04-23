@@ -5,6 +5,7 @@ import HealthScoresCard from "../cards/HealthScoresCard";
 import BudgetCard from "../cards/BudgetCard";
 import MinutesSearchCard from "../cards/MinutesSearchCard";
 import ElectionsCard from "../cards/ElectionsCard";
+import DevelopmentView from "./DevelopmentView";
 import type { City } from "../../../lib/south-bay/types";
 import digestsJson from "../../../data/south-bay/digests.json";
 import upcomingMeetingsJson from "../../../data/south-bay/upcoming-meetings.json";
@@ -299,6 +300,9 @@ export default function GovernmentView({ selectedCities }: Props) {
 
       {/* ── Council Records Search ── */}
       <MinutesSearchCard selectedCities={selectedCities} />
+
+      {/* ── Development projects (folded in from the former Development tab) ── */}
+      <DevelopmentView />
 
       {/* ── Food Safety Watch ── */}
       {/* Health scores moved to Food tab */}

@@ -5,14 +5,11 @@ import { CITIES } from "../../lib/south-bay/cities";
 import SouthBayTodayView from "./homepage/SouthBayTodayView";
 
 // Non-default tabs are lazy-loaded so a user who only looks at the Today tab
-// doesn't pay for Sports/Events/Tech/etc. code + their deps (recharts, etc.)
+// doesn't pay for Events/Tech/etc. code + their deps (recharts, etc.)
 // upfront. Each becomes its own chunk the browser fetches on tab activation.
-const SportsView = lazy(() => import("./views/SportsView"));
 const GovernmentView = lazy(() => import("./views/GovernmentView"));
 const EventsView = lazy(() => import("./views/EventsView"));
 const TechnologyView = lazy(() => import("./views/TechnologyView"));
-const DevelopmentView = lazy(() => import("./views/DevelopmentView"));
-const WeatherView = lazy(() => import("./views/WeatherView"));
 const FoodView = lazy(() => import("./views/FoodView"));
 const CampsView = lazy(() => import("./views/CampsView"));
 
@@ -96,8 +93,8 @@ export default function SignalApp() {
     });
   }, []);
 
-  // Only show city filter on government/events tabs (sports and tech are regional)
-  const showCityFilter = activeTab === "government" || activeTab === "events";
+  // City filter only applies to the Events tab.
+  const showCityFilter = activeTab === "events";
 
   return (
     <>
@@ -203,7 +200,6 @@ export default function SignalApp() {
         )}
         {activeTab !== "overview" && (
           <Suspense fallback={<div className="sb-loading"><div className="sb-spinner" /><div className="sb-loading-text">Loading…</div></div>}>
-            {activeTab === "sports" && <SportsView />}
             {activeTab === "events" && (
               <EventsView selectedCities={selectedCities} />
             )}
@@ -211,9 +207,7 @@ export default function SignalApp() {
               <GovernmentView selectedCities={selectedCities} />
             )}
             {activeTab === "technology" && <TechnologyView />}
-            {activeTab === "development" && <DevelopmentView />}
             {activeTab === "food" && <FoodView />}
-            {activeTab === "weather" && <WeatherView />}
             {activeTab === "camps" && <CampsView />}
           </Suspense>
         )}

@@ -27,6 +27,38 @@ export function wmoInfo(code: number): [string, string] {
   return WMO[code] ?? ["🌡", "Unknown"];
 }
 
+/**
+ * Forecast-tile emoji picker. Leans optimistic: Open-Meteo's daily WMO code
+ * often flags the whole day "overcast" because of morning marine layer, even
+ * when the afternoon is clear. Prefer mean cloud cover + rain probability;
+ * only use the raw code for true weather events (rain, snow, thunderstorms, fog).
+ */
+export function forecastEmoji(
+  code: number,
+  cloudCoverMean: number | null | undefined,
+  rainPct: number | null | undefined
+): [string, string] {
+  // Real weather wins: precipitation, snow, thunderstorms, fog.
+  if (code >= 51) return wmoInfo(code);
+  if (code === 45 || code === 48) return wmoInfo(code);
+  if ((rainPct ?? 0) >= 50) return wmoInfo(code >= 51 ? code : 61);
+
+  // Otherwise, sky-state call driven by mean cloud cover.
+  const cc = cloudCoverMean ?? -1;
+  if (cc < 0) {
+    // No cloud-cover data — bump each tier one step sunnier than the raw code.
+    if (code === 0) return ["☀️", "Sunny"];
+    if (code === 1) return ["☀️", "Mostly sunny"];
+    if (code === 2) return ["🌤", "Mostly sunny"];
+    if (code === 3) return ["⛅", "Partly cloudy"];
+    return wmoInfo(code);
+  }
+  if (cc < 25) return ["☀️", "Sunny"];
+  if (cc < 55) return ["🌤", "Mostly sunny"];
+  if (cc < 80) return ["⛅", "Partly cloudy"];
+  return ["☁️", "Cloudy"];
+}
+
 /** Default location for weather features (Campbell, CA). */
 export const DEFAULT_WEATHER_LAT = 37.2872;
 export const DEFAULT_WEATHER_LON = -121.95;

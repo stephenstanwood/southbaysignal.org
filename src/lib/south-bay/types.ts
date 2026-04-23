@@ -31,10 +31,7 @@ export const TABS: TabDef[] = [
   { id: "camps", label: "Camps" },
   { id: "government", label: "Gov" },
   { id: "technology", label: "Tech" },
-  { id: "development", label: "Development" },
   { id: "food", label: "Food" },
-  { id: "weather", label: "Weather" },
-  { id: "sports", label: "Sports" },
 ];
 
 // ── Sports types ──

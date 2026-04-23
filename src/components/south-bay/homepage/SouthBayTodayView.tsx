@@ -61,7 +61,20 @@ interface LocalState {
   dismissed: Record<string, DismissedEntry>;
   locked: string[];
   viewMode: "list" | "cards";
+  /** Rolling ledger of places/events we've shown the user. Lets the API
+   *  penalize recent repeats for up to 7 days so the same venue doesn't
+   *  anchor every day. Capped and auto-pruned on load. */
+  recentlyShown: RecentEntry[];
 }
+
+interface RecentEntry {
+  id: string;
+  name: string;
+  ts: number; // epoch ms
+}
+
+const RECENT_MAX = 120;
+const RECENT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 // ---------------------------------------------------------------------------
 // Design tokens
@@ -93,12 +106,36 @@ function loadState(): LocalState {
       const d = entry as DismissedEntry;
       if (d.type === "skip" && d.until && d.until < now) delete parsed.dismissed[id];
     }
-    return { ...defaultState(), ...parsed };
+    const cutoff = Date.now() - RECENT_MAX_AGE_MS;
+    const recent = Array.isArray(parsed.recentlyShown)
+      ? (parsed.recentlyShown as RecentEntry[])
+          .filter((e) => e && typeof e.ts === "number" && e.ts >= cutoff && typeof e.id === "string")
+      : [];
+    return { ...defaultState(), ...parsed, recentlyShown: recent };
   } catch { return defaultState(); }
 }
 
 function defaultState(): LocalState {
-  return { kids: false, dismissed: {}, locked: [], viewMode: "list" };
+  return { kids: false, dismissed: {}, locked: [], viewMode: "list", recentlyShown: [] };
+}
+
+/** Merge new card ids+names into the recent-shown ledger, drop duplicates
+ *  so a name's timestamp always reflects the most recent view, and cap the
+ *  list. The server reads this to penalize repeats across sessions. */
+function mergeRecent(prev: RecentEntry[], cards: { id: string; name: string }[]): RecentEntry[] {
+  const now = Date.now();
+  const cutoff = now - RECENT_MAX_AGE_MS;
+  const seenIds = new Set(cards.map((c) => c.id));
+  const seenNames = new Set(cards.map((c) => normalizeLedgerName(c.name)));
+  const kept = prev.filter(
+    (e) => e.ts >= cutoff && !seenIds.has(e.id) && !seenNames.has(normalizeLedgerName(e.name)),
+  );
+  const fresh = cards.map((c) => ({ id: c.id, name: c.name, ts: now }));
+  return [...fresh, ...kept].slice(0, RECENT_MAX);
+}
+
+function normalizeLedgerName(name: string | null | undefined): string {
+  return (name || "").toLowerCase().replace(/\s+/g, " ").trim();
 }
 
 const PLAN_ANCHORS: City[] = CITIES
@@ -333,11 +370,10 @@ export default function SouthBayTodayView(_props: Props) {
   const [timeDisplay, setTimeDisplay] = useState(() => formatTime());
   const fetchRef = useRef(0);
   const lastAnchorRef = useRef<City | null>(initialPlan.current.anchor);
-  // Variety ledger: last 3 anchors + last 10 card ids we showed the user.
-  // The API uses recentlyShown for a -20 score penalty so consecutive
-  // shuffles don't resurface the same anchor/events.
+  // Anchor diversity within a single session. Card-level variety is
+  // persisted in state.recentlyShown (localStorage, 7-day window) so it
+  // survives reloads and spans sessions.
   const recentAnchorsRef = useRef<City[]>(initialPlan.current.anchor ? [initialPlan.current.anchor] : []);
-  const recentCardIdsRef = useRef<string[]>(initialPlan.current.cards.map((c) => c.id));
   const fetchPlanRef = useRef<(extraLockedIds?: string[], noCache?: boolean) => void>(() => {});
   const [prefs, setPrefs] = useState<UserPreferences>(loadPrefs);
 
@@ -352,6 +388,18 @@ export default function SouthBayTodayView(_props: Props) {
   }, []);
 
   useEffect(() => { saveState(state); }, [state]);
+
+  // Seed the recent-shown ledger with the default plan's cards on first
+  // paint so even the first shuffle has something to avoid. Runs once.
+  useEffect(() => {
+    const seed = initialPlan.current;
+    if (!seed?.cards.length) return;
+    setState((s) => ({
+      ...s,
+      recentlyShown: mergeRecent(s.recentlyShown, seed.cards.map((c) => ({ id: c.id, name: c.name }))),
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const fetchPlan = useCallback(async (extraLockedIds?: string[], noCache = false) => {
     const id = ++fetchRef.current;
@@ -378,6 +426,15 @@ export default function SouthBayTodayView(_props: Props) {
     });
 
     const eff = getEffectiveTime(state.kids);
+    // Graduated variety signal: server scales the penalty by age, so
+    // today's picks get -25, this-week picks get ~-7. Persisted across
+    // sessions via localStorage (state.recentlyShown).
+    const nowMs = Date.now();
+    const recentPayload = state.recentlyShown.map((e) => ({
+      id: e.id,
+      name: e.name,
+      daysAgo: Math.max(0, Math.floor((nowMs - e.ts) / (24 * 60 * 60 * 1000))),
+    }));
     try {
       const res = await fetch("/api/plan-day", {
         method: "POST",
@@ -391,10 +448,7 @@ export default function SouthBayTodayView(_props: Props) {
           currentMinute: eff.currentMinute,
           planDate: eff.planDate,
           preferences: prefs.totalInteractions >= 5 ? prefs : undefined,
-          // Shuffle-variety signal: server applies -20 penalty to IDs we've
-          // shown recently, so consecutive clicks don't re-surface the same
-          // events.
-          recentlyShown: recentCardIdsRef.current,
+          recentlyShown: recentPayload,
           recentAnchors: recentAnchorsRef.current,
           noCache,
         }),
@@ -408,11 +462,10 @@ export default function SouthBayTodayView(_props: Props) {
       const sorted = [...data.cards].sort((a, b) => parseTimeBlock(a.timeBlock) - parseTimeBlock(b.timeBlock));
       // Only show green lock icon for user-explicitly-locked cards, not auto-kept ones
       setCards(sorted.map((c) => ({ ...c, locked: state.locked.includes(c.id) })));
-      // Push fresh card ids onto the ledger (front = newest). Dedup and cap
-      // at 10 so the next shuffle knows what to avoid.
-      const nextIds = sorted.map((c) => c.id);
-      const merged = [...nextIds, ...recentCardIdsRef.current.filter((id) => !nextIds.includes(id))];
-      recentCardIdsRef.current = merged.slice(0, 10);
+      setState((s) => ({
+        ...s,
+        recentlyShown: mergeRecent(s.recentlyShown, sorted.map((c) => ({ id: c.id, name: c.name }))),
+      }));
       setReplacedIds(new Set());
       setWeather(data.weather);
       // Purge any locked IDs the server couldn't find (event cancelled,
@@ -472,7 +525,10 @@ export default function SouthBayTodayView(_props: Props) {
       setCards(preGen.cards);
       lastAnchorRef.current = preGen.anchor;
       recentAnchorsRef.current = preGen.anchor ? [preGen.anchor] : [];
-      recentCardIdsRef.current = preGen.cards.map((c) => c.id);
+      setState((s) => ({
+        ...s,
+        recentlyShown: mergeRecent(s.recentlyShown, preGen.cards.map((c) => ({ id: c.id, name: c.name }))),
+      }));
       setReplacedIds(new Set());
       // Swap the weather line to match the new mode's anchor.
       try {

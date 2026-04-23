@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SignalApp from "../components/south-bay/SignalApp.tsx";
-const title = "South Bay Today";
+const title = "The South Bay Today";
 ---
 
 <BaseLayout
@@ -1961,6 +1961,18 @@ const title = "South Bay Today";
         border-color: var(--sb-ink);
         color: #fff;
         font-weight: 700;
+      }
+      .camps-city-chips {
+        display: grid;
+        grid-template-columns: repeat(6, max-content);
+        gap: 6px;
+        justify-content: start;
+      }
+      @media (max-width: 900px) {
+        .camps-city-chips { grid-template-columns: repeat(4, max-content); }
+      }
+      @media (max-width: 560px) {
+        .camps-city-chips { grid-template-columns: repeat(3, max-content); }
       }
       @media (max-width: 640px) {
         .camps-view .dev-header-title { font-size: 28px; }
