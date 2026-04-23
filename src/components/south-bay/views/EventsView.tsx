@@ -26,7 +26,6 @@ function meetingDisplayTitle(title: string, city: string): string {
 
 interface Props {
   selectedCities: Set<City>;
-  homeCity: City | null;
 }
 
 type ViewMode = "upcoming" | "recurring" | "venues";
@@ -737,7 +736,7 @@ const SB_BREAK_START  = "2026-04-03"; // first district break starts (Easter 202
 const SB_BREAK_WK1    = "2026-04-10"; // end of first break window
 const SB_BREAK_END    = "2026-04-17"; // end of second break window
 
-export default function EventsView({ selectedCities, homeCity }: Props) {
+export default function EventsView({ selectedCities }: Props) {
   const [viewMode, setViewMode] = useState<ViewMode>("upcoming");
   const [category, setCategory] = useState<EventCategory | "all">("all");
   const [search, setSearch] = useState("");
@@ -754,7 +753,7 @@ export default function EventsView({ selectedCities, homeCity }: Props) {
 
   const now = new Date();
   const currentMonth = now.getMonth() + 1;
-  const primary = homeCity ?? "san-jose";
+  const primary = "san-jose";
 
   const todayIso = now.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
   const tomorrowIso = new Date(now.getTime() + 86400000).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });

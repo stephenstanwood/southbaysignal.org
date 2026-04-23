@@ -48,12 +48,12 @@ function formatMoney(n: number): string {
   return `$${n.toLocaleString()}`;
 }
 
-export default function PermitPulseCard({ homeCity }: { homeCity: City | null }) {
-  // Use homeCity's data if available; fall back to any city with data (regional view)
-  const data = (homeCity && allData[homeCity]) || Object.values(allData)[0] || null;
+export default function PermitPulseCard() {
+  // Regional view — show whatever city has data first.
+  const data = Object.values(allData)[0] || null;
   if (!data || !data.permits || data.permits.length === 0) return null;
 
-  const isRegional = !homeCity || !allData[homeCity];
+  const isRegional = true;
   const { stats, permits, dateRange, city, sourceUrl, source } = data;
 
   return (

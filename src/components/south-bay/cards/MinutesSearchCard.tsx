@@ -79,7 +79,6 @@ function cityIdFromName(name: string): string {
 }
 
 interface Props {
-  homeCity: string | null;
   selectedCities: Set<string>;
 }
 
@@ -90,7 +89,7 @@ interface ChatTurn {
   error: string | null;
 }
 
-export default function MinutesSearchCard({ homeCity, selectedCities }: Props) {
+export default function MinutesSearchCard({ selectedCities }: Props) {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<ChatTurn[]>([]);
@@ -99,12 +98,11 @@ export default function MinutesSearchCard({ homeCity, selectedCities }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const cityParam = (() => {
-    if (homeCity) return CITY_NAME_MAP[homeCity] ?? null;
     const names = [...selectedCities].map((id) => CITY_NAME_MAP[id]).filter(Boolean);
     return names.length > 0 ? names.join(",") : null;
   })();
 
-  const cityLabel = homeCity ? (CITY_NAME_MAP[homeCity] ?? "your city") : "your city";
+  const cityLabel = "your city";
 
   const doSearch = async (q: string, topic?: string) => {
     const trimmed = q.trim();

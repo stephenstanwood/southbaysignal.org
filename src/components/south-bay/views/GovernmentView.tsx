@@ -11,7 +11,6 @@ import upcomingMeetingsJson from "../../../data/south-bay/upcoming-meetings.json
 
 interface Props {
   selectedCities: Set<City>;
-  homeCity: City | null;
 }
 
 interface AgendaItem {
@@ -56,7 +55,7 @@ const AGENDA_URLS: Record<string, string> = {
 };
 const allConfigured = configuredCities.length > 0 ? configuredCities : KNOWN_CITIES;
 
-export default function GovernmentView({ selectedCities, homeCity }: Props) {
+export default function GovernmentView({ selectedCities }: Props) {
   const [digests, setDigests] = useState<Map<string, DigestData>>(() => {
     const map = new Map<string, DigestData>();
     for (const [city, digest] of Object.entries(staticDigests)) {
@@ -101,7 +100,7 @@ export default function GovernmentView({ selectedCities, homeCity }: Props) {
   }, []);
 
   // Sort: home city first (fallback san-jose)
-  const primary = homeCity ?? "san-jose";
+  const primary = "san-jose";
   const visibleCities = allConfigured
     .filter((c) => selectedCities.has(c))
     .sort((a, b) => {
@@ -128,7 +127,7 @@ export default function GovernmentView({ selectedCities, homeCity }: Props) {
       <ElectionsCard />
 
       {/* ── Budget Snapshot ── */}
-      <BudgetCard cityId={homeCity} />
+      <BudgetCard cityId={null} />
 
       {/* ── Section header ── */}
       <div className="sb-section-header" style={{ marginBottom: 4 }}>
@@ -299,7 +298,7 @@ export default function GovernmentView({ selectedCities, homeCity }: Props) {
 
 
       {/* ── Council Records Search ── */}
-      <MinutesSearchCard homeCity={homeCity} selectedCities={selectedCities} />
+      <MinutesSearchCard selectedCities={selectedCities} />
 
       {/* ── Food Safety Watch ── */}
       {/* Health scores moved to Food tab */}

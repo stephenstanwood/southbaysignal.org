@@ -246,8 +246,6 @@ function recordInteraction(
 // ---------------------------------------------------------------------------
 
 type Props = {
-  homeCity: City | null;
-  setHomeCity: (city: City) => void;
   onNavigate: (tab: Tab) => void;
 };
 
@@ -255,7 +253,13 @@ type Props = {
 // Main component
 // ---------------------------------------------------------------------------
 
-export default function SouthBayTodayView({ homeCity }: Props) {
+// Regional anchor for any weather/forecast widget that needs a single city.
+// SBT is an "explore the whole area" product now — there's no user-selected
+// home city. Picking San Jose keeps the forecast stable and plausibly
+// representative for the whole South Bay.
+const REGIONAL_ANCHOR: City = "san-jose";
+
+export default function SouthBayTodayView(_props: Props) {
   const [state, setState] = useState<LocalState>(() => loadState());
   // Random anchor for initial render so first-visit users see variety.
   const initialPlan = useRef<{ cards: DayCard[]; anchor: City | null } | null>(null);
@@ -291,7 +295,7 @@ export default function SouthBayTodayView({ homeCity }: Props) {
 
   // Display city for forecast + weather label — user's persisted home city,
   // or san-jose (center of south bay) as a neutral default.
-  const displayCity: City = homeCity || "san-jose";
+  const displayCity: City = REGIONAL_ANCHOR;
 
   // Keep time display live
   useEffect(() => {

@@ -243,7 +243,7 @@ function DevSection({
 
 // ── Main view ────────────────────────────────────────────────────────────────
 
-export default function DevelopmentView({ homeCity }: { homeCity?: City | null }) {
+export default function DevelopmentView() {
   const [categoryFilter, setCategoryFilter] = useState<DevCategory | "all">("all");
 
   const byStatus = useMemo(() => {
@@ -307,7 +307,7 @@ export default function DevelopmentView({ homeCity }: { homeCity?: City | null }
       })}
 
       {/* Permit Pulse */}
-      <PermitPulseCard homeCity={homeCity ?? null} />
+      <PermitPulseCard />
 
       {/* Footer note */}
       <div className="dev-footer-note">

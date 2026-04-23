@@ -1,9 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import type { Tab, City } from "../../lib/south-bay/types";
 import { TABS } from "../../lib/south-bay/types";
-import { CITIES, getCityName } from "../../lib/south-bay/cities";
+import { CITIES } from "../../lib/south-bay/cities";
 import SportsView from "./views/SportsView";
-import HomepageView from "./homepage/HomepageView";
 import SouthBayTodayView from "./homepage/SouthBayTodayView";
 import GovernmentView from "./views/GovernmentView";
 import EventsView from "./views/EventsView";
@@ -46,16 +45,11 @@ export default function SignalApp() {
   const [selectedCities, setSelectedCities] = useState<Set<City>>(
     () => new Set(CITIES.map((c) => c.id)),
   );
-  const [homeCity, setHomeCityState] = useState<City | null>(() => {
-    if (typeof window === "undefined") return null;
-    return (localStorage.getItem("sb-home-city") as City | null) ?? null;
-  });
-
-  const setHomeCity = useCallback((city: City | null) => {
-    setHomeCityState(city);
-    if (city) {
-      localStorage.setItem("sb-home-city", city);
-    } else {
+  // Purge any lingering home-city preference from a previous build. The
+  // product is now "explore the whole area" — no anchor city. Keep this
+  // as a one-time cleanup so users aren't staring at a stale label.
+  useEffect(() => {
+    if (typeof window !== "undefined") {
       localStorage.removeItem("sb-home-city");
     }
   }, []);
@@ -121,11 +115,6 @@ export default function SignalApp() {
           </a>
           <div className="sb-date">
             <div>{TODAY}</div>
-            {homeCity && (
-              <div style={{ color: "var(--sb-muted)", fontWeight: 600, marginTop: 2 }}>
-                {getCityName(homeCity).toUpperCase()}
-              </div>
-            )}
           </div>
           <div className="sb-slogan">All local. Good vibes. No ads.</div>
           <div className="sb-social-links">
@@ -202,19 +191,19 @@ export default function SignalApp() {
       {/* Content */}
       <main className="sb-main">
         {activeTab === "overview" && (
-          <SouthBayTodayView homeCity={homeCity} setHomeCity={setHomeCity} onNavigate={navigateTo} />
+          <SouthBayTodayView onNavigate={navigateTo} />
         )}
         {activeTab === "sports" && <SportsView />}
         {activeTab === "events" && (
-          <EventsView selectedCities={selectedCities} homeCity={homeCity} />
+          <EventsView selectedCities={selectedCities} />
         )}
         {activeTab === "government" && (
-          <GovernmentView selectedCities={selectedCities} homeCity={homeCity} />
+          <GovernmentView selectedCities={selectedCities} />
         )}
         {activeTab === "technology" && <TechnologyView />}
-        {activeTab === "development" && <DevelopmentView homeCity={homeCity} />}
+        {activeTab === "development" && <DevelopmentView />}
         {activeTab === "food" && <FoodView />}
-        {activeTab === "weather" && <WeatherView homeCity={homeCity} />}
+        {activeTab === "weather" && <WeatherView />}
         {activeTab === "camps" && <CampsView />}
       </main>
 

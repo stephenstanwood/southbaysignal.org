@@ -61,10 +61,10 @@ function sortCities(cities: CityData[], key: SortKey, dir: SortDir): CityData[] 
 }
 
 interface Props {
-  homeCity: City | null;
+  homeCity?: City | null;
 }
 
-export default function RealEstateCard({ homeCity }: Props) {
+export default function RealEstateCard({ homeCity = null }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>("city");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
