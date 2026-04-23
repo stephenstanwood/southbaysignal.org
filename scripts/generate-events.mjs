@@ -44,26 +44,15 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { createHash, createSign } from "crypto";
 import { VIRTUAL_EVENT_PATTERNS } from "../src/lib/south-bay/eventFilters.mjs";
+import { loadEnvLocal } from "./lib/env.mjs";
+import { fetchJson, fetchText, UA } from "./lib/http.mjs";
+import { parseDate, parseDatePT, isoDate, todayPT, displayDate, displayTime } from "./lib/dates.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Auto-load .env.local if present (for local development without manual env injection)
-const envLocalPath = join(__dirname, "..", ".env.local");
-if (existsSync(envLocalPath)) {
-  const lines = readFileSync(envLocalPath, "utf8").split("\n");
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-    const idx = trimmed.indexOf("=");
-    if (idx === -1) continue;
-    const key = trimmed.slice(0, idx).trim();
-    const val = trimmed.slice(idx + 1).trim().replace(/^["']|["']$/g, "");
-    if (key && !(key in process.env)) process.env[key] = val;
-  }
-}
+loadEnvLocal();
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "upcoming-events.json");
 const BLACKLIST_PATH = join(__dirname, "..", "src", "data", "south-bay", "social-blacklist.json");
-const BOOKSTORE_EVENTS_PATH = join(__dirname, "..", "src", "data", "south-bay", "bookstore-events.json");
 const PLAYWRIGHT_EVENTS_PATH = join(__dirname, "..", "src", "data", "south-bay", "playwright-events.json");
 const INBOUND_EVENTS_PATH = join(__dirname, "..", "src", "data", "south-bay", "inbound-events.json");
 
@@ -79,90 +68,8 @@ function loadBlacklist() {
   return _blacklist;
 }
 
-const UA = "SouthBaySignal/1.0 (stanwood.dev; public event aggregator)";
-
 function h(prefix, ...parts) {
   return `${prefix}-${createHash("sha1").update(parts.join("|")).digest("hex").substring(0, 16)}`;
-}
-
-async function fetchJson(url) {
-  const res = await fetch(url, {
-    headers: { "User-Agent": UA, Accept: "application/json" },
-    signal: AbortSignal.timeout(15_000),
-  });
-  if (!res.ok) throw new Error(`${res.status}`);
-  return res.json();
-}
-
-async function fetchText(url, timeout = 20_000) {
-  const res = await fetch(url, {
-    headers: { "User-Agent": UA },
-    signal: AbortSignal.timeout(timeout),
-  });
-  if (!res.ok) throw new Error(`${res.status}`);
-  return res.text();
-}
-
-// ── Helpers ──
-
-function parseDate(str) {
-  if (!str) return null;
-  const d = new Date(str);
-  if (isNaN(d.getTime())) return null;
-  return d;
-}
-
-// For sources that return naive datetime strings (no timezone) in Pacific local time.
-// new Date("2026-04-12T12:00") is parsed as UTC in some Node environments,
-// so we append the correct PT offset before parsing.
-function parseDatePT(str) {
-  if (!str) return null;
-  // Only fixup naive datetimes — leave strings that already have tz info alone
-  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(str) && !/[Z+\-]\d{2}:?\d{2}$/.test(str) && !str.endsWith("Z")) {
-    const month = parseInt(str.slice(5, 7), 10);
-    // PDT (UTC-7): Mar–Nov; PST (UTC-8): Dec–Feb
-    const offset = (month >= 3 && month <= 11) ? "-07:00" : "-08:00";
-    str = str + offset;
-  }
-  const d = new Date(str);
-  if (isNaN(d.getTime())) return null;
-  return d;
-}
-
-function isoDate(d) {
-  if (!d) return null;
-  // Use PT to stay consistent with displayDate — avoids UTC-midnight off-by-one
-  const parts = d.toLocaleDateString("en-US", {
-    year: "numeric", month: "2-digit", day: "2-digit",
-    timeZone: "America/Los_Angeles",
-  }).split("/");
-  // Format: MM/DD/YYYY → YYYY-MM-DD
-  return `${parts[2]}-${parts[0]}-${parts[1]}`;
-}
-
-// Returns today's date in Pacific time (YYYY-MM-DD). Using PT everywhere avoids
-// the UTC-midnight off-by-one that drops today's events from the feed after ~5 PM local.
-function todayPT() {
-  return new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
-}
-
-function displayDate(d) {
-  if (!d) return "";
-  return d.toLocaleDateString("en-US", {
-    weekday: "short", month: "short", day: "numeric",
-    timeZone: "America/Los_Angeles",
-  });
-}
-
-function displayTime(d) {
-  if (!d) return null;
-  const h = d.getHours();
-  const m = d.getMinutes();
-  if (h === 0 && m === 0) return null; // midnight = probably no time set
-  return d.toLocaleTimeString("en-US", {
-    hour: "numeric", minute: "2-digit",
-    timeZone: "America/Los_Angeles",
-  });
 }
 
 // ── Event title blocklist — skip private/internal/irrelevant events ──────────
@@ -889,7 +796,7 @@ function isStudentOnlyEvent(item) {
 async function fetchSjsuEvents() {
   console.log("  ⏳ SJSU Events...");
   try {
-    const xml = await fetchText("https://events.sjsu.edu/calendar.xml", 45_000); // large feed ~1.4MB
+    const xml = await fetchText("https://events.sjsu.edu/calendar.xml", { timeout: 45_000 }); // large feed ~1.4MB
     const items = parseRssItems(xml);
     let skipped = 0;
     const events = items.map((item) => {
@@ -3400,20 +3307,16 @@ async function fetchJamsjEvents() {
 function fetchPlaywrightEvents() {
   console.log("  ⏳ Playwright-scraped events...");
   try {
-    // Try unified file first, fall back to legacy bookstore-only file
-    const path = existsSync(PLAYWRIGHT_EVENTS_PATH) ? PLAYWRIGHT_EVENTS_PATH
-      : existsSync(BOOKSTORE_EVENTS_PATH) ? BOOKSTORE_EVENTS_PATH
-      : null;
-    if (!path) {
+    if (!existsSync(PLAYWRIGHT_EVENTS_PATH)) {
       console.log("  ⚠️  Playwright events: no data file (run playwright-scrapers.mjs on Mini)");
       return [];
     }
-    const { events } = JSON.parse(readFileSync(path, "utf8"));
+    const { events } = JSON.parse(readFileSync(PLAYWRIGHT_EVENTS_PATH, "utf8"));
     const today = todayPT();
     const filtered = (events || [])
       .filter((e) => e.date >= today)
       .map((e) => e.time ? { ...e, time: e.time.toUpperCase() } : e);
-    console.log(`  ✅ Playwright events: ${filtered.length} events (from ${path.split("/").pop()})`);
+    console.log(`  ✅ Playwright events: ${filtered.length} events`);
     return filtered;
   } catch (err) {
     console.log(`  ⚠️  Playwright events: ${err.message}`);

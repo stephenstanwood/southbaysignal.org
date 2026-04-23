@@ -1924,6 +1924,18 @@ const title = "South Bay Today";
         50% { opacity: 0.3; }
       }
 
+      /* Respect OS-level reduced-motion preference */
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+        .photo-strip-track,
+        .apod-strip-track { animation: none !important; }
+      }
+
       /* ── Camps ── */
       .camps-view {
         padding: 0;

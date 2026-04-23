@@ -168,22 +168,26 @@ export default function SignalApp() {
       {showCityFilter && (
         <div className="sb-filters">
           <div className="sb-filters-inner">
-            <span className="sb-filter-label">Cities</span>
-            <button
-              className={`sb-city-pill sb-city-pill--all${allSelected ? " sb-city-pill--active" : ""}`}
-              onClick={toggleAll}
-            >
-              All
-            </button>
-            {CITIES.map((city) => (
+            <span className="sb-filter-label" id="sb-city-filter-label">Cities</span>
+            <div role="group" aria-labelledby="sb-city-filter-label" style={{ display: "contents" }}>
               <button
-                key={city.id}
-                className={`sb-city-pill${selectedCities.has(city.id) ? " sb-city-pill--active" : ""}`}
-                onClick={() => toggleCity(city.id)}
+                className={`sb-city-pill sb-city-pill--all${allSelected ? " sb-city-pill--active" : ""}`}
+                aria-pressed={allSelected}
+                onClick={toggleAll}
               >
-                {city.name}
+                All
               </button>
-            ))}
+              {CITIES.map((city) => (
+                <button
+                  key={city.id}
+                  className={`sb-city-pill${selectedCities.has(city.id) ? " sb-city-pill--active" : ""}`}
+                  aria-pressed={selectedCities.has(city.id)}
+                  onClick={() => toggleCity(city.id)}
+                >
+                  {city.name}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
