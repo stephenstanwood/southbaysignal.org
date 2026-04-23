@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -9,7 +9,6 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import upcomingJson from "../../../data/south-bay/upcoming-events.json";
 import techBriefingJson from "../../../data/south-bay/tech-briefing.json";
 import upcomingMeetingsJson from "../../../data/south-bay/upcoming-meetings.json";
 import {
@@ -360,18 +359,17 @@ function isTechEvent(e: UpcomingEvent): boolean {
   return isChm || isTechTitle;
 }
 
-function getTechEvents(): UpcomingEvent[] {
+function filterTechEvents(allEvents: UpcomingEvent[]): UpcomingEvent[] {
   const today = new Date().toISOString().slice(0, 10);
   const cutoff = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-  const events = (upcomingJson as { events: UpcomingEvent[] }).events;
 
   // CHM ongoing exhibits (deduplicate by venue, pick the best ones)
-  const chmExhibits = events
+  const chmExhibits = allEvents
     .filter((e) => e.venue?.toLowerCase().includes("computer history") && e.ongoing)
     .filter((e) => !["2026 Fellow Awards Ceremony", "Read Me", "To Infinity and Beyond"].includes(e.title));
 
   // Upcoming dated tech events
-  const upcoming = events
+  const upcoming = allEvents
     .filter((e) => !e.ongoing && e.date >= today && e.date <= cutoff && isTechEvent(e))
     .sort((a, b) => a.date.localeCompare(b.date));
 
@@ -379,7 +377,14 @@ function getTechEvents(): UpcomingEvent[] {
 }
 
 function TechEventsSection() {
-  const events = getTechEvents();
+  const [allEvents, setAllEvents] = useState<UpcomingEvent[]>([]);
+  useEffect(() => {
+    fetch("/api/south-bay/upcoming-events")
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => setAllEvents(d?.events ?? []))
+      .catch(() => {});
+  }, []);
+  const events = filterTechEvents(allEvents);
   if (events.length === 0) return null;
 
   const chmEvents = events.filter((e) => e.venue?.toLowerCase().includes("computer history"));

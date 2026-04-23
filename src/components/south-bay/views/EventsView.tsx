@@ -6,7 +6,6 @@ import {
   type SBEvent,
   type EventCategory,
 } from "../../../data/south-bay/events-data";
-import upcomingJson from "../../../data/south-bay/upcoming-events.json";
 
 /** Prepend city name to government meeting titles that don't already include it */
 function meetingDisplayTitle(title: string, city: string): string {
@@ -232,10 +231,8 @@ interface UpcomingEvent {
   ongoing?: boolean;
 }
 
-const allUpcomingEvents = (upcomingJson as { events: UpcomingEvent[] }).events || [];
-const upcomingEvents = allUpcomingEvents.filter((e) => !e.ongoing);
-const ongoingEvents = allUpcomingEvents.filter((e) => e.ongoing);
-const upcomingSources = (upcomingJson as { sources: string[] }).sources || [];
+// Upcoming events are fetched from the prerendered /api/south-bay/upcoming-events
+// endpoint on mount so the 640KB JSON doesn't get bundled into the client JS.
 
 // ── Time helpers ──
 
@@ -745,6 +742,24 @@ export default function EventsView({ selectedCities }: Props) {
   const [selectedVenue, setSelectedVenue] = useState<string | null>(null);
   const [springBreakMode, setSpringBreakMode] = useState(false);
   const [sjNeighborhoodRaw, setSjNeighborhood] = useState<string | null>(null);
+  const [upcomingData, setUpcomingData] = useState<{ events: UpcomingEvent[]; sources?: string[] } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/south-bay/upcoming-events")
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => setUpcomingData(d ?? { events: [] }))
+      .catch(() => setUpcomingData({ events: [] }));
+  }, []);
+
+  const { allUpcomingEvents, upcomingEvents, ongoingEvents, upcomingSources } = useMemo(() => {
+    const events = upcomingData?.events ?? [];
+    return {
+      allUpcomingEvents: events,
+      upcomingEvents: events.filter((e) => !e.ongoing),
+      ongoingEvents: events.filter((e) => e.ongoing),
+      upcomingSources: upcomingData?.sources ?? [],
+    };
+  }, [upcomingData]);
   // Only apply neighborhood filter when SJ is the sole city
   const sjNeighborhood = (selectedCities.size === 1 && selectedCities.has("san-jose")) ? sjNeighborhoodRaw : null;
   const [todayForecast, setTodayForecast] = useState<{
@@ -784,7 +799,7 @@ export default function EventsView({ selectedCities }: Props) {
   }, [primary, todayIso]);
 
   // ── Dynamic venue list (auto-discovered from event data) ──
-  const SOUTH_BAY_VENUES = useMemo(() => buildVenuesFromEvents(allUpcomingEvents), []);
+  const SOUTH_BAY_VENUES = useMemo(() => buildVenuesFromEvents(allUpcomingEvents), [allUpcomingEvents]);
 
   // ── Upcoming events (scraped, specific dates) ──
   const filteredUpcoming = useMemo(() => {
@@ -827,7 +842,7 @@ export default function EventsView({ selectedCities }: Props) {
       // 4. Same date+time: boost under-represented sources
       return (srcCounts[a.source] || 0) - (srcCounts[b.source] || 0);
     });
-  }, [selectedCities, category, showKidsOnly, search, primary, springBreakMode, todayIso, sjNeighborhood]);
+  }, [selectedCities, category, showKidsOnly, search, primary, springBreakMode, todayIso, sjNeighborhood, upcomingEvents]);
 
   // ── Per-category counts (all filters applied except category, for pill badges) ──
   const categoryCounts = useMemo(() => {
@@ -849,7 +864,7 @@ export default function EventsView({ selectedCities }: Props) {
     // "all" = sum of everything
     counts["all"] = Object.values(counts).reduce((a, b) => a + b, 0);
     return counts;
-  }, [selectedCities, showKidsOnly, search, springBreakMode, todayIso, sjNeighborhood]);
+  }, [selectedCities, showKidsOnly, search, springBreakMode, todayIso, sjNeighborhood, upcomingEvents]);
 
   // ── Recurring events (static, weekly/monthly/seasonal) ──
   const filteredRecurring = useMemo(() => {
@@ -894,7 +909,7 @@ export default function EventsView({ selectedCities }: Props) {
       }
       return true;
     });
-  }, [selectedCities, category, showKidsOnly, search]);
+  }, [selectedCities, category, showKidsOnly, search, ongoingEvents]);
 
   // ── Venue events (events grouped by venue) ──
   const venueEvents = useMemo(() => {
@@ -913,7 +928,7 @@ export default function EventsView({ selectedCities }: Props) {
         .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
     }
     return result;
-  }, [SOUTH_BAY_VENUES]);
+  }, [SOUTH_BAY_VENUES, allUpcomingEvents]);
 
   // Events at selected venue, with search/category/kids filter applied
   const venueFilteredEvents = useMemo(() => {
@@ -936,7 +951,7 @@ export default function EventsView({ selectedCities }: Props) {
         return true;
       })
       .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
-  }, [selectedVenue, category, showKidsOnly, search]);
+  }, [selectedVenue, category, showKidsOnly, search, SOUTH_BAY_VENUES, allUpcomingEvents]);
 
   // Group upcoming events by date bucket
   const groupedUpcoming = useMemo(() => {

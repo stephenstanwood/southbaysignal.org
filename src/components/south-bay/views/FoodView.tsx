@@ -1,5 +1,5 @@
+import { useState, useEffect } from "react";
 import HealthScoresCard from "../cards/HealthScoresCard";
-import upcomingJson from "../../../data/south-bay/upcoming-events.json";
 import restaurantRadarJson from "../../../data/south-bay/restaurant-radar.json";
 import sccFoodOpeningsJson from "../../../data/south-bay/scc-food-openings.json";
 import { SOUTH_BAY_EVENTS } from "../../../data/south-bay/events-data";
@@ -18,8 +18,6 @@ type UpcomingEvent = {
   url: string | null;
 };
 
-const allUpcoming: UpcomingEvent[] = (upcomingJson as { events: UpcomingEvent[] }).events ?? (upcomingJson as unknown as UpcomingEvent[]);
-
 const TODAY = new Date().toISOString().split("T")[0];
 const NINETY_DAYS = new Date(Date.now() + 90 * 86400000).toISOString().split("T")[0];
 
@@ -28,6 +26,14 @@ function cityLabel(city: string) {
 }
 
 function FarmersMarkets() {
+  const [allUpcoming, setAllUpcoming] = useState<UpcomingEvent[]>([]);
+  useEffect(() => {
+    fetch("/api/south-bay/upcoming-events")
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => setAllUpcoming(d?.events ?? []))
+      .catch(() => {});
+  }, []);
+
   // From recurring events-data
   const today = new Date();
   const dayName = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"][today.getDay()];

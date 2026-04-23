@@ -13,7 +13,6 @@ import {
   formatAge,
 } from "../../../lib/south-bay/timeHelpers";
 
-import upcomingJson from "../../../data/south-bay/upcoming-events.json";
 import upcomingMeetingsJson from "../../../data/south-bay/upcoming-meetings.json";
 import digestsJson from "../../../data/south-bay/digests.json";
 import cityBriefingsJson from "../../../data/south-bay/city-briefings.json";
@@ -63,6 +62,7 @@ type Props = {
 export default function CityPage({ cityId, cityName }: Props) {
   const [weather, setWeather] = useState<string | null>(null);
   const [forecast, setForecast] = useState<ForecastDay[] | null>(null);
+  const [upcomingData, setUpcomingData] = useState<{ events: UpcomingEvent[]; generatedAt?: string } | null>(null);
 
   useEffect(() => {
     fetch(`/api/weather?city=${cityId}`)
@@ -74,9 +74,16 @@ export default function CityPage({ cityId, cityName }: Props) {
       .catch(() => {});
   }, [cityId]);
 
+  useEffect(() => {
+    fetch("/api/south-bay/upcoming-events")
+      .then((r) => r.ok ? r.json() : null)
+      .then((d) => setUpcomingData(d ?? { events: [] }))
+      .catch(() => setUpcomingData({ events: [] }));
+  }, []);
+
   // ── Events ──
-  const allEvents = (upcomingJson as { events: UpcomingEvent[]; generatedAt?: string }).events ?? [];
-  const eventsGenAt = (upcomingJson as any).generatedAt;
+  const allEvents = upcomingData?.events ?? [];
+  const eventsGenAt = upcomingData?.generatedAt;
   const todayEvents = allEvents
     .filter((e) => e.date === TODAY_ISO && e.city === cityId && !e.ongoing && isNotEnded(e.time))
     .sort((a, b) => startMinutes(a.time) - startMinutes(b.time));
