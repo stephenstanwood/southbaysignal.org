@@ -505,7 +505,10 @@ export default function SouthBayTodayView({ homeCity }: Props) {
 
       {/* ═══ LIST VIEW ═══ */}
       {cards.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, margin: "0 -16px" }}>
+        <div
+          className={loading && !swapLoading ? "sbt-cards sbt-cards--loading" : "sbt-cards"}
+          style={{ display: "flex", flexDirection: "column", gap: 8, margin: "0 -16px" }}
+        >
           {cards.map((card, i) => {
             const accent = ACCENT_COLORS[i % ACCENT_COLORS.length];
             const emoji = CATEGORY_EMOJI[card.category] || "📍";
@@ -609,23 +612,39 @@ export default function SouthBayTodayView({ homeCity }: Props) {
           filter: brightness(1.1);
         }
         .sbt-shuffle--loading {
-          background: #ddd;
-          color: #fff;
-          cursor: not-allowed;
-          animation: none;
+          /* Base stays the idle gradient so the sweep reads as a highlight
+             moving across the brand color, not a foreign loader. */
+          cursor: wait;
         }
         .sbt-shuffle--loading::after {
           content: '';
           position: absolute;
-          top: 0; left: 0; bottom: 0;
-          width: 0%;
-          background: linear-gradient(90deg, #1E3A8A, #4C1D95);
-          animation: fillRight 4s ease-out forwards;
-          z-index: -1;
+          inset: 0;
+          background: linear-gradient(
+            100deg,
+            rgba(255,255,255,0) 20%,
+            rgba(255,255,255,0.45) 50%,
+            rgba(255,255,255,0) 80%
+          );
+          background-size: 250% 100%;
+          animation: sweep 1.1s linear infinite;
+          z-index: 0;
+          pointer-events: none;
         }
-        @keyframes fillRight {
-          0%   { width: 0%; }
-          100% { width: 100%; }
+        @keyframes sweep {
+          0%   { background-position: 150% 0; }
+          100% { background-position: -150% 0; }
+        }
+        /* Cards dim + desaturate during loading so the eye sees "this is
+           about to change" the instant SHUFFLE is clicked. Transition is
+           fast (180ms) so there's no gap between click and feedback. */
+        .sbt-cards {
+          transition: opacity 180ms ease, filter 180ms ease;
+        }
+        .sbt-cards--loading {
+          opacity: 0.45;
+          filter: grayscale(0.5) blur(1.5px);
+          pointer-events: none;
         }
         @keyframes shimmer {
           0% { background-position: 200% 0; }

@@ -450,8 +450,10 @@ function scoreCandidates(
     // --- Penalize generic neighborhood entries — specific places are always better ---
     if (c.category === "neighborhood") score -= 30;
 
-    // --- Dial down wellness/spa — they crowd out more interesting picks ---
-    if (c.category === "wellness") score -= 20;
+    // --- Dial down wellness/spa hard — they crowd out more interesting picks.
+    //     -20 wasn't enough; wellness kept winning evening slots. -60 makes it
+    //     a last-resort option only.
+    if (c.category === "wellness") score -= 60;
 
     // --- Duration-aware penalty: a 6-hour festival starting at 4 PM leaves
     //     only room for ~1 more stop. Demote very long events when we're
