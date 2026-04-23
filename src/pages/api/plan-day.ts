@@ -518,8 +518,10 @@ async function fetchWeather(city: City): Promise<{ weather: string | null; forec
     const rainPct = data.daily.precipitation_probability_max[0] ?? 0;
     const weatherCode = data.current.weather_code as number;
 
-    // Simplified weather classification for scoring
-    const isRainy = rainPct > 50 || [61, 63, 65, 71, 73, 75, 80, 81, 82, 95, 96, 99].includes(weatherCode);
+    // Simplified weather classification for scoring. Threshold lowered from
+    // 50% → 40% so a forecast like "40% chance of rain" also tips us toward
+    // indoor picks. Rain + cold is a noticeable quality lever for day plans.
+    const isRainy = rainPct >= 40 || [61, 63, 65, 71, 73, 75, 80, 81, 82, 95, 96, 99].includes(weatherCode);
     const isHot = high > 90;
     const isCold = high < 55;
     const isNice = !isRainy && !isHot && !isCold;
@@ -576,9 +578,17 @@ function scoreCandidates(
     if (kids && c.kidFriendly === false) score -= 40; // strong penalty
 
     // --- Weather appropriateness ---
+    // Rain + cold are two of the biggest "wish they'd planned better" vectors.
+    // Hard-penalize outdoor picks when it's raining or cold, and give indoor
+    // picks a modest boost in categories that actually work when the weather
+    // is lousy (museums, entertainment, food, shopping).
+    const INDOOR_RESCUE_CATS = new Set(["museum", "entertainment", "food", "shopping", "arts"]);
     if (weather) {
-      if (weather.isRainy && c.indoorOutdoor === "outdoor") score -= 25;
+      if (weather.isRainy && c.indoorOutdoor === "outdoor") score -= 30;
       if (weather.isRainy && c.indoorOutdoor === "indoor") score += 15;
+      if (weather.isRainy && !c.indoorOutdoor && INDOOR_RESCUE_CATS.has(c.category)) score += 10;
+      if (weather.isCold && c.indoorOutdoor === "outdoor") score -= 15;
+      if (weather.isCold && !c.indoorOutdoor && INDOOR_RESCUE_CATS.has(c.category)) score += 5;
       if (weather.isNice && c.indoorOutdoor === "outdoor") score += 15;
       if (weather.isHot && c.indoorOutdoor === "indoor") score += 10;
     }
@@ -1564,6 +1574,48 @@ Return ONLY the JSON array. No explanation.`;
     const bH = parseHour(b.timeBlock.split(/\s*-\s*/)[0]) ?? 99;
     return aH - bH;
   });
+
+  // Post-process: time-overlap validator. Claude sometimes hands back two
+  // cards whose blocks intersect (e.g. card[i] 2-4 PM, card[i+1] 3-5 PM).
+  // Keep the earlier one, drop the later one. Never drop a locked card —
+  // those stay regardless.
+  {
+    const before = cards.length;
+    const parseRange = (tb: string): [number, number] | null => {
+      const m = tb.match(/(\d{1,2}):(\d{2})\s*(AM|PM)\s*[-–]\s*(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+      if (!m) return null;
+      const toMin = (h: string, min: string, ap: string) => {
+        let hn = parseInt(h, 10);
+        const mn = parseInt(min, 10);
+        const pm = ap.toUpperCase() === "PM";
+        if (pm && hn !== 12) hn += 12;
+        if (!pm && hn === 12) hn = 0;
+        return hn * 60 + mn;
+      };
+      return [toMin(m[1], m[2], m[3]), toMin(m[4], m[5], m[6])];
+    };
+
+    for (let i = cards.length - 1; i >= 1; i--) {
+      if (cards[i].locked) continue;
+      const prev = parseRange(cards[i - 1].timeBlock);
+      const cur = parseRange(cards[i].timeBlock);
+      if (!prev || !cur) continue;
+      // prev.end > cur.start means overlap. Allow touching (prev.end == cur.start).
+      if (prev[1] > cur[0]) {
+        logDecision({
+          script: "plan-day",
+          action: "dropped",
+          target: `${cards[i].name} (${cards[i].id})`,
+          reason: `time overlap with ${cards[i - 1].name} (${cards[i - 1].timeBlock} vs ${cards[i].timeBlock})`,
+          meta: { city, targetDate, prevEnd: prev[1], curStart: cur[0] },
+        });
+        cards.splice(i, 1);
+      }
+    }
+    if (cards.length < before) {
+      console.log(`[plan-day] overlap validator: dropped ${before - cards.length} overlapping card(s)`);
+    }
+  }
 
   return cards;
 }
