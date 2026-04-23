@@ -1,19 +1,43 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-22T20:12:28.795Z",
+      "generatedAt": "2026-04-23T11:22:12.029Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Apr 15 – Apr 22",
+      "dateRange": "Apr 16 – Apr 23",
       "stats": {
-        "total": 311,
-        "notable": 23,
-        "newUnits": 18,
-        "totalValuation": 156857122
+        "total": 378,
+        "notable": 30,
+        "newUnits": 23,
+        "totalValuation": 13543369
       },
       "permits": [
+        {
+          "id": "2026-102265-RS",
+          "address": "805 Altino Bl",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Phase 3.1 Comm Hill Type 4b (Lot 20)",
+          "valuation": 573665,
+          "units": 1,
+          "issueDate": "2026-04-21",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-102353-RS",
+          "address": "817 Altino Bl",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Phase 3.1 Comm Hill (Lot 22) Plan 4a-Rtype 4a/4b/4c",
+          "valuation": 573665,
+          "units": 1,
+          "issueDate": "2026-04-21",
+          "subtype": "Single-Family"
+        },
         {
           "id": "2026-112444-RS",
           "address": "1502 Sherly Pl",
@@ -24,6 +48,30 @@
           "valuation": 570127,
           "units": 1,
           "issueDate": "2026-04-20",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-102379-RS",
+          "address": "823 Altino Bl",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Phase 3.1 Comm Hill (Lot 23) Plan 3a-R",
+          "valuation": 555615,
+          "units": 1,
+          "issueDate": "2026-04-21",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-102260-RS",
+          "address": "799 Altino Bl",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Phase 3.1 Comm Hill Type 2a-R (Lot 19)",
+          "valuation": 522441,
+          "units": 1,
+          "issueDate": "2026-04-21",
           "subtype": "Single-Family"
         },
         {
@@ -51,6 +99,18 @@
           "subtype": "Single-Family"
         },
         {
+          "id": "2026-102343-RS",
+          "address": "811 Altino Bl",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Comm Hill Phase 3.1 (Lot 21) Plan1b-R",
+          "valuation": 487435,
+          "units": 1,
+          "issueDate": "2026-04-21",
+          "subtype": "Single-Family"
+        },
+        {
           "id": "2026-112473-RS",
           "address": "1506 Sherly Pl",
           "category": "residential-new",
@@ -73,117 +133,33 @@
           "units": 1,
           "issueDate": "2026-04-20",
           "subtype": "Single-Family"
-        },
-        {
-          "id": "2024-112980-RS",
-          "address": "2942 Edison Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "New Detached adu",
-          "valuation": 202401,
-          "units": 1,
-          "issueDate": "2026-04-20",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-137777-RS",
-          "address": "528 N 11th St #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Basement Converted to adu",
-          "valuation": 170781,
-          "units": 1,
-          "issueDate": "2026-04-17",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-122435-RS",
-          "address": "3081 Wall St",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "New Detached adu",
-          "valuation": 169090,
-          "units": 1,
-          "issueDate": "2026-04-20",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2026-112521-RS",
-          "address": "1665 Lincoln Av #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "1655 Lincoln Unit 2 (Bemp 100%) New Attached adu",
-          "valuation": 135103,
-          "units": 1,
-          "issueDate": "2026-04-20",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-130149-RS",
-          "address": "3092 Allenwood Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "New Attached adu",
-          "valuation": 126818,
-          "units": 1,
-          "issueDate": "2026-04-16",
-          "subtype": "2nd Unit Added"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-22T20:12:31.126Z",
+      "generatedAt": "2026-04-23T11:22:14.225Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Apr 15 – Apr 22",
+      "dateRange": "Apr 16 – Apr 23",
       "stats": {
-        "total": 107,
-        "notable": 10,
+        "total": 109,
+        "notable": 9,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
         {
-          "id": "26BLD-00993",
-          "address": "180 El Camino Real",
+          "id": "26BLD-01012",
+          "address": "853 Thornwood Dr",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "COM: 'CHANEL'  Install two illuminated signs. Sign 1: (1) set of 9 1/4” (H) reverse channel lettering, with satin painted face and returns, frosted acrylic halo back and internal LED illumination. Sign 2. (1) set of 12 3/8” (H) reverse channel lettering, with satin painted face and returns, frosted acrylic halo back and internal LED illumination.",
+          "description": "Res: Remove and replace siding and trim on whole home, like for like style. no change to square footage.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-15",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00990",
-          "address": "2680 Ramona St",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "RES MEP: 15 duct supply & 1 duct return c/o.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-15",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-00996",
-          "address": "1655 Middlefield Rd",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Building Permit",
-          "description": "Res MEP: Replace tankless water heater, like for like in the basement.  Electrical outlet was provided.  No gas plumbing was done.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-15",
+          "issueDate": "2026-04-16",
           "subtype": "Permit Issued"
         },
         {
@@ -199,16 +175,16 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-00989",
-          "address": "864 Ames Av",
+          "id": "26BLD-01023",
+          "address": "3608 South Ct",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "Res MEP: Upgrade main electrical panel to 200A and meter socket at the same location as existing main panel and socket.",
+          "description": "Res: Replace water heater with heat pump water heater at utility closet. Add a 100-amp sub panel and wiring for future appliance. Separate building permit required when future appliance is proposed.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-15",
-          "subtype": "Finaled"
+          "issueDate": "2026-04-20",
+          "subtype": "Permit Issued"
         },
         {
           "id": "26BLD-01043",
@@ -223,15 +199,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-01044",
-          "address": "631 Saint Claire Dr",
+          "id": "26BLD-01021",
+          "address": "957 Colonial Ln",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-21",
+          "issueDate": "2026-04-19",
           "subtype": "Permit Issued"
         },
         {
@@ -247,15 +223,27 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-01021",
-          "address": "957 Colonial Ln",
+          "id": "26BLD-01054",
+          "address": "4112 Amaranta Av",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
           "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-19",
+          "issueDate": "2026-04-22",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-01044",
+          "address": "631 Saint Claire Dr",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-21",
           "subtype": "Permit Issued"
         },
         {

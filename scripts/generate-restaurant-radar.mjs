@@ -24,6 +24,14 @@ const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY ?? "";
  * city: the city id (e.g. "san-jose", "palo-alto")
  * address: the formatted address string as it appears in the output
  */
+/**
+ * Addresses to exclude entirely — keyed by "city:address".
+ * Use for non-food false positives that slip through the keyword filter.
+ */
+const SKIP_ADDRESSES = new Set([
+  "palo-alto:220 Hamilton Av", // Palo Alto Eyes — eyewear store, not food
+]);
+
 const MANUAL_OVERRIDES = {
   // Palo Alto: name inside quotes in description, not caught by extractor
   "palo-alto:121 Lytton Av": { name: "Rikyu", blurb: "Japanese restaurant fitting out a new space on Lytton Ave" },
@@ -44,6 +52,7 @@ const MANUAL_OVERRIDES = {
   "san-jose:3062 Story Rd": { blurb: "New coffee shop fitting out a $350K space on Story Road in East San Jose" },
   "san-jose:2549 S King Rd": { blurb: "New restaurant fitting out a space on South King Road in East San Jose" },
   "san-jose:1080 Saratoga Av": { blurb: "BBQ joint on Saratoga Avenue in west San Jose renovating its interior" },
+  "san-jose:3243 S White Rd": { blurb: "Round Table Pizza franchise fitting out a new location on South White Road in East San Jose" },
 };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -479,8 +488,14 @@ async function main() {
     return b.date.localeCompare(a.date);
   });
 
+  // Filter out known non-food false positives
+  const filtered = allItems.filter((item) => {
+    const key = `${item.city ?? ""}:${item.address}`;
+    return !SKIP_ADDRESSES.has(key);
+  });
+
   // Apply manual overrides (name, blurb) keyed by "city:address"
-  for (const item of allItems) {
+  for (const item of filtered) {
     const key = `${item.city ?? ""}:${item.address}`;
     const override = MANUAL_OVERRIDES[key];
     if (override) {
@@ -489,11 +504,13 @@ async function main() {
     }
   }
 
+  const allItems_final = filtered;
+
   const output = {
     generatedAt: new Date().toISOString(),
     cities: ["San Jose", "Palo Alto"],
     windowDays: 60,
-    items: allItems,
+    items: allItems_final,
   };
 
   writeFileSync(OUT_PATH, JSON.stringify(output, null, 2) + "\n");

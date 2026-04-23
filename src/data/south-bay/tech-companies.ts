@@ -1618,6 +1618,18 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     url: "https://point2tech.com",
   },
   {
+    id: "creao-ai",
+    name: "Creao AI",
+    city: "Palo Alto",
+    category: "ai",
+    round: "Seed ext.",
+    amount: "$10M",
+    date: "2026-04-17",
+    tagline: "AI agent platform where users chat to create autonomous 'Super Agents' with persistent memory and 24/7 execution — no coding required. Backed by Prosperity7 Ventures (Aramco), Monolith, and HongShan; amassed 200K organic users in under a year. Total raised: $25M.",
+    color: "#7c3aed",
+    url: "https://creao.ai",
+  },
+  {
     id: "simile",
     name: "Simile",
     city: "Palo Alto",
@@ -1658,7 +1670,7 @@ export const TECH_PULSE = [
   {
     value: "$6B+",
     label: "Raised in Q1–Q2 2026",
-    note: "53 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
+    note: "54 South Bay startup rounds · chips, robotics, EVs, networking, security, AI led the way",
   },
   {
     value: "Chip equipment",
