@@ -59,6 +59,15 @@ interface PlanRequest {
    *  schedule generator to prevent the same venue anchoring multiple days in
    *  the same week. */
   blockedNames?: string[];
+  /** Card ids the client has shown the user on recent shuffles — the scorer
+   *  penalizes these so consecutive clicks don't re-surface the same picks.
+   *  Soft signal (-20), not a hard exclude. Managed client-side by the
+   *  homepage variety ledger (last ~10 ids). */
+  recentlyShown?: string[];
+  /** City anchors used on recent shuffles — same shape/purpose as
+   *  recentlyShown but for anchor selection diversity. Currently informational
+   *  (client picks the anchor); kept here for future server-side use. */
+  recentAnchors?: string[];
   /** Week-level context so Claude can diversify across the batch. Optional —
    *  only populated by generate-schedule.mjs when building a 10-day run. */
   weekContext?: {
@@ -552,6 +561,7 @@ function scoreCandidates(
   hour: number,
   kids: boolean,
   prefs?: UserPreferences,
+  recentlyShown?: Set<string>,
 ): Candidate[] {
   for (const c of candidates) {
     let score = 0;
@@ -644,6 +654,13 @@ function scoreCandidates(
         else if (c.indoorOutdoor === "indoor") score -= prefs.outdoorBias * 10;
       }
     }
+
+    // --- Recently-shown penalty: consecutive shuffles shouldn't resurface
+    //     the same picks. -20 is soft enough that a truly dominant candidate
+    //     still survives, but enough to flip the ranking when scores are
+    //     comparable. Client-side ledger (SouthBayTodayView) tracks up to
+    //     10 ids across recent fetches. ---
+    if (recentlyShown && recentlyShown.has(c.id)) score -= 20;
 
     // --- Small random jitter for variety ---
     score += Math.random() * 10;
@@ -1802,7 +1819,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return errJson("Invalid JSON body", 400);
   }
 
-  const { city, kids = false, lockedIds = [], lockedCards = [], dismissedIds = [], currentHour, currentMinute, planDate, preferences, blockedNames = [], weekContext, noCache = false } = body;
+  const { city, kids = false, lockedIds = [], lockedCards = [], dismissedIds = [], currentHour, currentMinute, planDate, preferences, blockedNames = [], weekContext, recentlyShown = [], noCache = false } = body;
 
   // Merge lockedCards into lockedIds + a time map. lockedCards is the richer
   // format; we accept lockedIds separately for backwards compat with older
@@ -1835,7 +1852,10 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   // user always sees a new plan even if they happen to hit the same anchor.
   const prefsHash = preferences ? Math.round((preferences.outdoorBias || 0) * 10 + (preferences.costBias || 0) * 10) : 0;
   const cacheKey = `${city}:${kids}:${hour}:${prefsHash}:${planDate || ""}`;
-  if (!noCache && lockedIds.length === 0 && dismissedIds.length === 0 && blockedSet.size === 0) {
+  // recentlyShown bypasses the cache too — a repeated request with the same
+  // ledger would serve identical cards; the whole point of the ledger is
+  // variety, so we always replan when it's present.
+  if (!noCache && lockedIds.length === 0 && dismissedIds.length === 0 && blockedSet.size === 0 && recentlyShown.length === 0) {
     const cached = planCache.get(cacheKey);
     if (cached && Date.now() - cached.ts < CACHE_TTL) {
       return okJson(cached.data, { "Cache-Control": "private, no-store" });
@@ -1851,7 +1871,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const allCandidates = buildCandidatePool(city, kids, dismissedSet, lockedSet, planDate, blockedSet, startTime);
 
     // 3. Score candidates
-    const scored = scoreCandidates(allCandidates, weatherContext, hour, kids, preferences);
+    const recentlyShownSet = new Set(recentlyShown);
+    const scored = scoreCandidates(allCandidates, weatherContext, hour, kids, preferences, recentlyShownSet);
 
     // 4. Separate locked items. Any id the client sent that's NOT in the
     // current pool is stale (event cancelled, place archived) — return

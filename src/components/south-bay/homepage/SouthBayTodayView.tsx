@@ -330,6 +330,11 @@ export default function SouthBayTodayView(_props: Props) {
   const [timeDisplay, setTimeDisplay] = useState(() => formatTime());
   const fetchRef = useRef(0);
   const lastAnchorRef = useRef<City | null>(initialPlan.current.anchor);
+  // Variety ledger: last 3 anchors + last 10 card ids we showed the user.
+  // The API uses recentlyShown for a -20 score penalty so consecutive
+  // shuffles don't resurface the same anchor/events.
+  const recentAnchorsRef = useRef<City[]>(initialPlan.current.anchor ? [initialPlan.current.anchor] : []);
+  const recentCardIdsRef = useRef<string[]>(initialPlan.current.cards.map((c) => c.id));
   const fetchPlanRef = useRef<(extraLockedIds?: string[], noCache?: boolean) => void>(() => {});
   const [prefs, setPrefs] = useState<UserPreferences>(loadPrefs);
 
@@ -350,10 +355,13 @@ export default function SouthBayTodayView(_props: Props) {
     setLoading(true);
     setError(null);
     setTimeDisplay(formatTime());
-    // Pick a fresh random anchor, avoiding the last-used one so SHUFFLE
-    // always visibly shifts the plan to a different part of the south bay.
+    // Pick a fresh random anchor, avoiding the last 3 so SHUFFLE always
+    // visibly shifts the plan to a different part of the south bay. If
+    // pickRandomAnchor only accepts one "avoid", pass the most recent — the
+    // server-side recentlyShown filter covers the rest.
     const anchor = pickRandomAnchor(lastAnchorRef.current);
     lastAnchorRef.current = anchor;
+    recentAnchorsRef.current = [anchor, ...recentAnchorsRef.current].slice(0, 3);
     const allLocked = extraLockedIds
       ? [...new Set([...state.locked, ...extraLockedIds])]
       : state.locked;
@@ -380,6 +388,11 @@ export default function SouthBayTodayView(_props: Props) {
           currentMinute: eff.currentMinute,
           planDate: eff.planDate,
           preferences: prefs.totalInteractions >= 5 ? prefs : undefined,
+          // Shuffle-variety signal: server applies -20 penalty to IDs we've
+          // shown recently, so consecutive clicks don't re-surface the same
+          // events.
+          recentlyShown: recentCardIdsRef.current,
+          recentAnchors: recentAnchorsRef.current,
           noCache,
         }),
       });
@@ -392,6 +405,11 @@ export default function SouthBayTodayView(_props: Props) {
       const sorted = [...data.cards].sort((a, b) => parseTimeBlock(a.timeBlock) - parseTimeBlock(b.timeBlock));
       // Only show green lock icon for user-explicitly-locked cards, not auto-kept ones
       setCards(sorted.map((c) => ({ ...c, locked: state.locked.includes(c.id) })));
+      // Push fresh card ids onto the ledger (front = newest). Dedup and cap
+      // at 10 so the next shuffle knows what to avoid.
+      const nextIds = sorted.map((c) => c.id);
+      const merged = [...nextIds, ...recentCardIdsRef.current.filter((id) => !nextIds.includes(id))];
+      recentCardIdsRef.current = merged.slice(0, 10);
       setReplacedIds(new Set());
       setWeather(data.weather);
       // Purge any locked IDs the server couldn't find (event cancelled,
@@ -412,10 +430,15 @@ export default function SouthBayTodayView(_props: Props) {
     }
   }, [state.kids, state.dismissed, state.locked, cards]);
 
-  // Skip API call if we have a fresh pre-generated plan (<6h old). If the
-  // default is stale, show it instantly anyway (for first-paint speed) then
-  // silently refresh in the background so the user catches today's actual
-  // event pool rather than the 2 AM snapshot.
+  // Freshness policy for the pre-generated plan:
+  //   age < 6h    → show instantly, no refresh
+  //   6h ≤ age ≤ 26h → show instantly, silent background refresh
+  //   age > 26h   → hard-stale (cron missed its window). Don't show the
+  //                 cached plan at all — fire an API call with loading state.
+  //
+  // 26h is chosen to span the 2 AM nightly regen + a 2-hour buffer for
+  // cron delays. If we're past that window, something is wrong with the
+  // generator and the cached plan is more likely to mislead than help.
   useEffect(() => {
     if (!hasDefaultPlan) {
       fetchPlan();
@@ -424,6 +447,13 @@ export default function SouthBayTodayView(_props: Props) {
     const generatedAt = (defaultPlansJson as any)?._meta?.generatedAt;
     const ageMs = generatedAt ? Date.now() - new Date(generatedAt).getTime() : Infinity;
     const STALE_MS = 6 * 60 * 60 * 1000;
+    const HARD_STALE_MS = 26 * 60 * 60 * 1000;
+    if (ageMs > HARD_STALE_MS) {
+      console.warn(`[sbt] default-plans age ${Math.round(ageMs / 3600000)}h exceeds 26h — forcing live fetch`);
+      setLoading(true);
+      fetchPlan();
+      return;
+    }
     if (ageMs > STALE_MS) {
       // Background refresh — give the user a sec to see the instant plan,
       // then quietly swap in a fresh one.
