@@ -2,6 +2,35 @@
 
 ---
 
+## 2026-04-23 — Cycle 106: Build Fix + Full Data Refresh
+
+### Context
+Thursday April 23, 2026 (~10 AM PDT). Automated cycle. Crunchbase weekly roundup for Apr 18-25 not yet published (publishes Friday Apr 24). Searched extensively for new South Bay funding rounds Apr 22-23 — none confirmed beyond NeoCognition and Point2 Technology (already in DB from cycle 105). Investigated Lightwheel (Santa Clara) as a potential missing entry but primary-source verification was inconclusive (CBInsights maps it to "guanglun-intelligence" with primary Chinese funding rounds). Held off adding without clean press release. Full data pipeline refresh completed, plus svix dependency resolved.
+
+### What Was Built
+
+**Infra: resolved missing `svix` dependency**
+
+`npm run build` was failing with "Rollup failed to resolve import 'svix'" — the package was declared in `package.json` at `^1.90.0` but not present in `node_modules`. Ran `npm install` to fix. Vercel production builds were likely unaffected (Vercel runs its own install from package.json), but local dev builds were broken.
+
+**Data refreshed:**
+- `upcoming-events.json` — 728 events, 100% image coverage (Tier 1: 318, Tier 2 OG: 278, Tier 3 recraft: 132), 100% blurb coverage (719 cache hits + 9 newly generated)
+- `weekend-picks.json` — regenerated for April 24-26: Cherry Blossom Festival (Cupertino), Los Gatos Wine Walk, Moss Landing Marine Labs Open House
+- `around-town.json` — refreshed
+- `digests.json` — refreshed
+- `upcoming-meetings.json` — refreshed
+- `event-blurb-cache.json` / `event-image-cache.json` — updated caches
+
+### Why This Was the Strongest Move
+With no confirmed new funding rounds and all school calendar gaps already covered, unblocking the local build and flushing the full data pipeline ensures the April 24-26 weekend content is current before the weekend starts — Cherry Blossom Festival and Los Gatos Wine Walk are high-resident-interest events.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 25 Crunchbase watch** — Weekly roundup for Apr 18-25 publishes Friday. Check for South Bay rounds; Lightwheel (Santa Clara) worth a second look if a clean English-language press release surfaces.
+2. **Campbell council data gap** — Stoa has no Campbell council data past Feb 3, 2026. Playwright scrape of campbellca.gov needed.
+3. **AP Exams / Finals season banner** — AP Exams start May 4. Consider a school-calendar callout on the homepage for the cramming season ahead.
+
+---
+
 ## 2026-04-22 — Cycle 105: Point2 Technology Funding + Data Refresh
 
 ### Context
