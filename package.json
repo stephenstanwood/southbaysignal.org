@@ -32,7 +32,6 @@
     "test": "node --test scripts/social/lib/post-gen-review.test.mjs && node --import tsx --test src/pages/api/plan-day.test.ts",
     "test:watch": "node --test --watch scripts/social/lib/post-gen-review.test.mjs",
     "test:plan-day": "node --import tsx --test src/pages/api/plan-day.test.ts",
-    "generate-bookstore-events": "node scripts/generate-bookstore-events.mjs",
     "playwright-scrape": "node scripts/playwright-scrapers.mjs",
     "health-report": "node scripts/health-report.mjs",
     "generate-scc-food-openings": "node scripts/generate-scc-food-openings.mjs",

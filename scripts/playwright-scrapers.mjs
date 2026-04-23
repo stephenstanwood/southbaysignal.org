@@ -21,23 +21,12 @@ import { writeFileSync, readFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { createHash } from "crypto";
+import { loadEnvLocal } from "./lib/env.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "playwright-events.json");
 
-// Auto-load .env.local
-const envLocalPath = join(__dirname, "..", ".env.local");
-if (existsSync(envLocalPath)) {
-  for (const line of readFileSync(envLocalPath, "utf8").split("\n")) {
-    const t = line.trim();
-    if (!t || t.startsWith("#")) continue;
-    const i = t.indexOf("=");
-    if (i === -1) continue;
-    const k = t.slice(0, i).trim();
-    const v = t.slice(i + 1).trim().replace(/^["']|["']$/g, "");
-    if (k && !(k in process.env)) process.env[k] = v;
-  }
-}
+loadEnvLocal();
 
 // ---------------------------------------------------------------------------
 // Helpers

@@ -1645,7 +1645,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     id: "chipstack",
     name: "ChipStack",
     city: "Campbell",
-    category: "chips",
+    category: "chip",
     round: "Acquired",
     amount: "~$7M raised",
     date: "2025-11-01",

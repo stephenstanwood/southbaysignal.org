@@ -13,25 +13,13 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { ARTIFACTS, DATA_DIR, REPO_ROOT, generatorMeta } from "./lib/paths.mjs";
+import { loadEnvLocal } from "./lib/env.mjs";
 
 // ---------------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------------
 
-// Load .env.local if present
-try {
-  const envPath = join(REPO_ROOT, ".env.local");
-  const envContent = readFileSync(envPath, "utf-8");
-  for (const line of envContent.split("\n")) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-    const eq = trimmed.indexOf("=");
-    if (eq === -1) continue;
-    const key = trimmed.slice(0, eq).trim();
-    const val = trimmed.slice(eq + 1).trim().replace(/^["']|["']$/g, "");
-    if (!process.env[key]) process.env[key] = val;
-  }
-} catch { /* no .env.local, that's fine */ }
+loadEnvLocal();
 
 const API_KEY = process.env.GOOGLE_PLACES_API_KEY ?? "";
 if (!API_KEY) {
