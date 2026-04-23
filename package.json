@@ -29,8 +29,9 @@
     "audit-events": "node scripts/audit-events.mjs",
     "validate-schedule": "node scripts/validate-schedule.mjs",
     "check": "npm run validate-places && npm run validate-schedule && npm test",
-    "test": "node --test scripts/social/lib/post-gen-review.test.mjs",
+    "test": "node --test scripts/social/lib/post-gen-review.test.mjs && node --import tsx --test src/pages/api/plan-day.test.ts",
     "test:watch": "node --test --watch scripts/social/lib/post-gen-review.test.mjs",
+    "test:plan-day": "node --import tsx --test src/pages/api/plan-day.test.ts",
     "generate-bookstore-events": "node scripts/generate-bookstore-events.mjs",
     "playwright-scrape": "node scripts/playwright-scrapers.mjs",
     "health-report": "node scripts/health-report.mjs",
@@ -62,6 +63,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.7",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "overrides": {

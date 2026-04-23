@@ -305,7 +305,7 @@ const FALLBACK_BLURB_POOL: Record<string, string[]> = {
   ],
 };
 
-function fallbackBlurb(
+export function fallbackBlurb(
   source: "event" | "place",
   category: string | null | undefined,
   name: string,
@@ -331,7 +331,7 @@ function fallbackBlurb(
 // Prefers a given endTime; otherwise defaults to start + 90 minutes. Used by
 // both sequenceWithClaude and padWithClaude to force event cards onto their
 // actual time regardless of what Claude picked.
-function timeBlockFromEventTime(
+export function timeBlockFromEventTime(
   eventTime: string | null | undefined,
   eventEndTime?: string | null,
   fallback = "7:00 PM - 8:30 PM",
@@ -437,7 +437,7 @@ function currentPTHour(): number {
 }
 
 /** Parse a time string like "9:00 PM" or "21:00" into 24h hour. Returns null if unparseable. */
-function parseHour(timeStr: string): number | null {
+export function parseHour(timeStr: string): number | null {
   // Try "H:MM AM/PM" format
   const ampm = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
   if (ampm) {

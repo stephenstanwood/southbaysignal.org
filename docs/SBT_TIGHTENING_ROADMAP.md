@@ -52,7 +52,9 @@ commit/push, update memory. Flag cost if it turns out >100-event batch.
 
 ---
 
-### ⬛ Session 2 — Item #2: Kids/adult event purity filter
+### ✅ Session 2 — Item #2: Kids/adult event purity filter [2026-04-22]
+
+Shipped. New `src/lib/south-bay/audienceAge.mjs` classifier tags each event "kids"/"adult"/"all" at ingest. Plan-day filters kids-only events from adult plans and adult-only from kids plans. Conservative bias — only strong signals flip from "all". Backfill: 45 kids, 14 adult, 647 all across 706 events. Memory: `reference_audience_age.md`.
 
 **Scope:** Kids events (age-specific) filtered out of adult plans; 18+ venues filtered out of kids plans.
 
@@ -77,7 +79,9 @@ drop reasons, and commit/push.
 
 ---
 
-### ⬛ Session 3 — Items #3 + #4 combined: Weather-aware scoring + duration fit check
+### ✅ Session 3 — Items #3 + #4 combined: Weather-aware scoring + duration fit check [2026-04-22]
+
+Shipped. Rain threshold lowered 50→40%, outdoor rain penalty -25→-30, cold-outdoor penalty -15 added, indoor-rescue +10/+5 for museum/entertainment/food/shopping/arts when weather is bad. Time-overlap validator runs after the final chronological sort — drops any non-locked card whose timeBlock starts before the previous card's end.
 
 **Scope:** Real weather teeth in scoring (rain → penalize outdoor, boost indoor) + hard overlap check (back-to-back cards can't time-collide).
 
@@ -99,7 +103,9 @@ Start with MEMORY.md. No Mini work needed. Commit/push.
 
 ---
 
-### ⬛ Session 4 — Items #5 + #6: OG image quality gate + cross-source event dedup
+### ✅ Session 4 — Items #5 + #6: OG image quality gate + cross-source event dedup [2026-04-22]
+
+Shipped. OG quality gate in `src/lib/south-bay/eventImages.mjs` — filename-pattern + HEAD-probe size/type checks. Rejections cached so we don't re-validate. New `revalidateOgCache()` + `scripts/revalidate-og-images.mjs` applied on Mini: 78 of 392 cached OG images rejected, 65 events cleared to refetch on next regen. Cross-source dedup in `generate-events.mjs` — richness score on collision. Zero dupes in current data (infra there for when it matters).
 
 **Scope:** Reject low-quality OG images (falls through to Recraft). Normalize+dedup events in generate-events.mjs by (title, date, venue).
 
@@ -124,7 +130,9 @@ images. Commit/push from Mini.
 
 ---
 
-### ⬛ Session 5 — Items #7 + #8: Shuffle variety ledger + default-plan freshness stamp
+### ✅ Session 5 — Items #7 + #8: Shuffle variety ledger + default-plan freshness stamp [2026-04-22]
+
+Shipped. Homepage tracks last 3 anchors + last 10 card ids in refs, sends both with every `/api/plan-day` fetch. Scorer applies -20 to `recentlyShown` ids; cache bypassed when ledger is non-empty. Default-plan freshness upgraded from single 6h threshold to graduated policy: <6h instant, 6–26h instant+silent-refresh, >26h hard-refresh-with-loading-state.
 
 **Scope:** Prevent same anchor/event on consecutive shuffles. Force default-plan refresh when cached plan is stale.
 

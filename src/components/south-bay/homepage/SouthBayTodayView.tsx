@@ -558,12 +558,32 @@ export default function SouthBayTodayView(_props: Props) {
         </p>
       )}
 
-      {/* Error */}
-      {error && (
-        <div style={{ textAlign: "center", padding: 40, color: "#E63946", fontFamily: "'Inter', sans-serif" }}>
-          <p style={{ fontSize: 16, fontWeight: 700 }}>Couldn&apos;t plan your day</p>
-          <p style={{ fontSize: 13, color: "#888" }}>{error}</p>
-          <button onClick={handleNewPlan} style={{ marginTop: 12, padding: "8px 20px", borderRadius: 20, border: "2px solid #000", background: "#fff", cursor: "pointer", fontWeight: 700 }}>Try Again</button>
+      {/* Empty state — shown on error OR when planner returned zero cards.
+          Instead of a dead end, give the user a weather snapshot + a handful
+          of always-good options + the Events tab so they have somewhere to
+          land. */}
+      {(error || (!loading && cards.length === 0)) && (
+        <div style={{ padding: "24px 0", fontFamily: "'Inter', sans-serif" }}>
+          <p style={{ fontSize: 16, fontWeight: 700, margin: 0, marginBottom: 4 }}>
+            {error ? "Plan didn't load — try these classics" : "Nothing in the pool right now — try these classics"}
+          </p>
+          {error && <p style={{ fontSize: 12, color: "#888", margin: 0, marginBottom: 10 }}>{error}</p>}
+          {weather && <p style={{ fontSize: 13, color: "#555", margin: 0, marginBottom: 14 }}>{weather}</p>}
+          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 14px", display: "flex", flexDirection: "column", gap: 8 }}>
+            <li style={{ padding: "10px 12px", background: "#fff", border: "1px solid #eee", borderRadius: 8, fontSize: 14 }}>
+              <strong>Walk downtown Los Gatos.</strong> Coffee at Peet&apos;s, browse the shops on N Santa Cruz Ave, grab lunch wherever looks busy.
+            </li>
+            <li style={{ padding: "10px 12px", background: "#fff", border: "1px solid #eee", borderRadius: 8, fontSize: 14 }}>
+              <strong>Computer History Museum + Shoreline.</strong> Hit the permanent exhibits, then walk the lake trail for an hour.
+            </li>
+            <li style={{ padding: "10px 12px", background: "#fff", border: "1px solid #eee", borderRadius: 8, fontSize: 14 }}>
+              <strong>Santana Row stroll + dinner.</strong> Window-shop the open-air blocks, pick any of the patios for dinner.
+            </li>
+          </ul>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <button onClick={handleNewPlan} style={{ padding: "8px 20px", borderRadius: 20, border: "2px solid #000", background: "#fff", cursor: "pointer", fontWeight: 700 }}>Try Again</button>
+            <button onClick={() => _props.onNavigate("events")} style={{ padding: "8px 20px", borderRadius: 20, border: "2px solid #000", background: "#000", color: "#fff", cursor: "pointer", fontWeight: 700 }}>Browse Events →</button>
+          </div>
         </div>
       )}
 
