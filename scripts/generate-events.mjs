@@ -3866,6 +3866,22 @@ async function main() {
   }
   if (virtualFlagged) console.log(`   🛰  auto-flagged ${virtualFlagged} virtual event(s)`);
 
+  // Image resolution — Tier 1 (Places venue match) + Tier 2 (OG scrape) run
+  // always; Tier 3 (Recraft) is opt-in via RESOLVE_EVENT_IMAGES_RECRAFT=1
+  // since it costs money. Cache is persisted so re-runs don't re-fetch.
+  const { resolveEventImages } = await import("../src/lib/south-bay/eventImages.mjs");
+  console.log("\n🖼  Resolving event images (Tier 1 venue → Tier 2 OG → Tier 3 Recraft)...");
+  const imgStats = await resolveEventImages(collapsedEvents);
+  console.log(`   Tier 1 venue-match:    ${imgStats.tier1}`);
+  console.log(`   Tier 2 OG cached:      ${imgStats.tier2_cached}`);
+  console.log(`   Tier 2 OG fetched:     ${imgStats.tier2_fetched}`);
+  console.log(`   Tier 2 OG missed:      ${imgStats.tier2_missed}`);
+  console.log(`   Tier 3 recraft cached: ${imgStats.tier3_cached}`);
+  console.log(`   Tier 3 recraft new:    ${imgStats.tier3_generated}`);
+  console.log(`   Tier 3 skipped:        ${imgStats.tier3_skipped}`);
+  const resolved = imgStats.tier1 + imgStats.tier2_cached + imgStats.tier2_fetched + imgStats.tier3_cached + imgStats.tier3_generated + imgStats.preexisting;
+  console.log(`   Total images resolved: ${resolved} / ${collapsedEvents.length} (${((resolved / collapsedEvents.length) * 100).toFixed(0)}%)`);
+
   const ongoingCount = collapsedEvents.filter((e) => e.ongoing).length;
 
   const output = {

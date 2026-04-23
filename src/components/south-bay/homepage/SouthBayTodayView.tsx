@@ -29,6 +29,7 @@ interface DayCard {
   cost?: string | null;
   costNote?: string | null;
   photoRef?: string | null;
+  image?: string | null;
   venue?: string | null;
   source: "event" | "place";
   locked: boolean;
@@ -767,14 +768,24 @@ function CardInner({ card, emoji, accent }: { card: DayCard; emoji: string; acce
   const [unsplash, setUnsplash] = useState<UnsplashPhoto | null>(null);
 
   useEffect(() => {
-    if (card.photoRef) return; // already have a Google photo
+    // Skip Unsplash if we already have a photo from ingest (image URL) or Places (photoRef).
+    if (card.photoRef || card.image) return;
     fetch(`/api/unsplash-photo?query=${encodeURIComponent(card.category)}`)
       .then((r) => r.json())
       .then((d: UnsplashPhoto) => { if (d.url) setUnsplash(d); })
       .catch(() => {});
-  }, [card.id, card.category, card.photoRef]);
+  }, [card.id, card.category, card.photoRef, card.image]);
 
-  const hasPhoto = card.photoRef || unsplash;
+  const hasPhoto = card.photoRef || card.image || unsplash;
+  // Direct image URL wins over Places photoRef — it's the ingest-time
+  // resolved value (venue-shaped OG, event-specific art, or Recraft fallback).
+  const thumbBg = card.image
+    ? `url(${card.image}) center/cover no-repeat, #f0f0f0`
+    : card.photoRef
+      ? `url(/api/place-photo?ref=${encodeURIComponent(card.photoRef)}&w=200&h=200) center/cover no-repeat, #f0f0f0`
+      : unsplash
+        ? "transparent"
+        : "#f5f5f5";
 
   return (
     <>
@@ -782,19 +793,15 @@ function CardInner({ card, emoji, accent }: { card: DayCard; emoji: string; acce
       <div style={{ flexShrink: 0, margin: "10px 0 10px 12px", display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
         <div style={{
           width: 80, height: 80, borderRadius: 8, overflow: "hidden",
-          background: card.photoRef
-            ? `url(/api/place-photo?ref=${encodeURIComponent(card.photoRef)}&w=200&h=200) center/cover no-repeat, #f0f0f0`
-            : unsplash
-              ? "transparent"
-              : "#f5f5f5",
+          background: thumbBg,
           display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28,
         }}>
-          {unsplash && !card.photoRef
+          {unsplash && !card.photoRef && !card.image
             ? <img src={unsplash.url} alt={card.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             : !hasPhoto ? emoji : null}
         </div>
         {/* Unsplash attribution — only when using Unsplash photo */}
-        {unsplash && !card.photoRef && (
+        {unsplash && !card.photoRef && !card.image && (
           <div style={{ width: 80, fontSize: 7, lineHeight: 1.3, color: "#bbb", textAlign: "center" }}>
             <span role="link" tabIndex={0} onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(unsplash.photographerUrl, "_blank", "noopener"); }} style={{ color: "#bbb", cursor: "pointer" }}>{unsplash.photographer}</span>
             {" · "}

@@ -113,6 +113,7 @@ interface DayCard {
   costNote?: string | null;
   kidsCostNote?: string | null;
   photoRef?: string | null;
+  image?: string | null;
   source: "event" | "place";
   locked: boolean;
   /** Breadcrumb for debugging — describes why this card ended up in the plan.
@@ -581,9 +582,10 @@ function buildCandidatePool(
       costNote: (evt as any).costNote || null,
       kidFriendly: evt.kidFriendly ?? null,
       url: evt.url,
-      // Inherit the venue's Google Places photo if we can match it — events
-      // don't have their own photos but their host venue usually does.
-      photoRef: lookupVenuePhoto(evt.venue),
+      // Prefer ingest-time image (OG scrape or Recraft) over venue-match photoRef.
+      // Falls back to live venue lookup for any event that predates the ingest pass.
+      photoRef: (evt as any).photoRef || lookupVenuePhoto(evt.venue),
+      image: (evt as any).image || null,
       source: "event",
       eventDate: evt.date,
       eventTime: evt.time,
@@ -1008,6 +1010,7 @@ Return ONLY the JSON array. No explanation.`;
       costNote: kids && candidate.kidsCostNote ? candidate.kidsCostNote : candidate.costNote,
       kidsCostNote: candidate.kidsCostNote,
       photoRef: (candidate as any).photoRef || null,
+      image: (candidate as any).image || null,
       venue: candidate.venue || null,
       source: candidate.source,
       locked: isLocked,
@@ -1468,6 +1471,7 @@ Return ONLY the JSON array.`;
       costNote: kids && candidate.kidsCostNote ? candidate.kidsCostNote : candidate.costNote,
       kidsCostNote: candidate.kidsCostNote,
       photoRef: (candidate as any).photoRef || null,
+      image: (candidate as any).image || null,
       venue: candidate.venue || null,
       source: candidate.source,
       locked: false,
