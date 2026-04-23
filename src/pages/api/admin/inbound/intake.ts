@@ -36,6 +36,7 @@ import {
 import { looksLikeConfirmation, looksLikeAck } from "../../../../lib/lookout/confirm.ts";
 import { noteInboundFromSender } from "../../../../lib/lookout/tracker.ts";
 import { classifyCivic, forwardToStoa } from "../../../../lib/lookout/civic-classifier.ts";
+import { resolveRealSender } from "../../../../lib/lookout/resend-from.ts";
 import type { InboundEmail, InboundEvent, InboundIntakeLog } from "../../../../lib/lookout/types.ts";
 
 /** Internal shape — InboundEmail plus raw html for confirmation link parsing. */
@@ -329,8 +330,11 @@ async function fetchReceivedEmail(
   const html = stringFrom(data.html);
   const body = text || stripHtml(html);
 
+  const listedFrom = stringFrom(data.from) || fallback.from;
+  const from = resolveRealSender(listedFrom, data.headers, data.reply_to);
+
   return {
-    from: stringFrom(data.from) || fallback.from,
+    from,
     to: stringFrom(data.to) || fallback.to,
     subject: stringFrom(data.subject) || fallback.subject,
     body,

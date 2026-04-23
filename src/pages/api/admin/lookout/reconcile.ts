@@ -19,17 +19,10 @@
 import type { APIRoute } from "astro";
 import { readTracker, writeTracker } from "../../../../lib/lookout/tracker.ts";
 import { looksLikeAck, looksLikeConfirmation } from "../../../../lib/lookout/confirm.ts";
+import { resolveRealSender, SELF_INFRA_DOMAINS as IGNORE_DOMAINS } from "../../../../lib/lookout/resend-from.ts";
 import type { NewsletterTarget } from "../../../../lib/lookout/tracker.ts";
 
 export const prerender = false;
-
-// Self/infra sender domains we never want to count against a tracker row.
-const IGNORE_DOMAINS = new Set([
-  "in.southbaytoday.org",
-  "southbaytoday.org",
-  "stanwood.dev",
-  "gmail.com",
-]);
 
 // Look this many hours back on each run. The webhook handles the freshly-
 // arrived emails; this is only a catch-up. 48h gives plenty of overlap
@@ -44,6 +37,7 @@ interface ResendListItem {
   created_at: string;
   message_id?: string;
   reply_to?: string[];
+  headers?: Record<string, unknown>;
 }
 
 interface ResendDetail extends ResendListItem {
@@ -183,7 +177,13 @@ async function handle(request: Request): Promise<Response> {
   for (const item of listItems) {
     try {
       const d = await resendGet<ResendDetail>(`/emails/receiving/${item.id}`, resendKey);
-      details.push({ ...item, from: d.from ?? item.from, subject: d.subject ?? item.subject });
+      details.push({
+        ...item,
+        from: d.from ?? item.from,
+        subject: d.subject ?? item.subject,
+        reply_to: d.reply_to ?? item.reply_to,
+        headers: d.headers,
+      });
     } catch {
       /* skip */
     }
@@ -202,12 +202,10 @@ async function handle(request: Request): Promise<Response> {
   details.sort((a, b) => a.created_at.localeCompare(b.created_at));
 
   for (const e of details) {
-    // Prefer reply_to when the detail From resolves to our own receiving address.
-    let from = e.from;
-    const firstParse = parseFromHeader(from);
-    if (IGNORE_DOMAINS.has(firstParse.domain) && Array.isArray(e.reply_to) && e.reply_to[0]) {
-      from = e.reply_to[0];
-    }
+    // Gmail forwarding rewrites the envelope From, so `detail.from` for most
+    // inbound traffic is `events@in.southbaytoday.org`. Recover the original
+    // sender via headers.from → reply_to → listed value.
+    const from = resolveRealSender(e.from, e.headers, e.reply_to);
     const { address, domain, displayName } = parseFromHeader(from);
     if (!address) continue;
     if (IGNORE_DOMAINS.has(domain)) { skippedIgnore++; continue; }
