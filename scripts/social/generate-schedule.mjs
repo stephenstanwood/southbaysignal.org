@@ -2,11 +2,15 @@
 // ---------------------------------------------------------------------------
 // South Bay Today — 10-Day Schedule Generator
 // Populates the 3-slot daily schedule with draft content:
-//   07:15 — Day Plan (from default-plans.json)
+//   07:15 — Day Plan (one /api/plan-day call per day)
 //   11:45 — Tonight Pick (best evening event)
 //   16:30 — Wildcard (SV history, restaurant, or general)
 //
-// Runs at 2 AM alongside generate-default-plans.
+// Also writes today's adults + kids plans into default-plans.json so the
+// homepage first-paint reuses the social day-plan instead of recomputing.
+// (Replaces the now-deleted scripts/generate-default-plans.mjs.)
+//
+// Runs at 2 AM on the Mini.
 // Usage: node scripts/social/generate-schedule.mjs [--dry-run] [--days N]
 // ---------------------------------------------------------------------------
 
@@ -104,16 +108,51 @@ async function enrichCardPhotos(cards) {
   }
 }
 
+// Category → Unsplash URL cache so we only call once per category per run.
+// Cards whose photoRef + image are both null would otherwise flash the
+// category emoji on homepage load before the client-side Unsplash fallback
+// resolves; pre-baking the URL means the browser renders the image on
+// first paint.
+const unsplashByCategory = new Map();
+
+async function unsplashForCategory(category) {
+  if (!category) return null;
+  if (unsplashByCategory.has(category)) return unsplashByCategory.get(category);
+  try {
+    const res = await fetch(`${PLAN_API_BASE}/api/unsplash-photo?query=${encodeURIComponent(category)}`, {
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!res.ok) { unsplashByCategory.set(category, null); return null; }
+    const data = await res.json();
+    const url = data?.url || null;
+    unsplashByCategory.set(category, url);
+    return url;
+  } catch {
+    unsplashByCategory.set(category, null);
+    return null;
+  }
+}
+
+/** Fill card.image with an Unsplash URL for cards still missing a photoRef
+ *  after venue-lookup, so the homepage doesn't flash the emoji placeholder. */
+async function enrichMissingImages(cards) {
+  for (const c of cards) {
+    if (c.photoRef || c.image) continue;
+    const url = await unsplashForCategory(c.category);
+    if (url) c.image = url;
+  }
+}
+
 /** Call the plan API for a specific city + date. Returns plan data or null. */
 async function fetchPlanFromApi(city, dateStr, opts = {}) {
-  const { blockedNames = [], weekContext } = opts;
+  const { blockedNames = [], weekContext, kids = false } = opts;
   try {
     const res = await fetch(`${PLAN_API_BASE}/api/plan-day`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         city,
-        kids: false,
+        kids,
         currentHour: 7, // start with breakfast — enforced by plan-day prompt
         planDate: dateStr,
         blockedNames,
@@ -698,22 +737,93 @@ async function main() {
     saveSchedule(schedule);
     console.log(`\n✅ Schedule saved`);
 
+    // ── Homepage hero plans ──────────────────────────────────────────────
+    // The homepage's SouthBayTodayView reads default-plans.json for instant
+    // first-paint. Today's adults plan is the one social just generated; we
+    // only need an extra Claude call for today's kids plan. Client-side the
+    // card list is filtered by current time, so we don't need anchor
+    // variants — one plan per mode is enough.
+    await writeHomepageDefaultPlans(schedule, today);
+
     // Auto-commit shared-plans.json so plan pages are live by the time posts publish
     try {
       const repoRoot = join(__dirname, "..", "..");
-      const dirty = execSync("git diff --name-only -- src/data/south-bay/shared-plans.json", { cwd: repoRoot, encoding: "utf8" }).trim();
+      const dirty = execSync("git diff --name-only -- src/data/south-bay/shared-plans.json src/data/south-bay/default-plans.json", { cwd: repoRoot, encoding: "utf8" }).trim();
       if (dirty) {
-        execSync("git add src/data/south-bay/shared-plans.json", { cwd: repoRoot, stdio: "pipe" });
-        execSync('git commit -m "data: update shared plans from schedule generator"', { cwd: repoRoot, stdio: "pipe" });
+        execSync("git add src/data/south-bay/shared-plans.json src/data/south-bay/default-plans.json", { cwd: repoRoot, stdio: "pipe" });
+        execSync('git commit -m "data: update shared + default plans from schedule generator"', { cwd: repoRoot, stdio: "pipe" });
         execSync("git push", { cwd: repoRoot, stdio: "pipe" });
-        console.log("   📎 shared-plans.json committed and pushed");
+        console.log("   📎 shared + default plans committed and pushed");
       }
     } catch (e) {
-      console.warn("   ⚠️  Failed to auto-push shared-plans.json:", e.message);
+      console.warn("   ⚠️  Failed to auto-push plan JSONs:", e.message);
     }
   } else {
     console.log(`\n🏜️  Dry run`);
   }
+}
+
+const DEFAULT_PLANS_FILE = join(__dirname, "..", "..", "src", "data", "south-bay", "default-plans.json");
+
+async function writeHomepageDefaultPlans(schedule, todayStr) {
+  const todayAdults = schedule.days?.[todayStr]?.["day-plan"];
+  if (!todayAdults?.plan?.cards?.length) {
+    console.warn("   ⚠️  Today's adults plan is missing — skipping default-plans.json update");
+    return;
+  }
+  const citySlug = todayAdults.city;
+  const cityName = todayAdults.cityName;
+
+  // Enrich the adults plan's cards with Unsplash for any still missing a
+  // photoRef, so the homepage renders images on first paint.
+  await enrichMissingImages(todayAdults.plan.cards);
+
+  // Generate today's kids plan — this is the only extra Claude call option 2
+  // introduces relative to the social-only baseline.
+  console.log(`\n📋 Generating today's kids plan (${cityName}) for homepage...`);
+  let kidsPlan = null;
+  try {
+    kidsPlan = await fetchPlanFromApi(citySlug, todayStr, { kids: true });
+    if (kidsPlan) {
+      await enrichCardPhotos(kidsPlan.cards);
+      await enrichMissingImages(kidsPlan.cards);
+    }
+  } catch (err) {
+    console.warn(`   ⚠️  Kids plan fetch failed: ${err.message}`);
+  }
+
+  const adultsEntry = {
+    cards: todayAdults.plan.cards,
+    weather: todayAdults.plan.weather || null,
+    city: citySlug,
+    kids: false,
+    anchorHour: 9,
+    generatedAt: new Date().toISOString(),
+  };
+  const kidsEntry = kidsPlan ? {
+    cards: kidsPlan.cards,
+    weather: kidsPlan.weather || null,
+    city: citySlug,
+    kids: true,
+    anchorHour: 9,
+    generatedAt: new Date().toISOString(),
+  } : null;
+
+  const plans = { "adults:h9": adultsEntry };
+  if (kidsEntry) plans["kids:h9"] = kidsEntry;
+
+  const output = {
+    _meta: {
+      generatedAt: new Date().toISOString(),
+      generator: "generate-schedule (homepage hero)",
+      anchorHours: [9],
+      planCount: Object.keys(plans).length,
+    },
+    plans,
+  };
+  writeFileSync(DEFAULT_PLANS_FILE, JSON.stringify(output, null, 2));
+  const kidsMsg = kidsEntry ? `+ ${kidsEntry.cards.length} kids` : "(no kids plan — fetch failed)";
+  console.log(`   🏠 default-plans.json: ${adultsEntry.cards.length} adults ${kidsMsg}`);
 }
 
 main().catch((err) => {
