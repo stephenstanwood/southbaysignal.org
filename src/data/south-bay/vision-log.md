@@ -4976,3 +4976,36 @@ The comingSoon section of the Food tab went from empty to 12 items — residents
 1. **RECENTLY_FUNDED: Apr 21 watch** — Crunchbase weekly roundup for Apr 13–17 may publish later today or Monday. Specific targets: any new South Bay AI/chip rounds.
 2. **School calendar: teacher workday/PD days** — Districts often have 1–2 additional no-school days. Need verified 2025-26 dates per district.
 3. **Permit Pulse: Mountain View** — All known MV permit portals remain blocked/ECONNREFUSED. Monitor cityofmountainview.gov for changes.
+
+---
+
+## 2026-04-23 — Cycle 88: Filter Internal University Admin Events From Events Feed
+
+### Context
+Thursday April 23, 2026. All 6 SBT Tightening Roadmap sessions complete. Operating in continuous improvement mode. Multiple data pipelines refreshed via Mini cron.
+
+### What Was Built
+
+**generate-events.mjs: 4 new filter patterns to block internal university admin noise**
+
+Events from university calendars (SCU, SJSU) previously let through internal administrative records that have no value for South Bay residents:
+
+- `^last\s+day\s+to\s+(petition|submit|remove|add|drop|withdraw|file)` — academic deadline notices
+- `\bremove\s+(winter|spring|summer|fall)\s+\d{4}\s+incompletes?` — faculty grade admin deadlines
+- `\bclass\s+visit\b` — private faculty-arranged classroom visits (not open to the public)
+- `\bgrackle\b` — IT accessibility tool training workshops (internal)
+
+**upcoming-events.json: removed 5 admin events (741 events total, down from 746)**
+- "Last day to petition for degrees to be conferred in September 2026" (SCU)
+- "Last day to remove Winter 2026 incompletes (faculty)" (SCU)
+- "Class Visit: Hist 12H / Hist 27-127 / Executive MBA Class Visit" (SCU, 3 entries)
+
+**Data refreshed by Mini cron:** air quality, around-town, city-briefings, digests, event caches, health-scores, inbound-events, outages, permit-pulse, photos, real-estate, shared-plans, upcoming-meetings, weekend-picks.
+
+### Why This Was the Strongest Move
+A resident opening the Events tab shouldn't see "Last day to remove Winter 2026 incompletes (faculty)" — faculty workflow noise, not a community event. Five such events were live in today's feed. The durable fix in generate-events.mjs prevents recurrence on future regens.
+
+### Next 3 Strongest Ideas
+1. **RECENTLY_FUNDED: Apr 21+ watch** — NeoCognition ($40M) and Point2 Technology ($76M) added Apr 21. Crunchbase weekly roundup for Apr 21–25 may publish Friday.
+2. **Ongoing exhibit dedup** — MACLA and SJSU gallery exhibits appear as separate daily entries with no time and no `ongoing` flag. Same-URL multi-day entries should collapse to one ongoing event.
+3. **Permit Pulse: Mountain View** — All known MV permit portals remain blocked/ECONNREFUSED. Monitor cityofmountainview.gov for changes.
