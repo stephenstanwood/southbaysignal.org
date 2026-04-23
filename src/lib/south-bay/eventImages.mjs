@@ -146,6 +146,57 @@ async function fetchOgImage(url) {
   }
 }
 
+// OG image quality gate. Reject tiny files, wrong content types, and obvious
+// logo/icon/placeholder filename patterns so a CMS-default OG image doesn't
+// lock out Tier 3 Recraft later. Called right after extractOgImage.
+const BAD_OG_URL = /(?:^|[/_\-.])(?:logo|icon|favicon|default(?:[-_]image)?|placeholder|empty|blank|spacer|sprite|og[-_]default|share[-_]image|social[-_]share)(?:[-_.]|\.|$)/i;
+const OG_MIN_BYTES = 4000;       // < 4KB → almost certainly a logo
+const OG_MAX_BYTES = 10_000_000; // > 10MB → not a sane OG image
+const OG_VALIDATE_TIMEOUT_MS = 5000;
+
+async function validateOgImage(imageUrl) {
+  if (!imageUrl) return { ok: false, reason: "empty url" };
+  if (BAD_OG_URL.test(imageUrl)) return { ok: false, reason: "filename pattern" };
+
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), OG_VALIDATE_TIMEOUT_MS);
+    // Many CDNs reject HEAD; use GET with Range to cap the download at 1 byte
+    // when possible. Falls back to normal GET if Range is ignored.
+    const res = await fetch(imageUrl, {
+      signal: ctrl.signal,
+      headers: { "User-Agent": OG_UA, Range: "bytes=0-0" },
+      redirect: "follow",
+    });
+    clearTimeout(timer);
+    if (!res.ok && res.status !== 206) {
+      // Some hosts 403 Range but serve GET fine. Don't reject on first fail.
+      return { ok: true, warn: `range ${res.status}` };
+    }
+
+    const ct = (res.headers.get("content-type") || "").toLowerCase();
+    if (ct && !ct.startsWith("image/")) return { ok: false, reason: `non-image content-type: ${ct}` };
+
+    // Content-Range: "bytes 0-0/12345" → total length after the slash.
+    // Falls back to Content-Length when the server ignored Range.
+    let totalBytes = 0;
+    const cr = res.headers.get("content-range");
+    if (cr) {
+      const m = cr.match(/\/(\d+)\s*$/);
+      if (m) totalBytes = parseInt(m[1], 10);
+    }
+    if (!totalBytes) totalBytes = parseInt(res.headers.get("content-length") || "0", 10);
+
+    if (totalBytes && totalBytes < OG_MIN_BYTES) return { ok: false, reason: `too small: ${totalBytes}B` };
+    if (totalBytes && totalBytes > OG_MAX_BYTES) return { ok: false, reason: `too large: ${totalBytes}B` };
+
+    return { ok: true };
+  } catch (err) {
+    // Network errors shouldn't cause us to reject — keep the image and move on.
+    return { ok: true, warn: err.message };
+  }
+}
+
 // Simple concurrency limiter.
 async function mapConcurrent(items, fn, concurrency = 5) {
   const results = new Array(items.length);
@@ -235,6 +286,7 @@ export async function resolveEventImages(events, opts = {}) {
     tier2_cached: 0, // OG cache hits
     tier2_fetched: 0, // OG new fetches (success)
     tier2_missed: 0, // OG tried but no image found
+    tier2_rejected: 0, // OG fetched but failed quality gate
     tier3_cached: 0,
     tier3_generated: 0,
     tier3_skipped: 0, // would've recraft-gen'd but over budget / disabled
@@ -276,14 +328,30 @@ export async function resolveEventImages(events, opts = {}) {
     }
     // New fetch.
     const img = await fetchOgImage(url);
-    cache.byUrl[url] = { image: img || null, fetchedAt: new Date().toISOString() };
-    if (img) {
-      if (!dryRun) e.image = img;
-      stats.tier2_fetched++;
-    } else {
+    if (!img) {
+      cache.byUrl[url] = { image: null, fetchedAt: new Date().toISOString() };
       stats.tier2_missed++;
       needRecraft.push(e);
+      return;
     }
+    // Quality gate: reject tiny/logo/placeholder OG images so a CMS-default
+    // doesn't block a proper Recraft generation. Rejection is cached too
+    // so we don't re-validate every run.
+    const v = await validateOgImage(img);
+    if (!v.ok) {
+      cache.byUrl[url] = {
+        image: null,
+        rejected: img,
+        rejectReason: v.reason,
+        fetchedAt: new Date().toISOString(),
+      };
+      stats.tier2_rejected++;
+      needRecraft.push(e);
+      return;
+    }
+    cache.byUrl[url] = { image: img, fetchedAt: new Date().toISOString() };
+    if (!dryRun) e.image = img;
+    stats.tier2_fetched++;
   }, concurrency);
 
   // --- Tier 3: Recraft (opt-in, budgeted) ----------------------------------
@@ -315,6 +383,42 @@ export async function resolveEventImages(events, opts = {}) {
       stats.tier3_skipped++;
     }
   }
+
+  if (!dryRun) saveCache(cache);
+  return stats;
+}
+
+/**
+ * One-off: re-validate every positive entry in byUrl and drop the ones that
+ * fail the current quality gate. Use after tightening the validator so the
+ * next generate-events run refetches (and likely falls through to Recraft)
+ * for the junk entries.
+ */
+export async function revalidateOgCache({ concurrency = 6, dryRun = false } = {}) {
+  const cache = loadCache();
+  const entries = Object.entries(cache.byUrl || {}).filter(([, v]) => v?.image);
+  const stats = { total: entries.length, kept: 0, rejected: 0, errors: 0 };
+
+  await mapConcurrent(entries, async ([pageUrl, entry]) => {
+    try {
+      const v = await validateOgImage(entry.image);
+      if (v.ok) {
+        stats.kept++;
+        return;
+      }
+      if (!dryRun) {
+        cache.byUrl[pageUrl] = {
+          image: null,
+          rejected: entry.image,
+          rejectReason: v.reason,
+          fetchedAt: new Date().toISOString(),
+        };
+      }
+      stats.rejected++;
+    } catch {
+      stats.errors++;
+    }
+  }, concurrency);
 
   if (!dryRun) saveCache(cache);
   return stats;

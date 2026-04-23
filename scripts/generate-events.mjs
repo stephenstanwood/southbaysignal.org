@@ -3830,6 +3830,51 @@ async function main() {
     }
   }
 
+  // Cross-source dedup — two sources occasionally surface the same event
+  // (library event + newsletter item; Stanford + SVLG co-listings). Key by
+  // normalizeName(title) + date + normalizeName(venue), keep the richest
+  // entry (longest description, has time, has image/photoRef, has url).
+  {
+    const normKey = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    const scoreRichness = (e) => {
+      let s = 0;
+      if (e.description) s += Math.min(e.description.length / 100, 5);
+      if (e.time) s += 2;
+      if (e.endTime) s += 1;
+      if (e.image || e.photoRef) s += 2;
+      if (e.url) s += 1;
+      if (e.cost) s += 0.5;
+      if (e.kidFriendly !== null && e.kidFriendly !== undefined) s += 0.5;
+      return s;
+    };
+    const byKey = new Map();
+    const kept = [];
+    let dupeCount = 0;
+    for (const e of collapsedEvents) {
+      // Only dedup events with a title + date — closures and ambient entries
+      // without those fields don't collide meaningfully.
+      if (!e.title || !e.date) { kept.push(e); continue; }
+      const k = `${normKey(e.title)}|${e.date}|${normKey(e.venue)}`;
+      const existing = byKey.get(k);
+      if (!existing) {
+        byKey.set(k, { event: e, idx: kept.length });
+        kept.push(e);
+        continue;
+      }
+      dupeCount++;
+      const existingScore = scoreRichness(existing.event);
+      const newScore = scoreRichness(e);
+      if (newScore > existingScore) {
+        kept[existing.idx] = e;
+        byKey.set(k, { event: e, idx: existing.idx });
+      }
+      // Loser is dropped silently (keeping stdout clean).
+    }
+    if (dupeCount > 0) console.log(`   🔀 dedup: dropped ${dupeCount} cross-source duplicate(s)`);
+    collapsedEvents.length = 0;
+    collapsedEvents.push(...kept);
+  }
+
   // Shared rules — keep in sync with scripts/social/lib/content-rules.mjs.
   const { ACRONYM_FIXES, VIRTUAL_TITLE_SIGNALS, VIRTUAL_ADDRESS_SIGNALS } =
     await import("./social/lib/content-rules.mjs");
@@ -3890,6 +3935,7 @@ async function main() {
   console.log(`   Tier 2 OG cached:      ${imgStats.tier2_cached}`);
   console.log(`   Tier 2 OG fetched:     ${imgStats.tier2_fetched}`);
   console.log(`   Tier 2 OG missed:      ${imgStats.tier2_missed}`);
+  console.log(`   Tier 2 OG rejected:    ${imgStats.tier2_rejected || 0}`);
   console.log(`   Tier 3 recraft cached: ${imgStats.tier3_cached}`);
   console.log(`   Tier 3 recraft new:    ${imgStats.tier3_generated}`);
   console.log(`   Tier 3 skipped:        ${imgStats.tier3_skipped}`);
