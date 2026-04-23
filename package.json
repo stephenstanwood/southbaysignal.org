@@ -27,6 +27,7 @@
     "validate-places": "node scripts/validate-places.mjs",
     "audit-events": "node scripts/audit-events.mjs",
     "verify-camp-urls": "node scripts/verify-camp-urls.mjs",
+    "scrape-camp-prices": "node scripts/scrape-camp-prices.mjs",
     "validate-schedule": "node scripts/validate-schedule.mjs",
     "check": "npm run validate-places && npm run validate-schedule && npm test",
     "test": "node --test scripts/social/lib/post-gen-review.test.mjs && node --import tsx --test src/pages/api/plan-day.test.ts",
