@@ -26,5 +26,6 @@ Run these scripts to refresh pre-generated data:
 - NEVER create files in a root `api/` directory — Vercel treats that as legacy serverless functions and routes all `/api/*` traffic away from Astro's `_render`, breaking every API route. All API routes must live in `src/pages/api/`.
 
 ## Tabs
-Order: Today | Plan My Day | Events | Camps | Gov | Tech | Development | Food | Transit | Weather | Sports
-Hash routing: #overview, #plan, #events, #camps, #government, #technology, #development, #food, #transit, #weather, #sports
+Order: Today | Events | Camps | Gov | Tech | Food
+Hash routing: #overview, #events, #camps, #government, #technology, #food
+Gov now includes Development (folded in 2026-04-23 — the "What's Being Built" section near the bottom renders `<DevelopmentView />`). Weather + Sports tabs removed 2026-04-23 (not enough content to justify).

@@ -264,17 +264,21 @@ export default function DevelopmentView() {
   return (
     <div className="dev-view">
 
-      {/* Header */}
-      <div className="dev-header">
-        <div className="dev-header-eyebrow">South Bay / Development</div>
-        <h1 className="dev-header-title">What's Being Built</h1>
-        <p className="dev-header-subtitle">
-          Projects proposed, approved, and under construction across the South Bay — from new housing to transit to neighborhood retail.
-        </p>
-        <div className="dev-header-note">
-          Curated from public records and city council decisions. {activeCount} projects actively in development.
-        </div>
+      {/* Section header — this view is rendered inside GovernmentView */}
+      <div className="sb-section-header" style={{ marginBottom: 4, marginTop: 24 }}>
+        <span className="sb-section-title">What's Being Built</span>
       </div>
+      <p
+        style={{
+          fontSize: 12,
+          color: "var(--sb-muted)",
+          marginTop: 0,
+          marginBottom: 16,
+          lineHeight: 1.5,
+        }}
+      >
+        Projects proposed, approved, and under construction across the South Bay — curated from public records and city council decisions. {activeCount} projects actively in development.
+      </p>
 
       {/* Category filter */}
       <div style={{ marginBottom: 20 }}>

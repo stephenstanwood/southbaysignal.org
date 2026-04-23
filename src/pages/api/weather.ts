@@ -1,6 +1,6 @@
 export const prerender = false;
 import type { APIRoute } from "astro";
-import { wmoInfo, DEFAULT_WEATHER_LAT, DEFAULT_WEATHER_LON } from "../../lib/aestheticWeather";
+import { wmoInfo, forecastEmoji, DEFAULT_WEATHER_LAT, DEFAULT_WEATHER_LON } from "../../lib/aestheticWeather";
 import { CITY_MAP } from "../../lib/south-bay/cities";
 import type { City } from "../../lib/south-bay/types";
 import { rateLimit, rateLimitResponse } from "../../lib/rateLimit";
@@ -26,7 +26,7 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
       `https://api.open-meteo.com/v1/forecast`,
       `?latitude=${lat}&longitude=${lon}`,
       `&current=temperature_2m,weather_code`,
-      `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max`,
+      `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,cloud_cover_mean`,
       `&temperature_unit=fahrenheit`,
       `&timezone=America%2FLos_Angeles`,
       `&forecast_days=5`,
@@ -44,16 +44,18 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
     const weather = `${emoji} ${temp}°F ${desc.toLowerCase()}`;
 
     // 5-day daily forecast
-    const { time, weather_code, temperature_2m_max, temperature_2m_min, precipitation_probability_max } = data.daily;
+    const { time, weather_code, temperature_2m_max, temperature_2m_min, precipitation_probability_max, cloud_cover_mean } = data.daily;
     const forecast = (time as string[]).map((date: string, i: number) => {
-      const [fe, fd] = wmoInfo(weather_code[i] as number);
+      const rainPct = precipitation_probability_max[i] as number;
+      const ccMean = cloud_cover_mean?.[i] as number | null | undefined;
+      const [fe, fd] = forecastEmoji(weather_code[i] as number, ccMean, rainPct);
       return {
         date,
         emoji: fe,
         desc: fd,
         high: Math.round(temperature_2m_max[i] as number),
         low: Math.round(temperature_2m_min[i] as number),
-        rainPct: precipitation_probability_max[i] as number,
+        rainPct,
       };
     });
 

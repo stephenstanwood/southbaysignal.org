@@ -339,7 +339,7 @@ function BrowseMode() {
         <div style={{ fontSize: 11, fontWeight: 700, color: "var(--sb-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
           City
         </div>
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+        <div className="camps-city-chips">
           {ALL_CITIES.map((cityId) => {
             const active = selectedCities.has(cityId);
             return (
@@ -1422,7 +1422,7 @@ export default function CampsView() {
       <SpringBreakSection />
 
       {/* Mode switcher */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 24 }}>
+      <div style={{ display: "flex", gap: 4, marginTop: 22, marginBottom: 24 }}>
         <button
           onClick={() => setMode("browse")}
           style={{
