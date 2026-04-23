@@ -120,6 +120,33 @@ function pickNearestAnchor(availableAnchors: number[], nowHour: number): number 
   return availableAnchors.slice().sort((a, b) => a - b)[0];
 }
 
+/** Compute the effective time context for planning. Late at night there's
+ *  not enough day left to plan around, so we flip to tomorrow morning:
+ *  cutoff is 8 PM for adults, 6 PM for kids. Returns what the API should
+ *  receive (currentHour/currentMinute/planDate) plus whether we flipped.
+ *  planDate uses PT so a user in another timezone still gets tomorrow in
+ *  South Bay terms. */
+function getEffectiveTime(kids: boolean): {
+  isTomorrow: boolean;
+  currentHour: number;
+  currentMinute: number;
+  planDate: string | undefined;
+} {
+  const now = new Date();
+  const ptHour = Number(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles", hour: "numeric", hour12: false }));
+  const cutoff = kids ? 18 : 20;
+  if (ptHour >= cutoff) {
+    // Compute tomorrow's YYYY-MM-DD in PT. We do this by asking for PT's
+    // date, adding one day, and formatting as ISO date.
+    const ptTodayStr = now.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+    const [y, m, d] = ptTodayStr.split("-").map(Number);
+    const tomorrow = new Date(Date.UTC(y, m - 1, d + 1));
+    const planDate = tomorrow.toISOString().slice(0, 10);
+    return { isTomorrow: true, currentHour: 9, currentMinute: 0, planDate };
+  }
+  return { isTomorrow: false, currentHour: now.getHours(), currentMinute: now.getMinutes(), planDate: undefined };
+}
+
 /** Load a pre-generated plan from default-plans.json for instant display.
  *  Picks a random anchor city so first-visit users see variety, not always Campbell.
  *  Picks the nearest-but-not-future anchor HOUR so users landing at 4 PM don't
@@ -131,9 +158,12 @@ function loadDefaultPlan(kids: boolean): { cards: DayCard[]; anchor: City | null
     const anchorHours: number[] = Array.isArray(json._meta?.anchorHours) && json._meta.anchorHours.length
       ? json._meta.anchorHours
       : [9]; // legacy default-plans.json without anchor suffix
-    const now = new Date();
-    const nowHour = now.getHours();
-    const chosenAnchor = pickNearestAnchor(anchorHours, nowHour);
+    const eff = getEffectiveTime(kids);
+    // Tomorrow mode: always use the morning anchor so the preview shows a
+    // fresh day shape, not a stale evening slice.
+    const chosenAnchor = eff.isTomorrow
+      ? (anchorHours.includes(9) ? 9 : anchorHours.slice().sort((a, b) => a - b)[0])
+      : pickNearestAnchor(anchorHours, eff.currentHour);
     const city = pickRandomAnchor();
     const kidsSuffix = kids ? "kids" : "adults";
 
@@ -143,9 +173,11 @@ function loadDefaultPlan(kids: boolean): { cards: DayCard[]; anchor: City | null
     const plan = plans[anchoredKey] || plans[legacyKey];
     if (!plan?.cards?.length) return { cards: [], anchor: null };
 
-    // Filter out cards whose timeBlock is in the past (belt + suspenders —
-    // the anchor bucket already gets us close, this strips any straggler).
-    const nowMin = nowHour * 60 + now.getMinutes();
+    // Filter out cards whose timeBlock is in the past — only for today's
+    // plans. In tomorrow mode, every card is in the future so skip the
+    // filter entirely.
+    if (eff.isTomorrow) return { cards: plan.cards, anchor: city };
+    const nowMin = eff.currentHour * 60 + eff.currentMinute;
     const cards = plan.cards.filter((c: DayCard) => {
       const m = c.timeBlock?.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
       if (!m) return true;
@@ -326,6 +358,7 @@ export default function SouthBayTodayView(_props: Props) {
       return { id, timeBlock: card?.timeBlock ?? null };
     });
 
+    const eff = getEffectiveTime(state.kids);
     try {
       const res = await fetch("/api/plan-day", {
         method: "POST",
@@ -335,8 +368,9 @@ export default function SouthBayTodayView(_props: Props) {
           lockedIds: allLocked, // keep for backward compat
           lockedCards,
           dismissedIds: Object.keys(state.dismissed),
-          currentHour: new Date().getHours(),
-          currentMinute: new Date().getMinutes(),
+          currentHour: eff.currentHour,
+          currentMinute: eff.currentMinute,
+          planDate: eff.planDate,
           preferences: prefs.totalInteractions >= 5 ? prefs : undefined,
           noCache,
         }),
@@ -441,11 +475,11 @@ export default function SouthBayTodayView(_props: Props) {
     setTimeout(() => fetchPlanRef.current(keepIds), 100);
   };
 
-  // Tomorrow mode: 6pm for kids, 8pm for adults
-  const ptHour = Number(new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles", hour: "numeric", hour12: false }));
-  const tomorrowCutoff = state.kids ? 18 : 20;
-  const isTomorrowMode = ptHour >= tomorrowCutoff;
-  const headline = isTomorrowMode ? "What should we do tomorrow?" : "What should we do today?";
+  // Tomorrow mode: 6pm for kids, 8pm for adults — same cutoff used in
+  // getEffectiveTime so the headline and the actual plan always agree.
+  const headline = getEffectiveTime(state.kids).isTomorrow
+    ? "What should we do tomorrow?"
+    : "What should we do today?";
 
   return (
     <div style={{ maxWidth: 800, margin: "0 auto", padding: "0 16px 80px" }}>
