@@ -316,8 +316,9 @@ export const CAMPS: Camp[] = [
     locations: ["Various Palo Alto community services facilities"],
     description: "Palo Alto Community Services' Enjoy!-branded summer catalog — art, music, dance, theatre, sports, fitness, and special-interest camps.",
     registerUrl: "https://www.paloalto.gov/Departments/Community-Services/Activities-Programs/Enjoy/Summer-Camps",
+    priceNote: "2026 CivicRec catalog rates: most camps $381–$423/wk · premium camps $476–$529/wk · $75 non-refundable registration fee.",
     notes: "Catalog at ca-paloalto.civicrec.com. Resident registration is open.",
-    weeks: [wk(3, null), wk(4, null), wk(5, null), wk(6, null), wk(7, null), wk(8, null), wk(9, null), wk(10, null)],
+    weeks: [wk(3, 423), wk(4, 423), wk(5, 423), wk(6, 423), wk(7, 423), wk(8, 423), wk(9, 423), wk(10, 423)],
   },
 
   // ─── Los Altos — city ──────────────────────────────────────────────────────
@@ -577,9 +578,9 @@ export const CAMPS: Camp[] = [
     ],
     description: "The Bay Area's largest youth musical-theater summer program, no auditions required. Kids rotate through voice, acting, and dance, culminating in a themed final performance.",
     registerUrl: "https://www.cmtsj.org/campcmt/",
-    priceNote: "Contact CMT for pricing · 10% sibling discount · scholarships available.",
+    priceNote: "Junior Talents/Rising Stars (gr 1–8) $765–$840 depending on field trip and registration window · Tiny Tots (TK–K) $530–$580 · 10% sibling discount · scholarships available.",
     featured: true,
-    weeks: [wk(1, null), wk(2, null), wk(3, null), wk(4, null), wk(5, null), wk(6, null), wk(7, null), wk(8, null)],
+    weeks: [wk(1, 815), wk(2, 815), wk(3, 815), wk(4, 815), wk(5, 815), wk(6, 815), wk(7, 815), wk(8, 815)],
   },
 
   {
@@ -778,8 +779,9 @@ export const CAMPS: Camp[] = [
     locations: ["Palo Alto Junior Museum & Zoo"],
     description: "Zoo-based camp where kids meet live animals, help with animal care, and do science experiments alongside museum educators. Younger groups focus on animal stories; older groups do hands-on biology.",
     registerUrl: "https://www.paloaltozoo.org/Programs/Summer-Camps",
+    priceNote: "PAJMZ-linked city catalog rates: $381–$423/wk typical · $476–$529/wk for premium sessions · $75 non-refundable registration fee.",
     notes: "Registration opened Feb 2026.",
-    weeks: [wk(3, null), wk(4, null), wk(5, null), wk(6, null), wk(7, null), wk(8, null), wk(9, null), wk(10, null)],
+    weeks: [wk(3, 423), wk(4, 423), wk(5, 423), wk(6, 423), wk(7, 423), wk(8, 423), wk(9, 423), wk(10, 423)],
   },
 
   {
