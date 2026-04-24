@@ -3371,8 +3371,16 @@ function fetchInboundEvents() {
       const startDate = new Date(e.startsAt);
       if (isNaN(startDate.getTime())) continue;
 
-      // Extract a human time string from the ISO timestamp in PT
-      const time = startDate.toLocaleTimeString("en-US", {
+      // Extract a human time string from the ISO timestamp in PT.
+      // Treat midnight (00:00 local) as "time unknown" — the extractor writes
+      // T00:00:00 when no time was found in the newsletter.
+      const _ptHour = parseInt(
+        startDate.toLocaleTimeString("en-US", {
+          hour: "2-digit", hour12: false, timeZone: "America/Los_Angeles",
+        })
+      );
+      const _ptMin = startDate.getMinutes();
+      const time = (_ptHour === 0 && _ptMin === 0) ? null : startDate.toLocaleTimeString("en-US", {
         hour: "numeric",
         minute: "2-digit",
         hour12: true,
