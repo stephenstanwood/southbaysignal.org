@@ -40,7 +40,7 @@ export interface Camp {
 }
 
 // Date this data was last verified against operator websites.
-export const DATA_VERIFIED_AT = "2026-04-23";
+export const DATA_VERIFIED_AT = "2026-04-24";
 
 // 11-week summer schedule. Week 4 is a 4-day short week — Jul 4 falls on
 // Saturday in 2026, so Jul 3 is the federal observed holiday.
