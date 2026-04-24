@@ -71,6 +71,24 @@ function loadDefaultPlans() {
   try { return JSON.parse(readFileSync(PLANS_FILE, "utf8")); } catch { return { plans: {} }; }
 }
 
+/** Extract card names from the *previous* default-plans.json, split by mode.
+ *  Used to feed `recentlyShown` (with daysAgo: 1 → -25 penalty) into today's
+ *  plan generation so day-over-day variety actually happens. Without this the
+ *  homepage kids plan picked Bill's Cafe + Vasona Lake + Smoking Pig BBQ in a
+ *  loop because the nightly generator had no memory of yesterday's picks. */
+function extractPreviousPlanNames(plansData) {
+  const adults = new Set();
+  const kids = new Set();
+  for (const [key, plan] of Object.entries(plansData?.plans || {})) {
+    const target = key.startsWith("kids:") ? kids : adults;
+    for (const c of (plan?.cards || [])) {
+      const n = normalizeName(c.name);
+      if (n) target.add(n);
+    }
+  }
+  return { adults: [...adults], kids: [...kids] };
+}
+
 const PLAN_API_BASE = process.env.SBT_API_BASE || "https://southbaytoday.org";
 const PLACES_URL = "https://places.googleapis.com/v1/places:searchText";
 
@@ -145,7 +163,7 @@ async function enrichMissingImages(cards) {
 
 /** Call the plan API for a specific city + date. Returns plan data or null. */
 async function fetchPlanFromApi(city, dateStr, opts = {}) {
-  const { blockedNames = [], weekContext, kids = false } = opts;
+  const { blockedNames = [], weekContext, kids = false, recentlyShown = [] } = opts;
   try {
     const res = await fetch(`${PLAN_API_BASE}/api/plan-day`, {
       method: "POST",
@@ -157,6 +175,7 @@ async function fetchPlanFromApi(city, dateStr, opts = {}) {
         planDate: dateStr,
         blockedNames,
         weekContext,
+        recentlyShown,
       }),
       signal: AbortSignal.timeout(45000),
     });
@@ -404,7 +423,7 @@ function weightedRandomPick(items) {
  *    - "missing-only": only fill missing slots, leave existing drafts alone
  *      (used for Pass 2 — flagged slots were deleted, everything else is keep)
  */
-async function runGenerationPass(schedule, plansData, scored, { passLabel = "pass", regenMode = "draft-or-missing" } = {}) {
+async function runGenerationPass(schedule, plansData, scored, { passLabel = "pass", regenMode = "draft-or-missing", yesterdayAdultsNames = [] } = {}) {
   const shouldFill = (slot) => {
     if (!slot) return true;
     if (regenMode === "missing-only") return false;
@@ -491,7 +510,11 @@ async function runGenerationPass(schedule, plansData, scored, { passLabel = "pas
             anchorCities: anchorCitiesThisWeek.slice(),
             categorySaturation: { ...categorySaturation },
           };
-          const candidate = await fetchPlanFromApi(citySlug, dateStr, { blockedNames, weekContext });
+          // Penalize (not hard-block) yesterday's adults picks so today's
+          // plan shuffles even when seedUsedFromSchedule missed anything.
+          // daysAgo: 1 → -25 points in plan-day's scoreCandidates.
+          const recentlyShown = yesterdayAdultsNames.map((n) => ({ name: n, daysAgo: 1 }));
+          const candidate = await fetchPlanFromApi(citySlug, dateStr, { blockedNames, weekContext, recentlyShown });
           if (!candidate) {
             lastReason = "api returned nothing";
           } else {
@@ -688,8 +711,16 @@ async function main() {
   let scored;
   try { scored = scoreAndRank(upcoming); } catch { scored = upcoming; }
 
+  // Cross-day variety seed: extract yesterday's picks (split by mode) from
+  // the existing default-plans.json before we overwrite it. These flow into
+  // every plan API call as recentlyShown{daysAgo: 1} → -25 score penalty.
+  // Without this the nightly generator has no memory and serves the same
+  // "obviously good" Bill's Cafe + Vasona Lake stack day after day.
+  const { adults: yesterdayAdultsNames, kids: yesterdayKidsNames } = extractPreviousPlanNames(plansData);
+  console.log(`   🔁 variety seed: ${yesterdayAdultsNames.length} adults + ${yesterdayKidsNames.length} kids names from yesterday`);
+
   // ── Pass 1: initial generation ─────────────────────────────────────────
-  const p1 = await runGenerationPass(schedule, plansData, scored, { passLabel: "initial" });
+  const p1 = await runGenerationPass(schedule, plansData, scored, { passLabel: "initial", yesterdayAdultsNames });
   console.log(`\n▶︎ Pass 1: ${p1.generated} generated, ${p1.skipped} preserved`);
 
   // ── Quality review ────────────────────────────────────────────────────
@@ -709,7 +740,7 @@ async function main() {
     // ── Pass 2: regenerate only the slots that were deleted by review ────
     if (review.flagged.length) {
       console.log(`\n🔁 Pass 2: regenerating ${review.flagged.length} flagged slot(s)...`);
-      const p2 = await runGenerationPass(schedule, plansData, scored, { passLabel: "regen", regenMode: "missing-only" });
+      const p2 = await runGenerationPass(schedule, plansData, scored, { passLabel: "regen", regenMode: "missing-only", yesterdayAdultsNames });
       console.log(`✅ Pass 2: ${p2.generated} regenerated`);
 
       // Re-run the deterministic portion of the review (terminology,
@@ -743,7 +774,7 @@ async function main() {
     // only need an extra Claude call for today's kids plan. Client-side the
     // card list is filtered by current time, so we don't need anchor
     // variants — one plan per mode is enough.
-    await writeHomepageDefaultPlans(schedule, today);
+    await writeHomepageDefaultPlans(schedule, today, yesterdayKidsNames);
 
     // Auto-commit shared-plans.json so plan pages are live by the time posts publish
     try {
@@ -765,7 +796,7 @@ async function main() {
 
 const DEFAULT_PLANS_FILE = join(__dirname, "..", "..", "src", "data", "south-bay", "default-plans.json");
 
-async function writeHomepageDefaultPlans(schedule, todayStr) {
+async function writeHomepageDefaultPlans(schedule, todayStr, yesterdayKidsNames = []) {
   const todayAdults = schedule.days?.[todayStr]?.["day-plan"];
   if (!todayAdults?.plan?.cards?.length) {
     console.warn("   ⚠️  Today's adults plan is missing — skipping default-plans.json update");
@@ -783,7 +814,11 @@ async function writeHomepageDefaultPlans(schedule, todayStr) {
   console.log(`\n📋 Generating today's kids plan (${cityName}) for homepage...`);
   let kidsPlan = null;
   try {
-    kidsPlan = await fetchPlanFromApi(citySlug, todayStr, { kids: true });
+    // Penalize yesterday's kids picks so the homepage doesn't serve
+    // Bill's Cafe + Vasona Lake + Smoking Pig every day in a row.
+    // daysAgo: 1 → -25 points in plan-day's scoreCandidates.
+    const recentlyShown = yesterdayKidsNames.map((n) => ({ name: n, daysAgo: 1 }));
+    kidsPlan = await fetchPlanFromApi(citySlug, todayStr, { kids: true, recentlyShown });
     if (kidsPlan) {
       await enrichCardPhotos(kidsPlan.cards);
       await enrichMissingImages(kidsPlan.cards);
