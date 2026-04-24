@@ -67,7 +67,7 @@ async function callClaude(prompt) {
     },
     body: JSON.stringify({
       model: CLAUDE_HAIKU,
-      max_tokens: 1024,
+      max_tokens: 1536,
       messages: [{ role: "user", content: prompt }],
     }),
   });
@@ -97,8 +97,8 @@ async function main() {
     return;
   }
 
-  // Summarize events for Claude (cap to 80 to keep prompt reasonable)
-  const sample = weekend.slice(0, 80);
+  // Summarize events for Claude (cap to 150 to keep prompt reasonable)
+  const sample = weekend.slice(0, 150);
   const eventList = sample.map((e, i) =>
     `${i + 1}. [${e.date} ${e.time || "all day"}] ${e.title} — ${cityLabel(e.city)}${e.venue ? `, ${e.venue}` : ""} (${e.cost}) — ${(e.description || "").slice(0, 120)}`
   ).join("\n");
@@ -109,15 +109,18 @@ The upcoming weekend is ${label}. Here are ${sample.length} events happening acr
 
 ${eventList}
 
-Pick exactly 3 events that a real South Bay resident would genuinely want to attend. Prioritize:
+Pick exactly 5 events that a real South Bay resident would genuinely want to attend. Prioritize:
 - Events that are unique, annual, or rare (not things you can do any weekend)
 - Free or affordable events
 - Broad appeal across different types of residents
 - Geographic diversity across cities if possible
+- Day diversity: you MUST pick at least 2 events on Saturday AND at least 2 events on Sunday (check the date field carefully)
 
 Avoid: university admin events, clinical studies, internal community meetings, things open every week (farmers markets are fine if especially notable)
 
-Return ONLY a JSON array of 3 objects, no other text:
+IMPORTANT: Check the date on each event. Spread picks across both Saturday and Sunday.
+
+Return ONLY a JSON array of 5 objects, no other text:
 [
   {
     "eventIndex": <1-based index from the list above>,
