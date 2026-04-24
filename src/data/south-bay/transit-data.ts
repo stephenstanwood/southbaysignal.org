@@ -152,17 +152,6 @@ export const ROAD_PROJECTS: RoadProject[] = [
     source: "VTA / Caltrans",
   },
   {
-    id: "road-2",
-    title: "I-880 North: Paving and Interchange Work near Milpitas",
-    highway: "I-880",
-    cities: ["Milpitas", "San José"],
-    type: "construction",
-    impact: "moderate",
-    description: "Caltrans resurfacing project between the I-680 interchange and the Milpitas/San José border. Expect intermittent lane closures on weeknight evenings (9pm–5am) through April.",
-    schedule: "Weeknight closures through April 2026",
-    source: "Caltrans District 4",
-  },
-  {
     id: "road-3",
     title: "Hwy 85 / I-280 Interchange Improvement",
     highway: "SR-85 / I-280",
