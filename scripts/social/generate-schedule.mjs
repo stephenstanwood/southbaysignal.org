@@ -50,6 +50,12 @@ if (!process.env.ANTHROPIC_API_KEY) {
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
 const daysAhead = parseInt(args.find((a, i) => args[i - 1] === "--days") || "10");
+// --hero-only: skip the 10-day social generation entirely and just refresh
+// default-plans.json (today's adults plan pulled from the existing social
+// schedule + a fresh kids plan for the homepage). Intended for the daily
+// 2:30 AM cron that keeps the homepage first-paint fresh between the
+// weekly Saturday social run.
+const heroOnly = args.includes("--hero-only");
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -701,6 +707,36 @@ async function runGenerationPass(schedule, plansData, scored, { passLabel = "pas
 
 async function main() {
   const today = todayPT();
+
+  // Hero-only fast path: skip the 10-day social batch and just refresh
+  // default-plans.json for the homepage. Runs daily on the Mini.
+  if (heroOnly) {
+    console.log(`\n🏠 Hero-only refresh — ${today}`);
+    const schedule = loadSchedule();
+    const plansData = loadDefaultPlans();
+    const { kids: yesterdayKidsNames } = extractPreviousPlanNames(plansData);
+    if (dryRun) {
+      console.log(`\n🏜️  Dry run (hero-only)`);
+      return;
+    }
+    await writeHomepageDefaultPlans(schedule, today, yesterdayKidsNames);
+    try {
+      const repoRoot = join(__dirname, "..", "..");
+      const dirty = execSync("git diff --name-only -- src/data/south-bay/default-plans.json", { cwd: repoRoot, encoding: "utf8" }).trim();
+      if (dirty) {
+        execSync("git add src/data/south-bay/default-plans.json", { cwd: repoRoot, stdio: "pipe" });
+        execSync('git commit -m "data: refresh homepage default plans"', { cwd: repoRoot, stdio: "pipe" });
+        execSync("git push", { cwd: repoRoot, stdio: "pipe" });
+        console.log("   📎 default-plans.json committed and pushed");
+      } else {
+        console.log("   (default-plans.json unchanged)");
+      }
+    } catch (e) {
+      console.warn("   ⚠️  Failed to auto-push default-plans.json:", e.message);
+    }
+    return;
+  }
+
   console.log(`\n📅 Schedule generator — ${today} (${daysAhead} days ahead)`);
 
   const schedule = loadSchedule();

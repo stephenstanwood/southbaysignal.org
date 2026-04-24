@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>org.southbaytoday.default-plans-refresh</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/node</string>
+        <string>--env-file=.env.local</string>
+        <string>/Users/stephenstanwood/Projects/southbaytoday.org/scripts/social/generate-schedule.mjs</string>
+        <string>--hero-only</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/stephenstanwood/Projects/southbaytoday.org</string>
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>2</integer>
+        <key>Minute</key>
+        <integer>30</integer>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>/Users/stephenstanwood/Library/Logs/default-plans-refresh.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/stephenstanwood/Library/Logs/default-plans-refresh.log</string>
+</dict>
+</plist>
