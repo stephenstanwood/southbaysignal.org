@@ -220,8 +220,12 @@ function loadDefaultPlan(kids: boolean): { cards: DayCard[]; anchor: City | null
 
     // Filter out cards whose timeBlock is in the past — only for today's
     // plans. In tomorrow mode, every card is in the future so skip the
-    // filter entirely.
-    if (eff.isTomorrow) return { cards: plan.cards, anchor: city };
+    // filter entirely — but strip today-only event cards since the cache
+    // was generated for today's event pool; a live fetch will backfill
+    // tomorrow's real events.
+    if (eff.isTomorrow) {
+      return { cards: plan.cards.filter((c: DayCard) => c.source !== "event"), anchor: city };
+    }
     const nowMin = eff.currentHour * 60 + eff.currentMinute;
     const cards = plan.cards.filter((c: DayCard) => {
       const m = c.timeBlock?.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
@@ -514,6 +518,14 @@ export default function SouthBayTodayView(_props: Props) {
       fetchPlan();
       return;
     }
+    // Tomorrow mode can't be served from today's cache — the cached plan's
+    // event pool is today-only, and tomorrow has its own events/weather.
+    // Places render instantly (events were stripped in loadDefaultPlan);
+    // this fetch backfills tomorrow's real events.
+    if (getEffectiveTime(state.kids).isTomorrow) {
+      fetchPlan();
+      return;
+    }
     const generatedAt = (defaultPlansJson as any)?._meta?.generatedAt;
     const ageMs = generatedAt ? Date.now() - new Date(generatedAt).getTime() : Infinity;
     const HARD_STALE_MS = 26 * 60 * 60 * 1000;
@@ -552,6 +564,9 @@ export default function SouthBayTodayView(_props: Props) {
       ...s,
       recentlyShown: mergeRecent(s.recentlyShown, tom.cards.map((c) => ({ id: c.id, name: c.name }))),
     }));
+    // Backfill tomorrow's real events — loadTomorrowPlan only has today's
+    // cached places; fetch tomorrow's live plan to get tomorrow's event pool.
+    fetchPlanRef.current?.();
   }, [cards, planDateISO, nowMinutes, loading, state.kids]);
 
   // Actions
@@ -571,7 +586,8 @@ export default function SouthBayTodayView(_props: Props) {
         recentlyShown: mergeRecent(s.recentlyShown, preGen.cards.map((c) => ({ id: c.id, name: c.name }))),
       }));
       setReplacedIds(new Set());
-      setPlanDateISO(getEffectiveTime(nextKids).planDate || getTodayISOInPT());
+      const effNext = getEffectiveTime(nextKids);
+      setPlanDateISO(effNext.planDate || getTodayISOInPT());
       // Swap the weather line to match the new mode's anchor.
       try {
         const json = defaultPlansJson as any;
@@ -584,6 +600,9 @@ export default function SouthBayTodayView(_props: Props) {
           if (w) { setWeather(w); break; }
         }
       } catch {}
+      // Tomorrow mode: backfill real events via live fetch (pre-gen is
+      // places-only in tomorrow mode).
+      if (effNext.isTomorrow) setTimeout(() => fetchPlanRef.current?.(), 50);
       return;
     }
     // Fallback: hero plan missing for this mode → live fetch.
@@ -1167,7 +1186,10 @@ function loadTomorrowPlan(kids: boolean): { cards: DayCard[]; anchor: City | nul
       plan = plans[anchoredKey] || plans[legacyKey];
     }
     if (!plan?.cards?.length) return { cards: [], anchor: null, weather: null };
-    return { cards: plan.cards, anchor: city, weather: plan.weather || null };
+    // Strip today-only event cards — cache was generated for today's event
+    // pool and tomorrow has its own events. Places survive.
+    const cards = plan.cards.filter((c: DayCard) => c.source !== "event");
+    return { cards, anchor: city, weather: plan.weather || null };
   } catch {
     return { cards: [], anchor: null, weather: null };
   }
