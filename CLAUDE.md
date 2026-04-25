@@ -29,3 +29,6 @@ Run these scripts to refresh pre-generated data:
 Order: Today | Events | Camps | Gov | Tech | Food
 Hash routing: #overview, #events, #camps, #government, #technology, #food
 Gov now includes Development (folded in 2026-04-23 — the "What's Being Built" section near the bottom renders `<DevelopmentView />`). Weather + Sports tabs removed 2026-04-23 (not enough content to justify).
+
+## Home tab is curated — do not add teasers
+Do NOT add new teaser sections, callouts, or strips to `src/components/south-bay/homepage/SouthBayTodayView.tsx` (the Today/Home tab). The layout is hand-curated. If a nightly-generated data source isn't surfaced on Home, that's deliberate, not a gap to fill. Two autonomous additions were removed in one day (2026-04-25): JustOpenedTeaser and AroundTownTeaser. Routine work — bug fixes, copy edits, scrapers, scoring tweaks, additions to other tabs — is fine; new visual sections on Home need explicit Stephen approval.

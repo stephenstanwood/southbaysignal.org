@@ -9,7 +9,6 @@ import type { City, Tab } from "../../../lib/south-bay/types";
 import { CITIES } from "../../../lib/south-bay/cities";
 import PhotoStrip from "./PhotoStrip";
 import RedditPulseTeaser from "./RedditPulseTeaser";
-import AroundTownTeaser from "./AroundTownTeaser";
 import ForecastCard from "../cards/ForecastCard";
 import defaultPlansJson from "../../../data/south-bay/default-plans.json";
 
@@ -929,9 +928,6 @@ export default function SouthBayTodayView(_props: Props) {
           })}
         </div>
       )}
-
-      {/* Around the South Bay — recent civic actions */}
-      <AroundTownTeaser onNavigate={_props.onNavigate} />
 
       {/* Reddit pulse — what people are saying on regional subs */}
       <RedditPulseTeaser />
