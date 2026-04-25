@@ -1576,6 +1576,16 @@ Return ONLY the JSON array. No explanation.`;
         if (hoursObj && slotStart !== null && slotEnd !== null) {
           if (!fitsInOpenRange(hoursObj, slotStart, slotEnd)) continue;
         }
+        // Events with a fixed start/end window must actually be happening
+        // during the slot. A 9 AM–1 PM farmers market doesn't fit a 1:30 PM
+        // gap, even if its category is right.
+        if (cand.source === "event" && cand.eventTime && slotStart !== null && slotEnd !== null) {
+          const evStart = parseHour(cand.eventTime.split(/\s*-\s*/)[0]);
+          if (evStart !== null) {
+            const evEnd = cand.eventEndTime ? parseHour(cand.eventEndTime) : evStart + 1.5;
+            if (evEnd !== null && (evEnd <= slotStart || evStart >= slotEnd)) continue;
+          }
+        }
         replacement = cand;
         break;
       }
@@ -1592,13 +1602,19 @@ Return ONLY the JSON array. No explanation.`;
       console.log(`[plan-day] replacing back-to-back ${cur.category}: ${cur.name} → ${replacement.name}`);
       usedIds.delete(cur.id);
       usedIds.add(replacement.id);
+      // Replacement events keep their real-world time; only places inherit
+      // the original slot. Final sort below restores chronology.
+      const replacementTimeBlock =
+        replacement.source === "event" && replacement.eventTime
+          ? timeBlockFromEventTime(replacement.eventTime, replacement.eventEndTime)
+          : cur.timeBlock;
       cards[i] = {
         id: replacement.id,
         name: replacement.name,
         category: replacement.category,
         city: replacement.city,
         address: replacement.address,
-        timeBlock: cur.timeBlock,
+        timeBlock: replacementTimeBlock,
         blurb: replacement.blurb || replacement.description?.slice(0, 160) || fallbackBlurb(replacement.source, replacement.category, replacement.name, replacement.venue),
         why: replacement.why || "A solid pick to break up the day.",
         url: replacement.url ?? null,
@@ -1612,6 +1628,28 @@ Return ONLY the JSON array. No explanation.`;
         locked: false,
       };
       void poolById; // reserved for future lookups
+    }
+  }
+
+  // Defensive: any event card whose timeBlock drifted from the real event
+  // window gets snapped back. The main sequencer + padder force this, but
+  // back-to-back replacement and other paths historically copied a slot
+  // verbatim and orphaned the eventTime. This catches every path.
+  for (const card of cards) {
+    if (card.source !== "event") continue;
+    const candidate = candidateMap.get(card.id);
+    const evTime = (candidate as any)?.eventTime;
+    if (!evTime) continue;
+    const forced = timeBlockFromEventTime(evTime, (candidate as any)?.eventEndTime);
+    if (card.timeBlock !== forced) {
+      logDecision({
+        script: "plan-day",
+        action: "autofixed",
+        target: `${card.name} (${card.id})`,
+        reason: `event timeBlock drifted: "${card.timeBlock}" → "${forced}"`,
+        meta: { city, targetDate, eventTime: evTime },
+      });
+      card.timeBlock = forced;
     }
   }
 
