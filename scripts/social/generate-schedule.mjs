@@ -863,6 +863,54 @@ async function writeHomepageDefaultPlans(schedule, todayStr, yesterdayKidsNames 
     console.warn(`   ⚠️  Kids plan fetch failed: ${err.message}`);
   }
 
+  // ── Tomorrow's hero plans ────────────────────────────────────────────────
+  // The homepage flips into tomorrow mode after 6 PM (kids) / 8 PM (adults).
+  // Without dedicated tomorrow heroes, today's cache leaks today-only events
+  // into tomorrow's view. Tomorrow's adults plan is already generated as part
+  // of the 10-day social batch; we just pull it out and add a kids fetch.
+  const tomorrowStr = isoOffset(todayStr, 1);
+  const tomorrowAdults = schedule.days?.[tomorrowStr]?.["day-plan"];
+  let tomorrowAdultsEntry = null;
+  let tomorrowKidsEntry = null;
+  if (tomorrowAdults?.plan?.cards?.length) {
+    await enrichMissingImages(tomorrowAdults.plan.cards);
+    tomorrowAdultsEntry = {
+      cards: tomorrowAdults.plan.cards,
+      weather: tomorrowAdults.plan.weather || null,
+      city: tomorrowAdults.city,
+      kids: false,
+      anchorHour: 9,
+      planDate: tomorrowStr,
+      generatedAt: new Date().toISOString(),
+    };
+    console.log(`\n📋 Generating tomorrow's kids plan (${tomorrowAdults.cityName}) for homepage...`);
+    try {
+      const todayNames = (kidsPlan?.cards || todayAdults.plan.cards).map((c) => c.name).filter(Boolean);
+      const recentlyShown = [
+        ...yesterdayKidsNames.map((n) => ({ name: n, daysAgo: 2 })),
+        ...todayNames.map((n) => ({ name: n, daysAgo: 1 })),
+      ];
+      const tomorrowKidsPlan = await fetchPlanFromApi(tomorrowAdults.city, tomorrowStr, { kids: true, recentlyShown });
+      if (tomorrowKidsPlan?.cards?.length) {
+        await enrichCardPhotos(tomorrowKidsPlan.cards);
+        await enrichMissingImages(tomorrowKidsPlan.cards);
+        tomorrowKidsEntry = {
+          cards: tomorrowKidsPlan.cards,
+          weather: tomorrowKidsPlan.weather || null,
+          city: tomorrowAdults.city,
+          kids: true,
+          anchorHour: 9,
+          planDate: tomorrowStr,
+          generatedAt: new Date().toISOString(),
+        };
+      }
+    } catch (err) {
+      console.warn(`   ⚠️  Tomorrow kids plan fetch failed: ${err.message}`);
+    }
+  } else {
+    console.warn(`   ⚠️  Tomorrow's adults plan (${tomorrowStr}) missing from schedule — skipping tomorrow heroes`);
+  }
+
   const adultsEntry = {
     cards: todayAdults.plan.cards,
     weather: todayAdults.plan.weather || null,
@@ -882,6 +930,8 @@ async function writeHomepageDefaultPlans(schedule, todayStr, yesterdayKidsNames 
 
   const plans = { "adults:h9": adultsEntry };
   if (kidsEntry) plans["kids:h9"] = kidsEntry;
+  if (tomorrowAdultsEntry) plans["adults:h9:tomorrow"] = tomorrowAdultsEntry;
+  if (tomorrowKidsEntry) plans["kids:h9:tomorrow"] = tomorrowKidsEntry;
 
   const output = {
     _meta: {
@@ -894,7 +944,17 @@ async function writeHomepageDefaultPlans(schedule, todayStr, yesterdayKidsNames 
   };
   writeFileSync(DEFAULT_PLANS_FILE, JSON.stringify(output, null, 2));
   const kidsMsg = kidsEntry ? `+ ${kidsEntry.cards.length} kids` : "(no kids plan — fetch failed)";
-  console.log(`   🏠 default-plans.json: ${adultsEntry.cards.length} adults ${kidsMsg}`);
+  const tomMsg = tomorrowAdultsEntry
+    ? ` | tomorrow ${tomorrowAdultsEntry.cards.length} adults ${tomorrowKidsEntry ? `+ ${tomorrowKidsEntry.cards.length} kids` : "(kids fetch failed)"}`
+    : "";
+  console.log(`   🏠 default-plans.json: ${adultsEntry.cards.length} adults ${kidsMsg}${tomMsg}`);
+}
+
+/** Add `n` days to a YYYY-MM-DD string and return a new YYYY-MM-DD. */
+function isoOffset(isoStr, n) {
+  const [y, m, d] = isoStr.split("-").map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d + n));
+  return dt.toISOString().slice(0, 10);
 }
 
 main().catch((err) => {
