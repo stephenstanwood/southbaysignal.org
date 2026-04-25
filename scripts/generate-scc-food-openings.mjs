@@ -367,8 +367,25 @@ async function main() {
     100,
   );
 
+  // SCC final_inspection fires for re-inspections too (renovations, ownership
+  // changes, annual recerts) — not just new businesses. Brand-new restaurants
+  // typically clear plan check → final in 3–6 months; anything dragging past
+  // ~150 days is almost always a remodel of an existing business. Dropped a
+  // long-standing Dairy Queen Campbell as "just opened" before this filter.
+  const RENOVATION_THRESHOLD_DAYS = 150;
+  const isLikelyRenovation = (item) => {
+    if (!item.received_date || !item.final_inspection) return false;
+    const elapsed = (new Date(item.final_inspection) - new Date(item.received_date)) / 86400000;
+    return elapsed > RENOVATION_THRESHOLD_DAYS;
+  };
+  const renovationDrops = openedRaw.filter(isLikelyRenovation).length;
+  if (renovationDrops > 0) {
+    console.log(`  Dropped ${renovationDrops} likely-renovation record(s) (>${RENOVATION_THRESHOLD_DAYS}d plan→final)`);
+  }
+
   const opened = openedRaw
     .filter((item) => !shouldSkip(item))
+    .filter((item) => !isLikelyRenovation(item))
     .map((item) => {
       const name = cleanName(item.business_name);
       if (!name) return null;

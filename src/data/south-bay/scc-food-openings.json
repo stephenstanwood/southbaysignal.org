@@ -1,8 +1,19 @@
 {
-  "generatedAt": "2026-04-25T13:41:14.604Z",
+  "generatedAt": "2026-04-25T20:01:19.991Z",
   "lookbackDays": 45,
   "sourceUrl": "https://data.sccgov.org/resource/skd7-7ix3",
   "opened": [
+    {
+      "id": "opened-SR0884145",
+      "name": "Desi Indian Bazaar",
+      "address": "1584 Branham Ln",
+      "cityId": "san-jose",
+      "cityName": "SAN JOSE",
+      "date": "2026-04-23",
+      "status": "opened",
+      "sourceId": "SR0884145",
+      "blurb": "Indian cuisine featuring curries, breads, and regional specialties on Branham Lane."
+    },
     {
       "id": "opened-SR0884309",
       "name": "K113 - Gainz And Shreds Meal Prep",
@@ -12,18 +23,7 @@
       "date": "2026-04-22",
       "status": "opened",
       "sourceId": "SR0884309",
-      "blurb": "Meal prep service focusing on high-protein, fitness-oriented prepared foods."
-    },
-    {
-      "id": "opened-SR0879164",
-      "name": "Sea Restaurant",
-      "address": "503 E Calaveras Blvd",
-      "cityId": "milpitas",
-      "cityName": "MILPITAS",
-      "date": "2026-04-22",
-      "status": "opened",
-      "sourceId": "SR0879164",
-      "blurb": "Seafood restaurant at E Calaveras Blvd in Milpitas."
+      "blurb": "Health-focused meal prep service specializing in protein-driven prepared meals."
     },
     {
       "id": "opened-SR0884217",
@@ -37,50 +37,6 @@
       "blurb": "Breakfast and brunch spot at 545 San Antonio Rd in Mountain View."
     },
     {
-      "id": "opened-SR0880717",
-      "name": "Dairy Queen",
-      "address": "2255 S Winchester Blvd",
-      "cityId": "campbell",
-      "cityName": "CAMPBELL",
-      "date": "2026-04-21",
-      "status": "opened",
-      "sourceId": "SR0880717",
-      "blurb": "Dairy Queen opens on S Winchester Blvd in Campbell — ice cream, Blizzards, and fast food."
-    },
-    {
-      "id": "opened-SR0880767",
-      "name": "Dough Zone",
-      "address": "1875 S Bascom Ave., Ste. 405",
-      "cityId": "campbell",
-      "cityName": "CAMPBELL",
-      "date": "2026-04-21",
-      "status": "opened",
-      "sourceId": "SR0880767",
-      "blurb": "Dough Zone opens at 1875 S Bascom Ave in Campbell — Taiwanese dumplings and buns, second South Bay location."
-    },
-    {
-      "id": "opened-SR0877677",
-      "name": "Jollibee",
-      "address": "2008 Tully Rd",
-      "cityId": "san-jose",
-      "cityName": "SAN JOSE",
-      "date": "2026-04-17",
-      "status": "opened",
-      "sourceId": "SR0877677",
-      "blurb": "Filipino fast-food chain known for Chickenjoy fried chicken and Jolly Spaghetti — new South San Jose location."
-    },
-    {
-      "id": "opened-SR0878726",
-      "name": "T & T Supermarket Westgate",
-      "address": "1600 Saratoga Ave., Spc 44",
-      "cityId": "san-jose",
-      "cityName": "SAN JOSE",
-      "date": "2026-04-17",
-      "status": "opened",
-      "sourceId": "SR0878726",
-      "blurb": "T&T Supermarket — a major Canadian Asian grocery chain — opens its Westgate Mall location, bringing fresh produce, seafood, and imported Asian goods to West San Jose."
-    },
-    {
       "id": "opened-SR0884181",
       "name": "The Goods @Bay Club Santa Clara",
       "address": "3250 Central Expwy",
@@ -90,39 +46,6 @@
       "status": "opened",
       "sourceId": "SR0884181",
       "blurb": "Health-focused cafe and restaurant inside Bay Club Santa Clara — smoothies, salads, and fresh meals for members and guests."
-    },
-    {
-      "id": "opened-SR0879599",
-      "name": "Joy Cafe T-Go Restaurant",
-      "address": "1748 N Milpitas Blvd",
-      "cityId": "milpitas",
-      "cityName": "MILPITAS",
-      "date": "2026-04-15",
-      "status": "opened",
-      "sourceId": "SR0879599",
-      "blurb": "Taiwanese tea and light food in Milpitas."
-    },
-    {
-      "id": "opened-SR0882706",
-      "name": "Whole Foods Market - Stevens Creek",
-      "address": "20955 Stevens Creek Blvd",
-      "cityId": "cupertino",
-      "cityName": "CUPERTINO",
-      "date": "2026-04-15",
-      "status": "opened",
-      "sourceId": "SR0882706",
-      "blurb": "New Cupertino Whole Foods at 20955 Stevens Creek Blvd — long-awaited grocery anchor for the Stevens Creek corridor."
-    },
-    {
-      "id": "opened-SR0882015",
-      "name": "Bloom",
-      "address": "225 W Santa Clara St",
-      "cityId": "san-jose",
-      "cityName": "SAN JOSE",
-      "date": "2026-04-15",
-      "status": "opened",
-      "sourceId": "SR0882015",
-      "blurb": "Modern brunch bistro from Bloom Eatery (Santa Clara) — inventive breakfast dishes, hearty lunches, and seasonal cocktails in downtown San Jose."
     },
     {
       "id": "opened-SR0884051",
@@ -136,13 +59,81 @@
       "blurb": "Boba tea shop at San Antonio Rd in Mountain View."
     },
     {
-      "name": "Adamson's French Dip",
-      "city": "San Jose",
-      "blurb": "Adamson's French Dip opened a new location on South Bascom Avenue in San Jose.",
-      "source": "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
-      "sourceLabel": "r/SanJose",
-      "discoveredAt": "2026-04-25T13:41:14.068Z",
-      "discoveryMethod": "reddit-pulse"
+      "id": "opened-SR0883588",
+      "name": "King's Jok-Bal",
+      "address": "2374 El Camino Real",
+      "cityId": "santa-clara",
+      "cityName": "SANTA CLARA",
+      "date": "2026-04-10",
+      "status": "opened",
+      "sourceId": "SR0883588",
+      "blurb": "Korean braised pork knuckle specialist at El Camino Real in Santa Clara."
+    },
+    {
+      "id": "opened-SR0883940",
+      "name": "Tojo Coffee Tea House",
+      "address": "980 S Winchester Blvd Ste. 20",
+      "cityId": "san-jose",
+      "cityName": "SAN JOSE",
+      "date": "2026-04-07",
+      "status": "opened",
+      "sourceId": "SR0883940",
+      "blurb": "Coffee and tea shop at S Winchester Blvd in San Jose's Cambrian neighborhood."
+    },
+    {
+      "id": "opened-SR0883804",
+      "name": "Sbarro Oakridge",
+      "address": "925 Blossom Hill Rd",
+      "cityId": "san-jose",
+      "cityName": "SAN JOSE",
+      "date": "2026-04-03",
+      "status": "opened",
+      "sourceId": "SR0883804",
+      "blurb": "Italian-American pizza and pasta chain location at Oakridge shopping center."
+    },
+    {
+      "id": "opened-SR0883343",
+      "name": "Tiffy Kim Ran",
+      "address": "388 E Santa Clara St",
+      "cityId": "san-jose",
+      "cityName": "SAN JOSE",
+      "date": "2026-03-27",
+      "status": "opened",
+      "sourceId": "SR0883343",
+      "blurb": "Vietnamese cuisine including pho and traditional dishes in downtown San Jose."
+    },
+    {
+      "id": "opened-SR0883335",
+      "name": "Jr's Urban Eats",
+      "address": "2090 N. Capitol Ave, Ste. C",
+      "cityId": "san-jose",
+      "cityName": "SAN JOSE",
+      "date": "2026-03-24",
+      "status": "opened",
+      "sourceId": "SR0883335",
+      "blurb": "Contemporary casual dining concept on North Capitol Avenue."
+    },
+    {
+      "id": "opened-SR0883691",
+      "name": "Jappacurry Naglee Park Garage",
+      "address": "505 E San Carlos St",
+      "cityId": "san-jose",
+      "cityName": "SAN JOSE",
+      "date": "2026-03-20",
+      "status": "opened",
+      "sourceId": "SR0883691",
+      "blurb": "Japanese curry dishes in Naglee Park neighborhood food hall."
+    },
+    {
+      "id": "opened-SR0883623",
+      "name": "Freshest Pizza",
+      "address": "6932 Almaden Expwy",
+      "cityId": "san-jose",
+      "cityName": "SAN JOSE",
+      "date": "2026-03-17",
+      "status": "opened",
+      "sourceId": "SR0883623",
+      "blurb": "Fresh pizzeria concept on Almaden Expressway in San Jose."
     }
   ],
   "comingSoon": [
@@ -169,6 +160,17 @@
       "blurb": "Boba tea shop coming to Camden Ave in South San Jose."
     },
     {
+      "id": "soon-SR0884243",
+      "name": "Toastique",
+      "address": "145 West Santa Clara St",
+      "cityId": "san-jose",
+      "cityName": "SAN JOSE",
+      "date": "2026-04-20",
+      "status": "coming-soon",
+      "sourceId": "SR0884243",
+      "blurb": "Toastique — upscale avocado toast and cold-pressed juice bar — opening downtown San Jose on W Santa Clara St."
+    },
+    {
       "id": "soon-SR0884383",
       "name": "Grocery Outlet - Santa Clara",
       "address": "3520 Homestead Rd",
@@ -191,6 +193,17 @@
       "blurb": "Heytea — a popular Chinese tea chain known for fresh fruit teas — opening at Barber Ln in Milpitas."
     },
     {
+      "id": "soon-SR0880648",
+      "name": "Crepe Shibuya",
+      "address": "76 Ranch Dr",
+      "cityId": "milpitas",
+      "cityName": "MILPITAS",
+      "date": "2026-04-20",
+      "status": "coming-soon",
+      "sourceId": "SR0880648",
+      "blurb": "Crepe Shibuya — Japanese-style street crepes — coming to Ranch Dr in Milpitas."
+    },
+    {
       "id": "soon-SR0880855",
       "name": "Johnny Donuts",
       "address": "3055 Olin Ave., Ste. 1045, Kiosk 1",
@@ -200,17 +213,6 @@
       "status": "coming-soon",
       "sourceId": "SR0880855",
       "blurb": "Johnny Donuts coming to Santana Row area — handcrafted doughnuts and coffee at Olin Ave."
-    },
-    {
-      "id": "soon-SR0884243",
-      "name": "Toastique",
-      "address": "145 West Santa Clara St",
-      "cityId": "san-jose",
-      "cityName": "SAN JOSE",
-      "date": "2026-04-20",
-      "status": "coming-soon",
-      "sourceId": "SR0884243",
-      "blurb": "Toastique — upscale avocado toast and cold-pressed juice bar — opening downtown San Jose on W Santa Clara St."
     },
     {
       "id": "soon-SR0883952",
@@ -224,17 +226,6 @@
       "blurb": "Chama Nativa Brazilian Steakhouse — rodizio churrasco with tableside carving service — opening on Blossom Hill Rd in San Jose."
     },
     {
-      "id": "soon-SR0880648",
-      "name": "Crepe Shibuya",
-      "address": "76 Ranch Dr",
-      "cityId": "milpitas",
-      "cityName": "MILPITAS",
-      "date": "2026-04-20",
-      "status": "coming-soon",
-      "sourceId": "SR0880648",
-      "blurb": "Crepe Shibuya — Japanese-style street crepes — coming to Ranch Dr in Milpitas."
-    },
-    {
       "id": "soon-SR0883251",
       "name": "Sana'a Cafe - Mezzanine",
       "address": "1 E San Fernando St",
@@ -246,17 +237,6 @@
       "blurb": "Yemeni coffee and pastries in downtown San Jose — mezzanine-level location at 1 E San Fernando St."
     },
     {
-      "id": "soon-SR0884604",
-      "name": "Genji Sushi",
-      "address": "15650 Los Gatos Blvd",
-      "cityId": "los-gatos",
-      "cityName": "LOS GATOS",
-      "date": "2026-04-16",
-      "status": "coming-soon",
-      "sourceId": "SR0884604",
-      "blurb": "Sushi restaurant opening at 15650 Los Gatos Blvd in Los Gatos."
-    },
-    {
       "id": "soon-SR0880082",
       "name": "Supreme Crab Restaurant",
       "address": "625 Coleman Ave",
@@ -266,6 +246,17 @@
       "status": "coming-soon",
       "sourceId": "SR0880082",
       "blurb": "Seafood restaurant focusing on crab dishes — coming to 625 Coleman Ave in San Jose."
+    },
+    {
+      "id": "soon-SR0884604",
+      "name": "Genji Sushi",
+      "address": "15650 Los Gatos Blvd",
+      "cityId": "los-gatos",
+      "cityName": "LOS GATOS",
+      "date": "2026-04-16",
+      "status": "coming-soon",
+      "sourceId": "SR0884604",
+      "blurb": "Sushi restaurant opening at 15650 Los Gatos Blvd in Los Gatos."
     },
     {
       "id": "soon-SR0880573",
