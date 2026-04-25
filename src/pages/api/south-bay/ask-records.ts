@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 import Anthropic from "@anthropic-ai/sdk";
 import { errJson, okJson, fetchWithTimeout, toErrMsg, devErrJson } from "../../../lib/apiHelpers";
 import { rateLimit, rateLimitResponse } from "../../../lib/rateLimit";
-import { CLAUDE_HAIKU, extractText } from "../../../lib/models";
+import { CLAUDE_SONNET, extractText } from "../../../lib/models";
 import { CITIES } from "../../../lib/south-bay/cities";
 import type { City } from "../../../lib/south-bay/types";
 
@@ -107,15 +107,21 @@ RECORDS:
 ${recordsContext}
 
 Write a JSON object:
-- "answer": 3-5 sentences. Specific (dates, dollar amounts, project names, votes if you see them). Conversational. No "based on the records" preamble. No corporate hedging. If the records only tangentially answer, say so honestly and pivot to what they DO show. Don't invent facts.
+- "answer": 3-5 sentences. Specific (dates, dollar amounts, project names, votes if you see them). Conversational. No "based on the records" preamble. No corporate hedging. If the records only tangentially answer, say so honestly and pivot to what they DO show.
 - "followups": exactly 3 short follow-up questions a curious resident might ask next, based on what's in the records. Each under 60 chars. Specific, not generic.
+
+Rules:
+- Don't invent facts. Every claim must be grounded in the records above.
+- Use exact entity names as they appear in the records. If a record says "Via Transportation, Inc. Doing Business as Nomad Transit LLC," don't shorten to just one half.
+- Don't summarize boilerplate (roll call, agenda approval, public comment procedure) as substantive content.
+- If the records are mostly procedural (status updates, agenda planning) with no real news, say that plainly and point to where the substance might be.
 
 Output ONLY the JSON. No markdown fences, no preamble.`;
 
   try {
     const message = await client.messages.create({
-      model: CLAUDE_HAIKU,
-      max_tokens: 600,
+      model: CLAUDE_SONNET,
+      max_tokens: 700,
       messages: [{ role: "user", content: prompt }],
     });
 
