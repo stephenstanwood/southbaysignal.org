@@ -3245,12 +3245,71 @@ async function fetchSjdaEvents() {
 
 // ── San Jose Museum of Art (Drupal Views with <time> tags) ──
 
+const SJMA_BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15";
+
+// SJMA's listing page only ever stores UTC-noon timestamps for "all-day"
+// records, so the calendar widget can't tell us when an event actually
+// starts. The detail page, however, embeds the real time inside Drupal
+// `field__item` divs (e.g. <div class="field__item">3:30pm</div> or
+// "6–9pm" inside the body copy). Fetch the detail page and parse it.
+async function fetchSjmaDetailTime(url) {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": SJMA_BROWSER_UA },
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!res.ok) return { time: null, endTime: null };
+    const html = await res.text();
+    return extractSjmaTimeFromHtml(html);
+  } catch {
+    return { time: null, endTime: null };
+  }
+}
+
+// Pulled out so it's testable without network. Looks for a structured
+// `field__item` time value first, then falls back to the first time-range
+// in the body.
+function extractSjmaTimeFromHtml(html) {
+  // Strip tags inside structured field items so we can pattern-match cleanly.
+  const fieldItems = [...html.matchAll(/<div class="field__item">([\s\S]*?)<\/div>/g)]
+    .map((m) => m[1].replace(/<[^>]+>/g, "").trim())
+    .filter(Boolean);
+
+  // Prefer a time-range like "6–9pm", "1-4pm", "10:30am-noon"
+  const rangeRe = /\b(\d{1,2}(?::\d{2})?)\s*[-–—]\s*(\d{1,2}(?::\d{2})?)\s*([ap]\.?m\.?)\b/i;
+  // Single time like "3:30pm" or "6 PM"
+  const singleRe = /\b(\d{1,2}(?::\d{2})?)\s*([ap]\.?m\.?)\b/i;
+
+  for (const item of fieldItems) {
+    const r = item.match(rangeRe);
+    if (r) return { time: normalizeTimeStr(r[1], r[3]), endTime: normalizeTimeStr(r[2], r[3]) };
+    const s = item.match(singleRe);
+    // Skip obviously-not-event-time field items (e.g. dates with no time).
+    if (s && !/\bday|date|monday|tuesday|wednesday|thursday|friday|saturday|sunday\b/i.test(item)) {
+      return { time: normalizeTimeStr(s[1], s[2]), endTime: null };
+    }
+  }
+
+  // Fallback: scan plain body text for a range, then a single time.
+  const bodyText = html.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<style[\s\S]*?<\/style>/g, "");
+  const r = bodyText.match(rangeRe);
+  if (r) return { time: normalizeTimeStr(r[1], r[3]), endTime: normalizeTimeStr(r[2], r[3]) };
+  return { time: null, endTime: null };
+}
+
+function normalizeTimeStr(num, ampm) {
+  const period = ampm.toLowerCase().replace(/\./g, "").toUpperCase(); // "AM" | "PM"
+  const hasMinutes = num.includes(":");
+  const hourPart = hasMinutes ? num.split(":")[0] : num;
+  const minPart = hasMinutes ? num.split(":")[1] : "00";
+  return `${parseInt(hourPart, 10)}:${minPart.padStart(2, "0")} ${period}`;
+}
+
 async function fetchSjMuseumOfArtEvents() {
   console.log("  ⏳ San Jose Museum of Art...");
   try {
-    const BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15";
     const res = await fetch("https://sjmusart.org/calendar", {
-      headers: { "User-Agent": BROWSER_UA },
+      headers: { "User-Agent": SJMA_BROWSER_UA },
       signal: AbortSignal.timeout(15_000),
     });
     if (!res.ok) throw new Error(`${res.status}`);
@@ -3258,9 +3317,8 @@ async function fetchSjMuseumOfArtEvents() {
 
     const events = [];
     const now = new Date();
+    const detailFetches = [];
 
-    // Extract time+title pairs from Drupal Views
-    const pairs = [...html.matchAll(/<time[^>]*datetime="([^"]*)"[^>]*>[\s\S]*?<\/time>[\s\S]*?<h[23][^>]*>([\s\S]*?)<\/h[23]>/g)];
     // Also grab links near each pair
     const rows = html.split(/views-row/).slice(1);
     for (const row of rows) {
@@ -3286,7 +3344,7 @@ async function fetchSjMuseumOfArtEvents() {
       // Treat any SJMA event before 7am local as "no specific time" rather than 5am.
       const ptHour = parseInt(start.toLocaleTimeString("en-US", { hour: "2-digit", hour12: false, timeZone: "America/Los_Angeles" }));
       const sjmaTime = ptHour < 7 ? null : displayTime(start);
-      events.push({
+      const evt = {
         id: h("sjma", url, isoDate(start)),
         title,
         date: isoDate(start),
@@ -3302,7 +3360,35 @@ async function fetchSjMuseumOfArtEvents() {
         url,
         source: "San Jose Museum of Art",
         kidFriendly: /\b(kids|children|family|youth|toddler|baby|preschool|grade|ages?\s*\d)\b/i.test(title),
+      };
+      events.push(evt);
+
+      // Queue a detail-page fetch when the listing tells us nothing useful
+      // about the time and we have a real event URL to look it up on.
+      if (!evt.time && /\/event\//.test(url)) {
+        detailFetches.push(async () => {
+          const { time, endTime } = await fetchSjmaDetailTime(url);
+          if (time) {
+            evt.time = time;
+            evt.endTime = endTime;
+          }
+        });
+      }
+    }
+
+    if (detailFetches.length > 0) {
+      // Concurrency cap of 4 so we stay polite to sjmusart.org.
+      const queue = [...detailFetches];
+      const workers = Array.from({ length: Math.min(4, queue.length) }, async () => {
+        while (queue.length > 0) {
+          const job = queue.shift();
+          if (job) await job();
+        }
       });
+      const before = events.filter((e) => !e.time).length;
+      await Promise.all(workers);
+      const resolved = before - events.filter((e) => !e.time).length;
+      console.log(`  ↳ SJMA detail-page time backfill: resolved ${resolved}/${detailFetches.length} no-time entries`);
     }
 
     console.log(`  ✅ San Jose Museum of Art: ${events.length} events`);
