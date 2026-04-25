@@ -58,6 +58,7 @@ generate-around-town:15
 generate-restaurant-radar:10
 generate-sv-history:10
 generate-restaurant-openings:10
+generate-reddit-pulse:10
 playwright-scrapers:15
 threads-refresh:5
 collect-metrics:10

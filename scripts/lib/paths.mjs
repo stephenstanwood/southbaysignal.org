@@ -50,6 +50,8 @@ export const ARTIFACTS = {
   places:           join(DATA_DIR, "places.json"),
   playwrightEvents: join(DATA_DIR, "playwright-events.json"),
   defaultPlans:     join(DATA_DIR, "default-plans.json"),
+  redditPulse:      join(DATA_DIR, "reddit-pulse.json"),
+  redditGaps:       join(DATA_DIR, "reddit-gaps.json"),
 };
 
 // ---------------------------------------------------------------------------
