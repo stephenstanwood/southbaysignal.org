@@ -3810,6 +3810,20 @@ async function main() {
     if (e.description) e.description = polishDescription(e.description);
   });
 
+  // Sanitize time field: clear values that aren't a clock time (e.g. "SATURDAY, APRIL 25, 2026"
+  // ended up in the time field on a few SJMA / inbound listings). For comma-separated session
+  // lists ("12pm, 1pm, 2pm") only the last token needs to parse.
+  const TIME_PATTERN = /^\d{1,2}(:\d{2})?\s*(am|pm)$/i;
+  function isClockTime(t) {
+    if (!t) return false;
+    const last = String(t).split(",").pop().trim();
+    return TIME_PATTERN.test(last);
+  }
+  allEvents.forEach((e) => {
+    if (e.time && !isClockTime(e.time)) e.time = null;
+    if (e.endTime && !isClockTime(e.endTime)) e.endTime = null;
+  });
+
   // Filter: must have date and city and title, must be today or future, must be public, not cancelled
   // Also skip zero-duration university calendar markers (e.g. "5:00 PM – 5:00 PM")
   const uniSources = new Set(["Stanford Events", "Santa Clara University", "SJSU Events"]);
@@ -3823,6 +3837,10 @@ async function main() {
       (e.category === "sports" || e.date <= maxFuture) &&
       e.city &&
       e.title &&
+      // Non-ongoing events must have a real start time. All-day announcements
+      // ("Independent Bookstore Day", vague day-long fundraisers) and dup
+      // listings of timed events that lost their time get dropped here.
+      (e.ongoing || e.time) &&
       !(uniSources.has(e.source) && e.time && e.endTime && e.time === e.endTime) &&
       isPublicEvent(e.title, e.source, e.description, e.venue),
   );
