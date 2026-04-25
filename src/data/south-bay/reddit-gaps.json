@@ -1,369 +1,96 @@
 {
   "_meta": {
-    "generatedAt": "2026-04-25T15:17:03.826Z",
+    "generatedAt": "2026-04-25T17:17:31.108Z",
     "generator": "generate-reddit-pulse",
     "sourceCount": 14
   },
   "summary": {
     "threadsMined": 14,
-    "placesExtracted": 50,
-    "placesMatched": 13,
-    "placeGaps": 37,
-    "eventsExtracted": 17,
+    "placesExtracted": 46,
+    "placesMatched": 12,
+    "placeGaps": 34,
+    "eventsExtracted": 18,
     "eventsMatched": 4,
-    "eventGaps": 13,
+    "eventGaps": 14,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "Petco Sunnyvale",
-      "city": "Sunnyvale",
-      "kind": "venue",
-      "context": "hosts Bay Area Cats adoption events",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sunp4w/will_the_bay_area_follow_la_and_remove_ipads_from/",
-        "https://www.reddit.com/r/bayarea/comments/1suyyum/mission_peak/",
-        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
-        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
-        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
-      ]
-    },
-    {
-      "name": "Mission Peak",
-      "city": "",
-      "kind": "park",
-      "context": "popular hiking trail in South Bay area",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sunp4w/will_the_bay_area_follow_la_and_remove_ipads_from/",
-        "https://www.reddit.com/r/bayarea/comments/1suyyum/mission_peak/",
-        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
-        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
-        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
-      ]
-    },
-    {
       "name": "Streetlight Records",
       "city": "San Jose",
       "kind": "retail",
-      "context": "music store near Adamson's French Dip new location",
+      "context": "near new Adamson's French Dip on Bascom Ave",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sunp4w/will_the_bay_area_follow_la_and_remove_ipads_from/",
-        "https://www.reddit.com/r/bayarea/comments/1suyyum/mission_peak/",
         "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
         "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ]
     },
     {
-      "name": "Kura",
-      "city": "",
-      "kind": "restaurant",
-      "context": "sushi restaurant mentioned by user",
+      "name": "Petco Sunnyvale",
+      "city": "Sunnyvale",
+      "kind": "venue",
+      "context": "hosts Bay Area Cats adoption event Saturdays 10am-2pm",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
         "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Kenzo",
-      "city": "",
-      "kind": "restaurant",
-      "context": "sushi restaurant mentioned by user",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Cha Cha",
-      "city": "",
-      "kind": "restaurant",
-      "context": "sushi restaurant mentioned by user",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Sushi Maru",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "excellent sushi in Japantown",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Sushi arashi",
-      "city": "",
-      "kind": "restaurant",
-      "context": "sushi restaurant recommended",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Yuki Sushi",
-      "city": "Santa Clara",
-      "kind": "restaurant",
-      "context": "sushi restaurant",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Sanraku",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "sushi in Oakridge, authentic Japanese",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Sushi Koya",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "sushi by Haze dispensary and Cinemark",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Amami Shima",
-      "city": "Cupertino",
-      "kind": "restaurant",
-      "context": "sushi restaurant",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Sushi Pro",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "sushi on Brokaw, open since early",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Blue Pagoda",
-      "city": "",
-      "kind": "restaurant",
-      "context": "sushi restaurant mentioned",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Trifecta",
-      "city": "",
-      "kind": "restaurant",
-      "context": "sushi restaurant mentioned",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Mizu",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "sushi off Winchester",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Mimi's kitchen",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "in Santa Teresa area",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Kaizen",
-      "city": "Campbell",
-      "kind": "restaurant",
-      "context": "sushi restaurant",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "TGI Sushi",
-      "city": "Campbell",
-      "kind": "restaurant",
-      "context": "underrated sushi spot",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Bamboo Fish",
-      "city": "",
-      "kind": "restaurant",
-      "context": "sushi restaurant",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Miyuki",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "sushi in East San Jose",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "MJ Sushi",
-      "city": "",
-      "kind": "restaurant",
-      "context": "sushi restaurant",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Edomata",
-      "city": "San Mateo",
-      "kind": "restaurant",
-      "context": "authentic omakase, successor to Sushi Sam's",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ]
     },
     {
       "name": "Hammer Theater",
       "city": "San Jose",
       "kind": "venue",
-      "context": "live arts performances",
+      "context": "hosts theater performances, Kingdom of Cards Apr 25",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
         "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ]
     },
     {
       "name": "MACLA",
       "city": "San Jose",
       "kind": "venue",
-      "context": "arts organization with performances",
+      "context": "arts venue hosting (Un)Documents performance Apr 25",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
         "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "SJSU Music",
-      "city": "San Jose",
-      "kind": "venue",
-      "context": "university music recitals",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ]
     },
     {
       "name": "VoyagerCraft",
       "city": "San Jose",
       "kind": "venue",
-      "context": "brewery hosting 5K run",
+      "context": "hosts 5K Run event",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
         "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "Island Taste",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "hosts LaughSJ Comedy event Apr 25, 7:30pm",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ]
     },
     {
@@ -372,137 +99,518 @@
       "kind": "bar",
       "context": "nightlife venue",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
         "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ]
     },
     {
-      "name": "Island Taste",
+      "name": "Goodtime Bar",
+      "city": "",
+      "kind": "bar",
+      "context": "celebrating 3rd anniversary with music and drink specials",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "Diridon Caltrain",
       "city": "San Jose",
-      "kind": "restaurant",
-      "context": "hosts LaughSJ Comedy",
+      "kind": "venue",
+      "context": "transit hub near The Alameda neighborhood",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
         "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "French Market Carnival",
-      "city": "Saratoga",
-      "kind": "event",
-      "context": "carnival and dance event",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Rose Garden Farmers Market",
-      "city": "San Jose",
-      "kind": "market",
-      "context": "Saturday farmers market",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Santa Teresa Farmers Market",
-      "city": "San Jose",
-      "kind": "market",
-      "context": "Saturday farmers market",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ]
     },
     {
       "name": "Vesapio Apartments",
       "city": "San Jose",
       "kind": "other",
-      "context": "residential option on Alameda near transit",
+      "context": "housing near The Alameda and Diridon station",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
         "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
-        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/",
-        "https://www.reddit.com/r/bayarea/comments/1sv26nc/local_video_game_music_orchestra/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1st9uyf/new_lakewood_park_library_and_renovation/"
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ]
     },
     {
-      "name": "Diridon Station",
+      "name": "Sushi Maru",
       "city": "San Jose",
-      "kind": "venue",
-      "context": "major transit hub near Alameda neighborhood",
+      "kind": "restaurant",
+      "context": "sushi in Japantown, excellent",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
-        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/",
-        "https://www.reddit.com/r/bayarea/comments/1sv26nc/local_video_game_music_orchestra/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1st9uyf/new_lakewood_park_library_and_renovation/"
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
       ]
     },
     {
-      "name": "Santa Clara Transit Center",
+      "name": "Sushi Arashi",
+      "city": "",
+      "kind": "restaurant",
+      "context": "sushi restaurant recommendation",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Yuki Sushi",
       "city": "Santa Clara",
-      "kind": "venue",
-      "context": "transit hub for commuting to Coleman office area",
+      "kind": "restaurant",
+      "context": "sushi restaurant",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
-        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/",
-        "https://www.reddit.com/r/bayarea/comments/1sv26nc/local_video_game_music_orchestra/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1st9uyf/new_lakewood_park_library_and_renovation/"
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
       ]
     },
     {
-      "name": "Avaya Stadium",
+      "name": "Sanraku",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "sushi at Oakridge, authentic Japanese",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Edomata",
+      "city": "San Mateo",
+      "kind": "restaurant",
+      "context": "authentic Tokyo-style omakase, successor to Sushi Sam's",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Sushi Koya",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "sushi on Almaden near Cinemark",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Amami Shima",
+      "city": "Cupertino",
+      "kind": "restaurant",
+      "context": "sushi restaurant",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Sushi Pro",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "sushi on Brokaw, highly rated",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Blue Pagoda",
+      "city": "",
+      "kind": "restaurant",
+      "context": "sushi restaurant mentioned",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Trifecta",
+      "city": "",
+      "kind": "restaurant",
+      "context": "sushi restaurant mentioned",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "TGI Sushi",
+      "city": "Campbell",
+      "kind": "restaurant",
+      "context": "sushi, underrated spot",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Mizu",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "sushi off Winchester",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Mimi's Kitchen",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "restaurant in Santa Teresa area",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Kaizen",
+      "city": "Campbell",
+      "kind": "restaurant",
+      "context": "sushi restaurant",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Bamboo Fish",
+      "city": "",
+      "kind": "restaurant",
+      "context": "sushi restaurant",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Miyuki",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "sushi in East San Jose",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "MJ Sushi",
+      "city": "",
+      "kind": "restaurant",
+      "context": "sushi restaurant",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Kura",
+      "city": "",
+      "kind": "restaurant",
+      "context": "sushi restaurant mentioned",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Kenzo",
+      "city": "",
+      "kind": "restaurant",
+      "context": "sushi restaurant mentioned",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Cha Cha",
+      "city": "",
+      "kind": "restaurant",
+      "context": "sushi restaurant mentioned",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Cunningham Park",
+      "city": "San Jose",
+      "kind": "park",
+      "context": "park near VTA Eastridge light rail expansion",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "Raging Waters",
       "city": "San Jose",
       "kind": "venue",
-      "context": "landmark near Coleman office area and Caltrain",
+      "context": "water park near VTA expansion",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
-        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/",
-        "https://www.reddit.com/r/bayarea/comments/1sv26nc/local_video_game_music_orchestra/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1st9uyf/new_lakewood_park_library_and_renovation/"
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
       ]
     },
     {
       "name": "Milkbelly",
       "city": "San Jose",
       "kind": "bakery",
-      "context": "favorite bakery in DTSJ near Fox Tale Fermentation",
+      "context": "bakery in downtown San Jose",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
-        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/",
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
+      ]
+    },
+    {
+      "name": "GG Orchestra",
+      "city": "",
+      "kind": "venue",
+      "context": "local video game and anime music orchestra group",
+      "sourceUrls": [
+        "https://www.reddit.com/r/mountainview/comments/1sun0w1/i_lived_in_mountain_view_ca_for_seven_years_i/",
+        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/",
         "https://www.reddit.com/r/bayarea/comments/1sv26nc/local_video_game_music_orchestra/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1st9uyf/new_lakewood_park_library_and_renovation/"
+        "https://www.reddit.com/r/bayarea/comments/1suwffy/bayarea_staffing_help/"
       ]
     }
   ],
   "eventGaps": [
     {
       "name": "Bay Area Cats Adoption Event",
-      "when": "Saturday 10am to 2pm",
+      "when": "Saturday 10am-2pm",
       "city": "Sunnyvale",
-      "context": "cat and kitten adoption event at Petco",
+      "context": "weekly cat and kitten adoption event at Petco",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sunp4w/will_the_bay_area_follow_la_and_remove_ipads_from/",
-        "https://www.reddit.com/r/bayarea/comments/1suyyum/mission_peak/",
         "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
         "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "Ann Lin Jazz Recital",
+      "when": "Saturday Apr 25, 4:30pm",
+      "city": "San Jose",
+      "context": "free jazz performance at SJSU Music",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "(Un)Documents",
+      "when": "Saturday Apr 25, 7:30pm",
+      "city": "San Jose",
+      "context": "arts performance at MACLA",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "SJMA Gala After-Party",
+      "when": "Saturday Apr 25, 9:30pm",
+      "city": "San Jose",
+      "context": "gala event downtown",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "Vuori Run",
+      "when": "Saturday Apr 25, 8am",
+      "city": "San Jose",
+      "context": "free fitness run at Santana Row",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "5K Run",
+      "when": "Saturday Apr 25, 8:30am",
+      "city": "San Jose",
+      "context": "5K run at VoyagerCraft",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "San Jose Farmers Markets",
+      "when": "Saturday Apr 25, 9am-1pm",
+      "city": "San Jose",
+      "context": "multiple locations: Willow Glen, Rose Garden, Santa Teresa, Berryessa",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "French Market Dance",
+      "when": "Saturday Apr 25, 5pm-8pm",
+      "city": "Saratoga",
+      "context": "dance event at French Market Carnival",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "Roller Derby",
+      "when": "Saturday Apr 25, 1pm-8pm",
+      "city": "San Jose",
+      "context": "roller derby event at The Plex",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "LaughSJ Comedy",
+      "when": "Saturday Apr 25, 7:30pm",
+      "city": "San Jose",
+      "context": "comedy show at Island Taste restaurant",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "Goodtime Bar 3rd Anniversary",
+      "when": "Saturday Apr 25, 6pm to closing",
+      "city": "",
+      "context": "celebration with music, food and drink specials",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ]
+    },
+    {
+      "name": "Downtown Morgan Hill Art & Wine Stroll",
+      "when": "Saturday Apr 25, 1pm-5pm",
+      "city": "",
+      "context": "art and wine event in Morgan Hill",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ]
     },
@@ -512,153 +620,23 @@
       "city": "San Jose",
       "context": "political town hall event",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
         "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
         "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
       ]
     },
     {
-      "name": "Ann Lin Jazz Recital",
-      "when": "Saturday April 25, 2026 at 4:30PM",
-      "city": "San Jose",
-      "context": "jazz performance at SJSU Music",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "(Un)Documents",
-      "when": "Saturday April 25, 2026 at 7:30PM",
-      "city": "San Jose",
-      "context": "arts performance at MACLA",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "SJMA Gala After-Party",
-      "when": "Saturday April 25, 2026 at 9:30PM",
-      "city": "San Jose",
-      "context": "after-party event",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Vuori Run",
-      "when": "Saturday April 25, 2026 at 8AM",
-      "city": "San Jose",
-      "context": "free run at Santana Row",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Roller Derby",
-      "when": "Saturday April 25, 2026 1PM-8PM",
-      "city": "San Jose",
-      "context": "roller derby at The Plex",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "LaughSJ Comedy",
-      "when": "Saturday April 25, 2026 at 7:30PM",
-      "city": "San Jose",
-      "context": "comedy show at Island Taste",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Downtown Morgan Hill Art & Wine Stroll",
-      "when": "Saturday April 25, 2026 1-5PM",
-      "city": "Morgan Hill",
-      "context": "art and wine tasting event",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Women to Women AA",
-      "when": "Saturday April 25, 2026 at 7:30AM",
-      "city": "San Jose",
-      "context": "support group meeting",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Newcomers/Oldtimers AA",
-      "when": "Saturday April 25, 2026 at 6PM",
-      "city": "San Jose",
-      "context": "support group meeting",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "Second Tradition AA",
-      "when": "Saturday April 25, 2026 at 8PM",
-      "city": "San Jose",
-      "context": "support group meeting",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ]
-    },
-    {
-      "name": "GG Orchestra",
-      "when": "recurring",
+      "name": "GG Orchestra Debut Concert",
+      "when": "earlier this month",
       "city": "",
-      "context": "local video game and anime music orchestra debut concert",
+      "context": "local musicians performing video game and anime music",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
-        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/",
+        "https://www.reddit.com/r/mountainview/comments/1sun0w1/i_lived_in_mountain_view_ca_for_seven_years_i/",
+        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/",
         "https://www.reddit.com/r/bayarea/comments/1sv26nc/local_video_game_music_orchestra/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1st9uyf/new_lakewood_park_library_and_renovation/"
+        "https://www.reddit.com/r/bayarea/comments/1suwffy/bayarea_staffing_help/"
       ]
     }
   ],
@@ -667,27 +645,111 @@
       "name": "Adamson's French Dip",
       "city": "San Jose",
       "kind": "restaurant",
-      "context": "new Bascom Ave location opened, specializes in French dip",
+      "context": "new South Bascom Ave location opened, extended hours",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sunp4w/will_the_bay_area_follow_la_and_remove_ipads_from/",
-        "https://www.reddit.com/r/bayarea/comments/1suyyum/mission_peak/",
         "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
         "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ],
       "matchedName": "Adamson's French Dip"
     },
     {
-      "name": "Sen dai",
-      "city": "Milipitas",
-      "kind": "restaurant",
-      "context": "favorite sushi place with great prices",
+      "name": "Santana Row",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "hosts Vuori Run fitness event",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
         "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ],
+      "matchedName": "Santana Row"
+    },
+    {
+      "name": "Discovery Meadow",
+      "city": "San Jose",
+      "kind": "park",
+      "context": "hosts Holo Holo Festival Apr 25, 12pm-10pm",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ],
+      "matchedName": "Discovery Meadow"
+    },
+    {
+      "name": "The Plex",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "hosts Roller Derby event Apr 25, 1pm-8pm",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ],
+      "matchedName": "The Plex"
+    },
+    {
+      "name": "San Jose Giants",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "play game on Apr 25",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ],
+      "matchedName": "San Jose Giants"
+    },
+    {
+      "name": "Whole Foods",
+      "city": "San Jose",
+      "kind": "retail",
+      "context": "near The Alameda and Diridon station, walkable area",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ],
+      "matchedName": "Whole Foods Market"
+    },
+    {
+      "name": "Santa Clara University",
+      "city": "Santa Clara",
+      "kind": "venue",
+      "context": "nearby walkable area with transit access to Coleman office",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ],
+      "matchedName": "Santa Clara University"
+    },
+    {
+      "name": "Sen Dai",
+      "city": "Milpitas",
+      "kind": "restaurant",
+      "context": "sushi restaurant, favorite with great prices",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
       ],
       "matchedName": "Sen Dai Sushi"
     },
@@ -697,206 +759,113 @@
       "kind": "restaurant",
       "context": "sushi on McKee and East Side",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
         "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
         "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
       ],
       "matchedName": "Kakuna Sushi"
     },
     {
-      "name": "Santana Row",
-      "city": "San Jose",
+      "name": "Great America",
+      "city": "Santa Clara",
       "kind": "venue",
-      "context": "shopping and event venue",
+      "context": "theme park, closed",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
         "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ],
-      "matchedName": "Santana Row"
-    },
-    {
-      "name": "Discovery Meadow",
-      "city": "San Jose",
-      "kind": "park",
-      "context": "hosts Holo Holo Festival",
-      "sourceUrls": [
         "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
         "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
       ],
-      "matchedName": "Discovery Meadow"
-    },
-    {
-      "name": "The Plex",
-      "city": "San Jose",
-      "kind": "venue",
-      "context": "roller derby venue",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ],
-      "matchedName": "The Plex"
-    },
-    {
-      "name": "Willow Glen Farmers Market",
-      "city": "San Jose",
-      "kind": "market",
-      "context": "Saturday farmers market",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ],
-      "matchedName": "Willow Glen Farmers' Market"
-    },
-    {
-      "name": "Berryessa Farmers Market",
-      "city": "San Jose",
-      "kind": "market",
-      "context": "Saturday farmers market",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ],
-      "matchedName": "Berryessa Farmers' Market"
-    },
-    {
-      "name": "Whole Foods",
-      "city": "San Jose",
-      "kind": "retail",
-      "context": "landmark near Alameda and Diridon station area",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
-        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/",
-        "https://www.reddit.com/r/bayarea/comments/1sv26nc/local_video_game_music_orchestra/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1st9uyf/new_lakewood_park_library_and_renovation/"
-      ],
-      "matchedName": "Whole Foods Market"
-    },
-    {
-      "name": "Fox Tale Fermentation",
-      "city": "San Jose",
-      "kind": "bar",
-      "context": "brewery and restaurant in DTSJ featured on Check Please",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
-        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/",
-        "https://www.reddit.com/r/bayarea/comments/1sv26nc/local_video_game_music_orchestra/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1st9uyf/new_lakewood_park_library_and_renovation/"
-      ],
-      "matchedName": "Fox Tale Fermentation Project"
+      "matchedName": "Great America Amphitheater"
     },
     {
       "name": "Pastelaria Adega",
       "city": "San Jose",
       "kind": "bakery",
-      "context": "favorite bakery in DTSJ near Fox Tale Fermentation",
+      "context": "bakery in downtown San Jose",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
-        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/",
-        "https://www.reddit.com/r/bayarea/comments/1sv26nc/local_video_game_music_orchestra/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1st9uyf/new_lakewood_park_library_and_renovation/"
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
       ],
       "matchedName": "Pastelaria Adega"
     },
     {
-      "name": "Lakewood Park Library",
-      "city": "Sunnyvale",
-      "kind": "venue",
-      "context": "newly renovated library near Lakewood Elementary School",
+      "name": "Fox Tale Fermentation",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "restaurant and brewery in DTSJ, featured on Check Please",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
-        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/",
-        "https://www.reddit.com/r/bayarea/comments/1sv26nc/local_video_game_music_orchestra/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1st9uyf/new_lakewood_park_library_and_renovation/"
+        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
+        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sv3m2f/vtas_eastridge_expansion_i_dont_see_why_they/",
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/"
       ],
-      "matchedName": "Lakewood Park"
-    },
-    {
-      "name": "Lakewood Park",
-      "city": "Sunnyvale",
-      "kind": "park",
-      "context": "recently renovated park adjacent to Lakewood Elementary",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
-        "https://www.reddit.com/r/SanJose/comments/1sv1pv0/fox_tale_fermentation_in_dtsj_on_check_please/",
-        "https://www.reddit.com/r/bayarea/comments/1sv26nc/local_video_game_music_orchestra/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1st9uyf/new_lakewood_park_library_and_renovation/"
-      ],
-      "matchedName": "Lakewood Park"
+      "matchedName": "Fox Tale Fermentation Project"
     }
   ],
   "eventMatches": [
     {
       "name": "Kingdom of Cards",
-      "when": "Saturday April 25, 2026 at 2PM",
+      "when": "Saturday Apr 25, 2pm",
       "city": "San Jose",
-      "context": "arts performance at Hammer Theater",
+      "context": "theater performance at Hammer Theater",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
         "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ],
       "matchedName": "SJSU Theatre Presents: Kingdom of Cards"
     },
     {
-      "name": "Holo Holo Festival",
-      "when": "Saturday April 25, 2026 12PM-10PM",
-      "city": "San Jose",
-      "context": "music and arts festival at Discovery Meadow",
+      "name": "French Market Carnival",
+      "when": "Saturday Apr 25, 10am-8pm",
+      "city": "Saratoga",
+      "context": "free market carnival event",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
         "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+      ],
+      "matchedName": "French Market Carnival"
+    },
+    {
+      "name": "Holo Holo Festival",
+      "when": "Saturday Apr 25, 12pm-10pm",
+      "city": "San Jose",
+      "context": "festival at Discovery Meadow with $65-150+ admission",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
+        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ],
       "matchedName": "Holo Holo Festival"
     },
     {
       "name": "Los Gatos Wine Walk",
-      "when": "Saturday April 25, 2026 2-5PM",
+      "when": "Saturday Apr 25, 2pm-5pm",
       "city": "Los Gatos",
-      "context": "wine tasting event",
+      "context": "wine tasting walk event",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/SanJose/comments/1suu9y3/adamsons_french_dip_opened_new_location_on_bascom/",
+        "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/",
         "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
+        "https://www.reddit.com/r/SanJose/comments/1sva134/sj_walkability_moving_from_nyc_sj_for_work/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ],
       "matchedName": "Los Gatos Wine Walk"
-    },
-    {
-      "name": "French Market Carnival",
-      "when": "Saturday April 25, 2026 10AM-8PM",
-      "city": "Saratoga",
-      "context": "carnival with dance event at 5-8PM",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1suzgx8/tom_steyer_town_hall_april_30_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1suw4ux/recommend_sushi_places/",
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/SanJose/comments/1sv9g06/22_events_in_san_jose_today_apr_25_2026/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/"
-      ],
-      "matchedName": "French Market Carnival"
     }
   ]
 }
