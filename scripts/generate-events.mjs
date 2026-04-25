@@ -771,10 +771,14 @@ function parseRssItems(xml) {
       georss_point: get("georss:point"),
       s_localtime: get("s:localtime"),
       // MEC (Modern Events Calendar) WordPress plugin
+      // MACLA's feed uses mec:startHour / mec:endHour ("7:30 pm"); other MEC
+      // deployments use mec:startTime ("19:30:00"). Read both, prefer hour.
       mecStartDate: get("mec:startDate"),
       mecEndDate: get("mec:endDate"),
       mecStartTime: get("mec:startTime"),
       mecEndTime: get("mec:endTime"),
+      mecStartHour: get("mec:startHour"),
+      mecEndHour: get("mec:endHour"),
     });
   }
   return items;
@@ -2384,13 +2388,20 @@ async function fetchMaclaEvents() {
         const start = parseDate(item.mecStartDate || item.startDate || item.pubDate);
         if (!start || start < now) return null;
         const end = item.mecEndDate ? parseDate(item.mecEndDate) : null;
+        // Prefer mec:startHour ("7:30 pm" — already in clock format) over mec:startTime ("19:30:00")
+        const startTime = item.mecStartHour
+          ? formatHourClock(item.mecStartHour)
+          : (item.mecStartTime ? displayTime(new Date(`${item.mecStartDate}T${item.mecStartTime}`)) : null);
+        const endTime = item.mecEndHour
+          ? formatHourClock(item.mecEndHour)
+          : ((item.mecEndTime && item.mecEndDate) ? displayTime(new Date(`${item.mecEndDate}T${item.mecEndTime}`)) : null);
         return {
           id: h("macla", item.link || item.title, item.mecStartDate || item.pubDate),
           title: item.title,
           date: isoDate(start),
           displayDate: displayDate(start),
-          time: item.mecStartTime ? displayTime(new Date(`${item.mecStartDate}T${item.mecStartTime}`)) : null,
-          endTime: (item.mecEndTime && item.mecEndDate) ? displayTime(new Date(`${item.mecEndDate}T${item.mecEndTime}`)) : null,
+          time: startTime,
+          endTime,
           venue: "MACLA",
           address: "510 S 1st St, San Jose, CA 95113",
           city: "san-jose",
@@ -3106,6 +3117,8 @@ async function fetchKeplersEvents() {
 }
 
 // Hicklebee's (IndieCommerce / Drupal) — HTML parse
+// List page has no times; each event detail page has JSON-LD with startDate.
+// We fetch detail pages in parallel with a small concurrency cap.
 async function fetchHicklebeesEvents() {
   console.log("  ⏳ Hicklebee's...");
   try {
@@ -3117,11 +3130,10 @@ async function fetchHicklebeesEvents() {
     if (!res.ok) throw new Error(`${res.status}`);
     const html = await res.text();
 
-    const events = [];
+    const stubs = [];
     const now = new Date();
     const currentYear = now.getFullYear();
 
-    // Split on event-block__first (the actual event items, not containers)
     const blocks = html.split(/class="event-block__first/).slice(1);
     for (const block of blocks) {
       const titleMatch = block.match(/event-block__title[^>]*>(.*?)<\//s);
@@ -3141,37 +3153,105 @@ async function fetchHicklebeesEvents() {
       let year = currentYear;
       const candidate = new Date(year, monthNum, parseInt(day));
       if (candidate < new Date(now.getTime() - 30 * 86400000)) year++;
-      const start = new Date(year, monthNum, parseInt(day), 12, 0); // noon default
+      const start = new Date(year, monthNum, parseInt(day), 12, 0);
 
       const eventUrl = linkMatch
         ? `https://hicklebees.com${linkMatch[1]}`
         : "https://hicklebees.com/events";
 
-      events.push({
-        id: h("hicklebees", title, isoDate(start)),
-        title,
-        date: isoDate(start),
-        displayDate: displayDate(start),
-        time: null,
-        endTime: null,
-        venue: "Hicklebee's",
-        address: "1378 Lincoln Ave, San Jose, CA 95125",
-        city: "san-jose",
-        category: inferCategory(title, "", ""),
-        cost: "free",
-        description: "",
-        url: eventUrl,
-        source: "Hicklebee's",
-        kidFriendly: true, // it's a children's bookstore
-      });
+      stubs.push({ title, start, eventUrl });
     }
 
-    console.log(`  ✅ Hicklebee's: ${events.length} events`);
+    // Fetch detail pages in parallel (5 at a time) to extract clock time from JSON-LD
+    const concurrency = 5;
+    const results = [];
+    for (let i = 0; i < stubs.length; i += concurrency) {
+      const batch = stubs.slice(i, i + concurrency);
+      const detailed = await Promise.all(batch.map(async (s) => {
+        if (s.eventUrl.endsWith("/events")) return s; // no detail link, leave as-is
+        try {
+          const r = await fetch(s.eventUrl, {
+            headers: { "User-Agent": BROWSER_UA },
+            signal: AbortSignal.timeout(10_000),
+          });
+          if (!r.ok) return s;
+          const detailHtml = await r.text();
+          const startMatch = detailHtml.match(/"startDate":\s*"([^"]+)"/);
+          const endMatch = detailHtml.match(/"endDate":\s*"([^"]+)"/);
+          if (startMatch) {
+            const time = isoTimeToClockLocal(startMatch[1]);
+            const endTime = endMatch ? isoTimeToClockLocal(endMatch[1]) : null;
+            return { ...s, time, endTime };
+          }
+        } catch { /* ignore network errors per-event */ }
+        return s;
+      }));
+      results.push(...detailed);
+    }
+
+    const events = results.map((s) => ({
+      id: h("hicklebees", s.title, isoDate(s.start)),
+      title: s.title,
+      date: isoDate(s.start),
+      displayDate: displayDate(s.start),
+      time: s.time || null,
+      endTime: s.endTime || null,
+      venue: "Hicklebee's",
+      address: "1378 Lincoln Ave, San Jose, CA 95125",
+      city: "san-jose",
+      category: inferCategory(s.title, "", ""),
+      cost: "free",
+      description: "",
+      url: s.eventUrl,
+      source: "Hicklebee's",
+      kidFriendly: true,
+    }));
+
+    const withTime = events.filter((e) => e.time).length;
+    console.log(`  ✅ Hicklebee's: ${events.length} events (${withTime} with time)`);
     return events;
   } catch (err) {
     console.log(`  ⚠️  Hicklebee's: ${err.message}`);
     return [];
   }
+}
+
+/** Normalize a time string like "7:30 pm" / "7 PM" / "19:30" to "H:MM AM/PM". */
+function formatHourClock(s) {
+  if (!s || typeof s !== "string") return null;
+  const trimmed = s.trim();
+  // Already 12-hour with am/pm
+  let m = trimmed.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/i);
+  if (m) {
+    const h = parseInt(m[1], 10);
+    const min = m[2] ? parseInt(m[2], 10) : 0;
+    const ampm = m[3].toUpperCase();
+    return min === 0 ? `${h}:00 ${ampm}` : `${h}:${String(min).padStart(2, "0")} ${ampm}`;
+  }
+  // 24-hour "HH:MM"
+  m = trimmed.match(/^(\d{1,2}):(\d{2})$/);
+  if (m) {
+    const h24 = parseInt(m[1], 10);
+    const min = parseInt(m[2], 10);
+    if (h24 === 0 && min === 0) return null;
+    const ampm = h24 >= 12 ? "PM" : "AM";
+    const h12 = h24 === 0 ? 12 : (h24 > 12 ? h24 - 12 : h24);
+    return min === 0 ? `${h12}:00 ${ampm}` : `${h12}:${String(min).padStart(2, "0")} ${ampm}`;
+  }
+  return null;
+}
+
+/** Convert an ISO datetime to "H:MM AM/PM". Treats the embedded clock as wall time. */
+function isoTimeToClockLocal(iso) {
+  if (!iso || typeof iso !== "string") return null;
+  const m = iso.match(/T(\d{2}):(\d{2})/);
+  if (!m) return null;
+  const h24 = parseInt(m[1], 10);
+  const min = parseInt(m[2], 10);
+  if (h24 === 0 && min === 0) return null;
+  const ampm = h24 >= 12 ? "PM" : "AM";
+  const h12 = h24 === 0 ? 12 : (h24 > 12 ? h24 - 12 : h24);
+  return min === 0 ? `${h12}:00 ${ampm}` : `${h12}:${String(min).padStart(2, "0")} ${ampm}`;
 }
 
 // Linden Tree Books (Los Altos) — hand-coded HTML, events in <h3> tags
@@ -3864,15 +3944,53 @@ async function main() {
 
   // Deduplicate by normalized title + date
   // Sports events: also deduplicate by date+venue (same game, different listing titles)
-  // Same-source events: also deduplicate by date+venue+time (same event, different title variants)
+  // Same date+venue+time across sources: catches "SJDA listing of SJMA gala" vs
+  // "SJMA's own gala listing" by collapsing to one card.
+
+  // Aggressive venue normalization: strip accents, leading article, all non-alnum.
+  // Captures "The San José Museum of Art" === "San Jose Museum of Art".
+  function normVenueKey(v) {
+    if (!v) return "";
+    return v.toLowerCase()
+      .normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/^(the|a|an)\s+/, "")
+      .replace(/[^a-z0-9]/g, "")
+      .substring(0, 30);
+  }
+  function normTimeKey(t) {
+    if (!t) return "";
+    return String(t).split(",").pop().trim().toLowerCase().replace(/\s+/g, "");
+  }
+  // Source-venue affinity: how many venue tokens appear in the source name.
+  // Higher score means the source is the venue itself (e.g. SJMA listing
+  // for an SJMA event), which we prefer to keep over an aggregator listing.
+  function sourceVenueAffinity(e) {
+    const s = (e.source || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]/g, " ");
+    const v = (e.venue || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]/g, " ");
+    if (!s || !v) return 0;
+    const sTokens = new Set(s.split(/\s+/).filter((t) => t.length >= 3));
+    const vTokens = v.split(/\s+/).filter((t) => t.length >= 3);
+    let overlap = 0;
+    for (const t of vTokens) if (sTokens.has(t)) overlap++;
+    return overlap;
+  }
+
+  // Pre-sort capped events so that within any (date, venue, time) trio, the
+  // source-venue match comes first — that's the listing dedup will keep.
+  // Tiebreak by longer description (richer data).
+  capped.sort((a, b) => {
+    const aff = sourceVenueAffinity(b) - sourceVenueAffinity(a);
+    if (aff !== 0) return aff;
+    return (b.description?.length || 0) - (a.description?.length || 0);
+  });
+
   const seen = new Set();
   const sportsByDateVenue = new Set();
   const sameSourceByDVT = new Set();
   const deduped = capped.filter((e) => {
-    // Same-source dedup: catches title variants like "SJSU X" vs "X at SJSU"
+    // Cross-source date+venue+time dedup: one listing per concrete event slot
     if (e.venue && e.date && e.time) {
-      const venueNorm = e.venue.toLowerCase().replace(/[^a-z0-9]/g, "").substring(0, 20);
-      const dvtKey = `${e.date}|${venueNorm}|${e.time}`;
+      const dvtKey = `${e.date}|${normVenueKey(e.venue)}|${normTimeKey(e.time)}`;
       if (sameSourceByDVT.has(dvtKey)) return false;
       sameSourceByDVT.add(dvtKey);
     }

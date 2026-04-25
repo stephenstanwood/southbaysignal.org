@@ -102,6 +102,23 @@ function normalizeTime(raw) {
   return t || null;
 }
 
+/** Convert an ISO datetime ("2026-05-02T19:00:00-07:00") to "H:MM AM/PM".
+ *  Returns null if the string has no time component or is unparseable.
+ *  Treats the offset literally — for sources that emit local-wall-clock with
+ *  a Pacific offset, this gives the right human-readable time. */
+function isoTimeToClock(iso) {
+  if (!iso || typeof iso !== "string") return null;
+  const m = iso.match(/T(\d{2}):(\d{2})/);
+  if (!m) return null;
+  const h24 = parseInt(m[1], 10);
+  const min = parseInt(m[2], 10);
+  // 00:00 looks like "midnight by default" — usually means time wasn't set.
+  if (h24 === 0 && min === 0) return null;
+  const ampm = h24 >= 12 ? "PM" : "AM";
+  const h12 = h24 === 0 ? 12 : (h24 > 12 ? h24 - 12 : h24);
+  return min === 0 ? `${h12}:00 ${ampm}` : `${h12}:${String(min).padStart(2, "0")} ${ampm}`;
+}
+
 /** Category inference from title */
 function inferCategory(title) {
   const t = title.toLowerCase();
@@ -1023,8 +1040,8 @@ async function scrapeBooksInc(page) {
             events.push({
               title: item.name,
               date: item.startDate,
+              endDate: item.endDate,
               location: item.location?.name || "",
-              time: null,
               link: item.url,
             });
           }
@@ -1043,8 +1060,8 @@ async function scrapeBooksInc(page) {
             events.push({
               title: item.name,
               date: item.startDate,
+              endDate: item.endDate,
               location: item.location?.name || "",
-              time: null,
               link: item.url,
             });
           } catch { /* ignore */ }
@@ -1063,7 +1080,7 @@ async function scrapeBooksInc(page) {
         const date = dateEl?.getAttribute("datetime") || dateEl?.textContent?.trim();
         const location = locEl?.textContent?.trim() || "";
         const link = card.querySelector("a")?.href;
-        if (title && title.length > 3) events.push({ title, date, location, time: null, link });
+        if (title && title.length > 3) events.push({ title, date, location, link });
       }
     }
 
@@ -1080,11 +1097,14 @@ async function scrapeBooksInc(page) {
       if (locLower.includes(kw)) { city = cid; break; }
     }
     if (!city) continue; // not a South Bay store
+    // Extract clock time from ISO datetime ("2026-05-02T19:00:00-07:00" → "7:00 PM")
+    const time = isoTimeToClock(r.date);
+    const endTime = isoTimeToClock(r.endDate);
     events.push({
       title: r.title,
       date,
-      time: normalizeTime(r.time),
-      endTime: null,
+      time,
+      endTime,
       venue: `Books Inc ${r.location || ""}`.trim(),
       address: "",
       city,
