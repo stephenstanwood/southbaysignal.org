@@ -47,6 +47,22 @@ test("timeBlockFromEventTime: null/invalid falls back", () => {
   assert.equal(timeBlockFromEventTime("TBD"), "7:00 PM - 8:30 PM");
 });
 
+test("timeBlockFromEventTime: sports show start time only", () => {
+  assert.equal(
+    timeBlockFromEventTime("7:00 PM", null, undefined, "sports"),
+    "7:00 PM",
+  );
+  assert.equal(
+    timeBlockFromEventTime("5:00 PM", null, undefined, "sports"),
+    "5:00 PM",
+  );
+  // Explicit endTime still wins, even for sports
+  assert.equal(
+    timeBlockFromEventTime("7:00 PM", "10:00 PM", undefined, "sports"),
+    "7:00 PM - 10:00 PM",
+  );
+});
+
 test("fallbackBlurb: deterministic per-name", () => {
   const a1 = fallbackBlurb("event", "food", "Taco Festival", null);
   const a2 = fallbackBlurb("event", "food", "Taco Festival", null);

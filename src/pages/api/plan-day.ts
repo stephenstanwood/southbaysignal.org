@@ -334,13 +334,14 @@ export function fallbackBlurb(
 }
 
 // Build a "HH:MM AM/PM - HH:MM AM/PM" timeBlock from an event's start time.
-// Prefers a given endTime; otherwise defaults to start + 90 minutes. Used by
-// both sequenceWithClaude and padWithClaude to force event cards onto their
-// actual time regardless of what Claude picked.
+// Prefers a given endTime; otherwise defaults to start + 90 minutes. Sports
+// events return just the start time — you don't show up halfway through a
+// baseball game.
 export function timeBlockFromEventTime(
   eventTime: string | null | undefined,
   eventEndTime?: string | null,
   fallback = "7:00 PM - 8:30 PM",
+  category?: string | null,
 ): string {
   if (!eventTime) return fallback;
   const startMatch = eventTime.match(/(\d{1,2}:\d{2}\s*(?:AM|PM))/i);
@@ -352,6 +353,12 @@ export function timeBlockFromEventTime(
   if (eventEndTime) {
     const endMatch = eventEndTime.match(/(\d{1,2}:\d{2}\s*(?:AM|PM))/i);
     if (endMatch) return `${startMatch[1]} - ${endMatch[1]}`;
+  }
+
+  // Sports: just the start time. Games run 2-3+ hours and you arrive at
+  // first pitch / kickoff, not in the middle.
+  if ((category || "").toLowerCase() === "sports") {
+    return startMatch[1];
   }
 
   // Else default to +90 min.
@@ -1260,7 +1267,7 @@ Return ONLY the JSON array. No explanation.`;
     // eventTime) get Claude's chosen timeBlock.
     let timeBlock: string;
     if (candidate.source === "event" && candidate.eventTime) {
-      const forced = timeBlockFromEventTime(candidate.eventTime, candidate.eventEndTime);
+      const forced = timeBlockFromEventTime(candidate.eventTime, candidate.eventEndTime, undefined, candidate.category);
       if (pick.timeBlock && pick.timeBlock !== forced) {
         logDecision({
           script: "plan-day",
@@ -1274,7 +1281,7 @@ Return ONLY the JSON array. No explanation.`;
     } else {
       timeBlock = isValidTimeBlock(pick.timeBlock)
         ? pick.timeBlock
-        : timeBlockFromEventTime(candidate.eventTime);
+        : timeBlockFromEventTime(candidate.eventTime, undefined, undefined, candidate.category);
     }
 
     const isLocked = lockedCandidates.some((l) => l.id === candidate.id);
@@ -1338,7 +1345,7 @@ Return ONLY the JSON array. No explanation.`;
     if (!cards.some((c) => c.id === locked.id)) {
       console.log(`[plan-day] forcing locked item: ${locked.name}`);
       const pinnedTime = lockedTimeMap?.get(locked.id);
-      const timeBlock = pinnedTime || timeBlockFromEventTime(locked.eventTime);
+      const timeBlock = pinnedTime || timeBlockFromEventTime(locked.eventTime, undefined, undefined, locked.category);
       cards.push({
         id: locked.id,
         name: locked.name,
@@ -1620,7 +1627,7 @@ Return ONLY the JSON array. No explanation.`;
       // the original slot. Final sort below restores chronology.
       const replacementTimeBlock =
         replacement.source === "event" && replacement.eventTime
-          ? timeBlockFromEventTime(replacement.eventTime, replacement.eventEndTime)
+          ? timeBlockFromEventTime(replacement.eventTime, replacement.eventEndTime, undefined, replacement.category)
           : cur.timeBlock;
       cards[i] = {
         id: replacement.id,
@@ -1654,7 +1661,7 @@ Return ONLY the JSON array. No explanation.`;
     const candidate = candidateMap.get(card.id);
     const evTime = (candidate as any)?.eventTime;
     if (!evTime) continue;
-    const forced = timeBlockFromEventTime(evTime, (candidate as any)?.eventEndTime);
+    const forced = timeBlockFromEventTime(evTime, (candidate as any)?.eventEndTime, undefined, (candidate as any)?.category);
     if (card.timeBlock !== forced) {
       logDecision({
         script: "plan-day",
@@ -1845,7 +1852,7 @@ Return ONLY the JSON array.`;
     // likely to park events in convenient slots.
     let timeBlock: string;
     if (candidate.source === "event" && (candidate as any).eventTime) {
-      timeBlock = timeBlockFromEventTime((candidate as any).eventTime, (candidate as any).eventEndTime);
+      timeBlock = timeBlockFromEventTime((candidate as any).eventTime, (candidate as any).eventEndTime, undefined, (candidate as any).category);
     } else {
       timeBlock = isValidTimeBlock(pick.timeBlock) ? pick.timeBlock : "12:00 PM - 1:00 PM";
     }
