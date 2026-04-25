@@ -486,6 +486,10 @@ const TITLE_FIXES = {
   "Bayfc": "Bay FC",
   "Rock EN ": "Rock en ",
   "Latinaje EN ": "Latinaje en ",
+  // Source-side title-cased acronyms (regex won't catch — input wasn't ALL-CAPS)
+  " Pacl ": " PACL ",
+  " Pacl,": " PACL,",
+  "Pacl Book": "PACL Book",
 };
 
 function cleanTitle(title) {
@@ -513,6 +517,8 @@ function cleanTitle(title) {
     // South Bay venues / institutions
     "SJMA", "MACLA", "SVLG", "SJDA", "SCCC", "MOFAD",
     "USPS", "USPTO", "USDA", "UCSF", "UCSC", "UCSD", "UCSB",
+    // South Bay org/agency acronyms
+    "SJMADE", "SCCFD", "SCVMC", "PACL",
   ]);
   t = t.replace(/\b[A-Z]{4,}\b/g, (w) => KEEP_UPPER.has(w) ? w : w[0] + w.slice(1).toLowerCase());
   // Fix pipes without surrounding spaces: "Foo |Bar" → "Foo | Bar"
@@ -578,9 +584,33 @@ const BOILERPLATE_SENTENCE_PATTERNS = [
  * - capitalize sentence-start words ("free performance" → "Free performance")
  * - tidy whitespace
  */
+// Common scraper-introduced typos. Replacement preserves the original case of
+// the matched word (lowercase → lowercase, Capitalized → Capitalized).
+const DESC_TYPO_FIXES = [
+  [/\bpreformance(s?)\b/gi, "performance"],
+  [/\battendence\b/gi, "attendance"],
+  [/\boccured\b/gi, "occurred"],
+  [/\brecieve\b/gi, "receive"],
+  [/\bsepearate\b/gi, "separate"],
+];
+
 function polishDescription(text) {
   if (!text) return "";
   let t = text;
+
+  // Fix common typos before sentence-level processing.
+  for (const [pat, fix] of DESC_TYPO_FIXES) {
+    t = t.replace(pat, (m, ...rest) => {
+      // Preserve original case of the first letter; for "preformance(s)" pattern,
+      // append the trailing 's' if present.
+      const trailingS = typeof rest[0] === "string" ? rest[0] : "";
+      const replacement = fix + trailingS;
+      if (m[0] === m[0].toUpperCase() && m[0] !== m[0].toLowerCase()) {
+        return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+      }
+      return replacement;
+    });
+  }
 
   // Downcase ALL-CAPS runs of 4+ uppercase letters (preserve common acronyms).
   // Same logic as cleanTitle but applied to body text.
