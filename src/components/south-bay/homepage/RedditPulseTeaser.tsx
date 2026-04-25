@@ -23,14 +23,6 @@ interface PulsePost {
   externalUrl: string | null;
 }
 
-const CATEGORY_LABEL: Record<string, string> = {
-  restaurant_news: "Food",
-  event: "Event",
-  discussion: "Talk",
-  news: "News",
-  sports: "Sports",
-};
-
 // Each category gets a distinctive 2-color gradient used as the placeholder
 // when no Recraft image is available. Keeps the grid feeling colorful even
 // before the Mini has had a chance to populate images.
@@ -40,14 +32,6 @@ const CATEGORY_GRADIENT: Record<string, string> = {
   discussion:      "linear-gradient(135deg, #06b6d4 0%, #10b981 100%)",
   news:            "linear-gradient(135deg, #6366f1 0%, #14b8a6 100%)",
   sports:          "linear-gradient(135deg, #22c55e 0%, #eab308 100%)",
-};
-
-const CATEGORY_EMOJI: Record<string, string> = {
-  restaurant_news: "🍴",
-  event: "🎟",
-  discussion: "💬",
-  news: "📰",
-  sports: "⚽",
 };
 
 function formatAge(hours: number): string {
@@ -76,15 +60,13 @@ export default function RedditPulseTeaser() {
           The Conversation
         </h2>
         <p style={{ fontSize: 13, color: "#666", margin: "4px 0 0", fontWeight: 500 }}>
-          What people are talking about across South Bay subreddits
+          What people are talking about across the South Bay
         </p>
       </header>
 
       <div className="rp-grid">
         {posts.map((p) => {
           const fallback = CATEGORY_GRADIENT[p.category] ?? "linear-gradient(135deg, #6366f1 0%, #14b8a6 100%)";
-          const label = CATEGORY_LABEL[p.category] ?? "Talk";
-          const emoji = CATEGORY_EMOJI[p.category] ?? "💬";
           return (
             <a
               key={p.id}
@@ -101,8 +83,7 @@ export default function RedditPulseTeaser() {
 
               {/* Top metadata */}
               <div className="rp-tile-top">
-                <span className="rp-badge">{emoji} {label}</span>
-                <span className="rp-meta-top">r/{p.sub}</span>
+                <span className="rp-badge">r/{p.sub}</span>
               </div>
 
               {/* Bottom: title + footer metadata */}
@@ -122,7 +103,7 @@ export default function RedditPulseTeaser() {
       </div>
 
       <p style={{ marginTop: 12, fontSize: 11, color: "#aaa", textAlign: "right" }}>
-        Surfaced from regional subreddits · click any tile to read on Reddit
+        Tap any post to jump into the thread on Reddit
       </p>
 
       <style>{`
@@ -175,16 +156,7 @@ export default function RedditPulseTeaser() {
           border-radius: 999px;
           line-height: 1;
           white-space: nowrap;
-        }
-        .rp-meta-top {
-          background: rgba(0,0,0,0.55);
-          color: #fff;
-          padding: 4px 8px;
-          border-radius: 999px;
-          line-height: 1;
-          backdrop-filter: blur(2px);
-          white-space: nowrap;
-          max-width: 50%;
+          max-width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
         }
