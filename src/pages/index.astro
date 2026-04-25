@@ -269,17 +269,14 @@ const title = "The South Bay Today";
       /* ── Events: sticky search + filter bar ── */
       .sb-events-sticky-filter {
         position: sticky;
-        top: 36px;
-        background: rgba(248, 246, 240, 0.92);
-        backdrop-filter: saturate(140%) blur(8px);
-        -webkit-backdrop-filter: saturate(140%) blur(8px);
+        top: 0;
+        background: var(--sb-bg);
         z-index: 10;
         margin-left: -24px;
         margin-right: -24px;
-        padding: 12px 24px 12px;
-        border-bottom: 1px solid var(--sb-border-light, #e8e4dc);
+        padding: 10px 24px;
+        border-bottom: 1px solid var(--sb-border);
         margin-bottom: 12px;
-        box-shadow: 0 2px 8px -6px rgba(0, 0, 0, 0.08);
       }
       .sb-events-cat-row {
         display: flex;
@@ -288,10 +285,10 @@ const title = "The South Bay Today";
       }
       @media (max-width: 640px) {
         .sb-events-sticky-filter {
-          top: 35px;
+          top: 0;
           margin-left: -16px;
           margin-right: -16px;
-          padding: 8px 16px 8px;
+          padding: 8px 16px;
           margin-bottom: 8px;
         }
         /* Mobile: events section header is redundant with the EVENTS tab */
