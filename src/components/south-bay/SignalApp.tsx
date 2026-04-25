@@ -25,13 +25,36 @@ function formatTodayLabel(): string {
 
 const TAB_IDS = new Set<string>(TABS.map((t) => t.id));
 
-function getTabFromHash(): Tab {
-  const hash = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
+// Short-slug URLs (e.g. /gov, /tech) so the address bar reads cleanly instead
+// of the older /#government-style hash routing. Hash routing is preserved as a
+// fallback so existing bookmarks keep working.
+const TAB_TO_SLUG: Partial<Record<Tab, string>> = {
+  overview:   "/",
+  events:     "/events",
+  camps:      "/camps",
+  government: "/gov",
+  technology: "/tech",
+  food:       "/food",
+};
+const SLUG_TO_TAB: Record<string, Tab> = Object.fromEntries(
+  Object.entries(TAB_TO_SLUG).map(([tab, slug]) => [slug, tab as Tab]),
+);
+
+function tabFromLocation(): Tab {
+  if (typeof window === "undefined") return "overview";
+  const path = window.location.pathname.replace(/\/$/, "") || "/";
+  const fromPath = SLUG_TO_TAB[path];
+  if (fromPath) return fromPath;
+  const hash = window.location.hash.slice(1);
   return TAB_IDS.has(hash) ? (hash as Tab) : "overview";
 }
 
-export default function SignalApp() {
-  const [activeTab, setActiveTab] = useState<Tab>(getTabFromHash);
+interface SignalAppProps {
+  initialTab?: Tab;
+}
+
+export default function SignalApp({ initialTab }: SignalAppProps = {}) {
+  const [activeTab, setActiveTab] = useState<Tab>(() => initialTab ?? tabFromLocation());
   // Auto-refresh the masthead date on day rollover so a tab left open past
   // midnight doesn't show yesterday's label.
   const [todayLabel, setTodayLabel] = useState<string>(() => formatTodayLabel());
@@ -45,14 +68,21 @@ export default function SignalApp() {
 
   const navigateTo = useCallback((tab: Tab) => {
     setActiveTab(tab);
-    window.location.hash = tab === "overview" ? "" : tab;
+    const slug = TAB_TO_SLUG[tab] ?? "/";
+    if (window.location.pathname !== slug || window.location.hash) {
+      window.history.pushState({ tab }, "", slug);
+    }
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    const onHashChange = () => { setActiveTab(getTabFromHash()); window.scrollTo(0, 0); };
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
+    const sync = () => { setActiveTab(tabFromLocation()); window.scrollTo(0, 0); };
+    window.addEventListener("popstate", sync);
+    window.addEventListener("hashchange", sync);
+    return () => {
+      window.removeEventListener("popstate", sync);
+      window.removeEventListener("hashchange", sync);
+    };
   }, []);
 
   const [selectedCities, setSelectedCities] = useState<Set<City>>(
@@ -66,8 +96,6 @@ export default function SignalApp() {
       localStorage.removeItem("sb-home-city");
     }
   }, []);
-
-  const allSelected = selectedCities.size === CITIES.length;
 
   const toggleCity = useCallback((city: City) => {
     setSelectedCities((prev) => {
@@ -105,8 +133,7 @@ export default function SignalApp() {
     });
   }, []);
 
-  // City filter only applies to the Events tab.
-  const showCityFilter = activeTab === "events";
+  // City filter is rendered inline inside EventsView's filter bar, not at app level.
 
   return (
     <>
@@ -177,34 +204,6 @@ export default function SignalApp() {
         )}
       </nav>
 
-      {/* City filter */}
-      {showCityFilter && (
-        <div className="sb-filters">
-          <div className="sb-filters-inner">
-            <span className="sb-filter-label" id="sb-city-filter-label">Cities</span>
-            <div role="group" aria-labelledby="sb-city-filter-label" style={{ display: "contents" }}>
-              <button
-                className={`sb-city-pill sb-city-pill--all${allSelected ? " sb-city-pill--active" : ""}`}
-                aria-pressed={allSelected}
-                onClick={toggleAll}
-              >
-                All
-              </button>
-              {CITIES.map((city) => (
-                <button
-                  key={city.id}
-                  className={`sb-city-pill${selectedCities.has(city.id) ? " sb-city-pill--active" : ""}`}
-                  aria-pressed={selectedCities.has(city.id)}
-                  onClick={() => toggleCity(city.id)}
-                >
-                  {city.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Content */}
       <main className="sb-main">
         {activeTab === "overview" && (
@@ -213,7 +212,11 @@ export default function SignalApp() {
         {activeTab !== "overview" && (
           <Suspense fallback={<div className="sb-loading"><div className="sb-spinner" /><div className="sb-loading-text">Loading…</div></div>}>
             {activeTab === "events" && (
-              <EventsView selectedCities={selectedCities} />
+              <EventsView
+                selectedCities={selectedCities}
+                onToggleCity={toggleCity}
+                onToggleAllCities={toggleAll}
+              />
             )}
             {activeTab === "government" && (
               <GovernmentView selectedCities={selectedCities} />

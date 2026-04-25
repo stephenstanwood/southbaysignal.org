@@ -357,9 +357,19 @@ const INTERNAL_EVENT_PATTERNS = [
   /\bspring\s+budget\b/i,
   /\bchhs\b.*\bjournal\s+club\b/i,
   // Academic administrative deadlines (not resident-facing)
-  /^last\s+day\s+to\s+(petition|submit|remove|add|drop|withdraw|file)\b/i,
+  /^last\s+day\s+to\s+(petition|submit|remove|add|drop|withdraw|file|declare|change|elect)\b/i,
   /\bpetition\s+for\s+degrees?\s+to\s+be\s+conferred\b/i,
   /\bremove\s+(winter|spring|summer|fall)\s+\d{4}\s+incompletes?\b/i,
+  /\bp\/np\s+grading\b/i,
+  /\bgrading\s+option\b/i,
+  /\bpeer\s+advising\s+session\b/i,
+  /\bapplication\s+workshop\b/i,
+  /\bmandatory\s+(peer\s+)?advising\b/i,
+  /\bstudent\s+recognition\s+program\b/i,
+  /\brecognition\s+(ceremony|reception|program)\b/i,
+  /\bdean'?s\s+(reception|address|brunch)\b/i,
+  /\bclub\s+sport\s+practice\b/i,
+  /\bclass\s+meeting\s+for\s+/i,
   // Private class visits (faculty-arranged, not public)
   /\bclass\s+visit\b/i,
   // Internal seminar series / recurring workshop codes (not public events)
@@ -467,6 +477,16 @@ const TITLE_FIXES = {
   " IN SAN Jose": " in San Jose",   // post-regex: JOSE→Jose but IN/SAN (2-3 letter) survive
   " IN SAN JOSE,": " in San Jose,",
   " IN SAN Jose,": " in San Jose,",
+  // Local brand names with embedded Mixed Case
+  "Sjmade": "SJMade",
+  "Sjma ": "SJMA ",
+  "Macla ": "MACLA ",
+  "Sjda ": "SJDA ",
+  "Svlg ": "SVLG ",
+  "Sjz ": "SJZ ",
+  "Bayfc": "Bay FC",
+  "Rock EN ": "Rock en ",
+  "Latinaje EN ": "Latinaje en ",
 };
 
 function cleanTitle(title) {
@@ -491,6 +511,9 @@ function cleanTitle(title) {
     // 4-letter acronyms to preserve
     "SJSU", "SJPD", "SJFD", "FIFA", "UEFA", "ESPN", "STEM", "AAPI", "ACLU",
     "NASA", "IEEE", "YMCA", "YWCA", "ROTC", "FEMA", "NOAA", "WWII", "UCLA",
+    // South Bay venues / institutions
+    "SJMA", "MACLA", "SVLG", "SJDA", "SCCC", "MOFAD",
+    "USPS", "USPTO", "USDA", "UCSF", "UCSC", "UCSD", "UCSB",
   ]);
   t = t.replace(/\b[A-Z]{4,}\b/g, (w) => KEEP_UPPER.has(w) ? w : w[0] + w.slice(1).toLowerCase());
   // Fix pipes without surrounding spaces: "Foo |Bar" → "Foo | Bar"
@@ -527,6 +550,77 @@ function stripBareUrls(text) {
     .replace(/^\*This event \w+ (organized|hosted) by [^.]+\.?\s*/i, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+// Sentences that are pure boilerplate/warnings/promo and should be dropped from
+// description text. Each pattern matches a sentence (text ending in . ! or ?).
+const BOILERPLATE_SENTENCE_PATTERNS = [
+  /\bdo not (purchase|buy) tickets\b/i,
+  /\bonly (purchase|buy) tickets\b/i,
+  /\btickets? (are )?only available (online|from)\b/i,
+  /\bticket delivery delay\b/i,
+  /\btickets? will not be (emailed|delivered|sent)\b/i,
+  /\bverify the (web)?site\b/i,
+  /\bbeware of (scams?|counterfeit|third[\s-]?party)/i,
+  /\b(scalpers?|counterfeit tickets?)\b/i,
+  /\bno ticket purchase necessary\b/i,
+  /\bno (purchase|registration|tickets?) necessary\b/i,
+  /\bregister (here|now|online|today|in advance)\b/i,
+  /\bclick (here|the link)\b/i,
+  /\bvisit (our|the) website\b/i,
+  /\bsee (our|the) website\b/i,
+  /\bfor more (info|information|details)\b.*\bvisit\b/i,
+];
+
+/**
+ * Polish description text for display:
+ * - downcase ALL-CAPS shouting (4+ word runs)
+ * - drop promotional/boilerplate sentences
+ * - capitalize sentence-start words ("free performance" → "Free performance")
+ * - tidy whitespace
+ */
+function polishDescription(text) {
+  if (!text) return "";
+  let t = text;
+
+  // Downcase ALL-CAPS runs of 4+ uppercase letters (preserve common acronyms).
+  // Same logic as cleanTitle but applied to body text.
+  const KEEP_UPPER = new Set([
+    "ICYMI", "LGBTQ", "LGBTQIA", "BIPOC", "STEAM", "LEGO",
+    "SJSU", "SJPD", "SJFD", "FIFA", "UEFA", "ESPN", "STEM", "AAPI", "ACLU",
+    "NASA", "IEEE", "YMCA", "YWCA", "ROTC", "FEMA", "NOAA", "WWII", "UCLA",
+    "AAVE", "ADHD", "PTSD",
+    // South Bay / arts venues
+    "SJMA", "MACLA", "SJZ", "SVLG", "SJDA", "SCCC", "MOFAD", "VTAA", "VTAS",
+    // Misc
+    "USPS", "USPTO", "WIPO", "USDA", "FBI", "CIA", "NSA", "EPA", "FDA",
+    "MIT", "UCSF", "UCSC", "UCLA", "UCSD", "UCSB", "UCD",
+    "AAPI", "AAJA", "NAHJ", "NABJ", "GLAAD", "ACLU",
+  ]);
+  t = t.replace(/\b[A-Z]{4,}\b/g, (w) => KEEP_UPPER.has(w) ? w : w[0] + w.slice(1).toLowerCase());
+
+  // Insert space between concatenated words ("NIGHTSat" → "NIGHTS at", "USAMex" → "USA Mex")
+  // — split all-caps run before a capital+lowercase prefix that began a new word.
+  t = t.replace(/([A-Z]{2,})([A-Z][a-z])/g, "$1 $2");
+  // — split lowercase + uppercase boundary ("nightSat" → "night Sat").
+  t = t.replace(/([a-z])([A-Z])/g, "$1 $2");
+  // Normalize 1-2 letter all-caps fragments left over from prior step ("EN" preserved if before all-caps)
+  // Only rewrites words wedged between mixed-case neighbors — keeps "EN" in "Rock EN Espanol" lowercased.
+  t = t.replace(/(?<=[A-Z][a-z]+ )([A-Z]{2,3})(?= [A-Z][a-z])/g, (w) => w[0] + w.slice(1).toLowerCase());
+
+  // Split into sentences and drop boilerplate
+  const sentences = t.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [t];
+  const kept = sentences.filter((s) => {
+    const trimmed = s.trim();
+    if (!trimmed) return false;
+    return !BOILERPLATE_SENTENCE_PATTERNS.some((re) => re.test(trimmed));
+  });
+  t = kept.join(" ").replace(/\s+/g, " ").trim();
+
+  // Capitalize first letter of each sentence
+  t = t.replace(/(^|[.!?]\s+)([a-z])/g, (_, sep, ch) => sep + ch.toUpperCase());
+
+  return t;
 }
 
 /**
@@ -3710,6 +3804,11 @@ async function main() {
 
   // Clean titles: strip calendar-artifact date prefixes, apply to all events
   allEvents.forEach((e) => { e.title = cleanTitle(e.title); });
+
+  // Polish descriptions: drop boilerplate sentences, downcase ALL CAPS, capitalize sentence starts
+  allEvents.forEach((e) => {
+    if (e.description) e.description = polishDescription(e.description);
+  });
 
   // Filter: must have date and city and title, must be today or future, must be public, not cancelled
   // Also skip zero-duration university calendar markers (e.g. "5:00 PM – 5:00 PM")

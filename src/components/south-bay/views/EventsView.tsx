@@ -5,6 +5,27 @@ import {
   type EventCategory,
 } from "../../../data/south-bay/events-data";
 
+const CITIES: { id: City; name: string }[] = [
+  { id: "san-jose", name: "San Jose" },
+  { id: "santa-clara", name: "Santa Clara" },
+  { id: "sunnyvale", name: "Sunnyvale" },
+  { id: "mountain-view", name: "Mountain View" },
+  { id: "palo-alto", name: "Palo Alto" },
+  { id: "los-altos", name: "Los Altos" },
+  { id: "cupertino", name: "Cupertino" },
+  { id: "saratoga", name: "Saratoga" },
+  { id: "los-gatos", name: "Los Gatos" },
+  { id: "campbell", name: "Campbell" },
+  { id: "milpitas", name: "Milpitas" },
+];
+
+const CITY_LABELS: Record<string, string> = {
+  "san-jose": "San Jose", "campbell": "Campbell", "los-gatos": "Los Gatos",
+  "saratoga": "Saratoga", "cupertino": "Cupertino", "santa-clara": "Santa Clara",
+  "sunnyvale": "Sunnyvale", "mountain-view": "Mountain View", "palo-alto": "Palo Alto",
+  "milpitas": "Milpitas", "los-altos": "Los Altos",
+};
+
 /** Prepend city name to government meeting titles that don't already include it */
 function meetingDisplayTitle(title: string, city: string): string {
   const MEETING_PATTERNS = [
@@ -23,192 +44,9 @@ function meetingDisplayTitle(title: string, city: string): string {
 
 interface Props {
   selectedCities: Set<City>;
+  onToggleCity: (city: City) => void;
+  onToggleAllCities: () => void;
 }
-
-type ViewMode = "upcoming" | "venues";
-
-// ── South Bay venues (auto-discovered from events + curated overrides) ──
-
-interface SBVenue {
-  id: string;
-  name: string;
-  venueMatch: string; // substring match against event.venue
-  cityFilter?: string; // also require event.city === cityFilter (for shared venue names like SCCL)
-  city: string;
-  cityLabel: string;
-  emoji: string;
-  tags: string;
-}
-
-// Curated display overrides for known venues (emoji, friendly name, tags)
-const VENUE_OVERRIDES: Record<string, Partial<SBVenue>> = {
-  "SAP Center":                            { emoji: "🏟️", tags: "Arena · Sports · Concerts", name: "SAP Center" },
-  "San Jose Center for the Performing":    { emoji: "🎭", tags: "Theater · Broadway · Opera", name: "SJ Center for the Performing Arts" },
-  "California Theatre":                    { emoji: "🎼", tags: "Opera · Classical · Theater" },
-  "San Jose Civic":                        { emoji: "🎵", tags: "Concerts · Shows" },
-  "San Jose Improv":                       { emoji: "🎤", tags: "Comedy · Music" },
-  "The Ritz":                              { emoji: "🎸", tags: "Music · Indie" },
-  "Tech CU Arena":                         { emoji: "🏀", tags: "Sports · Events" },
-  "PayPal Park":                           { emoji: "⚽", tags: "Soccer · Sports" },
-  "Excite Ballpark":                       { emoji: "⚾", tags: "Baseball · MiLB" },
-  "McEnery Convention Center":             { emoji: "🎪", tags: "Conventions · Special Events" },
-  "Discovery Meadows":                     { emoji: "🌿", tags: "Outdoor · Family" },
-  "Happy Hollow":                          { emoji: "🦁", tags: "Family · Zoo", name: "Happy Hollow Park & Zoo" },
-  "San Jose Public Library":               { emoji: "📚", tags: "Library · Classes · Family" },
-  "MACLA":                                 { emoji: "🎨", tags: "Art · Latinx · Theater" },
-  "Shoreline Amphitheatre":                { emoji: "🎵", tags: "Outdoor Concerts" },
-  "Mountain View Center for the Performing": { emoji: "🎭", tags: "Theater · Dance · Music", name: "Mountain View Center for the Performing Arts" },
-  "Computer History Museum":               { emoji: "💾", tags: "Tech · Exhibits · Talks" },
-  "Mountain View Public Library":          { emoji: "📚", tags: "Library · Classes · Family" },
-  "Levi's Stadium":                        { emoji: "🏈", tags: "Football · Concerts · Events" },
-  "Triton Museum":                         { emoji: "🖼️", tags: "Art · Exhibits · Free", name: "Triton Museum of Art" },
-  "Frost Amphitheatre":                    { emoji: "🌙", tags: "Outdoor Concerts" },
-  "Cantor Arts Center":                    { emoji: "🗿", tags: "Art · Exhibits · Free" },
-  "Palo Alto City Library":                { emoji: "📚", tags: "Library · Classes · Family" },
-  "Montalvo":                              { emoji: "🎶", tags: "Concerts · Arts · Outdoor", name: "Montalvo Arts Center" },
-  "Sunnyvale Public Library":              { emoji: "📚", tags: "Library · Classes · Family" },
-  "Heritage Theatre":                      { emoji: "🎭", tags: "Concerts · Theater · Events" },
-  "SJZ Break Room":                        { emoji: "🎷", tags: "Jazz · Live Music · Free" },
-  "Santa Clara University":                { emoji: "🎓", tags: "University · Talks · Arts" },
-  "San Jose State University":             { emoji: "🎓", tags: "University · Events · Sports" },
-  "Hacker Dojo":                           { emoji: "💻", tags: "Tech · Meetups · Coworking" },
-  "De Anza College":                       { emoji: "🎓", tags: "College · Community · Arts" },
-  "West Valley College":                   { emoji: "🎓", tags: "College · Community" },
-  "San Jose City College":                 { emoji: "🎓", tags: "College · Community" },
-  "Mission College":                       { emoji: "🎓", tags: "College · Community" },
-};
-
-// Venues that share a name but should be split by city (e.g. "Santa Clara County Library")
-const SPLIT_BY_CITY: Record<string, Record<string, string>> = {
-  "Santa Clara County Library": {
-    "los-gatos": "Los Gatos Library",
-    "campbell": "Campbell Library",
-    "milpitas": "Milpitas Library",
-    "cupertino": "Cupertino Library",
-    "saratoga": "Saratoga Library",
-    "los-altos": "Los Altos Library",
-  },
-};
-
-const CITY_LABELS: Record<string, string> = {
-  "san-jose": "San Jose", "campbell": "Campbell", "los-gatos": "Los Gatos",
-  "saratoga": "Saratoga", "cupertino": "Cupertino", "santa-clara": "Santa Clara",
-  "sunnyvale": "Sunnyvale", "mountain-view": "Mountain View", "palo-alto": "Palo Alto",
-  "milpitas": "Milpitas", "los-altos": "Los Altos",
-};
-
-// Category → emoji fallback for auto-discovered venues
-const CATEGORY_EMOJI: Record<string, string> = {
-  music: "🎵", arts: "🎨", sports: "⚽", education: "📚", family: "👨‍👩‍👦",
-  community: "🤝", outdoor: "🌳", food: "🍽️", market: "🥦",
-};
-
-// Smarter emoji/tag inference from venue name + event content
-const VENUE_KEYWORD_RULES: { test: RegExp; emoji: string; tags: string }[] = [
-  { test: /\blibrary\b/i,                           emoji: "📚", tags: "Library · Classes · Family" },
-  { test: /\buniversity\b|\bcollege\b|\bsjsu\b/i,   emoji: "🎓", tags: "University · Events" },
-  { test: /\bschool\b/i,                            emoji: "🏫", tags: "School · Education" },
-  { test: /\bpark\b(?!ing)/i,                       emoji: "🌳", tags: "Park · Outdoor" },
-  { test: /\bstadium\b|\barena\b|\bballpark\b/i,    emoji: "🏟️", tags: "Sports · Events" },
-  { test: /\btheatre\b|\btheater\b|\bperforming/i,  emoji: "🎭", tags: "Theater · Performing Arts" },
-  { test: /\bmuseum\b|\bgallery\b/i,                emoji: "🖼️", tags: "Museum · Exhibits" },
-  { test: /\bchurch\b|\btemple\b|\bmosque\b/i,      emoji: "⛪", tags: "Worship · Community" },
-  { test: /\bjazz\b|\bmusic\b|\bconcert/i,          emoji: "🎷", tags: "Music · Live Shows" },
-  { test: /\bbrewery\b|\bwinery\b|\btap/i,          emoji: "🍺", tags: "Drinks · Social" },
-  { test: /\bcafe\b|\bcoffee\b|\brestaurant/i,      emoji: "☕", tags: "Food · Drinks" },
-  { test: /\bgarden\b|\bbotanical\b|\bconservancy/i, emoji: "🌿", tags: "Garden · Nature" },
-  { test: /\btrail\b|\bpreserve\b|\bopen space/i,   emoji: "🥾", tags: "Trails · Nature" },
-  { test: /\bcommunity center\b|\brec center/i,     emoji: "🏠", tags: "Community · Recreation" },
-  { test: /\bhacker\b|\bcowork\b|\btech\b/i,        emoji: "💻", tags: "Tech · Meetups" },
-  { test: /\bpool\b|\baquatic/i,                    emoji: "🏊", tags: "Swimming · Recreation" },
-  { test: /\bzoo\b|\bwildlife\b|\banimal/i,         emoji: "🦁", tags: "Wildlife · Family" },
-  { test: /\bfarm\b|\borchard\b/i,                  emoji: "🌾", tags: "Farm · Agriculture" },
-  { test: /\bmarket\b/i,                            emoji: "🥦", tags: "Market · Shopping" },
-];
-
-function inferVenueEmojiAndTags(
-  venueName: string,
-  topCategory: string,
-  events: UpcomingEvent[],
-): { emoji: string; tags: string } {
-  // Check venue name against keyword rules
-  for (const rule of VENUE_KEYWORD_RULES) {
-    if (rule.test.test(venueName)) return { emoji: rule.emoji, tags: rule.tags };
-  }
-
-  // Check event titles for hints (sample first 10)
-  const titleSample = events.slice(0, 10).map((e) => e.title).join(" ");
-  for (const rule of VENUE_KEYWORD_RULES) {
-    if (rule.test.test(titleSample)) return { emoji: rule.emoji, tags: rule.tags };
-  }
-
-  // Fall back to category emoji
-  const catEmoji = CATEGORY_EMOJI[topCategory] ?? "📍";
-  const catTag = topCategory.charAt(0).toUpperCase() + topCategory.slice(1);
-  return { emoji: catEmoji, tags: catTag };
-}
-
-const MIN_EVENTS_FOR_VENUE = 3;
-
-// Build venues dynamically from event data
-function buildVenuesFromEvents(events: UpcomingEvent[]): SBVenue[] {
-  // Group events by venue+city, handling SCCL split
-  const groups = new Map<string, { venue: string; city: string; events: UpcomingEvent[] }>();
-
-  for (const e of events) {
-    if (!e.venue || e.ongoing) continue;
-    const splitMap = SPLIT_BY_CITY[e.venue];
-    const displayName = splitMap?.[e.city] ?? e.venue;
-    const key = `${displayName}|||${splitMap ? e.city : ""}`;
-
-    if (!groups.has(key)) {
-      groups.set(key, { venue: displayName, city: e.city, events: [] });
-    }
-    groups.get(key)!.events.push(e);
-  }
-
-  // Convert to SBVenue, filtering by minimum event count
-  const venues: SBVenue[] = [];
-  for (const [, g] of groups) {
-    if (g.events.length < MIN_EVENTS_FOR_VENUE) continue;
-
-    // Find override by checking if any override key is a substring of the venue name
-    const overrideKey = Object.keys(VENUE_OVERRIDES).find(
-      (k) => g.venue.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(g.venue.toLowerCase()),
-    );
-    const override = overrideKey ? VENUE_OVERRIDES[overrideKey] : undefined;
-
-    // Infer most common category for auto-discovered venues
-    const catCounts: Record<string, number> = {};
-    for (const e of g.events) { catCounts[e.category] = (catCounts[e.category] || 0) + 1; }
-    const topCat = Object.entries(catCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "community";
-
-    const id = g.venue.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "").slice(0, 30);
-    const cityLabel = CITY_LABELS[g.city] ?? g.city.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
-    const inferred = inferVenueEmojiAndTags(g.venue, topCat, g.events);
-
-    venues.push({
-      id,
-      name: override?.name ?? g.venue,
-      venueMatch: g.venue,
-      city: g.city,
-      cityLabel: override?.cityLabel ?? cityLabel,
-      emoji: override?.emoji ?? inferred.emoji,
-      tags: override?.tags ?? inferred.tags,
-    });
-  }
-
-  // Sort: most events first
-  venues.sort((a, b) => {
-    const aCount = groups.get(`${a.venueMatch}|||${SPLIT_BY_CITY[a.venueMatch] ? a.city : ""}`)?.events.length ?? 0;
-    const bCount = groups.get(`${b.venueMatch}|||${SPLIT_BY_CITY[b.venueMatch] ? b.city : ""}`)?.events.length ?? 0;
-    return bCount - aCount;
-  });
-
-  return venues;
-}
-
-// ── Upcoming event type (from scraped JSON) ──
 
 interface UpcomingEvent {
   id: string;
@@ -227,12 +65,12 @@ interface UpcomingEvent {
   source: string;
   kidFriendly: boolean;
   ongoing?: boolean;
+  blurb?: string;
+  image?: string | null;
+  photoRef?: string | null;
 }
 
-// Upcoming events are fetched from the prerendered /api/south-bay/upcoming-events
-// endpoint on mount so the 640KB JSON doesn't get bundled into the client JS.
-
-// ── Time helpers ──
+// ── Time helpers ───────────────────────────────────────────────────────────
 
 function formatTimeRange(time: string | null, endTime: string | null, isSports = false): string | null {
   if (!time) return null;
@@ -259,7 +97,6 @@ function hasNotStarted(time: string | null): boolean {
 }
 
 function parseTimeToMinutes(t: string): number | null {
-  // For comma-separated session times ("12pm, 1pm, 2pm"), use the last one
   const parts = t.split(/,/);
   const target = parts[parts.length - 1].trim();
   const m = target.match(/^(\d+)(?::(\d+))?\s*(am|pm)$/i);
@@ -272,7 +109,7 @@ function parseTimeToMinutes(t: string): number | null {
   return h * 60 + min;
 }
 
-// ── Cost badge ──
+// ── Cost badge ─────────────────────────────────────────────────────────────
 
 function costBadge(cost: string): { label: string; bg: string; fg: string; border: string } {
   if (cost === "free") return { label: "FREE", bg: "#F0FDF4", fg: "#166534", border: "#BBF7D0" };
@@ -281,10 +118,10 @@ function costBadge(cost: string): { label: string; bg: string; fg: string; borde
 }
 
 function cityLabel(city: string) {
-  return city.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
+  return CITY_LABELS[city] ?? city.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
 }
 
-// ── Category accent colors ──
+// ── Category accent colors ─────────────────────────────────────────────────
 
 const CATEGORY_ACCENT: Record<string, { color: string; bg: string; label: string; emoji: string }> = {
   music:     { color: "#7C3AED", bg: "#F5F3FF", label: "Music",     emoji: "🎵" },
@@ -298,12 +135,47 @@ const CATEGORY_ACCENT: Record<string, { color: string; bg: string; label: string
   sports:    { color: "#1E3A8A", bg: "#EFF6FF", label: "Sports",    emoji: "🏟️" },
 };
 
-// ── Upcoming Event Card ──
+// ── Date helpers ───────────────────────────────────────────────────────────
+
+function todayPT(): string {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+}
+
+function addDays(iso: string, n: number): string {
+  const d = new Date(iso + "T12:00:00");
+  d.setDate(d.getDate() + n);
+  return d.toLocaleDateString("en-CA");
+}
+
+function dayLabel(iso: string, todayIso: string, tomorrowIso: string): { primary: string; secondary: string } {
+  const d = new Date(iso + "T12:00:00");
+  const dateStr = d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+  if (iso === todayIso) return { primary: "TODAY", secondary: dateStr };
+  if (iso === tomorrowIso) return { primary: "TOMORROW", secondary: dateStr };
+  const weekday = d.toLocaleDateString("en-US", { weekday: "long" }).toUpperCase();
+  const monthDay = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  return { primary: weekday, secondary: monthDay };
+}
+
+function shortDateLabel(iso: string): string {
+  const d = new Date(iso + "T12:00:00");
+  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+}
+
+// ── Event Card ─────────────────────────────────────────────────────────────
+
+function eventPhotoUrl(event: UpcomingEvent, w = 160, h = 160): string | null {
+  if (event.image) return event.image;
+  if (event.photoRef) return `/api/place-photo?ref=${encodeURIComponent(event.photoRef)}&w=${w}&h=${h}`;
+  return null;
+}
 
 function UpcomingEventCard({ event, showDate }: { event: UpcomingEvent; showDate?: boolean }) {
   const badge = costBadge(event.cost);
   const showBadge = !(event.cost === "free" && event.category === "community");
   const accent = CATEGORY_ACCENT[event.category] ?? CATEGORY_ACCENT.community;
+  const photo = eventPhotoUrl(event, 200, 200);
+  const body = (event.blurb && event.blurb.trim()) ? event.blurb : event.description;
 
   return (
     <div
@@ -320,14 +192,25 @@ function UpcomingEventCard({ event, showDate }: { event: UpcomingEvent; showDate
       onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--sb-shadow-hover)")}
       onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
     >
-      {/* Category emoji column */}
-      <div style={{
-        width: 32, height: 32, borderRadius: 6, flexShrink: 0,
-        background: accent.bg, display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: 16, marginTop: 1,
-      }}>
-        {accent.emoji}
-      </div>
+      {/* Photo or category emoji */}
+      {photo ? (
+        <div
+          style={{
+            width: 72, height: 72, borderRadius: 8, flexShrink: 0,
+            background: `url(${photo}) center/cover no-repeat, ${accent.bg}`,
+            border: `1px solid var(--sb-border-light)`,
+          }}
+          aria-hidden
+        />
+      ) : (
+        <div style={{
+          width: 72, height: 72, borderRadius: 8, flexShrink: 0,
+          background: accent.bg, display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 28,
+        }}>
+          {accent.emoji}
+        </div>
+      )}
 
       <div style={{ flex: 1, minWidth: 0 }}>
         {/* Category label + cost badge row */}
@@ -392,10 +275,10 @@ function UpcomingEventCard({ event, showDate }: { event: UpcomingEvent; showDate
           {event.venue && <span>{cityLabel(event.city)}</span>}
         </div>
 
-        {/* Description */}
-        {event.description && (
-          <p style={{ margin: "5px 0 0", fontSize: 11, lineHeight: 1.5, color: "var(--sb-muted)" }}>
-            {event.description}
+        {/* Body — prefer blurb, fall back to description */}
+        {body && (
+          <p style={{ margin: "5px 0 0", fontSize: 12, lineHeight: 1.5, color: "var(--sb-muted)" }}>
+            {body}
           </p>
         )}
 
@@ -408,7 +291,7 @@ function UpcomingEventCard({ event, showDate }: { event: UpcomingEvent; showDate
   );
 }
 
-// ── "Make it a day" button ──
+// ── "Make it a day" button ─────────────────────────────────────────────────
 
 function MakeItADayButton({ eventId, city, date }: { eventId: string; city: string; date: string }) {
   const [state, setState] = useState<"idle" | "loading" | "done">("idle");
@@ -420,7 +303,6 @@ function MakeItADayButton({ eventId, city, date }: { eventId: string; city: stri
     setState("loading");
 
     try {
-      // 1. Generate a plan with this event locked
       const planRes = await fetch("/api/plan-day", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -435,7 +317,6 @@ function MakeItADayButton({ eventId, city, date }: { eventId: string; city: stri
       if (!planRes.ok) throw new Error("plan failed");
       const planData = await planRes.json();
 
-      // 2. Save to get a shareable URL
       const shareRes = await fetch("/api/share-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -483,155 +364,21 @@ function MakeItADayButton({ eventId, city, date }: { eventId: string; city: stri
   );
 }
 
-// ── Date grouping helpers ──
+// ── Main view ──────────────────────────────────────────────────────────────
 
-function shortDate(isoDate: string): string {
-  const d = new Date(isoDate + "T12:00:00");
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-}
-
-function weekMonday(isoDate: string): string {
-  const d = new Date(isoDate + "T12:00:00");
-  const dow = d.getDay(); // 0=Sun
-  const daysToMon = dow === 0 ? 6 : dow - 1;
-  const mon = new Date(d.getTime() - daysToMon * 86400000);
-  return mon.toLocaleDateString("en-CA");
-}
-
-function weekLabel(monIso: string): string {
-  const sun = new Date(monIso + "T12:00:00");
-  sun.setDate(sun.getDate() + 6);
-  return `${shortDate(monIso)}–${shortDate(sun.toLocaleDateString("en-CA"))}`;
-}
-
-function getEventBucket(dateIso: string, todayIso: string, tomorrowIso: string, weekEndIso: string): string {
-  if (dateIso === todayIso) return "Today";
-  if (dateIso === tomorrowIso) return "Tomorrow";
-  if (dateIso <= weekEndIso) return "This Week";
-  return `week:${weekMonday(dateIso)}`;
-}
-
-function bucketLabel(bucket: string, weekEndIso: string): string {
-  if (bucket === "Today" || bucket === "Tomorrow" || bucket === "This Week") return bucket;
-  const monIso = bucket.slice(5); // "week:2026-04-13" → "2026-04-13"
-  const today = new Date();
-  const monDate = new Date(monIso + "T12:00:00");
-  const diffDays = Math.round((monDate.getTime() - today.getTime()) / 86400000);
-  if (diffDays <= 7) return `Next Week · ${weekLabel(monIso)}`;
-  return `Week of ${shortDate(monIso)}`;
-}
-
-const DATE_GROUP_STATIC = ["Today", "Tomorrow", "This Week"];
-
-// ── San José neighborhood filter ───────────────────────────────────────────
-
-interface SjNeighborhood {
-  id: string;
-  label: string;
-  emoji: string;
-  /** venue substrings (case-insensitive) that belong to this area */
-  venues: string[];
-}
-
-const SJ_NEIGHBORHOODS: SjNeighborhood[] = [
-  {
-    id: "downtown",
-    label: "Downtown",
-    emoji: "🏙️",
-    venues: [
-      "san jose improv", "the ritz", "sap center", "san jose civic",
-      "sjz break room", "hammer theatre", "macla", "city lights theater",
-      "ica san", "san jose center for the performing", "king library",
-      "san jose jazz", "arena green", "o\u2019flaherty", "o'flaherty",
-      "o&#8217;flaherty", "plaza de cesar chavez", "downtown san jose", "south first",
-      "san pedro square", "mcenery convention", "convention center",
-      "sofa market", "courage anyone",
-    ],
-  },
-  {
-    id: "sjsu",
-    label: "SJSU Area",
-    emoji: "🎓",
-    venues: ["san jose state", "san jose museum of art"],
-  },
-  {
-    id: "japantown",
-    label: "Japantown",
-    emoji: "🏮",
-    venues: ["japanese american museum", "sjda", "japantown"],
-  },
-  {
-    id: "willow-glen",
-    label: "Willow Glen",
-    emoji: "🌳",
-    venues: ["willow glen library", "hicklebee"],
-  },
-  {
-    id: "east-side",
-    label: "East Side",
-    emoji: "🌄",
-    venues: [
-      "berryessa library", "vineland library", "educational park library",
-      "edenvale library", "alum rock library",
-      "history park", "history san jose", "east sj carnegie", "mt. pleasant library",
-    ],
-  },
-  {
-    id: "south-sj",
-    label: "South SJ",
-    emoji: "🏡",
-    venues: [
-      "almaden library", "santa teresa library", "cambrian library",
-      "hillview library", "pearl avenue library",
-    ],
-  },
-  {
-    id: "evergreen",
-    label: "Evergreen",
-    emoji: "🌿",
-    venues: ["evergreen library", "village square library"],
-  },
-  {
-    id: "west-sj",
-    label: "West SJ",
-    emoji: "🛍️",
-    venues: ["santana row", "bascom library", "westfield valley fair", "valley fair"],
-  },
-  {
-    id: "sports",
-    label: "Sports Venues",
-    emoji: "🏟️",
-    venues: ["paypal park", "excite ballpark", "tech cu arena"],
-  },
-];
-
-function getSjNeighborhood(venue: string | null): string | null {
-  if (!venue) return null;
-  const vl = venue.toLowerCase();
-  for (const n of SJ_NEIGHBORHOODS) {
-    if (n.venues.some((v) => vl.includes(v))) return n.id;
-  }
-  return null;
-}
-
-// ── Main View ──
-
-// ── Spring Break constants ──────────────────────────────────────────────────
-const SB_BANNER_START = "2026-03-29"; // show banner from now through end of break
-const SB_BREAK_START  = "2026-04-03"; // first district break starts (Easter 2026 was Apr 5)
-const SB_BREAK_WK1    = "2026-04-10"; // end of first break window
-const SB_BREAK_END    = "2026-04-17"; // end of second break window
-
-export default function EventsView({ selectedCities }: Props) {
-  const [viewMode, setViewMode] = useState<ViewMode>("upcoming");
+export default function EventsView({ selectedCities, onToggleCity, onToggleAllCities }: Props) {
   const [category, setCategory] = useState<EventCategory | "all">("all");
   const [search, setSearch] = useState("");
   const [showKidsOnly, setShowKidsOnly] = useState(false);
-  const [showAllLater, setShowAllLater] = useState(false);
-  const [selectedVenue, setSelectedVenue] = useState<string | null>(null);
-  const [springBreakMode, setSpringBreakMode] = useState(false);
-  const [sjNeighborhoodRaw, setSjNeighborhood] = useState<string | null>(null);
-  const [upcomingData, setUpcomingData] = useState<{ events: UpcomingEvent[]; sources?: string[] } | null>(null);
+  const [upcomingData, setUpcomingData] = useState<{ events: UpcomingEvent[] } | null>(null);
+  const [todayForecast, setTodayForecast] = useState<{
+    high: number; rainPct: number; emoji: string; desc: string;
+  } | null>(null);
+
+  const todayIso = todayPT();
+  const tomorrowIso = addDays(todayIso, 1);
+
+  const [selectedDate, setSelectedDate] = useState<string>(todayIso);
 
   useEffect(() => {
     fetch("/api/south-bay/upcoming-events")
@@ -640,220 +387,164 @@ export default function EventsView({ selectedCities }: Props) {
       .catch(() => setUpcomingData({ events: [] }));
   }, []);
 
-  const { allUpcomingEvents, upcomingEvents, ongoingEvents } = useMemo(() => {
-    const events = upcomingData?.events ?? [];
-    return {
-      allUpcomingEvents: events,
-      upcomingEvents: events.filter((e) => !e.ongoing),
-      ongoingEvents: events.filter((e) => e.ongoing),
-    };
-  }, [upcomingData]);
-  // Only apply neighborhood filter when SJ is the sole city
-  const sjNeighborhood = (selectedCities.size === 1 && selectedCities.has("san-jose")) ? sjNeighborhoodRaw : null;
-  const [todayForecast, setTodayForecast] = useState<{
-    high: number; rainPct: number; emoji: string; desc: string;
-  } | null>(null);
-
-  const now = new Date();
-  const primary = "san-jose";
-
-  const todayIso = now.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
-  const tomorrowIso = new Date(now.getTime() + 86400000).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
-  const weekEndIso = new Date(now.getTime() + 7 * 86400000).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
-
-  const showSpringBreakBanner = todayIso >= SB_BANNER_START && todayIso <= SB_BREAK_END;
-  const daysUntilBreak = Math.ceil((new Date(SB_BREAK_START).getTime() - now.getTime()) / 86400000);
-  const breakInProgress = todayIso >= SB_BREAK_START && todayIso <= SB_BREAK_END;
-
-  // ── Fetch today's weather (sessionStorage-cached to avoid duplicate calls) ──
+  // Weather for today (used in subtle banner above the day view)
   useEffect(() => {
-    const cacheKey = `sb-events-weather-${primary}-${todayIso}`;
+    const cacheKey = `sb-events-weather-${todayIso}`;
     try {
       const cached = sessionStorage.getItem(cacheKey);
       if (cached) { setTodayForecast(JSON.parse(cached)); return; }
-    } catch {}
-    fetch(`/api/weather?city=${primary}`)
+    } catch { /* sessionStorage unavailable */ }
+    fetch(`/api/weather?city=san-jose`)
       .then((r) => r.json())
       .then((d) => {
         const f = d.forecast?.[0];
         if (f) {
           const summary = { high: f.high, rainPct: f.rainPct, emoji: f.emoji, desc: f.desc };
           setTodayForecast(summary);
-          try { sessionStorage.setItem(cacheKey, JSON.stringify(summary)); } catch {}
+          try { sessionStorage.setItem(cacheKey, JSON.stringify(summary)); } catch { /* sessionStorage unavailable */ }
         }
       })
       .catch(() => {});
-  }, [primary, todayIso]);
+  }, [todayIso]);
 
-  // ── Dynamic venue list (auto-discovered from event data) ──
-  const SOUTH_BAY_VENUES = useMemo(() => buildVenuesFromEvents(allUpcomingEvents), [allUpcomingEvents]);
+  const allEvents = upcomingData?.events ?? [];
+  const upcomingEvents = useMemo(() => allEvents.filter((e) => !e.ongoing), [allEvents]);
+  const ongoingEvents = useMemo(() => allEvents.filter((e) => e.ongoing), [allEvents]);
 
-  // ── Upcoming events (scraped, specific dates) ──
-  const filteredUpcoming = useMemo(() => {
-    const allCities = selectedCities.size === 11;
-    const filtered = upcomingEvents.filter((e) => {
-      if (!allCities && !selectedCities.has(e.city as City)) return false;
-      if (category !== "all" && e.category !== category) return false;
-      if (showKidsOnly && !e.kidFriendly) return false;
-      // Hide today's events once they've started
-      if (e.date === todayIso && !hasNotStarted(e.time)) return false;
-      // Spring break mode: show only Apr 3-17 events
-      if (springBreakMode && (e.date < SB_BREAK_START || e.date > SB_BREAK_END)) return false;
-      if (sjNeighborhood && e.city === "san-jose" && getSjNeighborhood(e.venue) !== sjNeighborhood) return false;
-      if (search) {
-        const q = search.toLowerCase();
-        if (!e.title.toLowerCase().includes(q) && !e.description.toLowerCase().includes(q) &&
-            !e.city.toLowerCase().includes(q) && !e.venue.toLowerCase().includes(q)) return false;
-      }
-      return true;
-    });
+  const allCities = selectedCities.size === CITIES.length;
 
-    // Source diversity: count how many events each source contributes after filtering.
-    // Within the same date, events from less-represented sources sort first — so a
-    // Campbell library story time beats the 200th SCU lecture.
-    const srcCounts: Record<string, number> = {};
-    for (const e of filtered) srcCounts[e.source] = (srcCounts[e.source] || 0) + 1;
+  // Search overrides single-day view
+  const isSearching = search.trim().length > 0;
+  const searchQ = search.trim().toLowerCase();
 
-    return filtered.sort((a, b) => {
-      // 1. Home city always first
-      const aHome = a.city === primary ? 1 : 0;
-      const bHome = b.city === primary ? 1 : 0;
-      if (aHome !== bHome) return bHome - aHome;
-      // 2. Date ascending
-      const dateCmp = (a.date || "").localeCompare(b.date || "");
-      if (dateCmp !== 0) return dateCmp;
-      // 3. Same date: sort by start time (no time = end of day)
-      const aMin = a.time ? (parseTimeToMinutes(a.time) ?? 9999) : 9999;
-      const bMin = b.time ? (parseTimeToMinutes(b.time) ?? 9999) : 9999;
+  // Apply common filters (city, category, kids, search) to a list of events
+  const matchesFilters = (e: UpcomingEvent): boolean => {
+    if (!allCities && !selectedCities.has(e.city as City)) return false;
+    if (category !== "all" && e.category !== category) return false;
+    if (showKidsOnly && !e.kidFriendly) return false;
+    if (isSearching) {
+      if (!e.title.toLowerCase().includes(searchQ) &&
+          !(e.blurb || "").toLowerCase().includes(searchQ) &&
+          !(e.description || "").toLowerCase().includes(searchQ) &&
+          !e.city.toLowerCase().includes(searchQ) &&
+          !e.venue.toLowerCase().includes(searchQ)) return false;
+    }
+    return true;
+  };
+
+  // Sort: pure start time ascending; events with no time come last
+  const byStartTimeWithinDate = (a: UpcomingEvent, b: UpcomingEvent): number => {
+    const aHasTime = a.time !== null && a.time !== undefined && a.time !== "";
+    const bHasTime = b.time !== null && b.time !== undefined && b.time !== "";
+    if (aHasTime !== bHasTime) return aHasTime ? -1 : 1;
+    if (aHasTime && bHasTime) {
+      const aMin = parseTimeToMinutes(a.time!) ?? 9999;
+      const bMin = parseTimeToMinutes(b.time!) ?? 9999;
       if (aMin !== bMin) return aMin - bMin;
-      // 4. Same date+time: boost under-represented sources
-      return (srcCounts[a.source] || 0) - (srcCounts[b.source] || 0);
-    });
-  }, [selectedCities, category, showKidsOnly, search, primary, springBreakMode, todayIso, sjNeighborhood, upcomingEvents]);
+    }
+    return a.title.localeCompare(b.title);
+  };
 
-  // ── Per-category counts (all filters applied except category, for pill badges) ──
-  const categoryCounts = useMemo(() => {
-    const allCities = selectedCities.size === 11;
-    const counts: Record<string, number> = {};
+  // Events visible for the currently selected day
+  const dayEvents = useMemo(() => {
+    if (isSearching) return [];
+    return upcomingEvents
+      .filter((e) => e.date === selectedDate)
+      .filter(matchesFilters)
+      .filter((e) => !(e.date === todayIso && !hasNotStarted(e.time))) // hide today's events that have started
+      .sort(byStartTimeWithinDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [upcomingEvents, selectedDate, selectedCities, category, showKidsOnly, todayIso, isSearching]);
+
+  // Search-mode results (across all dates)
+  const searchResults = useMemo(() => {
+    if (!isSearching) return [];
+    return upcomingEvents
+      .filter(matchesFilters)
+      .filter((e) => e.date >= todayIso) // future only
+      .sort((a, b) => {
+        const dateCmp = a.date.localeCompare(b.date);
+        if (dateCmp !== 0) return dateCmp;
+        return byStartTimeWithinDate(a, b);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [upcomingEvents, search, selectedCities, category, showKidsOnly, todayIso, isSearching]);
+
+  // Group search results by date for compact rendering
+  const searchGroups = useMemo(() => {
+    const groups: Record<string, UpcomingEvent[]> = {};
+    for (const e of searchResults) {
+      (groups[e.date] ||= []).push(e);
+    }
+    return Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0]));
+  }, [searchResults]);
+
+  // Determine which dates have any events visible (after city/category/kids/search filters)
+  const datesWithEvents = useMemo(() => {
+    const set = new Set<string>();
     for (const e of upcomingEvents) {
+      if (e.date < todayIso) continue;
+      if (e.date === todayIso && !hasNotStarted(e.time)) continue;
+      if (!matchesFilters(e)) continue;
+      set.add(e.date);
+    }
+    return [...set].sort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [upcomingEvents, selectedCities, category, showKidsOnly, todayIso, search]);
+
+  // Auto-clamp selected date if it's no longer in datesWithEvents (e.g. user changed filters)
+  useEffect(() => {
+    if (isSearching) return;
+    if (datesWithEvents.length === 0) {
+      if (selectedDate !== todayIso) setSelectedDate(todayIso);
+      return;
+    }
+    if (!datesWithEvents.includes(selectedDate)) {
+      // Snap to the nearest future date that has events
+      const nextDate = datesWithEvents.find((d) => d >= selectedDate) ?? datesWithEvents[0];
+      setSelectedDate(nextDate);
+    }
+  }, [datesWithEvents, selectedDate, todayIso, isSearching]);
+
+  // Per-category counts (for badges on category pills) — reflect current view
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    const pool = isSearching
+      ? upcomingEvents.filter((e) => e.date >= todayIso)
+      : upcomingEvents.filter((e) => e.date === selectedDate);
+    for (const e of pool) {
       if (!allCities && !selectedCities.has(e.city as City)) continue;
-      if (sjNeighborhood && e.city === "san-jose" && getSjNeighborhood(e.venue) !== sjNeighborhood) continue;
       if (showKidsOnly && !e.kidFriendly) continue;
       if (e.date === todayIso && !hasNotStarted(e.time)) continue;
-      if (springBreakMode && (e.date < SB_BREAK_START || e.date > SB_BREAK_END)) continue;
-      if (search) {
-        const q = search.toLowerCase();
-        if (!e.title.toLowerCase().includes(q) && !e.description.toLowerCase().includes(q) &&
-            !e.city.toLowerCase().includes(q) && !e.venue.toLowerCase().includes(q)) continue;
+      if (isSearching) {
+        if (!e.title.toLowerCase().includes(searchQ) &&
+            !(e.blurb || "").toLowerCase().includes(searchQ) &&
+            !(e.description || "").toLowerCase().includes(searchQ) &&
+            !e.city.toLowerCase().includes(searchQ) &&
+            !e.venue.toLowerCase().includes(searchQ)) continue;
       }
       counts[e.category] = (counts[e.category] || 0) + 1;
     }
-    // "all" = sum of everything
     counts["all"] = Object.values(counts).reduce((a, b) => a + b, 0);
     return counts;
-  }, [selectedCities, showKidsOnly, search, springBreakMode, todayIso, sjNeighborhood, upcomingEvents]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [upcomingEvents, selectedDate, selectedCities, showKidsOnly, todayIso, isSearching, searchQ]);
 
-  const activeList = viewMode === "upcoming" ? filteredUpcoming : [];
-
-  // Ongoing/exhibits — separate filtered list, city/category/search aware
+  // Ongoing/exhibits filter (separate from day view)
   const filteredOngoing = useMemo(() => {
-    const allCities = selectedCities.size === 11;
-    return ongoingEvents.filter((e) => {
-      if (!allCities && !selectedCities.has(e.city as City)) return false;
-      if (category !== "all" && e.category !== category) return false;
-      if (showKidsOnly && !e.kidFriendly) return false;
-      if (search) {
-        const q = search.toLowerCase();
-        if (!e.title.toLowerCase().includes(q) && !(e.description || "").toLowerCase().includes(q) &&
-            !e.city.toLowerCase().includes(q) && !e.venue.toLowerCase().includes(q)) return false;
-      }
-      return true;
-    });
-  }, [selectedCities, category, showKidsOnly, search, ongoingEvents]);
+    return ongoingEvents.filter(matchesFilters);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ongoingEvents, selectedCities, category, showKidsOnly, search]);
 
-  // ── Venue events (events grouped by venue) ──
-  const venueEvents = useMemo(() => {
-    const result: Record<string, UpcomingEvent[]> = {};
-    for (const v of SOUTH_BAY_VENUES) {
-      result[v.id] = allUpcomingEvents
-        .filter((e) => {
-          if (!e.venue) return false;
-          // For split-by-city venues (SCCL branches), match the original venue name + city
-          const splitMap = SPLIT_BY_CITY[e.venue];
-          if (splitMap) {
-            return splitMap[e.city] === v.name;
-          }
-          return e.venue.toLowerCase().includes(v.venueMatch.toLowerCase());
-        })
-        .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
-    }
-    return result;
-  }, [SOUTH_BAY_VENUES, allUpcomingEvents]);
+  // Prev/next date buttons
+  const prevDate = !isSearching && datesWithEvents.length > 0
+    ? [...datesWithEvents].reverse().find((d) => d < selectedDate) ?? null
+    : null;
+  const nextDate = !isSearching && datesWithEvents.length > 0
+    ? datesWithEvents.find((d) => d > selectedDate) ?? null
+    : null;
 
-  // Events at selected venue, with search/category/kids filter applied
-  const venueFilteredEvents = useMemo(() => {
-    if (!selectedVenue) return [];
-    const v = SOUTH_BAY_VENUES.find((x) => x.id === selectedVenue);
-    if (!v) return [];
-    return allUpcomingEvents
-      .filter((e) => {
-        if (!e.venue) return false;
-        const splitMap = SPLIT_BY_CITY[e.venue];
-        if (splitMap) {
-          if (splitMap[e.city] !== v.name) return false;
-        } else if (!e.venue.toLowerCase().includes(v.venueMatch.toLowerCase())) return false;
-        if (category !== "all" && e.category !== category) return false;
-        if (showKidsOnly && !e.kidFriendly) return false;
-        if (search) {
-          const q = search.toLowerCase();
-          if (!e.title.toLowerCase().includes(q) && !e.venue.toLowerCase().includes(q)) return false;
-        }
-        return true;
-      })
-      .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
-  }, [selectedVenue, category, showKidsOnly, search, SOUTH_BAY_VENUES, allUpcomingEvents]);
-
-  // Group upcoming events by date bucket
-  const groupedUpcoming = useMemo(() => {
-    if (springBreakMode) {
-      // Spring break: group by week, with a dedicated bucket for the Apr 11–12 weekend
-      const SB_WEEKEND_START = "2026-04-11";
-      const SB_WEEKEND_END   = "2026-04-12";
-      const groups: Record<string, UpcomingEvent[]> = {};
-      for (const e of filteredUpcoming) {
-        const label = e.date <= SB_BREAK_WK1
-          ? "Spring Break · Wk 1 (Apr 3–10)"
-          : e.date <= SB_WEEKEND_END
-            ? "Weekend — Apr 11–12"
-            : "Spring Break · Wk 2 (Apr 13–17)";
-        if (!groups[label]) groups[label] = [];
-        groups[label].push(e);
-      }
-      const order = ["Spring Break · Wk 1 (Apr 3–10)", "Weekend — Apr 11–12", "Spring Break · Wk 2 (Apr 13–17)"];
-      return order.filter((g) => groups[g]?.length > 0).map((label) => ({ label, events: groups[label], showDate: false }));
-    }
-
-    const groups: Record<string, UpcomingEvent[]> = {};
-    for (const e of filteredUpcoming) {
-      const bucket = getEventBucket(e.date || "", todayIso, tomorrowIso, weekEndIso);
-      if (!groups[bucket]) groups[bucket] = [];
-      groups[bucket].push(e);
-    }
-
-    // Sort buckets: static groups first, then calendar weeks in order
-    const staticBuckets = DATE_GROUP_STATIC.filter((g) => groups[g]?.length > 0);
-    const weekBuckets = Object.keys(groups)
-      .filter((k) => k.startsWith("week:"))
-      .sort();
-
-    return [...staticBuckets, ...weekBuckets]
-      .filter((bucket) => groups[bucket]?.length > 0)
-      .map((bucket) => ({
-        label: bucketLabel(bucket, weekEndIso),
-        events: groups[bucket],
-        showDate: !DATE_GROUP_STATIC.includes(bucket),
-      }));
-  }, [filteredUpcoming, todayIso, tomorrowIso, weekEndIso, springBreakMode]);
+  const dayLbl = dayLabel(selectedDate, todayIso, tomorrowIso);
 
   return (
     <>
@@ -868,9 +559,9 @@ export default function EventsView({ selectedCities }: Props) {
         <div className="sb-section-line" />
       </div>
 
-      {/* Sticky search + filter combo */}
+      {/* Sticky filter bar — search + cities + categories + kids */}
       <div className="sb-events-sticky-filter">
-        {/* Top row: search + view toggle + kids */}
+        {/* Top row: search + kids */}
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginBottom: 8 }}>
           <div style={{ position: "relative", flex: "1 1 240px", minWidth: 0 }}>
             <span aria-hidden style={{
@@ -879,7 +570,7 @@ export default function EventsView({ selectedCities }: Props) {
             }}>🔍</span>
             <input
               type="search"
-              placeholder="Search events, venues, cities…"
+              placeholder="Search all events…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{
@@ -893,37 +584,6 @@ export default function EventsView({ selectedCities }: Props) {
             />
           </div>
 
-          {/* View toggle */}
-          <div style={{ display: "flex", gap: 0, flexShrink: 0, background: "#fff", border: "1.5px solid var(--sb-border)", borderRadius: 100, padding: 2 }}>
-            {([
-              { mode: "upcoming" as ViewMode, label: "Events" },
-              { mode: "venues" as ViewMode, label: "Venues" },
-            ]).map(({ mode, label }) => {
-              const active = viewMode === mode;
-              return (
-                <button
-                  key={mode}
-                  onClick={() => { setViewMode(mode); setSelectedVenue(null); }}
-                  style={{
-                    padding: "4px 14px",
-                    border: "none",
-                    borderRadius: 100,
-                    background: active ? "var(--sb-primary)" : "transparent",
-                    color: active ? "#fff" : "var(--sb-muted)",
-                    fontSize: 12,
-                    fontWeight: active ? 700 : 500,
-                    cursor: "pointer",
-                    fontFamily: "inherit",
-                    transition: "all 0.12s",
-                  }}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Kids toggle */}
           <label style={{
             display: "flex", alignItems: "center", gap: 5, flexShrink: 0,
             fontSize: 12, color: showKidsOnly ? "var(--sb-ink)" : "var(--sb-muted)",
@@ -943,12 +603,36 @@ export default function EventsView({ selectedCities }: Props) {
           </label>
         </div>
 
-        {/* Category pills — wrap on desktop, horizontal scroll with fade on mobile */}
+        {/* City pills (folded inline) */}
+        <div className="sb-events-cat-row" style={{ marginBottom: 8 }}>
+          <button
+            onClick={onToggleAllCities}
+            className={`sb-city-pill${allCities ? " sb-city-pill--active sb-city-pill--all" : ""}`}
+            aria-pressed={allCities}
+          >
+            All cities
+          </button>
+          {CITIES.map((c) => {
+            const active = selectedCities.has(c.id);
+            return (
+              <button
+                key={c.id}
+                onClick={() => onToggleCity(c.id)}
+                className={`sb-city-pill${active ? " sb-city-pill--active" : ""}`}
+                aria-pressed={active}
+              >
+                {c.name}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Category pills */}
         <div className="sb-events-cat-row">
           {EVENT_CATEGORIES.map((cat) => {
             const active = category === cat.id;
-            const count = viewMode === "upcoming" ? (categoryCounts[cat.id] ?? 0) : null;
-            const showCount = count !== null && count > 0;
+            const count = categoryCounts[cat.id] ?? 0;
+            const showCount = count > 0;
             return (
               <button
                 key={cat.id}
@@ -980,114 +664,10 @@ export default function EventsView({ selectedCities }: Props) {
             );
           })}
         </div>
-
-        {/* San José neighborhood filter — shown when SJ is the only selected city */}
-        {selectedCities.size === 1 && selectedCities.has("san-jose") && viewMode === "upcoming" && (
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8, alignItems: "center" }}>
-            <span style={{
-              fontSize: 9, fontWeight: 700, fontFamily: "'Space Mono', monospace",
-              letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--sb-muted)",
-              flexShrink: 0,
-            }}>
-              Area:
-            </span>
-            <button
-              onClick={() => setSjNeighborhood(null)}
-              style={{
-                padding: "3px 10px", fontSize: 11, cursor: "pointer", fontFamily: "inherit",
-                border: `1.5px solid ${sjNeighborhood === null ? "var(--sb-primary)" : "var(--sb-border)"}`,
-                borderRadius: 100,
-                background: sjNeighborhood === null ? "var(--sb-primary)" : "#fff",
-                color: sjNeighborhood === null ? "#fff" : "var(--sb-muted)",
-                fontWeight: sjNeighborhood === null ? 600 : 400,
-                transition: "all 0.12s",
-              }}
-            >
-              All SJ
-            </button>
-            {SJ_NEIGHBORHOODS.map((n) => {
-              const active = sjNeighborhood === n.id;
-              return (
-                <button
-                  key={n.id}
-                  onClick={() => setSjNeighborhood(active ? null : n.id)}
-                  style={{
-                    padding: "3px 10px", fontSize: 11, cursor: "pointer", fontFamily: "inherit",
-                    border: `1.5px solid ${active ? "var(--sb-primary)" : "var(--sb-border)"}`,
-                    borderRadius: 100,
-                    background: active ? "var(--sb-primary)" : "#fff",
-                    color: active ? "#fff" : "var(--sb-muted)",
-                    fontWeight: active ? 600 : 400,
-                    transition: "all 0.12s",
-                    display: "flex", alignItems: "center", gap: 4,
-                  }}
-                >
-                  <span>{n.emoji}</span>
-                  <span>{n.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
       </div>
 
-      {viewMode !== "venues" && (
-        <div style={{ marginBottom: 10, fontSize: 11, color: "var(--sb-light)", fontFamily: "'Space Mono', monospace", textAlign: "right" }}>
-          {activeList.length} events
-        </div>
-      )}
-
-      {/* Spring Break banner */}
-      {showSpringBreakBanner && viewMode === "upcoming" && (
-        <div
-          style={{
-            marginBottom: 14,
-            padding: "10px 14px",
-            background: springBreakMode ? "#fdf4ff" : "#fff8f0",
-            border: `1.5px solid ${springBreakMode ? "#d8b4fe" : "#fdba74"}`,
-            borderRadius: 8,
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            flexWrap: "wrap",
-          }}
-        >
-          <span style={{ fontSize: 18, lineHeight: 1 }}>🌸</span>
-          <div style={{ flex: 1, minWidth: 180 }}>
-            <div style={{ fontWeight: 700, fontSize: 13, color: "var(--sb-ink)", fontFamily: "var(--sb-sans)" }}>
-              {breakInProgress
-                ? (todayIso === SB_BREAK_END ? "Last day of Spring Break!" : "Spring Break is here!")
-                : `Spring Break in ${daysUntilBreak} day${daysUntilBreak === 1 ? "" : "s"}`}
-            </div>
-            <div style={{ fontSize: 11, color: "var(--sb-muted)", marginTop: 1 }}>
-              SJUSD, PAUSD, MVWSD Apr 3–10 · FUHSD, Cupertino USD, Campbell USD Apr 13–17
-            </div>
-          </div>
-          <button
-            onClick={() => {
-              setSpringBreakMode(!springBreakMode);
-              if (!springBreakMode) setViewMode("upcoming");
-            }}
-            style={{
-              padding: "5px 12px",
-              background: springBreakMode ? "#a855f7" : "#f97316",
-              color: "#fff",
-              border: "none",
-              borderRadius: 6,
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: "pointer",
-              fontFamily: "var(--sb-sans)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {springBreakMode ? "← Show all dates" : "Show spring break events"}
-          </button>
-        </div>
-      )}
-
-      {/* Weather-aware banner */}
-      {todayForecast && viewMode === "upcoming" && category === "all" && (() => {
+      {/* Weather banner — only when viewing today and no category filter */}
+      {todayForecast && selectedDate === todayIso && category === "all" && !isSearching && (() => {
         const { high, rainPct, emoji, desc } = todayForecast;
         if (rainPct >= 40) {
           return (
@@ -1148,168 +728,116 @@ export default function EventsView({ selectedCities }: Props) {
         return null;
       })()}
 
-      {/* Event cards */}
-      {viewMode === "venues" ? (
-        selectedVenue ? (
-          /* Venue detail: filtered show list */
-          <>
+      {isSearching ? (
+        /* Search mode — group results by date */
+        <div>
+          <div style={{ marginBottom: 14, fontSize: 12, color: "var(--sb-muted)", fontFamily: "'Space Mono', monospace" }}>
+            {searchResults.length} result{searchResults.length === 1 ? "" : "s"} for &ldquo;{search}&rdquo;
+            {searchResults.length === 0 && " — try clearing filters or broadening your search."}
+          </div>
+          {searchGroups.map(([date, events]) => (
+            <div key={date} style={{ marginBottom: 24 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                <span style={{
+                  fontSize: 11, fontWeight: 800, fontFamily: "'Space Mono', monospace",
+                  letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--sb-ink)",
+                }}>
+                  {shortDateLabel(date)}
+                </span>
+                <span style={{ fontSize: 10, color: "var(--sb-light)", fontFamily: "'Space Mono', monospace" }}>
+                  {events.length} event{events.length === 1 ? "" : "s"}
+                </span>
+                <div style={{ flex: 1, height: 1, background: "var(--sb-border-light)" }} />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {events.map((event) => <UpcomingEventCard key={event.id} event={event} />)}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        /* Single-day view */
+        <div>
+          {/* Day navigator */}
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "center",
+            gap: 14, marginBottom: 18, marginTop: 4,
+            padding: "10px 8px",
+          }}>
             <button
-              onClick={() => setSelectedVenue(null)}
+              onClick={() => prevDate && setSelectedDate(prevDate)}
+              disabled={!prevDate}
+              aria-label="Previous day"
               style={{
-                display: "inline-flex", alignItems: "center", gap: 4,
-                marginBottom: 16, background: "none", border: "none",
-                color: "var(--sb-primary)", fontSize: 13, fontWeight: 600,
-                cursor: "pointer", padding: 0, fontFamily: "inherit",
+                width: 36, height: 36, borderRadius: 999,
+                border: "1.5px solid var(--sb-border)",
+                background: prevDate ? "#fff" : "transparent",
+                color: prevDate ? "var(--sb-ink)" : "var(--sb-light)",
+                cursor: prevDate ? "pointer" : "default",
+                fontSize: 18, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center",
+                opacity: prevDate ? 1 : 0.4,
+                fontFamily: "inherit",
               }}
             >
-              ← All Venues
+              ←
             </button>
-            {venueFilteredEvents.length === 0 ? (
-              <div className="sb-empty">
-                <div className="sb-empty-title">No shows match your filters</div>
-                <div className="sb-empty-sub">Try clearing category or search filters</div>
+            <div style={{ textAlign: "center", flex: "0 1 auto", minWidth: 0 }}>
+              <div style={{
+                fontSize: 22,
+                fontWeight: 800,
+                fontFamily: "'Space Mono', monospace",
+                letterSpacing: "0.08em",
+                color: selectedDate === todayIso ? "var(--sb-accent, #7C3AED)" : "var(--sb-ink)",
+                lineHeight: 1.1,
+              }}>
+                {dayLbl.primary}
               </div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {venueFilteredEvents.map((event) => <UpcomingEventCard key={event.id} event={event} />)}
+              <div style={{
+                fontSize: 13,
+                color: "var(--sb-muted)",
+                fontFamily: "var(--sb-sans)",
+                marginTop: 2,
+              }}>
+                {dayLbl.secondary}
               </div>
-            )}
-          </>
-        ) : (
-          /* Venue grid — only show venues with upcoming events */
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12 }}>
-            {SOUTH_BAY_VENUES.filter((v) => (venueEvents[v.id] ?? []).length > 0).map((v) => {
-              const shows = venueEvents[v.id] ?? [];
-              const hasShows = shows.length > 0;
-              const nextShow = shows[0];
-              return (
-                <div
-                  key={v.id}
-                  onClick={() => hasShows && setSelectedVenue(v.id)}
-                  style={{
-                    background: "#fff",
-                    border: "1.5px solid var(--sb-border-light)",
-                    borderRadius: 8,
-                    padding: "16px",
-                    cursor: "pointer",
-                    opacity: 1,
-                    transition: "box-shadow 0.15s, border-color 0.15s",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!hasShows) return;
-                    e.currentTarget.style.boxShadow = "var(--sb-shadow-hover)";
-                    e.currentTarget.style.borderColor = "var(--sb-primary)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = "none";
-                    e.currentTarget.style.borderColor = "var(--sb-border-light)";
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                    <span style={{ fontSize: 26, lineHeight: 1, flexShrink: 0, marginTop: 1 }}>{v.emoji}</span>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontFamily: "var(--sb-serif)", fontWeight: 700, fontSize: 14, color: "var(--sb-ink)", lineHeight: 1.3, marginBottom: 2 }}>
-                        {v.name}
-                      </div>
-                      <div style={{ fontSize: 11, color: "var(--sb-muted)", marginBottom: 8 }}>
-                        {v.cityLabel} · {v.tags}
-                      </div>
-                      {hasShows ? (
-                        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                          <span style={{
-                            fontSize: 10, fontWeight: 700,
-                            background: "var(--sb-primary)", color: "#fff",
-                            padding: "2px 8px", borderRadius: 100,
-                            letterSpacing: "0.03em",
-                          }}>
-                            {shows.length} upcoming
-                          </span>
-                          <span style={{ fontSize: 11, color: "var(--sb-muted)" }}>
-                            Next: {nextShow?.displayDate}
-                          </span>
-                        </div>
-                      ) : (
-                        <span style={{ fontSize: 11, color: "var(--sb-light)" }}>No shows in 90 days</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            </div>
+            <button
+              onClick={() => nextDate && setSelectedDate(nextDate)}
+              disabled={!nextDate}
+              aria-label="Next day"
+              style={{
+                width: 36, height: 36, borderRadius: 999,
+                border: "1.5px solid var(--sb-border)",
+                background: nextDate ? "#fff" : "transparent",
+                color: nextDate ? "var(--sb-ink)" : "var(--sb-light)",
+                cursor: nextDate ? "pointer" : "default",
+                fontSize: 18, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center",
+                opacity: nextDate ? 1 : 0.4,
+                fontFamily: "inherit",
+              }}
+            >
+              →
+            </button>
           </div>
-        )
-      ) : activeList.length === 0 ? (
-        <div className="sb-empty">
-          <div className="sb-empty-title">No events match</div>
-          <div className="sb-empty-sub">
-            Try broadening your filters or selecting more cities
-          </div>
-        </div>
-      ) : viewMode === "upcoming" ? (
-        /* Upcoming: grouped by date */
-        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-          {groupedUpcoming.map(({ label, events, showDate }) => {
-            const isWeekBucket = !DATE_GROUP_STATIC.includes(label) && !label.startsWith("Spring");
-            const visible = isWeekBucket && !showAllLater ? events.slice(0, 50) : events;
-            const isToday = label === "Today";
-            const isTomorrow = label === "Tomorrow";
-            return (
-              <div key={label} style={{ marginBottom: 24 }}>
-                {/* Date group header */}
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                  <span style={{
-                    fontSize: isToday || isTomorrow ? 13 : 11,
-                    fontWeight: 800,
-                    fontFamily: "'Space Mono', monospace",
-                    letterSpacing: "0.06em",
-                    textTransform: "uppercase",
-                    color: isToday ? "#fff" : "var(--sb-ink)",
-                    ...(isToday ? {
-                      background: "var(--sb-accent)",
-                      padding: "2px 8px",
-                      borderRadius: 4,
-                    } : {}),
-                  }}>
-                    {label}
-                  </span>
-                  <span style={{ fontSize: 10, color: "var(--sb-light)", fontFamily: "'Space Mono', monospace" }}>
-                    {events.length} event{events.length !== 1 ? "s" : ""}
-                  </span>
-                  <div style={{ flex: 1, height: 1, background: "var(--sb-border-light)" }} />
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  {visible.map((event) => (
-                    <UpcomingEventCard key={event.id} event={event} showDate={showDate} />
-                  ))}
-                </div>
-                {isWeekBucket && !showAllLater && events.length > 50 && (
-                  <button
-                    onClick={() => setShowAllLater(true)}
-                    style={{
-                      display: "block",
-                      marginTop: 12,
-                      padding: "8px 0",
-                      background: "none",
-                      border: "none",
-                      color: "var(--sb-primary)",
-                      fontSize: 13,
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      textDecoration: "underline",
-                      textUnderlineOffset: 3,
-                    }}
-                  >
-                    Show {events.length - 50} more events →
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      ) : null}
 
-      {/* Ongoing / Exhibits section */}
-      {(viewMode === "upcoming" || (viewMode === "venues" && selectedVenue)) && filteredOngoing.length > 0 && (
+          {/* Day events */}
+          {dayEvents.length === 0 ? (
+            <div className="sb-empty">
+              <div className="sb-empty-title">Nothing on the calendar</div>
+              <div className="sb-empty-sub">
+                Try a different day, fewer filters, or search for something specific.
+              </div>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {dayEvents.map((event) => <UpcomingEventCard key={event.id} event={event} />)}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Ongoing / Exhibits — shown below in both modes when matches exist */}
+      {filteredOngoing.length > 0 && (
         <div style={{ marginTop: 28 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 6, borderBottom: "2px solid var(--sb-border)" }}>
             <span style={{ fontSize: 11, fontWeight: 700, fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--sb-muted)" }}>
@@ -1320,13 +848,10 @@ export default function EventsView({ selectedCities }: Props) {
             </span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {filteredOngoing.map((event) => (
-              <UpcomingEventCard key={event.id} event={event} />
-            ))}
+            {filteredOngoing.map((event) => <UpcomingEventCard key={event.id} event={event} />)}
           </div>
         </div>
       )}
-
     </>
   );
 }
