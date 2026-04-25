@@ -2,6 +2,33 @@
 
 ---
 
+## 2026-04-25 — Cycle 108: Local Acronym Protection + Description Typo Fixes
+
+### Context
+Saturday April 25, 2026 (~4 PM PDT). Automated cycle. Cherry Blossom Festival (Cupertino), Los Gatos Wine Walk, and SJMA Gala After Party all happen today — surfaced and rendering in event cards. Goal: clean up event card text quality so weekend visitors see polished cards.
+
+### What Was Built
+
+**Title cleanup: SJMA / SJMADE / SCCFD / PACL acronym protection**
+
+`cleanTitle()` in `generate-events.mjs` runs a `[A-Z]{4,}` regex that downcases all-caps words unless they're in `KEEP_UPPER`. South Bay org acronyms were leaking through — SJMA Gala became "Sjma 2026 Gala...", SJMADE Fest became "Sjmade Fest 2026", SCCFD Wildfire Workshop became "Sccfd...". Added `SJMADE`, `SCCFD`, `SCVMC`, `PACL` to `KEEP_UPPER`. Also added `Pacl Book → PACL Book` to `TITLE_FIXES` for sources that title-case PACL pre-ingest (e.g. Palo Alto City Library's BiblioCommons feed surfaces "allcove x Pacl Book Club" — now renders "allcove x PACL Book Club").
+
+**Description typos: preformance → performance, attendence → attendance**
+
+Added `DESC_TYPO_FIXES` array to `polishDescription()`. Replacement preserves original case (lowercase → lowercase, Capitalized → Capitalized). Targets the top scraper-introduced typos surfaced in SJSU recital descriptions.
+
+**Data hot-fix:** Applied title corrections to current `upcoming-events.json` so "SJMADE Fest 2026" and "allcove x PACL Book Club" render correctly today without waiting for next regen cycle.
+
+### Why This Was the Strongest Move
+Residents see event titles before clicking through. "Sjma 2026 Gala" looks like a typo or low-effort listing — it erodes trust in the feed. Local acronym protection is a one-time scaffolding fix that cascades through every future regen.
+
+### Next 3 Strongest Ideas
+1. **High School Graduation surface** — May 27 (SJUSD) is a major resident moment. Consider a grad-season callout on the school calendar card alongside the AP Exams banner.
+2. **Cross-source dedup hardening** — SJDA listing of SJMA gala vs. inbound City Newsletter listing was getting deduped via richness score, sometimes keeping the lower-quality variant. A venue+date+time secondary key (when both are present) could catch this without title-normalization gymnastics.
+3. **Campbell council data gap** — Stoa still has no Campbell council data past Feb 3, 2026. Playwright scrape of campbellca.gov still needed.
+
+---
+
 ## 2026-04-23 — Cycle 107: Exhibit Dedup Fix + SCC False Positive Cleanup
 
 ### Context
