@@ -536,7 +536,10 @@ function stripBareUrls(text) {
  */
 function cleanVenue(raw) {
   if (!raw) return raw;
-  let v = raw.replace(/<[^>]+>/g, "").replace(/&[a-zA-Z]+;|&#\d+;/g, " ").replace(/\s+/g, " ").trim();
+  // Strip iCal backslash-escaping (\; and \,) before HTML entity decoding so
+  // entities like "&nbsp\;" survive as "&nbsp;" and get cleaned by the regex below.
+  let v = raw.replace(/\\;/g, ";").replace(/\\,/g, ",");
+  v = v.replace(/<[^>]+>/g, "").replace(/&[a-zA-Z]+;|&#\d+;/g, " ").replace(/\s+/g, " ").trim();
   // Remove leading "- " dash artifact from CivicPlus iCal
   v = v.replace(/^-\s+/, "");
   // If the string is meeting directions ("Meet at...", "Check in at..."), not a venue name
@@ -551,8 +554,10 @@ function cleanVenue(raw) {
   v = v.replace(/\s{2,}\d+\s+.*$/, "");
   // Strip trailing " - " or lone dash at end
   v = v.replace(/\s*-\s*$/, "");
-  // Strip " - <address>" suffix where address starts with a number (e.g. "Council Chambers - 110 E. Main St")
-  v = v.replace(/\s+-\s+\d+\s+.*$/, "");
+  // Strip " - <address>" suffix where address starts with a number, e.g.
+  // "Council Chambers - 110 E. Main St" or just a partial street number
+  // "Saratoga Senior Center - 19655" (CivicPlus often appends only the number).
+  v = v.replace(/\s+-\s+\d+(\s+.*)?$/, "");
   // If the entire string is just a raw address (starts with a number), return empty so caller can use fallback
   if (/^\d+\s/.test(v)) return "";
   return v.trim();
@@ -1895,16 +1900,16 @@ function fetchSantaCruzPicks() {
     // ── Santa Cruz Beach Boardwalk — Free Friday Night Bands 2026 ──
     // 10 weeks starting late June. Specific bands announced ~4 weeks out;
     // update this list once the official lineup drops.
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-06-19", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand. Bring a blanket — seating is first-come-first-served. Lineup announced monthly at beachboardwalk.com." },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-06-26", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand." },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-03", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand. Stay for the fireworks." },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-10", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand." },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-17", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand." },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-24", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand." },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-31", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand." },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-08-07", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand." },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-08-14", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand." },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-08-21", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand." },
+    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-06-19", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand. Bring a blanket — seating is first-come-first-served. Lineup announced monthly at beachboardwalk.com.", category: "music", cost: "free" },
+    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-06-26", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
+    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-03", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand. Stay for the fireworks.", category: "music", cost: "free" },
+    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-10", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
+    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-17", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
+    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-24", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
+    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-31", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
+    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-08-07", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
+    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-08-14", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
+    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-08-21", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
 
     // ── Roaring Camp Railroads — themed seasonal train rides ──
     { title: "Mother's Day Brunch Train", date: "2026-05-10", time: "10:30 AM", venue: "Roaring Camp Railroads", address: "5401 Graham Hill Rd, Felton, CA 95018", url: "https://roaringcamp.com/events/mothers-day-brunch-train", description: "Steam train ride through the redwoods followed by brunch on the grounds of Roaring Camp. Advance tickets required.", costNote: "From $55" },
@@ -1935,8 +1940,8 @@ function fetchSantaCruzPicks() {
         venue: e.venue,
         address: e.address,
         city: "santa-cruz",
-        category: "arts",
-        cost: "paid",
+        category: e.category ?? "arts",
+        cost: e.cost ?? "paid",
         ...(e.costNote ? { costNote: e.costNote } : {}),
         description: e.description ?? "",
         url: e.url,
@@ -3180,9 +3185,13 @@ async function fetchSjdaEvents() {
         if (!start || start < now) continue;
         const end = e.end_date ? parseDatePT(e.end_date) : null;
 
-        const venue = typeof e.venue === "object" && e.venue
+        const rawVenue = typeof e.venue === "object" && e.venue
           ? (e.venue.venue || "").trim()
           : "";
+        // SJDA's WP API sometimes returns a raw street address as the venue
+        // string. cleanVenue strips out address blobs and returns "" so the
+        // fallback ("Downtown San Jose") kicks in.
+        const venue = cleanVenue(rawVenue);
         const addr = typeof e.venue === "object" && e.venue
           ? `${e.venue.address || ""}, ${e.venue.city || "San Jose"}`.trim()
           : "";
@@ -3404,7 +3413,9 @@ function fetchInboundEvents() {
       // Real category inference instead of hardcoded "community" — this is
       // what makes newsletter events show up on the right tabs (Tech, Sports,
       // Arts, Food, etc) instead of just being lumped into Events.
-      const category = inferCategory(e.title, e.description ?? "", "");
+      // Pass location as venue so school-fundraiser detection works for events
+      // like "Leigh Longhorn 5K" hosted at "Leigh High School".
+      const category = inferCategory(e.title, e.description ?? "", "", e.location ?? "");
       const titleLower = e.title.toLowerCase();
       const descLower = (e.description ?? "").toLowerCase();
       const kidFriendly = /\b(kid|family|children|child|story\s?time|youth|teen|easter\s?egg|egg\s?hunt|preschool)\b/i.test(titleLower)
