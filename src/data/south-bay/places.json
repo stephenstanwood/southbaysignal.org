@@ -7,11 +7,11 @@
       "Google Places API (New) Text Search",
       "poi-data.ts (curated)"
     ],
-    "lastBackfilledAt": "2026-04-25T19:43:37.189Z",
+    "lastBackfilledAt": "2026-04-25T21:17:13.088Z",
     "lastBackfillSource": "reddit-gaps"
   },
   "stats": {
-    "total": 2510,
+    "total": 2511,
     "curated": 49,
     "googleOnly": 2450,
     "byCity": {
@@ -89448,6 +89448,41 @@
       "kidFriendlyChanged": false,
       "indoorOutdoorChanged": true,
       "source": "https://www.reddit.com/r/bayarea/comments/1svikio/bay_area_life/"
+    },
+    {
+      "id": "ChIJV1uZdFotjoARZzxFRrlY7OY",
+      "name": "Raging Waters San Jose",
+      "address": "2333 S White Rd, San Jose, CA 95148, USA",
+      "city": "san-jose",
+      "lat": 37.336138000000005,
+      "lng": -121.81303700000001,
+      "rating": 4,
+      "ratingCount": 1355,
+      "priceLevel": null,
+      "types": [
+        "water_park",
+        "tourist_attraction",
+        "amusement_park",
+        "government_office",
+        "event_venue",
+        "point_of_interest",
+        "service",
+        "establishment"
+      ],
+      "primaryType": "water_park",
+      "displayType": "Water park",
+      "category": "outdoor",
+      "hours": null,
+      "url": "https://calibunga.com/",
+      "mapsUrl": "https://maps.google.com/?cid=16639772275998276711&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "photoRef": "places/ChIJV1uZdFotjoARZzxFRrlY7OY/photos/AU_ZVEGTNGoHv2ui-S28kl-eSzex2e3Wxgtg1oyfg8fCsjkGD2bjowZ0XuNGW2fOsdJz8uLG0rwEknfuxqt-6fBEvIFOrsOGwz9IvVMuOTkx1L7SycYK-O1o38DHtREH2oQ1FnolQgsNPDQa-A_0cdAH9fcjYNmfM7QF4EyBwmWWBCONKgPl96qhI74gpEgbE8z3yZkDuZ6pB6fCI7G_i__Hy1hTydVFiQudp_p_nOAED8iWgtuAbtfdJMj4rL7iUcEVLZyBU-h6N8paTg3epa_rj3l52n0LVySIGtBV7z0O2cvTT0xMEvx4e3g26n9ZyHxbg8m_4d5meknHlkuPT4yhJBEHNrrr6V9jwbAt20-ehrtj2ZW3-Y8AaUuQhdqr_yQzIE9dbtN3j5SaQakJvkZKclVqocvKdYl2b8zwIvQvzkLFPbkh",
+      "curated": false,
+      "discoverySource": "reddit-gaps",
+      "kidFriendly": true,
+      "indoorOutdoor": "outdoor",
+      "kidFriendlyChanged": true,
+      "indoorOutdoorChanged": true,
+      "source": "https://www.reddit.com/r/bayarea/comments/1suy94k/adoption_event_saturday_10am_to_2pm_at_petco/"
     }
   ]
 }
