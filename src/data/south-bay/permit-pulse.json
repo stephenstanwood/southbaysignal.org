@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-24T23:09:36.381Z",
+      "generatedAt": "2026-04-25T11:08:41.849Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Apr 17 – Apr 24",
+      "dateRange": "Apr 18 – Apr 25",
       "stats": {
-        "total": 417,
-        "notable": 35,
-        "newUnits": 24,
-        "totalValuation": 16993511
+        "total": 525,
+        "notable": 44,
+        "newUnits": 29,
+        "totalValuation": 19212243
       },
       "permits": [
         {
@@ -137,29 +137,29 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-24T23:09:38.603Z",
+      "generatedAt": "2026-04-25T11:08:44.309Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Apr 17 – Apr 24",
+      "dateRange": "Apr 18 – Apr 25",
       "stats": {
-        "total": 117,
-        "notable": 9,
+        "total": 112,
+        "notable": 12,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
         {
-          "id": "26BLD-01017",
-          "address": "960 Shauna Ln",
+          "id": "26BLD-01073",
+          "address": "4112 Amaranta Av",
           "category": "commercial",
           "categoryLabel": "Commercial Project",
           "workType": "Building Permit",
-          "description": "RES: electrical upgrade, replacing an existing 100A subpanel with a 125A subpanel in the same location (no relocation).",
+          "description": "Res: Remove torch down roofing and replace with membrane.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-17",
+          "issueDate": "2026-04-23",
           "subtype": "Permit Issued"
         },
         {
@@ -175,6 +175,18 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-01065",
+          "address": "228 E Charleston Rd",
+          "category": "commercial",
+          "categoryLabel": "Commercial Project",
+          "workType": "Building Permit",
+          "description": "RES: Upgrade main panel to 200A in same location",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-23",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-01023",
           "address": "3608 South Ct",
           "category": "commercial",
@@ -184,6 +196,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-04-20",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-01076",
+          "address": "1624 Channing Av",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Heat Pump Mechanical",
+          "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-24",
           "subtype": "Permit Issued"
         },
         {
@@ -199,18 +223,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-01028",
-          "address": "4163 Park Bl",
-          "category": "residential-large",
-          "categoryLabel": "Major Renovation",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-20",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-01044",
           "address": "631 Saint Claire Dr",
           "category": "residential-large",
@@ -223,15 +235,27 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-01021",
-          "address": "957 Colonial Ln",
+          "id": "26BLD-01079",
+          "address": "3200 Ramona St",
           "category": "residential-large",
           "categoryLabel": "Major Renovation",
           "workType": "Web - Heat Pump Mechanical",
           "description": "Residential - Single Family/ADU/Duplex: Instant permit to install 1 heat pump space conditioning systems(s).",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-19",
+          "issueDate": "2026-04-24",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-01028",
+          "address": "4163 Park Bl",
+          "category": "residential-large",
+          "categoryLabel": "Major Renovation",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-20",
           "subtype": "Permit Issued"
         },
         {
@@ -245,18 +269,6 @@
           "units": 0,
           "issueDate": "2026-04-21",
           "subtype": "Permit Issued"
-        },
-        {
-          "id": "26PLN-00088",
-          "address": "180 University Av",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "New wall mounted display case along University Ave for Art Gallery",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-20",
-          "subtype": "Over the Counter Approved"
         }
       ]
     }
