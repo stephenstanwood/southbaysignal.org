@@ -1098,7 +1098,8 @@ async function scrapeBooksInc(page) {
     let year = now.getFullYear();
     const candidate = new Date(year, mIdx, r.day);
     if (candidate < new Date(now.getTime() - 30 * 86400000)) year++;
-    const date = new Date(year, mIdx, r.day);
+    const dateObj = new Date(year, mIdx, r.day);
+    const date = isoDate(dateObj);
     if (date < TODAY) continue;
 
     const venueLower = (r.venue || r.title).toLowerCase();
