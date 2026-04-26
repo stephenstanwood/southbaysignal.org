@@ -1363,7 +1363,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     date: "2026-04-07",
     tagline: "AI-native networking infrastructure purpose-built for large GPU clusters — hardware + software that maximizes token efficiency across Nvidia and Google chips. Emerged from stealth April 2026 with customer deployments already underway. Founded by Mansour Karam, who previously built and sold Apstra to Juniper for ~$450M.",
     color: "#0369a1",
-    url: "https://aria.network",
+    url: "https://arianetworks.com",
   },
   {
     id: "alcatraz-ai",
@@ -1399,7 +1399,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     date: "2026-03-30",
     tagline: "Enterprise AI agent operating system with built-in security, governance, and human oversight. Founded by Sri Viswanath (former Atlassian CTO); co-led by Coatue and Lightspeed.",
     color: "#16a34a",
-    url: "https://sycamore.ai",
+    url: "https://sycamore.so",
   },
   {
     id: "axiom-math-ai",
@@ -1591,7 +1591,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     date: "2026-04-15",
     tagline: "Non-invasive HIFU therapy system for pancreatic cancer ablation — treating tumors with focused ultrasound, no incisions, outpatient. FDA Breakthrough Device Designation in 2024. Series A led by Santé Ventures with Japanese co-investors.",
     color: "#0369a1",
-    url: "https://soniretherapeutics.com",
+    url: "https://www.sonire-therapeutics.com/en/",
   },
   {
     id: "neocognition",
@@ -1651,7 +1651,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     date: "2025-11-01",
     tagline: "AI-driven semiconductor verification startup founded in 2023 — built tools to automate chip design sign-off using LLMs, slashing the manual effort that typically bottlenecks tape-out. Acquired by Cadence Design Systems in November 2025, folding its technology into Cadence's Jasper and Verisium verification platforms.",
     color: "#0ea5e9",
-    url: "https://www.cadence.com",
+    url: "https://www.chipstack.ai",
   },
   {
     id: "lightwheel-ai",
