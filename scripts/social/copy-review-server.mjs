@@ -6,7 +6,7 @@
 // Auto-regenerates next batch when current batch is finished.
 // ---------------------------------------------------------------------------
 
-import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, unlinkSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, unlinkSync, statSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
@@ -2158,12 +2158,17 @@ const server = createServer((req, res) => {
         if (slot.planUrl) {
           try {
             const planId = slot.planUrl.split("/").pop();
-            let sharedPlans = {};
-            try { sharedPlans = JSON.parse(readFileSync(SHARED_PLANS_FILE, "utf8")); } catch {}
+            if (!existsSync(SHARED_PLANS_FILE)) throw new Error("shared-plans.json missing");
+            const sharedPlans = JSON.parse(readFileSync(SHARED_PLANS_FILE, "utf8"));
+            if (!sharedPlans || typeof sharedPlans !== "object" || Array.isArray(sharedPlans)) {
+              throw new Error(`shared-plans.json parsed to ${typeof sharedPlans} (not an object)`);
+            }
             if (sharedPlans[planId]) {
               sharedPlans[planId].cards = canonicalizePlanCards(slot.plan.cards);
               sharedPlans[planId].updatedAt = new Date().toISOString();
-              writeFileSync(SHARED_PLANS_FILE, JSON.stringify(sharedPlans, null, 2) + "\n");
+              const tmpPath = SHARED_PLANS_FILE + ".tmp";
+              writeFileSync(tmpPath, JSON.stringify(sharedPlans, null, 2) + "\n");
+              renameSync(tmpPath, SHARED_PLANS_FILE);
             }
           } catch (e) {
             console.warn(`[swap-card] shared-plans sync failed: ${e.message}`);
@@ -2423,10 +2428,27 @@ const server = createServer((req, res) => {
               city, kids: false, weather: planData.weather,
               planDate: date, createdAt: new Date().toISOString(),
             };
-            let sharedPlans = {};
-            try { sharedPlans = JSON.parse(readFileSync(SHARED_PLANS_FILE, "utf8")); } catch {}
+            // Fail loud if shared-plans.json can't be read/parsed — silently
+            // falling back to {} would clobber every existing plan (happened
+            // 2026-04-25: 910 plans erased when a regen race tripped this path).
+            let sharedPlans;
+            if (existsSync(SHARED_PLANS_FILE)) {
+              try {
+                sharedPlans = JSON.parse(readFileSync(SHARED_PLANS_FILE, "utf8"));
+              } catch (parseErr) {
+                throw new Error(`shared-plans.json exists but failed to parse — refusing to clobber: ${parseErr.message}`);
+              }
+              if (!sharedPlans || typeof sharedPlans !== "object" || Array.isArray(sharedPlans)) {
+                throw new Error(`shared-plans.json parsed to ${typeof sharedPlans} (not an object) — refusing to clobber`);
+              }
+            } else {
+              sharedPlans = {};
+            }
             sharedPlans[planId] = entry;
-            writeFileSync(SHARED_PLANS_FILE, JSON.stringify(sharedPlans, null, 2) + "\n");
+            // Atomic write: stage to temp file then rename, so a crashed write never leaves an empty/partial file.
+            const tmpPath = SHARED_PLANS_FILE + ".tmp";
+            writeFileSync(tmpPath, JSON.stringify(sharedPlans, null, 2) + "\n");
+            renameSync(tmpPath, SHARED_PLANS_FILE);
 
             const planUrl = `https://southbaytoday.org/plan/${planId}`;
 
