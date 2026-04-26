@@ -85,7 +85,7 @@ const TITLE_BLOCKLIST = [
   /\bspecial meeting\b/i, // generic "Special Meeting"
   /\bsubcommittee\b/i,    // internal subcommittees
   /\bstudy session\b/i,   // council study sessions
-  /\bclosed\s+(for|—|–|-)/i, // closure notices
+  /\bclosed\s*(for|—|–|-|:)/i, // closure notices ("Closed for", "Closed: Independence Day", etc.)
   /\bcancelled?\b/i,      // cancelled events
   /\bIndustry Insights with Alumni\b/i, // Stanford affiliates only
   /\bnetworking mixer\b/i, // internal student/professional mixers
@@ -491,6 +491,8 @@ const TITLE_FIXES = {
   " Pacl ": " PACL ",
   " Pacl,": " PACL,",
   "Pacl Book": "PACL Book",
+  "Sjdt ": "SJDT ",
+  "Lgpns ": "LGPNS ",
 };
 
 function cleanTitle(title) {
@@ -519,7 +521,7 @@ function cleanTitle(title) {
     "SJMA", "MACLA", "SVLG", "SJDA", "SCCC", "MOFAD",
     "USPS", "USPTO", "USDA", "UCSF", "UCSC", "UCSD", "UCSB",
     // South Bay org/agency acronyms
-    "SJMADE", "SCCFD", "SCVMC", "PACL",
+    "SJMADE", "SCCFD", "SCVMC", "PACL", "SJDT", "LGPNS",
   ]);
   t = t.replace(/\b[A-Z]{4,}\b/g, (w) => KEEP_UPPER.has(w) ? w : w[0] + w.slice(1).toLowerCase());
   // Fix pipes without surrounding spaces: "Foo |Bar" → "Foo | Bar"
@@ -622,6 +624,7 @@ function polishDescription(text) {
     "AAVE", "ADHD", "PTSD",
     // South Bay / arts venues
     "SJMA", "MACLA", "SJZ", "SVLG", "SJDA", "SCCC", "MOFAD", "VTAA", "VTAS",
+    "SJMADE", "SCCFD", "SCVMC", "PACL", "SJDT", "LGPNS",
     // Misc
     "USPS", "USPTO", "WIPO", "USDA", "FBI", "CIA", "NSA", "EPA", "FDA",
     "MIT", "UCSF", "UCSC", "UCLA", "UCSD", "UCSB", "UCD",
@@ -676,12 +679,20 @@ function cleanVenue(raw) {
   v = v.replace(/[,\s]+[A-Za-z][a-zA-Z\s,]+CA[,\s]+9\d{4}.*$/, "");
   // Remove inline address blob: "Name  123 Street..." or "Name 123 Street..." with double-space
   v = v.replace(/\s{2,}\d+\s+.*$/, "");
+  // Remove single-space inline address blob: "Vasona Park 233 Blossom Hill Rd." → "Vasona Park"
+  // Trigger only when the trailing chunk starts with a number and ends with a street suffix
+  // so we don't chop legitimate venue names that contain numbers (e.g. "Building 5").
+  v = v.replace(/[,\s]+\d+\s+[A-Z][a-zA-Z\.\s]*?\b(St|Ave|Avenue|Blvd|Boulevard|Rd|Road|Way|Ln|Lane|Dr|Drive|Ct|Court|Pl|Place|Hwy|Highway|Pkwy|Parkway|Cir|Circle|Ter|Terrace)\b\.?\s*$/, "");
+  // Strip trailing ", <truncated dir>" e.g. "Los Altos History Museum, 51 So." (truncated address)
+  v = v.replace(/,\s+\d+\s+(N|S|E|W|N\.|S\.|E\.|W\.|No|So|Ea|We)\.?\s*$/i, "");
   // Strip trailing " - " or lone dash at end
   v = v.replace(/\s*-\s*$/, "");
   // Strip " - <address>" suffix where address starts with a number, e.g.
   // "Council Chambers - 110 E. Main St" or just a partial street number
   // "Saratoga Senior Center - 19655" (CivicPlus often appends only the number).
   v = v.replace(/\s+-\s+\d+(\s+.*)?$/, "");
+  // Source-typo fixes (sources occasionally publish misspelled venue names)
+  v = v.replace(/\bNursey\b/g, "Nursery");
   // If the entire string is just a raw address (starts with a number), return empty so caller can use fallback
   if (/^\d+\s/.test(v)) return "";
   return v.trim();
