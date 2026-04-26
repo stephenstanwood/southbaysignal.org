@@ -6,6 +6,7 @@ import path from 'node:path';
 import { runQualityReview } from './lib/post-gen-review.mjs';
 import { generateDayPlanCopy, generateTonightPickCopy } from './lib/copy-gen.mjs';
 import { canonicalizePlanCards } from '../../src/lib/south-bay/canonicalizeCard.mjs';
+import { CITY_NAMES } from './lib/constants.mjs';
 
 const ROOT = process.cwd();
 const SCHEDULE = path.join(ROOT, 'src/data/south-bay/social-schedule.json');
@@ -130,7 +131,7 @@ for (const date of dates) {
       address: pick.address,
       timeBlock: slot.label,
       neighborhood: anchor,
-      blurb: `Top-rated ${cat} spot in ${dp.plan?.cityName || anchor}.`,
+      blurb: `Top-rated ${cat} spot in ${dp.plan?.cityName || CITY_NAMES[anchor] || anchor}.`,
     });
     usedNames.add(pick.name.toLowerCase());
     needed--;
