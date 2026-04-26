@@ -10,7 +10,6 @@ import { CITIES } from "../../../lib/south-bay/cities";
 import PhotoStrip from "./PhotoStrip";
 import RedditPulseTeaser from "./RedditPulseTeaser";
 import ForecastCard from "../cards/ForecastCard";
-import WeekendPicksCard from "../cards/WeekendPicksCard";
 import defaultPlansJson from "../../../data/south-bay/default-plans.json";
 
 // ---------------------------------------------------------------------------
@@ -798,9 +797,6 @@ export default function SouthBayTodayView(_props: Props) {
       <div style={{ margin: "0 -16px 14px" }}>
         <PhotoStrip />
       </div>
-
-      {/* Weekend picks — only renders Sat/Sun within the data's window */}
-      <WeekendPicksCard />
 
       {/* Instruction line */}
       {visibleCards.length > 0 && (

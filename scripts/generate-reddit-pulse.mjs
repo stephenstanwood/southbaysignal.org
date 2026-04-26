@@ -335,6 +335,7 @@ Return ONLY a JSON array of objects, no other text.`;
 
   const seenTopics = new Set();
   const subCounts = new Map();
+  const seenIds = new Set();
   let sportsCount = 0;
   const pulse = [];
   for (const p of pulseEligible) {
@@ -343,10 +344,40 @@ Return ONLY a JSON array of objects, no other text.`;
     if (n >= PER_SUB_CAP) continue;
     if (p.category === "sports" && sportsCount >= SPORTS_CAP) continue;
     pulse.push(p);
+    seenIds.add(p.id);
     if (p.topic) seenTopics.add(p.topic);
     subCounts.set(p.sub, n + 1);
     if (p.category === "sports") sportsCount++;
     if (pulse.length >= PULSE_TARGET) break;
+  }
+
+  // Backfill — homepage grid is a fixed 4×3 of 12 tiles; a short feed leaves
+  // a visible gap. If strict gates left us under PULSE_TARGET, relax in tiers
+  // (drop sub cap → drop sports cap → widen age window → lower relevance) until
+  // we hit 12 or run out of candidates. Keeps topic dedupe — that's a quality
+  // floor, not a tunable.
+  if (pulse.length < PULSE_TARGET) {
+    const tiers = [
+      // Tier 1: same gates, just drop the per-sub and sports caps.
+      (p) => POSITIVE_CATEGORIES.has(p.category) && p.relevance >= 6 && p.ageHours <= 72,
+      // Tier 2: widen the age window to a week.
+      (p) => POSITIVE_CATEGORIES.has(p.category) && p.relevance >= 6 && p.ageHours <= 168,
+      // Tier 3: lower the relevance floor.
+      (p) => POSITIVE_CATEGORIES.has(p.category) && p.relevance >= 4 && p.ageHours <= 168,
+    ];
+    for (const passes of tiers) {
+      if (pulse.length >= PULSE_TARGET) break;
+      for (const p of enriched.sort((a, b) => b.createdUtc - a.createdUtc)) {
+        if (pulse.length >= PULSE_TARGET) break;
+        if (seenIds.has(p.id)) continue;
+        if (p.topic && seenTopics.has(p.topic)) continue;
+        if (!passes(p)) continue;
+        pulse.push(p);
+        seenIds.add(p.id);
+        if (p.topic) seenTopics.add(p.topic);
+      }
+    }
+    console.log(`Backfilled to ${pulse.length} (target ${PULSE_TARGET}).`);
   }
 
   // ─── PHASE 3a: Light-touch title polish ─────────────────────────────

@@ -44,8 +44,13 @@ function formatAge(hours: number): string {
   return days === 1 ? "1d ago" : `${days}d ago`;
 }
 
+// The grid is a fixed 4×3 — render exactly 12 tiles so the bottom row is
+// never short. The generator targets 12 with a backfill pass, but slice
+// defensively in case the data file ever drifts.
+const PULSE_TILE_COUNT = 12;
+
 export default function RedditPulseTeaser() {
-  const posts = (pulseData?.posts ?? []) as PulsePost[];
+  const posts = ((pulseData?.posts ?? []) as PulsePost[]).slice(0, PULSE_TILE_COUNT);
   if (posts.length === 0) return null;
 
   return (
