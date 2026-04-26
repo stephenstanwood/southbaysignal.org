@@ -20,6 +20,7 @@ import {
   VIRTUAL_TITLE_SIGNALS,
   VIRTUAL_ADDRESS_SIGNALS,
 } from "./social/lib/content-rules.mjs";
+import { unwrapMany, isTrackerUrl } from "../src/lib/south-bay/unwrapTrackerUrl.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -118,6 +119,24 @@ for (const e of fresh) {
     const loc = e.location || "";
     if (VIRTUAL_TITLE_SIGNALS.some(r => r.test(title)) || VIRTUAL_ADDRESS_SIGNALS.some(r => r.test(loc))) {
       e.virtual = true;
+    }
+  }
+}
+
+// Resolve tracker-wrapped sourceUrls to their final destinations so links
+// don't rot when the email campaign expires. Cached in url-unwrap-cache.json.
+const trackerUrls = fresh
+  .map((e) => e.sourceUrl)
+  .filter((u) => u && isTrackerUrl(u));
+if (trackerUrls.length) {
+  const resolved = await unwrapMany(trackerUrls, { verbose: true });
+  for (const e of fresh) {
+    if (e.sourceUrl && resolved.has(e.sourceUrl)) {
+      const final = resolved.get(e.sourceUrl);
+      if (final && final !== e.sourceUrl) {
+        e.sourceUrlOriginal = e.sourceUrl;
+        e.sourceUrl = final;
+      }
     }
   }
 }
