@@ -1,17 +1,17 @@
 {
   "_meta": {
-    "generatedAt": "2026-04-26T19:18:20.576Z",
+    "generatedAt": "2026-04-26T19:19:34.969Z",
     "generator": "generate-reddit-pulse",
     "sourceCount": 14
   },
   "summary": {
     "threadsMined": 14,
-    "placesExtracted": 30,
-    "placesMatched": 10,
-    "placeGaps": 20,
-    "eventsExtracted": 2,
+    "placesExtracted": 21,
+    "placesMatched": 9,
+    "placeGaps": 12,
+    "eventsExtracted": 4,
     "eventsMatched": 0,
-    "eventGaps": 2,
+    "eventGaps": 4,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
@@ -22,9 +22,9 @@
       "context": "homeless navigation center near Taylor and 101",
       "sourceUrls": [
         "https://www.reddit.com/r/SanJose/comments/1svtpic/how_silicon_valley_solves_homelessness/",
-        "https://www.reddit.com/r/bayarea/comments/1svwd90/anyone_else_dying_of_allergies_first_spring_in/",
         "https://www.reddit.com/r/SanJose/comments/1svm7jc/thoughts_on_bills_cafe/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1swetmb/my_good_friends_in_sj/",
         "https://www.reddit.com/r/SanJose/comments/1svpwr7/went_to_lake_cunningham_park_havent_been_in_years/"
       ]
     },
@@ -32,12 +32,12 @@
       "name": "Family Supportive Housing",
       "city": "San Jose",
       "kind": "service",
-      "context": "nonprofit helping families transition from homelessness",
+      "context": "nonprofit providing housing and employment support for families",
       "sourceUrls": [
         "https://www.reddit.com/r/SanJose/comments/1svtpic/how_silicon_valley_solves_homelessness/",
-        "https://www.reddit.com/r/bayarea/comments/1svwd90/anyone_else_dying_of_allergies_first_spring_in/",
         "https://www.reddit.com/r/SanJose/comments/1svm7jc/thoughts_on_bills_cafe/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1swetmb/my_good_friends_in_sj/",
         "https://www.reddit.com/r/SanJose/comments/1svpwr7/went_to_lake_cunningham_park_havent_been_in_years/"
       ]
     },
@@ -45,251 +45,177 @@
       "name": "Lake Cunningham Park",
       "city": "San Jose",
       "kind": "park",
-      "context": "local park with walking trails and wildlife",
+      "context": "local park with walking trails and wildlife viewing opportunities",
       "sourceUrls": [
         "https://www.reddit.com/r/SanJose/comments/1svtpic/how_silicon_valley_solves_homelessness/",
-        "https://www.reddit.com/r/bayarea/comments/1svwd90/anyone_else_dying_of_allergies_first_spring_in/",
         "https://www.reddit.com/r/SanJose/comments/1svm7jc/thoughts_on_bills_cafe/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1swetmb/my_good_friends_in_sj/",
         "https://www.reddit.com/r/SanJose/comments/1svpwr7/went_to_lake_cunningham_park_havent_been_in_years/"
+      ]
+    },
+    {
+      "name": "Pruneyard",
+      "city": "Campbell",
+      "kind": "venue",
+      "context": "shopping center hosting Dough Zone and other restaurants",
+      "sourceUrls": [
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
+        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/"
       ]
     },
     {
       "name": "In-N-Out",
       "city": "San Jose",
       "kind": "restaurant",
-      "context": "near airport for plane watching with outdoor seating",
+      "context": "near airport, good plane watching spot with outdoor seating",
       "sourceUrls": [
         "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
         "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/"
+        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/"
       ]
     },
     {
       "name": "Columbus Park",
       "city": "San Jose",
       "kind": "park",
-      "context": "plane spotting location under landing flight paths",
+      "context": "plane spotting location under landing flight path",
       "sourceUrls": [
         "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
         "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/"
+        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/"
       ]
     },
     {
       "name": "Heritage Rose Garden",
       "city": "San Jose",
       "kind": "park",
-      "context": "plane spotting in airport landing zone",
+      "context": "plane spotting in landing zone, volunteer opportunities",
       "sourceUrls": [
         "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
         "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/"
+        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/"
       ]
     },
     {
       "name": "Sky Kitchen",
       "city": "San Carlos",
       "kind": "restaurant",
-      "context": "small plane spotting at San Carlos airport",
+      "context": "at San Carlos airport, smaller plane viewing",
       "sourceUrls": [
         "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
         "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/"
-      ]
-    },
-    {
-      "name": "Stevenson Elementary School",
-      "city": "Mountain View",
-      "kind": "other",
-      "context": "choice school with lottery admission in MVWSD",
-      "sourceUrls": [
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/",
-        "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/"
-      ]
-    },
-    {
-      "name": "Amy Imai Elementary School",
-      "city": "Mountain View",
-      "kind": "other",
-      "context": "highly rated elementary school in Mountain View",
-      "sourceUrls": [
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/",
-        "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/"
-      ]
-    },
-    {
-      "name": "Mariano Castro Elementary School",
-      "city": "Mountain View",
-      "kind": "other",
-      "context": "elementary school with significant homeless student population",
-      "sourceUrls": [
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/",
-        "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/"
-      ]
-    },
-    {
-      "name": "Gabriela Mistral Elementary School",
-      "city": "Mountain View",
-      "kind": "other",
-      "context": "dual immersion Spanish language program school",
-      "sourceUrls": [
-        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
-        "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/",
-        "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/"
-      ]
-    },
-    {
-      "name": "San Pedro Market",
-      "city": "San Jose",
-      "kind": "venue",
-      "context": "downtown San Jose food and gathering spot",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
+        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/"
       ]
     },
     {
       "name": "Mini Boss",
       "city": "San Jose",
       "kind": "other",
-      "context": "recommended visit after San Pedro Market",
+      "context": "venue to visit after San Pedro Square Market",
       "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
+        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/"
       ]
     },
     {
-      "name": "Bayland",
-      "city": "",
-      "kind": "park",
-      "context": "flat hiking area in South Bay",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
-      ]
-    },
-    {
-      "name": "Silicon Valley Bike Exchange",
-      "city": "Mountain View",
-      "kind": "service",
-      "context": "bike repair and learning workshop",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
-      ]
-    },
-    {
-      "name": "Loopkicks",
-      "city": "Sunnyvale",
-      "kind": "venue",
-      "context": "tricking gym for backflips and acrobatics",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
-      ]
-    },
-    {
-      "name": "Bay Area Glass Institute",
-      "city": "",
-      "kind": "service",
-      "context": "glassblowing classes in South Bay",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
-      ]
-    },
-    {
-      "name": "Maker Nexus",
-      "city": "",
-      "kind": "venue",
-      "context": "maker classes for woodworking, 3D printing, metalwork",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
-      ]
-    },
-    {
-      "name": "Alpine Inn",
-      "city": "Palo Alto",
-      "kind": "restaurant",
-      "context": "brunch spot",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
-      ]
-    },
-    {
-      "name": "Sharks Ice San Jose",
+      "name": "Calder's (Sharks Ice San Jose)",
       "city": "San Jose",
       "kind": "venue",
-      "context": "home of Calder's bar and San Jose Barracuda watch parties",
+      "context": "San Jose Barracuda Calder Cup playoffs watch party",
       "sourceUrls": [
         "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
+        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/",
+        "https://www.reddit.com/r/bayarea/comments/1svo2yi/want_to_spring_clean_your_bookshelf_where_to_sell/",
+        "https://www.reddit.com/r/SanJose/comments/1swats0/nikkei_matsuri_festival_happening_in_japantown/"
+      ]
+    },
+    {
+      "name": "Half Price Books",
+      "city": "",
+      "kind": "retail",
+      "context": "used book reseller mentioned by Bay Area readers",
+      "sourceUrls": [
+        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/",
+        "https://www.reddit.com/r/bayarea/comments/1svo2yi/want_to_spring_clean_your_bookshelf_where_to_sell/",
+        "https://www.reddit.com/r/SanJose/comments/1swats0/nikkei_matsuri_festival_happening_in_japantown/"
+      ]
+    },
+    {
+      "name": "Green Apple Bookstore",
+      "city": "",
+      "kind": "retail",
+      "context": "bookstore for selling or donating used books",
+      "sourceUrls": [
+        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/",
+        "https://www.reddit.com/r/bayarea/comments/1svo2yi/want_to_spring_clean_your_bookshelf_where_to_sell/",
+        "https://www.reddit.com/r/SanJose/comments/1swats0/nikkei_matsuri_festival_happening_in_japantown/"
       ]
     }
   ],
   "eventGaps": [
     {
       "name": "Murphy Association Community Event",
-      "when": "Saturday April 25th until noon",
+      "when": "Saturday April 25th",
       "city": "Sunnyvale",
-      "context": "community gathering with snacks and free books",
+      "context": "community event at Murphy Park with snacks and books",
       "sourceUrls": [
         "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
+        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/",
+        "https://www.reddit.com/r/bayarea/comments/1svo2yi/want_to_spring_clean_your_bookshelf_where_to_sell/",
+        "https://www.reddit.com/r/SanJose/comments/1swats0/nikkei_matsuri_festival_happening_in_japantown/"
       ]
     },
     {
       "name": "San Jose Barracuda Calder Cup Playoffs Watch Party",
       "when": "7 PM",
       "city": "San Jose",
-      "context": "watch party at Sharks Ice San Jose",
+      "context": "watch party at Calder's ice hockey venue",
       "sourceUrls": [
         "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
+        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/",
+        "https://www.reddit.com/r/bayarea/comments/1svo2yi/want_to_spring_clean_your_bookshelf_where_to_sell/",
+        "https://www.reddit.com/r/SanJose/comments/1swats0/nikkei_matsuri_festival_happening_in_japantown/"
+      ]
+    },
+    {
+      "name": "Nikkei Matsuri Festival",
+      "when": "April 26, 2026 10am-5pm",
+      "city": "San Jose",
+      "context": "Japantown festival with performances, food, and artisan booths",
+      "sourceUrls": [
+        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/",
+        "https://www.reddit.com/r/bayarea/comments/1svo2yi/want_to_spring_clean_your_bookshelf_where_to_sell/",
+        "https://www.reddit.com/r/SanJose/comments/1swats0/nikkei_matsuri_festival_happening_in_japantown/"
+      ]
+    },
+    {
+      "name": "Independent Bookstore Day",
+      "when": "",
+      "city": "",
+      "context": "national celebration of independent bookstores",
+      "sourceUrls": [
+        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/",
+        "https://www.reddit.com/r/bayarea/comments/1svo2yi/want_to_spring_clean_your_bookshelf_where_to_sell/",
+        "https://www.reddit.com/r/SanJose/comments/1swats0/nikkei_matsuri_festival_happening_in_japantown/"
       ]
     }
   ],
@@ -297,41 +223,27 @@
     {
       "name": "Bill's Cafe",
       "city": "San Jose",
-      "kind": "restaurant",
-      "context": "family-owned breakfast/brunch spot in Willow Glen area",
+      "kind": "cafe",
+      "context": "family-owned Greek cafe with multiple locations, long wait times",
       "sourceUrls": [
         "https://www.reddit.com/r/SanJose/comments/1svtpic/how_silicon_valley_solves_homelessness/",
-        "https://www.reddit.com/r/bayarea/comments/1svwd90/anyone_else_dying_of_allergies_first_spring_in/",
         "https://www.reddit.com/r/SanJose/comments/1svm7jc/thoughts_on_bills_cafe/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1swetmb/my_good_friends_in_sj/",
         "https://www.reddit.com/r/SanJose/comments/1svpwr7/went_to_lake_cunningham_park_havent_been_in_years/"
       ],
       "matchedName": "Bill's Cafe"
     },
     {
-      "name": "Uncle John's Pancake House",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "alternative to Bill's Cafe for breakfast",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1svtpic/how_silicon_valley_solves_homelessness/",
-        "https://www.reddit.com/r/bayarea/comments/1svwd90/anyone_else_dying_of_allergies_first_spring_in/",
-        "https://www.reddit.com/r/SanJose/comments/1svm7jc/thoughts_on_bills_cafe/",
-        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
-        "https://www.reddit.com/r/SanJose/comments/1svpwr7/went_to_lake_cunningham_park_havent_been_in_years/"
-      ],
-      "matchedName": "Uncle John's Pancake House"
-    },
-    {
       "name": "Holder's Country Inn",
       "city": "San Jose",
       "kind": "restaurant",
-      "context": "local breakfast alternative mentioned by residents",
+      "context": "breakfast alternative to Bill's Cafe in Willow Glen area",
       "sourceUrls": [
         "https://www.reddit.com/r/SanJose/comments/1svtpic/how_silicon_valley_solves_homelessness/",
-        "https://www.reddit.com/r/bayarea/comments/1svwd90/anyone_else_dying_of_allergies_first_spring_in/",
         "https://www.reddit.com/r/SanJose/comments/1svm7jc/thoughts_on_bills_cafe/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1swetmb/my_good_friends_in_sj/",
         "https://www.reddit.com/r/SanJose/comments/1svpwr7/went_to_lake_cunningham_park_havent_been_in_years/"
       ],
       "matchedName": "Holder’s Country Inn"
@@ -340,27 +252,41 @@
       "name": "Mission City Grill",
       "city": "San Jose",
       "kind": "restaurant",
-      "context": "local dining option compared favorably to Bill's Cafe",
+      "context": "breakfast alternative to Bill's Cafe",
       "sourceUrls": [
         "https://www.reddit.com/r/SanJose/comments/1svtpic/how_silicon_valley_solves_homelessness/",
-        "https://www.reddit.com/r/bayarea/comments/1svwd90/anyone_else_dying_of_allergies_first_spring_in/",
         "https://www.reddit.com/r/SanJose/comments/1svm7jc/thoughts_on_bills_cafe/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1swetmb/my_good_friends_in_sj/",
         "https://www.reddit.com/r/SanJose/comments/1svpwr7/went_to_lake_cunningham_park_havent_been_in_years/"
       ],
       "matchedName": "Holder’s Mission City Grill"
     },
     {
+      "name": "Uncle John's Pancake House",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "pancake house replacing Bill's Cafe as local favorite",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1svtpic/how_silicon_valley_solves_homelessness/",
+        "https://www.reddit.com/r/SanJose/comments/1svm7jc/thoughts_on_bills_cafe/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1swetmb/my_good_friends_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1svpwr7/went_to_lake_cunningham_park_havent_been_in_years/"
+      ],
+      "matchedName": "Uncle John's Pancake House"
+    },
+    {
       "name": "Dough Zone",
       "city": "Campbell",
       "kind": "restaurant",
-      "context": "upcoming opening at Pruneyard shopping center",
+      "context": "new location at Pruneyard, opening soon",
       "sourceUrls": [
         "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
         "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/"
+        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/"
       ],
       "matchedName": "Dough Zone Dumpling House Cupertino"
     },
@@ -368,15 +294,29 @@
       "name": "Rotary Park",
       "city": "San Jose",
       "kind": "park",
-      "context": "downtown location for plane watching near airport",
+      "context": "downtown location, planes fly overhead constantly",
       "sourceUrls": [
         "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
         "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
-        "https://www.reddit.com/r/mountainview/comments/1stom3d/eli5_public_elementary_schools_in_mv/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/"
+        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/"
       ],
       "matchedName": "Rotary Park"
+    },
+    {
+      "name": "San Pedro Square Market",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "downtown food market with multiple vendors, relaxation spot",
+      "sourceUrls": [
+        "https://www.reddit.com/r/paloalto/comments/1stfe9f/i_wrote_a_novel_set_in_palo_alto_and_mountain/",
+        "https://www.reddit.com/r/mountainview/comments/1su3a0s/mountain_view_council_shelves_bike_lane_plan_that/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/SanJose/comments/1swaati/good_plane_watching_sports_near_the_airport/",
+        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/"
+      ],
+      "matchedName": "San Pedro Square Market"
     },
     {
       "name": "Murphy Park",
@@ -385,50 +325,24 @@
       "context": "community event with snacks and free books",
       "sourceUrls": [
         "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
+        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/",
+        "https://www.reddit.com/r/bayarea/comments/1svo2yi/want_to_spring_clean_your_bookshelf_where_to_sell/",
+        "https://www.reddit.com/r/SanJose/comments/1swats0/nikkei_matsuri_festival_happening_in_japantown/"
       ],
       "matchedName": "Murphy Park"
     },
     {
-      "name": "Rancho San Antonio",
-      "city": "",
-      "kind": "park",
-      "context": "popular hiking spot in South Bay",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
-      ],
-      "matchedName": "Rancho San Antonio County Park & Open Space Preserve"
-    },
-    {
-      "name": "Color Me Mine",
-      "city": "Sunnyvale",
-      "kind": "venue",
-      "context": "pottery painting activity venue",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
-      ],
-      "matchedName": "Color Me Mine"
-    },
-    {
-      "name": "Santana Row",
+      "name": "Empire Seven Studios",
       "city": "San Jose",
-      "kind": "retail",
-      "context": "shopping destination",
+      "kind": "venue",
+      "context": "market happening during Nikkei Matsuri festival",
       "sourceUrls": [
         "https://www.reddit.com/r/Sunnyvale/comments/1svisd7/murphy_association_community_event_at_murphy_park/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/"
+        "https://www.reddit.com/r/SanJoseSharks/comments/1suv8pa/cuda_watch_party_tonight_at_calders_sharks_ice/",
+        "https://www.reddit.com/r/bayarea/comments/1svo2yi/want_to_spring_clean_your_bookshelf_where_to_sell/",
+        "https://www.reddit.com/r/SanJose/comments/1swats0/nikkei_matsuri_festival_happening_in_japantown/"
       ],
-      "matchedName": "Santana Row"
+      "matchedName": "Empire Seven Studios"
     }
   ],
   "eventMatches": []
