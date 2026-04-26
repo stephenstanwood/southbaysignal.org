@@ -4457,22 +4457,36 @@ async function main() {
   }
   console.log(`   👥 audience: kids=${audienceCounts.kids} adult=${audienceCounts.adult} all=${audienceCounts.all}`);
 
-  // Image resolution — Tier 1 (Places venue match) + Tier 2 (OG scrape) run
-  // always; Tier 3 (Recraft) is opt-in via RESOLVE_EVENT_IMAGES_RECRAFT=1
-  // since it costs money. Cache is persisted so re-runs don't re-fetch.
+  // Image resolution — Tier 1 (Places venue match) + Tier 2 (OG scrape) +
+  // Tier 3 (Unsplash by category) always run. Tier 4 (Recraft) is opt-in
+  // via RESOLVE_EVENT_IMAGES_RECRAFT=1 since it costs money. Cache is
+  // persisted so re-runs don't re-fetch.
   const { resolveEventImages } = await import("../src/lib/south-bay/eventImages.mjs");
-  console.log("\n🖼  Resolving event images (Tier 1 venue → Tier 2 OG → Tier 3 Recraft)...");
+  console.log("\n🖼  Resolving event images (Places → OG → Unsplash → Recraft)...");
   const imgStats = await resolveEventImages(collapsedEvents);
+  if (imgStats.prevalidated_decoded || imgStats.prevalidated_dropped) {
+    console.log(`   Pre-pass: decoded=${imgStats.prevalidated_decoded} dropped=${imgStats.prevalidated_dropped} (broken pre-existing URLs)`);
+  }
   console.log(`   Tier 1 venue-match:    ${imgStats.tier1}`);
   console.log(`   Tier 2 OG cached:      ${imgStats.tier2_cached}`);
   console.log(`   Tier 2 OG fetched:     ${imgStats.tier2_fetched}`);
   console.log(`   Tier 2 OG missed:      ${imgStats.tier2_missed}`);
   console.log(`   Tier 2 OG rejected:    ${imgStats.tier2_rejected || 0}`);
-  console.log(`   Tier 3 recraft cached: ${imgStats.tier3_cached}`);
-  console.log(`   Tier 3 recraft new:    ${imgStats.tier3_generated}`);
-  console.log(`   Tier 3 skipped:        ${imgStats.tier3_skipped}`);
-  const resolved = imgStats.tier1 + imgStats.tier2_cached + imgStats.tier2_fetched + imgStats.tier3_cached + imgStats.tier3_generated + imgStats.preexisting;
+  console.log(`   Tier 3 unsplash cache: ${imgStats.tier3_unsplash_cached}`);
+  console.log(`   Tier 3 unsplash fetch: ${imgStats.tier3_unsplash_fetched}`);
+  console.log(`   Tier 3 unsplash skip:  ${imgStats.tier3_unsplash_skipped}`);
+  console.log(`   Tier 4 recraft cached: ${imgStats.tier4_recraft_cached}`);
+  console.log(`   Tier 4 recraft new:    ${imgStats.tier4_recraft_generated}`);
+  console.log(`   Tier 4 recraft skip:   ${imgStats.tier4_recraft_skipped}`);
+  const resolved = collapsedEvents.length - imgStats.final_missing;
   console.log(`   Total images resolved: ${resolved} / ${collapsedEvents.length} (${((resolved / collapsedEvents.length) * 100).toFixed(0)}%)`);
+  if (imgStats.final_missing > 0) {
+    const missingSamples = collapsedEvents.filter(e => !e.image && !e.photoRef).slice(0, 5);
+    console.warn(`   ⚠️  ${imgStats.final_missing} event(s) shipped without a photo. Samples:`);
+    for (const e of missingSamples) {
+      console.warn(`      - "${e.title}" (${e.venue || e.city}) [${e.category}]`);
+    }
+  }
 
   // Blurb resolution — one Haiku pass per ingest so every event ships with a
   // stable "what to do here" sentence. Cache is persistent (keyed by URL), so

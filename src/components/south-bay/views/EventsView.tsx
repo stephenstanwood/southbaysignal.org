@@ -556,6 +556,31 @@ export default function EventsView({ selectedCities, onToggleCity, onToggleAllCi
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [upcomingEvents, selectedCities, showKidsOnly, todayIso, isSearching, searchQ]);
 
+  // Per-city counts (for badges on city pills) — same approach as
+  // categoryCounts but excludes the city filter so users can see what's
+  // available in each city given the current category/kids/search filters.
+  const cityCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    let total = 0;
+    for (const e of upcomingEvents) {
+      if (e.date < todayIso) continue;
+      if (e.date === todayIso && !hasNotStarted(e.time)) continue;
+      if (category !== "all" && e.category !== category) continue;
+      if (showKidsOnly && !e.kidFriendly) continue;
+      if (isSearching) {
+        if (!e.title.toLowerCase().includes(searchQ) &&
+            !(e.blurb || "").toLowerCase().includes(searchQ) &&
+            !(e.description || "").toLowerCase().includes(searchQ) &&
+            !e.city.toLowerCase().includes(searchQ) &&
+            !e.venue.toLowerCase().includes(searchQ)) continue;
+      }
+      counts[e.city] = (counts[e.city] || 0) + 1;
+      total++;
+    }
+    return { perCity: counts, total };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [upcomingEvents, category, showKidsOnly, todayIso, isSearching, searchQ]);
+
   // Ongoing/exhibits filter (separate from day view)
   const filteredOngoing = useMemo(() => {
     return ongoingEvents.filter(matchesFilters);
@@ -636,7 +661,7 @@ export default function EventsView({ selectedCities, onToggleCity, onToggleAllCi
           </label>
         </div>
 
-        {/* Row 2: Category pills — primary filter, count chip is the focal point */}
+        {/* Row 2: Category + city pills — same pill style, cities flow right after categories */}
         <div className="sb-events-cat-row" style={{ marginBottom: 10 }}>
           {EVENT_CATEGORIES.map((cat) => {
             const active = category === cat.id;
@@ -674,32 +699,146 @@ export default function EventsView({ selectedCities, onToggleCity, onToggleAllCi
               </button>
             );
           })}
-        </div>
 
-        {/* Row 3: City pills — secondary refinement, smaller + more subdued */}
-        <div className="sb-events-city-row">
-          <span className="sb-events-city-label">In</span>
+          {/* Subtle divider between categories and cities */}
+          <span aria-hidden style={{
+            width: 1, height: 20, alignSelf: "center",
+            background: "var(--sb-border)", margin: "0 4px",
+          }} />
+
+          {/* All cities pill — toggles between all/none */}
           <button
             onClick={onToggleAllCities}
-            className={`sb-city-pill${allCities ? " sb-city-pill--active sb-city-pill--all" : ""}`}
             aria-pressed={allCities}
+            style={{
+              display: "flex", alignItems: "center", gap: 5,
+              padding: "5px 11px 5px 10px",
+              border: `1.5px solid ${allCities ? "var(--sbt-accent, #4F46E5)" : "var(--sb-border)"}`,
+              borderRadius: 100,
+              background: allCities ? "var(--sbt-accent, #4F46E5)" : "#fff",
+              color: allCities ? "#fff" : "var(--sb-ink)",
+              fontSize: 12.5, fontWeight: allCities ? 600 : 500,
+              cursor: "pointer", fontFamily: "inherit", transition: "all 0.12s",
+              whiteSpace: "nowrap",
+            }}
           >
-            All cities
+            <span style={{ fontSize: 13, lineHeight: 1 }}>📍</span>
+            <span>All cities</span>
+            {cityCounts.total > 0 && (
+              <span style={{
+                fontSize: 10, fontWeight: 700,
+                background: allCities ? "rgba(255,255,255,0.22)" : "#EEF2FF",
+                color: allCities ? "#fff" : "var(--sbt-accent, #4F46E5)",
+                borderRadius: 100, padding: "0 6px", lineHeight: "16px",
+                minWidth: 18, textAlign: "center",
+              }}>
+                {cityCounts.total}
+              </span>
+            )}
           </button>
+
+          {/* Individual city pills — multiselect */}
           {CITIES.map((c) => {
-            const active = selectedCities.has(c.id);
+            const inSelection = selectedCities.has(c.id);
+            const count = cityCounts.perCity[c.id] ?? 0;
+            const showCount = count > 0;
             return (
               <button
                 key={c.id}
                 onClick={() => onToggleCity(c.id)}
-                className={`sb-city-pill${active ? " sb-city-pill--active" : ""}`}
-                aria-pressed={active}
+                aria-pressed={inSelection}
+                style={{
+                  display: "flex", alignItems: "center", gap: 5,
+                  padding: "5px 11px",
+                  border: `1.5px solid ${inSelection ? "var(--sbt-accent, #4F46E5)" : "var(--sb-border)"}`,
+                  borderRadius: 100,
+                  background: inSelection ? "var(--sbt-accent, #4F46E5)" : "#fff",
+                  color: inSelection ? "#fff" : "var(--sb-ink)",
+                  fontSize: 12.5, fontWeight: inSelection ? 600 : 500,
+                  cursor: "pointer", fontFamily: "inherit", transition: "all 0.12s",
+                  whiteSpace: "nowrap",
+                }}
               >
-                {c.name}
+                <span>{c.name}</span>
+                {showCount && (
+                  <span style={{
+                    fontSize: 10, fontWeight: 700,
+                    background: inSelection ? "rgba(255,255,255,0.22)" : "#EEF2FF",
+                    color: inSelection ? "#fff" : "var(--sbt-accent, #4F46E5)",
+                    borderRadius: 100, padding: "0 6px", lineHeight: "16px",
+                    minWidth: 18, textAlign: "center",
+                  }}>
+                    {count}
+                  </span>
+                )}
               </button>
             );
           })}
         </div>
+
+        {/* Day navigator — kept inside the sticky filter so event cards never butt against the section divider */}
+        {!isSearching && (
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "center",
+            gap: 14, marginTop: 8,
+            paddingTop: 6,
+          }}>
+            <button
+              onClick={() => prevDate && setSelectedDate(prevDate)}
+              disabled={!prevDate}
+              aria-label="Previous day"
+              style={{
+                width: 32, height: 32, borderRadius: 999,
+                border: "1.5px solid var(--sb-border)",
+                background: prevDate ? "#fff" : "transparent",
+                color: prevDate ? "var(--sb-ink)" : "var(--sb-light)",
+                cursor: prevDate ? "pointer" : "default",
+                fontSize: 16, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center",
+                opacity: prevDate ? 1 : 0.4,
+                fontFamily: "inherit",
+              }}
+            >
+              ←
+            </button>
+            <div style={{ textAlign: "center", flex: "0 1 auto", minWidth: 0 }}>
+              <div style={{
+                fontSize: 18,
+                fontWeight: 800,
+                fontFamily: "'Space Mono', monospace",
+                letterSpacing: "0.08em",
+                color: "var(--sb-ink)",
+                lineHeight: 1.1,
+              }}>
+                {dayLbl.primary}
+              </div>
+              <div style={{
+                fontSize: 12,
+                color: "var(--sb-muted)",
+                fontFamily: "var(--sb-sans)",
+                marginTop: 2,
+              }}>
+                {dayLbl.secondary}
+              </div>
+            </div>
+            <button
+              onClick={() => nextDate && setSelectedDate(nextDate)}
+              disabled={!nextDate}
+              aria-label="Next day"
+              style={{
+                width: 32, height: 32, borderRadius: 999,
+                border: "1.5px solid var(--sb-border)",
+                background: nextDate ? "#fff" : "transparent",
+                color: nextDate ? "var(--sb-ink)" : "var(--sb-light)",
+                cursor: nextDate ? "pointer" : "default",
+                fontSize: 16, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center",
+                opacity: nextDate ? 1 : 0.4,
+                fontFamily: "inherit",
+              }}
+            >
+              →
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Weather banner — only when viewing today and no category filter */}
@@ -794,68 +933,6 @@ export default function EventsView({ selectedCities, onToggleCity, onToggleAllCi
       ) : (
         /* Single-day view */
         <div>
-          {/* Day navigator */}
-          <div style={{
-            display: "flex", alignItems: "center", justifyContent: "center",
-            gap: 14, marginBottom: 18, marginTop: 4,
-            padding: "10px 8px",
-          }}>
-            <button
-              onClick={() => prevDate && setSelectedDate(prevDate)}
-              disabled={!prevDate}
-              aria-label="Previous day"
-              style={{
-                width: 36, height: 36, borderRadius: 999,
-                border: "1.5px solid var(--sb-border)",
-                background: prevDate ? "#fff" : "transparent",
-                color: prevDate ? "var(--sb-ink)" : "var(--sb-light)",
-                cursor: prevDate ? "pointer" : "default",
-                fontSize: 18, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center",
-                opacity: prevDate ? 1 : 0.4,
-                fontFamily: "inherit",
-              }}
-            >
-              ←
-            </button>
-            <div style={{ textAlign: "center", flex: "0 1 auto", minWidth: 0 }}>
-              <div style={{
-                fontSize: 22,
-                fontWeight: 800,
-                fontFamily: "'Space Mono', monospace",
-                letterSpacing: "0.08em",
-                color: "var(--sb-ink)",
-                lineHeight: 1.1,
-              }}>
-                {dayLbl.primary}
-              </div>
-              <div style={{
-                fontSize: 13,
-                color: "var(--sb-muted)",
-                fontFamily: "var(--sb-sans)",
-                marginTop: 2,
-              }}>
-                {dayLbl.secondary}
-              </div>
-            </div>
-            <button
-              onClick={() => nextDate && setSelectedDate(nextDate)}
-              disabled={!nextDate}
-              aria-label="Next day"
-              style={{
-                width: 36, height: 36, borderRadius: 999,
-                border: "1.5px solid var(--sb-border)",
-                background: nextDate ? "#fff" : "transparent",
-                color: nextDate ? "var(--sb-ink)" : "var(--sb-light)",
-                cursor: nextDate ? "pointer" : "default",
-                fontSize: 18, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center",
-                opacity: nextDate ? 1 : 0.4,
-                fontFamily: "inherit",
-              }}
-            >
-              →
-            </button>
-          </div>
-
           {/* Day events */}
           {dayEvents.length === 0 ? (
             <div className="sb-empty">

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// eventImages — shared 3-tier image resolver for events.
+// eventImages — shared 4-tier image resolver for events.
 //
 // Called at ingest time (generate-events.mjs) so every event gets an image
 // once and keeps it across regens. No more "fix it today, leak-break
@@ -14,10 +14,21 @@
 //   Cached persistently in event-image-cache.json keyed by URL so we
 //   never re-fetch the same page across regens.
 //
-// Tier 3: Recraft generation, uploaded to Vercel Blob.
+// Tier 3: Unsplash search by category.
+//   Stored on event as `image` (full URL).
+//   Free up to ~50 calls/hour with UNSPLASH_ACCESS_KEY. We cache one URL
+//   per category so the whole run costs <20 calls. The pipeline is meant
+//   to be Places → Unsplash → Recraft per the product rule, so Unsplash
+//   sits ahead of paid Recraft as the safety net.
+//
+// Tier 4: Recraft generation, uploaded to Vercel Blob.
 //   Stored on event as `image`.
 //   Behind `RESOLVE_EVENT_IMAGES_RECRAFT=1` env flag — paid API, so
 //   opt-in. Cached keyed by event fingerprint (title+venue+date).
+//
+// Pre-pass: every existing `e.image` is sanity-validated. URLs with raw
+// HTML entities (`&amp;`, etc.) get decoded; URLs that fail the OG quality
+// gate get dropped so the event re-enters the resolution chain.
 //
 // Budgets / safety:
 //   - OG scraping: 5 concurrent, 8s timeout, skip on any error.
@@ -101,6 +112,24 @@ function saveCache(cache) {
 const OG_TIMEOUT_MS = 8000;
 const OG_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15";
 
+// Decode HTML entities that survive in `content="..."` meta attributes.
+// Without this, Eventbrite-style URLs come through with `&amp;` literally
+// embedded in the query string, which Eventbrite's _next/image proxy then
+// 500s on — every BioBlitz / CPR / fire-prep event ends up imageless.
+function decodeHtmlEntities(s) {
+  if (!s) return s;
+  return String(s)
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)))
+    .replace(/&quot;/gi, '"')
+    .replace(/&apos;/gi, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&"); // must be last so we don't double-decode
+}
+
 function extractOgImage(html, pageUrl) {
   if (!html) return null;
   // Prefer og:image, then twitter:image, then <link rel="image_src">.
@@ -115,8 +144,9 @@ function extractOgImage(html, pageUrl) {
     const m = html.match(re);
     if (m && m[1]) {
       try {
-        // Absolutize relative URLs.
-        return new URL(m[1], pageUrl).toString();
+        // Decode HTML entities first, then absolutize relative URLs.
+        const decoded = decodeHtmlEntities(m[1]);
+        return new URL(decoded, pageUrl).toString();
       } catch {
         return null;
       }
@@ -215,7 +245,73 @@ async function mapConcurrent(items, fn, concurrency = 5) {
 }
 
 // ---------------------------------------------------------------------------
-// Tier 3: Recraft
+// Tier 3: Unsplash (category stock photo, free tier)
+// ---------------------------------------------------------------------------
+
+// Same shape as the search-query map in /api/unsplash-photo.ts. Keeping a
+// local copy means ingest doesn't need a running dev server to resolve
+// images — it goes straight to api.unsplash.com.
+const UNSPLASH_CATEGORY_QUERIES = {
+  food: "restaurant meal california",
+  outdoor: "park nature outdoor california",
+  museum: "museum art gallery interior",
+  entertainment: "entertainment fun activity",
+  wellness: "spa wellness relaxing",
+  shopping: "boutique shopping retail",
+  arts: "art gallery studio creative",
+  events: "festival outdoor event crowd",
+  sports: "sports stadium game",
+  neighborhood: "california downtown street cafe",
+  market: "farmers market fresh produce outdoor",
+  community: "community event gathering outdoor",
+  family: "family activity outdoor park",
+  music: "live music concert performance",
+  education: "campus university lecture hall",
+  volunteer: "volunteer community service outdoor",
+  health: "wellness healthcare community",
+};
+
+const UNSPLASH_UTM = "utm_source=south_bay_today&utm_medium=referral";
+
+async function fetchUnsplashByCategory(category) {
+  const key = process.env.UNSPLASH_ACCESS_KEY;
+  if (!key) return null;
+  const query = UNSPLASH_CATEGORY_QUERIES[String(category || "").toLowerCase()]
+    || `${category || "california"} california`;
+  try {
+    const res = await fetch(
+      `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=10&orientation=squarish`,
+      {
+        headers: { Authorization: `Client-ID ${key}`, "User-Agent": OG_UA },
+        signal: AbortSignal.timeout(8000),
+      },
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    const results = data.results ?? [];
+    if (!results.length) return null;
+    // Take a deterministic-ish first-of-top-5 to keep cache hits stable
+    // across runs while still varying category-to-category.
+    const photo = results[0];
+    if (!photo) return null;
+    // Required by Unsplash terms — fire-and-forget the download endpoint.
+    if (photo.links?.download_location) {
+      fetch(photo.links.download_location, {
+        headers: { Authorization: `Client-ID ${key}` },
+      }).catch(() => {});
+    }
+    return {
+      image: photo.urls?.small || photo.urls?.regular || null,
+      photographer: photo.user?.name || null,
+      photographerUrl: photo.user?.links?.html ? `${photo.user.links.html}?${UNSPLASH_UTM}` : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Tier 4: Recraft
 // ---------------------------------------------------------------------------
 
 function fingerprint(event) {
@@ -283,18 +379,53 @@ export async function resolveEventImages(events, opts = {}) {
   const dryRun = !!opts.dryRun;
 
   const cache = loadCache();
+  if (!cache.byCategory) cache.byCategory = {};
   const stats = {
     total: events.length,
+    prevalidated_decoded: 0, // pre-existing image had &amp; / entities, decoded
+    prevalidated_dropped: 0, // pre-existing image failed validation, re-resolving
     tier1: 0, // venue lookup hits
     tier2_cached: 0, // OG cache hits
     tier2_fetched: 0, // OG new fetches (success)
     tier2_missed: 0, // OG tried but no image found
     tier2_rejected: 0, // OG fetched but failed quality gate
-    tier3_cached: 0,
-    tier3_generated: 0,
-    tier3_skipped: 0, // would've recraft-gen'd but over budget / disabled
-    preexisting: 0, // event already had photoRef or image
+    tier3_unsplash_cached: 0, // Unsplash cache hits (per category)
+    tier3_unsplash_fetched: 0, // Unsplash new fetches
+    tier3_unsplash_skipped: 0, // no key / failed
+    tier4_recraft_cached: 0,
+    tier4_recraft_generated: 0,
+    tier4_recraft_skipped: 0, // would've recraft-gen'd but over budget / disabled
+    preexisting: 0, // event already had a healthy photoRef or image
+    final_missing: 0, // event still has nothing after all tiers (alarm signal)
   };
+
+  // --- Pre-pass: sanity-check existing `e.image` URLs ----------------------
+  // Source feeds (and historical OG cache hits) sometimes carry HTML-entity-
+  // encoded URLs (&amp; instead of &) that 5xx when the browser tries to
+  // load them. Decode silently; if the URL still looks broken, drop it so
+  // the resolver can retry through later tiers.
+  for (const e of events) {
+    if (!e.image || typeof e.image !== "string") continue;
+    if (/&(amp|quot|apos|lt|gt|#\d+|#x[0-9a-f]+);/i.test(e.image)) {
+      const decoded = decodeHtmlEntities(e.image);
+      if (decoded !== e.image) {
+        if (!dryRun) e.image = decoded;
+        stats.prevalidated_decoded++;
+      }
+    }
+    // Cheap sanity check — must be a valid http(s) URL. Anything weirder
+    // (data:, javascript:, malformed) is dropped so we resolve fresh.
+    try {
+      const u = new URL(e.image);
+      if (u.protocol !== "http:" && u.protocol !== "https:") {
+        if (!dryRun) e.image = null;
+        stats.prevalidated_dropped++;
+      }
+    } catch {
+      if (!dryRun) e.image = null;
+      stats.prevalidated_dropped++;
+    }
+  }
 
   // --- Tier 1: venue → photoRef (synchronous) ------------------------------
   const needOG = []; // events that don't have a photoRef/image after Tier 1
@@ -313,10 +444,10 @@ export async function resolveEventImages(events, opts = {}) {
   }
 
   // --- Tier 2: OG scrape with persistent cache -----------------------------
-  const needRecraft = [];
+  const needUnsplash = []; // events that didn't get an OG image
   await mapConcurrent(needOG, async (e) => {
     const url = e.url;
-    if (!url) { needRecraft.push(e); return; }
+    if (!url) { needUnsplash.push(e); return; }
     // Cache hit?
     if (cache.byUrl[url]) {
       const hit = cache.byUrl[url];
@@ -325,8 +456,8 @@ export async function resolveEventImages(events, opts = {}) {
         stats.tier2_cached++;
         return;
       }
-      // Negative cache — previously tried + failed. Try Recraft.
-      needRecraft.push(e);
+      // Negative cache — previously tried + failed. Try Unsplash next.
+      needUnsplash.push(e);
       return;
     }
     // New fetch.
@@ -334,12 +465,12 @@ export async function resolveEventImages(events, opts = {}) {
     if (!img) {
       cache.byUrl[url] = { image: null, fetchedAt: new Date().toISOString() };
       stats.tier2_missed++;
-      needRecraft.push(e);
+      needUnsplash.push(e);
       return;
     }
     // Quality gate: reject tiny/logo/placeholder OG images so a CMS-default
-    // doesn't block a proper Recraft generation. Rejection is cached too
-    // so we don't re-validate every run.
+    // doesn't block a proper Unsplash/Recraft fallback. Rejection is cached
+    // too so we don't re-validate every run.
     const v = await validateOgImage(img);
     if (!v.ok) {
       cache.byUrl[url] = {
@@ -349,7 +480,7 @@ export async function resolveEventImages(events, opts = {}) {
         fetchedAt: new Date().toISOString(),
       };
       stats.tier2_rejected++;
-      needRecraft.push(e);
+      needUnsplash.push(e);
       return;
     }
     cache.byUrl[url] = { image: img, fetchedAt: new Date().toISOString() };
@@ -357,34 +488,78 @@ export async function resolveEventImages(events, opts = {}) {
     stats.tier2_fetched++;
   }, concurrency);
 
-  // --- Tier 3: Recraft (opt-in, budgeted) ----------------------------------
+  // --- Tier 3: Unsplash by category (free, 50/hr) --------------------------
+  // Cached per category so the whole run uses ≤ N calls regardless of how
+  // many events fall through. If UNSPLASH_ACCESS_KEY is missing, every
+  // event slides straight to Tier 4 (Recraft) — log once so we notice.
+  const needRecraft = [];
+  let warnedNoUnsplashKey = false;
+  for (const e of needUnsplash) {
+    const cat = String(e.category || "community").toLowerCase();
+    let cached = cache.byCategory[cat];
+    if (!cached || !cached.image) {
+      if (!process.env.UNSPLASH_ACCESS_KEY) {
+        if (!warnedNoUnsplashKey) {
+          console.warn("[eventImages] UNSPLASH_ACCESS_KEY not set — Tier 3 disabled, falling through to Recraft");
+          warnedNoUnsplashKey = true;
+        }
+        stats.tier3_unsplash_skipped++;
+        needRecraft.push(e);
+        continue;
+      }
+      const fetched = await fetchUnsplashByCategory(cat);
+      if (!fetched?.image) {
+        stats.tier3_unsplash_skipped++;
+        needRecraft.push(e);
+        continue;
+      }
+      cache.byCategory[cat] = {
+        image: fetched.image,
+        photographer: fetched.photographer,
+        photographerUrl: fetched.photographerUrl,
+        fetchedAt: new Date().toISOString(),
+      };
+      cached = cache.byCategory[cat];
+      stats.tier3_unsplash_fetched++;
+    } else {
+      stats.tier3_unsplash_cached++;
+    }
+    if (!dryRun) e.image = cached.image;
+  }
+
+  // --- Tier 4: Recraft (opt-in, budgeted) ----------------------------------
   let recraftUsed = 0;
   for (const e of needRecraft) {
     const fp = fingerprint(e);
     const cached = cache.byFingerprint[fp];
     if (cached?.image) {
       if (!dryRun) e.image = cached.image;
-      stats.tier3_cached++;
+      stats.tier4_recraft_cached++;
       continue;
     }
     if (!enableRecraft || recraftUsed >= maxRecraft) {
-      stats.tier3_skipped++;
+      stats.tier4_recraft_skipped++;
       continue;
     }
     if (dryRun) {
-      stats.tier3_skipped++;
+      stats.tier4_recraft_skipped++;
       continue;
     }
     try {
       const url = await generateRecraft(e);
       cache.byFingerprint[fp] = { image: url, tier: "recraft", generatedAt: new Date().toISOString() };
       e.image = url;
-      stats.tier3_generated++;
+      stats.tier4_recraft_generated++;
       recraftUsed++;
     } catch (err) {
       console.warn(`[eventImages] recraft failed for "${e.title}": ${err.message}`);
-      stats.tier3_skipped++;
+      stats.tier4_recraft_skipped++;
     }
+  }
+
+  // --- Final safety check — flag any event still without an image ---------
+  for (const e of events) {
+    if (!e.photoRef && !e.image) stats.final_missing++;
   }
 
   if (!dryRun) saveCache(cache);
