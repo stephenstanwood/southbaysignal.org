@@ -322,25 +322,61 @@ function formatPaAddress(raw) {
 function categorizePa(record) {
   const cat = record.RECORD_TYPE_CATEGORY ?? "";
   const desc = (record.DESCRIPTION ?? "").toLowerCase();
+
+  // Residential signal — covers "RES:" / "Res:" prefix, "Residential -", "single family",
+  // "single-family", "ADU", "duplex". PermitView descriptions lead with these consistently.
+  const isResidential =
+    /^\s*res(?:idential)?\s*[-:]/.test(desc) ||
+    desc.includes("single family") ||
+    desc.includes("single-family") ||
+    desc.includes("\badu\b") ||
+    /\badu\b/.test(desc) ||
+    desc.includes("duplex");
+
+  // Mirror San Jose: skip boring residential maintenance so the card highlights real changes.
+  const isRoutineMaintenance =
+    desc.includes("heat pump") ||
+    desc.includes("water heater") ||
+    desc.includes("hvac") ||
+    desc.includes("furnace") ||
+    desc.includes("ev charger") ||
+    desc.includes("electrical panel") ||
+    desc.includes("main panel") ||
+    desc.includes("sub panel") ||
+    desc.includes("subpanel") ||
+    desc.includes("solar panel") ||
+    desc.includes("solar pv") ||
+    desc.includes("re-roof") ||
+    desc.includes("reroof") ||
+    /\broof\w*\b/.test(desc) ||
+    desc.includes("sewer") ||
+    desc.includes("plumbing") ||
+    desc.includes("window replacement") ||
+    desc.includes("water service");
+  if (isResidential && isRoutineMaintenance) return null;
+
   const isNew =
     desc.includes("new") && (desc.includes("construction") || desc.includes("dwelling") || desc.includes("adu") || desc.includes("sfr") || desc.includes("multi"));
   const isCommercial =
     desc.includes("ti:") || desc.includes("tenant improvement") || desc.includes("commercial") || desc.includes("office");
-  const isAddition = desc.includes("addition") || desc.includes("remodel") || desc.includes("adu");
+  const isRemodel = desc.includes("remodel") || desc.includes("kitchen") || desc.includes("bath");
+  const isAddition = desc.includes("addition");
   const isEntitlement = cat === "Entitlement" || cat === "Zoning";
 
   if (isEntitlement) return "entitlement";
   if (isNew) return "new-construction";
-  if (isCommercial) return "commercial";
-  if (isAddition) return "residential-large";
-  if (PA_INTERESTING_CATEGORIES.has(cat)) return "commercial"; // fallback bucket
+  if (isCommercial && !isResidential) return "commercial";
+  if (isResidential && isAddition) return "residential-large";
+  if (isResidential && isRemodel) return "residential-remodel";
+  // Drop everything else — generic residential maintenance shouldn't take a slot.
   return null;
 }
 
 const PA_CATEGORY_LABELS = {
   "new-construction": "New Construction",
   commercial: "Commercial Project",
-  "residential-large": "Major Renovation",
+  "residential-large": "Addition",
+  "residential-remodel": "Home Remodel",
   entitlement: "Entitlement / Zoning",
 };
 
@@ -425,7 +461,7 @@ async function mainPaloAlto() {
     });
   }
 
-  const PA_CAT_PRIORITY = { "new-construction": 0, commercial: 1, "residential-large": 2, entitlement: 3 };
+  const PA_CAT_PRIORITY = { "new-construction": 0, commercial: 1, "residential-large": 2, "residential-remodel": 3, entitlement: 4 };
   notable.sort((a, b) => (PA_CAT_PRIORITY[a.category] ?? 9) - (PA_CAT_PRIORITY[b.category] ?? 9));
   const top = notable.slice(0, 10);
 

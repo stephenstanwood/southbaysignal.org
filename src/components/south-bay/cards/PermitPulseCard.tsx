@@ -49,6 +49,7 @@ const CATEGORY_ICON: Record<string, string> = {
   "new-construction": "🏗️",
   "commercial-large": "🏢",
   "residential-large": "🔨",
+  "residential-remodel": "🛠️",
   commercial: "🏪",
   entitlement: "📐",
 };
