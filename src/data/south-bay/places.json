@@ -7,11 +7,11 @@
       "Google Places API (New) Text Search",
       "poi-data.ts (curated)"
     ],
-    "lastBackfilledAt": "2026-04-26T21:18:32.141Z",
+    "lastBackfilledAt": "2026-04-26T23:17:29.945Z",
     "lastBackfillSource": "reddit-gaps"
   },
   "stats": {
-    "total": 2519,
+    "total": 2520,
     "curated": 49,
     "googleOnly": 2450,
     "byCity": {
@@ -89811,6 +89811,49 @@
       "kidFriendlyChanged": false,
       "indoorOutdoorChanged": true,
       "source": "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/"
+    },
+    {
+      "id": "ChIJU2atA5g0joARqr3SRweOdf4",
+      "name": "Dry Creek Grill",
+      "address": "1580 Hamilton Ave, San Jose, CA 95125, USA",
+      "city": "san-jose",
+      "lat": 37.2933575,
+      "lng": -121.91297569999999,
+      "rating": 4.3,
+      "ratingCount": 1123,
+      "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+      "types": [
+        "american_restaurant",
+        "bar_and_grill",
+        "seafood_restaurant",
+        "barbecue_restaurant",
+        "steak_house",
+        "bar",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "primaryType": "american_restaurant",
+      "displayType": "American restaurant",
+      "category": "food",
+      "hours": {
+        "sun": "16:30-21:00",
+        "tue": "16:30-21:00",
+        "wed": "16:30-21:00",
+        "thu": "16:30-21:00",
+        "fri": "16:30-21:30",
+        "sat": "16:30-21:30"
+      },
+      "url": "http://www.drycreekgrill.com/",
+      "mapsUrl": "https://maps.google.com/?cid=18335717619829751210&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "photoRef": "places/ChIJU2atA5g0joARqr3SRweOdf4/photos/Ab43m-tmR3v4LB5uZ9gnFsEn70UtwLFWra5B_2z2OdPNYF2RioDhM6gj_ZCa6-XWzd4Frbr3g8By5CPEKT_Zbyl41PWddChJEowuMiyT9srdlwkZcaoSGOtG1dPafX7Bvgydu_4_pdoalu0y0N13BSEgIGBCK3h2SCxG0M7Ozn8lPimQpyndyWKPaAzSEJXStGRoWqIqcMpt10VuBFWBYlFEsR5sHs1Qi8_R8iqARv73XfzL-hiTuGJJw9RvydkDzQbkGtXpcnDMTsMKefrisDtwD_CEidAe20sfeALVe_Yiwc5SQw",
+      "curated": false,
+      "discoverySource": "reddit-gaps",
+      "indoorOutdoor": "indoor",
+      "kidFriendlyChanged": false,
+      "indoorOutdoorChanged": true,
+      "source": "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/"
     }
   ]
 }
