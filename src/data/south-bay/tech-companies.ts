@@ -2295,7 +2295,7 @@ export const TECH_CONFERENCES: TechConference[] = [
     city: "Mountain View",
     typicalMonth: 9,
     description: "Silicon Valley's regional tech and innovation summit — panels on SV's economic competitiveness, emerging sectors, and local tech policy. Held at the Computer History Museum in Mountain View.",
-    url: "https://svforum.org",
+    url: "https://www.siliconvalley.forum",
     scale: "regional",
   },
   {

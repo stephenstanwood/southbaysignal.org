@@ -142,6 +142,7 @@ export const TECH_LOGO_MANIFEST: Record<string, string> = {
   "sun-microsystems": "/logos/sun-microsystems.png",
   "sunday-robotics": "/logos/sunday-robotics.png",
   "supermicro": "/logos/supermicro.png",
+  "svforum-summit": "/logos/svforum-summit.png",
   "sycamore": "/logos/sycamore.png",
   "synopsys": "/logos/synopsys.png",
   "tenstorrent": "/logos/tenstorrent.png",
