@@ -8,7 +8,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CLAUDE_COPY_MODEL, CONFIG } from "./constants.mjs";
-import { mentionInstructions, applyTagSubstitutions } from "./handle-lookup.mjs";
+import { mentionInstructions, applyTagSubstitutions, recordUntaggedItem } from "./handle-lookup.mjs";
 
 const __copygen_dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -240,6 +240,7 @@ Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook", "inst
   }
 
   applyTagSubstitutions(variants, item);
+  recordUntaggedItem(item, { slot: "single" });
 
   return variants;
 }
@@ -526,6 +527,7 @@ Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook", "inst
   if (!variants.instagram) variants.instagram = variants.facebook;
 
   applyTagSubstitutions(variants, plan);
+  recordUntaggedItem(plan, { slot: "day-plan" });
 
   // Enforce hard character limits
   enforceHardLimits(variants);
@@ -607,6 +609,7 @@ Return ONLY a JSON object with keys "x", "threads", "bluesky", "facebook", "inst
   if (!variants.instagram) variants.instagram = variants.facebook;
 
   applyTagSubstitutions(variants, item);
+  recordUntaggedItem(item, { slot: "tonight-pick" });
 
   // Enforce hard character limits
   enforceHardLimits(variants);

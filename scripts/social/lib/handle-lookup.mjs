@@ -9,12 +9,13 @@
 // surgical about format ("@handle" in place vs "Name (@handle)" parenthetical).
 // ---------------------------------------------------------------------------
 
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const HANDLES_FILE = join(__dirname, "..", "..", "..", "src", "data", "south-bay", "social-handles.json");
+const GAPS_FILE = join(__dirname, "..", "..", "..", "src", "data", "south-bay", "social-handles-gaps.json");
 
 let _cache = null;
 
@@ -244,6 +245,118 @@ export function applyTagSubstitutions(variants, item) {
     variants[platform] = text;
   }
   return variants;
+}
+
+// ---------------------------------------------------------------------------
+// Gap tracking — log venues/orgs we tried to tag but couldn't, so the
+// coverage gap becomes visible and ranked. Resolution stays manual: once a
+// handle gets added to social-handles.json, it stops appearing here.
+// ---------------------------------------------------------------------------
+
+function readGaps() {
+  if (!existsSync(GAPS_FILE)) {
+    return {
+      _meta: {
+        description: "Venues/orgs we tried to tag but couldn't find in social-handles.json. Auto-populated at gen time. Resolve by adding entries to social-handles.json (this file's entries are then dropped on next run).",
+      },
+      gaps: {},
+    };
+  }
+  try {
+    const data = JSON.parse(readFileSync(GAPS_FILE, "utf8"));
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      throw new Error(`gaps file parsed to ${typeof data}`);
+    }
+    if (!data.gaps || typeof data.gaps !== "object") data.gaps = {};
+    return data;
+  } catch (err) {
+    // Fail loud — silently overwriting could erase a manually-curated backlog.
+    throw new Error(`social-handles-gaps.json failed to parse — refusing to clobber: ${err.message}`);
+  }
+}
+
+function writeGaps(data) {
+  const tmp = GAPS_FILE + ".tmp";
+  writeFileSync(tmp, JSON.stringify(data, null, 2) + "\n");
+  renameSync(tmp, GAPS_FILE);
+}
+
+/**
+ * Increment the gap counter for a single name. Skips names that are already
+ * in social-handles.json (no point logging resolved coverage). Also drops
+ * entries from the gaps file when they resolve, so the file naturally
+ * shrinks as Stephen fills in handles.
+ */
+function logHandleGap(rawName, context = {}) {
+  if (!rawName) return;
+  const name = String(rawName).trim();
+  if (name.length < 3) return;
+  const norm = normalizeText(name);
+  if (!norm) return;
+  if (loadHandles().has(norm)) return; // already resolved
+
+  const data = readGaps();
+  const today = new Date().toISOString().slice(0, 10);
+  const entry = data.gaps[norm] || {
+    displayName: name,
+    firstSeen: today,
+    occurrences: 0,
+    contexts: [],
+  };
+  entry.lastSeen = today;
+  entry.occurrences += 1;
+  // Track unique context tuples so we can see which slots/cities the gap
+  // shows up in (informs which platform handles matter most).
+  const ctx = {};
+  for (const k of ["slot", "city", "category", "kind"]) {
+    if (context[k]) ctx[k] = context[k];
+  }
+  if (Object.keys(ctx).length > 0) {
+    const key = JSON.stringify(ctx);
+    if (!entry.contexts.some((c) => JSON.stringify(c) === key)) {
+      entry.contexts.push(ctx);
+    }
+  }
+  data.gaps[norm] = entry;
+  data._meta = { ...(data._meta || {}), lastUpdated: today };
+
+  // Sweep already-resolved entries (in case social-handles.json grew since
+  // last gen — keeps the gaps file from accumulating stale rows).
+  const handles = loadHandles();
+  for (const k of Object.keys(data.gaps)) {
+    if (handles.has(k)) delete data.gaps[k];
+  }
+
+  writeGaps(data);
+}
+
+/**
+ * Walk an item's name fields (venue, title, card names) and log any that
+ * don't match social-handles.json. Call this from copy-gen alongside
+ * applyTagSubstitutions — together they capture both successes and gaps.
+ */
+export function recordUntaggedItem(item, context = {}) {
+  if (!item) return;
+  const seen = new Set();
+  const tryLog = (name, extra = {}) => {
+    if (!name) return;
+    const key = String(name).toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    if (findMatch(name)) return; // already in DB
+    logHandleGap(name, { ...context, ...extra });
+  };
+  tryLog(item.venue, { kind: "venue" });
+  tryLog(item.title, { kind: "title" });
+  if (Array.isArray(item.cards)) {
+    for (const card of item.cards) {
+      tryLog(card?.name, {
+        kind: "card",
+        category: card?.category,
+        city: card?.city,
+      });
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
