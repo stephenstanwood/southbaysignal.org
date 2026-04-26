@@ -43,14 +43,10 @@ function loadBotToken() {
   return null;
 }
 
-// Two-tier monitoring:
-//   PING_THRESHOLD — below this approved-unpublished count, DM Stephen
-//   QUEUE_TARGET   — top up generation until reviewable hits this
-// 80 is roughly where Stephen stops approving, 40 is when the queue feels thin.
+// Generation moved entirely to the weekly Saturday 3:30 AM `generate-schedule.mjs`
+// run (10-day horizon). Queue-monitor's only job now is to ping when the
+// approved-unpublished count drops below this floor.
 const PING_THRESHOLD = 40;
-const QUEUE_TARGET = 80;
-const MIN_BATCH = 20;      // never generate fewer than this when topping up
-const BUFFER = 5;          // overshoot the target by this much to absorb rejects
 
 // Walk the 10-day schedule once and bucket future slots:
 //   needsReview — still missing copy or image approval (the swiper queue)
@@ -137,8 +133,7 @@ async function main() {
   const pendingDrafts = countPendingDrafts();
   const now = new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles", dateStyle: "short", timeStyle: "short" });
 
-  const reviewable = approvedUnpublished + pendingDrafts;
-  console.log(`[${now}] Approved unpublished: ${approvedUnpublished} | Drafts to review: ${pendingDrafts} | Total reviewable: ${reviewable} (target ${QUEUE_TARGET})`);
+  console.log(`[${now}] Approved unpublished: ${approvedUnpublished} | Drafts to review: ${pendingDrafts}`);
 
   // Always check for SV History milestones (date-sensitive, runs regardless of queue health)
   console.log("Checking for SV History milestones...");
@@ -154,41 +149,14 @@ async function main() {
     console.error("SV History generation failed:", err.message);
   }
 
-  // Top up if total reviewable is below target.
-  if (reviewable < QUEUE_TARGET) {
-    const deficit = QUEUE_TARGET - reviewable + BUFFER;
-    const batchSize = Math.max(MIN_BATCH, deficit);
-
-    console.log(`Generating ${batchSize} new drafts to close deficit of ${deficit}...`);
-    try {
-      const nodePath = process.execPath;
-      const envFile = join(__dirname, "..", "..", ".env.local");
-      execFileSync(nodePath, ["--env-file=" + envFile, join(__dirname, "generate-posts.mjs"), "--max", String(batchSize)], {
-        cwd: join(__dirname, "..", ".."),
-        timeout: 600_000,
-        stdio: "inherit",
-      });
-    } catch (err) {
-      console.error("Generation failed:", err.message);
-    }
-  } else {
-    console.log("Queue is healthy, no top-up needed.");
-  }
-
-  const newDraftCount = countPendingDrafts();
-  const newApprovedUnpublished = countApprovedUnpublished();
-  const newReviewable = newApprovedUnpublished + newDraftCount;
-
-  // Only DM Stephen if approved-unpublished is below the ping threshold.
-  if (newApprovedUnpublished >= PING_THRESHOLD) {
-    console.log(`Approved unpublished ${newApprovedUnpublished} ≥ ping threshold ${PING_THRESHOLD} — skipping DM.`);
+  if (approvedUnpublished >= PING_THRESHOLD) {
+    console.log(`Approved unpublished ${approvedUnpublished} ≥ ping threshold ${PING_THRESHOLD} — skipping DM.`);
     return;
   }
 
   const msg = `📬 **South Bay Today — Queue Low**\n` +
-    `Approved unpublished: **${newApprovedUnpublished}** (ping at <${PING_THRESHOLD})\n` +
-    `Drafts to review: **${newDraftCount}**\n` +
-    `Total reviewable: **${newReviewable}** (target ${QUEUE_TARGET})\n\n` +
+    `Approved unpublished: **${approvedUnpublished}** (ping at <${PING_THRESHOLD})\n` +
+    `Drafts to review: **${pendingDrafts}**\n\n` +
     `Swiper: http://10.0.0.234:3456 (or Tailscale: http://100.117.24.89:3456)`;
 
   console.log("Sending Discord DM...");
