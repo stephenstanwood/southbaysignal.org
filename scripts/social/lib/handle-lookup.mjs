@@ -12,7 +12,7 @@
 import { readFileSync, writeFileSync, existsSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { resolveHandlesFromUrl } from "./resolve-handles.mjs";
+import { resolveHandlesFromUrl, resolveHandlesViaClaude } from "./resolve-handles.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const HANDLES_FILE = join(__dirname, "..", "..", "..", "src", "data", "south-bay", "social-handles.json");
@@ -361,16 +361,71 @@ export async function resolveItemHandles(item) {
 
   if (ops.length === 0) return;
 
+  // Also queue Tier-2 lookups for unmatched items WITHOUT a usable URL,
+  // so performers without their own URL still get resolved.
+  const tier2Only = [];
+  const seenT2 = new Set();
+  const queueTier2 = (name, section, hints) => {
+    if (!name) return;
+    const key = String(name).toLowerCase().trim();
+    if (!key || seenT2.has(key)) return;
+    seenT2.add(key);
+    if (findMatch(name)) return;
+    if (ops.some((o) => o.name.toLowerCase() === key)) return; // already in tier 1
+    tier2Only.push({ name, section, hints });
+  };
+  if (item.title && (!item.url || isThirdPartyEventListing(item.url))) {
+    queueTier2(item.title, "performers", { venue: item.venue, city: item.city, category: item.category });
+  }
+  if (item.venue && (!item.url || isThirdPartyEventListing(item.url))) {
+    queueTier2(item.venue, "venues", { city: item.city });
+  }
+  if (Array.isArray(item.cards)) {
+    for (const card of item.cards) {
+      if (card?.name && !card?.url) {
+        queueTier2(card.name, "venues", { city: card.city, category: card.category });
+      }
+    }
+  }
+
   for (const op of ops) {
     try {
-      const result = await resolveHandlesFromUrl(op.url);
-      if (result) {
-        addToHandles(op.section, op.name, result.handles, { source: result.source });
+      const tier1 = await resolveHandlesFromUrl(op.url);
+      if (tier1) {
+        addToHandles(op.section, op.name, tier1.handles, { source: tier1.source });
+        continue;
+      }
+      // Tier 1 miss — fall through to Tier 2
+      const tier2 = await resolveHandlesViaClaude(op.name, sectionToKind(op.section), {
+        url: op.url,
+        city: item.city || item.cards?.[0]?.city,
+      });
+      if (tier2) {
+        addToHandles(op.section, op.name, tier2.handles, { source: tier2.source });
       }
     } catch {
       // best-effort; fall through
     }
   }
+
+  for (const op of tier2Only) {
+    try {
+      const tier2 = await resolveHandlesViaClaude(op.name, sectionToKind(op.section), op.hints);
+      if (tier2) {
+        addToHandles(op.section, op.name, tier2.handles, { source: tier2.source });
+      }
+    } catch {
+      // best-effort
+    }
+  }
+}
+
+function sectionToKind(section) {
+  return section === "venues" ? "venue" : section === "orgs" ? "organization" : "performer";
+}
+
+function isThirdPartyEventListing(url) {
+  return /eventbrite|ticketweb|ticketmaster|stubhub|axs\.com|sjsu\.edu\/calendar|bibliocommons/i.test(String(url || ""));
 }
 
 // ---------------------------------------------------------------------------
