@@ -2402,11 +2402,22 @@ const server = createServer((req, res) => {
           }
           try {
             const city = slot.city || "san-jose";
-            console.log(`  🔄 Regenerating plan for ${city} on ${date}...`);
+            // Collect every other day-plan card name as a block list — without
+            // this, regen-plan keeps re-picking the same Greek dinner spot
+            // (Dio Deka on 4/29 + 5/2 + 5/3) because the cross-day dedup
+            // that lives in generate-schedule's main loop never reaches here.
+            const blockedNames = [];
+            for (const [otherDate, otherDay] of Object.entries(schedule.days || {})) {
+              if (otherDate === date) continue;
+              for (const card of (otherDay?.["day-plan"]?.plan?.cards || [])) {
+                if (card.name) blockedNames.push(card.name);
+              }
+            }
+            console.log(`  🔄 Regenerating plan for ${city} on ${date} (blocking ${blockedNames.length} cross-day picks)...`);
             const planRes = await fetch(`${PLAN_API_BASE}/api/plan-day`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ city, kids: false, currentHour: 9, planDate: date }),
+              body: JSON.stringify({ city, kids: false, currentHour: 9, planDate: date, blockedNames }),
               signal: AbortSignal.timeout(30000),
             });
             if (!planRes.ok) throw new Error(`Plan API returned ${planRes.status}`);
