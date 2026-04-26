@@ -370,50 +370,37 @@ export function timeBlockFromEventTime(
 }
 
 const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+type DayKey = typeof DAY_KEYS[number];
 
-/** Check if a place is open today based on its hours data. null hours = assume open. */
-function isOpenToday(hours: Record<string, string> | null): boolean {
-  if (!hours) return true; // no hours data = assume open
-  const dayIdx = new Date().toLocaleDateString("en-US", { timeZone: "America/Los_Angeles", weekday: "short" }).toLowerCase().slice(0, 3);
-  return dayIdx in hours;
+/**
+ * Convert a YYYY-MM-DD date string to its short day key in PT.
+ * Pass the plan's targetDate, NOT new Date() — generation runs at a different
+ * time than the plan is for. Travieso (sat-only) slipping into a Thursday
+ * plan was caused by hours helpers using `new Date()` (Saturday at gen time)
+ * instead of the plan date (Thursday).
+ */
+function dayKeyForDate(targetDate: string | null | undefined): DayKey {
+  const d = targetDate ? new Date(`${targetDate}T12:00:00`) : new Date();
+  return d.toLocaleDateString("en-US", { timeZone: "America/Los_Angeles", weekday: "short" })
+    .toLowerCase()
+    .slice(0, 3) as DayKey;
 }
 
-/** Get today's closing hour for a place, or null if unknown. */
-function closingHourToday(hours: Record<string, string> | null | undefined): number | null {
-  if (!hours) return null;
-  const dayIdx = new Date().toLocaleDateString("en-US", { timeZone: "America/Los_Angeles", weekday: "short" }).toLowerCase().slice(0, 3);
-  const range = hours[dayIdx];
-  if (!range) return null;
-  // Take the LAST segment for split ranges like "11:00-14:00,17:00-22:00"
-  const lastSeg = range.split(",").pop() || range;
-  const close = lastSeg.split("-")[1];
-  if (!close) return null;
-  return parseHour(close);
-}
-
-/** Get today's opening hour for a place, or null if unknown. */
-function openingHourToday(hours: Record<string, string> | null | undefined): number | null {
-  if (!hours) return null;
-  const dayIdx = new Date().toLocaleDateString("en-US", { timeZone: "America/Los_Angeles", weekday: "short" }).toLowerCase().slice(0, 3);
-  const range = hours[dayIdx];
-  if (!range) return null;
-  // Take the FIRST segment for split ranges (e.g. lunch start for "11:00-14:00,17:00-22:00")
-  const firstSeg = range.split(",")[0] || range;
-  const open = firstSeg.split("-")[0];
-  if (!open) return null;
-  return parseHour(open);
+/** Check if a place is open on `dayKey`. null hours = assume open (we lack data). */
+function isOpenOn(hours: Record<string, string> | null | undefined, dayKey: DayKey): boolean {
+  if (!hours) return true;
+  return dayKey in hours;
 }
 
 /**
- * Return the full list of (open, close) pairs for today, in 24h hours.
+ * Return the full list of (open, close) pairs for `dayKey`, in 24h hours.
  * Handles single and split ranges like "11:00-14:00,17:00-22:00".
- * Returns [] if closed today or hours unknown.
+ * Returns [] if closed that day or hours unknown.
  */
-function openRangesToday(hours: Record<string, string> | null | undefined): Array<[number, number]> {
+function openRangesOn(hours: Record<string, string> | null | undefined, dayKey: DayKey): Array<[number, number]> {
   if (!hours) return [];
-  const dayIdx = new Date().toLocaleDateString("en-US", { timeZone: "America/Los_Angeles", weekday: "short" }).toLowerCase().slice(0, 3);
-  const range = hours[dayIdx];
-  if (!range) return []; // closed today
+  const range = hours[dayKey];
+  if (!range) return [];
   const out: Array<[number, number]> = [];
   for (const seg of range.split(",")) {
     const [openStr, closeStr] = seg.split("-");
@@ -449,6 +436,7 @@ function isTimeSensitive(types: string[] | null | undefined): boolean {
  */
 function fitsInOpenRange(
   hours: Record<string, string> | null | undefined,
+  dayKey: DayKey,
   startH: number,
   endH: number,
   types?: string[] | null,
@@ -457,8 +445,8 @@ function fitsInOpenRange(
     if (isTimeSensitive(types)) return false;
     return startH >= 6 && endH <= 21; // outdoor/flexible: rough daylight band
   }
-  const ranges = openRangesToday(hours);
-  if (ranges.length === 0) return false; // closed today
+  const ranges = openRangesOn(hours, dayKey);
+  if (ranges.length === 0) return false; // closed that day
   for (const [o, c] of ranges) {
     if (startH >= o && endH <= c) return true;
   }
@@ -754,6 +742,7 @@ function buildCandidatePool(
   const candidates: Candidate[] = [];
   const cityConfig = CITY_MAP[city];
   const today = targetDate || todayStr();
+  const planDayKey = dayKeyForDate(today);
   const isBlocked = (name: string | null | undefined) => {
     const n = normalizeName(name);
     if (!n) return false;
@@ -951,8 +940,8 @@ function buildCandidatePool(
       continue;
     }
 
-    // Skip places that are closed today
-    if (!isOpenToday(p.hours)) continue;
+    // Skip places that are closed on the plan's date
+    if (!isOpenOn(p.hours, planDayKey)) continue;
 
     // Skip generic "Downtown X" / neighborhood tiles — Stephen has asked for
     // specific restaurants/shops as plan cards, not vague neighborhood names.
@@ -1065,6 +1054,7 @@ async function sequenceWithClaude(
   // ourselves so the prompt never says "15:00" when it's actually 3:53 PM.
   const start = startTime ?? computeStartTime(hour, 0);
   const startH = start.startHour;
+  const planDayKey = dayKeyForDate(targetDate);
 
   // Format locked items. Avoid the word "LOCKED" in the section header
   // because the model has echoed it back as a literal timeBlock value.
@@ -1121,8 +1111,8 @@ async function sequenceWithClaude(
       const placeTypes = (c as any).types as string[] | null | undefined;
       const fmt = (h: number) => (h > 12 ? `${h - 12} PM` : h === 12 ? "12 PM" : h === 0 ? "12 AM" : `${h} AM`);
       if (hoursObj) {
-        const ranges = openRangesToday(hoursObj);
-        if (ranges.length === 0) return null; // closed today — omit from prompt
+        const ranges = openRangesOn(hoursObj, planDayKey);
+        if (ranges.length === 0) return null; // closed on plan date — omit from prompt
         parts.push(`hours: ${ranges.map(([o, c2]) => `${fmt(o)}–${fmt(c2)}`).join(", ")}`);
       } else if (isTimeSensitive(placeTypes)) {
         // Time-sensitive (food, museum, etc.) with no verified hours: drop
@@ -1577,8 +1567,8 @@ Return ONLY the JSON array. No explanation.`;
       const startH = parseHour(startStr || "");
       const endH = parseHour(endStr || "") ?? (startH !== null ? startH + 1 : null);
       if (startH === null || endH === null) continue;
-      if (!fitsInOpenRange(hoursObj, startH, endH)) {
-        console.log(`[plan-day] dropped ${cards[i].name} — ${cards[i].timeBlock} doesn't fit venue hours`);
+      if (!fitsInOpenRange(hoursObj, planDayKey, startH, endH)) {
+        console.log(`[plan-day] dropped ${cards[i].name} — ${cards[i].timeBlock} doesn't fit venue hours on ${planDayKey}`);
         cards.splice(i, 1);
       }
     }
@@ -1625,7 +1615,7 @@ Return ONLY the JSON array. No explanation.`;
         if (cand.category === "neighborhood") continue;
         const hoursObj = (cand as any).hours as Record<string, string> | null | undefined;
         if (hoursObj && slotStart !== null && slotEnd !== null) {
-          if (!fitsInOpenRange(hoursObj, slotStart, slotEnd)) continue;
+          if (!fitsInOpenRange(hoursObj, planDayKey, slotStart, slotEnd)) continue;
         }
         // Events with a fixed start/end window must actually be happening
         // during the slot. A 9 AM–1 PM farmers market doesn't fit a 1:30 PM
@@ -2194,6 +2184,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     {
       const candidateById = new Map(diversePool.map((c) => [c.id, c]));
       const before = cards.length;
+      const sweepDayKey = dayKeyForDate(planDate);
       for (let i = cards.length - 1; i >= 0; i--) {
         if (cards[i].locked) continue;
         if (cards[i].source === "event") continue; // events keep their announced time
@@ -2205,10 +2196,10 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         const startH = parseHour(startStr || "");
         const endH = parseHour(endStr || "") ?? (startH !== null ? startH + 1 : null);
         if (startH === null || endH === null) continue;
-        if (!fitsInOpenRange(hoursObj, startH, endH, placeTypes)) {
+        if (!fitsInOpenRange(hoursObj, sweepDayKey, startH, endH, placeTypes)) {
           const reason = !hoursObj
             ? "no verified hours for time-sensitive venue"
-            : "doesn't fit venue hours";
+            : `doesn't fit venue hours on ${sweepDayKey}`;
           console.log(`[plan-day] final hours sweep dropped ${cards[i].name} — ${cards[i].timeBlock} ${reason}`);
           cards.splice(i, 1);
         }
