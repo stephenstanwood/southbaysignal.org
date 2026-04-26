@@ -1487,7 +1487,7 @@ async function openSwapPicker(dateStr, cardIndex) {
       for (const cand of cands) {
         const meta = (cand.category || '') + ' · ' + (cand.city || '') +
                      (cand.rating ? ' · ★ ' + cand.rating : '') +
-                     (cand._distKm ? ' · ' + cand._distKm + 'km' : '');
+                     (cand._distKm ? ' · ' + (cand._distKm * 0.621371).toFixed(1) + 'mi' : '');
         html += '<div class="swap-candidate" onclick="pickSwap(\\'' + dateStr + '\\', ' + cardIndex + ', \\'' + (cand.id || '').replace(/\\'/g, "\\\\'") + '\\', this)">' +
                   '<div class="swap-candidate-body">' +
                     '<div class="swap-candidate-name">' + (cand.name || '').replace(/</g, '&lt;') + '</div>' +

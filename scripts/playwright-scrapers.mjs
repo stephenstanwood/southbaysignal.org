@@ -294,6 +294,27 @@ async function scrapeTheTech(page) {
 
 // ── LibCal Libraries (MV Public Library, Los Gatos, Milpitas) ──
 
+// Bookmobile/outreach stops on libcal use bare venue names as titles ("Ginzton
+// Terrace Apartments", "Castro Elementary School", "Hope Services"). They live
+// on the library's calendar but aren't public events — the library's bookmobile
+// just visits that location.
+//
+// Pattern is FULL-title match (anchored ^...$) so we don't drop real events
+// like "Friends of the Los Altos Library Booksale @ Los Altos Community Center"
+// — those have the venue suffix but additional event words.
+const BOOKMOBILE_STOP_PATTERNS = [
+  /^[A-Z][\w'.&-]*(\s+[A-Z][\w'.&-]*)*\s+Apartments?$/,
+  /^[A-Z][\w'.&-]*(\s+[A-Z][\w'.&-]*)*\s+(Elementary|Middle|High|Senior)\s+School$/,
+  /^[A-Z][\w'.&-]*(\s+[A-Z][\w'.&-]*)*\s+(Senior|Retirement)\s+(Living|Center|Community)$/,
+  /^[A-Z][\w'.&-]*(\s+[A-Z][\w'.&-]*)*\s+(Community|Recreation)\s+Center$/,
+  /^[A-Z][\w'.&-]*(\s+[A-Z][\w'.&-]*)*\s+Services$/,           // "Hope Services"
+  /^[A-Z][\w'.&-]*(\s+[A-Z][\w'.&-]*)*\s+Mobile\s+Home\s+Park$/,
+];
+function isBookmobileStopTitle(title) {
+  if (!title) return false;
+  return BOOKMOBILE_STOP_PATTERNS.some((p) => p.test(title.trim()));
+}
+
 const LIBCAL_LIBRARIES = [
   {
     name: "Mountain View Public Library",
@@ -390,6 +411,11 @@ async function scrapeLibCal(page, config) {
           .map((r) => {
             const date = tryParseDate(r.date);
             if (!date || date < TODAY) return null;
+            // MV bookmobile / outreach stops surface as bare venue-name titles
+            // ("Ginzton Terrace Apartments", "Castro Elementary School", "Hope
+            // Services"). They're internal stops on the library's bookmobile
+            // calendar, not public events. Filter by title pattern.
+            if (isBookmobileStopTitle(r.title)) return null;
             return {
               title: r.title,
               date,
