@@ -493,6 +493,8 @@ const TITLE_FIXES = {
   "Pacl Book": "PACL Book",
   "Sjdt ": "SJDT ",
   "Lgpns ": "LGPNS ",
+  "Fopal": "FOPAL",     // Friends of Palo Alto Library — biblio API title-cases it
+  "Aanhpi": "AANHPI",   // Asian American/Native Hawaiian/Pacific Islander
 };
 
 function cleanTitle(title) {
@@ -504,6 +506,14 @@ function cleanTitle(title) {
     .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"').replace(/&apos;/g, "'")
     .replace(/&\w+;/g, "")
+    // Strip BiblioCommons "External Event:" prefix (Palo Alto Library tags
+    // events organized by outside groups — venue + source already convey
+    // that, the prefix is just visible noise in display titles).
+    .replace(/^External Event:\s*/i, "")
+    // Strip BiblioCommons asterisk-wrapped format markers like "*In Person*",
+    // "*Virtual*", "*Online*" (San Jose Public Library prefixes some titles
+    // with these — format is shown elsewhere via venue/url).
+    .replace(/^\*[^*]{1,20}\*\s*/, "")
     // Strip calendar-artifact date prefixes
     .replace(
       /^(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s*\d{4})?\s*:\s*/i,
@@ -597,6 +607,26 @@ const DESC_TYPO_FIXES = [
   [/\bsepearate\b/gi, "separate"],
 ];
 
+// Common abbreviations whose internal periods would otherwise be mistaken
+// for sentence boundaries by the [.!?] sentence splitter below — splitting
+// "p.m." into ["p.", "m."] then joining with space + capitalizing yields
+// the visible regression "p. M.". Replace with placeholders before splitting,
+// restore after.
+const ABBR_MASK_PAIRS = [
+  [/\bp\.m\./gi, "PMABBR"],
+  [/\ba\.m\./gi, "AMABBR"],
+  [/\be\.g\./gi, "EGABBR"],
+  [/\bi\.e\./gi, "IEABBR"],
+  [/\betc\./gi, "ETCABBR"],
+];
+const ABBR_RESTORE_PAIRS = [
+  [/PMABBR/g, "p.m."],
+  [/AMABBR/g, "a.m."],
+  [/EGABBR/g, "e.g."],
+  [/IEABBR/g, "i.e."],
+  [/ETCABBR/g, "etc."],
+];
+
 function polishDescription(text) {
   if (!text) return "";
   let t = text;
@@ -614,6 +644,9 @@ function polishDescription(text) {
       return replacement;
     });
   }
+
+  // Mask abbreviations so their internal periods don't trip the sentence splitter.
+  for (const [pat, sub] of ABBR_MASK_PAIRS) t = t.replace(pat, sub);
 
   // Downcase ALL-CAPS runs of 4+ uppercase letters (preserve common acronyms).
   // Same logic as cleanTitle but applied to body text.
@@ -633,8 +666,10 @@ function polishDescription(text) {
   t = t.replace(/\b[A-Z]{4,}\b/g, (w) => KEEP_UPPER.has(w) ? w : w[0] + w.slice(1).toLowerCase());
 
   // Insert space between concatenated words ("NIGHTSat" → "NIGHTS at", "USAMex" → "USA Mex")
-  // — split all-caps run before a capital+lowercase prefix that began a new word.
-  t = t.replace(/([A-Z]{2,})([A-Z][a-z])/g, "$1 $2");
+  // — split all-caps run before a Cap+lowercase WORD prefix. Requires 2+
+  // trailing lowercase letters so pluralized acronyms ("DVDs", "CDs", "URLs")
+  // stay intact instead of becoming "DV Ds".
+  t = t.replace(/([A-Z]{2,})([A-Z][a-z]{2,})/g, "$1 $2");
   // — split lowercase + uppercase boundary ("nightSat" → "night Sat").
   t = t.replace(/([a-z])([A-Z])/g, "$1 $2");
   // Normalize 1-2 letter all-caps fragments left over from prior step ("EN" preserved if before all-caps)
@@ -652,6 +687,10 @@ function polishDescription(text) {
 
   // Capitalize first letter of each sentence
   t = t.replace(/(^|[.!?]\s+)([a-z])/g, (_, sep, ch) => sep + ch.toUpperCase());
+
+  // Restore masked abbreviations (must run after capitalization so an "a.m."
+  // at the start of a sentence isn't accidentally re-cased to "A.m.")
+  for (const [pat, sub] of ABBR_RESTORE_PAIRS) t = t.replace(pat, sub);
 
   return t;
 }
