@@ -717,6 +717,12 @@ function inferCity(location, address) {
 function inferCategory(title, desc, type, venue = "") {
   const t = `${title} ${desc} ${type} ${venue}`.toLowerCase();
   const titleLower = title.toLowerCase();
+  // Bookstores host author talks and book launches — even when the description
+  // mentions sports (e.g. a runner discussing a memoir), it's an arts/literary
+  // event, not a sports event. Check before the sports/education rules below.
+  const venueLower = venue.toLowerCase();
+  const isBookstoreVenue = /\b(books?|bookshop|bookstore)\b/.test(venueLower);
+  if (isBookstoreVenue) return "arts";
   // "baby" check: only match when it's not a proper name (e.g. "Baby Bash" the rapper)
   const hasBaby = /\bbaby\b/.test(t) && !/\bbaby\s+bash\b/i.test(t);
   if (t.includes("story time") || t.includes("storytime") || t.includes("toddler") || hasBaby || t.includes("preschool") || t.includes("kids") || t.includes("children") || /\bbedtime\b/.test(titleLower) || /\bpuppet\s+show\b/.test(t)) return "family";
@@ -1426,7 +1432,10 @@ async function fetchCivicPlusIcal(name, url, defaultCity, defaultCost = "free") 
           date: isoDate(start),
           displayDate: displayDate(start),
           time: displayTime(start),
-          endTime: end ? displayTime(end) : null,
+          // Some iCal feeds (e.g. Opera SJ) write dtend == dtstart for events
+          // without a published end time. Treat those as "no end time" rather
+          // than a zero-duration event.
+          endTime: end && end.getTime() !== start.getTime() ? displayTime(end) : null,
           venue: cleanedVenue || name,
           address: "",
           city,
@@ -1654,7 +1663,10 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
           date: isoDate(start),
           displayDate: displayDate(start),
           time: displayTime(start),
-          endTime: end ? displayTime(end) : null,
+          // BiblioCommons sometimes returns end == start for ongoing exhibits
+          // and drop-in programs — surface that as "no end time" rather than a
+          // zero-duration block.
+          endTime: end && end.getTime() !== start.getTime() ? displayTime(end) : null,
           venue: branchName
             ? (branchName.toLowerCase().endsWith("library") ? branchName : `${branchName} Library`)
             : libraryName,
@@ -1752,7 +1764,7 @@ async function fetchScclEvents() {
           date: isoDate(start),
           displayDate: displayDate(start),
           time: displayTime(start),
-          endTime: end ? displayTime(end) : null,
+          endTime: end && end.getTime() !== start.getTime() ? displayTime(end) : null,
           venue: libraryName,
           address: "",
           city,
@@ -1826,7 +1838,7 @@ async function fetchEventbriteEvents() {
         date: isoDate(start),
         displayDate: displayDate(start),
         time: displayTime(start),
-        endTime: end ? displayTime(end) : null,
+        endTime: end && end.getTime() !== start.getTime() ? displayTime(end) : null,
         venue: venueName,
         address,
         city,
@@ -3140,12 +3152,16 @@ async function fetchSquarespaceEvents(pageUrl, source, defaultCity, defaultVenue
           date: isoDate(start),
           displayDate: displayDate(start),
           time: displayTime(start),
-          endTime: end ? displayTime(end) : null,
+          endTime: end && end.getTime() !== start.getTime() ? displayTime(end) : null,
           venue,
           address: addr,
           city: defaultCity,
-          category: inferCategory(item.title, desc, ""),
-          cost: "paid",
+          category: inferCategory(item.title, desc, "", venue),
+          // "Free Admission" or "Free " in the title (e.g. JAMsj's free-admission
+          // days) overrides the venue's default "paid" cost.
+          cost: /\bfree\s+admission\b/i.test(item.title) || /^free\b/i.test(item.title.trim())
+            ? "free"
+            : "paid",
           description: desc,
           url: fullUrl,
           source,
@@ -3605,7 +3621,7 @@ async function fetchSjdaEvents() {
           date: isoDate(start),
           displayDate: displayDate(start),
           time: displayTime(start),
-          endTime: end ? displayTime(end) : null,
+          endTime: end && end.getTime() !== start.getTime() ? displayTime(end) : null,
           venue: venue || "Downtown San Jose",
           address: addr,
           city: "san-jose",
@@ -3903,9 +3919,16 @@ function fetchInboundEvents() {
       const kidFriendly = /\b(kid|family|children|child|story\s?time|youth|teen|easter\s?egg|egg\s?hunt|preschool)\b/i.test(titleLower)
         || /\b(kid|family|children|story\s?time)\b/i.test(descLower);
 
-      // Extract venue name from location (first part before the comma)
+      // Extract venue name from location (first part before the comma).
+      // If the leading segment is just a street address ("1680 Foley Avenue",
+      // "315-367 S First St"), drop the leading number/range so we display the
+      // street name instead of a raw address. The full address still rides
+      // along in the address field.
       const location = e.location ?? "";
-      const venueName = location.includes(",") ? location.split(",")[0].trim() : location;
+      let venueName = location.includes(",") ? location.split(",")[0].trim() : location;
+      if (/^\d+(-\d+)?\s+/.test(venueName)) {
+        venueName = venueName.replace(/^\d+(-\d+)?\s+/, "").trim();
+      }
 
       out.push({
         id: h("inbound", e.id, dateKey, e.title),
