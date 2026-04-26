@@ -813,42 +813,50 @@ function RecentlyFundedCard({ company }: { company: RecentlyFunded }) {
 const ROUNDS_2026 = RECENTLY_FUNDED.filter((r) => r.date >= "2026-01-01").length;
 const EARLY_STAGES = new Set(["Seed", "Pre-Seed", "Series A", "Series A1"]);
 
-// Top 5 most-recent rounds — used for the "Latest Funding" ticker strip.
-function getLatestFundedRounds(n = 6): RecentlyFunded[] {
+// Most-recent N rounds — fed into the live-scrolling "Latest Funding" ticker.
+function getLatestFundedRounds(n = 20): RecentlyFunded[] {
   return [...RECENTLY_FUNDED].sort((a, b) => b.date.localeCompare(a.date)).slice(0, n);
 }
 
 function FundingTicker() {
-  const latest = getLatestFundedRounds(6);
+  const latest = getLatestFundedRounds(20);
+
+  const renderItem = (r: RecentlyFunded, dupKey: string) => (
+    <a
+      key={r.id + r.date + dupKey}
+      href={r.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="tech-ticker-item"
+      aria-hidden={dupKey === "dup" ? "true" : undefined}
+      tabIndex={dupKey === "dup" ? -1 : 0}
+    >
+      <CompanyLogo
+        {...logoForFunded(r)}
+        name={r.name}
+        size={28}
+        fallbackColor={r.color}
+        borderRadius={5}
+        bordered={false}
+      />
+      <div className="tech-ticker-text">
+        <div className="tech-ticker-name">{r.name}</div>
+        <div className="tech-ticker-meta">
+          <span className="tech-ticker-amount">{r.amount}</span>
+          <span className="tech-ticker-round">{r.round}</span>
+        </div>
+      </div>
+    </a>
+  );
+
   return (
     <div className="tech-ticker">
       <div className="tech-ticker-label">Latest funding ↘</div>
-      <div className="tech-ticker-track">
-        {latest.map((r) => (
-          <a
-            key={r.id + r.date}
-            href={r.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="tech-ticker-item"
-          >
-            <CompanyLogo
-              {...logoForFunded(r)}
-              name={r.name}
-              size={28}
-              fallbackColor={r.color}
-              borderRadius={5}
-              bordered={false}
-            />
-            <div className="tech-ticker-text">
-              <div className="tech-ticker-name">{r.name}</div>
-              <div className="tech-ticker-meta">
-                <span className="tech-ticker-amount">{r.amount}</span>
-                <span className="tech-ticker-round">{r.round}</span>
-              </div>
-            </div>
-          </a>
-        ))}
+      <div className="tech-ticker-viewport">
+        <div className="tech-ticker-track">
+          {latest.map((r) => renderItem(r, "a"))}
+          {latest.map((r) => renderItem(r, "dup"))}
+        </div>
       </div>
     </div>
   );

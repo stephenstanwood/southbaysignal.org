@@ -1107,15 +1107,36 @@ const {
         white-space: nowrap;
         flex-shrink: 0;
       }
-      .tech-ticker-track {
-        display: flex;
-        gap: 0;
-        overflow-x: auto;
-        scrollbar-width: thin;
+      .tech-ticker-viewport {
         flex: 1;
+        overflow: hidden;
+        position: relative;
+        min-width: 0;
+        mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+        -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
       }
-      .tech-ticker-track::-webkit-scrollbar { height: 4px; }
-      .tech-ticker-track::-webkit-scrollbar-thumb { background: #c4b5fd; border-radius: 2px; }
+      .tech-ticker-track {
+        display: inline-flex;
+        gap: 0;
+        animation: tech-ticker-scroll 60s linear infinite;
+        will-change: transform;
+      }
+      .tech-ticker-viewport:hover .tech-ticker-track,
+      .tech-ticker-track:focus-within {
+        animation-play-state: paused;
+      }
+      @keyframes tech-ticker-scroll {
+        from { transform: translate3d(0, 0, 0); }
+        to { transform: translate3d(-50%, 0, 0); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .tech-ticker-track { animation: none; }
+        .tech-ticker-viewport {
+          overflow-x: auto;
+          mask-image: none;
+          -webkit-mask-image: none;
+        }
+      }
       .tech-ticker-item {
         display: flex;
         align-items: center;

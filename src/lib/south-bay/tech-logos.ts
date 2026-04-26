@@ -1,7 +1,9 @@
 // Company logo URL helpers — no API key needed.
-// Primary: Clearbit (high-quality vector when available).
-// Fallback: Google s2 favicons (always works for any domain).
+// Primary: pinned high-res file from /public/logos (auto-resolved by
+//   scripts/fetch-tech-logos.mjs and stored in tech-logo-manifest.ts).
+// Fallback cascade: icon.horse → DuckDuckGo → Google s2 favicons.
 // Final: colored initial avatar (handled in <CompanyLogo>).
+import { TECH_LOGO_MANIFEST } from "./tech-logo-manifest";
 
 const SUBDOMAIN_STRIP = /^(jobs|careers|invest|investor|developer|developers|store|en-us|www2)\./i;
 
@@ -24,11 +26,10 @@ const APPLE_LOGO = "/logos/apple.png";
 const INTEL_LOGO = "/logos/intel.png";
 const GOOGLE_LOGO = "/logos/google.png";
 
-export const LOGO_URL_BY_ID: Record<string, string> = {
-  amd: "/logos/amd.png",
-  intel: INTEL_LOGO,
-  vmware: "/logos/vmware.png",
-  android: "/logos/android.png",
+// Hand-curated overrides — these take precedence over the auto manifest. Use
+// for milestones that re-use a parent company's mark, or to swap a manifest
+// pick that isn't quite right.
+const HAND_CURATED_LOGOS: Record<string, string> = {
   // Tech milestones (anniversary cards) — re-use the parent company's mark.
   "moores-law": INTEL_LOGO,
   "intel-4004": INTEL_LOGO,
@@ -45,6 +46,12 @@ export const LOGO_URL_BY_ID: Record<string, string> = {
   "apple-retail": APPLE_LOGO,
   "google-ipo": GOOGLE_LOGO,
   "hp35-calculator": "/logos/hp.png",
+};
+
+// Auto manifest first; hand-curated overrides win.
+export const LOGO_URL_BY_ID: Record<string, string> = {
+  ...TECH_LOGO_MANIFEST,
+  ...HAND_CURATED_LOGOS,
 };
 
 // Manual overrides keyed by company id — wins over URL-derived domain.
