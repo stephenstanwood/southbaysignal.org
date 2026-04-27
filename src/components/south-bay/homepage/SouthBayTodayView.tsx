@@ -10,6 +10,7 @@ import { CITIES } from "../../../lib/south-bay/cities";
 import PhotoStrip from "./PhotoStrip";
 import RedditPulseTeaser from "./RedditPulseTeaser";
 import CityHallThisWeek from "./CityHallThisWeek";
+import SchoolYearEndgame from "./SchoolYearEndgame";
 import ForecastCard from "../cards/ForecastCard";
 import defaultPlansJson from "../../../data/south-bay/default-plans.json";
 
@@ -932,6 +933,9 @@ export default function SouthBayTodayView(_props: Props) {
 
       {/* City Hall This Week — what's on the council docket near you */}
       <CityHallThisWeek onSeeAll={() => _props.onNavigate("government")} />
+
+      {/* School Year Endgame — AP exams, finals, graduation, last day */}
+      <SchoolYearEndgame onSeeAll={() => _props.onNavigate("events")} />
 
       {/* Reddit pulse — what people are saying on regional subs */}
       <RedditPulseTeaser />
