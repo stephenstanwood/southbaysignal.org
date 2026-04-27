@@ -1,266 +1,222 @@
 {
   "_meta": {
-    "generatedAt": "2026-04-27T22:16:44.284Z",
+    "generatedAt": "2026-04-27T23:16:26.732Z",
     "generator": "generate-reddit-pulse",
     "sourceCount": 14
   },
   "summary": {
     "threadsMined": 14,
-    "placesExtracted": 27,
+    "placesExtracted": 24,
     "placesMatched": 10,
-    "placeGaps": 17,
+    "placeGaps": 14,
     "eventsExtracted": 1,
-    "eventsMatched": 0,
-    "eventGaps": 1,
+    "eventsMatched": 1,
+    "eventGaps": 0,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "Bayland",
-      "city": "Sunnyvale",
-      "kind": "park",
-      "context": "flat hiking trail near Sunnyvale",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
-        "https://www.reddit.com/r/bayarea/comments/1sxhj5r/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/"
-      ]
-    },
-    {
       "name": "Bay Area Glass Institute",
       "city": "",
       "kind": "service",
-      "context": "glassblowing classes for after-work activities",
+      "context": "glassblowing classes",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
-        "https://www.reddit.com/r/bayarea/comments/1sxhj5r/i_redesigned_the_flags_of_14_bay_area_cities/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/"
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/"
       ]
     },
     {
       "name": "Maker Nexus",
       "city": "",
-      "kind": "venue",
-      "context": "maker classes, woodworking, 3D printing, metalwork",
+      "kind": "service",
+      "context": "woodworking, 3D printing, metalwork classes",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
-        "https://www.reddit.com/r/bayarea/comments/1sxhj5r/i_redesigned_the_flags_of_14_bay_area_cities/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/"
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/"
       ]
     },
     {
       "name": "Silicon Valley Bike Exchange",
       "city": "Mountain View",
-      "kind": "retail",
-      "context": "bike repair and volunteer opportunities",
+      "kind": "service",
+      "context": "bike repair and volunteering opportunities",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
-        "https://www.reddit.com/r/bayarea/comments/1sxhj5r/i_redesigned_the_flags_of_14_bay_area_cities/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/"
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/"
+      ]
+    },
+    {
+      "name": "Bayland",
+      "city": "Sunnyvale",
+      "kind": "park",
+      "context": "flat hiking area near Sunnyvale",
+      "sourceUrls": [
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/"
       ]
     },
     {
       "name": "Loopkicks",
       "city": "Sunnyvale",
       "kind": "venue",
-      "context": "tricking gym for backflips and acrobatics",
+      "context": "tricking gym for backflips and parkour",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
-        "https://www.reddit.com/r/bayarea/comments/1sxhj5r/i_redesigned_the_flags_of_14_bay_area_cities/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/"
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/"
       ]
     },
     {
-      "name": "Pruneyard",
-      "city": "Campbell",
-      "kind": "venue",
-      "context": "shopping center where Dough Zone is opening",
+      "name": "Sportys",
+      "city": "Sunnyvale",
+      "kind": "bar",
+      "context": "recreational social venue",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/"
       ]
     },
     {
       "name": "San Jose Rose Garden",
       "city": "San Jose",
       "kind": "park",
-      "context": "popular spot for proposals and ceremonies, semi-secluded",
+      "context": "proposal location with semi-secluded roses and ivy",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
       ]
     },
     {
       "name": "Vasona Park",
       "city": "Los Gatos",
       "kind": "park",
-      "context": "has paddle boats, good for proposals and outdoor activities",
+      "context": "paddle boat rentals, less crowded proposal spot",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
       ]
     },
     {
-      "name": "Hakone Japanese Gardens",
+      "name": "Hakone Gardens",
       "city": "Saratoga",
       "kind": "park",
-      "context": "beautiful gardens with koi, recommended for proposals",
+      "context": "Japanese gardens, near empty on weekdays",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
-      ]
-    },
-    {
-      "name": "Sierra Vista Open Space Reserve",
-      "city": "San Jose",
-      "kind": "park",
-      "context": "spectacular view of south bay, good for proposals",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
       ]
     },
     {
       "name": "Filoli Estate",
       "city": "",
       "kind": "park",
-      "context": "gardens and estate, recommended for proposal photos",
+      "context": "scenic gardens suitable for engagement photos",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
+      ]
+    },
+    {
+      "name": "Sierra Vista Open Space Reserve",
+      "city": "",
+      "kind": "park",
+      "context": "spectacular south bay views for photography",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
       ]
     },
     {
       "name": "Pulgas Water Temple",
       "city": "",
-      "kind": "venue",
-      "context": "nice for photos and proposals",
+      "kind": "park",
+      "context": "scenic location suitable for proposal photos",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
       ]
     },
     {
       "name": "Sunol Wilderness",
       "city": "",
       "kind": "park",
-      "context": "beautiful place for morning hiking and proposals",
+      "context": "morning hiking location for exercise and proposal",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
       ]
     },
     {
       "name": "Lick Observatory",
-      "city": "San Jose",
-      "kind": "venue",
-      "context": "Mt Hamilton location, scenic proposal spot",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
-      ]
-    },
-    {
-      "name": "Torino Panino",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "serves Italian beef sandwiches, expensive",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
-        "https://www.reddit.com/r/bayarea/comments/1sxaq7q/chicagoans_good_italian_beef_in_the_bay/",
-        "https://www.reddit.com/r/bayarea/comments/1swla28/calling_all_my_fellow_chinesehong_kong_bay_area/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
-      ]
-    },
-    {
-      "name": "Girasol Pizza",
       "city": "",
-      "kind": "restaurant",
-      "context": "retired chef makes pizza and beef occasionally",
+      "kind": "venue",
+      "context": "scenic mountaintop location near San Jose",
       "sourceUrls": [
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
-        "https://www.reddit.com/r/bayarea/comments/1sxaq7q/chicagoans_good_italian_beef_in_the_bay/",
-        "https://www.reddit.com/r/bayarea/comments/1swla28/calling_all_my_fellow_chinesehong_kong_bay_area/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
-      ]
-    },
-    {
-      "name": "Bibos",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "near the Arena, attached sandwich shop with Italian beef",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
-        "https://www.reddit.com/r/bayarea/comments/1sxaq7q/chicagoans_good_italian_beef_in_the_bay/",
-        "https://www.reddit.com/r/bayarea/comments/1swla28/calling_all_my_fellow_chinesehong_kong_bay_area/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
       ]
     }
   ],
-  "eventGaps": [
-    {
-      "name": "Swing Dance Weekly",
-      "when": "Wednesday nights 19:00",
-      "city": "Palo Alto",
-      "context": "weekly swing dance accessible by Caltrain",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
-        "https://www.reddit.com/r/bayarea/comments/1sxhj5r/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/"
-      ]
-    }
-  ],
+  "eventGaps": [],
   "placeMatches": [
+    {
+      "name": "Las Palmas Park",
+      "city": "Sunnyvale",
+      "kind": "park",
+      "context": "community opposing proposed fencing and lights renovation",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sx93ok/i_will_always_try_my_best_to_make_the_bay_area_a/",
+        "https://www.reddit.com/r/bayarea/comments/1sxhj5r/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1svshax/no_fence_no_lights_at_las_palmas_park/",
+        "https://www.reddit.com/r/bayarea/comments/1sx7dzi/is_prefab_housing_finally_ready_to_break_through/"
+      ],
+      "matchedName": "Las Palmas Park"
+    },
     {
       "name": "Apple Park",
       "city": "Cupertino",
-      "kind": "venue",
-      "context": "Apple headquarters, major employment center",
+      "kind": "other",
+      "context": "headquarters transformed city, brought traffic and housing costs",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
+        "https://www.reddit.com/r/bayarea/comments/1sx93ok/i_will_always_try_my_best_to_make_the_bay_area_a/",
         "https://www.reddit.com/r/bayarea/comments/1sxhj5r/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/"
+        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1svshax/no_fence_no_lights_at_las_palmas_park/",
+        "https://www.reddit.com/r/bayarea/comments/1sx7dzi/is_prefab_housing_finally_ready_to_break_through/"
       ],
       "matchedName": "Steve Jobs Theater | Apple Park"
     },
@@ -268,13 +224,13 @@
       "name": "Rancho San Antonio",
       "city": "Sunnyvale",
       "kind": "park",
-      "context": "popular hiking destination near Sunnyvale",
+      "context": "popular hiking spot near Sunnyvale",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
-        "https://www.reddit.com/r/bayarea/comments/1sxhj5r/i_redesigned_the_flags_of_14_bay_area_cities/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/"
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/"
       ],
       "matchedName": "Rancho San Antonio County Park & Open Space Preserve"
     },
@@ -282,13 +238,13 @@
       "name": "Color me Mine",
       "city": "Sunnyvale",
       "kind": "venue",
-      "context": "pottery painting activity in Sunnyvale and Palo Alto",
+      "context": "paint-your-own-pottery activity location",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
-        "https://www.reddit.com/r/bayarea/comments/1sxhj5r/i_redesigned_the_flags_of_14_bay_area_cities/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/"
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/"
       ],
       "matchedName": "Color Me Mine"
     },
@@ -296,55 +252,39 @@
       "name": "Downtown Sunnyvale",
       "city": "Sunnyvale",
       "kind": "venue",
-      "context": "food, movie theater, EDM club with DJs",
+      "context": "dining, movie theater, weekend EDM club with DJ events",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
-        "https://www.reddit.com/r/bayarea/comments/1sxhj5r/i_redesigned_the_flags_of_14_bay_area_cities/",
         "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/"
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/"
       ],
       "matchedName": "Downtown Sunnyvale"
-    },
-    {
-      "name": "Dough Zone",
-      "city": "Campbell",
-      "kind": "restaurant",
-      "context": "new location at Pruneyard, opening soon",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
-      ],
-      "matchedName": "Dough Zone Dumpling House Cupertino"
     },
     {
       "name": "Villa Montalvo",
       "city": "Saratoga",
       "kind": "venue",
-      "context": "gardens and art center with hiking trails for proposals",
+      "context": "art center with hiking trails and gardens for proposal",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
       ],
       "matchedName": "Villa Montalvo"
     },
     {
       "name": "The Mountain Winery",
-      "city": "Saratoga",
+      "city": "",
       "kind": "venue",
-      "context": "hilltop destination where proposals have taken place",
+      "context": "hilltop destination where friend proposed",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
       ],
       "matchedName": "The Mountain Winery"
     },
@@ -352,42 +292,56 @@
       "name": "House of Genji",
       "city": "San Jose",
       "kind": "restaurant",
-      "context": "Japanese restaurant on First Street, recommended for post-proposal dinner",
+      "context": "Japanese restaurant recommended for post-proposal dinner",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
       ],
       "matchedName": "House of Genji"
+    },
+    {
+      "name": "Dough Zone",
+      "city": "Campbell",
+      "kind": "restaurant",
+      "context": "new opening at Pruneyard shopping center",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
+      ],
+      "matchedName": "Dough Zone Dumpling House Cupertino"
     },
     {
       "name": "Maple Leaf Donuts",
       "city": "Campbell",
       "kind": "bakery",
-      "context": "family-owned donut shop, beloved by regulars",
+      "context": "family-owned donut shop with Vietnamese iced coffee",
       "sourceUrls": [
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
-        "https://www.reddit.com/r/bayarea/comments/1sxaq7q/chicagoans_good_italian_beef_in_the_bay/",
-        "https://www.reddit.com/r/bayarea/comments/1swla28/calling_all_my_fellow_chinesehong_kong_bay_area/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/"
       ],
       "matchedName": "Maple leaf Donuts"
-    },
-    {
-      "name": "Koi Palace",
-      "city": "Milpitas",
-      "kind": "restaurant",
-      "context": "serves Chinese roast goose, call ahead",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
-        "https://www.reddit.com/r/bayarea/comments/1sxaq7q/chicagoans_good_italian_beef_in_the_bay/",
-        "https://www.reddit.com/r/bayarea/comments/1swla28/calling_all_my_fellow_chinesehong_kong_bay_area/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
-      ],
-      "matchedName": "Koi Palace - Milpitas"
     }
   ],
-  "eventMatches": []
+  "eventMatches": [
+    {
+      "name": "Swing Dance",
+      "when": "Wednesday nights 7:00 PM",
+      "city": "Palo Alto",
+      "context": "weekly swing dance accessible by Caltrain",
+      "sourceUrls": [
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/",
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/bayarea/comments/1sxbykh/most_bay_area_companies_are_required_to_have_a/"
+      ],
+      "matchedName": "Spirit of ’45: Living History & Swing Dance"
+    }
+  ]
 }

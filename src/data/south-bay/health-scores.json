@@ -1,17 +1,6 @@
 {
   "flags": [
     {
-      "business_id": "PR0304119",
-      "name": "Tung Kee Noodle House",
-      "city": "San Jose",
-      "address": "1818 Tully Rd 162b",
-      "date": "2026-04-24",
-      "score": null,
-      "result": "Y",
-      "type": "FOLLOW-UP INSPECTION",
-      "summary": "This is a second charged follow up inspection to the routine inspection conducted on 04/14/26 and the first follow up conducted on 04/20/2026"
-    },
-    {
       "business_id": "PR0379077",
       "name": "Saigon Kitchen",
       "city": "San Jose",
@@ -23,6 +12,17 @@
       "summary": "* Facility is hereby closed due to evidence of a vermin infestation"
     },
     {
+      "business_id": "PR0304119",
+      "name": "Tung Kee Noodle House",
+      "city": "San Jose",
+      "address": "1818 Tully Rd 162b",
+      "date": "2026-04-24",
+      "score": null,
+      "result": "Y",
+      "type": "FOLLOW-UP INSPECTION",
+      "summary": "This is a second charged follow up inspection to the routine inspection conducted on 04/14/26 and the first follow up conducted on 04/20/2026"
+    },
+    {
       "business_id": "PR0304955",
       "name": "Marina Food Ii-market",
       "city": "Cupertino",
@@ -32,6 +32,17 @@
       "result": "Y",
       "type": "ROUTINE INSPECTION",
       "summary": "Inspection conducted in conjunction to CO0159450"
+    },
+    {
+      "business_id": "PR0303604",
+      "name": "Siam Station",
+      "city": "Cupertino",
+      "address": "20956 Homestead Rd # A2",
+      "date": "2026-04-22",
+      "score": 62,
+      "result": "Y",
+      "type": "ROUTINE INSPECTION",
+      "summary": "Food contact surfaces clean, sanitized"
     },
     {
       "business_id": "PR0456129",
@@ -56,17 +67,6 @@
       "summary": "Refer to CO0159443"
     },
     {
-      "business_id": "PR0303604",
-      "name": "Siam Station",
-      "city": "Cupertino",
-      "address": "20956 Homestead Rd # A2",
-      "date": "2026-04-22",
-      "score": 62,
-      "result": "Y",
-      "type": "ROUTINE INSPECTION",
-      "summary": "Food contact surfaces clean, sanitized"
-    },
-    {
       "business_id": "PR0393866",
       "name": "Local Cafe",
       "city": "Cupertino",
@@ -76,39 +76,6 @@
       "result": "Y",
       "type": "ROUTINE INSPECTION",
       "summary": "Note: Food safety manager certificate: Minghua Hu - 11/25/29"
-    },
-    {
-      "business_id": "PR0305016",
-      "name": "Pho Enjoy Ii",
-      "city": "San Jose",
-      "address": "5556 Monterey Rd",
-      "date": "2026-04-20",
-      "score": 84,
-      "result": "R",
-      "type": "ROUTINE INSPECTION",
-      "summary": "Note: Ice machine is not working, per PIC, they are waiting for a part for it"
-    },
-    {
-      "business_id": "PR0306424",
-      "name": "Pier 402",
-      "city": "San Jose",
-      "address": "238 Race St",
-      "date": "2026-04-20",
-      "score": null,
-      "result": "R",
-      "type": "FOLLOW-UP INSPECTION",
-      "summary": "On-site for an operator scheduled first follow-up inspection after the facility was closed due to evidence of a cockroach infestation"
-    },
-    {
-      "business_id": "PR0304119",
-      "name": "Tung Kee Noodle House",
-      "city": "San Jose",
-      "address": "1818 Tully Rd 162b",
-      "date": "2026-04-20",
-      "score": null,
-      "result": "Y",
-      "type": "FOLLOW-UP INSPECTION",
-      "summary": "- On-site for follow-up inspection after facility earned a conditional pass during a routine inspection on 4/14/2026"
     },
     {
       "business_id": "PR0367405",
@@ -122,6 +89,28 @@
       "summary": "- On-site for follow-up inspection after facility was closed due to evidence of a vermin infestation"
     },
     {
+      "business_id": "PR0306424",
+      "name": "Pier 402",
+      "city": "San Jose",
+      "address": "238 Race St",
+      "date": "2026-04-20",
+      "score": null,
+      "result": "R",
+      "type": "FOLLOW-UP INSPECTION",
+      "summary": "On-site for an operator scheduled first follow-up inspection after the facility was closed due to evidence of a cockroach infestation"
+    },
+    {
+      "business_id": "PR0305016",
+      "name": "Pho Enjoy Ii",
+      "city": "San Jose",
+      "address": "5556 Monterey Rd",
+      "date": "2026-04-20",
+      "score": 84,
+      "result": "R",
+      "type": "ROUTINE INSPECTION",
+      "summary": "Note: Ice machine is not working, per PIC, they are waiting for a part for it"
+    },
+    {
       "business_id": "PR0300018",
       "name": "Round Table Pizza #1342",
       "city": "Santa Clara",
@@ -131,6 +120,17 @@
       "result": "Y",
       "type": "ROUTINE INSPECTION",
       "summary": "A follow-up inspection to verify compliance of major violations will be conducted within five business days"
+    },
+    {
+      "business_id": "PR0304119",
+      "name": "Tung Kee Noodle House",
+      "city": "San Jose",
+      "address": "1818 Tully Rd 162b",
+      "date": "2026-04-20",
+      "score": null,
+      "result": "Y",
+      "type": "FOLLOW-UP INSPECTION",
+      "summary": "- On-site for follow-up inspection after facility earned a conditional pass during a routine inspection on 4/14/2026"
     },
     {
       "business_id": "PR0381726",
@@ -166,15 +166,15 @@
       "summary": "This inspection was conducted in conjunction with complaint investigation: CO0159386"
     },
     {
-      "business_id": "PR0306424",
-      "name": "Pier 402",
+      "business_id": "PR0372911",
+      "name": "O'flaherty's",
       "city": "San Jose",
-      "address": "238 Race St",
+      "address": "25 N San Pedro St",
       "date": "2026-04-16",
-      "score": null,
-      "result": "R",
+      "score": 82,
+      "result": "Y",
       "type": "ROUTINE INSPECTION",
-      "summary": "Provided Checklist for Reopening After Closure Due to Vermin Infestation"
+      "summary": "OWNERSHIP CHANGE INFORMATION"
     },
     {
       "business_id": "PR0423728",
@@ -188,6 +188,17 @@
       "summary": "The facility is hereby CLOSED by this department due to evidence of vermin infestation (see violation K23)"
     },
     {
+      "business_id": "PR0306424",
+      "name": "Pier 402",
+      "city": "San Jose",
+      "address": "238 Race St",
+      "date": "2026-04-16",
+      "score": null,
+      "result": "R",
+      "type": "ROUTINE INSPECTION",
+      "summary": "Provided Checklist for Reopening After Closure Due to Vermin Infestation"
+    },
+    {
       "business_id": "PR0306461",
       "name": "Mountain Mikes Pizza",
       "city": "Campbell",
@@ -197,17 +208,6 @@
       "result": "Y",
       "type": "ROUTINE INSPECTION",
       "summary": "A follow-up inspection will be conducted on 4/22/2026 to verily compliance with all of the cited major violations"
-    },
-    {
-      "business_id": "PR0372911",
-      "name": "O'flaherty's",
-      "city": "San Jose",
-      "address": "25 N San Pedro St",
-      "date": "2026-04-16",
-      "score": 82,
-      "result": "Y",
-      "type": "ROUTINE INSPECTION",
-      "summary": "OWNERSHIP CHANGE INFORMATION"
     },
     {
       "business_id": "PR0374901",
@@ -232,6 +232,17 @@
       "summary": "- Two or more major violations were observed during the routine inspection"
     },
     {
+      "business_id": "PR0305555",
+      "name": "Da Sichuan Bistro",
+      "city": "Palo Alto",
+      "address": "3781 El Camino Real",
+      "date": "2026-04-15",
+      "score": 81,
+      "result": "R",
+      "type": "ROUTINE INSPECTION",
+      "summary": "This facility shall remain closed until all major violations have been verified corrected by this department"
+    },
+    {
       "business_id": "PR0424154",
       "name": "Naisnow Tea & Bakery",
       "city": "Cupertino",
@@ -254,15 +265,15 @@
       "summary": "Onsite to conduct a routine inspection, during walk through observed a dead rodent and several droppings in the back of house area"
     },
     {
-      "business_id": "PR0305555",
-      "name": "Da Sichuan Bistro",
-      "city": "Palo Alto",
-      "address": "3781 El Camino Real",
+      "business_id": "PR0428892",
+      "name": "360 Restaurant",
+      "city": "San Jose",
+      "address": "989 Story Rd # 8000",
       "date": "2026-04-15",
-      "score": 81,
+      "score": null,
       "result": "R",
-      "type": "ROUTINE INSPECTION",
-      "summary": "This facility shall remain closed until all major violations have been verified corrected by this department"
+      "type": "FOLLOW-UP INSPECTION",
+      "summary": "- On-site for operator scheduled follow-up inspection after facility was closed due to evidence of a vermin infestation"
     },
     {
       "business_id": "PR0306143",
@@ -287,17 +298,6 @@
       "summary": "Note: The store sells coffee and other prepackaged food products"
     },
     {
-      "business_id": "PR0428892",
-      "name": "360 Restaurant",
-      "city": "San Jose",
-      "address": "989 Story Rd # 8000",
-      "date": "2026-04-15",
-      "score": null,
-      "result": "R",
-      "type": "FOLLOW-UP INSPECTION",
-      "summary": "- On-site for operator scheduled follow-up inspection after facility was closed due to evidence of a vermin infestation"
-    },
-    {
       "business_id": "PR0306310",
       "name": "Emelina's #3",
       "city": "San Jose",
@@ -309,17 +309,6 @@
       "summary": "Onsite for the first follow up inspection where numerous old rodent droppings were observed in an unused oven"
     },
     {
-      "business_id": "PR0304119",
-      "name": "Tung Kee Noodle House",
-      "city": "San Jose",
-      "address": "1818 Tully Rd 162b",
-      "date": "2026-04-14",
-      "score": 52,
-      "result": "Y",
-      "type": "ROUTINE INSPECTION",
-      "summary": "- Two or more major violations were observed during the routine inspection"
-    },
-    {
       "business_id": "PR0430640",
       "name": "The Yellow Chilli",
       "city": "Santa Clara",
@@ -329,9 +318,20 @@
       "result": "Y",
       "type": "ROUTINE INSPECTION",
       "summary": "A follow-up inspection to verify compliance of major violations will be conducted within five business days"
+    },
+    {
+      "business_id": "PR0370887",
+      "name": "Silver Creek Bbq",
+      "city": "San Jose",
+      "address": "4898 San Felipe Rd # 150",
+      "date": "2026-04-14",
+      "score": 77,
+      "result": "Y",
+      "type": "ROUTINE INSPECTION",
+      "summary": "Note: Food safety manager certificate: Hao Le - 2/19/2027"
     }
   ],
-  "generatedAt": "2026-04-27T22:09:16.457Z",
+  "generatedAt": "2026-04-27T23:09:26.852Z",
   "source": "Santa Clara County Department of Environmental Health",
   "sourceUrl": "https://data.sccgov.org/stories/s/SCC-DEH-Food-Facility-Inspections-Data/8ptb-6646/"
 }
