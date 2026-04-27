@@ -12,6 +12,21 @@ type ForecastDay = {
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+function FogIcon({ size = 28 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M 4 11 q 0 -2.5 2.5 -2.5 q 0.5 -3 4 -3 q 3.5 0 4.5 3 q 3 0 3 2.5 q 0 2.5 -3 2.5 l -8.5 0 q -2.5 0 -2.5 -2.5 z"
+        fill="#94A3B8"
+      />
+      <g stroke="#94A3B8" strokeWidth={1.8} strokeLinecap="round">
+        <line x1="4" y1="17" x2="20" y2="17" />
+        <line x1="6" y1="20.5" x2="18" y2="20.5" />
+      </g>
+    </svg>
+  );
+}
+
 interface Props {
   homeCity: City | null;
 }
@@ -101,7 +116,9 @@ export default function ForecastCard({ homeCity }: Props) {
               }}>
                 {label}
               </div>
-              <div className="sbt-forecast-emoji" style={{ fontSize: 22, lineHeight: 1, marginBottom: 6 }}>{day.emoji}</div>
+              <div className="sbt-forecast-emoji" style={{ height: 28, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, lineHeight: 1, marginBottom: 6 }}>
+                {day.emoji === "🌫️" || day.emoji === "🌫" ? <FogIcon size={26} /> : day.emoji}
+              </div>
               <div className="sbt-forecast-temp" style={{
                 fontSize: isToday ? 42 : 32,
                 fontWeight: 800,
