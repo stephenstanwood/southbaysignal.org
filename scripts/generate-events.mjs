@@ -748,6 +748,13 @@ function cleanVenue(raw) {
   // Strip iCal backslash-escaping (\; and \,) before HTML entity decoding so
   // entities like "&nbsp\;" survive as "&nbsp;" and get cleaned by the regex below.
   let v = raw.replace(/\\;/g, ";").replace(/\\,/g, ",");
+  // Decode common HTML entities to their real glyph BEFORE the catch-all
+  // entity stripper turns them into spaces. Without this, "Hobee&apos;s"
+  // becomes "Hobee s" instead of "Hobee's".
+  v = v
+    .replace(/&apos;|&#39;|&#x27;/gi, "'")
+    .replace(/&quot;|&#34;/gi, '"')
+    .replace(/&amp;|&#38;/gi, "&");
   v = v.replace(/<[^>]+>/g, "").replace(/&[a-zA-Z]+;|&#\d+;/g, " ").replace(/\s+/g, " ").trim();
   // Remove leading "- " dash artifact from CivicPlus iCal
   v = v.replace(/^-\s+/, "");
@@ -777,6 +784,10 @@ function cleanVenue(raw) {
   v = v.replace(/\bNursey\b/g, "Nursery");
   // If the entire string is just a raw address (starts with a number), return empty so caller can use fallback
   if (/^\d+\s/.test(v)) return "";
+  // If the cleaning passes left only digits behind (e.g. "41" or "457" — typically
+  // a CivicPlus location field that contained only an event ID or partial address),
+  // return empty so the caller falls back to the source name.
+  if (/^\d+$/.test(v)) return "";
   return v.trim();
 }
 
