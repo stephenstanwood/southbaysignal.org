@@ -1,14 +1,14 @@
 {
   "_meta": {
-    "generatedAt": "2026-04-27T17:18:15.081Z",
+    "generatedAt": "2026-04-27T19:18:44.289Z",
     "generator": "generate-reddit-pulse",
     "sourceCount": 14
   },
   "summary": {
     "threadsMined": 14,
-    "placesExtracted": 28,
-    "placesMatched": 11,
-    "placeGaps": 17,
+    "placesExtracted": 25,
+    "placesMatched": 9,
+    "placeGaps": 16,
     "eventsExtracted": 4,
     "eventsMatched": 0,
     "eventGaps": 4,
@@ -16,40 +16,27 @@
   },
   "placeGaps": [
     {
-      "name": "Voyager Coffee",
-      "city": "San Jose",
-      "kind": "cafe",
-      "context": "coffee shop located in San Pedro Square Market",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sx93ok/i_will_always_try_my_best_to_make_the_bay_area_a/",
-        "https://www.reddit.com/r/SanJose/comments/1swetmb/my_good_friends_in_sj/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/bayarea/comments/1swjoqt/bay_area_yoy_job_growth_in_the_postive_again/",
-        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
-      ]
-    },
-    {
-      "name": "Mini Boss",
-      "city": "San Jose",
+      "name": "Pruneyard",
+      "city": "Campbell",
       "kind": "venue",
-      "context": "venue near San Pedro Square Market downtown",
+      "context": "shopping center where Dough Zone is opening",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sx93ok/i_will_always_try_my_best_to_make_the_bay_area_a/",
-        "https://www.reddit.com/r/SanJose/comments/1swetmb/my_good_friends_in_sj/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/bayarea/comments/1swjoqt/bay_area_yoy_job_growth_in_the_postive_again/",
-        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
+        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ]
     },
     {
       "name": "Bay Area Glass Institute",
       "city": "",
-      "kind": "service",
+      "kind": "venue",
       "context": "glassblowing classes for after-work activities",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ]
@@ -57,25 +44,25 @@
     {
       "name": "Maker Nexus",
       "city": "",
-      "kind": "service",
-      "context": "maker classes including woodworking, 3D printing, metalwork",
+      "kind": "venue",
+      "context": "maker classes including woodworking, 3D printing, metal work",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ]
     },
     {
       "name": "Bayland",
-      "city": "",
+      "city": "Sunnyvale",
       "kind": "park",
-      "context": "flat hiking area near Sunnyvale",
+      "context": "flat hiking and outdoor activity area",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ]
@@ -83,12 +70,12 @@
     {
       "name": "Silicon Valley Bike Exchange",
       "city": "Mountain View",
-      "kind": "retail",
-      "context": "bike repair and learning for volunteers",
+      "kind": "venue",
+      "context": "community bike repair and volunteering spot",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ]
@@ -97,24 +84,24 @@
       "name": "Loopkicks tricking gym",
       "city": "",
       "kind": "venue",
-      "context": "backflip and tricking gym for after-work activity",
+      "context": "backflipping and tricking lessons in Sunnyvale area",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ]
     },
     {
-      "name": "Pruneyard",
-      "city": "Campbell",
-      "kind": "venue",
-      "context": "shopping center with restaurants and retail",
+      "name": "Sportys",
+      "city": "Sunnyvale",
+      "kind": "bar",
+      "context": "after-work social venue mentioned by locals",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ]
@@ -123,11 +110,11 @@
       "name": "San Jose Rose Garden",
       "city": "San Jose",
       "kind": "park",
-      "context": "semi-secluded gardens suitable for proposals",
+      "context": "semi-secluded romantic location with roses and ivy",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ]
@@ -136,11 +123,11 @@
       "name": "Vasona Park",
       "city": "Los Gatos",
       "kind": "park",
-      "context": "park with paddle boat rentals",
+      "context": "park with paddle boats for recreation",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ]
@@ -149,11 +136,11 @@
       "name": "Hakone Gardens",
       "city": "Saratoga",
       "kind": "park",
-      "context": "Japanese gardens with koi, quiet on weekdays",
+      "context": "Japanese gardens with koi ponds, romantic proposal location",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ]
@@ -162,64 +149,13 @@
       "name": "Filoli Estate",
       "city": "",
       "kind": "venue",
-      "context": "estate gardens suitable for proposal photo backdrop",
+      "context": "historic estate gardens for romantic photo backdrops",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
-      ]
-    },
-    {
-      "name": "Crystal Springs Reservoir",
-      "city": "",
-      "kind": "park",
-      "context": "scenic location for proposals",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
-      ]
-    },
-    {
-      "name": "Sierra Vista Open Space Reserve",
-      "city": "San Jose",
-      "kind": "park",
-      "context": "spectacular South Bay views for proposal",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
-      ]
-    },
-    {
-      "name": "Pulgas Water Temple",
-      "city": "",
-      "kind": "venue",
-      "context": "scenic photo location",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
-      ]
-    },
-    {
-      "name": "Rooster T Feathers",
-      "city": "",
-      "kind": "venue",
-      "context": "comedy or entertainment venue added to events listing",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/"
       ]
     },
     {
@@ -229,156 +165,190 @@
       "context": "comedy venue hosting Monsters of Tokyo show",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
         "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/"
+        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1swicde/jojos_hot_chicken_opening_in_old_vons_chicken/"
+      ]
+    },
+    {
+      "name": "Jojo's Hot Chicken",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "new brick and mortar location on Branham Lane, recently opened",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1swicde/jojos_hot_chicken_opening_in_old_vons_chicken/"
+      ]
+    },
+    {
+      "name": "Rooster T Feathers",
+      "city": "",
+      "kind": "venue",
+      "context": "events venue added to local event listings",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1swicde/jojos_hot_chicken_opening_in_old_vons_chicken/"
+      ]
+    },
+    {
+      "name": "Von's Chicken",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "closed location on Branham Lane, replaced by Jojo's",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1swicde/jojos_hot_chicken_opening_in_old_vons_chicken/"
+      ]
+    },
+    {
+      "name": "BBQ Chicken",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "Korean chicken spot opening soon at Hillsdale and Ross",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1swicde/jojos_hot_chicken_opening_in_old_vons_chicken/"
       ]
     }
   ],
   "eventGaps": [
     {
       "name": "Cupertino Cherry Blossom Festival",
-      "when": "Sunday April 26, 2026, 10AM-5:30PM",
+      "when": "Sunday 4/26, 10AM - 5:30PM",
       "city": "Cupertino",
-      "context": "Japanese culture, food, live performances, free admission",
+      "context": "two-day Japanese cultural celebration with food and performances",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
         "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/"
+        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1swicde/jojos_hot_chicken_opening_in_old_vons_chicken/"
       ]
     },
     {
       "name": "Cedar Room Live: Bent",
-      "when": "Sunday April 26, 2026, 8PM-11PM",
+      "when": "Sunday 4/26, 8PM - 11PM",
       "city": "Campbell",
-      "context": "high-energy music with craft cocktails",
+      "context": "live music performance with craft cocktails",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
         "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/"
-      ]
-    },
-    {
-      "name": "San Jose Earthquakes Open Cup Game",
-      "when": "Tuesday April 29, 2026",
-      "city": "San Jose",
-      "context": "MLS team with best start in history",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/"
+        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1swicde/jojos_hot_chicken_opening_in_old_vons_chicken/"
       ]
     },
     {
       "name": "Monsters of Tokyo",
-      "when": "Wednesday April 29, 2026, 7:30PM",
+      "when": "Wednesday 4/29, 7:30PM",
       "city": "San Jose",
-      "context": "Japanese comedy show at San Jose Improv",
+      "context": "Japanese comedy stand-up show",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
         "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/"
+        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1swicde/jojos_hot_chicken_opening_in_old_vons_chicken/"
+      ]
+    },
+    {
+      "name": "San Jose Earthquakes Open Cup Game",
+      "when": "Tuesday",
+      "city": "San Jose",
+      "context": "MLS team with 9-1 record start to season",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
+        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
+        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1swicde/jojos_hot_chicken_opening_in_old_vons_chicken/"
       ]
     }
   ],
   "placeMatches": [
     {
-      "name": "San Pedro Square Market",
-      "city": "San Jose",
-      "kind": "venue",
-      "context": "downtown market with food vendors and hangout spot",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sx93ok/i_will_always_try_my_best_to_make_the_bay_area_a/",
-        "https://www.reddit.com/r/SanJose/comments/1swetmb/my_good_friends_in_sj/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/bayarea/comments/1swjoqt/bay_area_yoy_job_growth_in_the_postive_again/",
-        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
-      ],
-      "matchedName": "San Pedro Square Market"
-    },
-    {
-      "name": "Urban Momo",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "serves black salted crispy wings and tikka fries",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sx93ok/i_will_always_try_my_best_to_make_the_bay_area_a/",
-        "https://www.reddit.com/r/SanJose/comments/1swetmb/my_good_friends_in_sj/",
-        "https://www.reddit.com/r/bayarea/comments/1swf6vr/san_pedro_market_in_downtown_san_jose_is_a_good/",
-        "https://www.reddit.com/r/bayarea/comments/1swjoqt/bay_area_yoy_job_growth_in_the_postive_again/",
-        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
-      ],
-      "matchedName": "Urban Momo"
-    },
-    {
-      "name": "Rancho San Antonio",
-      "city": "",
+      "name": "Las Palmas Park",
+      "city": "Sunnyvale",
       "kind": "park",
-      "context": "popular hiking destination near Sunnyvale",
+      "context": "community opposing proposed redevelopment with fences and lights",
       "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+        "https://www.reddit.com/r/bayarea/comments/1sx93ok/i_will_always_try_my_best_to_make_the_bay_area_a/",
+        "https://www.reddit.com/r/bayarea/comments/1swjoqt/bay_area_yoy_job_growth_in_the_postive_again/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1svshax/no_fence_no_lights_at_las_palmas_park/",
+        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ],
-      "matchedName": "Rancho San Antonio County Park & Open Space Preserve"
+      "matchedName": "Las Palmas Park"
     },
     {
-      "name": "Color me Mine",
-      "city": "Sunnyvale",
+      "name": "Apple Park",
+      "city": "Cupertino",
       "kind": "venue",
-      "context": "pottery painting activity",
+      "context": "headquarters transformed Cupertino, brought wealth and traffic issues",
       "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+        "https://www.reddit.com/r/bayarea/comments/1sx93ok/i_will_always_try_my_best_to_make_the_bay_area_a/",
+        "https://www.reddit.com/r/bayarea/comments/1swjoqt/bay_area_yoy_job_growth_in_the_postive_again/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1svshax/no_fence_no_lights_at_las_palmas_park/",
+        "https://www.reddit.com/r/bayarea/comments/1sxbi21/apple_park_transformed_cupertino_bringing_wealth/",
+        "https://www.reddit.com/r/mountainview/comments/1su68vi/us_news_ranks_mountain_view_6th_best_place_to/"
       ],
-      "matchedName": "Color Me Mine"
-    },
-    {
-      "name": "Downtown Sunnyvale",
-      "city": "Sunnyvale",
-      "kind": "venue",
-      "context": "food and movie theater entertainment district",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
-      ],
-      "matchedName": "Downtown Sunnyvale"
+      "matchedName": "Steve Jobs Theater | Apple Park"
     },
     {
       "name": "Dough Zone",
       "city": "Campbell",
       "kind": "restaurant",
-      "context": "new location opening at Pruneyard",
+      "context": "new location opening at Pruneyard shopping center",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ],
       "matchedName": "Dough Zone Dumpling House Cupertino"
     },
     {
+      "name": "Color me Mine",
+      "city": "Sunnyvale",
+      "kind": "venue",
+      "context": "pottery painting activity, also in Palo Alto",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
+        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+      ],
+      "matchedName": "Color Me Mine"
+    },
+    {
+      "name": "Rancho San Antonio",
+      "city": "Cupertino",
+      "kind": "park",
+      "context": "popular hiking spot near Sunnyvale",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
+        "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
+      ],
+      "matchedName": "Rancho San Antonio County Park & Open Space Preserve"
+    },
+    {
       "name": "Villa Montalvo",
       "city": "Saratoga",
       "kind": "venue",
-      "context": "art center with gardens and hiking trails for proposals",
+      "context": "art center and gardens with hiking trails for engagement photos",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ],
@@ -388,28 +358,15 @@
       "name": "House of Genji",
       "city": "San Jose",
       "kind": "restaurant",
-      "context": "Japanese restaurant on First Street for post-proposal dinner",
+      "context": "Japanese restaurant on First Street recommended for proposal dinner",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Sunnyvale/comments/1sw00ye/moved_to_sunnyvale_recently_what_do_people/",
         "https://www.reddit.com/r/SanJose/comments/1swpedj/what_are_the_names_of_the_mountains_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1sws9ke/voter_information_guide_misinformation_comic/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1swtcw8/less_crowded_places_to_propose_30_minutes_out/"
       ],
       "matchedName": "House of Genji"
-    },
-    {
-      "name": "Maple Leaf Donuts",
-      "city": "Campbell",
-      "kind": "bakery",
-      "context": "family-owned donut shop, beloved by regulars",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
-        "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/"
-      ],
-      "matchedName": "Maple leaf Donuts"
     },
     {
       "name": "Cedar Room",
@@ -418,9 +375,9 @@
       "context": "live music venue hosting Bent performance",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
         "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/"
+        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1swicde/jojos_hot_chicken_opening_in_old_vons_chicken/"
       ],
       "matchedName": "Cedar Room"
     },
@@ -428,12 +385,12 @@
       "name": "Cupertino Memorial Park",
       "city": "Cupertino",
       "kind": "park",
-      "context": "hosts Cherry Blossom Festival with Japanese culture",
+      "context": "hosts Cherry Blossom Festival celebration",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1swpqm4/endometriosis_group/",
-        "https://www.reddit.com/r/Campbell/comments/1swfw1e/found_at_maple_leaf_donuts_today/",
         "https://www.reddit.com/r/SanJose/comments/1swv2hx/hows_san_jose_these_days/",
-        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/"
+        "https://www.reddit.com/r/SanJose/comments/1swhqd7/things_to_do_in_san_jose_this_week_426_53_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1swicde/jojos_hot_chicken_opening_in_old_vons_chicken/"
       ],
       "matchedName": "Cupertino Memorial Park"
     }
