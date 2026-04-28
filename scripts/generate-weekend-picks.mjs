@@ -149,6 +149,23 @@ Return ONLY a JSON array of 5 objects, no other text:
     picks: picks.map(({ eventIndex, why }) => {
       const e = sample[eventIndex - 1];
       if (!e) return null;
+      // Validate any bracketed [Day, Mon D TIME] in the why matches this event.
+      // Claude occasionally pastes a different show's date/time; strip the bracket
+      // rather than ship a contradiction.
+      const bracketRe = /\s*\[[^\]]*\]/g;
+      let validatedWhy = why;
+      const brackets = why?.match(bracketRe) || [];
+      for (const b of brackets) {
+        const inner = b.replace(/[\[\]]/g, "").trim();
+        const expectedDate = (e.displayDate || "").replace(/\./g, "");
+        const expectedTime = (e.time || "").replace(/\s+/g, " ").trim();
+        const matchesDate = expectedDate && inner.toLowerCase().includes(expectedDate.toLowerCase());
+        const matchesTime = expectedTime && inner.toLowerCase().includes(expectedTime.toLowerCase());
+        if (!matchesDate && !matchesTime) {
+          console.warn(`  ⚠️  Stripped non-matching bracket from "${e.title}": ${b.trim()}`);
+          validatedWhy = validatedWhy.replace(b, "");
+        }
+      }
       return {
         id: e.id,
         title: e.title,
@@ -161,7 +178,7 @@ Return ONLY a JSON array of 5 objects, no other text:
         cost: e.cost,
         url: e.url,
         category: e.category,
-        why,
+        why: validatedWhy.replace(/\s{2,}/g, " ").trim(),
       };
     }).filter(Boolean),
   };

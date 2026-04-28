@@ -844,6 +844,9 @@ function cleanVenue(raw) {
   // a CivicPlus location field that contained only an event ID or partial address),
   // return empty so the caller falls back to the source name.
   if (/^\d+$/.test(v)) return "";
+  // If the cleaned value is just a South Bay city/state name with no actual venue,
+  // return empty so the caller emits null rather than rendering "Campbell" as a venue.
+  if (/^(Campbell|Cupertino|Los Altos|Los Gatos|Milpitas|Mountain View|Palo Alto|San Jose|San José|Santa Clara|Saratoga|Sunnyvale)(,?\s+CA)?$/i.test(v.trim())) return "";
   return v.trim();
 }
 
@@ -1530,7 +1533,7 @@ async function fetchCampbellEvents() {
         displayDate: displayDate(start),
         time: timeStr,
         endTime: null,
-        venue: cleanVenue(item.location || "") || "Campbell",
+        venue: cleanVenue(item.location || "") || null,
         address: "",
         city: "campbell",
         category: inferCategory(item.title, item.description, ""),
@@ -1574,7 +1577,7 @@ async function fetchCivicPlusIcal(name, url, defaultCity, defaultCost = "free") 
         const rawUrl = ev.url || null;
         const urlIsRelativeIcal = rawUrl && rawUrl.startsWith("/common/modules/iCalendar/");
         const eventUrl = descIsUrl ? descText.trim() : (!urlIsRelativeIcal ? rawUrl : null);
-        const cleanedVenue = cleanVenue((ev.location || name).replace(/\\,/g, ","));
+        const cleanedVenue = cleanVenue((ev.location || "").replace(/\\,/g, ","));
         return {
           id: h(defaultCity, ev.uid || ev.summary, ev.dtstart),
           title: ev.summary.replace(/\\,/g, ",").replace(/\\n/g, " "),
@@ -1585,7 +1588,7 @@ async function fetchCivicPlusIcal(name, url, defaultCity, defaultCost = "free") 
           // without a published end time. Treat those as "no end time" rather
           // than a zero-duration event.
           endTime: end && end.getTime() !== start.getTime() ? displayTime(end) : null,
-          venue: cleanedVenue || name,
+          venue: cleanedVenue || null,
           address: "",
           city,
           category: inferCategory(ev.summary, ev.description || "", ""),
@@ -1681,7 +1684,7 @@ async function fetchCivicPlusRssCity(name, url, defaultCity) {
         displayDate: displayDate(start),
         time: timeStr,
         endTime: null,
-        venue: venueLabel || name,
+        venue: venueLabel || null,
         address: "",
         city: defaultCity,
         category: inferCategory(item.title, item.description, ""),
@@ -1859,6 +1862,22 @@ const SCCL_LOCATION_MAP = {
   // MH = Morgan Hill, GI = Gilroy — outside South Bay, omit
 };
 
+// SCCL branch display names (used as the `venue` field on the event card so the
+// city-specific branch shows in the meta row instead of the generic system name).
+// Without this, every SCCL event reads "Santa Clara County Library" and the
+// title has to carry the branch (e.g. "ESL Conversation Club at Milpitas
+// Library") — we'd rather move the branch info to the venue line.
+const SCCL_LOCATION_BRANCH = {
+  CA: "Campbell Library",
+  CU: "Cupertino Library",
+  LA: "Los Altos Library",
+  WO: "Woodland Library",
+  LG: "Los Gatos Library",
+  MI: "Milpitas Library",
+  SA: "Saratoga Library",
+  SC: "Santa Clara City Library",
+};
+
 function scclCityMapper(branch, addr, locationCode) {
   if (locationCode && SCCL_LOCATION_MAP[locationCode]) return SCCL_LOCATION_MAP[locationCode];
   const text = `${branch} ${addr}`.toLowerCase();
@@ -1906,6 +1925,7 @@ async function fetchScclEvents() {
         const end = parseDatePT(endStr);
         const title = ev.title || ev.definition?.title || "";
         const desc = ev.description || ev.definition?.description || "";
+        const branchVenue = SCCL_LOCATION_BRANCH[locationCode] || libraryName;
 
         allEvents.push({
           id: `${libraryId}-${ev.id}`,
@@ -1914,7 +1934,7 @@ async function fetchScclEvents() {
           displayDate: displayDate(start),
           time: displayTime(start),
           endTime: end && end.getTime() !== start.getTime() ? displayTime(end) : null,
-          venue: libraryName,
+          venue: branchVenue,
           address: "",
           city,
           category: inferCategory(title, stripHtml(desc), ev.type || ""),
@@ -4078,6 +4098,8 @@ function fetchInboundEvents() {
       if (/^\d+(-\d+)?\s+/.test(venueName)) {
         venueName = venueName.replace(/^\d+(-\d+)?\s+/, "").trim();
       }
+      // Drop bare city/state stubs like "Campbell" or "San Jose, CA" — those aren't venues.
+      venueName = cleanVenue(venueName) || null;
 
       out.push({
         id: h("inbound", e.id, dateKey, e.title),
