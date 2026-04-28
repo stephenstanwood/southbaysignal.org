@@ -11,6 +11,7 @@ import PhotoStrip from "./PhotoStrip";
 import RedditPulseTeaser from "./RedditPulseTeaser";
 import CityHallThisWeek from "./CityHallThisWeek";
 import JustOpened from "./JustOpened";
+import MothersDayPlan from "./MothersDayPlan";
 import SchoolYearEndgame from "./SchoolYearEndgame";
 import SummerCampsCountdown from "./SummerCampsCountdown";
 import ForecastCard from "../cards/ForecastCard";
@@ -938,6 +939,9 @@ export default function SouthBayTodayView(_props: Props) {
 
       {/* Just Opened — fresh South Bay food spots from health-permit data */}
       <JustOpened onSeeAll={() => _props.onNavigate("food")} />
+
+      {/* Mother's Day Plan — picks for the weekend, retires the day after */}
+      <MothersDayPlan onSeeAll={() => _props.onNavigate("events")} />
 
       {/* School Year Endgame — AP exams, finals, graduation, last day */}
       <SchoolYearEndgame onSeeAll={() => _props.onNavigate("events")} />
