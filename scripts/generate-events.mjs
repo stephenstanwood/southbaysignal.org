@@ -669,6 +669,42 @@ const ABBR_RESTORE_PAIRS = [
   [/ETCABBR/gi, "etc."],
 ];
 
+// Private-Use placeholder for periods that must survive the sentence splitter:
+// decimal numbers ("1.5-hour"), URLs ("sccld.org/accessibility"), and email/
+// website hostnames ("@svlg.org"). Without masking, the splitter chops these
+// at the dot, the join+capitalize step then produces "1. 5-hour", "sccld. Org",
+// "svlg. Org" — visible regressions in event descriptions.
+const DOT_PLACEHOLDER = "";
+const KNOWN_TLDS = "org|com|net|edu|gov|io|co|app|ai|info|biz|us|tv|aspx|html|htm|php|pdf";
+
+function maskDomainAndDecimalDots(text) {
+  let t = text;
+  // Decimals: "1.5", "24.3", "$1.5M"
+  t = t.replace(/(\d)\.(\d)/g, `$1${DOT_PLACEHOLDER}$2`);
+  // Hostnames ending in a known TLD ("sccld.org", "svlg.org"). Multi-pass so
+  // multi-segment hosts ("interland3.donorperfect.net") get every dot.
+  const tldRe = new RegExp(
+    `\\b([A-Za-z][\\w-]*)\\.(${KNOWN_TLDS})\\b`,
+    "g",
+  );
+  let prev;
+  do {
+    prev = t;
+    t = t.replace(tldRe, `$1${DOT_PLACEHOLDER}$2`);
+    // Promote a preceding "<word>." into the placeholder run so the next pass
+    // can see it as part of the same hostname.
+    t = t.replace(
+      new RegExp(`\\b([A-Za-z][\\w-]*)\\.([A-Za-z][\\w-]*${DOT_PLACEHOLDER})`, "g"),
+      `$1${DOT_PLACEHOLDER}$2`,
+    );
+  } while (t !== prev);
+  return t;
+}
+
+function restoreDomainAndDecimalDots(text) {
+  return text.replace(new RegExp(DOT_PLACEHOLDER, "g"), ".");
+}
+
 function polishDescription(text) {
   if (!text) return "";
   let t = text;
@@ -703,6 +739,10 @@ function polishDescription(text) {
 
   // Mask abbreviations so their internal periods don't trip the sentence splitter.
   for (const [pat, sub] of ABBR_MASK_PAIRS) t = t.replace(pat, sub);
+
+  // Mask domain hostnames ("sccld.org", "interland3.donorperfect.net") and
+  // decimals ("1.5-hour", "24.3%") so their dots survive sentence-splitting.
+  t = maskDomainAndDecimalDots(t);
 
   // Downcase ALL-CAPS runs of 4+ uppercase letters (preserve common acronyms).
   // Same logic as cleanTitle but applied to body text.
@@ -747,6 +787,9 @@ function polishDescription(text) {
   // Restore masked abbreviations (must run after capitalization so an "a.m."
   // at the start of a sentence isn't accidentally re-cased to "A.m.")
   for (const [pat, sub] of ABBR_RESTORE_PAIRS) t = t.replace(pat, sub);
+
+  // Restore domain/decimal placeholder dots.
+  t = restoreDomainAndDecimalDots(t);
 
   return t;
 }
@@ -4635,7 +4678,14 @@ async function main() {
   console.log("\nBy city:", byCity);
 }
 
-main().catch((err) => {
-  console.error("Fatal:", err);
-  process.exit(1);
-});
+// When invoked directly, run the full event-generation pipeline. When imported
+// (e.g. by repolish-event-descriptions.mjs to re-use polishDescription on
+// existing data), skip the auto-run so the importer can call individual helpers.
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((err) => {
+    console.error("Fatal:", err);
+    process.exit(1);
+  });
+}
+
+export { polishDescription };
