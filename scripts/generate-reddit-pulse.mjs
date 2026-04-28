@@ -43,6 +43,31 @@ const IMAGE_CACHE_PATH = join(DATA_DIR, "reddit-image-cache.json");
 const MAX_COMMENT_FETCHES = 14;
 const TOP_COMMENTS_PER_POST = 30;
 
+// Map free-text city strings (Haiku output) → canonical South Bay cityId.
+// Cities NOT in this map are out-of-scope (e.g., Daly City, Oakland, SF) and
+// must be skipped — Reddit threads on r/bayarea regularly mention them.
+const CITY_ID_MAP = {
+  "san jose":      "san-jose",
+  "mountain view": "mountain-view",
+  "sunnyvale":     "sunnyvale",
+  "santa clara":   "santa-clara",
+  "cupertino":     "cupertino",
+  "milpitas":      "milpitas",
+  "campbell":      "campbell",
+  "saratoga":      "saratoga",
+  "los gatos":     "los-gatos",
+  "los altos":     "los-altos",
+  "los altos hills": "los-altos",
+  "palo alto":     "palo-alto",
+};
+function resolveCity(raw) {
+  const key = (raw || "").trim().toLowerCase();
+  if (!key) return null;
+  const cityId = CITY_ID_MAP[key];
+  if (!cityId) return null;
+  return { cityId, cityName: key.toUpperCase() };
+}
+
 // ─── Subreddit list ───────────────────────────────────────────────────
 const SUBS = [
   // South Bay core
@@ -794,9 +819,13 @@ Return ONLY the JSON object, no other text.`;
         (p) => p.category === "restaurant_news" && p.relevance >= 7,
       );
 
-      // Index already-known to avoid dupes — case-insensitive name+source match
-      const existingKeys = new Set(
-        [...fo.opened, ...fo.comingSoon].map((r) => `${normalizeName(r.name)}|${(r.source || "").trim()}`),
+      // Cross-source dedup by normalized name only — an SCC permit entry and
+      // a Reddit post about the same restaurant must collide. Source URL was
+      // a poor key (SCC entries have no source, so reddit dupes slipped in).
+      const existingNames = new Set(
+        [...fo.opened, ...fo.comingSoon]
+          .map((r) => normalizeName(r.name))
+          .filter(Boolean),
       );
 
       for (const post of restaurantPosts) {
@@ -828,23 +857,34 @@ Be strict. If this is a recommendation thread, a question, or general chat, vali
             v.name &&
             ["opened", "comingSoon"].includes(v.signal)
           ) {
-            const key = `${normalizeName(v.name)}|${post.permalink}`;
-            if (!existingKeys.has(key)) {
-              const entry = {
-                name: v.name,
-                city: v.city || "",
-                blurb: v.blurb || post.title,
-                source: post.permalink,
-                sourceLabel: `r/${post.sub}`,
-                discoveredAt: new Date().toISOString(),
-                discoveryMethod: "reddit-pulse",
-              };
-              if (v.signal === "opened") fo.opened.push(entry);
-              else fo.comingSoon.push(entry);
-              existingKeys.add(key);
-              appendedCount++;
-              console.log(`  ➕ auto-added [${v.signal}] ${v.name} (${v.city})`);
+            const normName = normalizeName(v.name);
+            if (existingNames.has(normName)) continue;
+            const cityResolved = resolveCity(v.city);
+            if (!cityResolved) {
+              console.log(`  ⊘ skipped [${v.signal}] ${v.name} — out-of-scope city "${v.city}"`);
+              continue;
             }
+            const status = v.signal === "opened" ? "opened" : "coming-soon";
+            const today = new Date().toISOString().slice(0, 10);
+            const entry = {
+              id: `${v.signal === "opened" ? "opened" : "soon"}-reddit-${post.id}`,
+              name: v.name,
+              address: null,
+              cityId: cityResolved.cityId,
+              cityName: cityResolved.cityName,
+              date: v.signal === "opened" ? today : null,
+              status,
+              blurb: v.blurb || post.title,
+              source: post.permalink,
+              sourceLabel: `r/${post.sub}`,
+              discoveredAt: new Date().toISOString(),
+              discoveryMethod: "reddit-pulse",
+            };
+            if (v.signal === "opened") fo.opened.push(entry);
+            else fo.comingSoon.push(entry);
+            existingNames.add(normName);
+            appendedCount++;
+            console.log(`  ➕ auto-added [${v.signal}] ${v.name} (${cityResolved.cityName})`);
           }
         } catch (err) {
           console.warn(`  ⚠️  validate fail for ${post.id}: ${err.message}`);
