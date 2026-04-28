@@ -2,7 +2,8 @@
 // The Conversation — Reddit-driven local chatter
 // ---------------------------------------------------------------------------
 // Tile grid of curated discussions/news/restaurant chatter from regional subs.
-// Recraft tiles when present, color-block fallback when not.
+// Generator guarantees every shipped post has a Recraft image — posts that
+// fail image generation get swapped out for reserve candidates upstream.
 // ---------------------------------------------------------------------------
 
 import pulseData from "../../../data/south-bay/reddit-pulse.json";
@@ -26,17 +27,6 @@ interface PulsePost {
   externalUrl: string | null;
 }
 
-// Each category gets a distinctive 2-color gradient used as the placeholder
-// when no Recraft image is available. Keeps the grid feeling colorful even
-// before the Mini has had a chance to populate images.
-const CATEGORY_GRADIENT: Record<string, string> = {
-  restaurant_news: "linear-gradient(135deg, #f59e0b 0%, #ec4899 100%)",
-  event:           "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
-  discussion:      "linear-gradient(135deg, #06b6d4 0%, #10b981 100%)",
-  news:            "linear-gradient(135deg, #6366f1 0%, #14b8a6 100%)",
-  sports:          "linear-gradient(135deg, #22c55e 0%, #eab308 100%)",
-};
-
 function formatAge(hours: number): string {
   if (hours < 1) return "now";
   if (hours < 24) return `${Math.round(hours)}h ago`;
@@ -50,7 +40,12 @@ function formatAge(hours: number): string {
 const PULSE_TILE_COUNT = 12;
 
 export default function RedditPulseTeaser() {
-  const posts = ((pulseData?.posts ?? []) as PulsePost[]).slice(0, PULSE_TILE_COUNT);
+  // Defensive: drop any post without a real image. Generator guarantees images
+  // upstream, but if a stale data file slips through we'd rather show fewer
+  // tiles than a gradient placeholder.
+  const posts = ((pulseData?.posts ?? []) as PulsePost[])
+    .filter((p) => !!p.image)
+    .slice(0, PULSE_TILE_COUNT);
   if (posts.length === 0) return null;
 
   return (
@@ -74,7 +69,6 @@ export default function RedditPulseTeaser() {
 
       <div className="rp-grid">
         {posts.map((p) => {
-          const fallback = CATEGORY_GRADIENT[p.category] ?? "linear-gradient(135deg, #6366f1 0%, #14b8a6 100%)";
           return (
             <a
               key={p.id}
@@ -83,7 +77,7 @@ export default function RedditPulseTeaser() {
               rel="noopener noreferrer"
               className="rp-tile"
               style={{
-                background: p.image ? `#000 url(${p.image}) center/cover no-repeat` : fallback,
+                background: `#000 url(${p.image}) center/cover no-repeat`,
               }}
             >
               {/* Bottom-up gradient for legibility under title */}

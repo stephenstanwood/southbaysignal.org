@@ -382,10 +382,130 @@ Return ONLY a JSON array of objects, no other text.`;
     console.log(`Backfilled to ${pulse.length} (target ${PULSE_TARGET}).`);
   }
 
-  // ─── PHASE 3a: Light-touch title polish ─────────────────────────────
-  // Fixes obvious grammar/punctuation/typo issues without touching Reddit voice.
-  // One Haiku call for all 12 pulse titles; original `title` is preserved on
-  // each post (for traceability) and `displayTitle` is what the UI renders.
+  // Reserve pool — extra eligible posts that survived topic-dedupe but didn't
+  // make the cut. Used in Phase 3b to swap out tiles whose Recraft generation
+  // fails so the homepage never ships a blank/gradient tile.
+  const reservePool = [];
+  for (const p of enriched.sort((a, b) => b.createdUtc - a.createdUtc)) {
+    if (seenIds.has(p.id)) continue;
+    if (p.topic && seenTopics.has(p.topic)) continue;
+    if (!POSITIVE_CATEGORIES.has(p.category)) continue;
+    if (p.relevance < 4 || p.ageHours > 168) continue;
+    reservePool.push(p);
+    seenIds.add(p.id);
+    if (p.topic) seenTopics.add(p.topic);
+  }
+  console.log(`Reserve pool: ${reservePool.length} posts available for image-fallback swap.`);
+
+  // ─── PHASE 3b: Generate Recraft images (with fallbacks, no gradients) ─
+  // Image generation acts as a filter, not a soft fallback. For each tile we
+  // try the original prompt; if that fails we try a category-generic prompt;
+  // if THAT fails we drop the post and pull a replacement from the reserve.
+  // The homepage NEVER ships a tile without a real image.
+  let imageCache = {};
+  if (existsSync(IMAGE_CACHE_PATH)) {
+    try { imageCache = JSON.parse(readFileSync(IMAGE_CACHE_PATH, "utf8")); } catch {}
+  }
+
+  // Generic per-category fallback prompts — used when a post-specific prompt
+  // gets rejected by Recraft (content moderation, weird subject, etc.).
+  // Topic-agnostic so they never hit the same rejection.
+  const GENERIC_FALLBACK_PROMPTS = {
+    restaurant_news: "abstract still-life of plates, cups, and food shapes in pop-art style, vivid warm palette",
+    event:           "abstract confetti, balloons, and celebration shapes in flat-color illustration, vibrant palette",
+    discussion:      "abstract overlapping speech bubbles and dots in pop-art style, bold mixed palette",
+    news:            "abstract geometric collage of overlapping rectangles and circles, bold mixed palette",
+    sports:          "abstract dynamic motion lines and arrow shapes in flat-color illustration, energetic mixed palette",
+  };
+
+  async function tryRecraft(p, prompt) {
+    const fullPrompt = `${prompt}. Bold flat-color illustration. Vivid colors. Square 1:1 ratio. NO TEXT, no letters, no words, no people, no logos, no faces.`;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const result = await generateAndUpload({
+          prompt: fullPrompt,
+          pathname: `reddit-pulse/${p.id}.png`,
+        });
+        return result.url;
+      } catch (err) {
+        const msg = err.message || "";
+        if (msg.includes("429") && attempt < 2) {
+          const wait = 4000 * (attempt + 1);
+          console.warn(`  ⏳ tile r/${p.sub}/${p.id} rate-limited, waiting ${wait}ms…`);
+          await sleep(wait);
+          continue;
+        }
+        console.warn(`  ⚠️  tile r/${p.sub}/${p.id} failed: ${msg}`);
+        return null;
+      }
+    }
+    return null;
+  }
+
+  async function generateTile(p) {
+    const cached = imageCache[p.id];
+    if (cached?.url) return cached.url;
+    if (!p.imagePrompt) return null;
+
+    // First attempt: post-specific prompt
+    let url = await tryRecraft(p, p.imagePrompt);
+    if (url) return url;
+
+    // Second attempt: category-generic fallback
+    const generic = GENERIC_FALLBACK_PROMPTS[p.category];
+    if (generic) {
+      console.warn(`  ↻ retrying r/${p.sub}/${p.id} with generic ${p.category} prompt…`);
+      await sleep(1500);
+      url = await tryRecraft(p, generic);
+      if (url) return url;
+    }
+    return null;
+  }
+
+  console.log(`Generating Recraft tiles for ${pulse.length} posts (reserve: ${reservePool.length})…`);
+  const finalPulse = [];
+  const imageById = new Map();
+  const candidateQueue = [...pulse, ...reservePool];
+
+  for (const p of candidateQueue) {
+    if (finalPulse.length >= PULSE_TARGET) break;
+    const url = await generateTile(p);
+    if (url) {
+      imageCache[p.id] = imageCache[p.id] || { url, prompt: p.imagePrompt, generatedAt: new Date().toISOString() };
+      finalPulse.push(p);
+      imageById.set(p.id, url);
+      console.log(`  ✓ tile r/${p.sub}/${p.id} (${finalPulse.length}/${PULSE_TARGET})`);
+    } else {
+      console.log(`  ⨯ tile r/${p.sub}/${p.id} dropped — no image available`);
+    }
+    // Polite spacing between calls regardless of success
+    await sleep(1500);
+  }
+
+  // Replace the pulse list with the image-filtered final list. Anything that
+  // didn't get an image is gone — no nulls reach the UI.
+  pulse.length = 0;
+  pulse.push(...finalPulse);
+  console.log(`Final pulse: ${pulse.length} posts (target ${PULSE_TARGET}).`);
+
+  // Persist image cache (even on partial failure — we want successful URLs saved).
+  writeFileSync(IMAGE_CACHE_PATH, JSON.stringify(imageCache, null, 2) + "\n");
+
+  // Prune cache entries that haven't been seen in pulse for >30 days.
+  // (Simple pruning: keep only ones referenced this run + recent ones.)
+  const pulseIds = new Set(pulse.map((p) => p.id));
+  const now = Date.now();
+  const prunedCache = {};
+  for (const [id, entry] of Object.entries(imageCache)) {
+    const ageDays = (now - new Date(entry.generatedAt).getTime()) / 86400000;
+    if (pulseIds.has(id) || ageDays < 30) prunedCache[id] = entry;
+  }
+  writeFileSync(IMAGE_CACHE_PATH, JSON.stringify(prunedCache, null, 2) + "\n");
+
+  // ─── PHASE 3c: Light-touch title polish ─────────────────────────────
+  // Runs AFTER image filtering so we polish only what we're actually shipping
+  // (including any reserve-swapped posts). One Haiku call for all final titles.
+  // Original `title` is preserved on each post; `displayTitle` is what the UI renders.
   if (pulse.length > 0) {
     const titlesBlock = pulse
       .map((p, i) => `${i + 1}. ${p.title}`)
@@ -438,75 +558,6 @@ No other text.`;
       console.warn(`  ⚠️  polish failed: ${err.message}`);
     }
   }
-
-  // ─── PHASE 3b: Generate Recraft images per post (cached) ────────────
-  // Cache by post.id so a post that survives across runs reuses its image.
-  // Generate in parallel — Recraft is async-friendly.
-  let imageCache = {};
-  if (existsSync(IMAGE_CACHE_PATH)) {
-    try { imageCache = JSON.parse(readFileSync(IMAGE_CACHE_PATH, "utf8")); } catch {}
-  }
-
-  console.log(`Generating Recraft tiles for ${pulse.length} posts…`);
-  // Serialize with a small delay — Recraft rate-limits parallel calls.
-  const imageResults = [];
-  for (const p of pulse) {
-    const cached = imageCache[p.id];
-    if (cached?.url) {
-      imageResults.push({ id: p.id, url: cached.url });
-      continue;
-    }
-    if (!p.imagePrompt) {
-      imageResults.push({ id: p.id, url: null });
-      continue;
-    }
-
-    const fullPrompt = `${p.imagePrompt}. Bold flat-color illustration. Vivid colors. Square 1:1 ratio. NO TEXT, no letters, no words, no people, no logos, no faces.`;
-
-    let url = null;
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        const result = await generateAndUpload({
-          prompt: fullPrompt,
-          pathname: `reddit-pulse/${p.id}.png`,
-        });
-        url = result.url;
-        break;
-      } catch (err) {
-        const msg = err.message || "";
-        if (msg.includes("429") && attempt < 2) {
-          const wait = 4000 * (attempt + 1);
-          console.warn(`  ⏳ tile r/${p.sub}/${p.id} rate-limited, waiting ${wait}ms…`);
-          await sleep(wait);
-          continue;
-        }
-        console.warn(`  ⚠️  tile r/${p.sub}/${p.id} failed: ${msg}`);
-        break;
-      }
-    }
-
-    if (url) {
-      imageCache[p.id] = { url, prompt: p.imagePrompt, generatedAt: new Date().toISOString() };
-      console.log(`  ✓ tile r/${p.sub}/${p.id}`);
-    }
-    imageResults.push({ id: p.id, url });
-    await sleep(1500); // polite spacing between Recraft calls
-  }
-  const imageById = new Map(imageResults.map((r) => [r.id, r.url]));
-
-  // Persist image cache (even on partial failure — we want successful URLs saved).
-  writeFileSync(IMAGE_CACHE_PATH, JSON.stringify(imageCache, null, 2) + "\n");
-
-  // Prune cache entries that haven't been seen in pulse for >30 days.
-  // (Simple pruning: keep only ones referenced this run + recent ones.)
-  const pulseIds = new Set(pulse.map((p) => p.id));
-  const now = Date.now();
-  const prunedCache = {};
-  for (const [id, entry] of Object.entries(imageCache)) {
-    const ageDays = (now - new Date(entry.generatedAt).getTime()) / 86400000;
-    if (pulseIds.has(id) || ageDays < 30) prunedCache[id] = entry;
-  }
-  writeFileSync(IMAGE_CACHE_PATH, JSON.stringify(prunedCache, null, 2) + "\n");
 
   const pulseOutput = {
     _meta: generatorMeta("generate-reddit-pulse", {
