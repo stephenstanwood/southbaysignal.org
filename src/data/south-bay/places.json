@@ -7,11 +7,11 @@
       "Google Places API (New) Text Search",
       "poi-data.ts (curated)"
     ],
-    "lastBackfilledAt": "2026-04-28T11:16:53.608Z",
+    "lastBackfilledAt": "2026-04-28T13:16:53.470Z",
     "lastBackfillSource": "reddit-gaps"
   },
   "stats": {
-    "total": 2539,
+    "total": 2540,
     "curated": 49,
     "googleOnly": 2450,
     "byCity": {
@@ -90604,6 +90604,42 @@
       "indoorOutdoor": "indoor",
       "kidFriendlyChanged": false,
       "indoorOutdoorChanged": true,
+      "source": "https://www.reddit.com/r/SanJose/comments/1sxre9s/tojo_coffee_tea_house_is_now_open_on_winchester/"
+    },
+    {
+      "id": "ChIJey2KFZa1j4ARsVW0X9Y_Mfs",
+      "name": "Ten Ren Tea",
+      "address": "10881 N Wolfe Rd, Cupertino, CA 95014, USA",
+      "city": "cupertino",
+      "lat": 37.335668999999996,
+      "lng": -122.01491750000001,
+      "rating": 4.5,
+      "ratingCount": 486,
+      "priceLevel": "PRICE_LEVEL_INEXPENSIVE",
+      "types": [
+        "tea_house",
+        "point_of_interest",
+        "establishment"
+      ],
+      "primaryType": "tea_house",
+      "displayType": "Tea house",
+      "category": "food",
+      "hours": {
+        "sun": "11:30-20:00",
+        "mon": "11:30-20:00",
+        "tue": "11:30-20:00",
+        "wed": "11:30-20:00",
+        "thu": "11:30-20:00",
+        "fri": "11:00-21:00",
+        "sat": "11:00-21:00"
+      },
+      "url": "http://www.tenren.com/",
+      "mapsUrl": "https://maps.google.com/?cid=18100318567339939249&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "photoRef": "places/ChIJey2KFZa1j4ARsVW0X9Y_Mfs/photos/Ab43m-uPnSJv0h8v09yb-gL6jKqcIPZWNbeYddycneg-iuLoNK6nxMDnHdUOtf5Vbx6uqhH3KEjrp4ZxASN93qtz2zK-3VliWitcxEZytsKROHr-8WDvFN4k0-kkQoT8xiiF0E-ajqmCrKBdJ92JtM7QoHQ3FGN_CfQZ4dYiTehwTk03FnzKL_rkkM6pzeiellKsufmaar6tknHBx_7thap3iqtGIUKCkXkiY2C0cNwqhZHqWNP2mfNUNW9YhYdMtdA-K7iG_Xe6HawXioB3ov-PFXdEsueiBccQETAedAo9Gam2W5bzM6yImNR0Gn__NoW-N4B4T8DnaUvEJvM7qL8pWXQMc6T-im6wKAXvo7Al7yL8olEcn2YogmDY6rLGX5ibuYI6CjkRiEye0lNZF_2CbuOZczumMklwaU_wj_v1R7tiHw",
+      "curated": false,
+      "discoverySource": "reddit-gaps",
+      "kidFriendlyChanged": false,
+      "indoorOutdoorChanged": false,
       "source": "https://www.reddit.com/r/SanJose/comments/1sxre9s/tojo_coffee_tea_house_is_now_open_on_winchester/"
     }
   ]
