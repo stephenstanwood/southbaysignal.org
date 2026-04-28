@@ -587,6 +587,17 @@ function truncate(text, len = 200) {
   return text.substring(0, len).replace(/\s+\S*$/, "") + "…";
 }
 
+// CivicPlus RSS descriptions often pack structured metadata into the body, e.g.
+// "Event date: May 3, 2026 Event Time: 12:30 PM - 11:59 PM Location: 1 W. Campbell Ave..."
+// Pull out the actual description (anything after "Description:") and drop the rest.
+function stripCivicPlusMetadata(text) {
+  if (!text) return "";
+  const descMatch = text.match(/\bDescription:\s*(.+)$/is);
+  if (descMatch) return descMatch[1].trim();
+  if (/^\s*Event date:/i.test(text)) return "";
+  return text;
+}
+
 // Strip bare URLs and common scraper artifacts from description text.
 // CivicPlus iCal and some RSS feeds append calendar URLs and UI text to descriptions.
 function stripBareUrls(text) {
@@ -1481,7 +1492,7 @@ async function fetchCampbellEvents() {
         city: "campbell",
         category: inferCategory(item.title, item.description, ""),
         cost: "free",
-        description: truncate(stripHtml(item.description)),
+        description: truncate(stripCivicPlusMetadata(stripHtml(item.description))),
         url: item.link,
         source: "City of Campbell",
         kidFriendly: /\b(kid|family|story|youth|grade|ages?\s*\d|children|toddler|baby|preschool)\b/i.test(item.title),
@@ -1632,7 +1643,7 @@ async function fetchCivicPlusRssCity(name, url, defaultCity) {
         city: defaultCity,
         category: inferCategory(item.title, item.description, ""),
         cost: "free",
-        description: truncate(stripHtml(item.description)),
+        description: truncate(stripCivicPlusMetadata(stripHtml(item.description))),
         url: item.link,
         source: name,
         kidFriendly: /\b(kid|family|story|youth|grade|ages?\s*\d|children|toddler|baby|preschool)\b/i.test(titleLower),
