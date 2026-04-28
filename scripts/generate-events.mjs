@@ -648,12 +648,14 @@ const ABBR_MASK_PAIRS = [
   [/\bi\.e\./gi, "IEABBR"],
   [/\betc\./gi, "ETCABBR"],
 ];
+// Case-insensitive: the all-caps downcaser on line ~709 will rewrite
+// "PMABBR" → "Pmabbr" before restore runs, so both forms must match.
 const ABBR_RESTORE_PAIRS = [
-  [/PMABBR/g, "p.m."],
-  [/AMABBR/g, "a.m."],
-  [/EGABBR/g, "e.g."],
-  [/IEABBR/g, "i.e."],
-  [/ETCABBR/g, "etc."],
+  [/PMABBR/gi, "p.m."],
+  [/AMABBR/gi, "a.m."],
+  [/EGABBR/gi, "e.g."],
+  [/IEABBR/gi, "i.e."],
+  [/ETCABBR/gi, "etc."],
 ];
 
 function polishDescription(text) {

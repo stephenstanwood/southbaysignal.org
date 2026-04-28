@@ -100,7 +100,7 @@ async function main() {
   // Summarize events for Claude (cap to 150 to keep prompt reasonable)
   const sample = weekend.slice(0, 150);
   const eventList = sample.map((e, i) =>
-    `${i + 1}. [${e.date} ${e.time || "all day"}] ${e.title} — ${cityLabel(e.city)}${e.venue ? `, ${e.venue}` : ""} (${e.cost}) — ${(e.description || "").slice(0, 120)}`
+    `${i + 1}. [${e.displayDate || e.date} ${e.time || "all day"}] ${e.title} — ${cityLabel(e.city)}${e.venue ? `, ${e.venue}` : ""} (${e.cost}) — ${(e.description || "").slice(0, 120)}`
   ).join("\n");
 
   const prompt = `You are the editorial voice of South Bay Signal, a local news site for Silicon Valley residents.
@@ -119,6 +119,8 @@ Pick exactly 5 events that a real South Bay resident would genuinely want to att
 Avoid: university admin events, clinical studies, internal community meetings, things open every week (farmers markets are fine if especially notable)
 
 IMPORTANT: Check the date on each event. Spread picks across both Saturday and Sunday.
+
+When writing the "why", do NOT invent or guess the day-of-week or time-of-day. If you mention either, copy from the event's bracketed [DayAbbr, Mon D TIME] header verbatim (e.g. "Sat morning", "Sun 7:30 PM"). Never call something a "matinee" unless the time is before 5 PM.
 
 Return ONLY a JSON array of 5 objects, no other text:
 [
