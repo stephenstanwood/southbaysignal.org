@@ -9,11 +9,18 @@ import type { City, Tab } from "../../../lib/south-bay/types";
 import { CITIES } from "../../../lib/south-bay/cities";
 import PhotoStrip from "./PhotoStrip";
 import RedditPulseTeaser from "./RedditPulseTeaser";
-import CityHallThisWeek from "./CityHallThisWeek";
-import JustOpened from "./JustOpened";
-import MothersDayPlan from "./MothersDayPlan";
-import SchoolYearEndgame from "./SchoolYearEndgame";
-import SummerCampsCountdown from "./SummerCampsCountdown";
+// =====================================================================
+// HOME-TAB-LOCKED — DO NOT ADD TEASER COMPONENTS HERE
+// The home tab is hand-curated. Adding new teasers, callouts, strips,
+// or cards here is an automated guardrail violation and will fail the
+// build via scripts/check-home-locked.mjs (wired into `npm run build`).
+// If a data source isn't surfaced on Home, that's deliberate. Surface
+// it on a non-Home tab or leave it for Stephen.
+// History of removed teasers: JustOpenedTeaser + AroundTownTeaser
+// (2026-04-25), WeekendPicksCard (2026-04-26), CityHallThisWeek +
+// JustOpened + MothersDayPlan + SchoolYearEndgame +
+// SummerCampsCountdown (2026-04-28).
+// =====================================================================
 import ForecastCard from "../cards/ForecastCard";
 import defaultPlansJson from "../../../data/south-bay/default-plans.json";
 
@@ -933,21 +940,6 @@ export default function SouthBayTodayView(_props: Props) {
           })}
         </div>
       )}
-
-      {/* City Hall This Week — what's on the council docket near you */}
-      <CityHallThisWeek onSeeAll={() => _props.onNavigate("government")} />
-
-      {/* Just Opened — fresh South Bay food spots from health-permit data */}
-      <JustOpened onSeeAll={() => _props.onNavigate("food")} />
-
-      {/* Mother's Day Plan — picks for the weekend, retires the day after */}
-      <MothersDayPlan onSeeAll={() => _props.onNavigate("events")} />
-
-      {/* School Year Endgame — AP exams, finals, graduation, last day */}
-      <SchoolYearEndgame onSeeAll={() => _props.onNavigate("events")} />
-
-      {/* Summer Camps — registration countdown + featured programs */}
-      <SummerCampsCountdown onSeeAll={() => _props.onNavigate("camps")} />
 
       {/* Reddit pulse — what people are saying on regional subs */}
       <RedditPulseTeaser />
