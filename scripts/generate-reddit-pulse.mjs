@@ -277,7 +277,9 @@ CRITICAL: a headline that complains, sounds defensive, or warns about something 
     "SJ bagel rec thread": "stack of colorful bagels with cream cheese and lox, pop-art style, vivid teal and yellow palette, no text"
     "Earthquakes win": "abstract soccer ball mid-flight with bold green and white triangular shapes, dynamic motion, no text, no logos"
     "MV ranks #6 best place": "stylized aerial silhouette of suburban houses and oak trees, sunset sky with magenta and gold, no text, no people"
-  Vary palettes across posts so the grid feels colorful, not monochrome. Always end with "no text, no people, no logos".
+  Vary palettes across posts so the grid feels colorful, not monochrome.
+  When the subject has a natural orientation (a swimmer in a lap pool, a runner on a track, a car on a road, a plane in the sky), be EXPLICIT about direction so Recraft doesn't randomize it: "swimmer gliding ALONG the lane lines (parallel to lanes, not across)", "runner moving down the track in lane direction", "car driving forward along the road". Composition cues prevent Recraft from rotating the subject 90°.
+  Always end with "no text, no people, no logos".
 
 Be strict on relevance. Crime/lawsuits/scary stuff = relevance 1-3 (we won't surface). Boring complaints = 1-3. A guy ranting about traffic = relevance 1. An MRI study recruitment = relevance 1. A new restaurant opening = relevance 9. A great rec thread = relevance 8.
 
@@ -391,6 +393,8 @@ Return ONLY a JSON array of objects, no other text.`;
     const polishPrompt = `Below are Reddit post titles. Apply the LIGHTEST possible touch-up to each — fix things the OP themselves would fix on a re-read, and nothing more.
 
 DO fix:
+- Capitalize the FIRST word of the title (e.g. "our ted lindsay finalist!" → "Our ted lindsay finalist!" — then continue to the proper-noun rule below)
+- Capitalize proper nouns: people's names, team names, place names, brand names, product names (e.g. "our ted lindsay finalist!" → "Our Ted Lindsay Finalist!" — Ted Lindsay is a person; "best pizza in san jose" → "Best pizza in San Jose")
 - Stray/wrong commas (e.g. "Bed Bath and Beyond will return, at Stanford" → drop the comma)
 - Trailing periods on sentence fragments / phrases (e.g. "New Lakewood Park Library and Renovation." → drop the period)
 - Doubled spaces, missing spaces around punctuation
@@ -398,10 +402,11 @@ DO fix:
 - Stylized ALL CAPS in the middle of an otherwise sentence-cased title (e.g. "22 Events in SAN JOSE — Today APR 25, 2026" → "22 Events in San Jose — Today Apr 25, 2026")
 
 DO NOT touch:
-- Reddit voice: a title that's ALL CAPS as a whole, lots of exclamation points, emoji decoration, slang, "!!!!" — that's the OP's voice; leave it
+- A title that's ENTIRELY all-caps as Reddit shouting voice — leave it (but if mostly lowercase, fix per rules above)
+- Lots of exclamation points, emoji decoration, slang, "!!!!" — that's the OP's voice; leave it
 - Meaning, structure, word order
-- Names of places, people, things
 - Quotes inside the title
+- Common words mid-title (don't title-case every word; just first word + proper nouns)
 
 If a title needs no edits, return it unchanged verbatim.
 
