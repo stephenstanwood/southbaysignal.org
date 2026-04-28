@@ -1,79 +1,19 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-27T23:09:58.293Z",
+      "generatedAt": "2026-04-28T11:07:39.705Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Apr 20 – Apr 27",
+      "dateRange": "Apr 21 – Apr 28",
       "stats": {
-        "total": 495,
-        "notable": 30,
-        "newUnits": 17,
-        "totalValuation": 15485587
+        "total": 360,
+        "notable": 18,
+        "newUnits": 9,
+        "totalValuation": 7240129
       },
       "permits": [
-        {
-          "id": "2026-102265-RS",
-          "address": "805 Altino Bl",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Phase 3.1 Comm Hill Type 4b (Lot 20)",
-          "valuation": 573665,
-          "units": 1,
-          "issueDate": "2026-04-21",
-          "subtype": "Single-Family"
-        },
-        {
-          "id": "2026-102353-RS",
-          "address": "817 Altino Bl",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Phase 3.1 Comm Hill (Lot 22) Plan 4a-Rtype 4a/4b/4c",
-          "valuation": 573665,
-          "units": 1,
-          "issueDate": "2026-04-21",
-          "subtype": "Single-Family"
-        },
-        {
-          "id": "2026-102379-RS",
-          "address": "823 Altino Bl",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Phase 3.1 Comm Hill (Lot 23) Plan 3a-R",
-          "valuation": 555615,
-          "units": 1,
-          "issueDate": "2026-04-21",
-          "subtype": "Single-Family"
-        },
-        {
-          "id": "2026-102260-RS",
-          "address": "799 Altino Bl",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Phase 3.1 Comm Hill Type 2a-R (Lot 19)",
-          "valuation": 522441,
-          "units": 1,
-          "issueDate": "2026-04-21",
-          "subtype": "Single-Family"
-        },
-        {
-          "id": "2026-102343-RS",
-          "address": "811 Altino Bl",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Comm Hill Phase 3.1 (Lot 21) Plan1b-R",
-          "valuation": 487435,
-          "units": 1,
-          "issueDate": "2026-04-21",
-          "subtype": "Single-Family"
-        },
         {
           "id": "2023-087858-RS",
           "address": "1500 Clayton Rd #2",
@@ -84,18 +24,6 @@
           "valuation": 202908,
           "units": 1,
           "issueDate": "2026-04-24",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-120006-RS",
-          "address": "3080 Water St #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "New Detached adu",
-          "valuation": 168414,
-          "units": 1,
-          "issueDate": "2026-04-21",
           "subtype": "2nd Unit Added"
         },
         {
@@ -111,41 +39,113 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-115482-RS",
-          "address": "373 Rosewood Av #2",
+          "id": "2024-094876-RS",
+          "address": "3154 Tully Rd #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Detached Garage Conversion + New Area Added for New Detached adu",
-          "valuation": 164883,
+          "description": "Detached adu",
+          "valuation": 110754,
           "units": 1,
-          "issueDate": "2026-04-21",
+          "issueDate": "2026-04-23",
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-143705-RS",
-          "address": "2327 Kenwood Av #2",
+          "id": "2025-105204-RS",
+          "address": "13099 Pfeifle Av #4",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Not Code Case Detached Garage Conversion to adu Unit 4",
+          "valuation": 108218,
+          "units": 1,
+          "issueDate": "2026-04-23",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-127205-RS",
+          "address": "1110 Coyote Rd #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Attached 2-Story adu",
+          "valuation": 104329,
+          "units": 1,
+          "issueDate": "2026-04-22",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-142682-RS",
+          "address": "3068 Quimby Rd #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
           "description": "New Detached adu",
-          "valuation": 130199,
+          "valuation": 103483,
           "units": 1,
-          "issueDate": "2026-04-21",
+          "issueDate": "2026-04-23",
           "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2026-098835-RS",
+          "address": "1780 Wilshire Bl #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Detached Garage Conversion to adu",
+          "valuation": 90970,
+          "units": 1,
+          "issueDate": "2026-04-23",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-096661-RS",
+          "address": "1206 Lennon Wy #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached 1-Sty adu",
+          "valuation": 67129,
+          "units": 1,
+          "issueDate": "2026-04-23",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-132134-RS",
+          "address": "1493 Brookdale Dr",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Detached Garage Conversion to adu",
+          "valuation": 63578,
+          "units": 1,
+          "issueDate": "2026-04-22",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2026-113959-CI",
+          "address": "960 W Hedding St #2",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Int Alt - Berchmans Hall - Bellarmine College",
+          "valuation": 1500000,
+          "units": 0,
+          "issueDate": "2026-04-22",
+          "subtype": "School/Daycare"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-27T23:10:00.753Z",
+      "generatedAt": "2026-04-28T11:07:42.351Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Apr 20 – Apr 27",
+      "dateRange": "Apr 21 – Apr 28",
       "stats": {
-        "total": 102,
-        "notable": 3,
+        "total": 84,
+        "notable": 2,
         "newUnits": 0,
         "totalValuation": 0
       },
@@ -163,28 +163,16 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-01028",
-          "address": "4163 Park Bl",
+          "id": "26BLD-01087",
+          "address": "642 Bryson Av",
           "category": "residential-remodel",
           "categoryLabel": "Home Remodel",
           "workType": "Web - Kitchen or Bath Remodel",
           "description": "Instant permit for a residential single-family kitchen or bath remodel.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-04-20",
+          "issueDate": "2026-04-27",
           "subtype": "Permit Issued"
-        },
-        {
-          "id": "26PLN-00088",
-          "address": "180 University Av",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "New wall mounted display case along University Ave for Art Gallery",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-20",
-          "subtype": "Over the Counter Approved"
         }
       ]
     }
