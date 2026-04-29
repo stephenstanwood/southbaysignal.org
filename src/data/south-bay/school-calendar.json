@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-21",
+  "updatedAt": "2026-04-29",
   "schoolYear": "2025-2026",
   "districts": [
     {
@@ -73,6 +73,14 @@
       "color": "#c2410c",
       "bg": "#fff7ed",
       "cities": ["santa-clara"]
+    },
+    {
+      "id": "musd",
+      "name": "MUSD",
+      "fullName": "Milpitas Unified",
+      "color": "#a21caf",
+      "bg": "#fdf4ff",
+      "cities": ["milpitas"]
     }
   ],
   "events": [
@@ -435,6 +443,30 @@
       "type": "finals",
       "startDate": "2026-05-22",
       "endDate": "2026-05-28"
+    },
+    {
+      "id": "musd-ap-exams-2026",
+      "districtId": "musd",
+      "label": "AP Exams",
+      "type": "testing",
+      "startDate": "2026-05-04",
+      "endDate": "2026-05-15"
+    },
+    {
+      "id": "musd-memorial-day-2026",
+      "districtId": "musd",
+      "label": "Memorial Day — No School",
+      "type": "holiday",
+      "startDate": "2026-05-25",
+      "endDate": "2026-05-25"
+    },
+    {
+      "id": "musd-last-day-2026",
+      "districtId": "musd",
+      "label": "Last Day of School",
+      "type": "lastday",
+      "startDate": "2026-06-05",
+      "endDate": "2026-06-05"
     }
   ]
 }
