@@ -1,14 +1,14 @@
 {
   "_meta": {
-    "generatedAt": "2026-04-29T11:17:05.406Z",
+    "generatedAt": "2026-04-29T13:16:57.429Z",
     "generator": "generate-reddit-pulse",
     "sourceCount": 14
   },
   "summary": {
     "threadsMined": 14,
-    "placesExtracted": 22,
+    "placesExtracted": 28,
     "placesMatched": 6,
-    "placeGaps": 16,
+    "placeGaps": 22,
     "eventsExtracted": 2,
     "eventsMatched": 0,
     "eventGaps": 2,
@@ -16,8 +16,73 @@
   },
   "placeGaps": [
     {
-      "name": "Cicero's",
+      "name": "Zachary's",
       "city": "",
+      "kind": "restaurant",
+      "context": "popular deep dish pizza",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
+      ]
+    },
+    {
+      "name": "Little Star",
+      "city": "",
+      "kind": "restaurant",
+      "context": "popular deep dish pizza",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
+      ]
+    },
+    {
+      "name": "Cheese Board Pizza",
+      "city": "",
+      "kind": "restaurant",
+      "context": "California fresh produce style pizza",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
+      ]
+    },
+    {
+      "name": "June's Pizza",
+      "city": "",
+      "kind": "restaurant",
+      "context": "recommended pizza place",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
+      ]
+    },
+    {
+      "name": "Tony's",
+      "city": "",
+      "kind": "restaurant",
+      "context": "highly rated overall pizza restaurant",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
+      ]
+    },
+    {
+      "name": "Cicero's",
+      "city": "San Jose",
       "kind": "restaurant",
       "context": "South Bay pizza restaurant",
       "sourceUrls": [
@@ -25,94 +90,107 @@
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
         "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
         "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/"
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
       ]
     },
     {
-      "name": "Birk's Steakhouse",
+      "name": "Birk's steakhouse",
       "city": "Santa Clara",
       "kind": "restaurant",
-      "context": "excellent prime rib in Santa Clara",
+      "context": "prime rib and steaks",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
         "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
         "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/"
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
       ]
     },
     {
-      "name": "San Mateo Prime",
-      "city": "",
+      "name": "Sundance",
+      "city": "Palo Alto",
       "kind": "restaurant",
-      "context": "prime rib with traditional sides",
+      "context": "recommended for prime rib",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
         "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
         "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/"
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
       ]
     },
     {
-      "name": "TechCU Arena",
+      "name": "SAP",
       "city": "San Jose",
       "kind": "venue",
-      "context": "potential PWHL arena venue in San Jose",
+      "context": "potential arena for PWHL team",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
         "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
         "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/"
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
       ]
     },
     {
-      "name": "Santa Cruz Warriors Stadium",
-      "city": "Santa Cruz",
+      "name": "TechCU",
+      "city": "San Jose",
       "kind": "venue",
-      "context": "new stadium potentially hosting hockey rink",
+      "context": "potential arena for PWHL team",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
         "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
         "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/"
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
+      ]
+    },
+    {
+      "name": "Bay FC",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "successful women's sports team",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
+      ]
+    },
+    {
+      "name": "Valkyries",
+      "city": "",
+      "kind": "venue",
+      "context": "successful women's sports team",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
       ]
     },
     {
       "name": "Corgi Cafe",
-      "city": "",
+      "city": "San Francisco",
       "kind": "cafe",
-      "context": "AI insurance startup-run coffee shop, 24-hour operation",
+      "context": "24-hour coffee shop run by AI insurance startup",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
-        "https://www.reddit.com/r/bayarea/comments/1sy7na9/realistic_improvements_to_caltrain/",
-        "https://www.reddit.com/r/bayarea/comments/1sye639/tokyo_central_specialty_market_damn/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/"
-      ]
-    },
-    {
-      "name": "Bunny Cafe",
-      "city": "",
-      "kind": "cafe",
-      "context": "works with local rescue groups, has Bunny Executive Officer",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
-        "https://www.reddit.com/r/bayarea/comments/1sy7na9/realistic_improvements_to_caltrain/",
-        "https://www.reddit.com/r/bayarea/comments/1sye639/tokyo_central_specialty_market_damn/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/"
+        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
       ]
     },
     {
       "name": "Tokyo Central specialty Market",
       "city": "",
       "kind": "retail",
-      "context": "specialty Japanese market with premium fruit offerings",
+      "context": "specialty Japanese fruits including premium melons",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/",
+        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/",
         "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
         "https://www.reddit.com/r/bayarea/comments/1sy7na9/realistic_improvements_to_caltrain/",
         "https://www.reddit.com/r/bayarea/comments/1sye639/tokyo_central_specialty_market_damn/",
@@ -123,107 +201,107 @@
       "name": "Spartan Home Services",
       "city": "",
       "kind": "service",
-      "context": "solar installation company with creative financing options",
+      "context": "solar installation company with family-run approach",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
-      ]
-    },
-    {
-      "name": "Clean Solar",
-      "city": "",
-      "kind": "service",
-      "context": "small business solar installer with positive customer reviews",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
-      ]
-    },
-    {
-      "name": "SunWork",
-      "city": "",
-      "kind": "service",
-      "context": "nonprofit solar installation about 33% cheaper than for-profit",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
+        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
+        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     },
     {
       "name": "Luminalt",
       "city": "",
       "kind": "service",
-      "context": "local reliable solar installer recommended in discussion",
+      "context": "recommended local solar installer",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
-      ]
-    },
-    {
-      "name": "Continuum",
-      "city": "",
-      "kind": "service",
-      "context": "solar installer recommended for quality installations",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
-        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
+        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
+        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     },
     {
       "name": "SunRun",
       "city": "",
       "kind": "service",
-      "context": "solar company mentioned as reliable local installer",
+      "context": "solar installation company",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
+        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
+        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     },
     {
-      "name": "Patxis",
-      "city": "Campbell",
-      "kind": "restaurant",
-      "context": "previous restaurant at Pruneyard, being replaced by Dough Zone",
+      "name": "Continuum",
+      "city": "",
+      "kind": "service",
+      "context": "recommended solar installer",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
+        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
+        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
+      ]
+    },
+    {
+      "name": "Clean Solar",
+      "city": "",
+      "kind": "service",
+      "context": "small business solar installation company",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
+        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
+      ]
+    },
+    {
+      "name": "SunWork",
+      "city": "",
+      "kind": "service",
+      "context": "nonprofit solar installation, 33% less expensive option",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
+        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     },
     {
       "name": "Pruneyard",
       "city": "Campbell",
       "kind": "venue",
-      "context": "shopping center where Dough Zone is opening",
+      "context": "shopping center with Dough Zone restaurant",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
+        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
+        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
+      ]
+    },
+    {
+      "name": "Patxis",
+      "city": "Campbell",
+      "kind": "restaurant",
+      "context": "previous restaurant at Pruneyard location",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
+        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "Beginner Roller Hockey League Learn to Play Class",
-      "when": "Monday nights 6:15 PM to 7:15 PM",
+      "name": "The Plex Beginner Roller Hockey League",
+      "when": "Mondays 6:15 PM - 7:15 PM",
       "city": "San Jose",
-      "context": "free beginner hockey class at The Plex, all skill levels welcome",
+      "context": "free learn-to-play hockey class leading into beginner league",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/",
+        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/",
         "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
         "https://www.reddit.com/r/bayarea/comments/1sy7na9/realistic_improvements_to_caltrain/",
         "https://www.reddit.com/r/bayarea/comments/1sye639/tokyo_central_specialty_market_damn/",
@@ -231,12 +309,12 @@
       ]
     },
     {
-      "name": "35+ and 45+ Roller Hockey Leagues",
-      "when": "Sunday afternoons, new season early June",
+      "name": "The Plex 35+ and 45+ Roller Hockey Leagues",
+      "when": "Sundays afternoons, new season early June",
       "city": "San Jose",
-      "context": "age-specific roller hockey leagues at The Plex",
+      "context": "age-specific roller hockey leagues with flexible skill levels",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/",
+        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/",
         "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
         "https://www.reddit.com/r/bayarea/comments/1sy7na9/realistic_improvements_to_caltrain/",
         "https://www.reddit.com/r/bayarea/comments/1sye639/tokyo_central_specialty_market_damn/",
@@ -249,13 +327,13 @@
       "name": "Seniore's Pizza",
       "city": "",
       "kind": "restaurant",
-      "context": "pizza place mentioned in South Bay discussion",
+      "context": "praised pizza place mentioned by post author",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
         "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
         "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/"
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
       ],
       "matchedName": "Seniore’s Pizza"
     },
@@ -263,13 +341,13 @@
       "name": "A Slice of New York",
       "city": "San Jose",
       "kind": "restaurant",
-      "context": "pizza in San Jose or Sunnyvale",
+      "context": "expensive but delicious pizza in San Jose or Sunnyvale",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
         "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
         "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/"
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
       ],
       "matchedName": "A Slice of New York"
     },
@@ -277,37 +355,23 @@
       "name": "Original Joe's",
       "city": "San Jose",
       "kind": "restaurant",
-      "context": "prime rib recommendation",
+      "context": "prime rib and classic dining",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
         "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
         "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/"
+        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/"
       ],
       "matchedName": "Original Joe's San Jose"
-    },
-    {
-      "name": "SAP Center",
-      "city": "San Jose",
-      "kind": "venue",
-      "context": "potential venue for PWHL team",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
-        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/"
-      ],
-      "matchedName": "SAP Center"
     },
     {
       "name": "The Plex",
       "city": "San Jose",
       "kind": "venue",
-      "context": "roller hockey facility with beginner league and free classes",
+      "context": "beginner roller hockey league and learn-to-play classes",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1syfgfy/san_francisco_coffee_shop_corgi_cafe_is_run_by_an/",
+        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/",
         "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
         "https://www.reddit.com/r/bayarea/comments/1sy7na9/realistic_improvements_to_caltrain/",
         "https://www.reddit.com/r/bayarea/comments/1sye639/tokyo_central_specialty_market_damn/",
@@ -316,15 +380,29 @@
       "matchedName": "The Plex"
     },
     {
+      "name": "Sharks Ice",
+      "city": "",
+      "kind": "venue",
+      "context": "ice hockey leagues mentioned for comparison pricing",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
+        "https://www.reddit.com/r/bayarea/comments/1sy7na9/realistic_improvements_to_caltrain/",
+        "https://www.reddit.com/r/bayarea/comments/1sye639/tokyo_central_specialty_market_damn/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/"
+      ],
+      "matchedName": "Sharks Ice at San Jose"
+    },
+    {
       "name": "Dough Zone",
       "city": "Campbell",
       "kind": "restaurant",
-      "context": "new location opening at Pruneyard shopping center",
+      "context": "new restaurant opening at Pruneyard shopping center",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/",
-        "https://www.reddit.com/r/santaclara/comments/1swwdm2/several_7eleven_locations_closing/"
+        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
+        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ],
       "matchedName": "Dough Zone Dumpling House Cupertino"
     }

@@ -7,11 +7,11 @@
       "Google Places API (New) Text Search",
       "poi-data.ts (curated)"
     ],
-    "lastBackfilledAt": "2026-04-29T05:18:01.767Z",
+    "lastBackfilledAt": "2026-04-29T13:17:08.084Z",
     "lastBackfillSource": "reddit-gaps"
   },
   "stats": {
-    "total": 2560,
+    "total": 2561,
     "curated": 49,
     "googleOnly": 2450,
     "byCity": {
@@ -91454,6 +91454,38 @@
       "curated": false,
       "discoverySource": "reddit-gaps",
       "indoorOutdoor": "indoor",
+      "kidFriendlyChanged": false,
+      "indoorOutdoorChanged": true,
+      "source": "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/"
+    },
+    {
+      "id": "ChIJGXZh0aHLj4ARX-9DpASeh5w",
+      "name": "PayPal Park",
+      "address": "1123 Coleman Ave, San Jose, CA 95110, USA",
+      "city": "san-jose",
+      "lat": 37.3511355,
+      "lng": -121.92463939999999,
+      "rating": 4.7,
+      "ratingCount": 3372,
+      "priceLevel": null,
+      "types": [
+        "stadium",
+        "event_venue",
+        "sports_complex",
+        "sports_activity_location",
+        "point_of_interest",
+        "establishment"
+      ],
+      "primaryType": "stadium",
+      "displayType": "Stadium",
+      "category": "entertainment",
+      "hours": null,
+      "url": "http://www.sjearthquakes.com/",
+      "mapsUrl": "https://maps.google.com/?cid=11279157534545669983&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "photoRef": "places/ChIJGXZh0aHLj4ARX-9DpASeh5w/photos/Ab43m-s0Dgp30pK40nKgne62XTVxxMAELhUlGMLJk0jS63LJmGpl_gvDyUxUUVAjUA6WyzrPA5iYouShgFpUdrrReXfMoYqdoqrnCLzEOP8PjpBel3CVbm9-4yk0lYYt38X0wGTxOnWc81yjJmfe2yfW887G_KzZSiq6OAujJ4sEizrat4OvdG54DdNZK_j8BnHjm8XADBiGy1eqr3EUDGu1d4zIWeRAebnc2Oim4w6E3UAl7uIVD0oE8s2BjVVXqfXtOYzt5L1t4l3iCNsx_4fH5h7o2WsgK3k5EJn34MGReGOm0Q",
+      "curated": false,
+      "discoverySource": "reddit-gaps",
+      "indoorOutdoor": "outdoor",
       "kidFriendlyChanged": false,
       "indoorOutdoorChanged": true,
       "source": "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/"
