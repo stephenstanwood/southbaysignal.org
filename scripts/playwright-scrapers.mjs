@@ -129,8 +129,10 @@ function inferCategory(title) {
   if (/\b(yoga|meditation|wellness|mindful)\b/.test(t)) return "community";
   if (/\b(hike|walk|run|fitness|sport|game)\b/.test(t)) return "sports";
   if (/\b(food|cook|wine|beer|tast|farm|restaurant)\b/.test(t)) return "food";
-  if (/\b(tech|hack|code|startup|ai|data|developer)\b/.test(t)) return "technology";
-  if (/\b(council|city|civic|government|hearing|meeting)\b/.test(t)) return "meetings";
+  // Must return a key from EventCategory in src/data/south-bay/events-data.ts:
+  // market | family | music | arts | sports | community | outdoor | education | food
+  if (/\b(tech|hack|code|startup|ai|data|developer)\b/.test(t)) return "education";
+  if (/\b(council|city|civic|government|hearing|meeting)\b/.test(t)) return "community";
   if (/\b(kids|children|family|story.?time|toddler|teen)\b/.test(t)) return "community";
   return "community";
 }
@@ -1292,7 +1294,9 @@ async function scrapePOST(page) {
       city,
       url: r.link || "https://openspacetrust.org/events/",
       source: "Peninsula Open Space Trust",
-      category: r.volunteer ? "volunteer" : "nature",
+      // EventCategory enum (src/data/south-bay/events-data.ts) doesn't include
+      // "nature" or "volunteer" — UI filters drop those events. Map to valid keys.
+      category: r.volunteer ? "community" : "outdoor",
       cost: "free",
       kidFriendly: /\b(family|kids|children|youth)\b/i.test(r.title),
     });
