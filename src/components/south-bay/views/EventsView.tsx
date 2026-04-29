@@ -4,6 +4,7 @@ import {
   EVENT_CATEGORIES,
   type EventCategory,
 } from "../../../data/south-bay/events-data";
+import schoolCalendarJson from "../../../data/south-bay/school-calendar.json";
 
 const CITIES: { id: City; name: string }[] = [
   { id: "san-jose", name: "San Jose" },
@@ -378,6 +379,159 @@ function MakeItADayButton({ eventId, city, date }: { eventId: string; city: stri
   );
 }
 
+// ── School-year heads-up banner ─────────────────────────────────────────────
+// Surfaces the soonest school-year milestone (AP exams, finals, graduation,
+// last day, holidays, breaks) within the next 14 days for districts that
+// overlap with the user's selected cities. One compact line, hidden when
+// nothing's near. Data lives in src/data/south-bay/school-calendar.json.
+
+interface SchoolDistrict {
+  id: string;
+  name: string;
+  fullName: string;
+  color: string;
+  bg: string;
+  cities: string[];
+}
+
+interface SchoolEvent {
+  id: string;
+  districtId: string;
+  label: string;
+  type: string;
+  startDate: string;
+  endDate: string;
+}
+
+const SCHOOL_TYPE_EMOJI: Record<string, string> = {
+  testing: "📝",
+  finals: "📝",
+  graduation: "🎓",
+  lastday: "🎉",
+  break: "🏖️",
+  holiday: "🏖️",
+};
+
+function schoolEventEmoji(type: string): string {
+  return SCHOOL_TYPE_EMOJI[type] ?? "📚";
+}
+
+function schoolDateLabel(iso: string, todayIso: string, tomorrowIso: string): string {
+  if (iso === todayIso) return "today";
+  if (iso === tomorrowIso) return "tomorrow";
+  const d = new Date(iso + "T12:00:00");
+  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+}
+
+function SchoolHeadsUpBanner({ selectedCities }: { selectedCities: Set<City> }) {
+  const todayIso = todayPT();
+  const tomorrowIso = addDays(todayIso, 1);
+  const horizonIso = addDays(todayIso, 14);
+
+  const districts = (schoolCalendarJson as { districts: SchoolDistrict[] }).districts;
+  const events = (schoolCalendarJson as { events: SchoolEvent[] }).events;
+
+  const matchedDistrictIds = useMemo(() => {
+    const set = new Set<string>();
+    for (const d of districts) {
+      if (d.cities.some((c) => selectedCities.has(c as City))) set.add(d.id);
+    }
+    return set;
+  }, [districts, selectedCities]);
+
+  const districtById = useMemo(() => {
+    const m: Record<string, SchoolDistrict> = {};
+    for (const d of districts) m[d.id] = d;
+    return m;
+  }, [districts]);
+
+  // Find the soonest event date with at least one matched district. Group all
+  // events that share that date AND label so e.g. Memorial Day collapses to a
+  // single line with multiple district badges.
+  const headline = useMemo(() => {
+    const upcoming = events
+      .filter((e) => e.startDate >= todayIso && e.startDate <= horizonIso)
+      .filter((e) => matchedDistrictIds.has(e.districtId))
+      .sort((a, b) => a.startDate.localeCompare(b.startDate));
+    if (upcoming.length === 0) return null;
+    const soonestDate = upcoming[0].startDate;
+    const sameDate = upcoming.filter((e) => e.startDate === soonestDate);
+    const sameLabel = sameDate.filter((e) => e.label === sameDate[0].label);
+    return {
+      label: sameLabel[0].label,
+      type: sameLabel[0].type,
+      startDate: sameLabel[0].startDate,
+      endDate: sameLabel[0].endDate,
+      districts: sameLabel
+        .map((e) => districtById[e.districtId])
+        .filter(Boolean)
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    };
+  }, [events, matchedDistrictIds, districtById, todayIso, horizonIso]);
+
+  if (!headline) return null;
+
+  const dateLabel = schoolDateLabel(headline.startDate, todayIso, tomorrowIso);
+  const isMultiDay = headline.endDate && headline.endDate !== headline.startDate;
+  const verb = headline.type === "graduation" || headline.type === "lastday"
+    ? "" // label already reads as a noun
+    : isMultiDay ? "begin " : "";
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: 8,
+        padding: "8px 12px",
+        marginBottom: 10,
+        background: "#F5F3FF",
+        border: "1px solid #DDD6FE",
+        borderRadius: 8,
+        fontSize: 12.5,
+        color: "#4C1D95",
+        lineHeight: 1.45,
+      }}
+    >
+      <span aria-hidden style={{ fontSize: 14, lineHeight: 1 }}>
+        {schoolEventEmoji(headline.type)}
+      </span>
+      <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6D28D9" }}>
+        School year
+      </span>
+      <span style={{ fontWeight: 600 }}>
+        {headline.label}
+      </span>
+      <span style={{ color: "#6D28D9" }}>
+        {verb}
+        {dateLabel}
+      </span>
+      <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+        {headline.districts.map((d) => (
+          <span
+            key={d.id}
+            title={d.fullName}
+            style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.04em",
+              padding: "1px 6px",
+              borderRadius: 4,
+              background: d.bg,
+              color: d.color,
+              border: `1px solid ${d.color}33`,
+            }}
+          >
+            {d.name}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Main view ──────────────────────────────────────────────────────────────
 
 export default function EventsView({ selectedCities, onToggleCity, onToggleAllCities }: Props) {
@@ -609,6 +763,8 @@ export default function EventsView({ selectedCities, onToggleCity, onToggleAllCi
         </span>
         <div className="sb-section-line" />
       </div>
+
+      <SchoolHeadsUpBanner selectedCities={selectedCities} />
 
       {/* Sticky filter bar — search + categories + cities + kids */}
       <div className="sb-events-sticky-filter">
