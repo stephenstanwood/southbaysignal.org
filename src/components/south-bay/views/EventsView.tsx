@@ -563,9 +563,9 @@ export default function EventsView({ selectedCities, onToggleCity, onToggleAllCi
   const [search, setSearch] = useState("");
   const [showKidsOnly, setShowKidsOnly] = useState(false);
   const [upcomingData, setUpcomingData] = useState<{ events: UpcomingEvent[] } | null>(null);
-  const [todayForecast, setTodayForecast] = useState<{
-    high: number; rainPct: number; emoji: string; desc: string;
-  } | null>(null);
+  const [forecastByDate, setForecastByDate] = useState<
+    Record<string, { high: number; rainPct: number; emoji: string; desc: string }>
+  >({});
 
   const todayIso = todayPT();
   const tomorrowIso = addDays(todayIso, 1);
@@ -579,22 +579,26 @@ export default function EventsView({ selectedCities, onToggleCity, onToggleAllCi
       .catch(() => setUpcomingData({ events: [] }));
   }, []);
 
-  // Weather for today (used in subtle banner above the day view)
+  // 5-day forecast — used for the subtle banner above the day view, keyed by
+  // ISO date so the banner can show conditions for whatever day is selected
+  // (not just today). Open-Meteo returns 5 days; later dates fall through.
   useEffect(() => {
-    const cacheKey = `sb-events-weather-${todayIso}`;
+    const cacheKey = `sb-events-forecast-${todayIso}`;
     try {
       const cached = sessionStorage.getItem(cacheKey);
-      if (cached) { setTodayForecast(JSON.parse(cached)); return; }
+      if (cached) { setForecastByDate(JSON.parse(cached)); return; }
     } catch { /* sessionStorage unavailable */ }
     fetch(`/api/weather?city=san-jose`)
       .then((r) => r.json())
       .then((d) => {
-        const f = d.forecast?.[0];
-        if (f) {
-          const summary = { high: f.high, rainPct: f.rainPct, emoji: f.emoji, desc: f.desc };
-          setTodayForecast(summary);
-          try { sessionStorage.setItem(cacheKey, JSON.stringify(summary)); } catch { /* sessionStorage unavailable */ }
+        const days: { date: string; high: number; low: number; rainPct: number; emoji: string; desc: string }[] = d.forecast ?? [];
+        if (days.length === 0) return;
+        const map: Record<string, { high: number; rainPct: number; emoji: string; desc: string }> = {};
+        for (const f of days) {
+          map[f.date] = { high: f.high, rainPct: f.rainPct, emoji: f.emoji, desc: f.desc };
         }
+        setForecastByDate(map);
+        try { sessionStorage.setItem(cacheKey, JSON.stringify(map)); } catch { /* sessionStorage unavailable */ }
       })
       .catch(() => {});
   }, [todayIso]);
@@ -1021,9 +1025,17 @@ export default function EventsView({ selectedCities, onToggleCity, onToggleAllCi
         )}
       </div>
 
-      {/* Weather banner — only when viewing today and no category filter */}
-      {todayForecast && selectedDate === todayIso && category === "all" && !isSearching && (() => {
-        const { high, rainPct, emoji, desc } = todayForecast;
+      {/* Weather banner — surfaces the forecast for the selected day so people
+          planning Saturday/Sunday don't only see today's weather. Open-Meteo
+          gives 5 days; further-out days drop through. Hidden when filtering
+          by category (would override the user's intent) or in search mode. */}
+      {forecastByDate[selectedDate] && category === "all" && !isSearching && (() => {
+        const { high, rainPct, emoji, desc } = forecastByDate[selectedDate];
+        const dayWord = selectedDate === todayIso
+          ? "today"
+          : selectedDate === tomorrowIso
+            ? "tomorrow"
+            : new Date(selectedDate + "T12:00:00").toLocaleDateString("en-US", { weekday: "long" });
         if (rainPct >= 40) {
           return (
             <div style={{
@@ -1035,7 +1047,7 @@ export default function EventsView({ selectedCities, onToggleCity, onToggleAllCi
               <span style={{ fontSize: 18, lineHeight: 1 }}>🌧️</span>
               <div style={{ flex: 1, minWidth: 180 }}>
                 <span style={{ fontWeight: 700, fontSize: 13, color: "var(--sb-ink)", fontFamily: "var(--sb-sans)" }}>
-                  Rainy today ({high}°F, {rainPct}% chance of rain)
+                  Rainy {dayWord} ({high}°F, {rainPct}% chance of rain)
                 </span>
                 <span style={{ fontSize: 12, color: "var(--sb-muted)", marginLeft: 6 }}>
                   — great day for a library program or indoor event.
@@ -1061,7 +1073,7 @@ export default function EventsView({ selectedCities, onToggleCity, onToggleAllCi
               <span style={{ fontSize: 18, lineHeight: 1 }}>{emoji}</span>
               <div style={{ flex: 1, minWidth: 180 }}>
                 <span style={{ fontWeight: 700, fontSize: 13, color: "var(--sb-ink)", fontFamily: "var(--sb-sans)" }}>
-                  {desc} today, {high}°F
+                  {desc} {dayWord}, {high}°F
                 </span>
                 <span style={{ fontSize: 12, color: "var(--sb-muted)", marginLeft: 6 }}>
                   — great day to get outside!
