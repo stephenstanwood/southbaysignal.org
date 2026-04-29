@@ -1,8 +1,8 @@
 {
   "_meta": {
-    "pulledAt": "2026-04-29T11:08:54.829Z",
-    "totalInBlob": 339,
-    "freshCount": 199
+    "pulledAt": "2026-04-29T19:09:40.639Z",
+    "totalInBlob": 353,
+    "freshCount": 213
   },
   "events": [
     {
@@ -247,6 +247,36 @@
       "sourceUrl": null,
       "cityKey": "los-gatos",
       "cityName": "Los Gatos",
+      "status": "new"
+    },
+    {
+      "id": "inbound_mok9bgh5_0y4463",
+      "receivedAt": "2026-04-29 16:15:51.106548+00",
+      "fromEmail": "cardinal@mail.gostanford.com",
+      "emailSubject": "Last Call",
+      "title": "Stanford softball vs. Pacific",
+      "startsAt": "2026-04-29T16:00:00-07:00",
+      "endsAt": null,
+      "location": "Stanford Softball Stadium, Stanford, CA",
+      "description": "No. 15 Stanford softball hosts Pacific in a midweek matchup. The Cardinal brings a 12-game winning streak to the final week of the regular season.",
+      "sourceUrl": "https://tickets.gostanford.com/",
+      "cityKey": "palo-alto",
+      "cityName": "Palo Alto",
+      "status": "new"
+    },
+    {
+      "id": "inbound_mok9bgh5_30o5cj",
+      "receivedAt": "2026-04-29 16:15:51.106548+00",
+      "fromEmail": "cardinal@mail.gostanford.com",
+      "emailSubject": "Last Call",
+      "title": "Stanford softball Senior Night vs. Sacramento State",
+      "startsAt": "2026-05-01T18:00:00-07:00",
+      "endsAt": null,
+      "location": "Stanford Softball Stadium, Stanford, CA",
+      "description": "Stanford softball honors seniors in the final regular-season home game against Sacramento State. The team will head to Virginia for the ACC Championship starting May 6.",
+      "sourceUrl": "https://tickets.gostanford.com/",
+      "cityKey": "palo-alto",
+      "cityName": "Palo Alto",
       "status": "new"
     },
     {
@@ -960,6 +990,36 @@
       "status": "new"
     },
     {
+      "id": "inbound_mokbfki3_xmiykj",
+      "receivedAt": "2026-04-29 17:15:02.076451+00",
+      "fromEmail": "info@go.49ers.com",
+      "emailSubject": "ON SALE NOW: Karol G and the Viajando Por El Mundo Tropitour",
+      "title": "Karol G - Viajando Por El Mundo Tropitour",
+      "startsAt": "2026-08-21T00:00:00-07:00",
+      "endsAt": null,
+      "location": "Levi's Stadium, 4900 Marie P. DeBartolo Way, Santa Clara, CA 95054",
+      "description": "Concert by Karol G at Levi's Stadium. Tickets on sale now.",
+      "sourceUrl": "https://ls.49ers.com/MjIyLUJBTy04NDQAAAGheSsLHAI1fuUNmg2Snn150lt_vxs_WG4KaC2ZRo8yxkdJoFWqYe9IXWYE6qH9hVdozfJL4Rs=",
+      "cityKey": "santa-clara",
+      "cityName": "Santa Clara",
+      "status": "new"
+    },
+    {
+      "id": "inbound_mokbfki3_co0k7t",
+      "receivedAt": "2026-04-29 17:15:02.076451+00",
+      "fromEmail": "info@go.49ers.com",
+      "emailSubject": "ON SALE NOW: Karol G and the Viajando Por El Mundo Tropitour",
+      "title": "Karol G - Viajando Por El Mundo Tropitour",
+      "startsAt": "2026-08-22T00:00:00-07:00",
+      "endsAt": null,
+      "location": "Levi's Stadium, 4900 Marie P. DeBartolo Way, Santa Clara, CA 95054",
+      "description": "Concert by Karol G at Levi's Stadium. Tickets on sale now.",
+      "sourceUrl": "https://ls.49ers.com/MjIyLUJBTy04NDQAAAGheSsLHDDxVzS4JLExMlk6ioKHEdZwUP1DfHng3ZJvz-hFAruJPhvdQICeabJoHkufusIcb_A=",
+      "cityKey": "santa-clara",
+      "cityName": "Santa Clara",
+      "status": "new"
+    },
+    {
       "id": "inbound_moaf99h7_fv7bdq",
       "receivedAt": "2026-04-22 19:04:20.637433+00",
       "fromEmail": "events@in.southbaytoday.org",
@@ -1652,6 +1712,21 @@
       "status": "new"
     },
     {
+      "id": "inbound_mok8tpcj_478oq6",
+      "receivedAt": "2026-04-29 16:02:07.252933+00",
+      "fromEmail": "news@info.SantaClaraCA.gov",
+      "emailSubject": "NORTHSIDE: LEGO Club",
+      "title": "Northside LEGO Club",
+      "startsAt": "2026-05-01T16:00:00-07:00",
+      "endsAt": "2026-05-01T17:00:00-07:00",
+      "location": "Northside Branch Library, 695 Moreland Way, Santa Clara, California 95054",
+      "description": "Kids ages 7-12 can unleash their creativity building with LEGO. Drop in and build to your heart's delight.",
+      "sourceUrl": "https://www.santaclaraca.gov/Home/Components/Calendar/Event/112073/",
+      "cityKey": "santa-clara",
+      "cityName": "Santa Clara",
+      "status": "new"
+    },
+    {
       "id": "inbound_mo6n419b_vtvmma",
       "receivedAt": "2026-04-20 03:33:09.327076+00",
       "fromEmail": "events@in.southbaytoday.org",
@@ -2036,6 +2111,21 @@
       "virtual": true
     },
     {
+      "id": "inbound_mok8tea3_4a35py",
+      "receivedAt": "2026-04-29 16:01:51.452466+00",
+      "fromEmail": "news@info.SantaClaraCA.gov",
+      "emailSubject": "NORTHSIDE: Children's Gardening Workshop",
+      "title": "Children's Gardening Workshop",
+      "startsAt": "2026-05-02T14:00:00-07:00",
+      "endsAt": "2026-05-02T15:00:00-07:00",
+      "location": "Northside Branch Library, 695 Moreland Way, Santa Clara, California 95054",
+      "description": "Children ages 7-11 learn how seeds grow into plants and pot their own starter flower or vegetable to take home. Registration available on Eventbrite for email reminders.",
+      "sourceUrl": "https://www.santaclaraca.gov/Home/Components/Calendar/Event/112213/",
+      "cityKey": "santa-clara",
+      "cityName": "Santa Clara",
+      "status": "new"
+    },
+    {
       "id": "inbound_mobhqvqb_yeydcy",
       "receivedAt": "2026-04-23 13:01:55.479326+00",
       "fromEmail": "events@in.southbaytoday.org",
@@ -2048,6 +2138,21 @@
       "sourceUrl": null,
       "cityKey": "mountain-view",
       "cityName": "Mountain View",
+      "status": "new"
+    },
+    {
+      "id": "inbound_mok9u67m_mbfuw1",
+      "receivedAt": "2026-04-29 16:30:26.356481+00",
+      "fromEmail": "redwoods@sempervirens.org",
+      "emailSubject": "Help protect redwoods from weakened safeguards",
+      "title": "The Science of Awe with Paul Piff",
+      "startsAt": "2026-05-26T00:00:00-07:00",
+      "endsAt": null,
+      "location": null,
+      "description": "U.C. Irvine professor Paul Piff discusses how experiencing awe, such as standing beneath redwoods, can benefit our lives and perspective.",
+      "sourceUrl": "https://click.everyaction.com/k/130400984/617638043/1850247630?nvep=ew0KICAiVGVuYW50VXJpIjogIm5ncHZhbjovL3Zhbi9FQS9FQTAwMS8xLzU5NjgzIiwNCiAgIkRpc3RyaWJ1dGlvblVuaXF1ZUlkIjogImZkYjc3YTg3LWU4NDMtZjExMS04ZWYyLTAwMGQzYTE0YjY0MCIsDQogICJFbWFpbEFkZHJlc3MiOiAic2FuZGNhdGh5cGVAZ21haWwuY29tIg0KfQ%3D%3D&hmac=6N388Dq-pXy6PiW7SsshyXefDmTU-ZDT62CAXv3Sor0=&emci=fb688fdb-9242-f111-8ef2-000d3a14b640&emdi=fdb77a87-e843-f111-8ef2-000d3a14b640&ceid=14469802",
+      "cityKey": null,
+      "cityName": null,
       "status": "new"
     },
     {
@@ -2409,6 +2514,111 @@
       "sourceUrl": null,
       "cityKey": "san-jose",
       "cityName": "San Jose",
+      "status": "new"
+    },
+    {
+      "id": "inbound_mok70tle_epz1sa",
+      "receivedAt": "2026-04-29 15:11:31.829014+00",
+      "fromEmail": "librarians@info.SantaClaraCA.gov",
+      "emailSubject": "May Happenings at the Santa Clara City Library",
+      "title": "Puppet Art Theater Presents - Little Red Riding Hood",
+      "startsAt": "2026-05-02T15:00:00-07:00",
+      "endsAt": null,
+      "location": "Santa Clara City Library Central Branch",
+      "description": "A lively puppet show presented by the Puppet Art Theater group. Attendance is limited and on a first come, first served basis.",
+      "sourceUrl": "https://www.sclibrary.org/Home/Components/Calendar/Event/110774/7953?curm=5&cury=2026",
+      "cityKey": "santa-clara",
+      "cityName": "Santa Clara",
+      "status": "new"
+    },
+    {
+      "id": "inbound_mok70tle_22zxim",
+      "receivedAt": "2026-04-29 15:11:31.829014+00",
+      "fromEmail": "librarians@info.SantaClaraCA.gov",
+      "emailSubject": "May Happenings at the Santa Clara City Library",
+      "title": "Master Gardener Talk - The Mystery of Purple Veggies",
+      "startsAt": "2026-05-09T11:00:00-07:00",
+      "endsAt": null,
+      "location": "Santa Clara City Library Central Branch",
+      "description": "UC Master Gardener Maria Guerra leads an engaging talk on purple vegetables that thrive in Zones 9B and 10A. Seating is first-come, first-served.",
+      "sourceUrl": "https://www.sclibrary.org/Home/Components/Calendar/Event/112101/7953?curm=5&cury=2026",
+      "cityKey": "santa-clara",
+      "cityName": "Santa Clara",
+      "status": "new"
+    },
+    {
+      "id": "inbound_mok70tle_hlaqj4",
+      "receivedAt": "2026-04-29 15:11:31.829014+00",
+      "fromEmail": "librarians@info.SantaClaraCA.gov",
+      "emailSubject": "May Happenings at the Santa Clara City Library",
+      "title": "Santa Clara City Library Foundation & Friends Anniversary Gala",
+      "startsAt": "2026-05-16T18:00:00-07:00",
+      "endsAt": "2026-05-16T21:00:00-07:00",
+      "location": "Triton Museum of Art, 1505 Warburton Avenue, Santa Clara",
+      "description": "Annual gala celebrating the Foundation's 25th anniversary featuring special guest Alexis Madrigal, co-host of the daily Forum on California Public Radio. Includes live auction, food, and drinks.",
+      "sourceUrl": "https://lovethelibrary.app.neoncrm.com/np/clients/lovethelibrary/eventRegistration.jsp?event=26",
+      "cityKey": "santa-clara",
+      "cityName": "Santa Clara",
+      "status": "new"
+    },
+    {
+      "id": "inbound_mok70tle_hys612",
+      "receivedAt": "2026-04-29 15:11:31.829014+00",
+      "fromEmail": "librarians@info.SantaClaraCA.gov",
+      "emailSubject": "May Happenings at the Santa Clara City Library",
+      "title": "Art After Dark",
+      "startsAt": "2026-05-21T17:30:00-07:00",
+      "endsAt": null,
+      "location": "Santa Clara City Library Northside Branch",
+      "description": "Adults-only arts and crafts session where participants tackle a new project they can take home. Seating is first-come, first-served.",
+      "sourceUrl": "https://www.sclibrary.org/Home/Components/Calendar/Event/112206/7953?curm=5&cury=2026",
+      "cityKey": "santa-clara",
+      "cityName": "Santa Clara",
+      "status": "new"
+    },
+    {
+      "id": "inbound_mok70tle_4z9lv6",
+      "receivedAt": "2026-04-29 15:11:31.829014+00",
+      "fromEmail": "librarians@info.SantaClaraCA.gov",
+      "emailSubject": "May Happenings at the Santa Clara City Library",
+      "title": "Arabic Belly Dance",
+      "startsAt": "2026-05-30T11:00:00-07:00",
+      "endsAt": null,
+      "location": "Santa Clara City Library Mission Branch",
+      "description": "Experience the color, rhythm, and storytelling of Arabic dance with multi-award-winning belly dancer Nicole Maria. Open to all ages.",
+      "sourceUrl": "https://www.sclibrary.org/Home/Components/Calendar/Event/111725/7953?curm=5&cury=2026",
+      "cityKey": "santa-clara",
+      "cityName": "Santa Clara",
+      "status": "new"
+    },
+    {
+      "id": "inbound_mok70tle_xiycku",
+      "receivedAt": "2026-04-29 15:11:31.829014+00",
+      "fromEmail": "librarians@info.SantaClaraCA.gov",
+      "emailSubject": "May Happenings at the Santa Clara City Library",
+      "title": "Foundation and Friends Book Sale",
+      "startsAt": "2026-05-08T10:00:00-07:00",
+      "endsAt": "2026-05-08T12:00:00-07:00",
+      "location": "Santa Clara City Library Northside Branch",
+      "description": "Support the Library by shopping at the Foundation and Friends Book Sale.",
+      "sourceUrl": "https://www.sclibrary.org/Home/Components/Calendar/Event/110544/7953?curm=5&cury=2026",
+      "cityKey": "santa-clara",
+      "cityName": "Santa Clara",
+      "status": "new"
+    },
+    {
+      "id": "inbound_mok70tle_mvvkrs",
+      "receivedAt": "2026-04-29 15:11:31.829014+00",
+      "fromEmail": "librarians@info.SantaClaraCA.gov",
+      "emailSubject": "May Happenings at the Santa Clara City Library",
+      "title": "Foundation and Friends Book Sale",
+      "startsAt": "2026-05-22T10:00:00-07:00",
+      "endsAt": "2026-05-22T12:00:00-07:00",
+      "location": "Santa Clara City Library Northside Branch",
+      "description": "Support the Library by shopping at the Foundation and Friends Book Sale.",
+      "sourceUrl": "https://www.sclibrary.org/Home/Components/Calendar/Event/110546/7953?curm=5&cury=2026",
+      "cityKey": "santa-clara",
+      "cityName": "Santa Clara",
       "status": "new"
     },
     {
