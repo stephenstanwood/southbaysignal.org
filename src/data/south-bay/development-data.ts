@@ -84,21 +84,6 @@ export const DEV_PROJECTS: DevProject[] = [
   // ── UNDER CONSTRUCTION ──────────────────────────────────────────────────
 
   {
-    id: "bart-phase2",
-    name: "BART Silicon Valley Phase II",
-    city: "San Jose / Santa Clara",
-    cityId: "san-jose",
-    category: "transit",
-    status: "under-construction",
-    description:
-      "Extension of BART service from Berryessa Station through downtown San Jose — including a 4-mile bored tunnel — to a new terminus at Santa Clara Station near Levi's Stadium. Tunneling is underway as of 2026. Four new underground stations will serve Alum Rock/28th St, Downtown San José, Diridon, and Santa Clara, connecting the South Bay to the Bay Area BART network.",
-    scale: "6 miles, 4 new stations",
-    developer: "Santa Clara Valley Transportation Authority (VTA)",
-    timeline: "Expected mid-2030s",
-    featured: true,
-  },
-
-  {
     id: "google-downtown-west",
     name: "Google Downtown West",
     city: "San Jose",
@@ -255,21 +240,6 @@ export const DEV_PROJECTS: DevProject[] = [
   },
 
   {
-    id: "sunnyvale-moffett-park",
-    name: "Sunnyvale Moffett Park Specific Plan",
-    city: "Sunnyvale",
-    cityId: "sunnyvale",
-    category: "mixed-use",
-    status: "approved",
-    description:
-      "Sunnyvale's Moffett Park Specific Plan transforms a major tech office district into a mixed-use neighborhood with housing, retail, and parks alongside office space. Several projects under this plan are in various stages of entitlement and construction.",
-    scale: "Approximately 10,000 housing units at buildout",
-    developer: "Multiple tech and residential developers",
-    timeline: "Phased through 2035",
-    featured: false,
-  },
-
-  {
     id: "los-gatos-downtown-mixed-use",
     name: "Los Gatos Downtown Mixed-Use Development",
     city: "Los Gatos",
@@ -282,36 +252,6 @@ export const DEV_PROJECTS: DevProject[] = [
     developer: "Various",
     timeline: "Active development",
     featured: false,
-  },
-
-  {
-    id: "diridon-station-area",
-    name: "Diridon Station Area Plan",
-    city: "San Jose",
-    cityId: "san-jose",
-    category: "mixed-use",
-    status: "approved",
-    description:
-      "San José's long-term plan for 250+ acres around Diridon Station — the South Bay's largest transit hub, served by Caltrain, VTA, Amtrak, and future BART and HSR. Envisions a dense, transit-oriented neighborhood with office towers, housing, retail, hotels, and public plazas replacing surface parking and underused industrial parcels.",
-    scale: "250 acres",
-    developer: "City of San José (multiple developers)",
-    timeline: "Phased development through 2040s",
-    featured: false,
-  },
-
-  {
-    id: "google-north-bayshore",
-    name: "Google North Bayshore Development",
-    city: "Mountain View",
-    cityId: "mountain-view",
-    category: "mixed-use",
-    status: "approved",
-    description:
-      "Mountain View's approved plan for Google's North Bayshore area — a major mixed-use development spanning housing, retail, parks, and Google office space adjacent to the Bay. Mountain View approved a Precise Plan enabling thousands of new homes in an area previously limited to office use.",
-    scale: "~7,000 housing units, office, retail",
-    developer: "Google",
-    timeline: "Long-term phased development",
-    featured: true,
   },
 
   {
@@ -329,21 +269,6 @@ export const DEV_PROJECTS: DevProject[] = [
     featured: false,
   },
 
-  {
-    id: "north-san-jose-urban-villages",
-    name: "North San José Urban Villages",
-    city: "San Jose",
-    cityId: "san-jose",
-    category: "housing",
-    status: "approved",
-    description:
-      "San José's Urban Village initiative designates transit-adjacent corridors for dense housing and mixed-use development. North San José has several active village plans enabling thousands of new residential units near tech campuses, VTA light rail, and future BART, targeting the Alviso, Berryessa, and Trimble Road corridors.",
-    scale: "Thousands of units across multiple sites",
-    developer: "Various developers",
-    timeline: "Ongoing approvals through 2030s",
-    featured: false,
-  },
-
   // ── PROPOSED ────────────────────────────────────────────────────────────
 
   {
@@ -358,21 +283,6 @@ export const DEV_PROJECTS: DevProject[] = [
     scale: "Residential",
     developer: "TBD",
     timeline: "Study session March 2026; approval pending",
-    featured: false,
-  },
-
-  {
-    id: "hsr-california",
-    name: "California High-Speed Rail (San José–Bakersfield)",
-    city: "San Jose",
-    cityId: "san-jose",
-    category: "transit",
-    status: "proposed",
-    description:
-      "The Central Valley segment of California's high-speed rail project is under construction, but the extension connecting San José's Diridon Station remains in planning. If completed, it would link San José to LA in under 3 hours and make Diridon the South Bay's primary intercity rail hub.",
-    scale: "Regional / statewide",
-    developer: "California High-Speed Rail Authority",
-    timeline: "San José connection: 2030s or later",
     featured: false,
   },
 
