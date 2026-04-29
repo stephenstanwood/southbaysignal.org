@@ -1,14 +1,14 @@
 {
   "_meta": {
-    "generatedAt": "2026-04-29T09:17:46.936Z",
+    "generatedAt": "2026-04-29T11:16:20.738Z",
     "generator": "generate-reddit-pulse",
     "sourceCount": 14
   },
   "summary": {
     "threadsMined": 14,
-    "placesExtracted": 45,
+    "placesExtracted": 40,
     "placesMatched": 7,
-    "placeGaps": 38,
+    "placeGaps": 33,
     "eventsExtracted": 2,
     "eventsMatched": 0,
     "eventGaps": 2,
@@ -19,7 +19,7 @@
       "name": "Zachary's",
       "city": "",
       "kind": "restaurant",
-      "context": "popular deep dish pizza location",
+      "context": "praised for deep dish pizza",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -32,7 +32,7 @@
       "name": "Little Star",
       "city": "",
       "kind": "restaurant",
-      "context": "recommended deep dish pizza",
+      "context": "good deep dish pizza",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -58,7 +58,7 @@
       "name": "June's Pizza",
       "city": "",
       "kind": "restaurant",
-      "context": "frequently recommended pizza spot",
+      "context": "worth trying, mentioned multiple times",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -71,7 +71,7 @@
       "name": "Tony's",
       "city": "",
       "kind": "restaurant",
-      "context": "highly ranked pizza restaurant",
+      "context": "overall best pizza according to commenter",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -84,7 +84,7 @@
       "name": "Cicero's",
       "city": "San Jose",
       "kind": "restaurant",
-      "context": "South Bay pizza establishment",
+      "context": "South Bay pizza place",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -97,20 +97,7 @@
       "name": "Vesta",
       "city": "",
       "kind": "restaurant",
-      "context": "Redwood City pizza with sausage honey special",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
-        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
-        "https://www.reddit.com/r/siliconvalley/comments/1sx73g8/palantir_employees_are_talking_about_companys/",
-        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/"
-      ]
-    },
-    {
-      "name": "Pizza Ponte",
-      "city": "",
-      "kind": "restaurant",
-      "context": "recommended pizza spot",
+      "context": "excellent pizza in Redwood City",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -123,7 +110,7 @@
       "name": "Pazzo",
       "city": "",
       "kind": "restaurant",
-      "context": "San Carlos pizza restaurant",
+      "context": "pizza place in San Carlos",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -133,10 +120,10 @@
       ]
     },
     {
-      "name": "Slice of Homage",
+      "name": "Pizza Ponte",
       "city": "",
       "kind": "restaurant",
-      "context": "mentioned pizza establishment",
+      "context": "pizza restaurant mentioned",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -149,7 +136,7 @@
       "name": "Bluebird Pizzeria",
       "city": "",
       "kind": "restaurant",
-      "context": "San Leandro pizza location",
+      "context": "pizza place in San Leandro",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -159,10 +146,10 @@
       ]
     },
     {
-      "name": "Corner Slice",
+      "name": "Slice of Homage",
       "city": "",
       "kind": "restaurant",
-      "context": "Livermore pizza restaurant",
+      "context": "pizza place mentioned",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -175,7 +162,7 @@
       "name": "Harris",
       "city": "",
       "kind": "restaurant",
-      "context": "SF steakhouse with excellent prime rib",
+      "context": "highly praised for prime rib in SF",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -188,7 +175,7 @@
       "name": "The Dead Fish",
       "city": "",
       "kind": "restaurant",
-      "context": "highly regarded Bay Area restaurant",
+      "context": "one of best restaurants in Bay Area with prime rib",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -201,20 +188,7 @@
       "name": "Sundance",
       "city": "Palo Alto",
       "kind": "restaurant",
-      "context": "Palo Alto establishment with prime rib",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
-        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
-        "https://www.reddit.com/r/siliconvalley/comments/1sx73g8/palantir_employees_are_talking_about_companys/",
-        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/"
-      ]
-    },
-    {
-      "name": "Henry's Hi-Life",
-      "city": "",
-      "kind": "restaurant",
-      "context": "weekend prime rib dining",
+      "context": "prime rib and reservations available",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -227,33 +201,7 @@
       "name": "Casa Orinda",
       "city": "",
       "kind": "restaurant",
-      "context": "Orinda restaurant with prime rib and lounge seating",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
-        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
-        "https://www.reddit.com/r/siliconvalley/comments/1sx73g8/palantir_employees_are_talking_about_companys/",
-        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/"
-      ]
-    },
-    {
-      "name": "Warehouse Cafe",
-      "city": "",
-      "kind": "cafe",
-      "context": "recommended dining spot",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
-        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
-        "https://www.reddit.com/r/siliconvalley/comments/1sx73g8/palantir_employees_are_talking_about_companys/",
-        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/"
-      ]
-    },
-    {
-      "name": "Hap's",
-      "city": "",
-      "kind": "restaurant",
-      "context": "downtown Pleasanton prime rib restaurant",
+      "context": "great prime rib with historic atmosphere and lounge",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -266,7 +214,7 @@
       "name": "Alexander's",
       "city": "",
       "kind": "restaurant",
-      "context": "excellent prime rib compared to House of Prime Rib",
+      "context": "excellent prime rib preferred over House of Prime Rib",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -276,49 +224,10 @@
       ]
     },
     {
-      "name": "Brazen Head",
-      "city": "",
-      "kind": "restaurant",
-      "context": "steakhouse in Bay Area",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
-        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
-        "https://www.reddit.com/r/siliconvalley/comments/1sx73g8/palantir_employees_are_talking_about_companys/",
-        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/"
-      ]
-    },
-    {
-      "name": "Ruth Chris",
-      "city": "",
-      "kind": "restaurant",
-      "context": "Walnut Creek steakhouse",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
-        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
-        "https://www.reddit.com/r/siliconvalley/comments/1sx73g8/palantir_employees_are_talking_about_companys/",
-        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/"
-      ]
-    },
-    {
-      "name": "Fat Lady",
-      "city": "",
-      "kind": "restaurant",
-      "context": "Oakland restaurant",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
-        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
-        "https://www.reddit.com/r/siliconvalley/comments/1sx73g8/palantir_employees_are_talking_about_companys/",
-        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/"
-      ]
-    },
-    {
-      "name": "Birk's Steakhouse",
+      "name": "Birk's steakhouse",
       "city": "Santa Clara",
       "kind": "restaurant",
-      "context": "Santa Clara steakhouse with prime rib",
+      "context": "steakhouse with prime rib options",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -341,36 +250,23 @@
       ]
     },
     {
-      "name": "Shadowbrook",
-      "city": "",
-      "kind": "restaurant",
-      "context": "Capitola steakhouse near Bay Area",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
-        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
-        "https://www.reddit.com/r/siliconvalley/comments/1sx73g8/palantir_employees_are_talking_about_companys/",
-        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/"
-      ]
-    },
-    {
-      "name": "Gold Club",
-      "city": "",
-      "kind": "restaurant",
-      "context": "steakhouse with prime rib",
-      "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
-        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
-        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
-        "https://www.reddit.com/r/siliconvalley/comments/1sx73g8/palantir_employees_are_talking_about_companys/",
-        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/"
-      ]
-    },
-    {
       "name": "Prime Steakhouse & Martini Garden",
       "city": "",
       "kind": "restaurant",
-      "context": "Walnut Creek steakhouse with prime rib",
+      "context": "Walnut Creek, better than House of Prime Rib",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/siliconvalley/comments/1sx73g8/palantir_employees_are_talking_about_companys/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/"
+      ]
+    },
+    {
+      "name": "Henry's Hi-Life",
+      "city": "",
+      "kind": "restaurant",
+      "context": "weekends prime rib option",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -383,7 +279,7 @@
       "name": "TechCU Arena",
       "city": "San Jose",
       "kind": "venue",
-      "context": "potential venue for PWHL team discussed",
+      "context": "potential PWHL venue, home to Barracuda",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -396,9 +292,9 @@
       "name": "Tokyo Central specialty Market",
       "city": "",
       "kind": "retail",
-      "context": "Japanese specialty market selling premium melons",
+      "context": "Japanese specialty market selling premium fruit including expensive melons",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/",
+        "https://www.reddit.com/r/bayarea/comments/1syjo4h/connect_bay_area_act_sb_63_are_there_alternatives/",
         "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
         "https://www.reddit.com/r/bayarea/comments/1sy7na9/realistic_improvements_to_caltrain/",
         "https://www.reddit.com/r/bayarea/comments/1sye639/tokyo_central_specialty_market_damn/",
@@ -406,14 +302,38 @@
       ]
     },
     {
+      "name": "Mickaboo",
+      "city": "",
+      "kind": "service",
+      "context": "bird rescue organization serving Bay Area",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
+        "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
+      ]
+    },
+    {
+      "name": "San Jose Animal Control",
+      "city": "San Jose",
+      "kind": "service",
+      "context": "lost pet reunification and animal services",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
+        "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
+        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
+      ]
+    },
+    {
       "name": "Spartan Home Services",
       "city": "",
       "kind": "service",
-      "context": "solar installation company, family-run, creative financing options",
+      "context": "solar installation company with family-run approach",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
         "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     },
@@ -421,11 +341,11 @@
       "name": "Luminalt",
       "city": "",
       "kind": "service",
-      "context": "local reliable solar installer recommended by users",
+      "context": "local reliable solar installer",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
         "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     },
@@ -433,11 +353,11 @@
       "name": "SunRun",
       "city": "",
       "kind": "service",
-      "context": "solar installation company, mentioned as reliable option",
+      "context": "solar installation company",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
         "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     },
@@ -445,11 +365,11 @@
       "name": "Continuum",
       "city": "",
       "kind": "service",
-      "context": "solar installer recommended as local and reliable",
+      "context": "solar installation company",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
         "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     },
@@ -457,23 +377,23 @@
       "name": "Clean Solar",
       "city": "",
       "kind": "service",
-      "context": "small business solar installer, highly recommended by user",
+      "context": "small business solar installer with positive reviews",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
         "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     },
     {
       "name": "SunWork",
-      "city": "Bay Area",
+      "city": "",
       "kind": "service",
-      "context": "nonprofit solar installation, approximately 33% less expensive than for-profit",
+      "context": "nonprofit solar installation 33% less expensive than for-profit",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
         "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     },
@@ -481,11 +401,11 @@
       "name": "Pruneyard",
       "city": "Campbell",
       "kind": "venue",
-      "context": "shopping center hosting new Dough Zone location",
+      "context": "shopping center with Dough Zone and other restaurants",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
         "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     },
@@ -493,23 +413,35 @@
       "name": "Patxis",
       "city": "Campbell",
       "kind": "restaurant",
-      "context": "former Pruneyard restaurant location now occupied by Dough Zone",
+      "context": "former Pruneyard restaurant, underwhelming experience noted",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
+        "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
+      ]
+    },
+    {
+      "name": "Skydio",
+      "city": "San Mateo",
+      "kind": "other",
+      "context": "drone manufacturer expanding factory with $3.5B investment",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
+        "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
+        "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
         "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "Beginner Roller Hockey League Learn to Play Class",
-      "when": "Monday nights 6:15 PM - 7:15 PM",
-      "city": "San Jose",
-      "context": "free weekly beginner hockey class at The Plex",
+      "name": "The Plex Beginner Roller Hockey Learn to Play Class",
+      "when": "Monday nights 6:15 PM to 7:15 PM",
+      "city": "",
+      "context": "free weekly hockey class for all skill levels, leads into beginner league",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/",
+        "https://www.reddit.com/r/bayarea/comments/1syjo4h/connect_bay_area_act_sb_63_are_there_alternatives/",
         "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
         "https://www.reddit.com/r/bayarea/comments/1sy7na9/realistic_improvements_to_caltrain/",
         "https://www.reddit.com/r/bayarea/comments/1sye639/tokyo_central_specialty_market_damn/",
@@ -517,12 +449,12 @@
       ]
     },
     {
-      "name": "35+ and 45+ Roller Hockey Leagues",
-      "when": "Sunday afternoons, new season early June",
-      "city": "San Jose",
-      "context": "age-specific roller hockey leagues at The Plex",
+      "name": "The Plex 35+ and 45+ Roller Hockey Leagues",
+      "when": "Sunday afternoons, new season starts early June",
+      "city": "",
+      "context": "age-specific roller hockey leagues with variable skill levels welcome",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/",
+        "https://www.reddit.com/r/bayarea/comments/1syjo4h/connect_bay_area_act_sb_63_are_there_alternatives/",
         "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
         "https://www.reddit.com/r/bayarea/comments/1sy7na9/realistic_improvements_to_caltrain/",
         "https://www.reddit.com/r/bayarea/comments/1sye639/tokyo_central_specialty_market_damn/",
@@ -535,7 +467,7 @@
       "name": "Seniore's Pizza",
       "city": "",
       "kind": "restaurant",
-      "context": "highly praised pizza spot mentioned in discussion",
+      "context": "mentioned as awesome pizza place in Bay Area",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -549,7 +481,7 @@
       "name": "A Slice of New York",
       "city": "San Jose",
       "kind": "restaurant",
-      "context": "pizza locations in San Jose and Sunnyvale",
+      "context": "locations in San Jose and Sunnyvale, expensive but delicious",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -563,7 +495,7 @@
       "name": "Original Joe's",
       "city": "San Jose",
       "kind": "restaurant",
-      "context": "San Jose restaurant with prime rib",
+      "context": "suggested for prime rib birthday dinner",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -577,7 +509,7 @@
       "name": "SAP Center",
       "city": "San Jose",
       "kind": "venue",
-      "context": "potential home for PWHL team in San Jose",
+      "context": "potential PWHL arena location",
       "sourceUrls": [
         "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/",
         "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
@@ -589,11 +521,11 @@
     },
     {
       "name": "The Plex",
-      "city": "San Jose",
+      "city": "",
       "kind": "venue",
-      "context": "roller hockey facility with beginner leagues",
+      "context": "roller hockey facility with beginner league and free learn-to-play classes",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/",
+        "https://www.reddit.com/r/bayarea/comments/1syjo4h/connect_bay_area_act_sb_63_are_there_alternatives/",
         "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
         "https://www.reddit.com/r/bayarea/comments/1sy7na9/realistic_improvements_to_caltrain/",
         "https://www.reddit.com/r/bayarea/comments/1sye639/tokyo_central_specialty_market_damn/",
@@ -605,9 +537,9 @@
       "name": "Sharks Ice",
       "city": "",
       "kind": "venue",
-      "context": "ice hockey leagues mentioned as expensive alternative",
+      "context": "ice hockey facility with leagues, mentioned as expensive alternative to The Plex",
       "sourceUrls": [
-        "https://www.reddit.com/r/bayarea/comments/1sycvje/any_reason_to_use_clipper_card_if_you_dont_have_a/",
+        "https://www.reddit.com/r/bayarea/comments/1syjo4h/connect_bay_area_act_sb_63_are_there_alternatives/",
         "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
         "https://www.reddit.com/r/bayarea/comments/1sy7na9/realistic_improvements_to_caltrain/",
         "https://www.reddit.com/r/bayarea/comments/1sye639/tokyo_central_specialty_market_damn/",
@@ -619,11 +551,11 @@
       "name": "Dough Zone",
       "city": "Campbell",
       "kind": "restaurant",
-      "context": "opening at Pruneyard shopping center",
+      "context": "upcoming restaurant opening at Pruneyard shopping center",
       "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
         "https://www.reddit.com/r/bayarea/comments/1sy2bhw/anyone_have_solar_installed_in_the_last_612_months/",
         "https://www.reddit.com/r/Campbell/comments/1svhz5n/dough_zone_signage/",
-        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
         "https://www.reddit.com/r/bayarea/comments/1sycxf1/skydio_drops_35_billion_drone_bet_on_san_mateo/"
       ],
       "matchedName": "Dough Zone Dumpling House Cupertino"

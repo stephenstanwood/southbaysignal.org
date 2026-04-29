@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-04-28T23:10:00.115Z",
+      "generatedAt": "2026-04-29T11:08:18.505Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Apr 21 – Apr 28",
+      "dateRange": "Apr 22 – Apr 29",
       "stats": {
-        "total": 360,
+        "total": 343,
         "notable": 18,
         "newUnits": 9,
-        "totalValuation": 7240129
+        "totalValuation": 7964946
       },
       "permits": [
         {
@@ -27,15 +27,15 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2024-119368-RS",
-          "address": "1687 Virginia Pl #2",
+          "id": "2024-107652-RS",
+          "address": "3023 Moonstar Ct #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Code Case Legalize Unpermitted Garage Conversion to adu",
-          "valuation": 167906,
+          "description": "New Detached adu",
+          "valuation": 168752,
           "units": 1,
-          "issueDate": "2026-04-22",
+          "issueDate": "2026-04-27",
           "subtype": "2nd Unit Added"
         },
         {
@@ -63,18 +63,6 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-127205-RS",
-          "address": "1110 Coyote Rd #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Attached 2-Story adu",
-          "valuation": 104329,
-          "units": 1,
-          "issueDate": "2026-04-22",
-          "subtype": "2nd Unit Added"
-        },
-        {
           "id": "2025-142682-RS",
           "address": "3068 Quimby Rd #2",
           "category": "residential-new",
@@ -99,6 +87,30 @@
           "subtype": "2nd Unit Added"
         },
         {
+          "id": "2025-144120-RS",
+          "address": "267 S 12th St #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Detached adu",
+          "valuation": 89280,
+          "units": 1,
+          "issueDate": "2026-04-27",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-144372-RS",
+          "address": "2928 Del Loma Dr #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Detached adu",
+          "valuation": 83023,
+          "units": 1,
+          "issueDate": "2026-04-27",
+          "subtype": "2nd Unit Added"
+        },
+        {
           "id": "2025-096661-RS",
           "address": "1206 Lennon Wy #2",
           "category": "residential-new",
@@ -111,57 +123,33 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-132134-RS",
-          "address": "1493 Brookdale Dr",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Detached Garage Conversion to adu",
-          "valuation": 63578,
-          "units": 1,
-          "issueDate": "2026-04-22",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2026-113959-CI",
-          "address": "960 W Hedding St #2",
+          "id": "2026-114976-CI",
+          "address": "2625 Zanker Rd",
           "category": "commercial-large",
           "categoryLabel": "Commercial Project",
           "workType": "Tenant Improvement",
-          "description": "Int Alt - Berchmans Hall - Bellarmine College",
-          "valuation": 1500000,
+          "description": "Rooftop Ac Replacement",
+          "valuation": 1030243,
           "units": 0,
-          "issueDate": "2026-04-22",
-          "subtype": "School/Daycare"
+          "issueDate": "2026-04-27",
+          "subtype": "Office"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-04-28T23:10:02.760Z",
+      "generatedAt": "2026-04-29T11:08:21.039Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Apr 21 – Apr 28",
+      "dateRange": "Apr 22 – Apr 29",
       "stats": {
-        "total": 84,
-        "notable": 2,
+        "total": 95,
+        "notable": 4,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
-        {
-          "id": "26BLD-01044",
-          "address": "631 Saint Claire Dr",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-04-21",
-          "subtype": "Permit Issued"
-        },
         {
           "id": "26BLD-01087",
           "address": "642 Bryson Av",
@@ -173,6 +161,42 @@
           "units": 0,
           "issueDate": "2026-04-27",
           "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-01061",
+          "address": "2351 Louis Rd",
+          "category": "residential-remodel",
+          "categoryLabel": "Home Remodel",
+          "workType": "Building Permit",
+          "description": "Res: Convert bedroom space into a bathroom. Fill in window.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-23",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26PLN-00094",
+          "address": "261 Hamilton Av",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for an Over-the-Counter Architectural Review to install one illuminated (edge lit) wall sign for Fireclay Tile. The sign will be constructed of stainless-steel letters (painted black with satin finish) and will be 9 inches tall by 7 feet and 7 inches long. Zoning District: CD-C (GF)(P). Environmental Assessment: Not a Project. For more information, contact Scott McKay at Scott.McKay@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-28",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00095",
+          "address": "220 University Av",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for an Over the Counter Architectural Review to install a new 36 inch tall by 115 inch wide LED channel letter sign on raceway to read, \"Zingsters\". The sign will be made with aluminum, painted black, red, and white with white acrylic face to be placed on a black aluminimum backer panel. Zone District: CD-C (Commercial Downtown). Environmental Assessment: Not a Project. For more information contact the project planner at Garrett.Sauls@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-04-28",
+          "subtype": "Over the Counter Approved"
         }
       ]
     }
