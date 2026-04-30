@@ -1,79 +1,767 @@
 {
   "_meta": {
-    "generatedAt": "2026-04-29T23:17:16.668Z",
+    "generatedAt": "2026-04-30T01:17:04.309Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 13
+    "sourceCount": 14
   },
   "summary": {
-    "threadsMined": 13,
-    "placesExtracted": 4,
-    "placesMatched": 2,
-    "placeGaps": 2,
-    "eventsExtracted": 0,
+    "threadsMined": 14,
+    "placesExtracted": 50,
+    "placesMatched": 15,
+    "placeGaps": 35,
+    "eventsExtracted": 6,
     "eventsMatched": 0,
-    "eventGaps": 0,
+    "eventGaps": 6,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "Mountain View Y",
-      "city": "Mountain View",
-      "kind": "venue",
-      "context": "indoor pool for lap swimming, often crowded or closed",
+      "name": "House of Prime Rib",
+      "city": "San Francisco",
+      "kind": "restaurant",
+      "context": "famous prime rib restaurant, mentioned as benchmark",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/",
-        "https://www.reddit.com/r/mountainview/comments/1swrzkc/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/mountainview/comments/1sy859w/best_place_to_swim_laps/",
-        "https://www.reddit.com/r/Cupertino/comments/1syrshl/i280wolfe_road_interchange_improvement_project_in/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1syreek/help_with_hosting_the_inlaws/"
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Harris",
+      "city": "San Francisco",
+      "kind": "restaurant",
+      "context": "recommended for prime rib, highly rated steakhouse",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "The Dead Fish",
+      "city": "",
+      "kind": "restaurant",
+      "context": "recommended as one of best restaurants in Bay Area",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Sundance",
+      "city": "Palo Alto",
+      "kind": "restaurant",
+      "context": "recommended for prime rib dinner",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Henry's Hi-Life",
+      "city": "",
+      "kind": "restaurant",
+      "context": "recommended for prime rib on weekends",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Casa Orinda",
+      "city": "",
+      "kind": "restaurant",
+      "context": "recommended for prime rib with lounge seating",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Warehouse Cafe",
+      "city": "",
+      "kind": "cafe",
+      "context": "mentioned alongside prime rib recommendations",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Hap's",
+      "city": "Pleasanton",
+      "kind": "restaurant",
+      "context": "recommended for prime rib in downtown Pleasanton",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Shadowbrook",
+      "city": "Capitola",
+      "kind": "restaurant",
+      "context": "steakhouse near Bay Area with prime rib",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Brazen Head",
+      "city": "",
+      "kind": "bar",
+      "context": "recommended steakhouse with bar seating",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Ruth Chris",
+      "city": "Walnut Creek",
+      "kind": "restaurant",
+      "context": "steakhouse with good steaks and prime rib",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Fat Lady",
+      "city": "Oakland",
+      "kind": "restaurant",
+      "context": "highly regarded restaurant, steakhouse option",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Alexander's",
+      "city": "",
+      "kind": "restaurant",
+      "context": "recommended for excellent prime rib",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Birk's Steakhouse",
+      "city": "Santa Clara",
+      "kind": "restaurant",
+      "context": "steakhouse with prime rib option",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Harry Hofbrau",
+      "city": "",
+      "kind": "restaurant",
+      "context": "mentioned as prime rib option",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Prime Steakhouse & Martini Garden",
+      "city": "Walnut Creek",
+      "kind": "restaurant",
+      "context": "steakhouse with prime rib, better than House of Prime Rib",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "San Mateo Prime",
+      "city": "San Mateo",
+      "kind": "restaurant",
+      "context": "easy reservations, traditional prime rib sides",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "TechCU Arena",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "potential venue for PWHL team, currently home to San Jose Barracuda",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Bay FC",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "successful women's soccer team in Bay Area",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "San Jose Valkyries",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "successful women's sports team, financial success mentioned",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "San Jose Barracuda",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "AHL team that might compete with PWHL team",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "Santa Cruz Warriors",
+      "city": "Santa Cruz",
+      "kind": "venue",
+      "context": "basketball team building new stadium that could host hockey rink",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "San Jose Sharks",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "NHL team in San Jose, potential PWHL partner",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ]
+    },
+    {
+      "name": "House Rabbit Society",
+      "city": "",
+      "kind": "service",
+      "context": "animal shelter and foster organization with Hop Shop retail discounts",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "The Tech Museum",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "technology museum in downtown San Jose",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "Japantown",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "walkable neighborhood with Japanese cultural sites and dining",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "Japanese Friendship Garden",
+      "city": "San Jose",
+      "kind": "park",
+      "context": "garden in Japantown area, scenic on sunny days",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "Hearts Delight Roller Derby",
+      "city": "",
+      "kind": "venue",
+      "context": "roller derby boot camp for learning to skate and meeting people",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "Pogonip",
+      "city": "",
+      "kind": "park",
+      "context": "hiking area near Santa Cruz with beach access",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "Monterey Bay Aquarium",
+      "city": "",
+      "kind": "venue",
+      "context": "aquarium in Monterey area recommended for visitors",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "Santa Cruz Boardwalk",
+      "city": "Santa Cruz",
+      "kind": "venue",
+      "context": "beach boardwalk entertainment destination",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "Capitola",
+      "city": "",
+      "kind": "venue",
+      "context": "coastal town with better dining than Santa Cruz Boardwalk",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
       ]
     },
     {
       "name": "Hibachi At Home",
       "city": "Sunnyvale",
       "kind": "service",
-      "context": "private chef service for in-home hibachi dining experience",
+      "context": "in-home hibachi chef service for entertaining guests",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/",
-        "https://www.reddit.com/r/mountainview/comments/1swrzkc/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/mountainview/comments/1sy859w/best_place_to_swim_laps/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syaj8h/favorite_moments_from_this_season/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sz6k8q/traveling_from_australia_for_a_game_next_year/",
+        "https://www.reddit.com/r/Cupertino/comments/1syrshl/i280wolfe_road_interchange_improvement_project_in/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syreek/help_with_hosting_the_inlaws/"
+      ]
+    },
+    {
+      "name": "Cooking for Friends",
+      "city": "Sunnyvale",
+      "kind": "service",
+      "context": "chef Richard provides paella and catering services at home",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syaj8h/favorite_moments_from_this_season/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sz6k8q/traveling_from_australia_for_a_game_next_year/",
+        "https://www.reddit.com/r/Cupertino/comments/1syrshl/i280wolfe_road_interchange_improvement_project_in/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syreek/help_with_hosting_the_inlaws/"
+      ]
+    },
+    {
+      "name": "Pichetti Ranch",
+      "city": "Cupertino",
+      "kind": "park",
+      "context": "hiking destination with winery, gentle terrain",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syaj8h/favorite_moments_from_this_season/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sz6k8q/traveling_from_australia_for_a_game_next_year/",
         "https://www.reddit.com/r/Cupertino/comments/1syrshl/i280wolfe_road_interchange_improvement_project_in/",
         "https://www.reddit.com/r/Sunnyvale/comments/1syreek/help_with_hosting_the_inlaws/"
       ]
     }
   ],
-  "eventGaps": [],
+  "eventGaps": [
+    {
+      "name": "Sharks Game",
+      "when": "start of next season in fall",
+      "city": "San Jose",
+      "context": "NHL game with potential player meet-and-greet opportunity",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "49ers Game",
+      "when": "fall",
+      "city": "",
+      "context": "NFL game suggested as activity for visiting group",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "Winchester Mystery House Nighttime Ghost Tours",
+      "when": "seasonal, check website",
+      "city": "San Jose",
+      "context": "flashlight ghost tours at historic mansion",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "Bad Bitch Book Club Monthly Meetup",
+      "when": "monthly",
+      "city": "Bay Area",
+      "context": "book club with Bay Area chapter and WhatsApp community",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "The Plex Beginner Hockey Learn-to-Play Class",
+      "when": "Monday nights 6:15 PM to 7:15 PM",
+      "city": "",
+      "context": "free weekly hockey class leading to beginner league",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    },
+    {
+      "name": "The Plex 35+ and 45+ Hockey Leagues",
+      "when": "Sunday afternoons, new season early June",
+      "city": "",
+      "context": "adult hockey leagues starting registration in early June",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ]
+    }
+  ],
   "placeMatches": [
+    {
+      "name": "Original Joe's",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "recommended for prime rib dinner",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/"
+      ],
+      "matchedName": "Original Joe's San Jose"
+    },
+    {
+      "name": "SAP Center",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "potential home for Bay Area PWHL team",
+      "sourceUrls": [
+        "https://www.reddit.com/r/bayarea/comments/1sym1dt/best_prime_rib_in_the_bay_area_that_isnt_house_of/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sydg21/do_you_think_a_pwhl_team_would_do_well_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
+        "https://www.reddit.com/r/bayarea/comments/1syy6f5/the_ohtani_effect_and_more_whats_behind_bay_area/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syaj8h/favorite_moments_from_this_season/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1sz6k8q/traveling_from_australia_for_a_game_next_year/",
+        "https://www.reddit.com/r/Cupertino/comments/1syrshl/i280wolfe_road_interchange_improvement_project_in/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1syreek/help_with_hosting_the_inlaws/"
+      ],
+      "matchedName": "SAP Center"
+    },
     {
       "name": "Great America",
       "city": "Santa Clara",
       "kind": "venue",
-      "context": "amusement park, field day destination for school groups",
+      "context": "amusement park with water park, celebrating 50th season",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1sykff0/i_redesigned_the_flags_of_14_bay_area_cities/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1syem2y/our_city_hall_is_coming_out/",
-        "https://www.reddit.com/r/SanJose/comments/1syjbj1/found_bird_near_japantown/",
         "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
-        "https://www.reddit.com/r/mountainview/comments/1syj8lx/bike_cop_lane_splitting_to_check_texting_driving/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1sy4vwa/barnyard_animal_program_in_sunnyvale_supports/",
-        "https://www.reddit.com/r/santaclara/comments/1syqaa5/does_anyone_know_if_great_america_is_worth_going/",
-        "https://www.reddit.com/r/SanJose/comments/1syp59b/tennis_lessons_for_adults/"
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
       ],
       "matchedName": "Great America Amphitheater"
     },
     {
-      "name": "Palo Alto Y",
-      "city": "Palo Alto",
+      "name": "The Plex",
+      "city": "",
       "kind": "venue",
-      "context": "indoor pool for lap swimming, often crowded or closed",
+      "context": "roller hockey facility with beginner leagues and free learn-to-play classes",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/",
-        "https://www.reddit.com/r/mountainview/comments/1swrzkc/moved_to_sunnyvale_recently_what_do_people/",
-        "https://www.reddit.com/r/mountainview/comments/1sy859w/best_place_to_swim_laps/",
-        "https://www.reddit.com/r/Cupertino/comments/1syrshl/i280wolfe_road_interchange_improvement_project_in/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1syreek/help_with_hosting_the_inlaws/"
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
       ],
-      "matchedName": "Palo Alto Cafe"
+      "matchedName": "The Plex"
+    },
+    {
+      "name": "Sharks Ice",
+      "city": "",
+      "kind": "venue",
+      "context": "ice hockey league facility with higher pricing than The Plex",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ],
+      "matchedName": "Sharks Ice at San Jose"
+    },
+    {
+      "name": "Winchester Mystery House",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "historic mansion with tours and nighttime ghost tours available",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ],
+      "matchedName": "Winchester Mystery House"
+    },
+    {
+      "name": "San Pedro Square",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "downtown gathering area with restaurants and bars, popular before/after Sharks games",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ],
+      "matchedName": "San Pedro Square Market"
+    },
+    {
+      "name": "The Rosicrucian Egyptian Museum",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "museum in downtown San Jose",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ],
+      "matchedName": "Rosicrucian Egyptian Museum"
+    },
+    {
+      "name": "The Japanese American Museum",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "museum in downtown San Jose",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ],
+      "matchedName": "Japanese American Museum of San Jose"
+    },
+    {
+      "name": "The San Jose Museum of Art",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "art museum in downtown San Jose",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ],
+      "matchedName": "San Jose Museum of Art"
+    },
+    {
+      "name": "Computer History Museum",
+      "city": "Mountain View",
+      "kind": "venue",
+      "context": "technology museum near San Jose",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ],
+      "matchedName": "Computer History Museum"
+    },
+    {
+      "name": "Westfield Valley Fair",
+      "city": "San Jose",
+      "kind": "retail",
+      "context": "large shopping mall with dining and retail options",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ],
+      "matchedName": "Westfield Valley Fair"
+    },
+    {
+      "name": "Eataly",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "Italian food shopping center mentioned in discussion",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ],
+      "matchedName": "Eataly"
+    },
+    {
+      "name": "Big Basin State Park",
+      "city": "",
+      "kind": "park",
+      "context": "redwoods park with hiking trails and views near Santa Cruz",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ],
+      "matchedName": "Big Basin Cafe"
+    },
+    {
+      "name": "Henry Cowell",
+      "city": "",
+      "kind": "park",
+      "context": "hiking destination near Santa Cruz with redwoods access",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1syj7ha/are_the_playoffs_giving_you_the_itch_to_play_come/",
+        "https://www.reddit.com/r/bayarea/comments/1szdly7/foster_a_shelter_rabbit_from_house_rabbit_society/",
+        "https://www.reddit.com/r/SanJoseSharks/comments/1szcwal/things_to_do_in_the_bay_for_midwesterners/",
+        "https://www.reddit.com/r/SanJose/comments/1szaigi/where_should_i_move_to_as_a_single_woman_in_her/"
+      ],
+      "matchedName": "Henry Cowell Redwoods State Park"
     }
   ],
   "eventMatches": []

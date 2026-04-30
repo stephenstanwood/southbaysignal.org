@@ -7,11 +7,11 @@
       "Google Places API (New) Text Search",
       "poi-data.ts (curated)"
     ],
-    "lastBackfilledAt": "2026-04-29T13:17:08.084Z",
+    "lastBackfilledAt": "2026-04-30T01:17:25.090Z",
     "lastBackfillSource": "reddit-gaps"
   },
   "stats": {
-    "total": 2561,
+    "total": 2562,
     "curated": 49,
     "googleOnly": 2450,
     "byCity": {
@@ -91489,6 +91489,44 @@
       "kidFriendlyChanged": false,
       "indoorOutdoorChanged": true,
       "source": "https://www.reddit.com/r/bayarea/comments/1sy4ezx/best_pizza_place_in_the_bay_area/"
+    },
+    {
+      "id": "ChIJnwKWPCwzjoARY4_zZxCFY5k",
+      "name": "Japanese Friendship Garden",
+      "address": "1300 Senter Rd, San Jose, CA 95112, USA",
+      "city": "san-jose",
+      "lat": 37.3212316,
+      "lng": -121.86087429999999,
+      "rating": 4,
+      "ratingCount": 2361,
+      "priceLevel": null,
+      "types": [
+        "garden",
+        "tourist_attraction",
+        "point_of_interest",
+        "establishment"
+      ],
+      "primaryType": "garden",
+      "displayType": "Garden",
+      "category": "outdoor",
+      "hours": {
+        "sun": "10:00-18:00",
+        "mon": "10:00-18:00",
+        "tue": "10:00-18:00",
+        "wed": "10:00-18:00",
+        "thu": "10:00-18:00",
+        "fri": "10:00-18:00",
+        "sat": "10:00-18:00"
+      },
+      "url": "https://www.sanjoseca.gov/Home/Components/FacilityDirectory/FacilityDirectory/2835/",
+      "mapsUrl": "https://maps.google.com/?cid=11052824216007315299&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "photoRef": "places/ChIJnwKWPCwzjoARY4_zZxCFY5k/photos/Ab43m-shHcS61vf868nC5sWPGG4ED4DKbXky6yHbRojutz1Uej-9QOt44cPFTjx5vmDZNrEYj3XayiXzAY6GrKIkYB4Srrh9zpW7hONcrDs3llWeW61b2EAaiA60DjVhsAgamSI28rldI7va31PcFCphD0jtsxAEVEez_WmbfDbmPvB2Rz5sTRiVQ4yBPT7hQsappIendQKFpDhoJqx17jhdGX_UvcdiBIzGfPvUPKTDEljMHUk4rPM53ygt43nV8Ktt3gHPgOfaqFnmaBd0LBaJ8eEk7hXJRX66bDktwZ4zgmKkmx-ARUSTYfpAa88xA5xW1eVPpp2xlMmORrp8xPNfMDur96DiPcKDXZacni5Luq9fPoExgR1JlhTzP6ftUr-J24cu_0133s0qpjDX5ylkQfKuuvo-5Z_iFNLbgzRUu3SD2vSao1jOGeWowYlOMA",
+      "curated": false,
+      "discoverySource": "reddit-gaps",
+      "indoorOutdoor": "outdoor",
+      "kidFriendlyChanged": false,
+      "indoorOutdoorChanged": true,
+      "source": "https://www.reddit.com/r/SanJose/comments/1syq7zk/does_anyone_know_if_great_america_is_worth_going/"
     }
   ]
 }
