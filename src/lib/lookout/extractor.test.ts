@@ -11,6 +11,7 @@ import {
   normalizeCityKey,
   isValidExtractedEvent,
   sanitizeExtractedEvent,
+  sourceUrlAlignsWithTitle,
   stripCodeFence,
   type ExtractedEvent,
 } from "./extractor.ts";
@@ -55,6 +56,34 @@ test("sanitizeExtractedEvent nulls mailto sourceUrl, keeps http(s)", () => {
   assert.equal(sanitizeExtractedEvent(ev({ sourceUrl: "mailto:hi@x.org" })).sourceUrl, null);
   assert.equal(sanitizeExtractedEvent(ev({ sourceUrl: "https://ex.com/e" })).sourceUrl, "https://ex.com/e");
   assert.equal(sanitizeExtractedEvent(ev({ sourceUrl: null })).sourceUrl, null);
+});
+
+test("sanitizeExtractedEvent nulls cross-wired newsletter links", () => {
+  const mismatched = sanitizeExtractedEvent(ev({
+    title: "San Jose Giants Japanese Heritage Game Night",
+    sourceUrl: "https://www.eventbrite.com/e/3rd-annual-aapi-playwright-festival-sj-japantown-guided-tour-tickets-1989767460036",
+  }));
+  assert.equal(mismatched.sourceUrl, null);
+});
+
+test("sourceUrlAlignsWithTitle keeps aligned Eventbrite slugs", () => {
+  assert.equal(
+    sourceUrlAlignsWithTitle(
+      "3rd Annual AAPI Playwright Festival SJ Japantown Guided Tour",
+      "https://www.eventbrite.com/e/3rd-annual-aapi-playwright-festival-sj-japantown-guided-tour-tickets-1989767460036",
+    ),
+    true,
+  );
+});
+
+test("sourceUrlAlignsWithTitle allows opaque MiLB ticket vendors", () => {
+  assert.equal(
+    sourceUrlAlignsWithTitle(
+      "San Jose Giants Japanese Heritage Game Night",
+      "https://mlb.tickets.com/schedule/?agency=MILB_MPV&orgid=56749#/sales_group_code;salesGroupId=13349",
+    ),
+    true,
+  );
 });
 
 test("sanitizeExtractedEvent does not mutate its input", () => {

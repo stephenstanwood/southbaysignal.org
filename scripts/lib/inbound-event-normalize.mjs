@@ -4,6 +4,9 @@ const PT = "America/Los_Angeles";
 
 export const JEREMY_FREY_EXHIBITION_URL = "https://museum.stanford.edu/exhibitions/jeremy-frey-woven-0";
 export const PAPAHUGS_OCCURRENCE_URL = "https://www.cdm.org/event/papahugs/";
+// JAMsj publishes tinyurl.com/jamsj-sjgiants for this sales group; unwrap resolves here.
+export const SJ_GIANTS_JAPANESE_HERITAGE_2026_07_26_URL =
+  "https://mlb.tickets.com/schedule/?agency=MILB_MPV&orgid=56749#/sales_group_code;salesGroupId=13349";
 
 // Some newsletter trackers can't be unwrapped — Books Inc.'s Adestra links
 // (l.e.booksinc.com/rts/go2.aspx) serve a 200 instead of redirecting once the
@@ -61,6 +64,17 @@ function officialOverride(event) {
       url: PAPAHUGS_OCCURRENCE_URL,
       time: "11:00 AM",
       endTime: "11:45 AM",
+    };
+  }
+  if (
+    date === "2026-07-26"
+    && /san\s+jose\s+giants.*japanese\s+heritage|japanese\s+heritage.*san\s+jose\s+giants/i.test(identity)
+    && /excite\s+ballpark/i.test(identity)
+  ) {
+    return {
+      url: SJ_GIANTS_JAPANESE_HERITAGE_2026_07_26_URL,
+      time: "5:00 PM",
+      endTime: null,
     };
   }
   return null;
