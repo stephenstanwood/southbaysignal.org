@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-24T03:08:41.547Z",
+  "generatedAt": "2026-07-27T11:06:06.229Z",
   "meetings": {
     "sunnyvale": {
       "date": "2026-07-28",
@@ -34,7 +34,7 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-07-28",
-        "sourceUrl": "https://webapi.legistar.com/v1/sunnyvaleca/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-07-23T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sunnyvaleca/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-07-27T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
@@ -63,7 +63,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-07-23T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-07-27T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   }
