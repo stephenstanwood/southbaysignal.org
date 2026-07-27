@@ -107,6 +107,7 @@ Other rules:
 - Do NOT invent fields. If a field is missing, use null (or empty string for description).
 - Prefer the event's own page URL over the newsletter's main URL.
   - NEVER use a mailto: link as sourceUrl. If the only contact is an email address, set sourceUrl to null.
+  - In multi-event newsletters (JAMsj, chamber roundups, etc.), bind each sourceUrl to the link nearest that event's title/block — never reuse a neighboring event's ticket link.
   - Prefer the venue or chamber's own URL. If the only event-specific link is a newsletter click-tracking URL, return it; the pipeline will unwrap it later.
 - If the city is Morgan Hill or Gilroy, return cityName: null (we don't cover those).
 - Return ONLY the JSON object, no markdown code fences, no commentary.
@@ -179,6 +180,48 @@ ${bodyBlock}`;
   return events.filter(isValidExtractedEvent).map(sanitizeExtractedEvent);
 }
 
+const URL_TITLE_STOP = new Set([
+  "about", "annual", "avenue", "california", "community", "event", "events",
+  "friday", "game", "games", "heritage", "monday", "night", "saturday",
+  "sunday", "thursday", "ticket", "tickets", "tuesday", "wednesday",
+  "2026", "2027", "free", "jose", "san", "the", "with", "from", "your",
+]);
+
+const OPAQUE_TICKET_VENDOR = /(?:^|\.)(?:ticketmaster|mlb\.tickets|tickets\.com|milb|gofevo)(?:\.|$)/i;
+
+function significantUrlTitleTokens(text: string): string[] {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .split(/[\s-]+/)
+    .filter((word) => word.length >= 5 && !URL_TITLE_STOP.has(word));
+}
+
+/** Reject cross-wired newsletter links whose slug clearly names another event. */
+export function sourceUrlAlignsWithTitle(title: string, url: string | null): boolean {
+  if (!url) return true;
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return true;
+  }
+  if (OPAQUE_TICKET_VENDOR.test(parsed.hostname)) return true;
+
+  const haystack = `${parsed.hostname} ${parsed.pathname} ${parsed.search}`.toLowerCase();
+  const titleTokens = significantUrlTitleTokens(title);
+  if (titleTokens.length === 0) return true;
+
+  const urlTokens = significantUrlTitleTokens(haystack.replace(/\//g, " "));
+  if (urlTokens.length === 0) return true;
+
+  return titleTokens.some((token) =>
+    urlTokens.some((candidate) =>
+      candidate === token || candidate.includes(token) || token.includes(candidate),
+    ),
+  );
+}
+
 /**
  * Null out non-web source URLs that sneak past the prompt. Tracker links are
  * intentionally preserved: pull-inbound-events.mjs unwraps them before
@@ -188,6 +231,8 @@ export function sanitizeExtractedEvent(e: ExtractedEvent): ExtractedEvent {
   const cleaned = { ...e };
   if (cleaned.sourceUrl) {
     if (cleaned.sourceUrl.startsWith("mailto:")) {
+      cleaned.sourceUrl = null;
+    } else if (!sourceUrlAlignsWithTitle(cleaned.title, cleaned.sourceUrl)) {
       cleaned.sourceUrl = null;
     }
   }

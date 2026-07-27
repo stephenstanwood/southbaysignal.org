@@ -5,6 +5,7 @@ import {
   inboundClock,
   JEREMY_FREY_EXHIBITION_URL,
   PAPAHUGS_OCCURRENCE_URL,
+  SJ_GIANTS_JAPANESE_HERITAGE_2026_07_26_URL,
   normalizeInboundEventPresentation,
 } from "./inbound-event-normalize.mjs";
 
@@ -39,6 +40,20 @@ test("PapaHugs uses the museum occurrence page and published end time", () => {
     time: "11:00 AM",
     endTime: "11:45 AM",
     url: PAPAHUGS_OCCURRENCE_URL,
+  });
+});
+
+test("SJ Giants Japanese Heritage Night uses the official MiLB ticket sales group", () => {
+  assert.deepEqual(normalizeInboundEventPresentation({
+    title: "San Jose Giants Japanese Heritage Game Night",
+    startsAt: "2026-07-26T17:00:00-07:00",
+    endsAt: null,
+    location: "Excite Ballpark, 588 E Alma Ave, San Jose, CA 95112",
+    sourceUrl: "https://www.eventbrite.com/e/3rd-annual-aapi-playwright-festival-sj-japantown-guided-tour-tickets-1989767460036",
+  }), {
+    time: "5:00 PM",
+    endTime: null,
+    url: SJ_GIANTS_JAPANESE_HERITAGE_2026_07_26_URL,
   });
 });
 
