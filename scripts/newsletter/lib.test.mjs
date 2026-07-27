@@ -10,9 +10,18 @@ import {
   sanitizeTonightPickBlurb,
   selectDefaultPlan,
   todayPT,
+  truncateNewsletterCopy,
 } from "./lib.mjs";
 
 const BLOCKED_UNSPLASH = "https://images.unsplash.com/photo-1585899873671-ade0aa28a821?crop=entropy&w=400";
+
+test("newsletter copy truncation never cuts a word in half", () => {
+  const note = "Civic stakes lead the week, plus practical threads on car-free VTA life and getting through a heatwave without central AC.";
+  const truncated = truncateNewsletterCopy(note, 90);
+
+  assert.equal(truncated, "Civic stakes lead the week, plus practical threads on car-free VTA life and getting…");
+  assert.ok(truncated.length <= 90);
+});
 
 function pairedPlanCards() {
   return [
