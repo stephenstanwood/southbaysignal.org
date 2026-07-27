@@ -1313,7 +1313,7 @@ function applyEditorialJson(data, candidates, edit) {
       openingsHeading: newsletterCopyString(edit.openingsHeading, 80),
       openingsNote: newsletterCopyString(edit.openingsNote, 220),
       conversationHeading: newsletterCopyString(edit.conversationHeading, 80),
-      conversationNote: newsletterCopyString(edit.conversationNote, 220),
+      conversationNote: newsletterCopyString(edit.conversationNote, 320),
     },
   };
 
@@ -1415,9 +1415,25 @@ function anchorTokens(value) {
   return [normalized, ...tokens];
 }
 
-function limitedString(value, max) {
+export function truncateNewsletterCopy(value, max) {
   if (typeof value !== "string") return "";
-  return value.trim().slice(0, max);
+  const clean = value.trim();
+  if (clean.length <= max) return clean;
+  if (max <= 1) return "…".slice(0, Math.max(0, max));
+
+  const head = clean.slice(0, max - 1);
+  const sentenceEnds = [...head.matchAll(/[.!?](?=\s|$)/g)];
+  const lastSentenceEnd = sentenceEnds.at(-1)?.index;
+  if (Number.isInteger(lastSentenceEnd) && lastSentenceEnd + 1 >= Math.floor(max * 0.6)) {
+    return head.slice(0, lastSentenceEnd + 1).trimEnd();
+  }
+
+  const wordSafe = head.replace(/\s+\S*$/, "").replace(/[,:;\-–—]+$/, "").trimEnd();
+  return `${wordSafe || head.trimEnd()}…`;
+}
+
+function limitedString(value, max) {
+  return truncateNewsletterCopy(value, max);
 }
 
 const DAY_CONTEXT_WORDS = [
