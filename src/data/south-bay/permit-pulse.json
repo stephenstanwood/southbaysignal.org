@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-07-27T11:05:49.811Z",
+      "generatedAt": "2026-07-28T03:09:23.690Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,15 +137,15 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-07-27T11:05:52.391Z",
+      "generatedAt": "2026-07-28T03:09:25.955Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
       "dateRange": "Jul 20 – Jul 27",
       "stats": {
-        "total": 115,
-        "notable": 6,
+        "total": 87,
+        "notable": 5,
         "newUnits": 0,
         "totalValuation": 0
       },
@@ -187,16 +187,16 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-01979",
-          "address": "757 E Charleston Rd",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "id": "26PLN-00193",
+          "address": "3233 Cowper St",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for review of Annual Conditional Monitoring information submission for Khan Lab School related to 21PLN-00129 (CUP).",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-07-20",
-          "subtype": "Permit Issued"
+          "issueDate": "2026-07-21",
+          "subtype": "Over the Counter Approved"
         },
         {
           "id": "26PLN-00195",
@@ -208,18 +208,6 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-07-22",
-          "subtype": "Over the Counter Approved"
-        },
-        {
-          "id": "26PLN-00193",
-          "address": "3233 Cowper St",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for review of Annual Conditional Monitoring information submission for Khan Lab School related to 21PLN-00129 (CUP).",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-07-21",
           "subtype": "Over the Counter Approved"
         }
       ]
