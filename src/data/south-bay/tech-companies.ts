@@ -1038,6 +1038,12 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // is a UC Santa Barbara professor with operations in Goleta. Until a primary
   // source confirms a Santa Clara County HQ, treat it as out of coverage — do not
   // re-add on the strength of the round size alone.
+  // Note: Katalyze AI ($10.5M seed, July 6 2026; agentic OS for pharma) is NOT
+  // here despite FinSMEs and TechStartups both labeling it "Mountain View." The
+  // company's own announcement and About page place it in San Francisco (with a
+  // second office in Toronto), and BetaKit describes it as an SF startup with
+  // SF-based CEO Reza Farahani. Aggregator city labels are wrong here — out of
+  // coverage. Do not add from the "Mountain View" tag alone.
   {
     id: "glow",
     name: "Glow",
