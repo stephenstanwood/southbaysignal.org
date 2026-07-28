@@ -15,10 +15,11 @@
 //
 // Re-runnable: every operation is idempotent.
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { writeFileAtomic } from "./lib/io.mjs";
+import { stripRedundantVenueSuffix } from "./lib/venue-suffix.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_PATH = resolve(__dirname, "../src/data/south-bay/upcoming-events.json");
@@ -38,37 +39,10 @@ function isTldOrphan(desc) {
   return !!first && TLD_TOKENS.has(first);
 }
 
-// Subtitle-aware version of stripRedundantVenueSuffix.
-function stripSubtitleAwareSuffix(title, venue) {
-  if (!title || !venue || typeof venue !== "string") return title;
-  const m = title.match(/^(.+?)\s+at\s+(.+?)\s*$/);
-  if (!m) return title;
-  const [, base, suffix] = m;
-  const norm = (s) =>
-    s
-      .toLowerCase()
-      .replace(/[.,]+$/, "")
-      .replace(/^\s*the\s+/i, "")
-      .replace(/\b(branch|library)\b/gi, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-
-  // Already handled by cycle-110 strict equality? Skip — generator already
-  // applied that strip; reapplying here would double-process.
-  if (norm(suffix) === norm(venue)) return title;
-
-  const dashMatch = suffix.match(/^(.+?)\s+[-–—]\s+(.+?)$/);
-  if (!dashMatch) return title;
-  const [, suffixVenue, subtitle] = dashMatch;
-  if (
-    norm(suffixVenue) === norm(venue) &&
-    base.trim().length >= 10 &&
-    subtitle.trim().length >= 4
-  ) {
-    return `${base.trim()} — ${subtitle.trim()}`;
-  }
-  return title;
-}
+// The subtitle-aware strip used to be mirrored inline here, with a guard that
+// skipped titles the generator's strict-equality pass had already handled. The
+// canonical stripRedundantVenueSuffix in lib/venue-suffix.mjs now covers both
+// cases and is idempotent, so the special-casing is gone.
 
 function main() {
   const raw = readFileSync(DATA_PATH, "utf8");
@@ -87,7 +61,7 @@ function main() {
       tldDropped += 1;
     }
     if (evt.title && evt.venue) {
-      const next = stripSubtitleAwareSuffix(evt.title, evt.venue);
+      const next = stripRedundantVenueSuffix(evt.title, evt.venue);
       if (next !== evt.title) {
         if (samples.subtitle.length < 6) {
           samples.subtitle.push({ id: evt.id, before: evt.title, after: next });

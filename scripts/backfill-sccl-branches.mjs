@@ -5,10 +5,11 @@
 //
 // Idempotent — runs through the same data twice yield the same output.
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { writeFileAtomic } from "./lib/io.mjs";
+import { stripRedundantVenueSuffix } from "./lib/venue-suffix.mjs";
 
 import { polishDescription } from "./generate-events.mjs"; // forces module load (also a sanity check it exports)
 
@@ -31,42 +32,9 @@ const SCCL_CITY_BRANCH = {
   "santa-clara": "Santa Clara City Library",
 };
 
-// Mirror of the upgraded stripRedundantVenueSuffix in generate-events.mjs.
-// Kept inline so this backfill stays self-contained and doesn't need an
-// additional named export.
-function stripRedundantVenueSuffix(title, venue) {
-  if (!title) return title;
-  let t = title;
-
-  // Pattern 1: " at <City>, Calif./CA[.]" — SJSU Athletics location tail.
-  t = t.replace(
-    /\s+at\s+[A-Z][\w\s.'-]+,\s*(?:Calif\.?|CA)\.?$/i,
-    "",
-  );
-
-  // Pattern 2: " at <Venue>" — relaxed equality so a title's "at <Branch>"
-  // collapses against a venue of "<Branch> Library", "<Branch> Branch", or
-  // "the <Branch> Library".
-  if (venue && typeof venue === "string") {
-    const m = t.match(/^(.+?)\s+at\s+(.+?)\s*$/);
-    if (m) {
-      const [, base, suffix] = m;
-      const norm = (s) =>
-        s
-          .toLowerCase()
-          .replace(/[.,]+$/, "")
-          .replace(/^\s*the\s+/i, "")
-          .replace(/\b(branch|library)\b/gi, " ")
-          .replace(/\s+/g, " ")
-          .trim();
-      if (norm(suffix) === norm(venue) && base.trim().length >= 10) {
-        t = base.trim();
-      }
-    }
-  }
-
-  return t;
-}
+// stripRedundantVenueSuffix used to be mirrored inline here. It drifted from
+// the generator's copy (a 10-char base floor instead of 6, no pipe or subtitle
+// handling), so both now import the canonical version from lib/venue-suffix.mjs.
 
 function main() {
   void polishDescription; // no-op, just ensures the module loaded cleanly
