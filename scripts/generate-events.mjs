@@ -1758,6 +1758,12 @@ function cleanVenue(raw) {
   v = v.replace(/<[^>]+>/g, "").replace(/&[a-zA-Z]+;|&#\d+;/g, " ").replace(/\s+/g, " ").trim();
   // Remove leading "- " dash artifact from CivicPlus iCal
   v = v.replace(/^-\s+/, "");
+  // Localist/athletics feeds prefix the city+state onto the venue field, e.g.
+  // "Santa Clara, Calif., Stevens Stadium - Buck Shaw Field". Strip a leading
+  // "<City>, Calif.," / "<City>, CA," block only when a real venue name follows
+  // (the required comma after the state token protects names like "Palo Alto,
+  // California Avenue Station"); a bare "Santa Clara, Calif." is left for the caller.
+  v = v.replace(/^[A-Z][A-Za-z.'\- ]+,\s*(?:Calif\.?|California|CA)\.?,\s*(?=\S)/, "");
   // If the string is meeting directions ("Meet at...", "Check in at..."), not a venue name
   if (/^(meet|check\s+in)\s+(at|in)\s+/i.test(v)) return "";
   // Locational sentences slip into the venue field on some CivicPlus calendars,
@@ -2070,7 +2076,12 @@ function inferCategory(title, desc, type, venue = "") {
     /\b(bbq|barbecue|barbeque|cookout|potluck|mixer|reception|networking)\b/i.test(title) ||
     // "lawn games" anywhere (cornhole, ladder ball, giant Jenga) are casual
     // recreation at park pop-ups / community series, not athletic sports.
-    /\blawn games?\b/i.test(t);
+    /\blawn games?\b/i.test(t) ||
+    // Culinary/tasting socials (e.g. the View Teen Center "AfterHours" series:
+    // "sensory speed-round games", "mystery drink tastings", "food assembly")
+    // describe party games at a food event, not athletics. Let these fall
+    // through to the food check below.
+    /\b(culinary|tasting|tastings|food\s+assembly)\b/i.test(t);
   // Carnivals (school carnivals, business carnivals, festival carnivals) are community
   // events — descriptions often mention "carnival games" which would otherwise hit the
   // sports branch via t.includes("game"). Music/arts carnivals (e.g. Mötley Crüe's
