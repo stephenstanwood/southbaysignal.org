@@ -51,6 +51,7 @@
 import { readFileSync, existsSync } from "fs";
 import { writeFileAtomic } from "./lib/io.mjs";
 import { catSignal } from "./lib/notify.mjs";
+import { extractVenueFromTitle, stripRedundantVenueSuffix } from "./lib/venue-suffix.mjs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { createHash, createSign } from "crypto";
@@ -1169,79 +1170,6 @@ function cleanTitle(title) {
     t = t.replaceAll(bad, fix);
   }
   return cleanDisplayName(t);
-}
-
-// Drop a trailing " at <Venue>" from a title when the suffix duplicates the
-// venue field. Also drops SJSU sports' " at <City>, <State-abbr>." location
-// tail, which the SJSU athletics RSS appends to every game title even though
-// the venue field already carries the campus location.
-function stripRedundantVenueSuffix(title, venue) {
-  if (!title) return title;
-  let t = title;
-
-  // Pattern 1: " at <City>, Calif./CA[.]" — SJSU Athletics location tail
-  t = t.replace(
-    /\s+at\s+[A-Z][\w\s.'-]+,\s*(?:Calif\.?|CA)\.?$/i,
-    "",
-  );
-
-  // Pattern 2: " at <Venue>" matching the venue field (allows leading "the"
-  // and stray "Branch"/"Library" tokens on either side so SJPL titles like
-  // "Tech Mentor at Edenvale Branch" with venue="Edenvale Library" both
-  // collapse to the branch token "Edenvale" and match.
-  // Greedy base group + /i flag so we match the LAST " at " (handles titles
-  // like "SJSU Alumni Night at the SJ Giants at Excite Ballpark") and
-  // tolerate capitalized "At" from sources like SJPL.
-  if (venue && typeof venue === "string") {
-    const norm = (s) =>
-      s
-        .toLowerCase()
-        .replace(/[.,]+$/, "")
-        .replace(/^\s*the\s+/i, "")
-        .replace(/\b(branch|library)\b/gi, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-    const m = t.match(/^(.+)\s+at\s+(.+?)\s*$/i);
-    if (m) {
-      const [, base, suffix] = m;
-      if (norm(suffix) === norm(venue) && base.trim().length >= 6) {
-        t = base.trim();
-      } else {
-        // Subtitle-aware: "<Title> at <Venue> - <Subtitle>" or with em/en-dash.
-        // Try splitting suffix on the dash and checking whether the venue
-        // half matches. If yes, drop the venue half and rejoin as
-        // "<Title> — <Subtitle>" so the subtitle survives.
-        const dashMatch = suffix.match(/^(.+?)\s+[-–—]\s+(.+?)$/);
-        if (dashMatch) {
-          const [, suffixVenue, subtitle] = dashMatch;
-          if (
-            norm(suffixVenue) === norm(venue) &&
-            base.trim().length >= 6 &&
-            subtitle.trim().length >= 4
-          ) {
-            t = `${base.trim()} — ${subtitle.trim()}`;
-          }
-        }
-      }
-    }
-
-    // Pattern 3: " | <Venue>" matching the venue field. Stanford Localist
-    // emits some recurring events with the venue appended via pipe ("Spotlight
-    // Tours Thursdays | Anderson Collection") even though the venue field
-    // already carries it. Conservative: only strip when the pipe-suffix
-    // matches the venue, so subtitles like "Archive Room: Ester Hernandez |
-    // Selections from Special Collections at Stanford Libraries" (legitimate
-    // pipe-separated subtitle, not a venue) survive.
-    const pipeMatch = t.match(/^(.+?)\s*\|\s*(.+?)\s*$/);
-    if (pipeMatch) {
-      const [, base, suffix] = pipeMatch;
-      if (norm(suffix) === norm(venue) && base.trim().length >= 6) {
-        t = base.trim();
-      }
-    }
-  }
-
-  return t;
 }
 
 function truncate(text, len = 200) {
@@ -2378,25 +2306,6 @@ function isStudentOnlyEvent(item) {
   if (SCU_INTERNAL_DESC.test(desc)) return true;
   if (STUDENT_ONLY_AUDIENCE.test(desc)) return true;
   return false;
-}
-
-/** Pull a venue out of a title like "Workshop at King Library" → "King Library".
- *  Used when the source feed doesn't populate <location>; without this, two
- *  unrelated SJSU events fall back to the generic "San Jose State University"
- *  venue and collide in cross-source dedup. */
-function extractVenueFromTitle(title) {
-  if (!title) return null;
-  // Strip the calendar-artifact date prefix first
-  const stripped = title.replace(
-    /^(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s*\d{4})?\s*:\s*/i,
-    "",
-  );
-  const m = stripped.match(/\s+at\s+([A-Z][^,]+?)$/);
-  if (!m) return null;
-  const venue = m[1].trim();
-  // Reject obviously-non-venue tails (events ending with dates, times, etc.)
-  if (/^\d|^(noon|midnight)\b/i.test(venue)) return null;
-  return venue;
 }
 
 // SJSU's Localist feed title-cases all words including acronyms, so
@@ -7138,7 +7047,10 @@ async function main() {
   // shows venue separately, so the trailing suffix is pure duplication
   // ("Brass Ensemble at Music Building" + venue=Music Building → "Brass
   // Ensemble"). Also strips SJSU sports' " at San Jose, Calif." location
-  // tail. Conservative — base title must remain ≥10 chars after strip.
+  // tail. Conservative — base title must remain ≥6 chars after strip.
+  //
+  // Runs before the venue field is entity-decoded and cleanVenue()'d further
+  // down, so the comparison in venue-suffix.mjs decodes both sides itself.
   allEvents.forEach((e) => { e.title = stripRedundantVenueSuffix(e.title, e.venue); });
 
   // Polish descriptions: drop boilerplate sentences, downcase ALL CAPS, capitalize sentence starts
