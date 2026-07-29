@@ -1973,6 +1973,12 @@ function inferCategory(title, desc, type, venue = "") {
   if (/\b(commission|committee|council|board)\s+(meeting|hearing|session)\b/i.test(title) ||
       /\b(commission|committee|board)\s*$/i.test(title) ||
       /\b(city council|town council|planning commission|city manager|public works)\b/i.test(title)) return "community";
+  // Public-input meetings (community meeting, town hall, listening session, survey
+  // meeting) are civic gatherings even when the title names a sport — e.g. a
+  // "Tennis & Pickleball Survey Community Meeting" is residents weighing in on
+  // rec facilities, not an athletic event. Must run BEFORE the sports check, which
+  // would otherwise catch the "tennis"/"pickleball" token.
+  if (/\b(community meeting|public meeting|input meeting|town hall|listening session|survey (meeting|community))\b/i.test(title)) return "community";
   // Yoga, pilates, and wellness classes are community, not sports — check before sports block
   // (event type fields from sources like SJDA can include "Sports & Activities" even for yoga)
   if (/\b(yoga|pilates|meditation|mindfulness|tai chi)\b/.test(t)) return "community";
