@@ -1030,20 +1030,66 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // April 2026) are both Redwood City / San Mateo County — north of the Santa
   // Clara County line every other entry here sits inside. Out of coverage
   // unless the footprint explicitly expands.
-  // Note: ChipAgents ($50M Series A1, Feb 2026, $74M total; agentic AI for chip
-  // design) is deliberately NOT here — HQ is genuinely disputed. Sacra and the
-  // Pacific Coast Business Times (a Santa Barbara paper covering it as a local
-  // "Santa Barbara AI firm") place it in Santa Barbara / Goleta; only unattributed
-  // aggregator summaries claim a Santa Clara relocation, and founder William Wang
-  // is a UC Santa Barbara professor with operations in Goleta. Until a primary
-  // source confirms a Santa Clara County HQ, treat it as out of coverage — do not
-  // re-add on the strength of the round size alone.
+  // Note: ChipAgents' HQ was resolved 2026-08-03 — it IS in coverage, and both
+  // its 2026 entries below stay. An older note here called the HQ "disputed"
+  // (Santa Barbara / Goleta per Sacra and the Pacific Coast Business Times) and
+  // said the company was deliberately excluded, which had already gone stale —
+  // the Feb Series A1 entry was in the list. Primary sources now agree: the
+  // July 29 2026 Series A2 release carries a "Santa Clara, Calif." dateline and
+  // its boilerplate reads "headquartered in Santa Clara, California," and the
+  // company's own careers page lists HQ at 6280 America Center Drive, Suite 200,
+  // San Jose, with Goleta as a separate R&D office. The Pacific Coast Business
+  // Times — the Santa Barbara paper whose coverage anchored the old exclusion —
+  // now writes that ChipAgents "is headquartered in Santa Clara but was founded
+  // and still houses major operations in Goleta." Keep BOTH the A1 ($50M, Feb)
+  // and A2 ($60M, Jul) entries: those are separate raises of new money on the way
+  // to $134M cumulative, not one round restated like the Upscale AI case noted
+  // further down.
   // Note: Katalyze AI ($10.5M seed, July 6 2026; agentic OS for pharma) is NOT
   // here despite FinSMEs and TechStartups both labeling it "Mountain View." The
   // company's own announcement and About page place it in San Francisco (with a
   // second office in Toronto), and BetaKit describes it as an SF startup with
   // SF-based CEO Reza Farahani. Aggregator city labels are wrong here — out of
   // coverage. Do not add from the "Mountain View" tag alone.
+  {
+    id: "antora-energy",
+    name: "Antora Energy",
+    city: "San Jose",
+    category: "hardware",
+    round: "Series C",
+    amount: "$550M",
+    date: "2026-07-30",
+    tagline:
+      "Batteries that store energy as heat instead of chemistry: Antora runs cheap off-peak or renewable electricity into blocks of solid carbon, holds them at up to 2,400°C for days, and gives the energy back as industrial heat or power — so a factory or data center can run around the clock on power it bought when it was cheapest. The $550M Series C is one of the largest US clean-energy rounds of the year, co-led by G2 Venture Partners and Eclipse, with Ribbit Capital, Salesforce Ventures, Activate Capital, John Doerr, the Westly Group, StepStone Group, and Liberty Mutual Strategic Ventures coming in new and Breakthrough Energy Ventures, Lowercarbon Capital, Decarbonization Partners, Impact Science Ventures, and Trust Ventures returning. Most of it lands locally: Antora is expanding its San Jose plant — now a three-building campus staffed by welders, electricians, pipefitters, and machinists, and among the largest battery factories in the country — and adding a second US manufacturing hub.",
+    color: "#1e3a8a",
+    url: "https://www.antora.com/insights/series-c",
+  },
+  {
+    id: "discern-security",
+    name: "Discern Security",
+    city: "Sunnyvale",
+    category: "security",
+    round: "Series A",
+    amount: "$13M",
+    date: "2026-07-30",
+    tagline:
+      "Security teams get buried in alerts they don't have the people to chase down. Discern connects each finding back to the control, system, and compliance rule behind it, ranks what actually matters to the business, and then drives the fix through security, IT, and compliance instead of stopping at a report. The round was announced alongside Agentic Loops, which automates that follow-through end to end. Cybersecurity investor Forgepoint Capital led, with First Rays Ventures, Growth Enjin Partners, Vela Ventures, and angel investors joining; founder and CEO Sai Venkataraman is spending it on engineering and a bigger library of automated fixes.",
+    color: "#4f46e5",
+    url: "https://www.discernsecurity.com",
+  },
+  {
+    id: "chipagents-series-a2",
+    name: "ChipAgents",
+    city: "Santa Clara",
+    category: "chip",
+    round: "Series A2",
+    amount: "$60M",
+    date: "2026-07-29",
+    tagline:
+      "Six months after closing a $74M Series A, the Santa Clara startup added $60M more and pushed the round to $134M. Its AI agents take a written chip spec and turn it into production-ready design code, the tests that prove the design works, and automated answers for why a test failed — work that normally eats months of engineer time. B Capital came in new alongside existing backers Bessemer Venture Partners, Micron, MediaTek, Ericsson, and ScOp. Founder and CEO William Wang says recurring revenue grew sixfold in the first half of 2026, with the platform now running at more than 120 semiconductor companies.",
+    color: "#7c3aed",
+    url: "https://chipagents.ai",
+  },
   {
     id: "glow",
     name: "Glow",
