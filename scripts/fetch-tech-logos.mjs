@@ -346,6 +346,18 @@ async function resolveCommonsFile(filename) {
   return null;
 }
 
+// Wikimedia sister-project / site chrome. A company named after a common word
+// ("Glow", "Hark", "Simile", "Queue") resolves to a dictionary or disambiguation
+// page whose image list includes these, and they sail through a bare
+// /(logo|wordmark)/ filter — every one of them came back as the same Wiktionary
+// mark. Never a company logo; reject by filename before fetching.
+const WIKIMEDIA_CHROME =
+  /(wiktionary|wikipedia|wikimedia|wikisource|wikiquote|wikibooks|wikinews|wikiversity|wikivoyage|wikidata|wikispecies|commons-logo|mediawiki|meta-wiki|disambig|ambox|question_book|edit-clear|wiki_letter|nuvola|crystal_clear|gnome-|oojs_ui|padlock|portal-puzzle|symbol_|text_document|magnify-clip)/i;
+
+function isWikimediaChrome(filename) {
+  return WIKIMEDIA_CHROME.test(String(filename).replace(/^File:/i, ""));
+}
+
 async function tryWikipedia(name) {
   if (!name) return null;
   const baseNames = [
@@ -363,7 +375,9 @@ async function tryWikipedia(name) {
       if (!res.ok) continue;
       const data = await res.json();
       const imgs = data?.parse?.images || [];
-      const logoCandidates = imgs.filter((f) => /(logo|wordmark)/i.test(f) && /\.(svg|png|jpg|jpeg)$/i.test(f));
+      const logoCandidates = imgs.filter(
+        (f) => /(logo|wordmark)/i.test(f) && /\.(svg|png|jpg|jpeg)$/i.test(f) && !isWikimediaChrome(f),
+      );
       // Prefer SVG, then PNG. Prefer most recent (year suffix) by sorting desc.
       logoCandidates.sort((a, b) => {
         const av = a.endsWith(".svg") ? 0 : 1;
@@ -406,6 +420,7 @@ async function tryWikipedia(name) {
       for (const h of hits) {
         const title = h.title || "";
         if (!/\.(svg|png|jpg|jpeg)$/i.test(title)) continue;
+        if (isWikimediaChrome(title)) continue;
         const t = title.toLowerCase().replace(/^file:/, "");
         // Must contain the first word of the brand. Strip non-alnum from
         // both sides since titles like "Yahoo!_(2019)" have punctuation.
@@ -624,11 +639,21 @@ async function main() {
     "tesla", // covered by PINNED
   ]);
 
+  // Wikipedia is worse than useless for RECENTLY_FUNDED startups. These are
+  // young private companies with no article, and their names are often common
+  // words — "Glow", "Hark", "Simile", "Queue", "Terra AI", "Scout AI". The
+  // lookup lands on a dictionary or disambiguation page and returns that page's
+  // chrome or an unrelated same-named business (Glow → a kiwi bird, Hark → a
+  // German stove maker). The company's own favicon is authoritative here, so
+  // skip straight to it. Big public companies and historical milestones still
+  // use Wikipedia, where it genuinely has the best mark.
+  const skipWiki = (c) => c.group === "RECENTLY_FUNDED" || SKIP_WIKI_IDS.has(c.id);
+
   async function resolveOne(c) {
     const domain = urlToDomain(c.url);
     return (
       (await tryPinned(c.id)) ||
-      (SKIP_WIKI_IDS.has(c.id) ? null : await tryWikipedia(c.name)) ||
+      (skipWiki(c) ? null : await tryWikipedia(c.name)) ||
       (await tryIconHorse(domain)) ||
       (await tryWebsiteScrape(c.url)) ||
       (await tryDuckDuckGo(domain)) ||

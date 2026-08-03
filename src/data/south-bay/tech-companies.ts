@@ -1045,6 +1045,17 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // and A2 ($60M, Jul) entries: those are separate raises of new money on the way
   // to $134M cumulative, not one round restated like the Upscale AI case noted
   // further down.
+  // Note: Array Labs ($21M strategic round anchored by Mitsubishi Electric,
+  // announced July 27–28 2026; mass-manufacturable space-based radar) is NOT
+  // here despite AlleyWatch's weekly roundup filing it under "Palo Alto." The
+  // city labels conflict and the most recent primary sources both point out of
+  // coverage: the company's own July announcement page datelines Redwood City,
+  // California, and its federal SAM.gov entity registration lists 889 Winslow
+  // St, Redwood City. Only the older January Series A press release carries a
+  // "PALO ALTO, Calif." dateline, and the company's own boilerplate says just
+  // "Based in Silicon Valley." Redwood City is San Mateo County — the same line
+  // that already excludes Fireworks AI and Cognichip above. Out of coverage
+  // unless a primary source puts the HQ back inside Santa Clara County.
   // Note: Katalyze AI ($10.5M seed, July 6 2026; agentic OS for pharma) is NOT
   // here despite FinSMEs and TechStartups both labeling it "Mountain View." The
   // company's own announcement and About page place it in San Francisco (with a
@@ -1076,6 +1087,32 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
       "Security teams get buried in alerts they don't have the people to chase down. Discern connects each finding back to the control, system, and compliance rule behind it, ranks what actually matters to the business, and then drives the fix through security, IT, and compliance instead of stopping at a report. The round was announced alongside Agentic Loops, which automates that follow-through end to end. Cybersecurity investor Forgepoint Capital led, with First Rays Ventures, Growth Enjin Partners, Vela Ventures, and angel investors joining; founder and CEO Sai Venkataraman is spending it on engineering and a bigger library of automated fixes.",
     color: "#4f46e5",
     url: "https://www.discernsecurity.com",
+  },
+  {
+    id: "simile-series-b",
+    name: "Simile",
+    city: "Palo Alto",
+    category: "ai",
+    round: "Series B",
+    amount: "$200M+",
+    date: "2026-07-30",
+    tagline:
+      "Five months after coming out of stealth with a $100M Series A, Simile raised more than $200M more at a $2B valuation. It builds foundation models that simulate how people actually behave, so a company can test a product change, a price, or a campaign against a synthetic population that acts like its real customers before booking a single focus group. Greenoaks led, with Definition joining as a new investor and Index Ventures, Bain Capital Ventures, Hanabi, A*, Factory, and CVS Health Ventures all returning. Co-founded by Stanford's Joon Sung Park with Michael Bernstein, Percy Liang, and Lainie Yallen; CVS Health, Wealthfront, Deloitte, and Gallup are named customers, and the company says Fortune 100 enterprises have run tens of millions of simulations through the platform. The money goes toward training the core behavior models, expanding simulation compute, and building out enterprise teams in healthcare, financial services, and media.",
+    color: "#4f46e5",
+    url: "https://simile.ai",
+  },
+  {
+    id: "eliyan-series-c",
+    name: "Eliyan",
+    city: "Santa Clara",
+    category: "chip",
+    round: "Series C",
+    amount: "$145M",
+    date: "2026-07-29",
+    tagline:
+      "Six months after a $50M strategic round, Eliyan added $145M more and crossed a $1B valuation — a unicorn less than five years after it was founded. Its NuLink and NuGear technologies get licensed to chipmakers as the high-speed plumbing that lets AI chips talk to each other and to memory across die, package, and rack boundaries without the usual bandwidth and power penalty. This round funds the move past electrical links into electro-optical ones, where light instead of copper carries data between AI accelerators. Seligman Ventures led, with optical-networking strategics Cisco Investments and Lumentum coming in new; Seligman's Umesh Padval joins the board. Total raised is now roughly $295M. Founded in 2021 by Ramin Farjadrad, Patrick Soheili, and Syrus Ziai.",
+    color: "#0369a1",
+    url: "https://eliyan.com",
   },
   {
     id: "chipagents-series-a2",

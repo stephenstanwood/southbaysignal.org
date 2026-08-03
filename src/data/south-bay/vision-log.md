@@ -2,6 +2,82 @@
 
 ---
 
+## 2026-08-03 — Cycle 203: Eliyan + Simile Rounds, Wikipedia Logo Resolver Fixed
+
+### Context
+Sunday August 3, 2026. Automated builder cycle. Continued the Tech tab funding
+watch against the Aug 3 national roundups, then followed a logo backfill into a
+resolver bug that was quietly assigning the wrong company's mark.
+
+### What Was Built
+
+**Tech tab: Eliyan Series C added to RECENTLY_FUNDED** (Santa Clara, $145M,
+July 29, 2026). Six months after the $50M strategic round already in the list,
+Eliyan raised $145M at a $1B valuation — a unicorn inside five years. The round
+funds a move past electrical chiplet links into electro-optical interconnects.
+Seligman Ventures led, with Cisco Investments and Lumentum new; Umesh Padval
+joins the board; ~$295M raised to date. Verified against Eliyan's own release
+(`https://eliyan.com/news/eliyan-achieves-unicorn-status-with-145-million-series-c/`),
+whose dateline reads "Santa Clara, Calif. – July 29, 2026." Kept alongside the
+January entry per the ChipAgents A1/A2 precedent: separate raises of new money,
+not one round restated.
+
+**Tech tab: Simile Series B added to RECENTLY_FUNDED** (Palo Alto, $200M+,
+July 30, 2026). Five months after the $100M Series A already in the list, Simile
+raised $200M+ at $2B. Greenoaks led; Definition new; Index, Bain Capital
+Ventures, Hanabi, A*, Factory, and CVS Health Ventures returned. Verified against
+TechCrunch's July 30 report and FinSMEs.
+
+**Coverage boundary: Array Labs rejected and documented.** AlleyWatch's Aug 3
+weekly roundup filed its $21M Mitsubishi Electric round under "Palo Alto," but
+the city labels conflict and the most recent primary sources point out of
+coverage — the company's own July announcement page datelines Redwood City, and
+its SAM.gov entity registration lists 889 Winslow St, Redwood City. Only the
+older January Series A release says "PALO ALTO, Calif."; the company's own
+boilerplate says just "Based in Silicon Valley." Redwood City is San Mateo
+County, the same line that already excludes Fireworks AI and Cognichip. Added as
+a standing note so future cycles don't re-add it from the aggregator tag.
+
+**Root-cause fix: `fetch-tech-logos.mjs` no longer assigns the wrong brand.**
+Running the resolver to pick up the new card ids revealed a 44-logo backfill
+gap — and that **13 of those resolved to the identical Wiktionary sister-project
+mark**. Cause: `tryWikipedia()` Strategy A pulls a candidate page's image list
+and filters only on `/(logo|wordmark)/`, with no brand check. A startup named
+after a common word ("Glow", "Hark", "Simile", "Queue", "Terra AI", "Scout AI")
+lands on a dictionary or disambiguation page whose images are site chrome. Two
+fixes: a `WIKIMEDIA_CHROME` filename filter applied in Strategies A and B, and —
+because the first fix only moved Glow from a Wiktionary logo to a *kiwi bird*
+and Hark to a German stove maker's wordmark — Wikipedia is now skipped entirely
+for `RECENTLY_FUNDED` entries, whose own favicon is authoritative. All 42 new
+logos are now distinct, and 3 (Queue, Architect Labs, Vortex Imaging) correctly
+resolve to nothing rather than something wrong; those fall back to the render-time
+favicon service, unchanged from before.
+
+**Verified:** `astro check` 0 errors, `check-home-locked` OK, full build clean,
+and all 32 logo paths referenced by the built `/tech` page resolve to real files.
+
+### Why This Was the Strongest Move
+Two genuinely fresh, verified Santa Clara County rounds — both follow-ons to
+companies already on the page, which is exactly the "who's compounding here"
+signal the Tech tab is for. The logo fix matters more than it sounds: the page
+was one commit away from shipping a German stove company's wordmark as a Palo
+Alto AI startup's logo, on a page whose whole value is being trustworthy about
+local companies. No protected Home, Events, or Food surface was touched.
+
+### Next 3 Strongest Ideas
+1. **Pre-existing duplicate-logo clusters** — 16 history-milestone cards
+   (`app-store-launch`, `intel-4004`, `moores-law`, `yahoo-ipo`, …) share one
+   image, and 6 more (`android`, `kai-security`, `mojo-vision`, `supermicro`, …)
+   share another. Both predate this cycle and were left alone; they need the
+   same wrong-brand audit the funding cards just got.
+2. **Extend the Wikipedia skip to `SCC_SPOTLIGHT`** — it holds startups with the
+   same common-word exposure. Deliberately not broadened this cycle to keep the
+   blast radius small; needs a `--refresh` pass and a visual check.
+3. **RECENTLY_FUNDED early-August watch** — keep scanning primary releases;
+   Antora, Discern, Eliyan, and Simile all landed in a dense July 29–30 window.
+
+---
+
 ## 2026-07-21 — Cycle 198: TYLsemi Added, Rivos Retired, Tech Hero Date Fixed
 
 ### Context
