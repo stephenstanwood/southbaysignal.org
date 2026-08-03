@@ -1,40 +1,40 @@
 {
-  "generatedAt": "2026-07-29T03:09:09.171Z",
+  "generatedAt": "2026-08-03T11:05:56.072Z",
   "meetings": {
-    "sunnyvale": {
-      "date": "2026-07-28",
-      "displayDate": "Tue, Jul 28",
+    "san-jose": {
+      "date": "2026-08-11",
+      "displayDate": "Tue, Aug 11",
       "bodyName": "City Council",
-      "location": "Online and Council Chambers, City Hall",
-      "url": "https://sunnyvaleca.legistar.com/MeetingDetail.aspx?LEGID=4519&GID=270&G=FA76FAAA-7A74-41EA-9143-F2DB1947F9A5",
-      "legistarEventId": 4519,
+      "location": "Council Chambers",
+      "url": "https://sanjose.legistar.com/MeetingDetail.aspx?LEGID=8109&GID=317&G=920296E4-80BE-4CA2-A78F-32C5EFCF78AF",
+      "legistarEventId": 8109,
       "agendaItems": [
         {
-          "title": "Public Participation and Access",
-          "sequence": 1
+          "title": "Proposition 1 - Veterans and Affordable Housing Bond Act of 2026.",
+          "sequence": 61
         },
         {
-          "title": "4:30 P.M. SPECIAL COUNCIL MEETING (Closed Session)",
-          "sequence": 2
+          "title": "Fiscal Year 2026-2027 Property Tax Levy for General Obligation Bonds.",
+          "sequence": 63
         },
         {
-          "title": "Convene to Closed Session",
-          "sequence": 6
+          "title": "Public Hearing for the Fiscal Year 2026-2027 Annual Residential Solid Waste Collection Service Charges to be Placed on the 2026-2027 Santa Clara County Secured Property Tax Roll.",
+          "sequence": 64
         },
         {
-          "title": "Closed Session Held Pursuant to California Government Code Section 54956.9:",
-          "sequence": 7
+          "title": "Public Hearing for the Fiscal Year 2026-2027 Sanitary Sewer Service and Use Charge and Storm Sewer Service Charge Assessments to be Placed on the 2026-2027 Santa Clara County Secured Property Tax Roll.",
+          "sequence": 65
         },
         {
-          "title": "Adjourn Special Meeting",
-          "sequence": 8
+          "title": "Response to Santa Clara County Civil Grand Jury Report Entitled “A Canopy in Decline: Is San José serious about expanding its tree coverage?”",
+          "sequence": 70
         }
       ],
       "confirmation": {
         "status": "confirmed",
         "provider": "legistar",
-        "observedDate": "2026-07-28",
-        "sourceUrl": "https://webapi.legistar.com/v1/sunnyvaleca/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-07-28T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "observedDate": "2026-08-11",
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-03T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
@@ -52,18 +52,18 @@
       }
     },
     "milpitas": {
-      "date": "2026-08-11",
-      "displayDate": "Tue, Aug 11",
+      "date": "2026-08-03",
+      "displayDate": "Mon, Aug 3",
       "bodyName": "City Council Special Meeting",
       "location": "Milpitas City Hall",
       "url": "https://www.milpitas.gov/129/Agendas-Minutes",
-      "civicClerkEventId": 2941,
+      "civicClerkEventId": 2973,
       "agendaItems": [],
       "confirmation": {
         "status": "confirmed",
         "provider": "civicclerk",
-        "observedDate": "2026-08-11",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-07-28T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "observedDate": "2026-08-03",
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-03T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   }
