@@ -13,6 +13,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { loadEnvLocal } from "./lib/env.mjs";
+import { callClaude as callClaudeApi } from "./lib/claude.mjs";
 import { DATA_DIR } from "./lib/paths.mjs";
 import { writeFileAtomic } from "./lib/io.mjs";
 
@@ -24,30 +25,11 @@ if (!ANTHROPIC_API_KEY) {
   process.exit(1);
 }
 
-const CLAUDE_SONNET = "claude-sonnet-5";
 const IMAGE_CACHE_PATH = join(DATA_DIR, "reddit-image-cache.json");
 const BATCH_SIZE = 60;
 
 async function callClaude(prompt, maxTokens = 16384) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model: CLAUDE_SONNET,
-      max_tokens: maxTokens,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Claude API error (${res.status}): ${text}`);
-  }
-  const data = await res.json();
-  return data.content[0].text;
+  return callClaudeApi(prompt, { maxTokens, label: "reddit-image-cache" });
 }
 
 function parseJson(raw) {

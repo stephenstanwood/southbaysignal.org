@@ -26,6 +26,7 @@ import { loadEnvLocal } from "./lib/env.mjs";
 import { DATA_DIR, ARTIFACTS, generatorMeta } from "./lib/paths.mjs";
 import { generateAndUploadResized } from "./social/lib/recraft.mjs";
 import { writeFileAtomic } from "./lib/io.mjs";
+import { callClaude as callClaudeApi } from "./lib/claude.mjs";
 
 loadEnvLocal();
 
@@ -35,7 +36,6 @@ if (!ANTHROPIC_API_KEY) {
   process.exit(1);
 }
 
-const CLAUDE_SONNET = "claude-sonnet-5";
 const USER_AGENT = "southbaytoday-pulse/1.0 (by /u/southbaytoday; https://southbaytoday.org)";
 const REQUEST_DELAY_MS = 2000;
 
@@ -210,22 +210,7 @@ function normalizeRssEntry(entry, subName, weight, scope) {
 }
 
 async function callClaude(prompt, maxTokens = 4096) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model: CLAUDE_SONNET,
-      max_tokens: maxTokens,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-  if (!res.ok) throw new Error(`Claude API error: ${res.status} ${await res.text().catch(() => "")}`);
-  const data = await res.json();
-  return data.content[0].text;
+  return callClaudeApi(prompt, { maxTokens, label: "reddit-pulse" });
 }
 
 function parseJson(raw) {

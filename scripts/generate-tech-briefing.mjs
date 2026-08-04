@@ -16,6 +16,7 @@ import { writeFileAtomic } from "./lib/io.mjs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { loadEnvLocal } from "./lib/env.mjs";
+import { callClaude as callClaudeApi } from "./lib/claude.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -31,7 +32,6 @@ if (!ANTHROPIC_API_KEY) {
   process.exit(1);
 }
 
-const CLAUDE_SONNET = "claude-sonnet-5";
 
 function getWeekRange() {
   const now = new Date();
@@ -86,25 +86,8 @@ function extractHiringTrends(tsContent) {
 }
 
 async function callClaude(prompt) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model: CLAUDE_SONNET,
-      max_tokens: 400,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Claude API ${res.status}: ${body}`);
-  }
-  const data = await res.json();
-  return data.content[0].text.trim();
+  const text = await callClaudeApi(prompt, { maxTokens: 800, label: "tech-briefing" });
+  return text.trim();
 }
 
 const TECH_EVENT_KEYWORDS = [
@@ -178,6 +161,10 @@ CRITICAL — structure and timing:
 - LEAD with what's happening this week: the tech events below, or the freshest funding (rounds dated within the last 14 days of today). Do not open the briefing with a backward-looking month recap ("April saw…") when there's fresher news available.
 - The funding rounds below span up to 45 days. Older rounds belong in a supporting sentence at the END, not the lede. Never say "this week" or "today" about rounds that are weeks old — say "earlier this spring", "over the past month", or just give the company name with no time claim.
 - Only the events list represents "this week" — funding rounds do not.
+
+CRITICAL — editorial voice:
+- Never characterize the week or its calendar as quiet, slow, thin, light, sparse, sleepy, soft, or weak, and never apologize for what isn't happening. There is always something worth a resident's time; lead with the strongest thing on the list instead of grading the list.
+- Describe what IS on, not what is missing. "Light on marquee events but steady on community programming" is exactly the framing to avoid — open on the community programming itself.
 
 Recent funding rounds in the South Bay (last 45 days, newest first):
 ${fundedLines}

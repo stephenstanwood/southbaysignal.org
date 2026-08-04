@@ -16,6 +16,7 @@ import { writeFileAtomic } from "./lib/io.mjs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { loadEnvLocal } from "./lib/env.mjs";
+import { callClaude as callClaudeApi } from "./lib/claude.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -32,7 +33,6 @@ if (!ANTHROPIC_API_KEY) {
   process.exit(1);
 }
 
-const CLAUDE_SONNET = "claude-sonnet-5";
 
 const CITIES = [
   { id: "campbell",      name: "Campbell" },
@@ -81,25 +81,8 @@ function getWeekRange() {
 }
 
 async function callClaude(prompt) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model: CLAUDE_SONNET,
-      max_tokens: 256,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Claude API ${res.status}: ${body}`);
-  }
-  const data = await res.json();
-  return data.content[0].text.trim();
+  const text = await callClaudeApi(prompt, { maxTokens: 800, label: "city-briefings" });
+  return text.trim();
 }
 
 // Agenda items that carry no news. Council agendas open with procedural

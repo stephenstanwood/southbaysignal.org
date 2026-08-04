@@ -16,6 +16,7 @@ import { writeFileAtomic } from "./lib/io.mjs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { loadEnvLocal } from "./lib/env.mjs";
+import { callClaude } from "./lib/claude.mjs";
 import { isEventPublishable } from "../src/lib/south-bay/eventOccurrence.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -29,8 +30,6 @@ if (!ANTHROPIC_API_KEY) {
   console.error("ERROR: ANTHROPIC_API_KEY not set");
   process.exit(1);
 }
-
-const CLAUDE_SONNET = "claude-sonnet-5";
 
 // ── Helpers ──
 
@@ -60,25 +59,6 @@ function getWeekendRange() {
     end: toLocalIso(sun),
     label: `${fri.toLocaleDateString("en-US", { month: "long", day: "numeric" })} – ${sun.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`,
   };
-}
-
-async function callClaude(prompt) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model: CLAUDE_SONNET,
-      max_tokens: 1536,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-  if (!res.ok) throw new Error(`Claude API error: ${res.status}`);
-  const data = await res.json();
-  return data.content[0].text;
 }
 
 // ── Main ──
@@ -164,7 +144,7 @@ Return ONLY a JSON array of 8 objects (4 S-codes ranked best-first, then 4 U-cod
 
   let rankedCandidates;
   try {
-    const raw = await callClaude(prompt);
+    const raw = await callClaude(prompt, { maxTokens: 2048, label: "weekend-picks" });
     const json = raw.match(/\[[\s\S]*\]/)?.[0];
     if (!json) throw new Error("No JSON array in response");
     rankedCandidates = JSON.parse(json);

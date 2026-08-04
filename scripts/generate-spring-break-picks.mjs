@@ -13,6 +13,7 @@ import { writeFileAtomic } from "./lib/io.mjs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { loadEnvLocal } from "./lib/env.mjs";
+import { callClaude as callClaudeApi } from "./lib/claude.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const EVENTS_PATH = join(__dirname, "..", "src", "data", "south-bay", "upcoming-events.json");
@@ -26,29 +27,13 @@ if (!ANTHROPIC_API_KEY) {
   process.exit(1);
 }
 
-const CLAUDE_SONNET = "claude-sonnet-5";
 
 function cityLabel(city) {
   return city.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
 }
 
 async function callClaude(prompt) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model: CLAUDE_SONNET,
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-  if (!res.ok) throw new Error(`Claude API error: ${res.status}`);
-  const data = await res.json();
-  return data.content[0].text;
+  return callClaudeApi(prompt, { maxTokens: 2048, label: "spring-break-picks" });
 }
 
 async function main() {
