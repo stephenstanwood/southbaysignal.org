@@ -26,10 +26,12 @@
 //   • default-plans.json     — the live homepage day plans
 //   • shared-plans.json      — /plan/<id> reader snapshots
 //
-// Day-plan cards are repaired IN PLACE: `role`, `bucket`, and `pairedWithId`
-// are untouched, so the pillar pairs stay atomic (docs/day-plan-selection.md).
-// No card is added, dropped, or swapped — the evening pillar is the same event
-// at the same venue, just sourced from the record that gets it right.
+// Day-plan cards are repaired IN PLACE: `role` and `bucket` are untouched and
+// no card is added, dropped, or swapped, so the pillar pairs stay atomic
+// (docs/day-plan-selection.md). The evening pillar is the same event at the
+// same venue, just sourced from the record that gets it right. Its `id` does
+// change, so the paired meal card's `pairedWithId` is repointed in the same
+// pass — otherwise the pair's reciprocal link dangles.
 //
 // Deliberately NOT touched:
 //   • newsletter-hero.json / the sent issue + its archive — immutable history.
@@ -99,9 +101,18 @@ function healPlanFile(path, plansOf, survivor) {
   let touched = 0;
   for (const plan of plansOf(data)) {
     for (const card of plan?.cards ?? []) {
-      if (!isBadCard(card)) continue;
-      healCard(card, survivor);
-      touched += 1;
+      if (isBadCard(card)) {
+        healCard(card, survivor);
+        touched += 1;
+      }
+      // The pillar's id changes, which orphans its meal partner's back
+      // reference and breaks the pair. Keyed on the old id rather than on
+      // "did we just heal it", so a run following a partial one still
+      // restores reciprocity.
+      if (card?.pairedWithId === `event:${BAD_EVENT_ID}`) {
+        card.pairedWithId = `event:${survivor.id}`;
+        touched += 1;
+      }
     }
   }
   return touched ? { path, data, touched } : null;
