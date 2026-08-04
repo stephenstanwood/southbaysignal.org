@@ -9,6 +9,13 @@
 // "Jazz Jam Ft. X". This pass groups by date+city and collapses pairs whose
 // titles are subsets (or jaccard ≥ 0.85) AND share either start time
 // (within 30 min) or venue tokens (jaccard ≥ 0.4).
+//
+// Token comparison tolerates a single-character typo on long words, and when
+// two events already share a venue the venue's own name is stripped from both
+// titles before matching — a ticketing feed stamps it on ("Hammer Presents
+// `X`") where the institutional calendar doesn't. The survivor is chosen by
+// occurrence evidence, then URL authority (a .edu/.gov event page beats a
+// bare forms.gle RSVP link), then richness.
 // ---------------------------------------------------------------------------
 
 const STOP_WORDS = new Set([
@@ -31,17 +38,79 @@ function tokenize(s) {
   return out;
 }
 
+// Levenshtein distance, bailed out early once it exceeds `max`. Only ever
+// called on short title tokens, so the full matrix is unnecessary.
+function withinEditDistance(a, b, max) {
+  if (Math.abs(a.length - b.length) > max) return false;
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    let rowMin = i;
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      cur[j] = Math.min(cur[j - 1] + 1, prev[j] + 1, prev[j - 1] + cost);
+      if (cur[j] < rowMin) rowMin = cur[j];
+    }
+    if (rowMin > max) return false;
+    prev = cur;
+  }
+  return prev[b.length] <= max;
+}
+
+// Two title tokens are "the same word" when they differ by a single typo.
+// Deliberately narrow: both tokens alpha-only, ≥6 chars, sharing a 3-char
+// prefix. That catches real scraper typos ("Texturscape" for "Texturescape",
+// D194) without collapsing short distinct words ("tour"/"tours") or numeric
+// tokens, which encode grade bands and age ranges that must stay distinct.
+function sameWord(a, b) {
+  if (a === b) return true;
+  if (a.length < 6 || b.length < 6) return false;
+  if (!/^[a-z]+$/.test(a) || !/^[a-z]+$/.test(b)) return false;
+  if (a.slice(0, 3) !== b.slice(0, 3)) return false;
+  return withinEditDistance(a, b, 1);
+}
+
+function hasWord(set, word) {
+  if (set.has(word)) return true;
+  for (const w of set) if (sameWord(w, word)) return true;
+  return false;
+}
+
 function jaccard(a, b) {
   if (a.size === 0 || b.size === 0) return 0;
+  // One-to-one pairing: a token in `b` can only be claimed once, so two
+  // near-identical tokens on one side can't both match it and push the
+  // intersection above the smaller set's size.
+  const claimed = new Set();
   let inter = 0;
-  for (const w of a) if (b.has(w)) inter++;
+  for (const w of a) {
+    if (b.has(w) && !claimed.has(w)) { claimed.add(w); inter++; continue; }
+    for (const c of b) {
+      if (claimed.has(c) || !sameWord(c, w)) continue;
+      claimed.add(c);
+      inter++;
+      break;
+    }
+  }
   return inter / (a.size + b.size - inter);
 }
 
 function isSubsetOf(a, b) {
   if (a.size === 0) return false;
-  for (const w of a) if (!b.has(w)) return false;
+  for (const w of a) if (!hasWord(b, w)) return false;
   return true;
+}
+
+// Drop venue words from a title's token set. A ticketing feed routinely
+// stamps its own venue onto every title ("Hammer Presents `X`") while the
+// institutional calendar doesn't ("Opening Reception - X"). Once we've
+// already established both events are at the same venue, those tokens carry
+// no distinguishing signal — they just drag jaccard below threshold.
+function stripVenueTokens(titleTokens, venueTokens) {
+  if (venueTokens.size === 0) return titleTokens;
+  const out = new Set();
+  for (const w of titleTokens) if (!hasWord(venueTokens, w)) out.add(w);
+  return out;
 }
 
 function parseTimeMin(t) {
@@ -96,11 +165,58 @@ function firstPartyAuthorityScore(event) {
   return 0;
 }
 
+// Link shorteners and bare form endpoints. These are RSVP/ticket handoffs,
+// never a canonical event page — they carry no date, time, price, or
+// description a reader (or a later fact-check pass) can verify against.
+const NON_EVENT_PAGE_HOST = /(^|\.)(forms\.gle|bit\.ly|tinyurl\.com|t\.co|ow\.ly|lnkd\.in|rebrand\.ly|buff\.ly)$/i;
+const FORM_PATH = /^\/forms\//i;
+
+// Institutional publishers — a university or government calendar is the
+// system of record for events held at its own venues.
+const INSTITUTIONAL_HOST = /\.(edu|gov|mil)$/i;
+
+/**
+ * How authoritative this record's URL is as a description of the event.
+ *   2 — institutional event page (.edu / .gov)
+ *   1 — some other real event page
+ *   0 — missing, a link shortener, or a bare form
+ * Ranked above richness so a first-party calendar entry beats a ticketing
+ * feed's longer blurb; ranked below occurrence evidence, which is stronger.
+ */
+function urlAuthorityScore(event) {
+  const raw = String(event?.url || "").trim();
+  if (!raw) return 0;
+  let host;
+  let path;
+  try {
+    const u = new URL(raw);
+    host = u.hostname;
+    path = u.pathname;
+  } catch {
+    return 0;
+  }
+  if (NON_EVENT_PAGE_HOST.test(host)) return 0;
+  if (FORM_PATH.test(path)) return 0;
+  return INSTITUTIONAL_HOST.test(host) ? 2 : 1;
+}
+
+// Lexicographic: occurrence evidence, then URL authority, then richness.
+// Each tier only breaks a tie the tier above it left open.
+function authorityTuple(event) {
+  return [
+    firstPartyAuthorityScore(event),
+    urlAuthorityScore(event),
+    richnessScore(event),
+  ];
+}
+
 function chooseDuplicateToDrop(e1, e2) {
-  const authority1 = firstPartyAuthorityScore(e1);
-  const authority2 = firstPartyAuthorityScore(e2);
-  if (authority1 !== authority2) return authority1 > authority2 ? e2 : e1;
-  return richnessScore(e1) < richnessScore(e2) ? e1 : e2;
+  const a = authorityTuple(e1);
+  const b = authorityTuple(e2);
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return a[i] > b[i] ? e2 : e1;
+  }
+  return e2;
 }
 
 function richnessScore(e) {
@@ -159,8 +275,10 @@ export function fuzzyDedupEvents(events) {
         }
 
         const t2 = tokenize(e2.title);
+        const v2 = tokenize(e2.venue);
+        const venueClose = jaccard(v1, v2) >= 0.4;
         const hasFirstParty = firstPartyAuthorityScore(e1) > 0 || firstPartyAuthorityScore(e2) > 0;
-        const titleMatch = isSubsetOf(t1, t2)
+        let titleMatch = isSubsetOf(t1, t2)
           || isSubsetOf(t2, t1)
           || jaccard(t1, t2) >= 0.85
           // First-party titles are often longer and more formal than an
@@ -168,6 +286,21 @@ export function fuzzyDedupEvents(events) {
           // date/city/venue is enough only when one record carries dated
           // first-party occurrence evidence.
           || (hasFirstParty && sharesTitleAnchor(e1.title, e2.title));
+
+        // Same venue, same date, and the only thing keeping the titles apart
+        // is the venue's own name bleeding into one of them. Retry the match
+        // with venue words removed from both sides. Guarded on ≥2 residual
+        // tokens each so a title that is *only* the venue name can't subset
+        // its way into an unrelated event at the same address. D194:
+        // "Hammer Presents `Texturscape` Hammer2 Gallery Opening Reception"
+        // vs "Opening Reception - Hammer2 Gallery: Texturescape".
+        if (!titleMatch && venueClose) {
+          const s1 = stripVenueTokens(t1, v1);
+          const s2 = stripVenueTokens(t2, v2);
+          if (s1.size >= 2 && s2.size >= 2) {
+            titleMatch = isSubsetOf(s1, s2) || isSubsetOf(s2, s1) || jaccard(s1, s2) >= 0.85;
+          }
+        }
         if (!titleMatch) continue;
 
         const tm2 = parseTimeMin(e2.time);
@@ -175,8 +308,6 @@ export function fuzzyDedupEvents(events) {
           continue;
         }
         const timeClose = tm1 != null && tm2 != null && Math.abs(tm1 - tm2) <= 30;
-        const v2 = tokenize(e2.venue);
-        const venueClose = jaccard(v1, v2) >= 0.4;
         if (!timeClose && !venueClose) continue;
 
         const drop = chooseDuplicateToDrop(e1, e2);
