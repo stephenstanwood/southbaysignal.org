@@ -6,7 +6,10 @@
 // fail image generation get swapped out for reserve candidates upstream.
 // ---------------------------------------------------------------------------
 
+import { useEffect, useState } from "react";
+
 import pulseData from "../../../data/south-bay/reddit-pulse.json";
+import { formatAge, resolvePostAgeHours } from "../../../lib/south-bay/postAge";
 
 interface PulsePost {
   id: string;
@@ -27,11 +30,24 @@ interface PulsePost {
   externalUrl: string | null;
 }
 
-function formatAge(hours: number): string {
-  if (hours < 1) return "now";
-  if (hours < 24) return `${Math.round(hours)}h ago`;
-  const days = Math.round(hours / 24);
-  return days === 1 ? "1d ago" : `${days}d ago`;
+/**
+ * Reads the clock only after mount. A static Astro build can't know the
+ * visitor's current time, so computing during render would freeze the
+ * build-time value into the HTML and mismatch on hydration. Same shape as
+ * useLiveTodayLabel. Until then `resolvePostAgeHours` falls back to the
+ * generator's stored value.
+ */
+function useNowMs(): number | null {
+  const [nowMs, setNowMs] = useState<number | null>(null);
+  useEffect(() => {
+    const tick = () => setNowMs(Date.now());
+    tick();
+    // Tiles are minute-granular only at the low end; an hourly refresh keeps a
+    // long-lived tab honest without churning the whole grid.
+    const id = window.setInterval(tick, 3_600_000);
+    return () => window.clearInterval(id);
+  }, []);
+  return nowMs;
 }
 
 // The grid is a fixed 4-column layout (2-col at mobile). Generator targets 12
@@ -42,6 +58,8 @@ const PULSE_TILE_COUNT = 12;
 const PULSE_COLS = 4;
 
 export default function RedditPulseTeaser() {
+  const nowMs = useNowMs();
+
   // Defensive: drop any post without a real image. Generator guarantees images
   // upstream, but if a stale data file slips through we'd rather show fewer
   // tiles than a gradient placeholder.
@@ -110,7 +128,7 @@ export default function RedditPulseTeaser() {
                 <div className="rp-meta">
                   {p.score > 0 && <><span>↑ {p.score}</span><span>·</span></>}
                   {p.numComments > 0 && <><span>💬 {p.numComments}</span><span>·</span></>}
-                  <span>{formatAge(p.ageHours)}</span>
+                  <span>{formatAge(resolvePostAgeHours(p.createdUtc, p.ageHours, nowMs))}</span>
                 </div>
               </div>
             </a>
