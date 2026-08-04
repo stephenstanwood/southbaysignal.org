@@ -18,6 +18,7 @@ import {
   assembleNewsletterData, finalizeNewsletterImages, renderEmail, resendFetch,
   publishNewsletterArchive, recordNewsletterSend, sendNewsletterDiscordDm,
   todayPT, loadConfig, FROM_ADDRESS, REPLY_TO,
+  loadNewsletterDataDefects, formatDataDefectEscalation,
 } from "./lib.mjs";
 import { generateNewsletterHero } from "./generate-hero.mjs";
 import { assertVerifiedCheckoutToken } from "./scheduled-preflight.mjs";
@@ -145,6 +146,18 @@ async function main() {
 
   await recordNewsletterSend({ data, subject, broadcastId: broadcast.id, archiveUrl });
   console.log("newsletter send recorded");
+
+  // The editorial pass just filed any SOURCE-DATA defects it found (duplicate
+  // events, bare form links, missing prices). Print them so the 2pm digest
+  // sweep relays them into triage — otherwise they sit unread in a gitignored
+  // file and ship again tomorrow, which is exactly what happened through
+  // 2026-08-04. Reporting only; never fails the send.
+  try {
+    const escalation = formatDataDefectEscalation(loadNewsletterDataDefects(), { today: data.date });
+    if (escalation) console.log(`\n${escalation}`);
+  } catch (err) {
+    console.warn(`data-defect report failed: ${err.message}`);
+  }
 
   if (dmError) throw dmError;
 }

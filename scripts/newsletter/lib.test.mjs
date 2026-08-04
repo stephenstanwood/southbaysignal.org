@@ -11,6 +11,9 @@ import {
   selectDefaultPlan,
   todayPT,
   truncateNewsletterCopy,
+  mergeDataDefects,
+  dataDefectKey,
+  formatDataDefectEscalation,
 } from "./lib.mjs";
 
 const BLOCKED_UNSPLASH = "https://images.unsplash.com/photo-1585899873671-ade0aa28a821?crop=entropy&w=400";
@@ -697,4 +700,100 @@ test("email head carries dark-mode overrides, keeps light styles, spares accents
   );
   assert.equal(darkBlock.includes("#7c3aed"), false);
   assert.equal(darkBlock.includes("#3b4ef0"), false);
+});
+
+// --- Editorial data-defect ledger (D194 follow-up) ---------------------------
+// The editorial pass has always spotted ingest defects, but every finding was
+// stored as `guidance` — a note telling tomorrow's editor to work around it —
+// so the pipeline never heard and the defect shipped again. These pin the
+// split: defects accumulate with a recurrence count and escalate on repeat.
+
+test("the same defect recurring bumps a count instead of adding a row", () => {
+  const day1 = mergeDataDefects([], [
+    { area: "url", detail: "Primary link is a bare forms.gle registration form, not an event page", example: "Texturescape opening" },
+  ], "2026-08-04");
+  assert.equal(day1.length, 1);
+  assert.equal(day1[0].count, 1);
+  assert.equal(day1[0].firstSeen, "2026-08-04");
+
+  // Same complaint, reworded slightly the next morning.
+  const day2 = mergeDataDefects(day1, [
+    { area: "url", detail: "Primary link is a bare forms.gle registration form, not an event page", example: "Another opening" },
+  ], "2026-08-05");
+  assert.equal(day2.length, 1, "a reworded repeat must not create a second row");
+  assert.equal(day2[0].count, 2);
+  assert.equal(day2[0].firstSeen, "2026-08-04", "firstSeen pins how long this has been broken");
+  assert.equal(day2[0].lastSeen, "2026-08-05");
+});
+
+test("distinct areas stay distinct even with similar wording", () => {
+  const merged = mergeDataDefects([], [
+    { area: "url", detail: "link is wrong on the evening pick" },
+    { area: "time", detail: "link is wrong on the evening pick" },
+  ], "2026-08-04");
+  assert.equal(merged.length, 2);
+});
+
+test("an unknown area is kept as 'other' rather than dropped", () => {
+  const merged = mergeDataDefects([], [
+    { area: "wingdings", detail: "Same event ingested twice under different titles" },
+  ], "2026-08-04");
+  assert.equal(merged.length, 1);
+  assert.equal(merged[0].area, "other", "a mislabelled real defect is still worth surfacing");
+});
+
+test("malformed reflections never corrupt the ledger", () => {
+  const seed = mergeDataDefects([], [{ area: "cost", detail: "Ticketed events carry no price signal" }], "2026-08-04");
+  for (const junk of [null, undefined, "nope", [null, {}, { area: "url" }, { detail: "   " }]]) {
+    const merged = mergeDataDefects(seed, junk, "2026-08-05");
+    assert.equal(merged.length, 1, `junk input ${JSON.stringify(junk)} must leave the ledger intact`);
+    assert.equal(merged[0].count, 1, "entries with no detail must not bump a count");
+  }
+});
+
+test("escalation names recurring defects separately from one-offs", () => {
+  const defects = [
+    { key: "url:a", area: "url", detail: "Bare forms.gle as primary link", example: "Texturescape", firstSeen: "2026-08-01", lastSeen: "2026-08-04", count: 4 },
+    { key: "cost:b", area: "cost", detail: "Ticketed events carry no price signal", example: "Bay FC", firstSeen: "2026-08-04", lastSeen: "2026-08-04", count: 1 },
+  ];
+  const report = formatDataDefectEscalation(defects, { today: "2026-08-04" });
+  assert.match(report, /2 open, 1 recurring/);
+  assert.match(report, /RECURRING/);
+  assert.match(report, /\[url\] ×4 since 2026-08-01/);
+  assert.match(report, /New\/one-off \(1\)/);
+});
+
+test("escalation stays quiet when there is nothing open or everything is stale", () => {
+  assert.equal(formatDataDefectEscalation([], { today: "2026-08-04" }), "");
+  assert.equal(formatDataDefectEscalation(null, { today: "2026-08-04" }), "");
+  const old = [{ key: "url:a", area: "url", detail: "Fixed long ago", firstSeen: "2026-06-01", lastSeen: "2026-06-02", count: 9 }];
+  assert.equal(
+    formatDataDefectEscalation(old, { today: "2026-08-04" }),
+    "",
+    "a defect nobody has seen in two weeks is presumed fixed and must not nag",
+  );
+});
+
+test("a reworded repeat bumps the original row rather than opening a second", () => {
+  // The editor re-derives findings from scratch each morning, so the same
+  // defect comes back phrased differently. If that opened a new row, every
+  // recurrence would look like a fresh one-off — destroying the signal.
+  const day1 = mergeDataDefects([], [
+    { area: "duplicate", detail: "Same event ingested twice under different titles, once from the ticketing feed" },
+  ], "2026-08-04");
+  const day2 = mergeDataDefects(day1, [
+    { area: "duplicate", detail: "Same event ingested twice under different titles — the venue calendar and a ticket vendor" },
+  ], "2026-08-05");
+
+  assert.equal(day2.length, 1);
+  assert.equal(day2[0].count, 2);
+  assert.equal(day2[0].firstSeen, "2026-08-04");
+  assert.match(day2[0].detail, /venue calendar/, "latest phrasing wins");
+
+  // A genuinely different defect in the same area still gets its own row.
+  const day3 = mergeDataDefects(day2, [
+    { area: "duplicate", detail: "Three separate National Night Out entries for one city" },
+  ], "2026-08-06");
+  assert.equal(day3.length, 2);
+  assert.equal(dataDefectKey({ area: "duplicate", detail: "x y z" }).startsWith("duplicate:"), true);
 });

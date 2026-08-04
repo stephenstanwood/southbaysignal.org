@@ -40,6 +40,7 @@
     "playwright-scrape": "node scripts/playwright-scrapers.mjs",
     "replay-inbound-events": "node --import tsx scripts/lookout/replay-inbound-events.ts",
     "health-report": "node scripts/health-report.mjs",
+    "newsletter-data-defects": "node scripts/newsletter/report-data-defects.mjs",
     "generate-scc-food-openings": "node scripts/generate-scc-food-openings.mjs",
     "verify:email-dns": "node scripts/verify-email-dns.mjs",
     "social:publish": "node scripts/social/publish.mjs",
