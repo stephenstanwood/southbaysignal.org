@@ -206,6 +206,11 @@ function inferCategory(title) {
   if (/\b(theater|theatre|play|comedy|improv|show|performance)\b/.test(t)) return "arts";
   if (/\b(book|author|reading|poetry|literary|signing)\b/.test(t)) return "arts";
   if (/\b(yoga|meditation|wellness|mindful)\b/.test(t)) return "community";
+  // Team matchups. This scraper feeds SAP Center / Tech CU Arena, where the
+  // Sharks' listings are just "Sharks vs Golden Knights" — no keyword below
+  // matches, so they were falling through to the "community" default.
+  if (/\bvs\.?\b/.test(t) && !/\b(concert|tour|comedy|trivia|book)\b/.test(t)) return "sports";
+  if (/\b(hockey|basketball|baseball|football|soccer|lacrosse|volleyball|rugby)\b/.test(t)) return "sports";
   // Charity/awareness walks (Walk a Mile, Walk to End X, NAMIWalks) are community events,
   // not sports — strip "walk" from the sports keywords.
   if (/\b(hike|run|fitness|sport|game)\b/.test(t)) return "sports";

@@ -301,10 +301,16 @@ async function fetchPrimeGovMeeting(city, domain, committeeId) {
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const meetings = await res.json();
 
-  // Filter to City Council (committeeId) and future dates
-  const today = new Date().toISOString().split("T")[0];
+  // Filter to City Council (committeeId) and future dates. PT, not UTC — same
+  // late-in-the-day off-by-one the date fields below already call out.
+  const today = ptDateISO();
   const council = meetings
     .filter((m) => m.committeeId === committeeId && m.title?.toLowerCase().includes("city council"))
+    // Skip canceled/postponed meetings — PrimeGov marks them in the title
+    // ("City Council Regular Meeting - CANCELED"), and without this the
+    // canceled sitting shipped as Palo Alto's next meeting. The Legistar
+    // path above has had this guard; PrimeGov was missing it.
+    .filter((m) => !/cancel(?:led|ed)|postponed/i.test(m.title || ""))
     .filter((m) => {
       const d = new Date(m.dateTime).toISOString().split("T")[0];
       return d >= today;

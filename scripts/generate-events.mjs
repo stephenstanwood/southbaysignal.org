@@ -747,6 +747,19 @@ const TITLE_FIXES = {
   "Xfyd ": "XFYD ",     // XFYD chess club — all-caps brand name on flyers
   "Grpc's": "GRPC's",   // Guadalupe River Park Conservancy — Google Cal title-cases it
   " Uv ": " UV ",       // ultraviolet resin classes — library feeds/old data title-case the acronym
+  "Ac/Dc": "AC/DC",     // City Newsletter sentence-cases the band name ("Ac/Dc concert")
+  "Cert Academy": "CERT Academy",  // Community Emergency Response Team — city calendars title-case it
+  // UC campus names arrive title-cased from university athletics + UC Master
+  // Gardener program listings ("Uc Davis", "Uc Master Gardeners").
+  "Uc Master Gardener": "UC Master Gardener",
+  "Uc Davis": "UC Davis",
+  "Uc Berkeley": "UC Berkeley",
+  "Uc Santa Cruz": "UC Santa Cruz",
+  "Uc Santa Barbara": "UC Santa Barbara",
+  "Uc Irvine": "UC Irvine",
+  "Uc San Diego": "UC San Diego",
+  "Uc Riverside": "UC Riverside",
+  "Uc Merced": "UC Merced",
   // Performer/brand acronyms styled ALL-CAPS in the act's own marketing — the
   // 2+ regex downcases them once the rest of the title tips into mixed case,
   // and they're too generic (ONE, RJ, DSP, EXE) to safely add to KEEP_UPPER.
@@ -1877,6 +1890,14 @@ function inferCategory(title, desc, type, venue = "") {
   // arts). Trivia and live music are unambiguous when present in the title.
   if (/\btrivia\b/.test(titleLower)) return "community";
   if (/\blive\s+music\b/.test(titleLower)) return "music";
+  // A title that names a team sport AND a matchup ("Stanford football vs.
+  // Miami", "SCU Men's Soccer vs Sacramento State - Exhibition") is a game,
+  // full stop. Without this the game loses to a later rule on incidental
+  // wording: "Exhibition" hits the `exhibit` art-show substring, a halftime
+  // "artist" in the description hits the arts rule, and "Cardinal Kids Day"
+  // hits the family rule. All three shipped as miscategorized games.
+  const titleHasVs = titleLower.includes("vs.") || titleLower.includes(" vs ");
+  if (titleHasVs && /\b(football|basketball|baseball|softball|soccer|hockey|volleyball|lacrosse|water polo|rugby)\b/.test(titleLower)) return "sports";
   // Title-anchored "concert" / "choir" / "symphony" / "orchestra" / "philharmonic"
   // wins over the arts rule below — venues like "Heritage Theatre" or "Hammer
   // Theatre Center" otherwise capture symphony/concert performances (Peninsula
@@ -1918,7 +1939,10 @@ function inferCategory(title, desc, type, venue = "") {
   // promote the event into the arts bucket via the isArtWord check below.
   if (/\b(meditation|mindfulness|yoga|pilates)\b/i.test(titleLower)) return "community";
   const isArtWord = /\barts?\b|\bartist|\bartwork|\bartistry/.test(t);
-  if (t.includes("exhibit") || t.includes("gallery") || t.includes("theater") || t.includes("theatre") || t.includes("film") || t.includes("cinema") || t.includes("dance") || t.includes("performance") || t.includes("museum") || (isArtWord && !t.includes("martial art"))) return "arts";
+  // "exhibition game/match/scrimmage" is preseason athletics, not an art
+  // exhibit — the bare "exhibit" substring below matches it either way.
+  const isExhibitionGame = /\bexhibition\s+(?:game|match|contest|scrimmage)\b/.test(t);
+  if ((t.includes("exhibit") && !isExhibitionGame) || t.includes("gallery") || t.includes("theater") || t.includes("theatre") || t.includes("film") || t.includes("cinema") || t.includes("dance") || t.includes("performance") || t.includes("museum") || (isArtWord && !t.includes("martial art"))) return "arts";
   // Theater play descriptions — university/community theaters often title shows by the
   // play name alone ("Exit... Pursued by a Bear") with no overt arts keyword. Detect
   // the production-credit pattern in the description: "Directed by X", "Written and
@@ -2025,9 +2049,9 @@ function inferCategory(title, desc, type, venue = "") {
   // Picnics are community/social gatherings — descriptions mention "games"
   // (lawn games, raffles, activities) that would otherwise hit the sports branch.
   if (/\bpicnic\b/.test(titleLower)) return "community";
-  // "vs." and "vs " as sports indicators should only be checked in the TITLE, not descriptions —
-  // descriptions can use "vs." for technical comparisons ("DataFrames vs. Series").
-  const titleHasVs = titleLower.includes("vs.") || titleLower.includes(" vs ");
+  // NOTE: `titleHasVs` is computed near the top of this function — "vs." and
+  // "vs " are sports indicators only in the TITLE, never in descriptions, which
+  // use "vs." for technical comparisons ("DataFrames vs. Series").
   // For library venues, restrict the sports detector to the TITLE (not desc + type
   // + venue). Library events about gardening or insects pick up "sports" tags from
   // BiblioCommons type fields ("Activity / Sports") or descriptions that mention

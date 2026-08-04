@@ -17,7 +17,7 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { writeFileAtomic } from "./lib/io.mjs";
-import { legistarMeetingUrl } from "./lib/civic-meetings.mjs";
+import { legistarMeetingUrl, ptDateISO } from "./lib/civic-meetings.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "digests.json");
@@ -221,11 +221,20 @@ async function summarize(config, meeting) {
     : "";
 
   const councilBody = config.councilBody ?? "City Council";
+  // Agendas publish days ahead of the meeting, so a digest is often written for
+  // a meeting that hasn't happened yet. Without this the model defaults to past
+  // tense ("The Council met to approve…"), which reports a scheduled meeting as
+  // a completed one — a factual claim about a future event.
+  const isUpcoming = meeting.date > ptDateISO();
+  const tenseNote = isUpcoming
+    ? `IMPORTANT: this meeting has NOT happened yet — it is scheduled for ${meeting.date} and the source is the published agenda. Write in the future tense ("the ${councilBody} will consider…", "is set to review…"). Never write that the ${councilBody} "met", "approved", "voted", "adopted", or "decided" — nothing has been decided yet.`
+    : `This meeting has already taken place. Past tense is fine, but the source is the agenda, not the minutes — describe what was taken up ("the ${councilBody} considered…"), not how any vote turned out.`;
   const prompt = `Summarize this ${config.cityName}, CA ${councilBody} meeting for residents in plain English.
 
 Meeting date: ${meeting.date}
 ${contentBlock}
 Keywords: ${meeting.keywords.join(", ")}
+${tenseNote}
 ${transcriptNote}
 
 Return JSON with:
@@ -284,7 +293,11 @@ async function main() {
   const records = await fetchStoaMeetings();
 
   // Group by city name (keep most recent City Council meeting per city)
-  const today = new Date().toISOString().split("T")[0];
+  // PT, not UTC: the nightly run fires ~8pm PT, which is already "tomorrow" in
+  // UTC. Using the UTC date let tomorrow's published agenda through the
+  // past-meetings-only filter below, and the summary then described a meeting
+  // that hadn't happened yet in the past tense (Los Gatos, 2026-08-03).
+  const today = ptDateISO();
   const PLACEHOLDER_EXCERPTS = [
     "meeting agenda available",
     "search for specific items",
@@ -299,10 +312,21 @@ async function main() {
     "americans with disabilities act",
     "scroll to the end for information about",
     "rules of conduct of the meeting",
+    // Remote-participation instructions. Santa Clara's ingested records are
+    // nothing but this block (Zoom link, webinar ID, eComment steps), which
+    // produced a "digest" that summarized how to join the meeting instead of
+    // what was on the agenda.
+    "webinar id",
+    "ecomment",
+    "submit written public comment",
   ];
+  // A record whose *title* is the participation notice rather than a meeting
+  // name never carries agenda content — the notice is the whole record.
+  const LOGISTICS_TITLE = /\bconduct(?:s|ing)\b[^.]*\bmeetings?\b[^.]*\b(?:hybrid|in-person|remotely)\b/i;
   function hasRealContent(r) {
     const ex = (r.excerpt || "").toLowerCase().trim();
     if (ex.length <= 80) return false;
+    if (LOGISTICS_TITLE.test(r.title || "")) return false;
     if (PLACEHOLDER_EXCERPTS.some((p) => ex.includes(p))) return false;
     // If 2+ boilerplate phrases appear, it's meeting logistics not substance
     const boilerplateHits = BOILERPLATE_PHRASES.filter((p) => ex.includes(p)).length;
