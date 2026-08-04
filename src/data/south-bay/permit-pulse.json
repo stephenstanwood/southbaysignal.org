@@ -1,7 +1,7 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-03T11:05:43.798Z",
+      "generatedAt": "2026-08-04T03:08:36.946Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
@@ -137,55 +137,19 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-03T11:05:46.059Z",
+      "generatedAt": "2026-08-04T03:08:39.442Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
       "dateRange": "Jul 27 – Aug 3",
       "stats": {
-        "total": 125,
-        "notable": 8,
+        "total": 103,
+        "notable": 5,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
-        {
-          "id": "26REV-00361",
-          "address": "262 Walter Hays Dr",
-          "category": "commercial",
-          "categoryLabel": "Commercial Project",
-          "workType": "Revision",
-          "description": "26BLD-01990: Install 10 LED lights - 4 in dining room, 2 in play room and 4 in office. Install a new fan with light in bathroom.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-07-27",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-02044",
-          "address": "138 Byron St",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-07-27",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-02097",
-          "address": "1390 Harker Av",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-07-30",
-          "subtype": "Permit Issued"
-        },
         {
           "id": "26BLD-02079",
           "address": "1873 Mark Twain St",
@@ -211,6 +175,18 @@
           "subtype": "Permit Issued"
         },
         {
+          "id": "26BLD-02097",
+          "address": "1390 Harker Av",
+          "category": "residential-remodel",
+          "categoryLabel": "Home Remodel",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-07-30",
+          "subtype": "Permit Issued"
+        },
+        {
           "id": "26BLD-02105",
           "address": "3941 Duncan Pl",
           "category": "residential-remodel",
@@ -232,18 +208,6 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-07-31",
-          "subtype": "Over the Counter Approved"
-        },
-        {
-          "id": "26PLN-00200",
-          "address": "1053 E Meadow Cir",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for an Over the Counter Architectural Review to install two illuminated sign cabinets onto existing concrete base to read, \"1053 E. Meadow Circle\". The proposed signage will be constructed from aluminum with aluminum channel letters to be 93 inches wide by 36 inches tall. Zone District: General Manufacturing (GM). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-07-27",
           "subtype": "Over the Counter Approved"
         }
       ]
