@@ -2126,10 +2126,17 @@ Return JSON only:
   "keepDoing": ["specific thing to preserve"],
   "improveNext": ["specific instruction for tomorrow's editor pass"],
   "avoid": ["pattern to avoid"],
-  "guidance": ["short reusable rule for future prompt memory"]
+  "guidance": ["short reusable rule for future prompt memory"],
+  "dataDefects": [{ "area": "duplicate|url|cost|time|title|venue|image|civic|other", "detail": "what is wrong in the underlying record", "example": "the exact event/title/value that shows it" }]
 }
 
 Be specific. Do not praise generic structure. Focus on selection quality, local usefulness, awkward copy, repetition, over/under-indexing family events, and whether the email feels like a real morning briefing.
+
+Sort every criticism into the right bucket, because they go to different places:
+- "guidance" = something TOMORROW'S EDITOR can fix by writing or selecting differently from the same data. Wording, ordering, tone, what to lead with, what to cut.
+- "dataDefects" = something WRONG IN THE SOURCE RECORD that no amount of editing can fix — the same event ingested twice under different titles, a start time or price that contradicts the venue's own page, a primary link that is a bare registration form or shortener instead of an event page, a garbled scraped title, a missing cost field.
+
+This split matters: a data defect filed as guidance just tells the editor to keep papering over it, and it will be back tomorrow. Put it in "dataDefects" so it reaches the pipeline that owns it. Leave "dataDefects" empty when the underlying data was clean — do not invent entries to fill it.
 
 NEWSLETTER:
 ${renderDiscordDigest(data, subject)}
@@ -2169,9 +2176,152 @@ function saveNewsletterReflection({ reflection, data, subject, sentAt }) {
   const output = {
     _meta: { updatedAt: new Date().toISOString(), generator: "newsletter self-reflection" },
     guidance: guidance.slice(-24),
+    dataDefects: mergeDataDefects(current.dataDefects, reflection.dataDefects, data.date),
     reflections: [...(current.reflections || []), entry].slice(-30),
   };
   writeFileAtomic(NEWSLETTER_MEMORY_FILE, JSON.stringify(output, null, 2) + "\n");
+}
+
+// Areas map to the pipeline stage that owns the fix. Anything the editor
+// labels outside this set lands in "other" rather than being dropped —
+// a mislabelled real defect is still worth surfacing.
+const DATA_DEFECT_AREAS = new Set([
+  "duplicate", "url", "cost", "time", "title", "venue", "image", "civic", "other",
+]);
+
+/** Stable id for a defect row. */
+export function dataDefectKey(defect) {
+  const words = normalizeComparable(defect.detail || "").split(/\s+/).filter(Boolean);
+  return `${defect.area}:${words.slice(0, 8).join(" ")}`;
+}
+
+function defectWords(detail) {
+  return new Set(
+    normalizeComparable(detail || "").split(/\s+/).filter((w) => w.length >= 4),
+  );
+}
+
+/**
+ * Does this new defect describe the same problem as an existing row?
+ *
+ * A prefix key alone is too brittle here: the editor re-derives its findings
+ * from scratch each morning, so the same defect comes back reworded ("…once
+ * from the ticketing feed" vs "…the venue calendar and a ticket vendor").
+ * A prefix match files those as two one-offs, which is precisely the signal
+ * we're trying to measure — content-word overlap survives the rephrasing.
+ */
+function isSameDefect(a, b) {
+  if (a.area !== b.area) return false;
+  const wa = defectWords(a.detail);
+  const wb = defectWords(b.detail);
+  // Require enough substance on both sides that overlap means something —
+  // two three-word complaints shouldn't fuse on a single shared noun.
+  if (wa.size < 4 || wb.size < 4) return false;
+  let inter = 0;
+  for (const w of wa) if (wb.has(w)) inter++;
+  // Overlap coefficient, not jaccard: the two phrasings routinely differ in
+  // length ("…once from the ticketing feed" vs "…the venue calendar and a
+  // ticket vendor"), and jaccard penalises the extra trailing detail hard
+  // enough that a clear repeat scores 0.47 and reads as a new defect.
+  return inter / Math.min(wa.size, wb.size) >= 0.6;
+}
+
+/**
+ * Fold today's editor-reported data defects into the running ledger.
+ *
+ * Recurrence is the whole point: a defect the editor names once may be a
+ * one-off bad record, but one it names six mornings running is a pipeline
+ * that isn't fixing it. `count` + `firstSeen` are what make that visible —
+ * previously every recurrence was just re-phrased guidance telling the
+ * editor to keep working around it.
+ */
+export function mergeDataDefects(existing, incoming, date) {
+  const byKey = new Map();
+  for (const d of Array.isArray(existing) ? existing : []) {
+    if (d && d.key) byKey.set(d.key, { ...d });
+  }
+  for (const raw of Array.isArray(incoming) ? incoming : []) {
+    if (!raw || typeof raw !== "object") continue;
+    const detail = String(raw.detail || "").trim().slice(0, 220);
+    if (!detail) continue;
+    const area = DATA_DEFECT_AREAS.has(String(raw.area || "").toLowerCase())
+      ? String(raw.area).toLowerCase()
+      : "other";
+    const defect = { area, detail };
+    // Exact key first, then a content-overlap match against existing rows so
+    // a reworded repeat bumps the original instead of opening a second row.
+    let key = dataDefectKey(defect);
+    let prior = byKey.get(key);
+    if (!prior) {
+      for (const candidate of byKey.values()) {
+        if (isSameDefect(candidate, defect)) { prior = candidate; key = candidate.key; break; }
+      }
+    }
+    byKey.set(key, {
+      key,
+      area,
+      // Latest phrasing wins — it describes the most recent occurrence.
+      detail,
+      example: String(raw.example || "").trim().slice(0, 180) || prior?.example || "",
+      firstSeen: prior?.firstSeen || date,
+      lastSeen: date,
+      count: (prior?.count || 0) + 1,
+    });
+  }
+  // Most recently seen first; the tail is stale one-offs from fixed issues.
+  return [...byKey.values()]
+    .sort((a, b) => String(b.lastSeen).localeCompare(String(a.lastSeen)) || b.count - a.count)
+    .slice(0, 40);
+}
+
+// Deliberately NOT fed back into the editor's prompt window (see
+// newsletterMemoryForPrompt). The editor must re-derive defects from what it
+// actually sees each morning — if we handed it yesterday's list it would echo
+// them back and `count` would measure our own prompt, not whether the
+// pipeline still ships the defect.
+export function loadNewsletterDataDefects() {
+  const memory = loadNewsletterEditorialMemory();
+  return Array.isArray(memory?.dataDefects) ? memory.dataDefects : [];
+}
+
+/**
+ * Render open data defects for the newsletter job's stdout. The 2pm
+ * daily-digest sweep relays each task's final output verbatim, so printing
+ * here is what actually carries these into the triage channel instead of
+ * leaving them in a gitignored file nobody opens.
+ *
+ * Returns "" when there is nothing worth escalating, so a clean run stays quiet.
+ */
+export function formatDataDefectEscalation(defects, { recurringThreshold = 3, staleDays = 14, today = null } = {}) {
+  const open = (defects || []).filter((d) => d && d.detail);
+  if (!open.length) return "";
+  // Age out defects nobody has seen recently — the pipeline likely fixed them.
+  // An entry with no lastSeen is kept rather than aged out: mergeDataDefects
+  // always sets it, so a missing one means something is wrong and hiding it
+  // is worse than showing it.
+  const fresh = today
+    ? open.filter((d) => !d.lastSeen || daysBetween(d.lastSeen, today) <= staleDays)
+    : open;
+  if (!fresh.length) return "";
+
+  const recurring = fresh.filter((d) => (d.count || 0) >= recurringThreshold);
+  const lines = [];
+  lines.push(`newsletter data defects: ${fresh.length} open, ${recurring.length} recurring (seen ${recurringThreshold}+ mornings)`);
+  const describe = (d) => {
+    const span = d.firstSeen && d.firstSeen !== d.lastSeen ? ` since ${d.firstSeen}` : "";
+    const eg = d.example ? ` — e.g. ${d.example}` : "";
+    return `  [${d.area}] ×${d.count || 1}${span}: ${d.detail}${eg}`;
+  };
+  if (recurring.length) {
+    lines.push("RECURRING — the editor keeps working around these; the fix belongs upstream:");
+    for (const d of recurring) lines.push(describe(d));
+  }
+  const oneOffs = fresh.filter((d) => (d.count || 0) < recurringThreshold);
+  if (oneOffs.length) {
+    lines.push(`New/one-off (${oneOffs.length}):`);
+    for (const d of oneOffs.slice(0, 10)) lines.push(describe(d));
+  }
+  return lines.join("\n");
 }
 
 function numberInRange(value, min, max) {
