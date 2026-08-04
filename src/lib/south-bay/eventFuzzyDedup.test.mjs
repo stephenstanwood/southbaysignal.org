@@ -188,6 +188,127 @@ test("first-party occurrence time wins over a richer aggregator duplicate", () =
   assert.equal(kept[0].url, officialUrl);
 });
 
+// --- D194: same venue + date, venue name stamped onto one title, typo -------
+// The Aug 4 2026 newsletter ran the Hammer Theatre record as its Evening Pick:
+// misspelled title, 5:00 PM instead of 6:00, "paid" instead of a free RSVP.
+// Both records survived dedup because "Hammer" (the venue, in the title) plus
+// the "Texturscape" typo dragged title jaccard to 4/7.
+test("collapses a venue-stamped, typo'd ticketing title against the institutional listing", () => {
+  const events = [
+    ev({
+      id: "hammertheatre-030fe2046064ece3",
+      date: "2026-08-04",
+      title: "Hammer Presents `Texturscape` Hammer2 Gallery Opening Reception",
+      venue: "Hammer Theatre Center",
+      source: "Hammer Theatre",
+      category: "arts",
+      time: "5:00 PM",
+      cost: "paid",
+      description: "",
+      url: "https://forms.gle/UDVr6gz84WDHWjp79",
+      image: "https://vboblobprod-cdn-01.example.net/198589_event_md_365.png",
+    }),
+    ev({
+      id: "sjsu-fc1b5a4c9ed399fd",
+      date: "2026-08-04",
+      title: "Opening Reception - Hammer2 Gallery: Texturescape",
+      venue: "Hammer Theatre Center",
+      source: "SJSU Events",
+      category: "arts",
+      time: "6:00 PM",
+      cost: "free",
+      description:
+        "Hammer2 Gallery Exhibition: Texturescape Featuring the Work of Nine Local Artists and San José State University Alumni Exhibition Dates: July 18 – November 4, 2026 Reception: Tuesday, August 4, 2026…",
+      url: "https://events.sjsu.edu/event/opening-reception-for-the-hammer2-gallery-texturescape",
+      photoRef: "places/ChIJxfWisLvMj4ARLNfwpDgtJyY/photos/AWCwydg",
+    }),
+  ];
+
+  const { kept, droppedCount } = fuzzyDedupEvents(events);
+  assert.equal(droppedCount, 1);
+  assert.equal(kept.length, 1);
+  assert.equal(kept[0].id, "sjsu-fc1b5a4c9ed399fd");
+  assert.equal(kept[0].title, "Opening Reception - Hammer2 Gallery: Texturescape");
+  assert.equal(kept[0].time, "6:00 PM");
+  assert.equal(kept[0].cost, "free");
+});
+
+test("survivor holds regardless of input order", () => {
+  const a = ev({ id: "form", title: "Hammer Presents `Texturscape` Opening Reception", venue: "Hammer Theatre Center", time: "5:00 PM", url: "https://forms.gle/UDVr6gz84WDHWjp79", description: "x".repeat(600) });
+  const b = ev({ id: "edu", title: "Opening Reception - Hammer2 Gallery: Texturescape", venue: "Hammer Theatre Center", time: "6:00 PM", url: "https://events.sjsu.edu/event/opening-reception-for-the-hammer2-gallery-texturescape" });
+  assert.equal(fuzzyDedupEvents([a, b]).kept[0].id, "edu");
+  assert.equal(fuzzyDedupEvents([b, a]).kept[0].id, "edu");
+});
+
+test("a bare form or shortener link loses to a real event page", () => {
+  for (const badUrl of ["https://forms.gle/abc123", "https://docs.google.com/forms/d/e/x/viewform", "https://bit.ly/abc", ""]) {
+    const events = [
+      ev({ id: "bad", title: "Summer Gala Fundraiser", venue: "Civic Hall", time: "7:00 PM", url: badUrl, description: "A".repeat(600) }),
+      ev({ id: "page", title: "Summer Gala Fundraiser", venue: "Civic Hall", time: "7:00 PM", url: "https://civichall.example.com/events/summer-gala" }),
+    ];
+    const { kept, droppedCount } = fuzzyDedupEvents(events);
+    assert.equal(droppedCount, 1, `expected collapse for ${badUrl || "(empty)"}`);
+    assert.equal(kept[0].id, "page", `expected the event page to win over ${badUrl || "(empty)"}`);
+  }
+});
+
+test("an institutional (.edu/.gov) event page outranks a commercial one", () => {
+  const events = [
+    ev({ id: "commercial", title: "Chamber Music Recital", venue: "Concert Hall", time: "7:30 PM", url: "https://tickets.example.com/e/chamber-music", description: "A".repeat(600), endTime: "9:00 PM" }),
+    ev({ id: "institutional", title: "Chamber Music Recital", venue: "Concert Hall", time: "7:30 PM", url: "https://events.sjsu.edu/event/chamber-music-recital" }),
+  ];
+  const { kept, droppedCount } = fuzzyDedupEvents(events);
+  assert.equal(droppedCount, 1);
+  assert.equal(kept[0].id, "institutional");
+});
+
+test("single-character typos merge only on long words, not short ones", () => {
+  // "Texturscape"/"Texturescape" must merge…
+  assert.equal(
+    fuzzyDedupEvents([
+      ev({ title: "Texturscape Reception", venue: "Gallery", time: "6:00 PM" }),
+      ev({ title: "Texturescape Reception", venue: "Gallery", time: "6:00 PM" }),
+    ]).droppedCount,
+    1,
+  );
+  // …while short words a single edit apart stay distinct events.
+  assert.equal(
+    fuzzyDedupEvents([
+      ev({ title: "Bard Reading Circle", venue: "Library", time: "4:00 PM" }),
+      ev({ title: "Bird Reading Circle", venue: "Library", time: "4:00 PM" }),
+    ]).droppedCount,
+    0,
+  );
+});
+
+test("stripping the venue name does not merge distinct events at that venue", () => {
+  const events = [
+    ev({ id: "jazz", title: "Hammer Presents: Jazz Night", venue: "Hammer Theatre Center", time: "8:00 PM" }),
+    ev({ id: "comedy", title: "Hammer Presents: Comedy Hour", venue: "Hammer Theatre Center", time: "8:00 PM" }),
+  ];
+  assert.equal(fuzzyDedupEvents(events).droppedCount, 0);
+});
+
+test("venue-stripping never collapses a title down to a single residual token", () => {
+  // Once "Hammer Theatre Center" is removed, the first title is just
+  // {auditions} — which would subset-match {auditions, workshop} and merge an
+  // audition with the workshop about it. The ≥2-residual-token guard on the
+  // retry is what stops that; the unstripped sets don't match either way.
+  const events = [
+    ev({ id: "audition", title: "Hammer Theatre Center Auditions", venue: "Hammer Theatre Center", time: "2:00 PM" }),
+    ev({ id: "workshop", title: "Auditions Workshop", venue: "Hammer Theatre Center", time: "2:00 PM" }),
+  ];
+  assert.equal(fuzzyDedupEvents(events).droppedCount, 0);
+});
+
+test("venue-stripped retry still requires time or venue proximity", () => {
+  const events = [
+    ev({ title: "Hammer Presents `Texturscape` Opening Reception", venue: "Hammer Theatre Center", time: "5:00 PM" }),
+    ev({ title: "Opening Reception: Texturescape", venue: "Triton Museum of Art", time: "9:00 PM" }),
+  ];
+  assert.equal(fuzzyDedupEvents(events).droppedCount, 0);
+});
+
 test("handles empty and malformed input without throwing", () => {
   assert.deepEqual(fuzzyDedupEvents([]), { kept: [], droppedCount: 0 });
   const messy = [null, { id: "x" }, ev({ title: "Solo Show", venue: "Hall" })];
