@@ -55,7 +55,12 @@ import { extractVenueFromTitle, stripRedundantVenueSuffix } from "./lib/venue-su
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { createHash, createSign } from "crypto";
-import { VIRTUAL_EVENT_PATTERNS } from "../src/lib/south-bay/eventFilters.mjs";
+import {
+  COVERED_LOCATION,
+  LOCAL_DEPARTURE_TRIP,
+  OUT_OF_AREA_LOCATION,
+  VIRTUAL_EVENT_PATTERNS,
+} from "../src/lib/south-bay/eventFilters.mjs";
 import { fuzzyDedupEvents } from "../src/lib/south-bay/eventFuzzyDedup.mjs";
 import { SLUG_TO_CITY_TOKENS } from "./social/lib/content-rules.mjs";
 import { loadEnvLocal } from "./lib/env.mjs";
@@ -6673,12 +6678,10 @@ const INBOUND_ACCEPTED_CITIES = new Set([
 // San Francisco came through tagged "san-jose" and published on the San Jose
 // tab. So also read the location string: if it names a Bay Area city we don't
 // cover and names none that we do, drop it regardless of cityKey.
-const OUT_OF_AREA_LOCATION = /\b(san francisco|oakland|berkeley|alameda|fremont|hayward|walnut creek|san mateo|redwood city|daly city|san leandro|richmond|concord|vallejo|sacramento|los angeles|san rafael|novato|petaluma|napa|emeryville|burlingame|san bruno|pacifica|half moon bay|morgan hill|gilroy|marin)\b/i;
-const COVERED_LOCATION = /\b(san jos[eé]|santa clara|sunnyvale|cupertino|campbell|milpitas|saratoga|los gatos|los altos|palo alto|mountain view|monte sereno|stanford|moffett)\b/i;
-// Exception: organized outings depart from a covered city even though the
-// destination is elsewhere — "August Day Trip to San Francisco Zoo & Gardens"
-// is a Sunnyvale senior-center trip, not an SF event. Keep those.
-const LOCAL_DEPARTURE_TRIP = /\b(day\s+trip|bus\s+trip|field\s+trip|excursion|trip\s+to|tour\s+to)\b/i;
+//
+// The two regexes and the day-trip exemption now live in eventFilters.mjs so
+// plan-day reads the same geography rules this ingest pass does — see the
+// header there on the caught-at-one-stage-not-the-other divergence bug.
 
 function fetchInboundEvents() {
   console.log("  ⏳ Inbound-email events...");

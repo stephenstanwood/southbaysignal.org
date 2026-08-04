@@ -53,3 +53,56 @@ export function isVirtualEvent(eventOrText) {
   if (!hay) return false;
   return VIRTUAL_EVENT_PATTERNS.some((re) => re.test(hay));
 }
+
+// ---------------------------------------------------------------------------
+// Geography
+// ---------------------------------------------------------------------------
+
+/**
+ * Bay Area (and wider California) cities outside the coverage area. A hit on
+ * an event's address/venue means the event physically happens somewhere we
+ * don't cover, regardless of what its city slug says.
+ */
+export const OUT_OF_AREA_LOCATION =
+  /\b(san francisco|oakland|berkeley|alameda|fremont|hayward|walnut creek|san mateo|redwood city|daly city|san leandro|richmond|concord|vallejo|sacramento|los angeles|san rafael|novato|petaluma|napa|emeryville|burlingame|san bruno|pacifica|half moon bay|morgan hill|gilroy|marin)\b/i;
+
+/** Cities inside the coverage area, plus the two campus tokens that carry no city name. */
+export const COVERED_LOCATION =
+  /\b(san jos[eé]|santa clara|sunnyvale|cupertino|campbell|milpitas|saratoga|los gatos|los altos|palo alto|mountain view|monte sereno|stanford|moffett)\b/i;
+
+/**
+ * Organized outings that depart from a covered city even though the
+ * destination is elsewhere — "August Day Trip to San Francisco Zoo & Gardens"
+ * is a Sunnyvale senior-center trip, not an SF event. These stay in the
+ * events feed (see `hasOutOfAreaDestination` for why they still can't be
+ * day-plan stops).
+ */
+export const LOCAL_DEPARTURE_TRIP =
+  /\b(day\s+trip|bus\s+trip|field\s+trip|excursion|trip\s+to|tour\s+to)\b/i;
+
+/**
+ * Returns true if the event's own address/venue names an out-of-area city and
+ * names no covered city — i.e. the thing physically happens outside coverage.
+ *
+ * Reads address/venue ONLY, never the description: descriptions name sponsors,
+ * beneficiaries and "supports families in <city>" asides that are not the
+ * event's location (the Kepler's 4/24 regression).
+ *
+ * Note the asymmetry with the ingest filter in generate-events.mjs. There, a
+ * `LOCAL_DEPARTURE_TRIP` title is an exemption — city-run day trips are real
+ * local programming and belong on the Events tab under their departure city.
+ * Here there is no exemption, because a day plan is a geography contract: a
+ * pillar gets paired with a meal within five miles of its coordinates, and an
+ * SF Zoo trip resolves to no known venue and falls back to its departure
+ * city's centroid. Left in the pool, it produces a plan that sends a reader to
+ * San Francisco for the afternoon and books lunch in Sunnyvale.
+ */
+export function hasOutOfAreaDestination(event) {
+  if (!event) return false;
+  const hay =
+    typeof event === "string"
+      ? event
+      : [event.address, event.location, event.venue].filter(Boolean).join(" | ");
+  if (!hay) return false;
+  return OUT_OF_AREA_LOCATION.test(hay) && !COVERED_LOCATION.test(hay);
+}

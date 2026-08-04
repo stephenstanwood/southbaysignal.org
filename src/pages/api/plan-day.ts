@@ -24,7 +24,7 @@ import { CLAUDE_OPUS, extractText, stripFences } from "../../lib/models";
 import { CITY_MAP, getCityName } from "../../lib/south-bay/cities";
 import { normalizeName } from "../../lib/south-bay/normalizeName";
 import { logDecision } from "../../lib/south-bay/decisionLog.mjs";
-import { isVirtualEvent } from "../../lib/south-bay/eventFilters.mjs";
+import { hasOutOfAreaDestination, isVirtualEvent } from "../../lib/south-bay/eventFilters.mjs";
 import { canonicalCategory } from "../../lib/south-bay/categories.mjs";
 import { holidayOn, matchesHolidayTheme } from "../../lib/south-bay/holidays";
 import { cleanDisplayCopy, cleanDisplayName } from "../../lib/south-bay/displayText.mjs";
@@ -825,6 +825,22 @@ function buildCandidatePool(
     if (isVirtualEvent(evt)) continue;
     if (evt.title && PLAN_TITLE_BLOCKLIST.some((re) => re.test(evt.title))) continue;
     if (isBlocked(evt.title) || isBlocked(evt.venue)) continue;
+
+    // City-run day trips ship on the Events tab under their departure city
+    // (that exemption lives in generate-events.mjs and is deliberate), but the
+    // destination is out of coverage and has no resolvable local venue, so
+    // locationForEvent falls back to the departure city's centroid. A plan
+    // built on that pairs an SF Zoo afternoon with a Sunnyvale lunch.
+    if (hasOutOfAreaDestination(evt)) {
+      logDecision({
+        script: "plan-day",
+        action: "dropped",
+        target: `${evt.title} (event:${evt.id})`,
+        reason: "destination is outside the coverage area",
+        meta: { city, targetDate: today, address: evt.address, venue: evt.venue },
+      });
+      continue;
+    }
 
     const isToday = evt.date === today;
     const isOngoingExhibition = evt.ongoing && !evt.date;
