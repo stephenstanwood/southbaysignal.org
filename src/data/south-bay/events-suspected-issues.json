@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-05T12:44:02.007Z"
+    "auditedAt": "2026-08-05T15:08:32.047Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1824,
+    "total": 1834,
     "totals": {
       "hard": 2,
       "soft": 1,
@@ -64,15 +64,15 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 409,
+    "total": 377,
     "totals": {
       "hard": 9,
-      "soft": 5,
+      "soft": 3,
       "info": 0
     },
     "byReason": {
-      "unknown-slug": 2,
-      "virtual-not-flagged": 3,
+      "virtual-not-flagged": 2,
+      "unknown-slug": 1,
       "out-of-area": 7,
       "slug-mismatch": 2
     },
@@ -205,34 +205,6 @@
       }
     ],
     "soft": [
-      {
-        "id": "inbound_mqpty7ed_rnhaun",
-        "title": "National Night Out",
-        "city": "monte-sereno",
-        "date": "2026-08-04T17:00:00-07:00",
-        "location": "Town Plaza Park, Los Gatos, CA",
-        "findings": [
-          {
-            "severity": "soft",
-            "reason": "unknown-slug",
-            "detail": "city=\"monte-sereno\" is not in the 11-city coverage map"
-          }
-        ]
-      },
-      {
-        "id": "inbound_ms96yzli_ppfwmj",
-        "title": "The Legacy of Julia Child's Kitchen with Smithsonian Curator Paula J. Johnson",
-        "city": "sunnyvale",
-        "date": "2026-08-04T11:00:00-07:00",
-        "location": "",
-        "findings": [
-          {
-            "severity": "soft",
-            "reason": "virtual-not-flagged",
-            "detail": "matched /description mention/ in description"
-          }
-        ]
-      },
       {
         "id": "inbound_ms96yzli_6nl03l",
         "title": "Overcoming Burnout to Lead with Resilience and Alignment featuring Jane Chen",
