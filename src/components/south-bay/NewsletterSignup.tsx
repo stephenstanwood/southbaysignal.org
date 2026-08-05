@@ -9,6 +9,7 @@ export default function NewsletterSignup({
   variant?: "card" | "inline" | "minimal";
 }) {
   const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -21,7 +22,7 @@ export default function NewsletterSignup({
       const res = await fetch("/api/newsletter/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, website }),
       });
       const data = await res.json();
       if (data.ok) {
@@ -45,11 +46,27 @@ export default function NewsletterSignup({
   const isCard = variant === "card";
   const isMinimal = variant === "minimal";
 
+  // Honeypot: off-screen rather than display:none, because some bots skip
+  // hidden inputs. A person never reaches it (aria-hidden, tabIndex -1), so a
+  // filled value means automation and the server silently drops the signup.
+  const honeypot = (
+    <input
+      type="text"
+      name="website"
+      value={website}
+      onChange={(e) => setWebsite(e.target.value)}
+      tabIndex={-1}
+      autoComplete="off"
+      aria-hidden="true"
+      style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+    />
+  );
+
   if (status === "success") {
     if (isMinimal) {
       return (
         <div style={{ fontSize: 12, color: "#1a1a2e", fontFamily: "'Inter', sans-serif", textAlign: "center" }}>
-          📬 You're in — first email at 6:00 AM tomorrow.
+          📬 Check your email to confirm.
         </div>
       );
     }
@@ -64,10 +81,10 @@ export default function NewsletterSignup({
         }}
       >
         <div style={{ fontWeight: 700, color: "#1a1a2e", marginBottom: 4, fontSize: 16 }}>
-          You're in. 📬
+          Almost there. 📬
         </div>
         <div style={{ fontSize: 14, color: "#5b6478" }}>
-          A plan for the day lands in your inbox at 6:00&nbsp;AM.
+          Check your inbox for a confirmation link. Click it and the first plan lands at 6:00&nbsp;AM.
         </div>
       </div>
     );
@@ -79,6 +96,7 @@ export default function NewsletterSignup({
     return (
       <>
         <form onSubmit={onSubmit} className="sbt-nl-min">
+          {honeypot}
           <div className="sbt-nl-min-text">
             <div className="sbt-nl-min-headline">Start your day with us! ☀️</div>
             <div className="sbt-nl-min-tagline">One email with everything we know about.</div>
@@ -272,6 +290,7 @@ export default function NewsletterSignup({
   }: { inputFontSize: number; buttonPadding: string; buttonFontSize: number }) {
     return (
       <form onSubmit={onSubmit} style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        {honeypot}
         <input
           type="email"
           aria-label="Email address"

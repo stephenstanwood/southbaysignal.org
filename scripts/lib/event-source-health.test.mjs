@@ -3,8 +3,8 @@ import test from "node:test";
 
 import {
   buildSourceHealth,
-  criticalSourceProblems,
   eventRegressionProblem,
+  sourceProblems,
   inspectSnapshot,
   sourceRegressionProblems,
   strictRefreshInputHealth,
@@ -46,7 +46,7 @@ test("strict input health requires credentials and both fresh snapshots", () => 
   assert.deepEqual(result.problems, []);
 });
 
-test("source health blocks every adapter error and critical empty source", () => {
+test("source health blocks a critical empty source but absorbs a broken optional one", () => {
   const health = buildSourceHealth(
     [
       { id: "broad", label: "Broad feed", critical: true },
@@ -59,10 +59,39 @@ test("source health blocks every adapter error and critical empty source", () =>
       { status: "rejected", reason: new Error("upstream 503") },
     ],
   );
-  assert.deepEqual(criticalSourceProblems(health), [
-    "Broad feed is empty",
-    "Broken feed is error: upstream 503",
-  ]);
+  const result = sourceProblems(health);
+  assert.deepEqual(result.blocking, ["Broad feed is empty"]);
+  assert.deepEqual(result.tolerated, ["Broken feed is error: upstream 503"]);
+  assert.equal(result.toleranceExceeded, false);
+});
+
+test("a handful of dead optional feeds never blocks the refresh", () => {
+  // The Jul/Aug 2026 outage: four sports/theatre adapters 403/400'd and took
+  // down a 4,000-event refresh — and five days of newsletters with it.
+  const definitions = ["Earthquakes", "Bay FC", "Santa Cruz Warriors", "Palo Alto Players"]
+    .map((label, i) => ({ id: `s${i}`, label, critical: false }));
+  const health = buildSourceHealth(
+    [{ id: "tm", label: "Ticketmaster", critical: true }, ...definitions],
+    [
+      { status: "fulfilled", value: [{ date: "2026-08-05" }] },
+      ...definitions.map(() => ({ status: "rejected", reason: new Error("403") })),
+    ],
+  );
+  const result = sourceProblems(health);
+  assert.deepEqual(result.blocking, []);
+  assert.equal(result.tolerated.length, 4);
+});
+
+test("a systemic outage still blocks even when no source is marked critical", () => {
+  const definitions = Array.from({ length: 9 }, (_, i) => ({ id: `s${i}`, label: `Feed ${i}`, critical: false }));
+  const health = buildSourceHealth(
+    definitions,
+    definitions.map(() => ({ status: "rejected", reason: new Error("ETIMEDOUT") })),
+  );
+  const result = sourceProblems(health);
+  assert.equal(result.toleranceExceeded, true);
+  assert.equal(result.blocking.length, 9);
+  assert.deepEqual(result.tolerated, []);
 });
 
 test("detects meaningful source or event-count regressions", () => {

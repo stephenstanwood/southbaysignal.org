@@ -35,6 +35,12 @@ function stampCooldown(key) {
   try { writeFileAtomic(cooldownFile(key), String(Date.now())); } catch {}
 }
 
+/** Ping target for alert embeds. Unset means the embed posts without a ping. */
+function mention() {
+  const id = String(process.env.DISCORD_ALERT_USER_ID || "").trim();
+  return /^\d{5,}$/.test(id) ? `<@${id}>` : "";
+}
+
 /**
  * Fire a red Discord DM. Returns immediately if cooldown active or no webhook.
  *
@@ -54,7 +60,10 @@ export async function catSignal({ key, title, body }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        content: "<@me>",
+        // A literal "<@me>" is not valid Discord mention syntax — it renders as
+        // plain text and pings nobody, which is how five days of blocked event
+        // refreshes went unnoticed in Aug 2026. Real mentions need a numeric id.
+        content: mention(),
         embeds: [{
           title: `🚨 ${title}`,
           description: body.slice(0, 1800),
