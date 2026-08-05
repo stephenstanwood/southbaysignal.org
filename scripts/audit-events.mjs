@@ -17,6 +17,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { writeFileAtomic } from "./lib/io.mjs";
+import { catSignal } from "./lib/notify.mjs";
 import {
   SLUG_TO_CITY_TOKENS,
   OUT_OF_AREA_CITIES,
@@ -250,7 +251,31 @@ function auditSource(label, path) {
   return { label, total: events.length, totals, byReason, hard: hardEntries, soft: softEntries };
 }
 
-function main() {
+// A hard virtual-not-flagged finding means an event's own title or address
+// says "online/virtual/zoom" while `virtual` is unset — so every downstream
+// consumer will treat it as a physical destination. This is exactly the class
+// of defect that put SJSU's online-only CRC meeting into the 2026-08-05
+// newsletter as an in-person afternoon pick with a lunch paired to it, and it
+// sat in this report for weeks because nothing read the report. Now it fails
+// the run. Other reasons stay advisory: they need human judgment (is this
+// venue really out of area?), while this one is always a pipeline bug —
+// generate-events and pull-inbound-events both run the flag pass, so a hit
+// here means the flag pass regressed or a new feed skipped it.
+function virtualNotFlaggedBlockers(sources) {
+  const blockers = [];
+  for (const src of sources) {
+    for (const entry of src.hard) {
+      for (const finding of entry.findings) {
+        if (finding.severity === "hard" && finding.reason === "virtual-not-flagged") {
+          blockers.push(`${src.label}: "${entry.title}" (${entry.id}) — ${finding.detail}`);
+        }
+      }
+    }
+  }
+  return blockers;
+}
+
+async function main() {
   const upcoming = auditSource("upcoming-events.json", UPCOMING);
   const inbound = auditSource("inbound-events.json", INBOUND);
   const report = {
@@ -277,6 +302,21 @@ function main() {
     }
   }
   console.log(`\nReport: ${REPORT}`);
+
+  const blockers = virtualNotFlaggedBlockers([upcoming, inbound]);
+  if (blockers.length) {
+    console.error(
+      `\n❌ BLOCKED: ${blockers.length} event(s) read as virtual but are not flagged \`virtual\`.\n` +
+      `   Every downstream surface will publish them as a physical destination.\n` +
+      blockers.map((b) => `   - ${b}`).join("\n"),
+    );
+    await catSignal({
+      key: "events-virtual-not-flagged",
+      title: `${blockers.length} virtual event(s) not flagged`,
+      body: blockers.join("\n"),
+    });
+    process.exitCode = 1;
+  }
 }
 
-main();
+await main();

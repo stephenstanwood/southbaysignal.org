@@ -9,6 +9,7 @@ import { CITIES } from "../../lib/south-bay/cities";
 import { parseClockTime } from "../../lib/south-bay/calendarLink";
 import { buildEventSlugs } from "../../lib/south-bay/eventSlug";
 import { eventListJsonLd, type SchemaEventRecord } from "../../lib/south-bay/eventSchema";
+import { isVirtualEvent } from "../../lib/south-bay/eventFilters.mjs";
 
 // This file compiles to a component named `Date` (from the [date] param),
 // shadowing the global Date constructor in the language server's view of the
@@ -32,6 +33,7 @@ interface RawEvent {
   cost?: string | null;
   kidFriendly?: boolean | null;
   category?: string | null;
+  virtual?: boolean | null;
 }
 
 export function getStaticPaths() {
@@ -179,7 +181,10 @@ const breadcrumbJsonLd = JSON.stringify({
             )}
           </h2>
           <p class="cal-meta">
-            {[e.venue, e.cityName].filter(Boolean).join(" · ")}
+            {isVirtualEvent(e)
+              ? ["Online", e.venue].filter(Boolean).join(" · ")
+              : [e.venue, e.cityName].filter(Boolean).join(" · ")}
+            {isVirtualEvent(e) && <span class="cal-chip cal-chip--virtual">Virtual</span>}
             {e.cost === "free" && <span class="cal-chip">Free</span>}
             {e.kidFriendly && <span class="cal-chip cal-chip--kids">Kids</span>}
           </p>

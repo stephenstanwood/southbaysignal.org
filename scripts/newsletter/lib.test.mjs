@@ -105,6 +105,73 @@ test("newsletter rejects a stale pair plan with the wrong breakfast service", ()
   }, "2026-07-22"), null);
 });
 
+// ── virtual events can never be a field-guide pillar ──
+//
+// The 2026-08-05 issue ran SJSU's online-only "Collegiate Recovery Community
+// (CRC) All Recovery Meeting" as its AFTERNOON PICK, paired with a LUNCH
+// NEARBY, inside a lede promising "three self-contained pairings." Nothing in
+// the event's title or copy says virtual — only events.sjsu.edu does — and the
+// only defense was scoreEvent()'s -20, which a good event outruns. A pillar is
+// a place to go; there is no score at which an online event becomes one.
+
+function virtualPillarPlan() {
+  const cards = pairedPlanCards();
+  const afternoon = cards.find((card) => card.bucket === "afternoon");
+  afternoon.id = "event:sjsu-d0c9e71e4aec161b";
+  afternoon.name = "Collegiate Recovery Community (CRC) All Recovery Meeting";
+  afternoon.source = "event";
+  afternoon.description =
+    "Meet with students exploring recovery and substance-free living in a supportive group";
+  cards.find((card) => card.bucket === "lunch").pairedWithId = afternoon.id;
+  return { selectionModel: "pillar-pairs-v1", cards };
+}
+
+test("newsletter rejects a plan whose pillar the feed flags virtual", () => {
+  const plan = virtualPillarPlan();
+  const virtualEventIds = new Set(["event:sjsu-d0c9e71e4aec161b"]);
+  const validEventIds = new Set(["event:sjsu-d0c9e71e4aec161b"]);
+  assert.equal(
+    makeNewsletterPlan(plan, "2026-08-05", { validEventIds, virtualEventIds }),
+    null,
+  );
+});
+
+test("a virtual pillar is rejected, not demoted, even with a perfect plan around it", () => {
+  // Everything else about this plan is valid — pairs link, distances are in
+  // range, meals are open. The rejection is the virtual card alone.
+  const plan = virtualPillarPlan();
+  assert.ok(
+    makeNewsletterPlan(
+      { ...plan, cards: pairedPlanCards() },
+      "2026-08-05",
+      { validEventIds: new Set(), virtualEventIds: new Set() },
+    ),
+    "control: the same plan shape passes when no card is virtual",
+  );
+  assert.equal(
+    makeNewsletterPlan(plan, "2026-08-05", {
+      validEventIds: new Set(["event:sjsu-d0c9e71e4aec161b"]),
+      virtualEventIds: new Set(["event:sjsu-d0c9e71e4aec161b"]),
+    }),
+    null,
+  );
+});
+
+test("newsletter rejects a virtual pillar from card text when the feed lookup is unavailable", () => {
+  // Second line of defense: a plan built before the flag pipeline existed, or
+  // a card whose event has aged out of the feed.
+  const cards = pairedPlanCards();
+  const afternoon = cards.find((card) => card.bucket === "afternoon");
+  afternoon.id = "event:online-talk";
+  afternoon.name = "Online: Author Talk with Ann Patchett";
+  afternoon.source = "event";
+  cards.find((card) => card.bucket === "lunch").pairedWithId = afternoon.id;
+  assert.equal(
+    makeNewsletterPlan({ selectionModel: "pillar-pairs-v1", cards }, "2026-08-05"),
+    null,
+  );
+});
+
 test("newsletter renders each activity pick before its nearby meal", () => {
   const { html } = renderEmail({
     date: "2026-07-18",
@@ -120,6 +187,40 @@ test("newsletter renders each activity pick before its nearby meal", () => {
   assert.ok(html.indexOf("Morning pick") < html.indexOf("Breakfast nearby"));
   assert.ok(html.indexOf("Afternoon pick") < html.indexOf("Lunch nearby"));
   assert.match(html, /Three standout picks for today/);
+});
+
+test("a virtual event in the calendar list is labelled Virtual and loses its city", () => {
+  // Virtual events stay eligible for "Also on the calendar" — they're real and
+  // attendable — but the meta line must not read as a place to go.
+  const { html } = renderEmail({
+    date: "2026-08-05",
+    longDate: "Wednesday, August 5, 2026",
+    weather: null,
+    dayPlan: null,
+    dayPlanBlurb: "",
+    tonightPick: null,
+    tonightPickBlurb: "",
+    todayEvents: [],
+    featuredEvents: [
+      {
+        id: "sjsu-d0c9e71e4aec161b",
+        title: "Collegiate Recovery Community (CRC) All Recovery Meeting",
+        time: "3:30 PM",
+        venue: "San Jose State University",
+        city: "san-jose",
+        cost: "free",
+        virtual: true,
+        url: "https://events.sjsu.edu/event/collegiate-recovery-community-crc-all-recovery-meeting",
+      },
+    ],
+    recentOpenings: [], tonightMeetings: [], todayHistory: [], redditPosts: [],
+    visuals: {}, editorial: null,
+  });
+  assert.match(html, /3:30 PM · Virtual · San Jose State University · Free/);
+  assert.ok(
+    !/San Jose State University · San Jose/.test(html),
+    "must not print a city next to the venue for an online-only event",
+  );
 });
 
 test("current-day newsletters reject a stale event feed", () => {

@@ -29,6 +29,7 @@ export interface SchemaEventRecord {
   description?: string | null;
   cost?: string | null;
   costNote?: string | null; // e.g. "From $30" — a floor, not a fixed price
+  virtual?: boolean | null; // set at ingest from the source's own location type
 }
 
 /** UTC offset suffix ("-07:00") for America/Los_Angeles on a given date. */
@@ -54,7 +55,10 @@ function isoDateTime(date: string, clock: { h: number; m: number }, offset: stri
 function absoluteImage(e: SchemaEventRecord): string | null {
   const image = normalizeAbsoluteHttpUrl(e.image);
   if (image) return image;
-  if (e.photoRef) {
+  // photoRef is a Google Places photo of the venue. Attaching one to an
+  // online-only event puts a picture of an unreachable building in the
+  // structured data; the event's own art is still used when it has any.
+  if (e.photoRef && e.virtual !== true) {
     return `${SITE}/api/place-photo?ref=${encodeURIComponent(e.photoRef)}&w=640&h=480`;
   }
   return null;
@@ -86,9 +90,14 @@ export function eventToSchema(e: SchemaEventRecord): Record<string, unknown> | n
   const offset = ptOffsetForDate(e.date);
   const start = parseClockTime(e.time);
   const end = parseClockTime(e.endTime);
+  // The `virtual` flag comes from the source's own location-type field and
+  // wins over the text scan, which cannot see that e.g. SJSU's "Collegiate
+  // Recovery Community (CRC) All Recovery Meeting" is online-only. A flagged
+  // event is never "mixed" — the flag means online-only by construction.
   const attendanceText = [e.title, e.venue, e.address].filter(Boolean).join(" ");
-  const isOnline = /\b(?:online|virtual|zoom)\b/i.test(attendanceText);
-  const isMixed = isOnline && /\b(?:hybrid|in[ -]person)\b/i.test(attendanceText);
+  const flaggedVirtual = e.virtual === true;
+  const isOnline = flaggedVirtual || /\b(?:online|virtual|zoom)\b/i.test(attendanceText);
+  const isMixed = !flaggedVirtual && isOnline && /\b(?:hybrid|in[ -]person)\b/i.test(attendanceText);
 
   const schema: Record<string, unknown> = {
     "@type": "Event",
@@ -121,8 +130,11 @@ export function eventToSchema(e: SchemaEventRecord): Record<string, unknown> | n
     ...(e.address || locality ? { address } : {}),
   };
   const virtualLocation = {
+    // When the flag (not the text) is what makes this virtual, `venue` holds a
+    // physical campus name — naming the VirtualLocation after it would just
+    // move the false geography into the structured data.
     "@type": "VirtualLocation",
-    name: e.venue || "Online",
+    name: flaggedVirtual ? "Online" : e.venue || "Online",
     ...(e.url ? { url: e.url } : {}),
   };
   schema.location = isMixed ? [place, virtualLocation] : isOnline ? virtualLocation : place;

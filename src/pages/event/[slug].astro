@@ -9,6 +9,7 @@ import { CITIES } from "../../lib/south-bay/cities";
 import { buildGoogleCalendarUrl } from "../../lib/south-bay/calendarLink";
 import { buildEventSlugs } from "../../lib/south-bay/eventSlug";
 import { eventToSchema, type SchemaEventRecord } from "../../lib/south-bay/eventSchema";
+import { isVirtualEvent } from "../../lib/south-bay/eventFilters.mjs";
 import { normalizeAbsoluteHttpUrl } from "../../lib/south-bay/httpUrl.mjs";
 
 interface RawEvent {
@@ -30,6 +31,7 @@ interface RawEvent {
   kidFriendly?: boolean | null;
   category?: string | null;
   source?: string | null;
+  virtual?: boolean | null;
 }
 
 export function getStaticPaths() {
@@ -65,6 +67,14 @@ const { event, passed, updatedAt } = Astro.props;
 const cityName = event.city ? CITIES.find((c) => c.id === event.city)?.name ?? null : null;
 const pageUrl = `https://southbaytoday.org${Astro.url.pathname}`;
 
+// Online-only events still get a page — they're real, attendable things — but
+// nothing on it may read as "go here." SJSU lists most of its campus feed with
+// a San Jose State University venue whether or not the event is on Zoom, so a
+// virtual event rendered the usual way ships a venue, a city, and a map link
+// to a room that doesn't exist. Flag comes from the source's own location
+// type at ingest (see eventFilters.mjs).
+const isVirtual = isVirtualEvent(event);
+
 const dayLabel = new Date(`${event.date}T12:00:00Z`).toLocaleDateString("en-US", {
   timeZone: "UTC",
   weekday: "long",
@@ -74,7 +84,9 @@ const dayLabel = new Date(`${event.date}T12:00:00Z`).toLocaleDateString("en-US",
 });
 
 const timeLabel = event.endTime && event.time ? `${event.time}–${event.endTime}` : event.time ?? "";
-const metaBits = [timeLabel, event.venue, cityName].filter(Boolean);
+const metaBits = isVirtual
+  ? [timeLabel, "Online", event.venue].filter(Boolean)
+  : [timeLabel, event.venue, cityName].filter(Boolean);
 
 // <title> uncapped ran long on most events — drop the year (redundant with the
 // visible dayLabel elsewhere on the page) and, if it's still long, drop the
@@ -97,22 +109,32 @@ function capDescription(text: string, max = 155): string {
   return `${safe}…`;
 }
 const description = capDescription(
-  `${event.title} on ${dayLabel}${event.venue ? ` at ${event.venue}` : ""}${
-    cityName ? ` in ${cityName}` : ""
-  }. ${(event.blurb || event.description || "").trim()}`.trim(),
+  isVirtual
+    ? `${event.title} on ${dayLabel}. Online event${event.venue ? ` hosted by ${event.venue}` : ""}. ${(
+        event.blurb || event.description || ""
+      ).trim()}`.trim()
+    : `${event.title} on ${dayLabel}${event.venue ? ` at ${event.venue}` : ""}${
+        cityName ? ` in ${cityName}` : ""
+      }. ${(event.blurb || event.description || "").trim()}`.trim(),
 );
 
 const directImageUrl = normalizeAbsoluteHttpUrl(event.image);
+// photoRef resolves to a Google Places photo OF THE VENUE. For an online-only
+// event that is a picture of a building the reader cannot go to — the same
+// false-place claim as the map link, just in image form. The event's own art
+// (event.image) is still fine; only the venue-photo fallback is suppressed.
 const imageUrl = directImageUrl
   ? directImageUrl
-  : event.photoRef
+  : event.photoRef && !isVirtual
     ? `/api/place-photo?ref=${encodeURIComponent(event.photoRef)}&w=760&h=420`
     : null;
 
 const mapsQuery = [event.venue, event.address, cityName ? `${cityName}, CA` : null]
   .filter(Boolean)
   .join(", ");
-const mapsUrl = mapsQuery ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}` : null;
+const mapsUrl = !isVirtual && mapsQuery
+  ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`
+  : null;
 
 // Address strings pulled from source listings often repeat the venue name
 // ("Frost Amphitheater, 327 Lasuen St, ..."). The "Where" line already shows
@@ -140,7 +162,7 @@ const calendarUrl = buildGoogleCalendarUrl({
   url: event.url,
 });
 
-const eventSchema = eventToSchema({ ...event, cityName, pageUrl } as SchemaEventRecord);
+const eventSchema = eventToSchema({ ...event, virtual: isVirtual, cityName, pageUrl } as SchemaEventRecord);
 const webPageSchema = {
   "@type": "WebPage",
   "@id": `${pageUrl}#webpage`,
@@ -189,9 +211,12 @@ const slugByEvent = new Map<RawEvent, string>();
 for (const [slug, e] of venueSlugs) slugByEvent.set(e, slug);
 const eventVenueKey = (event.venue ?? "").trim().toLowerCase();
 const isSelf = (e: RawEvent) => e === event || (e.date === event.date && e.title === event.title);
-const moreAtVenue = eventVenueKey
+// "More at <venue>" is a place-based recommendation on both sides: it makes no
+// sense for an online-only event, and an online-only sibling doesn't belong in
+// a physical venue's list.
+const moreAtVenue = eventVenueKey && !isVirtual
   ? upcomingPool
-      .filter((e) => !isSelf(e) && (e.venue ?? "").trim().toLowerCase() === eventVenueKey)
+      .filter((e) => !isSelf(e) && !isVirtualEvent(e) && (e.venue ?? "").trim().toLowerCase() === eventVenueKey)
       .map((e) => ({ event: e, slug: slugByEvent.get(e) }))
       .filter((x): x is { event: RawEvent; slug: string } => Boolean(x.slug))
       .sort((a, b) => (a.event.date! < b.event.date! ? -1 : a.event.date! > b.event.date! ? 1 : 0))
@@ -230,6 +255,7 @@ const showDesc = longDesc && longDesc !== blurb && !blurb.startsWith(longDesc.sl
   <h1>{event.title}</h1>
   <p class="cal-sub">
     {metaBits.join(" · ")}
+    {isVirtual && <span class="cal-chip cal-chip--virtual">Virtual</span>}
     {event.cost === "free" && <span class="cal-chip">Free</span>}
     {event.cost === "paid" && <span class="cal-chip cal-chip--paid">Paid</span>}
     {event.cost === "low" && <span class="cal-chip cal-chip--low">Low cost</span>}
@@ -242,7 +268,7 @@ const showDesc = longDesc && longDesc !== blurb && !blurb.startsWith(longDesc.sl
       src={imageUrl}
       width="760"
       height="420"
-      alt={`${event.title}${event.venue ? ` at ${event.venue}` : ""}`}
+      alt={`${event.title}${event.venue ? (isVirtual ? ` — online, hosted by ${event.venue}` : ` at ${event.venue}`) : ""}`}
       loading="lazy"
     />
   )}
@@ -252,7 +278,15 @@ const showDesc = longDesc && longDesc !== blurb && !blurb.startsWith(longDesc.sl
 
   <dl class="cal-detail-facts">
     <div><dt>When</dt><dd>{dayLabel}{timeLabel ? ` · ${timeLabel}` : ""}</dd></div>
-    {event.venue && (
+    {isVirtual ? (
+      <div>
+        <dt>Where</dt>
+        <dd>
+          Online{event.venue ? ` — hosted by ${event.venue}` : ""}. No in-person
+          location; check the listing for the link.
+        </dd>
+      </div>
+    ) : event.venue && (
       <div>
         <dt>Where</dt>
         <dd>

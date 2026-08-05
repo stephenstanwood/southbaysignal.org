@@ -14,6 +14,7 @@ import { fetchForecast, DEFAULT_WEATHER_LAT, DEFAULT_WEATHER_LON } from "../../s
 import { chainBrandKey, isNationalChain } from "../../src/lib/south-bay/chains.mjs";
 import { isPlaceTemporarilyUnavailable } from "../../src/lib/south-bay/placeAvailability.mjs";
 import { isEventPublishable } from "../../src/lib/south-bay/eventOccurrence.mjs";
+import { isVirtualEvent } from "../../src/lib/south-bay/eventFilters.mjs";
 import { normalizeAbsoluteHttpUrl } from "../../src/lib/south-bay/httpUrl.mjs";
 import { dayKeyForIsoDate, mealServiceIssue } from "../../src/lib/south-bay/mealService.mjs";
 import { selectDatedDefaultPlan } from "../../src/lib/south-bay/defaultPlanSelection.mjs";
@@ -248,8 +249,16 @@ export async function assembleNewsletterData(date, opts = {}) {
       .filter((event) => event.date === date)
       .map((event) => `event:${event.id}`),
   );
+  // Plan cards don't carry the virtual flag — only the event feed does — so
+  // the newsletter re-checks against the live feed before publishing a card
+  // as a place to go.
+  const virtualEventIds = new Set(
+    allEvents
+      .filter((event) => isVirtualEvent(event))
+      .map((event) => `event:${event.id}`),
+  );
   const selectedPlan = selectDefaultPlan(defaultPlans.plans, date);
-  const dayPlan = makeNewsletterPlan(selectedPlan, date, { validEventIds });
+  const dayPlan = makeNewsletterPlan(selectedPlan, date, { validEventIds, virtualEventIds });
 
   const todayEvents = allEvents
     .filter((e) => e.date === date && !e.ongoing)
@@ -326,7 +335,7 @@ export async function assembleNewsletterData(date, opts = {}) {
   }
 }
 
-export function makeNewsletterPlan(plan, date, { validEventIds = null } = {}) {
+export function makeNewsletterPlan(plan, date, { validEventIds = null, virtualEventIds = null } = {}) {
   if (!plan?.cards?.length) return null;
   const isPairPlan = plan.selectionModel === "pillar-pairs-v1" || plan.cards.some((card) => card.role);
   // Defense-in-depth against bad picks: generic chain branches are excluded,
@@ -354,6 +363,19 @@ export function makeNewsletterPlan(plan, date, { validEventIds = null } = {}) {
     }
     if (isEventCard && validEventIds && !validEventIds.has(c.id)) {
       rejectedCards.push({ card: c, reason: "absent from current event feed" });
+      return false;
+    }
+    // Hard exclusion, never a score penalty. A field-guide card is a place to
+    // go, paired with a meal within five miles of it; an online-only event has
+    // no such place, so no amount of quality makes it a valid pillar. This is
+    // the gate the 2026-08-05 CRC meeting walked through when the only defense
+    // was scoreEvent()'s -20.
+    if (isEventCard && virtualEventIds && virtualEventIds.has(c.id)) {
+      rejectedCards.push({ card: c, reason: "virtual (no physical destination)" });
+      return false;
+    }
+    if (isEventCard && isVirtualEvent({ title: c.name, description: c.description || c.blurb })) {
+      rejectedCards.push({ card: c, reason: "virtual (no physical destination)" });
       return false;
     }
     return true;
@@ -721,7 +743,11 @@ function pickTonightEvent(events, recent = null) {
 }
 
 function isTonightPickCandidate(e) {
-  if (!e || e.virtual || !e.url) return false;
+  if (!e || !e.url) return false;
+  // Tonight's Pick is "the single best answer to what should I do tonight" —
+  // an online-only event is never that, whether the feed flagged it or only
+  // its copy gives it away.
+  if (isVirtualEvent(e)) return false;
   if (audienceBreadthPenalty(e) >= UNPROMPTED_AUDIENCE_PENALTY_CUTOFF) return false;
   const minutes = parseTimeMinutes(e.time);
   if (!Number.isFinite(minutes) || minutes < 16 * 60 || minutes >= 24 * 60) return false;
@@ -817,7 +843,11 @@ function scoreEvent(e, tonight) {
   // free shouldn't outrank a headliner there.
   if (e.cost === "free" && !tonight) score += 4;
   if (e.kidFriendly) score += 2;
-  if (e.virtual) score -= 20;
+  // Demotion, not exclusion — this score only ranks "Also on the calendar",
+  // where a virtual event is still a real thing a reader can attend and is
+  // labelled "Virtual" by eventMeta(). The slots that imply a destination
+  // (field-guide pillars, Tonight's Pick) exclude virtual outright upstream.
+  if (isVirtualEvent(e)) score -= 20;
   score -= titleQualityPenalty(e.title);
   score -= routineEventPenalty(e);
   score -= audienceBreadthPenalty(e);
@@ -1774,10 +1804,16 @@ function planCardRow(card) {
 }
 
 function eventMeta(e) {
+  // A virtual event says "Virtual" and drops the city. The venue stays as the
+  // host, but the locality is the part that reads as "go here" — printing
+  // "San Jose State University · San Jose" for an online-only meeting is the
+  // exact claim that made the 2026-08-05 issue wrong.
+  const virtual = isVirtualEvent(e);
   return [
     e.time,
+    virtual ? "Virtual" : null,
     e.venue,
-    eventLocality(e),
+    virtual ? null : eventLocality(e),
     e.cost === "free" ? "Free" : null,
   ].filter(Boolean).join(" · ");
 }

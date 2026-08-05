@@ -165,6 +165,11 @@ try {
       runNode(repoRoot, "scripts/playwright-scrapers.mjs", lockScript, 40 * 60_000);
       runNode(repoRoot, "scripts/pull-inbound-events.mjs", lockScript, 10 * 60_000);
       runNode(repoRoot, "scripts/generate-events.mjs", lockScript, 45 * 60_000);
+      // Audit before commit: a hard virtual-not-flagged finding means an
+      // online-only event would ship with a venue, a city and a map link, so
+      // it fails the run into the rollback path below instead of landing in a
+      // report nobody opens (the 2026-08-05 CRC newsletter error).
+      runNode(repoRoot, "scripts/audit-events.mjs", lockScript, 5 * 60_000);
       commitGeneratedData(repoRoot);
 
       // Re-fetch after the long scrape. Data-only local commits can safely
