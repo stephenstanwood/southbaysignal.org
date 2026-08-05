@@ -258,9 +258,26 @@ for (const artifact of ARTIFACTS) {
       const coveredCities = Object.keys(data.meetings).filter(
         (c) => data.meetings[c]?.date
       );
-      const missing = EXPECTED_CITIES.filter((c) => !coveredCities.includes(c));
+      const health = data.sourceHealth ?? {};
+      // A city with no meeting is only worth reporting as a defect when its
+      // source actually failed. Councils genuinely recess (most of the South Bay
+      // goes dark in August), so lumping recess in with broken scrapers trained
+      // us to ignore this line — Campbell's agenda feed sat frozen for 302 days
+      // behind a benign-looking "missing cities" warning.
+      const broken = Object.entries(health).filter(([, s]) => s?.status === "error");
+      if (broken.length) {
+        for (const [city, s] of broken) {
+          entry.warnings.push(`source broken — ${city} (${s.provider}): ${s.detail}`);
+        }
+      }
+      const missing = EXPECTED_CITIES.filter(
+        (c) => !coveredCities.includes(c) && health[c]?.status !== "error"
+      );
       if (missing.length) {
-        entry.warnings.push(`missing cities: ${missing.join(", ")}`);
+        const label = Object.keys(health).length
+          ? "no meeting on the calendar"
+          : "missing cities";
+        entry.warnings.push(`${label}: ${missing.join(", ")}`);
       }
     }
   } catch (err) {

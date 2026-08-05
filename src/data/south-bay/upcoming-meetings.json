@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T03:09:02.326Z",
+  "generatedAt": "2026-08-05T14:15:35.255Z",
   "meetings": {
     "san-jose": {
       "date": "2026-08-11",
@@ -34,7 +34,7 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-04T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-05T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
@@ -63,8 +63,57 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-04T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-05T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
+    }
+  },
+  "sourceHealth": {
+    "san-jose": {
+      "provider": "Legistar",
+      "status": "ok"
+    },
+    "mountain-view": {
+      "provider": "Legistar",
+      "status": "no-meeting"
+    },
+    "sunnyvale": {
+      "provider": "Legistar",
+      "status": "no-meeting"
+    },
+    "cupertino": {
+      "provider": "Legistar",
+      "status": "no-meeting"
+    },
+    "santa-clara": {
+      "provider": "Legistar",
+      "status": "no-meeting"
+    },
+    "palo-alto": {
+      "provider": "PrimeGov",
+      "status": "ok"
+    },
+    "campbell": {
+      "provider": "CivicEngage",
+      "status": "error",
+      "detail": "agenda page frozen — newest posting 2025-10-07 (302d old)"
+    },
+    "saratoga": {
+      "provider": "CivicEngage",
+      "status": "no-meeting"
+    },
+    "los-altos": {
+      "provider": "CivicEngage",
+      "status": "error",
+      "detail": "no dates parsed from agenda page (source likely JS-rendered)"
+    },
+    "milpitas": {
+      "provider": "CivicClerk",
+      "status": "ok"
+    },
+    "los-gatos": {
+      "provider": "MuniCode",
+      "status": "error",
+      "detail": "fetch failed"
     }
   }
 }

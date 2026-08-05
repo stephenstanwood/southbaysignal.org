@@ -292,7 +292,7 @@ async function fetchNextMeeting(client, site, body) {
 
 // ── PrimeGov (Palo Alto) ────────────────────────────────────────────────────
 
-async function fetchPrimeGovMeeting(city, domain, committeeId) {
+async function fetchPrimeGovMeeting(domain, committeeId) {
   const url = `https://${domain}/api/v2/PublicPortal/ListUpcomingMeetings`;
   const res = await fetch(url, {
     headers: { "User-Agent": UA, Accept: "application/json" },
@@ -373,10 +373,12 @@ async function fetchCivicEngageMeeting(baseUrl, calendarId) {
   // The HTML contains rows like: <td>04/15/2026</td> or dates in agenda links
   const datePattern = /(\d{1,2})\/(\d{1,2})\/(\d{4})/g;
   const dates = [];
+  const allDates = [];
   let match;
   while ((match = datePattern.exec(html)) !== null) {
     const [, month, day, year] = match;
     const iso = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    allDates.push(iso);
     if (iso >= todayIso && parseInt(year) <= new Date().getFullYear() + 1) dates.push(iso);
   }
 
@@ -384,7 +386,23 @@ async function fetchCivicEngageMeeting(baseUrl, calendarId) {
   const unique = [...new Set(dates)].sort();
 
   const nextDate = unique[0];
-  if (!nextDate) return null;
+  if (!nextDate) {
+    // Distinguish "council is between meetings" from "this scraper has rotted".
+    // Campbell's Agenda Center froze in 2025 when the town moved to eScribe, and
+    // Saratoga/Los Altos now render their calendars client-side — all three
+    // returned a healthy HTTP 200 and simply reported "none scheduled" for
+    // months. A page whose newest date is far in the past, or that has no dates
+    // at all, is a broken source and should say so.
+    const newest = allDates.length ? allDates.slice().sort().at(-1) : null;
+    const staleDays = newest
+      ? (Date.parse(todayIso) - Date.parse(newest)) / 86_400_000
+      : null;
+    if (!newest) throw new Error("no dates parsed from agenda page (source likely JS-rendered)");
+    if (staleDays > 120) {
+      throw new Error(`agenda page frozen — newest posting ${newest} (${Math.round(staleDays)}d old)`);
+    }
+    return null;
+  }
 
   const d = new Date(nextDate + "T12:00:00");
   const daysOut = (d.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
@@ -519,83 +537,44 @@ async function main() {
   console.log("Fetching upcoming council meetings...\n");
 
   const candidates = {};
+  const sourceHealth = {};
 
-  // Legistar cities
-  for (const { city, client, site, body } of LEGISTAR_CITIES) {
-    process.stdout.write(`  ⏳ ${city} (Legistar)...`);
+  // Run one city's fetcher and record whether it succeeded, genuinely had no
+  // meeting on the calendar, or failed — so a broken scraper is never silently
+  // indistinguishable from a council in recess.
+  async function runSource(city, provider, fetchFn) {
+    process.stdout.write(`  ⏳ ${city} (${provider})...`);
     try {
-      const next = await fetchNextMeeting(client, site, body);
+      const next = await fetchFn();
       if (next) {
         candidates[city] = next;
+        sourceHealth[city] = { provider, status: "ok" };
         const itemCount = next.agendaItems?.length ?? 0;
-        console.log(` ✅ ${next.displayDate} (${itemCount} agenda items)`);
+        console.log(` ✅ ${next.displayDate}${itemCount ? ` (${itemCount} agenda items)` : ""}`);
       } else {
+        sourceHealth[city] = { provider, status: "no-meeting" };
         console.log(` — none scheduled`);
       }
     } catch (err) {
+      sourceHealth[city] = { provider, status: "error", detail: err.message };
       console.log(` ⚠️  ${err.message}`);
     }
   }
 
-  // PrimeGov cities
+  for (const { city, client, site, body } of LEGISTAR_CITIES) {
+    await runSource(city, "Legistar", () => fetchNextMeeting(client, site, body));
+  }
+
   for (const { city, domain, committeeId } of PRIMEGOV_CITIES) {
-    process.stdout.write(`  ⏳ ${city} (PrimeGov)...`);
-    try {
-      const next = await fetchPrimeGovMeeting(city, domain, committeeId);
-      if (next) {
-        candidates[city] = next;
-        console.log(` ✅ ${next.displayDate}`);
-      } else {
-        console.log(` — none scheduled`);
-      }
-    } catch (err) {
-      console.log(` ⚠️  ${err.message}`);
-    }
+    await runSource(city, "PrimeGov", () => fetchPrimeGovMeeting(domain, committeeId));
   }
 
-  // CivicEngage cities
   for (const { city, baseUrl, calendarId } of CIVICENGAGE_CITIES) {
-    process.stdout.write(`  ⏳ ${city} (CivicEngage)...`);
-    try {
-      const next = await fetchCivicEngageMeeting(baseUrl, calendarId);
-      if (next) {
-        candidates[city] = next;
-        console.log(` ✅ ${next.displayDate}`);
-      } else {
-        console.log(` — none scheduled`);
-      }
-    } catch (err) {
-      console.log(` ⚠️  ${err.message}`);
-    }
+    await runSource(city, "CivicEngage", () => fetchCivicEngageMeeting(baseUrl, calendarId));
   }
 
-  // Milpitas
-  process.stdout.write(`  ⏳ milpitas (CivicClerk)...`);
-  try {
-    const next = await fetchMilpitasMeeting();
-    if (next) {
-      candidates["milpitas"] = next;
-      console.log(` ✅ ${next.displayDate}`);
-    } else {
-      console.log(` — none scheduled`);
-    }
-  } catch (err) {
-    console.log(` ⚠️  ${err.message}`);
-  }
-
-  // Los Gatos
-  process.stdout.write(`  ⏳ los-gatos (MuniCode)...`);
-  try {
-    const next = await fetchLosGatosMeeting();
-    if (next) {
-      candidates["los-gatos"] = next;
-      console.log(` ✅ ${next.displayDate}`);
-    } else {
-      console.log(` — none scheduled`);
-    }
-  } catch (err) {
-    console.log(` ⚠️  ${err.message}`);
-  }
+  await runSource("milpitas", "CivicClerk", () => fetchMilpitasMeeting());
+  await runSource("los-gatos", "MuniCode", () => fetchLosGatosMeeting());
 
   const meetings = onlyConfirmedMeetings(candidates);
   const rejected = Object.keys(candidates).length - Object.keys(meetings).length;
@@ -604,11 +583,21 @@ async function main() {
   const output = {
     generatedAt: new Date().toISOString(),
     meetings,
+    // Per-city fetch outcome. A city absent from `meetings` is ambiguous on its
+    // own — summer recess and a dead scraper look identical. This records which
+    // one it was so health-report can flag broken sources instead of counting
+    // them as "missing cities".
+    sourceHealth,
   };
 
   writeFileAtomic(OUT_PATH, JSON.stringify(output, null, 2) + "\n");
   const count = Object.keys(meetings).length;
+  const broken = Object.entries(sourceHealth).filter(([, s]) => s.status === "error");
   console.log(`\n✅ Done — ${count} cities with upcoming meetings → ${OUT_PATH}`);
+  if (broken.length > 0) {
+    console.warn(`\n⚠️  ${broken.length} source(s) failed — these are NOT "no meeting scheduled":`);
+    for (const [city, s] of broken) console.warn(`   ${city} (${s.provider}): ${s.detail}`);
+  }
 }
 
 main().catch((err) => {
