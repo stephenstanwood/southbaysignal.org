@@ -7,6 +7,7 @@
 import { useState, useEffect, useMemo } from "react";
 import type { City } from "../../../lib/south-bay/types";
 import { CITY_MAP } from "../../../lib/south-bay/cities";
+import { isVirtualEvent } from "../../../lib/south-bay/eventFilters.mjs";
 import {
   TODAY_ISO, NOW_PT,
   startMinutes, formatTimeRange, hasNotStarted,
@@ -43,6 +44,7 @@ type UpcomingEvent = {
   url?: string | null;
   source: string;
   kidFriendly: boolean;
+  virtual?: boolean;
   ongoing?: boolean;
   blurb?: string | null;
   description?: string | null;
@@ -296,6 +298,9 @@ function EventRow({ event }: { event: UpcomingEvent }) {
         </div>
         <div style={{ fontSize: 11, color: "var(--sb-muted)", display: "flex", gap: 6, marginTop: 2 }}>
           {time && <span style={{ fontWeight: 600 }}>{time}</span>}
+          {/* A bare venue on a city page reads as "here, in this city" — say
+              Online first when the event has no physical location. */}
+          {isVirtualEvent(event) && <span style={{ fontWeight: 600, color: "#1D4ED8" }}>· Online</span>}
           {event.venue && <span>· {event.venue}</span>}
         </div>
       </div>

@@ -60,6 +60,38 @@ used for a proximity pair.
 Food events, such as a farmers market or festival, may be activity pillars.
 Only restaurant/place records can fill meal buckets.
 
+### Virtual events are never pillars
+
+A pillar is a place to go, paired with a meal within five miles of it. An
+online-only event has no such place, so it is hard-excluded from every pillar
+lane — never merely demoted. It stays eligible for listing surfaces (the
+Events tab, "Also on the calendar") where it is labelled `Virtual` and shown
+without a city, a map link, or a venue place-photo.
+
+`virtual` is set at ingest from the **source's own location-type field**, not
+from title/description text:
+
+| Feed | Endpoint | Field |
+| --- | --- | --- |
+| SJSU, Stanford (Localist) | `/api/2/events` | `experience` |
+| SCU (LiveWhale) | `/live/json/events` | `online_type` / `is_online` |
+| Libraries (BiblioCommons) | events API | `definition.isVirtual` |
+| Meetup | GraphQL `eventSearch` | `eventType` (non-`PHYSICAL` dropped) |
+
+`hybrid` counts as physically attendable and stays eligible.
+`virtualFromSourceSignal()` and `resolveVirtualFlag()` in
+`src/lib/south-bay/eventFilters.mjs` normalize these; the text patterns remain
+as a fallback, and either signal saying "virtual" is enough.
+
+Text matching alone is not sufficient and must never be the only check. On
+2026-08-05 the newsletter ran SJSU's "Collegiate Recovery Community (CRC) All
+Recovery Meeting" as its afternoon pick with a lunch paired to it, inside a
+lede promising "three self-contained pairings." events.sjsu.edu lists it
+VIRTUAL; nothing in its title or blurb says so, SJSU's RSS carries no location
+field at all, and the only defense was a `-20` score penalty a good event
+outruns. `scripts/audit-events.mjs` now exits non-zero on any hard
+`virtual-not-flagged` finding and runs in the nightly refresh before commit.
+
 ## Scopes
 
 - `scope: "regional"` is the homepage, newsletter, graphics, scheduled hero,

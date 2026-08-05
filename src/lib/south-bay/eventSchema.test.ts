@@ -82,6 +82,87 @@ test("eventToSchema describes explicitly online events as virtual", () => {
   });
 });
 
+test("a source-flagged virtual event emits no physical Place, whatever its venue says", () => {
+  // The 2026-08-05 defect in structured-data form: SJSU's RSS gives every
+  // event a "San Jose State University" venue, so text matching alone emitted
+  // an OfflineEventAttendanceMode Place with a San Jose address for an
+  // online-only meeting.
+  const sourceUrl = "https://events.sjsu.edu/event/collegiate-recovery-community-crc-all-recovery-meeting";
+  const schema = eventToSchema({
+    title: "Collegiate Recovery Community (CRC) All Recovery Meeting",
+    date: "2026-08-05",
+    time: "3:30 PM",
+    venue: "San Jose State University",
+    cityName: "San Jose",
+    virtual: true,
+    url: sourceUrl,
+  });
+
+  assert.ok(schema);
+  assert.equal(schema.eventAttendanceMode, "https://schema.org/OnlineEventAttendanceMode");
+  assert.deepEqual(schema.location, {
+    "@type": "VirtualLocation",
+    // Not "San Jose State University" — that would move the false geography
+    // into the structured data instead of removing it.
+    name: "Online",
+    url: sourceUrl,
+  });
+});
+
+test("a virtual event drops the venue place-photo but keeps its own art", () => {
+  const photoRef = "places/ChIJvaE_uF7Nj4ARJF49qlouHK8/photos/AWCwydiDJG";
+  const venuePhoto = eventToSchema({
+    title: "CRC All Recovery Meeting",
+    date: "2026-08-05",
+    venue: "San Jose State University",
+    photoRef,
+    virtual: true,
+  });
+  assert.equal(venuePhoto?.image, undefined, "a Places photo of the campus is not this event");
+
+  const ownArt = eventToSchema({
+    title: "CRC All Recovery Meeting",
+    date: "2026-08-05",
+    image: "https://events.sjsu.edu/photos/crc.jpg",
+    photoRef,
+    virtual: true,
+  });
+  assert.equal(ownArt?.image, "https://events.sjsu.edu/photos/crc.jpg");
+
+  const inPerson = eventToSchema({
+    title: "Jazz on the Plazz",
+    date: "2026-08-05",
+    venue: "Los Gatos Town Plaza Park",
+    photoRef,
+  });
+  assert.match(String(inPerson?.image), /\/api\/place-photo\?ref=/);
+});
+
+test("a virtual-flagged event is never MixedEventAttendanceMode", () => {
+  // "in-person" appearing in a venue string can't promote a flagged
+  // online-only event to hybrid.
+  const schema = eventToSchema({
+    title: "Team Sync",
+    date: "2026-08-05",
+    venue: "Virtual (formerly in-person)",
+    cityName: "San Jose",
+    virtual: true,
+  });
+  assert.equal(schema?.eventAttendanceMode, "https://schema.org/OnlineEventAttendanceMode");
+});
+
+test("an unflagged in-person event is unaffected by the virtual field", () => {
+  const schema = eventToSchema({
+    title: "Jazz on the Plazz",
+    date: "2026-08-05",
+    venue: "Los Gatos Town Plaza Park",
+    cityName: "Los Gatos",
+    virtual: false,
+  });
+  assert.equal(schema?.eventAttendanceMode, "https://schema.org/OfflineEventAttendanceMode");
+  assert.equal((schema?.location as Record<string, unknown>)["@type"], "Place");
+});
+
 test("eventToSchema rejects records without a real title and ISO date", () => {
   assert.equal(eventToSchema({ title: "", date: "2026-07-19" }), null);
   assert.equal(eventToSchema({ title: "Open House", date: "July 19" }), null);

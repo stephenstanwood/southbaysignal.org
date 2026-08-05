@@ -15,6 +15,7 @@ import {
 } from "../../../lib/south-bay/holidays";
 import { currentHeritageMonths, matchesHeritage, type HeritageMonth } from "../../../lib/south-bay/heritageMonths";
 import { buildGoogleCalendarUrl } from "../../../lib/south-bay/calendarLink";
+import { isVirtualEvent } from "../../../lib/south-bay/eventFilters.mjs";
 import { cleanDisplayCopy, cleanDisplayName } from "../../../lib/south-bay/displayText.mjs";
 import PageHero from "../PageHero";
 
@@ -437,6 +438,15 @@ function UpcomingEventCard({
               Kids
             </span>
           )}
+          {isVirtualEvent(event) && (
+            <span
+              className="sb-event-micro-badge"
+              title="Online only — there is no in-person location"
+              style={{ background: "#EFF6FF", color: "#1D4ED8", borderColor: "#BFDBFE" }}
+            >
+              Virtual
+            </span>
+          )}
           {urgency && (
             <span
               className={`sb-event-micro-badge${urgency.pulse ? " sb-urgency-pulse" : ""}`}
@@ -481,12 +491,25 @@ function UpcomingEventCard({
             </span>
           )}
           {event.time && (event.venue || event.city) && <span aria-hidden>·</span>}
-          {venue
-            ? <span>{venue}</span>
-            : <span>{cityLabel(event.city)}</span>
-          }
-          {venue && <span aria-hidden>·</span>}
-          {venue && <span>{cityLabel(event.city)}</span>}
+          {/* An online-only event has no city to go to — printing one next to a
+              campus venue is what made the 2026-08-05 CRC meeting read as a
+              place. Show "Online" and the host instead. */}
+          {isVirtualEvent(event) ? (
+            <>
+              <span>Online</span>
+              {venue && <span aria-hidden>·</span>}
+              {venue && <span>{venue}</span>}
+            </>
+          ) : (
+            <>
+              {venue
+                ? <span>{venue}</span>
+                : <span>{cityLabel(event.city)}</span>
+              }
+              {venue && <span aria-hidden>·</span>}
+              {venue && <span>{cityLabel(event.city)}</span>}
+            </>
+          )}
           {recurring && (
             <>
               <span aria-hidden>·</span>
@@ -557,7 +580,9 @@ function AddToCalendarButton({ event }: { event: UpcomingEvent }) {
 // as a related set.
 
 function buildEventMapsUrl(event: UpcomingEvent): string | null {
-  if (event.virtual) return null;
+  // Flag first, text second — the flag catches source-declared virtual events
+  // whose title and blurb never say so.
+  if (isVirtualEvent(event)) return null;
   const cityName = event.city ? cityLabel(event.city) : "";
   // Prefer venue + address + city when available — most specific.
   // Some scrapers stuff the address into the venue field; if address starts

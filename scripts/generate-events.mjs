@@ -60,6 +60,7 @@ import {
   LOCAL_DEPARTURE_TRIP,
   OUT_OF_AREA_LOCATION,
   VIRTUAL_EVENT_PATTERNS,
+  virtualFromSourceSignal,
 } from "../src/lib/south-bay/eventFilters.mjs";
 import { fuzzyDedupEvents } from "../src/lib/south-bay/eventFuzzyDedup.mjs";
 import { SLUG_TO_CITY_TOKENS } from "./social/lib/content-rules.mjs";
@@ -2278,6 +2279,79 @@ function parseIcalDate(dtStr) {
   return parseDate(dtStr);
 }
 
+// ── Source-published "is this online?" lookups ──
+//
+// Title/description regex is not enough. SJSU's "Collegiate Recovery
+// Community (CRC) All Recovery Meeting" is listed VIRTUAL on events.sjsu.edu
+// and says so nowhere in its title or blurb, so on 2026-08-05 it shipped as
+// the newsletter's in-person afternoon pick with a lunch paired to it. Both
+// campus platforms publish the answer in a dedicated field; read it.
+//
+// Neither lookup is load-bearing for the listing itself — a failure returns
+// an empty map and the text fallback still applies — but each logs loudly and
+// the caller re-throws under STRICT_EVENT_REFRESH so the nightly refresh fails
+// rather than silently republishing unverified location types.
+
+/**
+ * Localist (SJSU, Stanford): /api/2/events exposes `experience` =
+ * "virtual" | "inperson" | "hybrid". The RSS feed we list from does not.
+ * Returns Map<localist_url, experience>.
+ */
+async function fetchLocalistExperienceMap(origin, { days = 370, maxPages = 12 } = {}) {
+  const map = new Map();
+  const start = todayPT();
+  let pages = 1;
+  for (let page = 1; page <= Math.min(pages, maxPages); page++) {
+    const url = `${origin}/api/2/events?start=${start}&days=${days}&pp=100&page=${page}`;
+    const data = await fetchJson(url, { timeout: 30_000 });
+    pages = data?.page?.total ?? 1;
+    for (const wrapper of data?.events ?? []) {
+      const ev = wrapper?.event;
+      if (!ev?.localist_url || !ev.experience) continue;
+      map.set(ev.localist_url.replace(/\/+$/, ""), ev.experience);
+    }
+  }
+  if (pages > maxPages) {
+    console.warn(`  ⚠️  ${origin}: location-type lookup capped at ${maxPages} of ${pages} pages — later events fall back to text matching`);
+  }
+  return map;
+}
+
+/**
+ * LiveWhale (SCU): /live/json/events exposes `online_type` =
+ * "Online only" | "Hybrid" and `is_online`. Its RSS feed does not.
+ * Keyed by the numeric event id, because the JSON `url` omits the group
+ * path segment the RSS `<link>` carries
+ * (/event/469593-… vs /archives-and-special-collections/event/469593-…).
+ * Returns Map<numericId, onlineType>.
+ */
+async function fetchLiveWhaleOnlineMap(origin, { maxPages = 14 } = {}) {
+  const map = new Map();
+  let pages = 1;
+  for (let page = 1; page <= Math.min(pages, maxPages); page++) {
+    const data = await fetchJson(`${origin}/live/json/events?page=${page}`, { timeout: 30_000 });
+    pages = data?.meta?.total_pages ?? 1;
+    for (const ev of data?.data ?? []) {
+      if (ev?.id === undefined || ev?.id === null) continue;
+      // online_type is the descriptive field ("Online only" / "Hybrid");
+      // is_online alone can't distinguish those two.
+      const signal = ev.online_type ?? (ev.is_online ? "Online only" : null);
+      if (signal === null) continue;
+      map.set(String(ev.id), signal);
+    }
+  }
+  if (pages > maxPages) {
+    console.warn(`  ⚠️  ${origin}: location-type lookup capped at ${maxPages} of ${pages} pages — later events fall back to text matching`);
+  }
+  return map;
+}
+
+/** LiveWhale event URL → numeric id ("…/event/469593-reflections-of-faith" → "469593"). */
+function liveWhaleEventId(url) {
+  const m = String(url || "").match(/\/event\/(\d+)\b/);
+  return m ? m[1] : null;
+}
+
 // ── Sources ──
 
 async function fetchStanfordEvents() {
@@ -2295,6 +2369,9 @@ async function fetchStanfordEvents() {
       // Use today as the event date for ongoing events (started in past, ends in future).
       const venue = cleanVenue(ev.location_name || "") || "Stanford University";
       const description = stripHtml(ev.description_text || ev.description || "");
+      // Localist publishes the attendance mode outright — no need to guess it
+      // from the copy. "hybrid" stays a physical destination.
+      const isVirtual = virtualFromSourceSignal(ev.experience) === true;
       let eventDate = start;
       let isOngoing = false;
       if (start < now) {
@@ -2317,6 +2394,7 @@ async function fetchStanfordEvents() {
         venue,
         address: ev.address || "",
         city: "palo-alto",
+        ...(isVirtual ? { virtual: true } : {}),
         category: inferUniversityCategory(ev.title, description, "", venue),
         cost: (ev.free || /\balcoholics anonymous\b/i.test(ev.title)) ? "free" : "paid",
         description: truncate(description),
@@ -2412,8 +2490,13 @@ async function fetchSjsuEvents() {
   try {
     const xml = await fetchText("https://events.sjsu.edu/calendar.xml", { timeout: 45_000 }); // large feed ~1.4MB
     const items = parseRssItems(xml);
+    // The RSS carries no location field at all — SJSU's Localist API does,
+    // and its `localist_url` joins 1:1 with the RSS <link>. Without this, ~20%
+    // of the SJSU feed is online-only and looks in-person.
+    const experienceByUrl = await fetchLocalistExperienceMap("https://events.sjsu.edu");
     let skipped = 0;
     let venueCityFixes = 0;
+    let virtualFromSource = 0;
     const parsed = items.map((item) => {
       if (isStudentOnlyEvent(item)) { skipped++; return null; }
       const start = parseDate(item.pubDate);
@@ -2441,6 +2524,9 @@ async function fetchSjsuEvents() {
       // bleeds when the description plays up the alumni dinner.
       const COMMERCIAL_TICKET_VENUE = /\b(paypal park|excite ballpark|levi'?s stadium|sap center|cefcu stadium|spartan stadium|provident credit union event center|shoreline amphitheatre|mountain winery|mountain west championship)\b/i;
       const cost = category === "sports" || COMMERCIAL_TICKET_VENUE.test(venue) ? "paid" : "free";
+      const isVirtual =
+        virtualFromSourceSignal(experienceByUrl.get(String(item.link || "").replace(/\/+$/, ""))) === true;
+      if (isVirtual) virtualFromSource++;
       return {
         id: h("sjsu", item.link || item.title, item.pubDate),
         title: item.title,
@@ -2451,6 +2537,7 @@ async function fetchSjsuEvents() {
         venue,
         address: "",
         city,
+        ...(isVirtual ? { virtual: true } : {}),
         category,
         cost,
         description: truncate(stripBareUrls(stripHtml(item.description))),
@@ -2494,7 +2581,7 @@ async function fetchSjsuEvents() {
       .filter((e) => !dropIds.has(e.id))
       .map(({ _startMs, ...e }) => e);
 
-    console.log(`  ✅ SJSU: ${events.length} events (${skipped} student-only filtered${collapsed ? `, ${collapsed} occurrences collapsed into exhibits` : ""}${venueCityFixes ? `, ${venueCityFixes} venue-vs-city corrections` : ""})`);
+    console.log(`  ✅ SJSU: ${events.length} events (${skipped} student-only filtered${collapsed ? `, ${collapsed} occurrences collapsed into exhibits` : ""}${venueCityFixes ? `, ${venueCityFixes} venue-vs-city corrections` : ""}${virtualFromSource ? `, ${virtualFromSource} flagged virtual by source` : ""})`);
     return events;
   } catch (err) {
     console.log(`  ⚠️  SJSU: ${err.message}`);
@@ -2556,7 +2643,12 @@ async function fetchScuEvents() {
   try {
     const xml = await fetchText("https://events.scu.edu/live/rss/events");
     const items = parseRssItems(xml);
+    // The RSS exposes no online/location-type field; LiveWhale's JSON API does.
+    // Ids missing from the map (paging drift between the two endpoints) fall
+    // through to the text patterns rather than being assumed in-person.
+    const onlineTypeById = await fetchLiveWhaleOnlineMap("https://events.scu.edu");
     let skippedScu = 0;
+    let virtualFromSourceScu = 0;
     const parsed = items.map((item) => {
       if (isStudentOnlyEvent(item)) { skippedScu++; return null; }
       const start = parseDate(item.pubDate);
@@ -2567,6 +2659,9 @@ async function fetchScuEvents() {
         return null;
       }
       const venue = cleanVenue(item.location || item.georssFeatureName || "") || "Santa Clara University";
+      const isVirtual =
+        virtualFromSourceSignal(onlineTypeById.get(liveWhaleEventId(item.link))) === true;
+      if (isVirtual) virtualFromSourceScu++;
       return {
         id: h("scu", item.link || item.title, item.pubDate),
         title: item.title,
@@ -2577,6 +2672,7 @@ async function fetchScuEvents() {
         venue,
         address: "",
         city: geoCity || "santa-clara",
+        ...(isVirtual ? { virtual: true } : {}),
         category: inferUniversityCategory(item.title, item.description, "", venue),
         cost: inferScuCost(item),
         description: truncate(stripHtml(item.description)),
@@ -2618,7 +2714,7 @@ async function fetchScuEvents() {
       .filter((e) => !dropIds.has(e.id))
       .map(({ _startMs, ...e }) => e);
 
-    console.log(`  ✅ SCU: ${events.length} events (${skippedScu} student-only filtered${collapsed ? `, ${collapsed} occurrences collapsed into exhibits` : ""})`);
+    console.log(`  ✅ SCU: ${events.length} events (${skippedScu} student-only filtered${collapsed ? `, ${collapsed} occurrences collapsed into exhibits` : ""}${virtualFromSourceScu ? `, ${virtualFromSourceScu} flagged virtual by source` : ""})`);
     return events;
   } catch (err) {
     console.log(`  ⚠️  SCU: ${err.message}`);

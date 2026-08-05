@@ -6,9 +6,22 @@ import {
   OUT_OF_AREA_LOCATION,
   hasOutOfAreaDestination,
   isVirtualEvent,
+  resolveVirtualFlag,
+  virtualFromSourceSignal,
 } from "./eventFilters.mjs";
 
-// ── isVirtualEvent ──
+// The event that shipped as an in-person newsletter destination on
+// 2026-08-05. events.sjsu.edu lists it VIRTUAL; nothing in its title or blurb
+// says so, and SJSU's RSS defaults every event to the San Jose campus.
+const CRC_MEETING = {
+  title: "Collegiate Recovery Community (CRC) All Recovery Meeting",
+  description:
+    "Meet with students exploring recovery and substance-free living in a supportive group",
+  venue: "San Jose State University",
+  city: "san-jose",
+};
+
+// ── isVirtualEvent — text fallback ──
 
 test("virtual title prefixes are caught", () => {
   assert.ok(isVirtualEvent({ title: "Online: Author Talk with Ann Patchett" }));
@@ -19,6 +32,74 @@ test("virtual title prefixes are caught", () => {
 test("a physical event with an incidental word is not virtual", () => {
   assert.ok(!isVirtualEvent({ title: "Live Music on the Plaza" }));
   assert.ok(!isVirtualEvent({ title: "Streamside Nature Walk" }));
+});
+
+test("the text fallback alone cannot see the CRC meeting — that is the bug", () => {
+  // Documents WHY the source signal exists. If this ever starts returning
+  // true from text alone, the regex got broader, not the source signal
+  // redundant — keep reading the source field regardless.
+  assert.ok(!isVirtualEvent({ title: CRC_MEETING.title, description: CRC_MEETING.description }));
+});
+
+// ── isVirtualEvent — explicit flag wins ──
+
+test("an event flagged virtual by its source is virtual with no text marker", () => {
+  assert.ok(isVirtualEvent({ ...CRC_MEETING, virtual: true }));
+});
+
+test("the flag does not override a text match in the other direction", () => {
+  // virtual:false must not un-flag copy that plainly says webinar.
+  assert.ok(isVirtualEvent({ title: "Bay Area Climate Webinar", virtual: false }));
+});
+
+// ── virtualFromSourceSignal ──
+
+test("Localist experience values map correctly", () => {
+  assert.equal(virtualFromSourceSignal("virtual"), true);
+  assert.equal(virtualFromSourceSignal("inperson"), false);
+  // Hybrid has a real room — it stays a destination.
+  assert.equal(virtualFromSourceSignal("hybrid"), false);
+});
+
+test("LiveWhale online_type values map correctly", () => {
+  assert.equal(virtualFromSourceSignal("Online only"), true);
+  assert.equal(virtualFromSourceSignal("Hybrid"), false);
+});
+
+test("BiblioCommons booleans and unknowns map correctly", () => {
+  assert.equal(virtualFromSourceSignal(true), true);
+  assert.equal(virtualFromSourceSignal(false), false);
+  // Silence is not an in-person guarantee — null keeps the text fallback.
+  assert.equal(virtualFromSourceSignal(null), null);
+  assert.equal(virtualFromSourceSignal(undefined), null);
+  assert.equal(virtualFromSourceSignal(""), null);
+  assert.equal(virtualFromSourceSignal("in-person and outdoors"), false);
+  assert.equal(virtualFromSourceSignal("something else entirely"), null);
+});
+
+// ── resolveVirtualFlag — the ingest-time decision ──
+
+test("the source's own field flags the CRC meeting the regex misses", () => {
+  assert.equal(resolveVirtualFlag(CRC_MEETING, "virtual"), true);
+});
+
+test("the regex fallback still applies when the source says nothing", () => {
+  assert.equal(resolveVirtualFlag({ title: "Online: Author Talk" }, null), true);
+  assert.equal(resolveVirtualFlag({ title: "Online: Author Talk" }, undefined), true);
+});
+
+test("an in-person source signal leaves a physical event alone", () => {
+  assert.equal(
+    resolveVirtualFlag({ title: "Music in the Park", venue: "Plaza de César Chávez" }, "inperson"),
+    false,
+  );
+  assert.equal(resolveVirtualFlag({ title: "Jazz on the Plazz" }, "hybrid"), false);
+});
+
+test("either signal is enough — an in-person label cannot override webinar copy", () => {
+  // A false positive costs one skipped recommendation; a false negative ships
+  // a factual error.
+  assert.equal(resolveVirtualFlag({ title: "Bay Area Climate Webinar" }, "inperson"), true);
 });
 
 // ── hasOutOfAreaDestination ──
