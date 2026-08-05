@@ -103,6 +103,41 @@ function formatAddress(raw) {
     .trim();
 }
 
+// Permit-process boilerplate that survives the noise-stripping above and would
+// otherwise be published as a restaurant name. Real examples that shipped to the
+// Food tab: "Occupancy Certificate", "Permit To Final For 23-126633", "Code -",
+// "Permit To Allow Completion -Kushinari". These describe the paperwork, not the
+// business. Reject them so the item falls through to the Google Places lookup
+// (which resolves the real tenant from the address) or drops at render time.
+// Missing > wrong.
+const PERMIT_PROCESS_PATTERNS = [
+  /^permit\b/i,                       // "Permit To Final For …", "Permit To Allow Completion -…"
+  /^code\b/i,                         // "Code - Demo Covered Patio" → "Code -"
+  /\boccupancy\s+certificate\b/i,
+  /^certificate\s+of\b/i,
+  /^(re)?inspection\b/i,
+  /^revision\b/i,
+  /^temp(orary)?\s+(power|occupancy)\b/i,
+  /^change\s+of\s+(use|occupancy|contractor)\b/i,
+  /^(final|partial)\b/i,
+];
+
+// San Jose permit records and Google Places both return bilingual business names
+// with a trailing CJK rendering ("Hearth BBQ炉边烧烤"). Drop the CJK half so the
+// card reads as one name — same convention as cleanTitle() in generate-events.
+function stripBilingualSuffix(name) {
+  if (!name) return name;
+  const stripped = name
+    .replace(
+      /[\s·・|/—–-]*[　-〿぀-ヿ㐀-䶿一-鿿豈-﫿＀-￯]+\s*$/,
+      "",
+    )
+    .trim();
+  // Only take the strip if a Latin-script name survives — an entirely CJK name
+  // is the real name, not a suffix.
+  return /[A-Za-z]/.test(stripped) ? stripped : name;
+}
+
 /**
  * Try to extract a business name from a San Jose permit FOLDERNAME.
  * Permit names follow patterns like:
@@ -112,6 +147,7 @@ function formatAddress(raw) {
  *   "Jc'S Bbq (Bepm 100%) Interior Ti"
  *   "Taco Bell (E 100%) Sign"
  *   "(Bp100%) Demo Restaurant"  ← no real name, return null
+ *   "(B) Occupancy Certificate" ← permit paperwork, return null
  */
 function extractName(raw) {
   if (!raw) return null;
@@ -137,13 +173,18 @@ function extractName(raw) {
   const generic = /^(demo|demolition|n\/a|restaurant|kitchen|bar|cafe|bakery|food)$/i;
   if (generic.test(s)) return null;
 
-  // Title-case the result
-  return s
+  // Describes the permit paperwork rather than a business → no name
+  if (PERMIT_PROCESS_PATTERNS.some((re) => re.test(s))) return null;
+
+  // Title-case the result. The negative lookbehind keeps possessives lowercase —
+  // a bare /\b\w/ capitalizes the S in "Jc'S Bbq" and shipped "JC'S BBQ".
+  const titled = s
     .toLowerCase()
-    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .replace(/(?<!['’])\b\w/g, (c) => c.toUpperCase())
     .replace(/\bBbq\b/gi, "BBQ")
-    .replace(/\bJc\b/gi, "JC")
-    .replace(/\bJcs\b/gi, "JC's");
+    .replace(/\bJc\b/gi, "JC");
+
+  return stripBilingualSuffix(titled);
 }
 
 function signalFromWork(workType) {
@@ -466,13 +507,14 @@ async function main() {
           if (!res.ok) continue;
           const data = await res.json();
           const candidate = data.candidates?.[0];
-          if (candidate?.name) {
-            item.name = candidate.name;
+          const placeName = stripBilingualSuffix(candidate?.name);
+          if (placeName) {
+            item.name = placeName;
             const status = candidate.business_status;
             if (status === "CLOSED_PERMANENTLY" || status === "CLOSED_TEMPORARILY") {
-              item.description = `${candidate.name} (${status === "CLOSED_PERMANENTLY" ? "permanently closed" : "temporarily closed"})`;
+              item.description = `${placeName} (${status === "CLOSED_PERMANENTLY" ? "permanently closed" : "temporarily closed"})`;
             }
-            console.log(`    ✓ ${item.address} → ${candidate.name}${status ? ` [${status}]` : ""}`);
+            console.log(`    ✓ ${item.address} → ${placeName}${status ? ` [${status}]` : ""}`);
           }
           await new Promise((r) => setTimeout(r, 200)); // rate limit
         } catch (err) {
@@ -528,7 +570,13 @@ async function main() {
   );
 }
 
-main().catch((err) => {
-  console.error("Error:", err.message);
-  process.exit(1);
-});
+// Only run the scrape when invoked directly — importing this module for tests
+// must not fire network requests (same guard as generate-events.mjs).
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((err) => {
+    console.error("Error:", err.message);
+    process.exit(1);
+  });
+}
+
+export { extractName, stripBilingualSuffix };
