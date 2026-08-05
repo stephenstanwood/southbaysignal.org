@@ -55,7 +55,7 @@ const SOUTH_BAY_CITIES = new Set([
 ]);
 
 // Patterns that indicate non-restaurant entries to skip
-const SKIP_PATTERNS = /\bPOOLS?\b|ELEM\b|SCHOOL\b|\bAPTS?\b|\bHOA\b|HOMEOWNER|COMMUNITY\s+ASSOC|MICRO KITCHEN|MODERNIZATION|MFF\b|MOBILE FOOD\b|CART\b|COMMISSARY\b|VENDING|\bCAFETERIA\b|PANTRY\b.*LEVEL|\bPANTRY\s+ROOM\b|\bSTORAGE\s+PANTRY\b|\bLVL\s+\d|\bRELOCATION\b|CORPORATE|EXTERIOR STORAGE|BARISTA AREA|COFFEE AREA|KITCHEN UNIT|BEVERAGE UNIT|AIRPORT BLVD|SJC AIRPORT|PLTR#|\bPRO SHOP\b|\bSPA\b|\bHOT TUB\b|\bAPT\s+SPA\b|APARTMENT\s+SPA|PARK\s+SPA\b|BREAKROOM|BREAK\s+ROOM|NSVC\s+B\d|EMPLOYEE\s+LOUNGE|\bREPLASTER\b|\bENCLOSURE\b|\bBLDG\b|\bYMCA\b|\bMEETING\s+ROOM\b|\bHQ\d+\s+KITCHEN\b|\bFENCE\b|\bGATES?\b|\bSECURITY\b|\bALARM\b|\bSPRINKLER\b|\bRE-?ROOF\b|\bSIGNAGE\b|\bMONUMENT\s+SIGN\b|\bPARKING\s+(LOT|GARAGE|STRUCTURE)\b|\bELEVATOR\b|\bRETAINING\s+WALL\b|\bINNOVATION\s+CAMPUS\b/i;
+const SKIP_PATTERNS = /\bPOOLS?\b|ELEM\b|SCHOOL\b|\bAPTS?\b|\bHOA\b|HOMEOWNER|COMMUNITY\s+ASSOC|MICRO KITCHEN|MODERNIZATION|MFF\b|MOBILE FOOD\b|CART\b|COMMISSARY\b|VENDING|\bCAFETERIA\b|PANTRY\b.*LEVEL|\bPANTRY\s+ROOM\b|\bSTORAGE\s+PANTRY\b|\bLVL\s+\d|\bRELOCATION\b|CORPORATE|EXTERIOR STORAGE|BARISTA AREA|COFFEE AREA|KITCHEN UNIT|BEVERAGE UNIT|AIRPORT BLVD|SJC AIRPORT|PLTR#|\bPRO SHOP\b|\bSPA\b|\bHOT TUB\b|\bAPT\s+SPA\b|APARTMENT\s+SPA|PARK\s+SPA\b|BREAKROOM|BREAK\s+ROOM|NSVC\s+B\d|EMPLOYEE\s+LOUNGE|\bREPLASTER\b|\bENCLOSURE\b|\bBLDG\b|\bYMCA\b|\bMEETING\s+ROOM\b|\bHQ\d+\s+KITCHEN\b|\bFENCE\b|\bGATES?\b|\bSECURITY\b|\bALARM\b|\bSPRINKLER\b|\bRE-?ROOF\b|\bSIGNAGE\b|\bMONUMENT\s+SIGN\b|\bPARKING\s+(LOT|GARAGE|STRUCTURE)\b|\bELEVATOR\b|\bRETAINING\s+WALL\b|\bINNOVATION\s+CAMPUS\b|\b(?:1ST|2ND|3RD|\d+TH)\s+FLOOR\b/i;
 
 // Equipment/maintenance-only permits — not openings, just upgrades to existing places.
 // Anything matching here is a re-inspection of an existing facility, not a new business.
@@ -66,8 +66,10 @@ const SKIP_PATTERNS = /\bPOOLS?\b|ELEM\b|SCHOOL\b|\bAPTS?\b|\bHOA\b|HOMEOWNER|CO
 // slash separator — the "<equipment> REPLACEMENT" rule below requires a space.
 const EQUIPMENT_ONLY_PATTERNS = /\bADD(?:ING|ITION\s+OF)\s+[\w\s]*\b(OVEN|GRIDDLE|FRYER|RANGE|STOVE|HOOD|WARMER|SINK|COOLER|FREEZER|DISHWASHER|ICE\s+MACHINE)S?\b|\bNEW\s+HOOD\b|\b(REFRIGERATION|HOOD|EXHAUST|PLUMBING|ELECTRICAL)\s*\/\s*\w+\s+(REPLACEMENT|REPAIR|UPGRADE)\b|\bRACK\s+REPLACEMENT\b|\bMOP\s+SINK\b|\bEQUIPMENT\s+(CHANGE|REPLACEMENT|INSTALL|UPGRADE|ADDITION)\b|\bUPDATED\s+KITCHEN\s+EQUIPMENT\b|\bKITCHEN\s+EQUIPMENT\b|\bMACHINE\s+(REPLACEMENT|INSTALL(?:ATION)?|CHANGE)\b|\b(SMOOTHIE|JUICE|ESPRESSO|COFFEE|DISH)\s+MACHINE\b|\bFREEZER[-\s]COOLER\b|\bWALK[-\s]IN\s+(COOLER|FREEZER)\b|\bOIL\s+TANK\b|\bGREASE\s+(TRAP|TANK|INTERCEPTOR)\b|\bUNDERGROUND\s+TANK\b|\bTANK\s+(INSTALL|REMOVAL|REPLACE)\b|\bHOOD\s+INSTALL\b|\bANSUL\s+SYSTEM\b|\bFIRE\s+SUPPRESSION\b|\bLIGHT(ING)?\s+(EQUIPMENT|REPLACEMENT|UPGRADE)\b|\bMINOR\s+EQUIPMENT\b|\bUNDERCOUNTER\b|\b(DISHWASHER|DISH\s*MACHINE|ICE\s+MACHINE|PREP\s+SINK)\s*$|\bEXPANSION\s*$|\bEXPANSION\b.*(EXISTING|OWNER)|\b(GRIDDLE|FRYER|RANGE|OVEN|WARMER|STOVE|REFRIGERATION|FREEZER|COOLER|DISHWASHER|HOOD|SINK|COUNTER|EXHAUST|PLUMBING|ELECTRICAL)S?\s+(UPDATE|MODIFICATION|REPAIR|REPLACEMENT|REMODEL)\b|\b(OVEN|GRIDDLE|FRYER|RANGE|STOVE|HOOD|WARMER|EQUIPMENT|KITCHEN)\s+ADDITION\b/i;
 
-// Corporate campus patterns — office cafeterias aren't public restaurants
-const CORPORATE_PATTERNS = /\b(GOOGLE(PLEX)?|APPLE|FACEBOOK|META|INTEL|CISCO|NVIDIA|WAYMO|MICROSOFT|AMAZON|LINKEDIN|TWITTER|SERVICENOW|PALO ALTO NETWORKS|VMW|BROADCOM|ADOBE|WALMART|YAHOO|SAMSUNG|DATABRICKS)\b/i;
+// Corporate campus patterns — office cafeterias aren't public restaurants.
+// "JOHNSON & JOHNSON (AURIS HEALTH) 1ST FLOOR" shipped as a coming-soon
+// restaurant; the floor-descriptor rule above now catches that shape too.
+const CORPORATE_PATTERNS = /\b(GOOGLE(PLEX)?|APPLE|FACEBOOK|META|INTEL|CISCO|NVIDIA|WAYMO|MICROSOFT|AMAZON|LINKEDIN|TWITTER|SERVICENOW|PALO ALTO NETWORKS|VMW|BROADCOM|ADOBE|WALMART|YAHOO|SAMSUNG|DATABRICKS|JOHNSON\s*&\s*JOHNSON|AURIS\s+HEALTH)\b/i;
 
 // Databricks Cityline office campus (200/250 W Washington Ave, Sunnyvale) —
 // internal food facilities filed under building-code placeholder names
@@ -222,6 +224,12 @@ function cleanName(raw) {
   // Requires a following word so a real name is never swallowed whole.
   s = s.replace(/^RTI\b[\s-]*(?=\S)/i, "").trim();
 
+  // Strip leading food-hall stall codes ("K107 BAYBAJA KITCHEN",
+  // "K115-MUMBAI EXPRESS" at 1026 W Evelyn Ave in Sunnyvale). The unit is
+  // already carried in the address, so in the name it just reads as noise.
+  // Requires a following letter so a code-only name is never emptied out.
+  s = s.replace(/^K\d{2,3}\s*[-–]?\s*(?=[A-Za-z])/i, "").trim();
+
   // If the whole thing is a generic tenant improvement placeholder, return null
   if (/^(RESTAURANT\s+)?TENANT\s+IMPR(OVEMENT)?(\s+\d+)?$/i.test(s)) return null;
 
@@ -231,6 +239,12 @@ function cleanName(raw) {
   // "T.I." spelling both occur in the county feed — "Hotel De Anza - Restaurant
   // T.I." published with the permit jargon still attached to the venue name.
   s = s.replace(/\s+-\s+(?:Restaurant\s+|Kitchen\s+|Food\s+)?(T\.?I\.?|Tenant\s+Impr(?:ovement)?|TI|Remodel|Hood\s+Install|Plumbing|Electrical|Fire\s+Suppression|Grease\s+Trap|Ansul|Ventilation|Sprinkler|Build[-\s]?Out|Buildout|Renovation|Expansion|Addition|Alteration|Conversion|New\s+Construction|Plan\s+Check|Permit|Install|Upgrade|Oil\s+Tank|Grease\s+Tank|Underground\s+Tank|Tank\s+Install|Tank\s+Removal|Tank\s+Replace|Lvl|Level|Lgt|Light|Concession(\s+\w+)?)(\s+\d+)?$/i, "").trim();
+
+  // The tenant-improvement jargon also arrives with no dash separator
+  // ("Momokitty Life Store T.I."). Only the unambiguous forms are stripped
+  // bare — "Remodel"/"Renovation" can be part of a real venue name, so those
+  // stay behind the dash-anchored rule above.
+  s = s.replace(/\s+(T\.I\.?|Tenant\s+Impr(?:ovement)?)\s*$/i, "").trim();
 
   // Strip trailing equipment-only descriptors without dash separator (e.g. "Chick Fil A Oil Tank")
   s = s.replace(/\s+(Oil\s+Tank|Grease\s+Tank|Underground\s+Tank|Tank\s+Install|Tank\s+Removal|Grease\s+Trap\s+Install|Kitchen\s+Hood|Hood\s+Install|Ansul\s+System|Fire\s+Suppression\s+System|Minor\s+Equipment\s+Change|Machine\s+Replacement|Equipment\s+Change|Equipment\s+Replacement|Equipment\s+Install|Equipment\s+Upgrade|New\s+Equipment|Gas\s+Stove|Lgt|Light\s+Equipment|New\s+Build|New\s+Food\s+Facility)\s*$/i, "").trim();
@@ -251,7 +265,7 @@ function cleanName(raw) {
   // "Kaizen Lounge"). These are SCC filing artifacts, not part of the name.
   s = s.replace(/\s+(San Jose|Palo Alto|Mountain View|Sunnyvale|Santa Clara|Cupertino|Milpitas|Campbell|Saratoga|Los Gatos|Los Altos)?\s*\bPc\s*-?\d+\s*$/i, "").trim();
 
-  // Strip trailing business-entity suffixes ("K108 Hey Noodle LLC" → "K108 Hey
+  // Strip trailing business-entity suffixes ("K108 Hey Noodle LLC" → "Hey
   // Noodle"). These are filing-entity artifacts on the permit, not how the
   // restaurant brands itself. Restaurants effectively never display a trailing
   // LLC/Inc/Corp, so this is safe; leave "Co." alone (real names like "Brewing Co.").

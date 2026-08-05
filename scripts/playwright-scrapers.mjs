@@ -201,7 +201,10 @@ function inferCategory(title) {
   if (t.includes("story time") || t.includes("storytime") || t.includes("toddler") ||
       hasBaby || t.includes("preschool") || t.includes("kids") || t.includes("children") ||
       /\bbedtime\b/.test(t) || /\bpuppet\s+show\b/.test(t)) return "family";
-  if (/\b(concert|music|jazz|band|orchestra|symphony|dj)\b/.test(t)) return "arts";
+  // Concerts belong in music, not arts. This returned "arts" while the comment
+  // above claimed it mirrored generate-events.mjs, which returns "music" — so a
+  // title that literally said "concert" landed in the wrong bucket.
+  if (/\b(concert|music|jazz|band|orchestra|symphony|dj)\b/.test(t)) return "music";
   if (/\b(art|gallery|exhibit|museum|sculpture)\b/.test(t)) return "arts";
   if (/\b(theater|theatre|play|comedy|improv|show|performance)\b/.test(t)) return "arts";
   if (/\b(book|author|reading|poetry|literary|signing)\b/.test(t)) return "arts";

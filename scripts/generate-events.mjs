@@ -1287,6 +1287,10 @@ const DESC_TYPO_FIXES = [
   [/\boccured\b/gi, "occurred"],
   [/\brecieve\b/gi, "receive"],
   [/\bsepearate\b/gi, "separate"],
+  // Shakespeare's play is "Antony and Cleopatra". The Cupertino Parks & Rec
+  // listing for SF Shakes' Free Shakespeare in the Park spells it "Anthony",
+  // which then propagated into the AI blurb and the weekend picks.
+  [/\banthony(?= and cleopatra\b)/gi, "antony"],
   // Missing-apostrophe possessives. Source feeds (CHM, a few BiblioCommons
   // events) drop the apostrophe in body copy; the trailing 's' replacement
   // hook in polishDescription preserves it.
@@ -1895,6 +1899,12 @@ function inferCategory(title, desc, type, venue = "") {
   // arts). Trivia and live music are unambiguous when present in the title.
   if (/\btrivia\b/.test(titleLower)) return "community";
   if (/\blive\s+music\b/.test(titleLower)) return "music";
+  // National Night Out is a nationwide police/neighborhood block party. Cities
+  // list it with whatever entertainment they booked ("chalk art, live DJ
+  // music"), which split one evening across three categories — Los Altos and
+  // Gamble Garden filed community while Mountain View's blurb pulled it into
+  // arts. It is a community event in every city, every year.
+  if (/\bnational\s+night\s+out\b/.test(titleLower)) return "community";
   // A title that names a team sport AND a matchup ("Stanford football vs.
   // Miami", "SCU Men's Soccer vs Sacramento State - Exhibition") is a game,
   // full stop. Without this the game loses to a later rule on incidental
@@ -1944,10 +1954,23 @@ function inferCategory(title, desc, type, venue = "") {
   // promote the event into the arts bucket via the isArtWord check below.
   if (/\b(meditation|mindfulness|yoga|pilates)\b/i.test(titleLower)) return "community";
   const isArtWord = /\barts?\b|\bartist|\bartwork|\bartistry/.test(t);
+  // An art word in the TITLE or the VENUE is a strong signal and stays in the
+  // early check below — "Center for the Performing Arts" is how the touring
+  // Broadway musicals (Beauty and the Beast, The Who's Tommy) hold their place
+  // in arts. The same word in a scraped body is not a signal: every touring
+  // musician's bio says "artist" and every concert blurb says "performances",
+  // which is what filed Juanes, Codiciado, Jamey Johnson, and the '90s Corridos
+  // Tour under arts. That version runs after the music check instead.
+  const isArtWordStrong = /\barts?\b|\bartist|\bartwork|\bartistry/.test(`${titleLower} ${venueLower}`);
   // "exhibition game/match/scrimmage" is preseason athletics, not an art
   // exhibit — the bare "exhibit" substring below matches it either way.
   const isExhibitionGame = /\bexhibition\s+(?:game|match|contest|scrimmage)\b/.test(t);
-  if ((t.includes("exhibit") && !isExhibitionGame) || t.includes("gallery") || t.includes("theater") || t.includes("theatre") || t.includes("film") || t.includes("cinema") || t.includes("dance") || t.includes("performance") || t.includes("museum") || (isArtWord && !t.includes("martial art"))) return "arts";
+  // "amphitheatre" contains the "theatre" substring, so matching it bare sent
+  // every Shoreline Amphitheatre concert to arts even when Ticketmaster's own
+  // classification said Music. Exclude the amphi- prefix; a genuine theatre
+  // booking there still carries "Arts & Theatre" in its classification text.
+  const isTheaterWord = /(?<!amphi)theat(?:er|re)/.test(t);
+  if ((t.includes("exhibit") && !isExhibitionGame) || t.includes("gallery") || isTheaterWord || t.includes("film") || t.includes("cinema") || t.includes("dance") || t.includes("museum") || (isArtWordStrong && !`${titleLower} ${venueLower}`.includes("martial art"))) return "arts";
   // Theater play descriptions — university/community theaters often title shows by the
   // play name alone ("Exit... Pursued by a Bear") with no overt arts keyword. Detect
   // the production-credit pattern in the description: "Directed by X", "Written and
@@ -1967,7 +1990,16 @@ function inferCategory(title, desc, type, venue = "") {
   // unambiguous music genre markers — anchor on word boundary so "rapture",
   // "hop" by itself, and stray ampersands don't false-positive.
   if (/\br\s*&\s*b\b|\bhip[-\s]?hop\b/i.test(t)) return "music";
-  if (t.includes("concert") || t.includes("music") || t.includes("jazz") || t.includes("symphony") || t.includes("band") || t.includes("orchestra") || t.includes("choir")) return "music";
+  // Word-boundary the music keywords. As bare substrings they also matched
+  // "abandoned", "bandwidth", and "soft bands of light" — the last one filed a
+  // Stanford Art & Architecture Library listing under music. "bands" plural
+  // only counts alongside a performance cue, since bands of light/color/fog are
+  // the common non-musical use.
+  // San Jose Civic books a lot of Spanish-language bills whose blurbs are also
+  // in Spanish ("la banda", "rock latino"), so the Spanish cognates carry the
+  // same weight — "banda" is both the word for band and a regional genre.
+  const hasBandWord = /\b(?:band|banda)\b/.test(t) || (/\bbands\b/.test(t) && /\b(play|playing|perform|stage|tour|album|concert)\b/.test(t));
+  if (/\bconcerts?\b|\bmusic(?:al|ians?)?\b|\bm[úu]sic[ao]s?\b|\bconciertos?\b|\bjazz\b|\bsymphon(?:y|ies)\b|\borchestras?\b|\bchoirs?\b/.test(t) || hasBandWord) return "music";
   if (t.includes("comedy") || t.includes("stand-up") || t.includes("standup") || t.includes("improv show") || t.includes("comedian")) return "arts";
   // Comedy-club venues (San Jose Improv, Rooster T. Feathers, etc.) host
   // stand-up almost exclusively — many tour titles are just a performer's
@@ -1976,6 +2008,10 @@ function inferCategory(title, desc, type, venue = "") {
   // is the unambiguous signal. Runs after the title-anchored music/family
   // checks above so a hypothetical music night wouldn't be miscategorized.
   if (/\b(improv|comedy\s+club|rooster\s+t)\b/.test(venueLower)) return "arts";
+  // Body-copy art cues ("featuring local artists", "an evening of performances").
+  // Weaker than the title-anchored version above — a concert bio trips both — so
+  // this runs only after the music and comedy rules have had their say.
+  if ((isArtWord && !t.includes("martial art")) || t.includes("performance")) return "arts";
   // Nature / wildlife events — check BEFORE sports to avoid false positives.
   // Guard against swim-stroke names ("butterfly", "freestyle", etc.) that share
   // vocabulary with insect/bird watching but describe swimming clinics.
