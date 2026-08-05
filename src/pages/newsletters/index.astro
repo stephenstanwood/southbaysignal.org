@@ -13,6 +13,27 @@ import { list } from "@vercel/blob";
 const title = "Newsletter archive — South Bay Today";
 const description = "Past issues of the South Bay Today newsletter — the day's plan, what's new, what's opening, what city hall did.";
 
+// Where /api/newsletter/confirm lands after flipping a pending signup live.
+const subscription = Astro.url.searchParams.get("subscription");
+const SUBSCRIPTION_NOTICE: Record<string, { tone: "ok" | "warn"; headline: string; body: string }> = {
+  confirmed: {
+    tone: "ok",
+    headline: "You're in. 📬",
+    body: "A plan for the day lands in your inbox at 6:00 AM.",
+  },
+  expired: {
+    tone: "warn",
+    headline: "That link has expired.",
+    body: "Confirmation links are good for seven days. Sign up again below and we'll send a fresh one.",
+  },
+  error: {
+    tone: "warn",
+    headline: "Something went wrong confirming that.",
+    body: "Try the link again, or sign up below and we'll send a new confirmation email.",
+  },
+};
+const notice = subscription ? SUBSCRIPTION_NOTICE[subscription] : undefined;
+
 interface Issue {
   date: string;
   label: string;
@@ -61,6 +82,13 @@ if (token) {
     One email a day: the day's plan, what's new, what's opening, what city hall did.
   </p>
 
+  {notice && (
+    <div class:list={["nl-confirm-notice", `nl-confirm-${notice.tone}`]} role="status">
+      <strong>{notice.headline}</strong>
+      <span>{notice.body}</span>
+    </div>
+  )}
+
   <div class="nl-index-signup">
     <NewsletterSignup client:load variant="card" />
   </div>
@@ -81,6 +109,28 @@ if (token) {
 </CalendarShell>
 
 <style>
+  .nl-confirm-notice {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin: 0 0 20px;
+    padding: 14px 18px;
+    border-radius: 4px;
+    border-left: 3px solid;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .nl-confirm-notice strong {
+    font-size: 15px;
+  }
+  .nl-confirm-ok {
+    background: #eef3ec;
+    border-left-color: #4c7a3f;
+  }
+  .nl-confirm-warn {
+    background: #fbf2e6;
+    border-left-color: #b3762a;
+  }
   .nl-index-signup {
     margin: 0 0 28px;
   }

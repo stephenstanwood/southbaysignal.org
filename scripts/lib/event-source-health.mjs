@@ -138,13 +138,45 @@ export function buildSourceHealth(sourceDefinitions, settledResults) {
   });
 }
 
-export function criticalSourceProblems(sourceHealth) {
-  return sourceHealth
-    // Every thrown adapter error is unsafe: it means we do not know whether
-    // the source is legitimately empty. Seasonal sources may return a proven
-    // empty array, while critical broad sources must also remain non-empty.
-    .filter((source) => source.status === "error" || (source.critical && source.status !== "ok"))
-    .map((source) => `${source.label} is ${source.status}${source.error ? `: ${source.error}` : ""}`);
+// How many non-critical adapters may fail before we treat the run as unsafe.
+// Above this, the failures look systemic (network, DNS, a shared upstream)
+// rather than a handful of individually dead feeds.
+export const DEFAULT_SOURCE_ERROR_TOLERANCE = 6;
+
+function describeSource(source) {
+  return `${source.label} is ${source.status}${source.error ? `: ${source.error}` : ""}`;
+}
+
+/**
+ * Split source failures into the ones that must block the overwrite and the
+ * ones the run can absorb.
+ *
+ * A thrown adapter error is still unsafe in isolation — we do not know whether
+ * the source is legitimately empty — but blocking the whole refresh on any one
+ * of them is worse: four dead sports feeds took down a 4,000-event refresh for
+ * five days in Jul/Aug 2026, and with it the daily newsletter, which refuses to
+ * send without a fresh feed. Critical broad sources still block on any non-ok
+ * status; everything else is tolerated (and reported) until enough of them fail
+ * at once to look systemic.
+ */
+export function sourceProblems(sourceHealth, { tolerance = DEFAULT_SOURCE_ERROR_TOLERANCE } = {}) {
+  const critical = [];
+  const tolerable = [];
+
+  for (const source of Array.isArray(sourceHealth) ? sourceHealth : []) {
+    if (source.critical) {
+      if (source.status !== "ok") critical.push(source);
+    } else if (source.status === "error") {
+      tolerable.push(source);
+    }
+  }
+
+  const toleranceExceeded = tolerable.length > tolerance;
+  return {
+    blocking: [...critical, ...(toleranceExceeded ? tolerable : [])].map(describeSource),
+    tolerated: toleranceExceeded ? [] : tolerable.map(describeSource),
+    toleranceExceeded,
+  };
 }
 
 export function eventRegressionProblem({ previous, nextSourceCount, nextEventCount }) {

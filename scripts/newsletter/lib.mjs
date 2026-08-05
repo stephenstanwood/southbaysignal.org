@@ -885,12 +885,15 @@ function editorialEventBoost(e) {
 async function applyEditorialPass(data, candidates) {
   const packet = buildEditorialPacket(data, candidates);
   const prompt = buildEditorialPrompt(packet);
-  const raw = await callClaudeNewsletterEditor(prompt);
+  const { raw, via } = await callClaudeNewsletterEditor(prompt);
   const edit = parseClaudeJson(raw);
   const revised = applyEditorialJson(data, candidates, edit);
   revised.editorialMeta = {
     status: "claude",
-    model: process.env.SBT_NEWSLETTER_CLAUDE_MODEL || "fable",
+    via,
+    model: via === "anthropic-api"
+      ? (process.env.SBT_NEWSLETTER_API_MODEL || "claude-fable-5")
+      : (process.env.SBT_NEWSLETTER_CLAUDE_MODEL || "fable"),
     eventCandidates: candidates.eventCandidates.length,
     openingCandidates: candidates.openingCandidates.length,
     redditCandidates: candidates.redditCandidates.length,
@@ -1133,9 +1136,41 @@ ${JSON.stringify(packet, null, 2)}
 `;
 }
 
-const CLAUDE_CLI = process.env.CLAUDE_CLI_PATH || "/opt/homebrew/bin/claude";
+// Read per call, like the model and timeout below — a module-level constant
+// would freeze the path at import time and silently ignore the environment the
+// scheduled send actually runs under.
+const claudeCli = () => process.env.CLAUDE_CLI_PATH || "/opt/homebrew/bin/claude";
 
-async function callClaudeNewsletterEditor(instructions) {
+/**
+ * Editorial pass, with a metered fallback.
+ *
+ * The Max-plan CLI is the primary path because it is free at the margin. When
+ * it fails — usage cap, auth expiry, a wedged binary — the pass would otherwise
+ * degrade to the deterministic build and the day's issue would quietly lose its
+ * editing. The Anthropic API runs the identical prompt for roughly $1 an issue,
+ * which is worth paying to keep the voice consistent on the days the plan is
+ * exhausted. If the API path is unavailable too, the caller still degrades to
+ * the deterministic build — a missed send is never acceptable.
+ *
+ * Returns { raw, via } so the send can record which path produced the edit.
+ */
+export async function callClaudeNewsletterEditor(instructions) {
+  try {
+    return { raw: await runClaudeCliEditor(instructions), via: "claude-cli" };
+  } catch (cliError) {
+    const detail = String(cliError?.message || cliError).slice(0, 200);
+    if (!process.env.ANTHROPIC_API_KEY) throw cliError;
+    console.warn(`⚠️  newsletter: claude CLI editorial failed (${detail}) — retrying on the Anthropic API`);
+    try {
+      return { raw: await runAnthropicApiEditor(instructions), via: "anthropic-api" };
+    } catch (apiError) {
+      // Surface both, so a degraded issue says why in one line.
+      throw new Error(`CLI: ${detail} | API: ${String(apiError?.message || apiError).slice(0, 200)}`);
+    }
+  }
+}
+
+async function runClaudeCliEditor(instructions) {
   // Fable default since 2026-07-14 — the editorial pass is pure taste work,
   // so it gets the best model on the Max plan. Measured ~7-8 min on the full
   // packet, hence the 10-min timeout and the 5:50am launchd start (send still
@@ -1153,7 +1188,7 @@ async function callClaudeNewsletterEditor(instructions) {
       if (err) reject(err);
       else resolve(value);
     };
-    const proc = spawn(CLAUDE_CLI, [
+    const proc = spawn(claudeCli(), [
       "-p",
       "--model", model,
       "--output-format", "text",
@@ -1169,6 +1204,39 @@ async function callClaudeNewsletterEditor(instructions) {
     });
     proc.stdin.end(instructions);
   });
+}
+
+/**
+ * Metered twin of the CLI path. Matches the CLI's model tier so a fallback
+ * issue reads in the same voice — override with SBT_NEWSLETTER_API_MODEL to
+ * trade quality for cost (Opus 5 is roughly half Fable's rate).
+ *
+ * Streamed because the editorial pass runs for minutes on the full packet, well
+ * past the point where a non-streaming request risks an HTTP timeout.
+ */
+async function runAnthropicApiEditor(instructions) {
+  const { default: Anthropic } = await import("@anthropic-ai/sdk");
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const model = process.env.SBT_NEWSLETTER_API_MODEL || "claude-fable-5";
+
+  const stream = client.beta.messages.stream({
+    model,
+    max_tokens: 64_000,
+    // Fable thinks unconditionally — configuring `thinking` at all is a 400.
+    output_config: { effort: process.env.SBT_NEWSLETTER_API_EFFORT || "high" },
+    betas: ["server-side-fallback-2026-07-01"],
+    fallbacks: "default",
+    messages: [{ role: "user", content: instructions }],
+  });
+
+  const message = await stream.finalMessage();
+  if (message.stop_reason === "refusal") {
+    throw new Error(`editorial request refused (${message.stop_details?.category ?? "unknown"})`);
+  }
+  return message.content
+    .filter((block) => block.type === "text")
+    .map((block) => block.text)
+    .join("");
 }
 
 function parseClaudeJson(raw) {
@@ -2141,7 +2209,7 @@ This split matters: a data defect filed as guidance just tells the editor to kee
 NEWSLETTER:
 ${renderDiscordDigest(data, subject)}
 `;
-  const raw = await callClaudeNewsletterEditor(prompt);
+  const { raw } = await callClaudeNewsletterEditor(prompt);
   const reflection = parseClaudeJson(raw);
   saveNewsletterReflection({ reflection, data, subject, sentAt });
 }

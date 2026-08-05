@@ -88,7 +88,7 @@ import {
 import {
   DEFAULT_SNAPSHOT_MAX_AGE_HOURS,
   buildSourceHealth,
-  criticalSourceProblems,
+  sourceProblems,
   eventRegressionProblem,
   sourceRegressionProblems,
   strictRefreshInputHealth,
@@ -7053,13 +7053,31 @@ async function main() {
 
   const results = await Promise.allSettled(sources.map(({ fn }) => fn()));
   const sourceHealth = buildSourceHealth(sources, results);
-  const criticalProblems = criticalSourceProblems(sourceHealth);
-  if (STRICT_EVENT_REFRESH && criticalProblems.length > 0) {
-    const detail = criticalProblems.join("; ");
+  const { blocking, tolerated, toleranceExceeded } = sourceProblems(sourceHealth);
+
+  // Degraded-but-publishable: these adapters contribute nothing today, and the
+  // rest of the refresh proceeds without them. Alert anyway — a permanently
+  // dead source otherwise shrinks coverage silently for weeks.
+  if (tolerated.length > 0) {
+    console.warn(`⚠️  events: continuing without ${tolerated.length} failed non-critical source(s)`);
+    for (const problem of tolerated) console.warn(`   • ${problem}`);
+    await catSignal({
+      key: "events-refresh-degraded-source",
+      title: `Event refresh degraded — ${tolerated.length} source(s) down`,
+      body:
+        `${tolerated.join("\n")}\n\n` +
+        `The refresh continued without them. Fix or retire these adapters if it persists.`,
+    });
+  }
+
+  if (STRICT_EVENT_REFRESH && blocking.length > 0) {
+    const detail = blocking.join("; ");
     await catSignal({
       key: "events-refresh-critical-source",
       title: "Event refresh blocked before overwrite",
-      body: detail,
+      body: toleranceExceeded
+        ? `${blocking.length} sources failed at once — systemic, not a dead feed.\n\n${detail}`
+        : detail,
     });
     throw new Error(`critical event sources failed: ${detail}`);
   }

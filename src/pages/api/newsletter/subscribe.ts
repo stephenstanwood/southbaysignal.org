@@ -1,9 +1,17 @@
 import type { APIRoute } from "astro";
 import config from "../../../data/south-bay/newsletter-config.json";
+import {
+  RESEND_BASE,
+  FROM_ADDRESS,
+  clientIp,
+  confirmationEmail,
+  createConfirmToken,
+  isValidEmail,
+  rateLimited,
+  serverEnv,
+} from "../../../lib/south-bay/newsletterSignup";
 
 export const prerender = false;
-
-const RESEND_BASE = "https://api.resend.com";
 
 function jsonError(status: number, message: string) {
   return new Response(JSON.stringify({ ok: false, error: message }), {
@@ -12,27 +20,42 @@ function jsonError(status: number, message: string) {
   });
 }
 
+function ok(extra: Record<string, unknown> = {}) {
+  return new Response(JSON.stringify({ ok: true, ...extra }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
 export const POST: APIRoute = async ({ request }) => {
-  let body: { email?: string; name?: string };
+  let body: { email?: string; name?: string; website?: string };
   try {
     body = await request.json();
   } catch {
     return jsonError(400, "invalid JSON");
   }
 
+  // Honeypot: the form renders a hidden "website" field that a person never
+  // sees and never fills. Report success so the bot has nothing to tune against.
+  if (String(body.website ?? "").trim()) return ok({ pending: true });
+
   const email = (body.email ?? "").trim().toLowerCase();
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return jsonError(400, "valid email required");
+  if (!email || !isValidEmail(email)) return jsonError(400, "valid email required");
+
+  if (rateLimited(clientIp(request))) {
+    return jsonError(429, "too many signups from this address — try again later");
   }
 
   const audienceId = (config as { audienceId?: string | null }).audienceId;
   if (!audienceId) return jsonError(500, "newsletter audience not configured");
 
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = serverEnv("RESEND_API_KEY");
   if (!apiKey) return jsonError(500, "RESEND_API_KEY not set");
 
   const [first, ...rest] = (body.name ?? "").trim().split(/\s+/).filter(Boolean);
 
+  // Land as unsubscribed: present in the audience, excluded from every
+  // broadcast until the confirmation link is clicked.
   const res = await fetch(`${RESEND_BASE}/audiences/${audienceId}/contacts`, {
     method: "POST",
     headers: {
@@ -43,7 +66,7 @@ export const POST: APIRoute = async ({ request }) => {
       email,
       first_name: first || undefined,
       last_name: rest.join(" ") || undefined,
-      unsubscribed: false,
+      unsubscribed: true,
     }),
   });
 
@@ -51,23 +74,38 @@ export const POST: APIRoute = async ({ request }) => {
   let detail: unknown = null;
   try { detail = JSON.parse(text); } catch { detail = text; }
 
-  if (res.ok) {
-    return new Response(JSON.stringify({ ok: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  // Already subscribed — treat as success so we don't surface that to a stranger.
   const message = typeof detail === "object" && detail && "message" in detail
     ? String((detail as { message: unknown }).message)
     : String(text);
-  if (/already exists/i.test(message)) {
-    return new Response(JSON.stringify({ ok: true, alreadySubscribed: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+
+  // "Already exists" covers both a pending signup and a live subscriber. Re-send
+  // the confirmation either way rather than leaking which one this address is.
+  if (!res.ok && !/already exists/i.test(message)) {
+    return jsonError(res.status || 500, message || "subscribe failed");
   }
 
-  return jsonError(res.status || 500, message || "subscribe failed");
+  // Always the canonical origin, never `request.url` — a preview deployment
+  // would otherwise email confirmation links pointing at a host that stops
+  // resolving as soon as the preview is superseded.
+  const baseUrl = import.meta.env.SITE || "https://southbaytoday.org";
+  const confirmUrl = new URL(
+    `/api/newsletter/confirm?token=${encodeURIComponent(createConfirmToken(email))}`,
+    baseUrl,
+  ).toString();
+  const { subject, html, text: plain } = confirmationEmail(confirmUrl);
+
+  const sent = await fetch(`${RESEND_BASE}/emails`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ from: FROM_ADDRESS, to: email, subject, html, text: plain }),
+  });
+
+  if (!sent.ok) {
+    return jsonError(502, "could not send the confirmation email — try again in a minute");
+  }
+
+  return ok({ pending: true });
 };
