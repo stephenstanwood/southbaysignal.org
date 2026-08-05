@@ -4087,28 +4087,53 @@ function fetchSantaCruzPicks() {
 // downtown Santa Cruz. Season runs Nov–Apr. Off-season: returns []. ESPN
 // doesn't always have venue/address in the team schedule, so they're hardcoded.
 
+/**
+ * Season label for the G League's schedule endpoint. Their season spans two
+ * calendar years and tips off in November, so before then the current label
+ * still points at the season that just ended.
+ */
+function gLeagueSeasons(now = new Date()) {
+  const year = Number(isoDate(now).slice(0, 4));
+  const month = Number(isoDate(now).slice(5, 7));
+  const startYear = month >= 8 ? year : year - 1;
+  // Try the upcoming season first; in the offseason it is published as an empty
+  // shell, so fall back to the one that is still live.
+  return [`${startYear}-${String((startYear + 1) % 100).padStart(2, "0")}`,
+          `${startYear - 1}-${String(startYear % 100).padStart(2, "0")}`];
+}
+
 async function fetchSantaCruzWarriorsSchedule() {
-  console.log("  ⏳ SC Warriors (ESPN G League)...");
+  console.log("  ⏳ SC Warriors (G League schedule)...");
   try {
-    const res = await fetch(
-      "https://site.api.espn.com/apis/site/v2/sports/basketball/nba-development/teams/20/schedule",
-      { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(15_000) },
-    );
-    if (!res.ok) throw new Error(`${res.status}`);
-    const data = await res.json();
+    // ESPN's site.api host started returning 403 for every path in Aug 2026
+    // (robots.txt included), so this reads the league's own published schedule
+    // instead. stats.gleague.nba.com/robots.txt carries no Disallow rules.
+    let games = [];
+    for (const season of gLeagueSeasons()) {
+      const res = await fetch(
+        `https://stats.gleague.nba.com/stats/scheduleleaguev2?LeagueID=20&Season=${season}`,
+        {
+          headers: { "User-Agent": UA, Referer: "https://stats.gleague.nba.com/", Accept: "application/json" },
+          signal: AbortSignal.timeout(20_000),
+        },
+      );
+      if (!res.ok) throw new Error(`${res.status}`);
+      const data = await res.json();
+      games = (data?.leagueSchedule?.gameDates || []).flatMap((d) => d.games || []);
+      if (games.length) break;
+    }
+
     const today = todayPT();
-    const events = (data.events || []).map((e) => {
-      const comp = e.competitions?.[0];
-      if (!comp) return null;
-      const start = new Date(e.date);
+    const events = games.map((g) => {
+      const homeName = `${g.homeTeam?.teamCity || ""} ${g.homeTeam?.teamName || ""}`.trim();
+      if (!/santa cruz/i.test(homeName)) return null;
+      // gameDateTimeEst is the authoritative kickoff; gameDateTimeUTC when present.
+      const start = new Date(g.gameDateTimeUTC || g.gameDateTimeEst || g.gameDateEst);
       const dateStr = isoDate(start);
       if (!dateStr || dateStr < today) return null;
-      const home = comp.competitors?.find((c) => c.homeAway === "home");
-      if (!home?.team?.displayName?.toLowerCase().includes("santa cruz")) return null;
-      const away = comp.competitors?.find((c) => c.homeAway === "away");
-      const opponent = away?.team?.displayName || "Opponent";
+      const opponent = `${g.awayTeam?.teamCity || ""} ${g.awayTeam?.teamName || ""}`.trim() || "Opponent";
       return {
-        id: h("sc-warriors", String(e.id)),
+        id: h("sc-warriors", String(g.gameId)),
         title: `Santa Cruz Warriors vs. ${opponent}`,
         date: dateStr,
         displayDate: displayDate(start),
@@ -6401,26 +6426,19 @@ async function fetchLosAltosStageEvents() {
 async function fetchPaloAltoPlayersEvents() {
   console.log("  ⏳ Palo Alto Players...");
   try {
-    // Venture Event Manager calendar AJAX (robots.txt allows admin-ajax.php).
-    // Returns one entry per performance with an epoch start + ticket link —
-    // calendar id 263 is the public /calendar/ page's all-productions view.
-    const now = Math.floor(Date.now() / 1000);
-    const res = await fetch("https://paplayers.org/wp-admin/admin-ajax.php", {
-      method: "POST",
-      headers: { "User-Agent": UA, "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        action: "vem_get_events",
-        id: "263",
-        event: "0",
-        start: String(now - 86_400),
-        end: String(now + 150 * 86_400),
-        moment: "x",
-        futureOnly: "false",
-      }),
-      signal: AbortSignal.timeout(20_000),
-    });
+    // PAP rebuilt on GenerateBlocks in 2026 and dropped the Venture Event
+    // Manager plugin, so `vem_get_events` now 400s and /calendar/ renders its
+    // orphaned [vemcalendar] shortcode as literal text. Nothing publishes
+    // per-performance dates any more — the supported surface is the `show`
+    // custom post type in their WordPress REST API, which carries one entry per
+    // production plus a run range on the show page. One event per production is
+    // therefore the most granular honest read; do not synthesise performances.
+    const res = await fetch(
+      "https://paplayers.org/wp-json/wp/v2/show?per_page=50&_fields=id,link,title",
+      { headers: { "User-Agent": UA, Accept: "application/json" }, signal: AbortSignal.timeout(20_000) },
+    );
     if (!res.ok) throw new Error(`${res.status}`);
-    const perfs = (JSON.parse(await res.text())?.events || []).filter((p) => p?.start && p?.title);
+    const productions = (await res.json()).filter((p) => p?.link && p?.title?.rendered);
 
     // One detail fetch per production (a handful per season) for the synopsis,
     // pretty permalink, and venue. PAP's resident home is the Lucie Stern
@@ -6434,6 +6452,8 @@ async function fetchPaloAltoPlayersEvents() {
         description: "",
         venue: "Lucie Stern Theatre",
         address: "1305 Middlefield Rd, Palo Alto, CA 94301",
+        runStart: null,
+        runEnd: null,
       };
       if (pageUrl) {
         try {
@@ -6451,6 +6471,17 @@ async function fetchPaloAltoPlayersEvents() {
             detail.venue = cleanEscapedCalendarText(venueName);
             detail.address = `${street}, ${locality}, CA${zip ? ` ${zip}` : ""}`;
           }
+          // The run range sits in a calendar-icon block as two short-form dates
+          // ("Jun 11, 2027" – "Jun 27, 2027"). Longer "Friday, June 11, 2027"
+          // strings elsewhere on the page are one-off gala/preview nights, so
+          // match the short form only and take the first pair.
+          const runDates = [...html.matchAll(/\b([A-Z][a-z]{2}) (\d{1,2}), (20\d\d)\b/g)]
+            .map((m) => isoDate(new Date(`${m[1]} ${m[2]}, ${m[3]} 12:00:00`)))
+            .filter(Boolean);
+          if (runDates.length) {
+            detail.runStart = runDates[0];
+            detail.runEnd = runDates.slice(1).find((d) => d >= runDates[0]) || null;
+          }
           await new Promise((r) => setTimeout(r, 150));
         } catch {
           // Keep Lucie Stern defaults — every PAP production runs there.
@@ -6460,41 +6491,42 @@ async function fetchPaloAltoPlayersEvents() {
       return detail;
     }
 
-    const fmt = new Intl.DateTimeFormat("en-US", {
-      timeZone: "America/Los_Angeles",
-      year: "numeric", month: "2-digit", day: "2-digit",
-      hour: "numeric", minute: "2-digit", hour12: true,
-    });
     const today = todayPT();
     const events = [];
 
-    for (const perf of perfs) {
-      const title = cleanEscapedCalendarText(perf.title);
+    for (const production of productions) {
+      const title = cleanEscapedCalendarText(production.title.rendered);
       if (!title || isBlockedEvent(title)) continue;
-      const parts = Object.fromEntries(
-        fmt.formatToParts(new Date(Number(perf.start) * 1000)).map((p) => [p.type, p.value]),
-      );
-      const date = `${parts.year}-${parts.month}-${parts.day}`;
+      const detail = await productionDetail(production.link);
+      // No run dates means the show page hasn't been filled in yet — skip
+      // rather than guess a date for it.
+      if (!detail.runStart) continue;
+      // Keep a production visible for its whole run, not just opening night.
+      const date = detail.runEnd && detail.runEnd >= today && detail.runStart < today
+        ? today
+        : detail.runStart;
       if (date < today) continue;
-      const time = `${parts.hour}:${parts.minute} ${parts.dayPeriod.toUpperCase()}`;
-      const detail = await productionDetail(perf.url);
+
+      const runNote = detail.runEnd && detail.runEnd !== detail.runStart
+        ? `Runs ${displayDate(parseDatePT(`${detail.runStart}T12:00:00`))} – ${displayDate(parseDatePT(`${detail.runEnd}T12:00:00`))}. `
+        : "";
 
       events.push({
-        id: h("paplayers", title, date, time),
+        id: h("paplayers", title, detail.runStart),
         title,
         date,
         displayDate: displayDate(parseDatePT(`${date}T12:00:00`)),
-        time,
+        // PAP no longer publishes curtain times in any machine-readable form.
+        time: null,
         endTime: null,
         venue: detail.venue,
         address: detail.address,
         city: "palo-alto",
         category: "arts",
         cost: "paid",
-        description: detail.description,
+        description: `${runNote}${detail.description}`.trim(),
         url: detail.url,
         source: "Palo Alto Players",
-        ...(perf.thumb ? { image: perf.thumb } : {}),
         kidFriendly: /\b(kid|child|family|story|youth|teen|junior|disney)\b/i.test(title + " " + detail.description),
       });
     }
@@ -7012,8 +7044,9 @@ async function main() {
     source(fetchSjJazzEvents, { label: "San Jose Jazz" }),
     source(fetchMontalvoEvents),
     // fetchEventbriteEvents, — deprecated: /v3/events/search/ removed by Eventbrite
-    source(fetchEarthquakesSchedule),
-    source(fetchBayFCSchedule),
+    // fetchEarthquakesSchedule, — site.api.espn.com 403s every path since 2026-08;
+    // Ticketmaster carries the PayPal Park home slate, so coverage is unchanged.
+    // fetchBayFCSchedule,       — same ESPN block; Ticketmaster covers Bay FC too.
     source(fetchSJGiantsSchedule),
     source(fetchTicketmasterEvents, { label: "Ticketmaster", critical: true }),
     source(fetchSharksSchedule),
