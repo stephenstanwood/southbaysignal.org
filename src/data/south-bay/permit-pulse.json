@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-04T03:08:36.946Z",
+      "generatedAt": "2026-08-05T03:08:50.883Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Jul 27 – Aug 3",
+      "dateRange": "Jul 28 – Aug 4",
       "stats": {
-        "total": 350,
-        "notable": 23,
-        "newUnits": 8,
-        "totalValuation": 14944682
+        "total": 278,
+        "notable": 18,
+        "newUnits": 5,
+        "totalValuation": 15322057
       },
       "permits": [
         {
@@ -25,18 +25,6 @@
           "units": 1,
           "issueDate": "2026-07-31",
           "subtype": "Single-Family"
-        },
-        {
-          "id": "2025-098131-RS",
-          "address": "1598 Stapleton Ct #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "New Detached 2-Sty ADU",
-          "valuation": 221643,
-          "units": 1,
-          "issueDate": "2026-07-28",
-          "subtype": "2nd Unit Added"
         },
         {
           "id": "2025-146496-RS",
@@ -75,30 +63,6 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-100418-RS",
-          "address": "1598 Stapleton Ct #3",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Garage Conversion to Jadu",
-          "valuation": 84038,
-          "units": 1,
-          "issueDate": "2026-07-28",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-128054-RS",
-          "address": "409 N 10th St #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Detached Garage Conversion to ADU Code Case #2020-03141",
-          "valuation": 83034,
-          "units": 1,
-          "issueDate": "2026-07-28",
-          "subtype": "2nd Unit Added"
-        },
-        {
           "id": "2026-108408-RS",
           "address": "2481 Fernwood Av #2",
           "category": "residential-new",
@@ -133,23 +97,71 @@
           "units": 0,
           "issueDate": "2026-07-30",
           "subtype": "Industrial Plant"
+        },
+        {
+          "id": "2026-129790-CI",
+          "address": "1550 Hamilton Av",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Ross Store Ross Tenant Improvement",
+          "valuation": 1561150,
+          "units": 0,
+          "issueDate": "2026-07-29",
+          "subtype": "Retail"
+        },
+        {
+          "id": "2026-123631-CI",
+          "address": "1251 S Bascom Av",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "San Jose Water Company (Be 100%) Ev Charging Station",
+          "valuation": 1131767,
+          "units": 0,
+          "issueDate": "2026-07-31",
+          "subtype": "Industrial Plant"
+        },
+        {
+          "id": "2026-129900-CI",
+          "address": "1741 Technology Dr",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Axiado (Bemp100%) Suite 400 TI",
+          "valuation": 1125000,
+          "units": 0,
+          "issueDate": "2026-07-29",
+          "subtype": "Office"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-04T03:08:39.442Z",
+      "generatedAt": "2026-08-05T03:08:53.279Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Jul 27 – Aug 3",
+      "dateRange": "Jul 28 – Aug 4",
       "stats": {
-        "total": 103,
+        "total": 101,
         "notable": 5,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
+        {
+          "id": "26BLD-02105",
+          "address": "3941 Duncan Pl",
+          "category": "residential-remodel",
+          "categoryLabel": "Home Remodel",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-07-30",
+          "subtype": "Permit Issued"
+        },
         {
           "id": "26BLD-02079",
           "address": "1873 Mark Twain St",
@@ -163,32 +175,8 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-02063",
-          "address": "1300 Hamilton Av",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-07-28",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-02097",
           "address": "1390 Harker Av",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-07-30",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-02105",
-          "address": "3941 Duncan Pl",
           "category": "residential-remodel",
           "categoryLabel": "Home Remodel",
           "workType": "Web - Kitchen or Bath Remodel",
@@ -208,6 +196,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-07-31",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00209",
+          "address": "457 Kingsley Av",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for an Over the Counter Architectural Review to remove one dead 48-inch box Blue Atlas Cedar tree and replace it with one 24-inch box Chinese Pistache tree in the same location. Zone District: Single Family (R-1 (10,000)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-03",
           "subtype": "Over the Counter Approved"
         }
       ]

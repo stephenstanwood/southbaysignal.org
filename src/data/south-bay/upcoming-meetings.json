@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-04T03:08:48.442Z",
+  "generatedAt": "2026-08-05T03:09:02.326Z",
   "meetings": {
     "san-jose": {
       "date": "2026-08-11",
@@ -34,7 +34,7 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-03T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-04T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
@@ -52,18 +52,18 @@
       }
     },
     "milpitas": {
-      "date": "2026-08-03",
-      "displayDate": "Mon, Aug 3",
+      "date": "2026-08-11",
+      "displayDate": "Tue, Aug 11",
       "bodyName": "City Council Special Meeting",
       "location": "Milpitas City Hall",
       "url": "https://www.milpitas.gov/129/Agendas-Minutes",
-      "civicClerkEventId": 2973,
+      "civicClerkEventId": 2941,
       "agendaItems": [],
       "confirmation": {
         "status": "confirmed",
         "provider": "civicclerk",
-        "observedDate": "2026-08-03",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-03T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "observedDate": "2026-08-11",
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-04T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   }

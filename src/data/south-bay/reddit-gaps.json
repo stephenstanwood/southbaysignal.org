@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-07-15T03:15:16.556Z",
+    "generatedAt": "2026-08-05T03:16:36.053Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 12
+    "sourceCount": 8
   },
   "summary": {
-    "threadsMined": 12,
-    "placesExtracted": 3,
-    "placesMatched": 0,
+    "threadsMined": 8,
+    "placesExtracted": 5,
+    "placesMatched": 2,
     "placeGaps": 3,
     "eventsExtracted": 0,
     "eventsMatched": 0,
@@ -16,46 +16,67 @@
   },
   "placeGaps": [
     {
-      "name": "Trader Joe's",
+      "name": "Good Samaritan Hospital",
       "city": "San Jose",
-      "kind": "retail",
-      "context": "grocery store near user's home in San Jose/Santa Clara",
+      "kind": "service",
+      "context": "hospital being compared for labor and delivery",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1uwnexg/is_vta_public_transportation_really_that_bad/",
-        "https://www.reddit.com/r/SanJose/comments/1uwjz3w/where_to_find_tasty_veggie_stuffed_roti/",
-        "https://www.reddit.com/r/SanJose/comments/1uwr61t/reccomendations_for_nail_salons_that_do_builder/",
-        "https://www.reddit.com/r/SanJose/comments/1uwj3ep/google_hiding_that_its_building_a_data_center_in/",
-        "https://www.reddit.com/r/SanJose/comments/1uwelrr/best_place_to_buy_fresh_bulk_chicken/"
+        "https://www.reddit.com/r/SanJose/comments/1vfglng/sj_opera_how_are_the_mezzanine_ring_seats/",
+        "https://www.reddit.com/r/SanJose/comments/1vf25hb/good_sam_or_el_camino_los_gatos_for_labor/",
+        "https://www.reddit.com/r/SanJose/comments/1vf1i4x/how_is_grant_elementary_school_in_jtown/"
       ]
     },
     {
-      "name": "Doradas",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "recommended for best tripas tacos",
+      "name": "El Camino Hospital Los Gatos",
+      "city": "Los Gatos",
+      "kind": "service",
+      "context": "hospital being compared for labor and delivery",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1uw4if1/tacos/",
-        "https://www.reddit.com/r/SanJose/comments/1uvxyvd/amazing_sunset_lately/",
-        "https://www.reddit.com/r/SanJose/comments/1uwser4/kassa_kitchen_and_bath_in_san_jose_has_anyone/",
-        "https://www.reddit.com/r/SanJose/comments/1uwhy16/south_bay_officials_seek_public_help_in_ridding/",
-        "https://www.reddit.com/r/SanJose/comments/1uweizc/5670_camden_avenue_residential_project_108_new/"
+        "https://www.reddit.com/r/SanJose/comments/1vfglng/sj_opera_how_are_the_mezzanine_ring_seats/",
+        "https://www.reddit.com/r/SanJose/comments/1vf25hb/good_sam_or_el_camino_los_gatos_for_labor/",
+        "https://www.reddit.com/r/SanJose/comments/1vf1i4x/how_is_grant_elementary_school_in_jtown/"
       ]
     },
     {
-      "name": "Kassa Kitchen and Bath",
+      "name": "Grant Elementary School",
       "city": "San Jose",
-      "kind": "retail",
-      "context": "kitchen and bath showroom with cabinet options",
+      "kind": "other",
+      "context": "elementary school in Japantown, asking about experience",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1uw4if1/tacos/",
-        "https://www.reddit.com/r/SanJose/comments/1uvxyvd/amazing_sunset_lately/",
-        "https://www.reddit.com/r/SanJose/comments/1uwser4/kassa_kitchen_and_bath_in_san_jose_has_anyone/",
-        "https://www.reddit.com/r/SanJose/comments/1uwhy16/south_bay_officials_seek_public_help_in_ridding/",
-        "https://www.reddit.com/r/SanJose/comments/1uweizc/5670_camden_avenue_residential_project_108_new/"
+        "https://www.reddit.com/r/SanJose/comments/1vfglng/sj_opera_how_are_the_mezzanine_ring_seats/",
+        "https://www.reddit.com/r/SanJose/comments/1vf25hb/good_sam_or_el_camino_los_gatos_for_labor/",
+        "https://www.reddit.com/r/SanJose/comments/1vf1i4x/how_is_grant_elementary_school_in_jtown/"
       ]
     }
   ],
   "eventGaps": [],
-  "placeMatches": [],
+  "placeMatches": [
+    {
+      "name": "Hotel De Anza",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "downtown hotel remodel adding new restaurant",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vfkv2u/hotel_de_anza_in_san_jose_revamps_with_upgrades/",
+        "https://www.reddit.com/r/SanJose/comments/1vffnpc/never_played_pickle_ball_but_wanna_learn/",
+        "https://www.reddit.com/r/SanJose/comments/1vfrujz/looking_for_a_good_mechanicshop/",
+        "https://www.reddit.com/r/SanJose/comments/1vfr69r/boxing_coaches_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vfoyzb/controversial_battery_storage_project_in_san/"
+      ],
+      "matchedName": "Hotel De Anza"
+    },
+    {
+      "name": "California Theatre (SJ Opera)",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "opera venue, asking about mezzanine seats",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vfglng/sj_opera_how_are_the_mezzanine_ring_seats/",
+        "https://www.reddit.com/r/SanJose/comments/1vf25hb/good_sam_or_el_camino_los_gatos_for_labor/",
+        "https://www.reddit.com/r/SanJose/comments/1vf1i4x/how_is_grant_elementary_school_in_jtown/"
+      ],
+      "matchedName": "California Theatre"
+    }
+  ],
   "eventMatches": []
 }
