@@ -226,18 +226,32 @@ const CITY_ORDER: City[] = [
   "milpitas",
 ];
 
+// Where "View agendas →" sends a resident when there's no specific next-meeting
+// URL. Every entry below was fetched and confirmed to load; several used to
+// point at hosts that had gone 404, stopped resolving, or frozen into an
+// archive while still answering 200. Re-verify before editing.
 const AGENDA_URLS: Record<string, string> = {
-  "campbell": "https://www.campbellca.gov/AgendaCenter/City-Council-10",
-  "saratoga": "https://saratoga-ca.municodemeetings.com/",
-  "los-altos": "https://losaltos-ca.municodemeetings.com/",
+  // Campbell moved to eScribe in late 2025; the old Agenda Center is frozen at
+  // 2025-10-07 and must not be linked as current.
+  "campbell": "https://pub-campbell.escribemeetings.com/",
+  "saratoga": "https://www.saratoga.ca.us/AgendaCenter/City-Council-13",
+  // Los Altos moved to CivicClerk; losaltosca.gov/AgendaCenter now titles
+  // itself "Archived Agenda Center" and stops at 2025-04-22.
+  "los-altos": "https://losaltosca.portal.civicclerk.com/",
+  // Los Gatos: municodemeetings.com is the only agenda source losgatosca.gov
+  // links to. It refuses our automated requests, so we can't verify it the way
+  // the others were verified — kept because it's the town's own published link.
   "los-gatos": "https://losgatos-ca.municodemeetings.com/",
   "san-jose": "https://sanjose.legistar.com/Calendar.aspx",
   "mountain-view": "https://mountainview.legistar.com/Calendar.aspx",
   "sunnyvale": "https://sunnyvale.legistar.com/Calendar.aspx",
   "cupertino": "https://cupertino.legistar.com/Calendar.aspx",
   "santa-clara": "https://santaclara.legistar.com/Calendar.aspx",
-  "milpitas": "https://www.ci.milpitas.ca.gov/government/council/",
-  "palo-alto": "https://www.cityofpaloalto.org/Government/City-Clerk/Meetings-Agendas-Minutes",
+  // ci.milpitas.ca.gov no longer serves; the city is on milpitas.gov.
+  "milpitas": "https://www.milpitas.gov/129/Agendas-Minutes",
+  // cityofpaloalto.org/Government/City-Clerk/... 404s; this is the page the
+  // city's own City Council page links to.
+  "palo-alto": "https://www.paloalto.gov/City-Hall/City-Council/Council-Agendas-Minutes",
 };
 
 export default function GovernmentView({ selectedCities }: Props) {

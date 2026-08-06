@@ -40,15 +40,17 @@ export interface AgendaInfo {
 
 export const AGENDA_CITIES: AgendaCityConfig[] = [
   // ── CivicEngage cities (same scraper pattern) ──
-  {
-    city: "campbell",
-    cityName: "Campbell",
-    platform: "civicengage",
-    agendaUrl: "https://www.campbellca.gov/AgendaCenter/City-Council-10",
-    baseUrl: "https://www.campbellca.gov",
-    body: "City Council",
-    schedule: "1st and 3rd Tuesday",
-  },
+  //
+  // Campbell and Los Altos used to live here and had to be removed: both left
+  // CivicEngage, and both left their old Agenda Center standing as a frozen
+  // archive that still answers HTTP 200. Because scrapeCivicEngage takes the
+  // newest *listed* agenda, "Generate digest" was summarizing Campbell's
+  // 2025-10-07 agenda and Los Altos's 2025-04-22 agenda as if they were the
+  // current meeting. Campbell is on eScribe (pub-campbell.escribemeetings.com)
+  // and Los Altos on CivicClerk (losaltosca.portal.civicclerk.com) — neither is
+  // scrapeable by this factory, so they fall through to a clean 404 until
+  // someone teaches it those platforms. Do not re-add the CivicEngage configs.
+  //
   // Los Gatos: CivicEngage but no Town Council category — skipped
   {
     city: "saratoga",
@@ -58,15 +60,6 @@ export const AGENDA_CITIES: AgendaCityConfig[] = [
     baseUrl: "https://www.saratoga.ca.us",
     body: "City Council",
     schedule: "1st and 3rd Wednesday",
-  },
-  {
-    city: "los-altos",
-    cityName: "Los Altos",
-    platform: "civicengage",
-    agendaUrl: "https://www.losaltosca.gov/AgendaCenter/City-Council-4",
-    baseUrl: "https://www.losaltosca.gov",
-    body: "City Council",
-    schedule: "2nd and 4th Tuesday",
   },
 
   // ── Legistar cities ──
@@ -129,6 +122,11 @@ export const AGENDA_CITIES: AgendaCityConfig[] = [
 
 // ── CivicEngage scraper ──
 
+// Longest gap we'll accept between "newest posted agenda" and today before
+// calling the source dead rather than the council idle. Councils recess for
+// summer and the winter holidays, but never for four months.
+const STALE_AGENDA_DAYS = 120;
+
 async function scrapeCivicEngage(
   config: AgendaCityConfig,
 ): Promise<AgendaInfo | null> {
@@ -169,6 +167,23 @@ async function scrapeCivicEngage(
     const day = raw.substring(2, 4);
     const year = raw.substring(4, 8);
     dateStr = `${month}/${day}/${year}`;
+
+    // A city that leaves CivicEngage tends to leave the old Agenda Center
+    // standing, frozen and still answering HTTP 200. Since we take the newest
+    // listed agenda, that silently turns into "here is Campbell's latest
+    // meeting" on top of a year-old PDF. Refuse anything older than a long
+    // recess; the caller turns null into an honest 404.
+    const agendaTime = Date.parse(`${year}-${month}-${day}T12:00:00Z`);
+    if (Number.isFinite(agendaTime)) {
+      const ageDays = (Date.now() - agendaTime) / 86_400_000;
+      if (ageDays > STALE_AGENDA_DAYS) {
+        console.warn(
+          `[agenda-scraper] ${config.city}: newest agenda is ${dateStr} `
+          + `(${Math.round(ageDays)}d old) — treating source as stale, not current`,
+        );
+        return null;
+      }
+    }
   }
 
   // Try heading date for nicer format
