@@ -1,19 +1,31 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-05T03:08:50.883Z",
+      "generatedAt": "2026-08-06T03:08:30.456Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Jul 28 – Aug 4",
+      "dateRange": "Jul 29 – Aug 5",
       "stats": {
-        "total": 278,
-        "notable": 18,
-        "newUnits": 5,
-        "totalValuation": 15322057
+        "total": 301,
+        "notable": 17,
+        "newUnits": 6,
+        "totalValuation": 16654981
       },
       "permits": [
+        {
+          "id": "2026-116995-RS",
+          "address": "1268 Eden Av",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Veev 2-Story SFR Per Sb9 Lot Split",
+          "valuation": 606698,
+          "units": 1,
+          "issueDate": "2026-08-03",
+          "subtype": "Single-Family"
+        },
         {
           "id": "2025-111493-RS",
           "address": "1028 Wilsham Dr",
@@ -25,6 +37,18 @@
           "units": 1,
           "issueDate": "2026-07-31",
           "subtype": "Single-Family"
+        },
+        {
+          "id": "2025-104717-RS",
+          "address": "2415 Verwood Dr #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached ADU",
+          "valuation": 168180,
+          "units": 1,
+          "issueDate": "2026-08-03",
+          "subtype": "2nd Unit Added"
         },
         {
           "id": "2025-146496-RS",
@@ -39,15 +63,15 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-119152-RS",
-          "address": "890 Summerbrook Ln #2",
+          "id": "2026-106948-RS",
+          "address": "1298 Lennon Wy #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Code Case New Detached ADU 749 Sq Ft",
-          "valuation": 131764,
+          "description": "Detached Garage Conversion to ADU",
+          "valuation": 160087,
           "units": 1,
-          "issueDate": "2026-07-29",
+          "issueDate": "2026-08-03",
           "subtype": "2nd Unit Added"
         },
         {
@@ -60,18 +84,6 @@
           "valuation": 84442,
           "units": 1,
           "issueDate": "2026-07-31",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2026-108408-RS",
-          "address": "2481 Fernwood Av #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Detached ADU",
-          "valuation": 70016,
-          "units": 1,
-          "issueDate": "2026-07-29",
           "subtype": "2nd Unit Added"
         },
         {
@@ -99,16 +111,16 @@
           "subtype": "Industrial Plant"
         },
         {
-          "id": "2026-129790-CI",
-          "address": "1550 Hamilton Av",
+          "id": "2026-130576-CI",
+          "address": "488 Almaden Bl",
           "category": "commercial-large",
           "categoryLabel": "Commercial Project",
           "workType": "Tenant Improvement",
-          "description": "Ross Store Ross Tenant Improvement",
-          "valuation": 1561150,
+          "description": "Vta Tenant Improvement",
+          "valuation": 1629040,
           "units": 0,
-          "issueDate": "2026-07-29",
-          "subtype": "Retail"
+          "issueDate": "2026-08-03",
+          "subtype": "Office"
         },
         {
           "id": "2026-123631-CI",
@@ -121,57 +133,33 @@
           "units": 0,
           "issueDate": "2026-07-31",
           "subtype": "Industrial Plant"
-        },
-        {
-          "id": "2026-129900-CI",
-          "address": "1741 Technology Dr",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Axiado (Bemp100%) Suite 400 TI",
-          "valuation": 1125000,
-          "units": 0,
-          "issueDate": "2026-07-29",
-          "subtype": "Office"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-05T03:08:53.279Z",
+      "generatedAt": "2026-08-06T03:08:32.902Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Jul 28 – Aug 4",
+      "dateRange": "Jul 29 – Aug 5",
       "stats": {
-        "total": 101,
-        "notable": 5,
+        "total": 123,
+        "notable": 7,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
         {
-          "id": "26BLD-02105",
-          "address": "3941 Duncan Pl",
+          "id": "26BLD-02162",
+          "address": "737 Ensign Wy",
           "category": "residential-remodel",
           "categoryLabel": "Home Remodel",
           "workType": "Web - Kitchen or Bath Remodel",
           "description": "Instant permit for a residential single-family kitchen or bath remodel.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-07-30",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-02079",
-          "address": "1873 Mark Twain St",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-07-29",
+          "issueDate": "2026-08-04",
           "subtype": "Permit Issued"
         },
         {
@@ -187,16 +175,16 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26PLN-00207",
-          "address": "1000 Welch Rd",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for an Over the Counter Architectural Review to remove two camphor trees and replace them with two 36-inch box size western redbud trees and pay an in-liue fee for eigth 24-inch box size trees (26TRE-00089). Zone District: Medical Office and Meidcal Research (MOR). CEQA Status: Exempt from the provisions of CEQA per Section 15304. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
+          "id": "26BLD-02105",
+          "address": "3941 Duncan Pl",
+          "category": "residential-remodel",
+          "categoryLabel": "Home Remodel",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-07-31",
-          "subtype": "Over the Counter Approved"
+          "issueDate": "2026-07-30",
+          "subtype": "Permit Issued"
         },
         {
           "id": "26PLN-00209",
@@ -208,6 +196,42 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-08-03",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00213",
+          "address": "491 W Charleston Rd",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for Architectural Review for the removal of one dead Deodar Cedar tree outside a day care center and replacement with a new 24-inch box size Cork Oak tree.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-04",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00215",
+          "address": "353 University Av",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for a temporary sign permit to installation of one exterior wall-mounted sign at the building corner. The sign will be 48 inches wide by 96 and 1/8 inches tall made from aluminum composite (Dibond) panel, 45° folded to wrap building corner, mounted to existing brick with masonry anchors. The sign will be installed from August 4 through September 1 but will be removed before September 4 and the building will be returned to its original condition. Zone District: Downtown Commercial (CD-C(GF)(P)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-04",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00207",
+          "address": "1000 Welch Rd",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for an Over the Counter Architectural Review to remove two camphor trees and replace them with two 36-inch box size western redbud trees and pay an in-liue fee for eigth 24-inch box size trees (26TRE-00089). Zone District: Medical Office and Meidcal Research (MOR). CEQA Status: Exempt from the provisions of CEQA per Section 15304. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-07-31",
           "subtype": "Over the Counter Approved"
         }
       ]
