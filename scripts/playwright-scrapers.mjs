@@ -17,13 +17,14 @@
  *   node scripts/playwright-scrapers.mjs
  */
 
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, realpathSync } from "fs";
 import { writeFileAtomic } from "./lib/io.mjs";
 import { todayPT } from "./lib/dates.mjs";
-import { join, dirname } from "path";
+import { join, dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import { createHash } from "crypto";
 import { loadEnvLocal } from "./lib/env.mjs";
+import { classifyLibCalLocation } from "./lib/libcal-location.mjs";
 import {
   normalizeMidpenOccurrenceUrl,
   normalizeMountainWineryCard,
@@ -410,7 +411,13 @@ function isBookmobileStopTitle(title) {
   return BOOKMOBILE_STOP_PATTERNS.some((p) => p.test(title.trim()));
 }
 
-const LIBCAL_LIBRARIES = [
+// `onsiteLocations` lists in-building spaces whose names the generic room-suffix
+// rule in libcal-location.mjs can't recognise. Mountain View's History Center is
+// on the library's 2nd floor (library.mountainview.gov/learn/mountain-view-history),
+// so its events really are at 585 Franklin St. Anything not listed here and not
+// room-shaped is treated as off-site — see the header of libcal-location.mjs for
+// why that asymmetry is deliberate.
+export const LIBCAL_LIBRARIES = [
   {
     name: "Mountain View Public Library",
     urls: [
@@ -419,6 +426,12 @@ const LIBCAL_LIBRARIES = [
     ],
     city: "mountain-view",
     address: "585 Franklin St, Mountain View, CA 94041",
+    onsiteLocations: ["History Center"],
+    // Verified against the City of Mountain View facility directory. Anything
+    // not listed ships with an empty address, never a guess.
+    offsiteAddresses: {
+      "Pioneer Park": "1146 Church St, Mountain View, CA 94041",
+    },
   },
   {
     name: "Los Gatos Library",
@@ -427,11 +440,12 @@ const LIBCAL_LIBRARIES = [
     ],
     city: "los-gatos",
     address: "110 E Main St, Los Gatos, CA 95030",
+    onsiteLocations: [],
   },
   // Milpitas: SCCL LibCal returns 404; covered by SCCL BiblioCommons in generate-events.mjs
 ];
 
-async function scrapeLibCal(page, config) {
+export async function scrapeLibCal(page, config) {
   for (const url of config.urls) {
     try {
       const resp = await page.goto(url, { waitUntil: "networkidle", timeout: 25_000 });
@@ -444,6 +458,31 @@ async function scrapeLibCal(page, config) {
         const events = [];
         const now = new Date();
         const currentYear = now.getFullYear();
+
+        // LibCal publishes a per-event location in both layouts. The eventcard
+        // layout puts it in the second .s-lc-eventcard-heading-text (the first
+        // holds the time range and the In-Person/Online pill); the media-body
+        // layout uses a <dt>Location:</dt><dd> pair.
+        const cardLocation = (card) => {
+          const nodes = [...card.querySelectorAll(".s-lc-eventcard-heading-text")];
+          for (const n of nodes) {
+            if (n.querySelector(".s-lc-eventcard-pill")) continue; // time + pill row
+            const text = (n.textContent || "").replace(/\s+/g, " ").trim();
+            if (!text) continue;
+            // Skip the time row on cards that render no pill at all.
+            if (/\d{1,2}(:\d{2})?\s*[ap]m/i.test(text) || /all\s+day\s+event/i.test(text)) continue;
+            return text;
+          }
+          return "";
+        };
+        const dlLocation = (root) => {
+          for (const dt of root.querySelectorAll("dl dt")) {
+            if (!/location/i.test(dt.textContent || "")) continue;
+            const dd = dt.nextElementSibling;
+            if (dd) return (dd.textContent || "").replace(/\s+/g, " ").trim();
+          }
+          return "";
+        };
 
         // Strategy 1: LibCal eventcard layout (Los Gatos style)
         // Cards have .s-lc-eventcard with h2.s-lc-eventcard-title containing the title link
@@ -464,7 +503,7 @@ async function scrapeLibCal(page, config) {
           const dateStr = monthDay ? `${monthDay[0]}, ${currentYear}` : null;
           // Time like "11:00am" from card body
           const timeMatch = card.textContent?.match(/\d{1,2}:\d{2}\s*[ap]m/i);
-          events.push({ title, date: dateStr, time: timeMatch?.[0], link: titleLink.href, cardText: card.textContent || "" });
+          events.push({ title, date: dateStr, time: timeMatch?.[0], link: titleLink.href, location: cardLocation(card), cardText: card.textContent || "" });
         }
 
         // Strategy 2: LibCal media-body layout (Mountain View style)
@@ -482,7 +521,7 @@ async function scrapeLibCal(page, config) {
             const dateMatch = bodyText.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+\d{1,2}/i);
             const date = dateMatch ? `${dateMatch[0]}, ${currentYear}` : null;
             const timeMatch = bodyText.match(/\d{1,2}:\d{2}\s*[ap]m/i);
-            events.push({ title, date, time: timeMatch?.[0], link: titleLink.href, cardText: bodyText });
+            events.push({ title, date, time: timeMatch?.[0], link: titleLink.href, location: dlLocation(body), cardText: bodyText });
           }
         }
 
@@ -494,7 +533,7 @@ async function scrapeLibCal(page, config) {
             const title = a.textContent?.trim();
             if (!title || title.length < 3 || seen.has(title) || /register|more|image/i.test(title)) continue;
             seen.add(title);
-            events.push({ title, date: null, time: null, link: a.href });
+            events.push({ title, date: null, time: null, link: a.href, location: "" });
           }
         }
 
@@ -506,21 +545,27 @@ async function scrapeLibCal(page, config) {
           .map((r) => {
             const date = tryParseDate(r.date);
             if (!date || date < TODAY) return null;
+            // Where this event actually is — the library's own building is
+            // only one of the answers. See lib/libcal-location.mjs.
+            const place = classifyLibCalLocation(r.location, config);
             // Bookmobile stops live on the library's calendar but aren't public
-            // events. LibCal labels them; fall back to title shape if it doesn't.
+            // events. The parsed Location names them exactly; the card-text scan
+            // and title shape stay as fallbacks for layouts that omit the label.
+            if (place.kind === "bookmobile") return null;
             if (isMobileLibraryStop(r.cardText) || isBookmobileStopTitle(r.title)) return null;
             return {
               title: r.title,
               date,
               time: normalizeTime(r.time),
               endTime: null,
-              venue: config.name,
-              address: config.address,
+              venue: place.venue,
+              address: place.address,
               city: config.city,
               url: r.link || url,
               source: config.name,
               category: inferCategory(r.title),
               cost: "free",
+              ...(place.virtual ? { virtual: true } : {}),
               // Prefix-only boundary so "Storytime" matches "story", "Babies"
             // matches "baby", "Grades K-6" matches "grade", etc. Library kid-
             // event titles use a wide variety of compounds: Storytime,
@@ -2640,7 +2685,18 @@ async function main() {
   console.log("   Breakdown:", Object.entries(bySrc).map(([s, n]) => `${s}: ${n}`).join(", "));
 }
 
-main().catch((err) => {
-  console.error("❌ Fatal:", err);
-  process.exit(1);
-});
+// Run the full scrape only when this file is the process entry point, so a
+// single scraper can be imported and exercised against its live source
+// (scripts/verify-libcal-locations.mjs) without firing all ~40 of them.
+// realpath both sides: a symlinked checkout (or /tmp -> /private/tmp on macOS)
+// otherwise compares unequal and the nightly run would silently do nothing.
+const realPath = (p) => { try { return realpathSync(p); } catch { return resolve(p); } };
+const isEntrypoint =
+  !!process.argv[1] && realPath(process.argv[1]) === realPath(fileURLToPath(import.meta.url));
+
+if (isEntrypoint) {
+  main().catch((err) => {
+    console.error("❌ Fatal:", err);
+    process.exit(1);
+  });
+}
