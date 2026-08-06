@@ -352,7 +352,7 @@ const PRIMEGOV_CITIES = [
   { city: "palo-alto", domain: "cityofpaloalto.primegov.com", committeeId: 9 },
 ];
 
-// ── CivicEngage HTML scraping (Campbell, Saratoga, Los Altos) ───────────────
+// ── CivicEngage HTML scraping (Saratoga) ────────────────────────────────────
 
 async function fetchCivicEngageMeeting(baseUrl, calendarId) {
   // CivicEngage agenda centers have a predictable HTML structure
@@ -388,10 +388,11 @@ async function fetchCivicEngageMeeting(baseUrl, calendarId) {
   const nextDate = unique[0];
   if (!nextDate) {
     // Distinguish "council is between meetings" from "this scraper has rotted".
-    // Campbell's Agenda Center froze in 2025 when the town moved to eScribe, and
-    // Saratoga/Los Altos now render their calendars client-side — all three
-    // returned a healthy HTTP 200 and simply reported "none scheduled" for
-    // months. A page whose newest date is far in the past, or that has no dates
+    // Campbell's Agenda Center froze in 2025 when the town moved to eScribe and
+    // Los Altos left the platform entirely — both returned a healthy HTTP 200
+    // and reported "none scheduled" for months before anyone noticed. (Both are
+    // now read from their real portals above; Saratoga is the last CivicEngage
+    // city.) A page whose newest date is far in the past, or that has no dates
     // at all, is a broken source and should say so.
     const newest = allDates.length ? allDates.slice().sort().at(-1) : null;
     const staleDays = newest
@@ -427,16 +428,122 @@ async function fetchCivicEngageMeeting(baseUrl, calendarId) {
 }
 
 const CIVICENGAGE_CITIES = [
-  { city: "campbell",  baseUrl: "https://www.campbellca.gov",  calendarId: "City-Council-10" },
   { city: "saratoga",  baseUrl: "https://www.saratoga.ca.us",  calendarId: "City-Council-13" },
-  { city: "los-altos", baseUrl: "https://www.losaltosca.gov",  calendarId: "City-Council-4" },
 ];
 
-// ── Milpitas (CivicClerk / calendar page scraping) ──────────────────────────
+// ── eScribe (Campbell) ──────────────────────────────────────────────────────
+//
+// Campbell left CivicEngage for eScribe in late 2025; the old Agenda Center is
+// frozen at 2025-10-07 and must never be read for council records again.
+// eScribe exposes a JSON calendar endpoint, but it answers one *rendered month*
+// at a time — a Jan–Dec range returns an empty array, while Aug 1–31 returns
+// August. So walk month by month rather than asking for a single wide window.
 
-async function fetchMilpitasMeeting() {
+const ESCRIBE_MONTHS_AHEAD = 2; // current month + 2 covers the 60-day horizon
+
+// Some Node builds reject escribemeetings.com's chain with
+// UNABLE_TO_GET_ISSUER_CERT_LOCALLY (the root resolves from Node's bundled CA
+// store, not the OS keychain). System curl trusts it, so fall back to curl on
+// a TLS failure instead of dropping the city. Don't collapse this to a plain
+// fetch without testing on the Mini.
+async function escribePost(url, body) {
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "User-Agent": UA, Accept: "application/json" },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(20_000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    const cause = err?.cause?.code || "";
+    const tlsProblem = /CERT|TLS|SSL/i.test(`${cause} ${err.message}`);
+    if (!tlsProblem) throw err;
+    const { execFile } = await import("node:child_process");
+    const { promisify } = await import("node:util");
+    const { stdout } = await promisify(execFile)("curl", [
+      "-s", "--max-time", "25", "-X", "POST", url,
+      "-H", "Content-Type: application/json",
+      "-H", `User-Agent: ${UA}`,
+      "-d", JSON.stringify(body),
+    ], { maxBuffer: 20 * 1024 * 1024 });
+    return JSON.parse(stdout);
+  }
+}
+
+function monthWindows(startIso, monthsAhead) {
+  const [y, m] = startIso.split("-").map(Number);
+  const windows = [];
+  for (let i = 0; i <= monthsAhead; i++) {
+    const first = new Date(Date.UTC(y, m - 1 + i, 1));
+    const last = new Date(Date.UTC(y, m + i, 0));
+    windows.push([first.toISOString().slice(0, 10), last.toISOString().slice(0, 10)]);
+  }
+  return windows;
+}
+
+async function fetchEscribeMeeting(host) {
+  const url = `https://${host}/MeetingsCalendarView.aspx/GetCalendarMeetings`;
   const today = ptDateISO();
-  const apiUrl = new URL("https://milpitasca.api.civicclerk.com/v1/Events");
+  let sawAnyMeeting = false;
+
+  for (const [calendarStartDate, calendarEndDate] of monthWindows(today, ESCRIBE_MONTHS_AHEAD)) {
+    const payload = await escribePost(url, { calendarStartDate, calendarEndDate });
+    const rows = Array.isArray(payload?.d) ? payload.d : [];
+    if (rows.length) sawAnyMeeting = true;
+
+    // eScribe StartDate is "YYYY/MM/DD HH:mm:ss" in the city's local time.
+    const upcoming = rows
+      .map((row) => ({ row, date: String(row.StartDate || "").slice(0, 10).replace(/\//g, "-") }))
+      .filter(({ row, date }) =>
+        /^\d{4}-\d{2}-\d{2}$/.test(date)
+        && date >= today
+        && /council/i.test(row.MeetingName || "")
+        // Executive/closed sessions aren't public business; skip them the way
+        // the Legistar path skips closed session.
+        && !/executive session|closed session/i.test(row.MeetingName || "")
+        && !/cancel(?:led|ed)|postponed/i.test(`${row.MeetingName || ""} ${row.Description || ""}`))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    if (!upcoming.length) continue;
+
+    const { row, date } = upcoming[0];
+    const d = new Date(`${date}T12:00:00`);
+    if ((d.getTime() - Date.now()) / 86_400_000 > 60) return null;
+
+    const meeting = {
+      date,
+      displayDate: d.toLocaleDateString("en-US", {
+        weekday: "short", month: "short", day: "numeric",
+        timeZone: "America/Los_Angeles",
+      }),
+      bodyName: row.MeetingName || "City Council",
+      location: cleanLocation(row.Location),
+      url: typeof row.Url === "string" && row.Url.startsWith(`https://${host}/`)
+        ? row.Url
+        : `https://${host}/`,
+      agendaItems: [],
+    };
+    return confirmMeeting(meeting, { provider: "escribe", sourceUrl: url, observedDate: date });
+  }
+
+  // No council meeting posted in the window. An eScribe calendar that returns
+  // nothing at all for three straight months is more likely a moved portal
+  // than a three-month recess — say so rather than reporting a clean recess.
+  if (!sawAnyMeeting) throw new Error("eScribe calendar returned no meetings for the next 3 months");
+  return null;
+}
+
+const ESCRIBE_CITIES = [
+  { city: "campbell", host: "pub-campbell.escribemeetings.com" },
+];
+
+// ── CivicClerk (Milpitas, Los Altos) ────────────────────────────────────────
+
+async function fetchCivicClerkMeeting({ apiHost, location = null, meetingUrl }) {
+  const today = ptDateISO();
+  const apiUrl = new URL(`https://${apiHost}/v1/Events`);
   apiUrl.searchParams.set("$filter", `categoryName eq 'City Council' and eventDate ge ${today}T00:00:00Z`);
   apiUrl.searchParams.set("$orderby", "eventDate asc");
   apiUrl.searchParams.set("$top", "100");
@@ -457,8 +564,8 @@ async function fetchMilpitasMeeting() {
       weekday: "short", month: "short", day: "numeric", timeZone: "UTC",
     }),
     bodyName: event.eventName || "City Council",
-    location: "Milpitas City Hall",
-    url: "https://www.milpitas.gov/129/Agendas-Minutes",
+    location,
+    url: meetingUrl(event),
     civicClerkEventId: event.id,
     agendaItems: [],
   };
@@ -469,15 +576,43 @@ async function fetchMilpitasMeeting() {
   });
 }
 
+const CIVICCLERK_CITIES = [
+  {
+    city: "milpitas",
+    apiHost: "milpitasca.api.civicclerk.com",
+    location: "Milpitas City Hall",
+    meetingUrl: () => "https://www.milpitas.gov/129/Agendas-Minutes",
+  },
+  {
+    // Los Altos moved off CivicEngage too — losaltosca.gov/AgendaCenter now
+    // self-identifies as "Archived Agenda Center" and stops at 2025-04-22.
+    city: "los-altos",
+    apiHost: "losaltosca.api.civicclerk.com",
+    meetingUrl: (event) => `https://losaltosca.portal.civicclerk.com/event/${event.id}/overview`,
+  },
+];
+
 // ── Los Gatos (MuniCode) ────────────────────────────────────────────────────
 
 async function fetchLosGatosMeeting() {
-  // Los Gatos uses MuniCode Meetings — scrape the main page for next date
+  // Los Gatos uses MuniCode Meetings, and losgatosca.gov links to it as the
+  // town's only agenda source — there is no Legistar/CivicClerk/PrimeGov/
+  // Granicus tenant to switch to. The host currently refuses our requests
+  // outright (empty reply on HTTP/2 and HTTP/1.1). Treat that as the site
+  // declining automated access: report it, don't work around it.
   const url = "https://losgatos-ca.municodemeetings.com/";
-  const res = await fetch(url, {
-    headers: { "User-Agent": UA },
-    signal: AbortSignal.timeout(30_000),
-  });
+  let res;
+  try {
+    res = await fetch(url, {
+      headers: { "User-Agent": UA },
+      signal: AbortSignal.timeout(30_000),
+    });
+  } catch (err) {
+    throw new Error(
+      `municodemeetings.com refused the connection (${err?.cause?.code || err.message}) — `
+      + "town's only published agenda source; not worked around",
+    );
+  }
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const html = await res.text();
 
@@ -573,7 +708,14 @@ async function main() {
     await runSource(city, "CivicEngage", () => fetchCivicEngageMeeting(baseUrl, calendarId));
   }
 
-  await runSource("milpitas", "CivicClerk", () => fetchMilpitasMeeting());
+  for (const { city, host } of ESCRIBE_CITIES) {
+    await runSource(city, "eScribe", () => fetchEscribeMeeting(host));
+  }
+
+  for (const { city, ...config } of CIVICCLERK_CITIES) {
+    await runSource(city, "CivicClerk", () => fetchCivicClerkMeeting(config));
+  }
+
   await runSource("los-gatos", "MuniCode", () => fetchLosGatosMeeting());
 
   const meetings = onlyConfirmedMeetings(candidates);

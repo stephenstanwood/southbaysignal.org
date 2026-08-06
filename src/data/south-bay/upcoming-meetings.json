@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-06T03:08:41.958Z",
+  "generatedAt": "2026-08-06T14:11:30.789Z",
   "meetings": {
     "san-jose": {
       "date": "2026-08-11",
@@ -34,7 +34,7 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-05T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-06T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
@@ -63,7 +63,22 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-05T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-06T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+      }
+    },
+    "los-altos": {
+      "date": "2026-08-25",
+      "displayDate": "Tue, Aug 25",
+      "bodyName": "City Council Regular Meeting",
+      "location": null,
+      "url": "https://losaltosca.portal.civicclerk.com/event/2083/overview",
+      "civicClerkEventId": 2083,
+      "agendaItems": [],
+      "confirmation": {
+        "status": "confirmed",
+        "provider": "civicclerk",
+        "observedDate": "2026-08-25",
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-06T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },
@@ -92,28 +107,26 @@
       "provider": "PrimeGov",
       "status": "ok"
     },
-    "campbell": {
-      "provider": "CivicEngage",
-      "status": "error",
-      "detail": "agenda page frozen — newest posting 2025-10-07 (302d old)"
-    },
     "saratoga": {
       "provider": "CivicEngage",
       "status": "no-meeting"
     },
-    "los-altos": {
-      "provider": "CivicEngage",
-      "status": "error",
-      "detail": "no dates parsed from agenda page (source likely JS-rendered)"
+    "campbell": {
+      "provider": "eScribe",
+      "status": "no-meeting"
     },
     "milpitas": {
+      "provider": "CivicClerk",
+      "status": "ok"
+    },
+    "los-altos": {
       "provider": "CivicClerk",
       "status": "ok"
     },
     "los-gatos": {
       "provider": "MuniCode",
       "status": "error",
-      "detail": "fetch failed"
+      "detail": "municodemeetings.com refused the connection (ERR_HTTP2_STREAM_ERROR) — town's only published agenda source; not worked around"
     }
   }
 }
