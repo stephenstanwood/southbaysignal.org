@@ -1724,6 +1724,22 @@ function cleanVenue(raw) {
   // verb "located", so treat any such string as directions, not a place name,
   // and let the caller fall back to a civic venue guess or the city.
   if (/\blocated\s+(at|near|in|by|on|next|across|behind|inside|outside)\b/i.test(v)) return "";
+  // Same CivicPlus calendars also write the location as a full sentence with the
+  // place name at the end, e.g. Los Altos "Downtown Park Outreach" workshops whose
+  // location reads "Workshop will take place on Plaza 3". Unlike the "located
+  // near ..." case above these DO carry a usable venue name, so lift out the tail
+  // after the verb phrase rather than dropping the field.
+  const heldMatch = v.match(
+    /^.*?\b(?:will\s+take\s+place|takes\s+place|will\s+be\s+held|is\s+being\s+held|will\s+occur)\s+(on|at|in|inside|near|by|behind|outside|next\s+to|across\s+from|adjacent\s+to)\s+(?:the\s+)?(\S.*)$/i,
+  );
+  if (heldMatch) {
+    // Only a containment preposition introduces a place NAME. A directional one
+    // ("... will take place near the front door") introduces directions, so drop
+    // the field and let the caller fall back to a civic-venue guess.
+    if (!/^(?:on|at|in|inside)$/i.test(heldMatch[1])) return "";
+    v = heldMatch[2].trim().replace(/[.,;]+$/, "");
+    if (!v || /\b(?:located|near|corner\s+of|across\s+from|next\s+to)\b/i.test(v)) return "";
+  }
   // Meetup organizers sometimes type a parking note into the venue-name field
   // ("Street Parking for Free", "Free Parking"). That's an instruction, not a
   // place name — return empty so the caller falls back to the group/source name.
