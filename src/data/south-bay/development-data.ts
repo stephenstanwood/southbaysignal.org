@@ -82,7 +82,7 @@ export const DEV_PROJECTS: DevProject[] = [
     category: "mixed-use",
     status: "approved",
     description:
-      "Formerly CityPlace Santa Clara. A large mixed-use development adjacent to Levi's Stadium planned by Related Companies. Approved by Santa Clara after years of litigation with San Jose. Includes office, hotel, retail, and entertainment uses across a multi-building campus.",
+      "Formerly CityPlace Santa Clara. A large mixed-use development adjacent to Levi's Stadium planned by Related Companies. Approved by Santa Clara after years of litigation with San José. Includes office, hotel, retail, and entertainment uses across a multi-building campus.",
     scale: "Multi-building campus",
     developer: "Related Companies",
     timeline: "TBD",
@@ -99,7 +99,7 @@ export const DEV_PROJECTS: DevProject[] = [
     category: "mixed-use",
     status: "on-hold",
     description:
-      "Google's 80-acre mixed-use district next to Diridon Station, approved by San Jose City Council in 2021 for up to 7.3M sq ft of office plus 4,000+ homes, parks, and retail near the region's largest transit hub. Google ended its development partnership with Lendlease in 2023 and paused active construction; the entitled site remains largely cleared while the company reassesses the timeline. Under the development agreement, a $54M community-fund payment is triggered if construction hasn't started by July 2031.",
+      "Google's 80-acre mixed-use district next to Diridon Station, approved by San José City Council in 2021 for up to 7.3M sq ft of office plus 4,000+ homes, parks, and retail near the region's largest transit hub. Google ended its development partnership with Lendlease in 2023 and paused active construction; the entitled site remains largely cleared while the company reassesses the timeline. Under the development agreement, a $54M community-fund payment is triggered if construction hasn't started by July 2031.",
     scale: "Up to 7.3M sq ft; 4,000+ housing units planned",
     developer: "Google (Lendlease partnership ended 2023)",
     timeline: "Entitled 2021; active construction paused",
