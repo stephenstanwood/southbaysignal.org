@@ -62,7 +62,11 @@ export const GET: APIRoute = async ({ url, clientAddress }) => {
   // 1. Scrape the latest agenda
   const agenda = await fetchCityAgenda(city);
   if (!agenda) {
-    return errJson(`No agenda data available for ${city}`, 404);
+    // Reached when the city has no scraper config, or when its agenda source
+    // is stale enough that publishing it would misdate the meeting. The card
+    // shows this string verbatim, so keep it plain English — the nightly digest
+    // already on screen stays put.
+    return errJson("Couldn't pull a fresh agenda from this city right now.", 404);
   }
 
   // 2. Get the agenda content
