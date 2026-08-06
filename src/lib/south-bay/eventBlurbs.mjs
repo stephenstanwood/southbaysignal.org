@@ -8,8 +8,9 @@
 //
 // Flow:
 //   Tier 1: Event already has a blurb (cache hit carried in the event obj).
-//   Tier 2: Persistent cache hit (event-blurb-cache.json keyed by URL or
-//           fingerprint). Free.
+//   Tier 2: Persistent cache hit (event-blurb-cache.json, keyed by a
+//           title+venue+description fingerprint — see eventBlurbCacheKey for
+//           why the description has to be in there). Free.
 //   Tier 3: Sonnet batch generation — 30 events per call, cached across runs.
 //           Behind RESOLVE_EVENT_BLURBS=1 env flag so
 //           local dev runs don't burn Sonnet credits.
@@ -19,6 +20,7 @@
 // ---------------------------------------------------------------------------
 
 import { readFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import Anthropic from "@anthropic-ai/sdk";
@@ -54,24 +56,115 @@ function norm(s) {
   return String(s || "").toLowerCase().replace(/\s+/g, " ").trim();
 }
 
-function cacheKey(event) {
-  // Title + venue fingerprint — stable across date variants of the same
-  // recurring event, AND distinct between different events that happen to
-  // share a URL (e.g. all MLS Earthquakes home games shared
-  // sjearthquakes.com/schedule, which used to map every game to whichever
-  // game's blurb got cached first — every team showed the same opponent).
-  return `fp:${norm(event.title)}|${norm(event.venue)}`;
+/** Short content hash of the per-occurrence source text a blurb is derived
+ *  from. Empty string when the event carries no description — that's a stable
+ *  value, not a hash collision risk, and it keeps description-less events on
+ *  one key instead of thrashing. */
+function descFingerprint(event) {
+  const d = norm(event?.description);
+  if (!d) return "";
+  return createHash("sha1").update(d).digest("hex").slice(0, 12);
 }
 
-/** Reverse of cacheKey() for `fp:` keys — recovers the (normalized) title
- *  and venue so a cache entry can be given Sonnet context even when the
- *  source event has aged out of upcoming-events.json. */
-function parseFpKey(key) {
-  if (!key.startsWith("fp:")) return { title: "", venue: "" };
-  const rest = key.slice(3);
+/**
+ * Cache key for one event's blurb.
+ *
+ * Title + venue keeps date variants of a recurring event on one entry, AND
+ * keeps different events that share a URL apart (all MLS Earthquakes home
+ * games shared sjearthquakes.com/schedule, which used to map every game to
+ * whichever game's blurb got cached first — every team showed the same
+ * opponent).
+ *
+ * The description fingerprint is the third component because title+venue
+ * alone is NOT identity for a recurring series whose particulars change every
+ * occurrence. Kepler's Books runs a monthly "Story Is the Thing" with a new
+ * author lineup each month; the blurb generated 2026-04-26 named that April's
+ * four authors and was then served for every later month, so the August 6
+ * issue published four real people as appearing at an event they were not at.
+ * A changed description now misses the cache and regenerates.
+ *
+ * Format: `fp:<title>|<venue>|d:<descFp>`. The `|d:` marker is what
+ * distinguishes this from the legacy two-component `fp:<title>|<venue>` key,
+ * so parseFpKey can read both without guessing.
+ */
+export function eventBlurbCacheKey(event) {
+  return `fp:${norm(event?.title)}|${norm(event?.venue)}|d:${descFingerprint(event)}`;
+}
+
+const cacheKey = eventBlurbCacheKey;
+
+/** The pre-description key an event would have had. Only used to find legacy
+ *  entries worth migrating. */
+function legacyCacheKey(event) {
+  return `fp:${norm(event?.title)}|${norm(event?.venue)}`;
+}
+
+/** Reverse of cacheKey() for `fp:` keys — recovers the (normalized) title,
+ *  venue and description fingerprint so a cache entry can be given Sonnet
+ *  context even when the source event has aged out of upcoming-events.json.
+ *  Reads legacy two-component keys too (descFp comes back ""). */
+export function parseFpKey(key) {
+  if (typeof key !== "string" || !key.startsWith("fp:")) return { title: "", venue: "", descFp: "" };
+  let rest = key.slice(3);
+  let descFp = "";
+  // Split the description component off first — titles may themselves contain
+  // "|", which is why venue is recovered with lastIndexOf below.
+  const dIdx = rest.lastIndexOf("|d:");
+  if (dIdx !== -1) {
+    descFp = rest.slice(dIdx + 3);
+    rest = rest.slice(0, dIdx);
+  }
   const pipe = rest.lastIndexOf("|");
-  if (pipe === -1) return { title: rest, venue: "" };
-  return { title: rest.slice(0, pipe), venue: rest.slice(pipe + 1) };
+  if (pipe === -1) return { title: rest, venue: "", descFp };
+  return { title: rest.slice(0, pipe), venue: rest.slice(pipe + 1), descFp };
+}
+
+/** True when two cache keys describe the same title+venue and differ only in
+ *  their description fingerprint — i.e. two occurrences of one recurring
+ *  series, not two different events. */
+export function isSameSeriesKey(a, b) {
+  if (a === b) return false;
+  const x = parseFpKey(a), y = parseFpKey(b);
+  if (!x.title || !y.title) return false;
+  return x.title === y.title && x.venue === y.venue;
+}
+
+/**
+ * Migrate legacy `fp:<title>|<venue>` entries written before the description
+ * fingerprint joined the key.
+ *
+ * A legacy entry records no description, so there is no way to tell whether
+ * its blurb still matches the event's current particulars. Adopting it under
+ * the new key would preserve exactly the bug this change exists to fix, so:
+ *
+ *   • event currently has NO description → nothing per-occurrence could have
+ *     drifted, so move the blurb onto the new key and keep the work.
+ *   • event HAS a description → drop the entry and let it regenerate against
+ *     the text that's actually true today.
+ *
+ * Legacy keys with no matching current event are left alone. Pruning them off
+ * the live event list would delete blurbs for anything outside this run's
+ * window — the partial-regen data-loss shape.
+ */
+export function migrateLegacyFingerprintKeys(cache, events) {
+  let migrated = 0, dropped = 0;
+  for (const e of events || []) {
+    const oldKey = legacyCacheKey(e);
+    const entry = cache?.byKey?.[oldKey];
+    if (!entry) continue;
+    if (!descFingerprint(e)) {
+      const newKey = cacheKey(e);
+      if (!cache.byKey[newKey]) cache.byKey[newKey] = entry;
+      migrated++;
+    } else {
+      dropped++;
+    }
+    delete cache.byKey[oldKey];
+  }
+  if (migrated || dropped) {
+    console.log(`[eventBlurbs] description-key migration: ${migrated} carried forward, ${dropped} dropped for regeneration`);
+  }
+  return { migrated, dropped };
 }
 
 function dayOfWeek(dateStr) {
@@ -344,6 +437,7 @@ export async function resolveEventBlurbs(events, opts = {}) {
 
   const cache = loadCache();
   migrateUrlKeys(cache, events);
+  migrateLegacyFingerprintKeys(cache, events);
 
   // Sweep stale entries whose blurb leaks date/day/month context. The card
   // shows the date separately, so these are always wrong — drop and let the
@@ -428,6 +522,12 @@ export async function resolveEventBlurbs(events, opts = {}) {
         // of shipping the same boilerplate twice.
         const key = batch[i].key;
         let owner = usedBlurbs.get(norm(blurb));
+        // A prior occurrence of the SAME series (same title+venue, older
+        // description fingerprint) is not a boilerplate collision — it's last
+        // month's entry for this very event, which the description component
+        // now keys separately. Forcing a contrived difference against it would
+        // burn a retry to make two blurbs for one activity read as unrelated.
+        if (owner && isSameSeriesKey(owner, key)) owner = null;
         if (owner && owner !== key) {
           const conflictBlurbs = [blurb];
           let deduped = false;
