@@ -159,7 +159,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     trendNote: "7K at Santa Clara HQ + SCC offices; growing with AI GPU demand",
     highlights: [
       "Blackwell GPUs now deployed across every major cloud; the next-generation Vera Rubin platform ramps through 2026, with Jensen Huang projecting $1 trillion in Blackwell and Rubin orders by 2027",
-      "Market cap above $5 trillion — the world's most valuable company",
+      "First company to cross a $5 trillion market cap, in October 2025",
     ],
     description:
       "GPUs and AI accelerators. The defining company of the current AI era. Santa Clara's crown jewel.",
@@ -268,13 +268,13 @@ export const TECH_COMPANIES: TechCompany[] = [
     category: "network",
     sccEmployeesK: 3,
     trend: "flat",
-    trendNote: "3K at Sunnyvale HQ; now part of HP Enterprise after $14B acquisition",
+    trendNote: "3K at Sunnyvale HQ; now part of Hewlett Packard Enterprise after $14B acquisition",
     highlights: [
-      "HP Enterprise acquisition closed 2024 — Juniper now part of HPE networking portfolio",
+      "HPE acquisition closed July 2025 after a DOJ antitrust settlement — Juniper now part of the HPE networking portfolio",
       "Mist AI-driven networking platform being integrated into HPE product suite",
     ],
     description:
-      "Enterprise networking. Now part of HP Enterprise after a $14B acquisition.",
+      "Enterprise networking. Now part of Hewlett Packard Enterprise after a $14B acquisition that closed in July 2025.",
     color: "#84BD00",
     careersUrl: "https://careers.hpe.com",
   },
