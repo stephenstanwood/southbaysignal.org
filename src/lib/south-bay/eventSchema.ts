@@ -9,6 +9,13 @@ import { normalizeAbsoluteHttpUrl } from "./httpUrl.mjs";
 
 const SITE = "https://southbaytoday.org";
 
+/** True when an ISO calendar date (PT) is strictly before today in Pacific time. */
+export function isPastEventDate(isoDate: string, ref: Date = new Date()): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return false;
+  const todayPt = ref.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+  return isoDate < todayPt;
+}
+
 export interface SchemaEventRecord {
   id?: string | null;
   title?: string | null;

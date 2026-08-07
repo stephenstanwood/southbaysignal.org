@@ -180,11 +180,26 @@ if (!outputDir) {
 
       if (parsed.pathname.startsWith("/event/")) {
         metrics.eventLeafPages += 1;
+        const passed = /class=["']cal-passed["']/.test(html);
         const events = parsedBlocks.flatMap((block) => collectTypedObjects(block, "Event"));
-        if (events.length !== 1) fail(`${url} must expose exactly one Event object; found ${events.length}.`);
-        const event = events[0];
-        if (event && event.url !== url) fail(`${url} Event.url must point to its canonical leaf page.`);
-        if (event && !event.sameAs) warn(`${url} has no primary-source sameAs URL.`);
+        if (passed) {
+          if (events.length !== 0) {
+            fail(`${url} is a passed archive page but still exposes ${events.length} Event object(s).`);
+          }
+        } else {
+          if (events.length !== 1) fail(`${url} must expose exactly one Event object; found ${events.length}.`);
+          const event = events[0];
+          if (event && event.url !== url) fail(`${url} Event.url must point to its canonical leaf page.`);
+          if (event && !event.sameAs) warn(`${url} has no primary-source sameAs URL.`);
+          if (
+            event &&
+            event.eventStatus === "https://schema.org/EventScheduled" &&
+            typeof event.startDate === "string" &&
+            event.startDate.slice(0, 10) < new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
+          ) {
+            fail(`${url} advertises EventScheduled for a startDate that has already passed.`);
+          }
+        }
         if (!/<time\s+[^>]*datetime=["'][^"']+["']/i.test(html)) warn(`${url} does not show a machine-readable refresh time.`);
       }
     }

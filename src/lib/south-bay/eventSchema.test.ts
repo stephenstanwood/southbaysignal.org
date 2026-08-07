@@ -1,7 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { eventToSchema } from "./eventSchema";
+import { eventToSchema, isPastEventDate } from "./eventSchema";
+
+test("isPastEventDate compares ISO dates in Pacific time", () => {
+  const ref = new Date("2026-08-07T20:00:00Z"); // Aug 7 afternoon PT
+  assert.equal(isPastEventDate("2026-08-06", ref), true);
+  assert.equal(isPastEventDate("2026-08-07", ref), false);
+  assert.equal(isPastEventDate("2026-08-08", ref), false);
+  assert.equal(isPastEventDate("not-a-date", ref), false);
+});
 
 test("eventToSchema identifies the canonical leaf page and preserves the primary source", () => {
   const pageUrl = "https://southbaytoday.org/event/2026-07-18-summer-concert";

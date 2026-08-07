@@ -162,7 +162,12 @@ const calendarUrl = buildGoogleCalendarUrl({
   url: event.url,
 });
 
-const eventSchema = eventToSchema({ ...event, virtual: isVirtual, cityName, pageUrl } as SchemaEventRecord);
+// Passed archive leaves stay crawlable for the ~30-day window but must not
+// advertise EventScheduled — GSC flags stale Event objects on pages that
+// already say the event happened.
+const eventSchema = passed
+  ? null
+  : eventToSchema({ ...event, virtual: isVirtual, cityName, pageUrl } as SchemaEventRecord);
 const webPageSchema = {
   "@type": "WebPage",
   "@id": `${pageUrl}#webpage`,
