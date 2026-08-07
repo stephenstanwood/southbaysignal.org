@@ -773,14 +773,17 @@ export const SCC_SPOTLIGHT: SccTechSpotlight[] = [
     employeesNote: "~300 employees",
   },
   {
+    // Renamed 2026-08-07: the company dropped "Labs" and moved its main domain
+    // from lambdalabs.com to lambda.ai. `id` and the logo-manifest key stay
+    // "lambda-labs" so the existing logo keeps resolving.
     id: "lambda-labs",
-    name: "Lambda Labs",
+    name: "Lambda",
     city: "San Jose",
     category: "cloud",
     stage: "growth",
     tagline: "GPU cloud built for AI teams — H100 and A100 clusters you can rent by the hour without a hyperscaler contract. The go-to option for startups and researchers who can't get AWS quota. More than $3B raised, including a $1.5B Series E in late 2025; weighing a 2026 IPO.",
     color: "#EA580C",
-    url: "https://lambdalabs.com",
+    url: "https://lambda.ai",
     employeesNote: "~250 employees",
   },
   {
@@ -1117,7 +1120,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     tagline:
       "Five months after coming out of stealth with a $100M Series A, Simile raised more than $200M more at a $2B valuation. It builds foundation models that simulate how people actually behave, so a company can test a product change, a price, or a campaign against a synthetic population that acts like its real customers before booking a single focus group. Greenoaks led, with Definition joining as a new investor and Index Ventures, Bain Capital Ventures, Hanabi, A*, Factory, and CVS Health Ventures all returning. Co-founded by Stanford's Joon Sung Park with Michael Bernstein, Percy Liang, and Lainie Yallen; CVS Health, Wealthfront, Deloitte, and Gallup are named customers, and the company says Fortune 100 enterprises have run tens of millions of simulations through the platform. The money goes toward training the core behavior models, expanding simulation compute, and building out enterprise teams in healthcare, financial services, and media.",
     color: "#4f46e5",
-    url: "https://simile.ai",
+    url: "https://www.simile.com",
   },
   {
     id: "eliyan-series-c",
@@ -1601,7 +1604,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     date: "2026-03-25",
     tagline: "Vertical power delivery chips for AI data centers. Founded by engineers who pioneered switched-capacitor power in mobile chips.",
     color: "#1e3a5f",
-    url: "https://epicmicrosystems.com",
+    url: "https://epicmicro.com",
   },
   {
     id: "cylake",
@@ -1649,7 +1652,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     date: "2026-03-25",
     tagline: "Micro-LED display and optical interconnect tech. Pivoting to AI data center optical I/O in partnership with Marvell Technology, alongside XR/AR displays.",
     color: "#2563eb",
-    url: "https://mojovision.com",
+    url: "https://www.mojo.vision",
   },
   {
     id: "dazzle-ai",
@@ -2127,7 +2130,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     date: "2026-02-12",
     tagline: "AI simulation platform that creates digital twins of real consumers — letting companies stress-test new products, UI changes, and pricing moves against synthetic populations before talking to a single real customer. Led by Index Ventures; Fei-Fei Li and Andrej Karpathy are investors. Emerged from stealth February 2026.",
     color: "#4f46e5",
-    url: "https://simile.ai",
+    url: "https://www.simile.com",
   },
   {
     id: "lightwheel-ai",

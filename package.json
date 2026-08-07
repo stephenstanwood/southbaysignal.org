@@ -25,6 +25,7 @@
     "audit-places": "node scripts/audit-places.mjs",
     "validate-places": "node scripts/validate-places.mjs",
     "audit-events": "node scripts/audit-events.mjs",
+    "audit-tech-urls": "node --import tsx scripts/audit-tech-urls.mjs",
     "audit:discovery": "node scripts/audit-discovery.mjs",
     "report:growth": "node scripts/report-growth.mjs",
     "verify-camp-urls": "node scripts/verify-camp-urls.mjs",
