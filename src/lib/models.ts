@@ -1,7 +1,7 @@
 /** Centralized Claude model ID constants */
 
 export const CLAUDE_SONNET = "claude-sonnet-5";
-export const CLAUDE_OPUS = "claude-opus-4-8";
+export const CLAUDE_OPUS = "claude-opus-5";
 
 /**
  * Extract trimmed text from a Claude response's content array.

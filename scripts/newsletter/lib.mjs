@@ -1612,7 +1612,7 @@ Return ONLY the rewritten blurb, no quotes, no preamble.`;
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-6",
+      model: "claude-sonnet-5",
       max_tokens: 600,
       system: SYSTEM,
       messages: [{ role: "user", content: prompt }],

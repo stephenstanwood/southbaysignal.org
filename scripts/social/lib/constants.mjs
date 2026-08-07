@@ -25,7 +25,7 @@ export const CLAUDE_MODEL = "claude-sonnet-5";
 // wildcards, restaurant opening blurbs, daily-email blurbs). Each daily run
 // produces all platform variants in one call, so the cost delta over Sonnet
 // is negligible (a few cents/day) and the quality is what people see.
-export const CLAUDE_COPY_MODEL = "claude-opus-4-7";
+export const CLAUDE_COPY_MODEL = "claude-opus-5";
 
 // Scoring weights
 export const SCORE_WEIGHTS = {
