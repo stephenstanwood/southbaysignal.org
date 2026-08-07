@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-06T14:11:30.789Z",
+  "generatedAt": "2026-08-07T03:09:24.958Z",
   "meetings": {
     "san-jose": {
       "date": "2026-08-11",
@@ -11,23 +11,23 @@
       "agendaItems": [
         {
           "title": "Proposition 1 - Veterans and Affordable Housing Bond Act of 2026.",
-          "sequence": 63
-        },
-        {
-          "title": "Fiscal Year 2026-2027 Property Tax Levy for General Obligation Bonds.",
           "sequence": 65
         },
         {
-          "title": "Public Hearing for the Fiscal Year 2026-2027 Annual Residential Solid Waste Collection Service Charges to be Placed on the 2026-2027 Santa Clara County Secured Property Tax Roll.",
-          "sequence": 66
-        },
-        {
-          "title": "Public Hearing for the Fiscal Year 2026-2027 Sanitary Sewer Service and Use Charge and Storm Sewer Service Charge Assessments to be Placed on the 2026-2027 Santa Clara County Secured Property Tax Roll.",
+          "title": "Fiscal Year 2026-2027 Property Tax Levy for General Obligation Bonds.",
           "sequence": 67
         },
         {
+          "title": "Public Hearing for the Fiscal Year 2026-2027 Annual Residential Solid Waste Collection Service Charges to be Placed on the 2026-2027 Santa Clara County Secured Property Tax Roll.",
+          "sequence": 68
+        },
+        {
+          "title": "Public Hearing for the Fiscal Year 2026-2027 Sanitary Sewer Service and Use Charge and Storm Sewer Service Charge Assessments to be Placed on the 2026-2027 Santa Clara County Secured Property Tax Roll.",
+          "sequence": 69
+        },
+        {
           "title": "Response to Santa Clara County Civil Grand Jury Report Entitled “A Canopy in Decline: Is San José serious about expanding its tree coverage?”",
-          "sequence": 72
+          "sequence": 74
         }
       ],
       "confirmation": {
@@ -35,6 +35,42 @@
         "provider": "legistar",
         "observedDate": "2026-08-11",
         "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-06T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+      }
+    },
+    "sunnyvale": {
+      "date": "2026-08-11",
+      "displayDate": "Tue, Aug 11",
+      "bodyName": "City Council",
+      "location": "Online and Council Chambers, City Hall",
+      "url": "https://sunnyvaleca.legistar.com/MeetingDetail.aspx?LEGID=4521&GID=270&G=FA76FAAA-7A74-41EA-9143-F2DB1947F9A5",
+      "legistarEventId": 4521,
+      "agendaItems": [
+        {
+          "title": "Public Participation and Access",
+          "sequence": 1
+        },
+        {
+          "title": "5:30 P.M. SPECIAL COUNCIL MEETING (Study Session)",
+          "sequence": 2
+        },
+        {
+          "title": "Consider Increasing Inclusionary Housing Requirements and Updating Below Market Rate In-Lieu Fees for New Rental and Ownership Housing (Council Priority Project CDD 23-01)",
+          "sequence": 6
+        },
+        {
+          "title": "Adjourn Special Meeting",
+          "sequence": 7
+        },
+        {
+          "title": "Award a Consultant Services Agreement to Biggs Cardosa Associates, Inc. in the Amount of $435,591 for Professional Services for the Preventive Maintenance of Various Bridges Project and Approve Budget Modification No. 5 in the Amount of $446,100 (F26-285)",
+          "sequence": 15
+        }
+      ],
+      "confirmation": {
+        "status": "confirmed",
+        "provider": "legistar",
+        "observedDate": "2026-08-11",
+        "sourceUrl": "https://webapi.legistar.com/v1/sunnyvaleca/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-06T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
@@ -93,7 +129,7 @@
     },
     "sunnyvale": {
       "provider": "Legistar",
-      "status": "no-meeting"
+      "status": "ok"
     },
     "cupertino": {
       "provider": "Legistar",

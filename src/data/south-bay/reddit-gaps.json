@@ -1,68 +1,85 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-06T03:15:36.255Z",
+    "generatedAt": "2026-08-07T03:16:45.239Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 3
+    "sourceCount": 11
   },
   "summary": {
-    "threadsMined": 3,
-    "placesExtracted": 3,
+    "threadsMined": 11,
+    "placesExtracted": 2,
     "placesMatched": 1,
-    "placeGaps": 2,
-    "eventsExtracted": 1,
+    "placeGaps": 1,
+    "eventsExtracted": 3,
     "eventsMatched": 0,
-    "eventGaps": 1,
-    "autoAppendedOpenings": 1
+    "eventGaps": 3,
+    "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "The Silk Route",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "new Indian restaurant replacing Olla Cocina in San Pedro Square",
+      "name": "Twin Creeks Soccer League",
+      "city": "Sunnyvale",
+      "kind": "venue",
+      "context": "7v7 men's novice soccer league recruiting players",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vggk0c/san_pedro_square_has_never_had_a_restaurant_like/",
-        "https://www.reddit.com/r/SanJose/comments/1vgp8wx/sunnyvale_indoor_hoops_run_saturdays_7pm_to_9pm/",
-        "https://www.reddit.com/r/SanJose/comments/1vgfzq9/coyote_creek_trail_safe_for_jogging/"
-      ]
-    },
-    {
-      "name": "Olla Cocina",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "former restaurant at San Pedro Square site",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vggk0c/san_pedro_square_has_never_had_a_restaurant_like/",
-        "https://www.reddit.com/r/SanJose/comments/1vgp8wx/sunnyvale_indoor_hoops_run_saturdays_7pm_to_9pm/",
-        "https://www.reddit.com/r/SanJose/comments/1vgfzq9/coyote_creek_trail_safe_for_jogging/"
+        "https://www.reddit.com/r/Sunnyvale/comments/1veyyhi/twin_creeks_soccer_league_recruiting_players_7v7/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "Sunnyvale Indoor Hoops",
+      "name": "AC/DC Concert",
+      "when": "",
+      "city": "San Jose",
+      "context": "recent concert praised as a great show",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vh9yw5/the_best_cards_shop_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vgx58g/acdc_rocked_out/",
+        "https://www.reddit.com/r/SanJose/comments/1vgvz47/any_recs_for_things_going_on_this_weekend_that/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1vgp8bu/sunnyvale_indoor_hoops_run_saturdays_7pm_to_9pm/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1vezqjt/underwater_robotics_opportunity/"
+      ]
+    },
+    {
+      "name": "Sunnyvale Indoor Hoops Run",
       "when": "Saturdays 7pm-9pm",
       "city": "Sunnyvale",
-      "context": "recurring pickup basketball run",
+      "context": "pickup basketball run, $13/session",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vggk0c/san_pedro_square_has_never_had_a_restaurant_like/",
-        "https://www.reddit.com/r/SanJose/comments/1vgp8wx/sunnyvale_indoor_hoops_run_saturdays_7pm_to_9pm/",
-        "https://www.reddit.com/r/SanJose/comments/1vgfzq9/coyote_creek_trail_safe_for_jogging/"
+        "https://www.reddit.com/r/SanJose/comments/1vh9yw5/the_best_cards_shop_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vgx58g/acdc_rocked_out/",
+        "https://www.reddit.com/r/SanJose/comments/1vgvz47/any_recs_for_things_going_on_this_weekend_that/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1vgp8bu/sunnyvale_indoor_hoops_run_saturdays_7pm_to_9pm/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1vezqjt/underwater_robotics_opportunity/"
+      ]
+    },
+    {
+      "name": "MATE ROV Competition",
+      "when": "",
+      "city": "",
+      "context": "underwater robotics competition team forming in Santa Clara area",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vh9yw5/the_best_cards_shop_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vgx58g/acdc_rocked_out/",
+        "https://www.reddit.com/r/SanJose/comments/1vgvz47/any_recs_for_things_going_on_this_weekend_that/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1vgp8bu/sunnyvale_indoor_hoops_run_saturdays_7pm_to_9pm/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1vezqjt/underwater_robotics_opportunity/"
       ]
     }
   ],
   "placeMatches": [
     {
-      "name": "Coyote Creek Trail",
+      "name": "Lake Cunningham",
       "city": "San Jose",
       "kind": "park",
-      "context": "trail being considered for jogging",
+      "context": "has a skate park and bike tracks, free and open to public",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vggk0c/san_pedro_square_has_never_had_a_restaurant_like/",
-        "https://www.reddit.com/r/SanJose/comments/1vgp8wx/sunnyvale_indoor_hoops_run_saturdays_7pm_to_9pm/",
-        "https://www.reddit.com/r/SanJose/comments/1vgfzq9/coyote_creek_trail_safe_for_jogging/"
+        "https://www.reddit.com/r/SanJose/comments/1vhddbf/lake_cunningham_has_a_skate_park_and_some_really/",
+        "https://www.reddit.com/r/SanJose/comments/1vhjlz3/where_to_play_pickup_beach_volleyball/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1vhhz3n/park_with_toddlers_riding_striders/",
+        "https://www.reddit.com/r/Sunnyvale/comments/1vhgg6c/the_best_part_of_sunnyvale/",
+        "https://www.reddit.com/r/SanJose/comments/1vhb46w/looking_for_good_restaurants_for_a_date/"
       ],
-      "matchedName": "Coyote Creek Trail"
+      "matchedName": "Lake Cunningham Regional Park"
     }
   ],
   "eventMatches": []

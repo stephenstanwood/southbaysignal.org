@@ -1,19 +1,31 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-06T03:08:30.456Z",
+      "generatedAt": "2026-08-07T03:09:13.050Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Jul 29 – Aug 5",
+      "dateRange": "Jul 30 – Aug 6",
       "stats": {
-        "total": 301,
-        "notable": 17,
-        "newUnits": 6,
-        "totalValuation": 16654981
+        "total": 308,
+        "notable": 24,
+        "newUnits": 13,
+        "totalValuation": 12606244
       },
       "permits": [
+        {
+          "id": "2025-116871-RS",
+          "address": "3551 Chamberlain Dr",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Lot 5new 2-Story SFR",
+          "valuation": 681229,
+          "units": 1,
+          "issueDate": "2026-08-04",
+          "subtype": "Single-Family"
+        },
         {
           "id": "2026-116995-RS",
           "address": "1268 Eden Av",
@@ -51,18 +63,6 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-146496-RS",
-          "address": "3240 Jade Av #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Pdox Conversion of (E) Space & Additon Added for New Attached ADU",
-          "valuation": 164133,
-          "units": 1,
-          "issueDate": "2026-07-30",
-          "subtype": "2nd Unit Added"
-        },
-        {
           "id": "2026-106948-RS",
           "address": "1298 Lennon Wy #2",
           "category": "residential-new",
@@ -72,6 +72,42 @@
           "valuation": 160087,
           "units": 1,
           "issueDate": "2026-08-03",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2026-129339-RS",
+          "address": "684 N 10th St #3",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Epr Code Amnesty Legalize Unpermitted Conversion Detach Accessory Structure to ADU",
+          "valuation": 145662,
+          "units": 1,
+          "issueDate": "2026-08-04",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2025-112043-RS",
+          "address": "3117 Julio Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached ADU",
+          "valuation": 139153,
+          "units": 1,
+          "issueDate": "2026-08-04",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2026-126583-RS",
+          "address": "684 N 10th St #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Epr Code Amnesty Legalize Unpermitted Attach ADU",
+          "valuation": 107839,
+          "units": 1,
+          "issueDate": "2026-08-04",
           "subtype": "2nd Unit Added"
         },
         {
@@ -87,65 +123,29 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2026-129322-CI",
-          "address": "696 Blossom Hill Rd",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
+          "id": "2024-078071-RS",
+          "address": "1264 Paddington Wy #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Epr (Bemp 100%) New Commercial Building",
-          "valuation": 3333000,
-          "units": 0,
-          "issueDate": "2026-07-30",
-          "subtype": "Mixed Use"
-        },
-        {
-          "id": "2026-130224-CI",
-          "address": "1333 Oakland Rd",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Additions/Alterations",
-          "description": "(Be 100%) Solar and Battery Installation",
-          "valuation": 2509654,
-          "units": 0,
-          "issueDate": "2026-07-30",
-          "subtype": "Industrial Plant"
-        },
-        {
-          "id": "2026-130576-CI",
-          "address": "488 Almaden Bl",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Vta Tenant Improvement",
-          "valuation": 1629040,
-          "units": 0,
-          "issueDate": "2026-08-03",
-          "subtype": "Office"
-        },
-        {
-          "id": "2026-123631-CI",
-          "address": "1251 S Bascom Av",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "San Jose Water Company (Be 100%) Ev Charging Station",
-          "valuation": 1131767,
-          "units": 0,
-          "issueDate": "2026-07-31",
-          "subtype": "Industrial Plant"
+          "description": "Code Case - Attached ADU",
+          "valuation": 73723,
+          "units": 1,
+          "issueDate": "2026-08-04",
+          "subtype": "2nd Unit Added"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-06T03:08:32.902Z",
+      "generatedAt": "2026-08-07T03:09:15.273Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Jul 29 – Aug 5",
+      "dateRange": "Jul 30 – Aug 6",
       "stats": {
-        "total": 123,
-        "notable": 7,
+        "total": 117,
+        "notable": 6,
         "newUnits": 0,
         "totalValuation": 0
       },
@@ -163,60 +163,12 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-02097",
-          "address": "1390 Harker Av",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-07-30",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-02105",
-          "address": "3941 Duncan Pl",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-07-30",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26PLN-00209",
-          "address": "457 Kingsley Av",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for an Over the Counter Architectural Review to remove one dead 48-inch box Blue Atlas Cedar tree and replace it with one 24-inch box Chinese Pistache tree in the same location. Zone District: Single Family (R-1 (10,000)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-03",
-          "subtype": "Over the Counter Approved"
-        },
-        {
           "id": "26PLN-00213",
           "address": "491 W Charleston Rd",
           "category": "entitlement",
           "categoryLabel": "Entitlement / Zoning",
           "workType": "Entitlement",
           "description": "Request for Architectural Review for the removal of one dead Deodar Cedar tree outside a day care center and replacement with a new 24-inch box size Cork Oak tree.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-04",
-          "subtype": "Over the Counter Approved"
-        },
-        {
-          "id": "26PLN-00215",
-          "address": "353 University Av",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for a temporary sign permit to installation of one exterior wall-mounted sign at the building corner. The sign will be 48 inches wide by 96 and 1/8 inches tall made from aluminum composite (Dibond) panel, 45° folded to wrap building corner, mounted to existing brick with masonry anchors. The sign will be installed from August 4 through September 1 but will be removed before September 4 and the building will be returned to its original condition. Zone District: Downtown Commercial (CD-C(GF)(P)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-08-04",
@@ -232,6 +184,42 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-07-31",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00209",
+          "address": "457 Kingsley Av",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for an Over the Counter Architectural Review to remove one dead 48-inch box Blue Atlas Cedar tree and replace it with one 24-inch box Chinese Pistache tree in the same location. Zone District: Single Family (R-1 (10,000)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-03",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00217",
+          "address": "164 University Av",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for Architectural Review to install (1) non-illuminated sign onto an existing metal canopy and (1) non-illuminated hanging sign for \"PopUp Bagels\".",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-05",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00215",
+          "address": "353 University Av",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for a temporary sign permit to installation of one exterior wall-mounted sign at the building corner. The sign will be 48 inches wide by 96 and 1/8 inches tall made from aluminum composite (Dibond) panel, 45° folded to wrap building corner, mounted to existing brick with masonry anchors. The sign will be installed from August 4 through September 1 but will be removed before September 4 and the building will be returned to its original condition. Zone District: Downtown Commercial (CD-C(GF)(P)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-04",
           "subtype": "Over the Counter Approved"
         }
       ]
