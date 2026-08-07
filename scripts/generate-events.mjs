@@ -7412,6 +7412,17 @@ async function main() {
   valid.sort((a, b) => a.date.localeCompare(b.date));
 
   // Per-source cap — university feeds are high-volume; cap them so community events aren't buried
+  //
+  // KNOWN LIMITATION (measured 2026-08-07): the cap counts down a list already
+  // sorted by date, so it truncates a source in TIME rather than thinning it.
+  // A sparse feed just loses its tail; a dense one gets a hard coverage cliff.
+  // San Jose Public Library publishes 39-79 events/day, so the 200 cap leaves
+  // it with nothing past ~5 days out, while sparser library feeds reach weeks
+  // further (Palo Alto -> Oct 2, SCCL -> Sep 1 on the same run). Raising SJPL
+  // alone just moves the cliff; capping per-source-per-day would thin density
+  // instead. Left as-is pending Stephen's call — the fix changes the Events
+  // tab's editorial mix (full 14-day SJPL coverage is ~745 events, ~38% of
+  // the corpus), which is not an autonomous decision.
   const SOURCE_CAPS = {
     "Santa Clara University": 25,
     "SJSU Events": 30,
