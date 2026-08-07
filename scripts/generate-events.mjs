@@ -3557,102 +3557,138 @@ async function fetchSanJoseCityEvents() {
 
 // ── BiblioCommons Library Events ──
 
+// BiblioCommons pages are NOT date-ordered — every page returns a mixed slice
+// spanning the next ~10 months (verified 2026-08-07: pages 1, 5, 20 and 60 of
+// the SJPL feed each ran Aug 2026 → mid-2027). A single unpaginated request
+// therefore yields an arbitrary sparse sample, not "the soonest N events":
+// SJPL surfaced 9 events in the next 14 days where the full feed holds 344,
+// and Palo Alto surfaced 8 where the feed holds 43. Paginate like
+// fetchScclEvents does — it's the same API and was already fixed there.
+// Cap is a runaway guard, not a budget: the loop below stops as soon as a page
+// comes back empty or repeats IDs, so small feeds cost only what they need
+// (Palo Alto exhausts at page 13, SCCL at 35). It has to clear the largest
+// feed, though — SJPL runs 133 pages / 6,580 events, and because pages aren't
+// date-ordered, stopping early drops near-term events at random rather than
+// just distant ones.
+const BIBLIO_MAX_PAGES = 200;
+const BIBLIO_PAGE_SIZE = 50;
+
 async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
-  console.log(`  ⏳ ${libraryName}...`);
+  console.log(`  ⏳ ${libraryName} (paginating all branches)...`);
+  const results = [];
+  const seenIds = new Set();
+  const now = new Date();
+
   try {
-    const data = await fetchJson(
-      `https://gateway.bibliocommons.com/v2/libraries/${libraryId}/events?limit=150`,
-    );
+    for (let page = 1; page <= BIBLIO_MAX_PAGES; page++) {
+      const data = await fetchJson(
+        `https://gateway.bibliocommons.com/v2/libraries/${libraryId}/events?limit=${BIBLIO_PAGE_SIZE}&page=${page}`,
+      );
+      if (data.error) break;
 
-    const entities = data.entities || {};
-    const eventList = entities.events ? Object.values(entities.events) : [];
+      const entities = data.entities || {};
+      const eventList = entities.events ? Object.values(entities.events) : [];
+      if (eventList.length === 0) break;
 
-    const now = new Date();
-    const results = eventList
-      .map((ev) => {
-        const startStr = ev.start || ev.definition?.start;
-        const endStr = ev.end || ev.definition?.end;
-        const start = parseDatePT(startStr);
-        if (!start || start < now) return null;
+      const freshEvents = eventList.filter((ev) => {
+        if (seenIds.has(ev.id)) return false;
+        seenIds.add(ev.id);
+        return true;
+      });
+      // A page with nothing new means the feed has wrapped — stop rather than
+      // burning the remaining requests against someone else's API.
+      if (freshEvents.length === 0) break;
 
-        const end = parseDatePT(endStr);
-        const branchId = ev.branchId || ev.definition?.branchLocationId;
-        const branchStore = entities.locations || entities.branches;
-        const branch = branchId && branchStore ? branchStore[branchId] : null;
-        const branchName = branch?.name || "";
-        const branchAddrObj = branch?.address || {};
-        const branchAddr = branch
-          ? [branchAddrObj.number, branchAddrObj.street, branchAddrObj.city].filter(Boolean).join(" ")
-          : (branch?.address || "");
-        const locationCode = ev.definition?.branchLocationId || "";
-        const city = cityMapper(branchName, branchAddr, locationCode);
-        if (!city) return null;
+      // The branch/location store is per-page, so events must be mapped with
+      // their own page's entities — don't hoist this out of the loop.
+      const mapped = freshEvents
+        .map((ev) => {
+          const startStr = ev.start || ev.definition?.start;
+          const endStr = ev.end || ev.definition?.end;
+          const start = parseDatePT(startStr);
+          if (!start || start < now) return null;
 
-        const title = ev.title || ev.definition?.title || "";
-        const desc = ev.description || ev.definition?.description || "";
-        // BiblioCommons marks online-only library events with definition.isVirtual.
-        // Title-pattern fallbacks ("Online …", "Virtual …") miss titles like
-        // "Short Story Social" and "Learn English: Online Conversation Group"
-        // (where "Online" isn't at the start). Trust the authoritative flag.
-        const isVirtual = ev.definition?.isVirtual === true;
+          const end = parseDatePT(endStr);
+          const branchId = ev.branchId || ev.definition?.branchLocationId;
+          const branchStore = entities.locations || entities.branches;
+          const branch = branchId && branchStore ? branchStore[branchId] : null;
+          const branchName = branch?.name || "";
+          const branchAddrObj = branch?.address || {};
+          const branchAddr = branch
+            ? [branchAddrObj.number, branchAddrObj.street, branchAddrObj.city].filter(Boolean).join(" ")
+            : (branch?.address || "");
+          const locationCode = ev.definition?.branchLocationId || "";
+          const city = cityMapper(branchName, branchAddr, locationCode);
+          if (!city) return null;
 
-        const displayVenue = branchName
-          ? (branchName.toLowerCase().endsWith("library") ? branchName : `${branchName} Library`)
-          : libraryName;
+          const title = ev.title || ev.definition?.title || "";
+          const desc = ev.description || ev.definition?.description || "";
+          // BiblioCommons marks online-only library events with definition.isVirtual.
+          // Title-pattern fallbacks ("Online …", "Virtual …") miss titles like
+          // "Short Story Social" and "Learn English: Online Conversation Group"
+          // (where "Online" isn't at the start). Trust the authoritative flag.
+          const isVirtual = ev.definition?.isVirtual === true;
 
-        // Month-long exhibits arrive from BiblioCommons as start = open day @
-        // arbitrary clock, end = close day @ same clock (e.g. Oil Painting
-        // Exhibit: May 31 5:00 PM → Jun 30 5:00 PM). Underlying timestamps
-        // differ so the getTime-based dedupe below doesn't fire, but both
-        // sides format to "5:00 PM" and the card renders a deceptive
-        // one-minute event. When end is on a different calendar day AND the
-        // clock-time display matches start, the API endpoints aren't real
-        // event times — treat as ongoing and null both clocks.
-        const dayMs = 24 * 60 * 60 * 1000;
-        const spansMultipleDays = end && (end.getTime() - start.getTime()) >= dayMs;
-        const sameClockDisplay = end && displayTime(start) === displayTime(end);
-        const isOngoingExhibit = spansMultipleDays && sameClockDisplay;
+          const displayVenue = branchName
+            ? (branchName.toLowerCase().endsWith("library") ? branchName : `${branchName} Library`)
+            : libraryName;
 
-        return {
-          id: `${libraryId}-${ev.id}`,
-          title,
-          date: isoDate(start),
-          displayDate: displayDate(start),
-          time: isOngoingExhibit ? null : displayTime(start),
-          // BiblioCommons sometimes returns end == start for ongoing exhibits
-          // and drop-in programs — surface that as "no end time" rather than a
-          // zero-duration block.
-          endTime: isOngoingExhibit
-            ? null
-            : (end && end.getTime() !== start.getTime() ? displayTime(end) : null),
-          ...(isOngoingExhibit ? { ongoing: true } : {}),
-          venue: displayVenue,
-          address: branchAddr,
-          city,
-          ...(isVirtual ? { virtual: true } : {}),
-          // Pass the rendered venue so isIndoorVenue can detect "library" — short
-          // branch names like "Cambrian" (no "Library" suffix) used to slip past it.
-          category: inferCategory(title, stripHtml(desc), ev.type || "", displayVenue),
-          cost: "free",
-          description: truncate(stripHtml(desc)),
-          url: ev.registrationUrl || `https://${libraryId}.bibliocommons.com/events/${ev.id}`,
-          source: libraryName,
-          // Prefix-only boundary on the title+desc regex — match compounds like
-          // "Storytime", "Babies", "Grades K-6". Mirrors playwright-scrapers.mjs.
-          kidFriendly: (ev.audiences || []).some((a) => {
-            const name = typeof a === "string" ? a : a?.name || "";
-            return /child|teen|family|baby|toddler/i.test(name);
-          }) || /\b(kid|child|family|story|youth|teen|toddler|baby|preschool|infant|lap[-\s]?sit|puppet show|ages?\s*\d|grades?\s+[K0-9])/i.test(title + " " + stripHtml(desc)),
-        };
-      })
-      .filter(Boolean);
+          // Month-long exhibits arrive from BiblioCommons as start = open day @
+          // arbitrary clock, end = close day @ same clock (e.g. Oil Painting
+          // Exhibit: May 31 5:00 PM → Jun 30 5:00 PM). Underlying timestamps
+          // differ so the getTime-based dedupe below doesn't fire, but both
+          // sides format to "5:00 PM" and the card renders a deceptive
+          // one-minute event. When end is on a different calendar day AND the
+          // clock-time display matches start, the API endpoints aren't real
+          // event times — treat as ongoing and null both clocks.
+          const dayMs = 24 * 60 * 60 * 1000;
+          const spansMultipleDays = end && (end.getTime() - start.getTime()) >= dayMs;
+          const sameClockDisplay = end && displayTime(start) === displayTime(end);
+          const isOngoingExhibit = spansMultipleDays && sameClockDisplay;
+
+          return {
+            id: `${libraryId}-${ev.id}`,
+            title,
+            date: isoDate(start),
+            displayDate: displayDate(start),
+            time: isOngoingExhibit ? null : displayTime(start),
+            // BiblioCommons sometimes returns end == start for ongoing exhibits
+            // and drop-in programs — surface that as "no end time" rather than a
+            // zero-duration block.
+            endTime: isOngoingExhibit
+              ? null
+              : (end && end.getTime() !== start.getTime() ? displayTime(end) : null),
+            ...(isOngoingExhibit ? { ongoing: true } : {}),
+            venue: displayVenue,
+            address: branchAddr,
+            city,
+            ...(isVirtual ? { virtual: true } : {}),
+            // Pass the rendered venue so isIndoorVenue can detect "library" — short
+            // branch names like "Cambrian" (no "Library" suffix) used to slip past it.
+            category: inferCategory(title, stripHtml(desc), ev.type || "", displayVenue),
+            cost: "free",
+            description: truncate(stripHtml(desc)),
+            url: ev.registrationUrl || `https://${libraryId}.bibliocommons.com/events/${ev.id}`,
+            source: libraryName,
+            // Prefix-only boundary on the title+desc regex — match compounds like
+            // "Storytime", "Babies", "Grades K-6". Mirrors playwright-scrapers.mjs.
+            kidFriendly: (ev.audiences || []).some((a) => {
+              const name = typeof a === "string" ? a : a?.name || "";
+              return /child|teen|family|baby|toddler/i.test(name);
+            }) || /\b(kid|child|family|story|youth|teen|toddler|baby|preschool|infant|lap[-\s]?sit|puppet show|ages?\s*\d|grades?\s+[K0-9])/i.test(title + " " + stripHtml(desc)),
+          };
+        })
+        .filter(Boolean);
+
+      results.push(...mapped);
+    }
 
     console.log(`  ✅ ${libraryName}: ${results.length} events`);
     return results;
   } catch (err) {
     console.log(`  ⚠️  ${libraryName}: ${err.message}`);
     if (STRICT_EVENT_REFRESH) throw err;
-    return [];
+    return results; // partial pagination beats dropping the whole source
   }
 }
 

@@ -19,6 +19,7 @@ const metrics = {
   htmlPagesChecked: 0,
   jsonLdBlocks: 0,
   eventLeafPages: 0,
+  ssrPagesSkipped: 0,
 };
 
 function fail(message) {
@@ -55,6 +56,28 @@ function canonicalHref(html) {
   const first = /<link\s+[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["'][^>]*>/i.exec(html);
   if (first) return first[1];
   return /<link\s+[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["'][^>]*>/i.exec(html)?.[1] ?? null;
+}
+
+// A sitemap URL can legitimately have no prerendered HTML: pages that opt out
+// with `export const prerender = false` are rendered per request (e.g.
+// /newsletters, whose issue list lives in Vercel Blob rather than build-time
+// data). Resolve the page source instead of hardcoding a list, so a route that
+// later flips back to static is checked again automatically. Only the
+// build-output assertions are skipped — the live checks still cover these.
+function ssrPageSourceFor(pathname) {
+  const route = pathname.replace(/^\/+|\/+$/g, "");
+  if (!route) return null;
+  const candidates = [
+    join("src/pages", route, "index.astro"),
+    join("src/pages", `${route}.astro`),
+    join("src/pages", route, "index.ts"),
+    join("src/pages", `${route}.ts`),
+  ];
+  for (const candidate of candidates) {
+    if (!existsSync(candidate)) continue;
+    if (/export\s+const\s+prerender\s*=\s*false/.test(read(candidate))) return candidate;
+  }
+  return null;
 }
 
 function collectTypedObjects(value, type, found = []) {
@@ -125,7 +148,13 @@ if (!outputDir) {
       const relative = parsed.pathname === "/" ? "index.html" : `${parsed.pathname.slice(1)}/index.html`;
       const htmlPath = join(outputDir, relative);
       if (!existsSync(htmlPath)) {
-        fail(`Sitemap URL has no generated HTML: ${url}`);
+        const ssrSource = ssrPageSourceFor(parsed.pathname);
+        if (ssrSource) {
+          metrics.ssrPagesSkipped += 1;
+          warn(`${url} is server-rendered (${ssrSource}) — build-output checks skipped.`);
+        } else {
+          fail(`Sitemap URL has no generated HTML: ${url}`);
+        }
         continue;
       }
 
@@ -167,7 +196,7 @@ if (jsonMode) {
   console.log(JSON.stringify(report, null, 2));
 } else {
   console.log(`Discovery audit: ${errors.length ? "FAILED" : "OK"}`);
-  console.log(`  ${metrics.sitemapUrls} sitemap URLs; ${metrics.htmlPagesChecked} HTML pages; ${metrics.eventLeafPages} event leaves; ${metrics.jsonLdBlocks} JSON-LD blocks`);
+  console.log(`  ${metrics.sitemapUrls} sitemap URLs; ${metrics.htmlPagesChecked} HTML pages; ${metrics.ssrPagesSkipped} server-rendered; ${metrics.eventLeafPages} event leaves; ${metrics.jsonLdBlocks} JSON-LD blocks`);
   for (const message of errors) console.error(`  ERROR: ${message}`);
   for (const message of warnings) console.warn(`  WARN: ${message}`);
 }

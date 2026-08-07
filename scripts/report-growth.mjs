@@ -7,6 +7,13 @@ import { readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
+import { loadEnvLocal } from "./lib/env.mjs";
+
+// Lets a long-lived VERCEL_TOKEN in .env.local take over when the Vercel CLI's
+// OAuth token lapses — that token expires every few weeks and silently took
+// the weekly growth report offline from 2026-07-16 onward.
+loadEnvLocal();
+
 const TEAM_ID = process.env.VERCEL_TEAM_ID ?? "team_qOPCwp8ArAsCRpm9sNjGbMc3";
 const PROJECT_ID = process.env.VERCEL_PROJECT_ID ?? "prj_yIxdy6XFGBAtePrHMzc0FH7ucYS5";
 const API = "https://api.vercel.com/v1/query/web-analytics/visits/aggregate";
@@ -46,8 +53,23 @@ function readToken() {
   const authPath = join(homedir(), "Library", "Application Support", "com.vercel.cli", "auth.json");
   try {
     const auth = JSON.parse(readFileSync(authPath, "utf8"));
-    if (auth.token) return auth.token;
-  } catch {
+    if (auth.token) {
+      // The CLI's OAuth token is short-lived. Say so up front rather than
+      // letting the API answer with an opaque 403 "invalidToken".
+      const expiresAt = Number(auth.expiresAt);
+      if (Number.isFinite(expiresAt)) {
+        const expiryMs = expiresAt > 1e12 ? expiresAt : expiresAt * 1000;
+        if (expiryMs < Date.now()) {
+          throw new Error(
+            `The Vercel CLI token expired on ${new Date(expiryMs).toISOString().slice(0, 10)}. `
+            + "Run `vercel login`, or add a long-lived VERCEL_TOKEN to .env.local.",
+          );
+        }
+      }
+      return auth.token;
+    }
+  } catch (err) {
+    if (/expired/.test(err?.message ?? "")) throw err;
     // The error below explains both supported authentication paths.
   }
   throw new Error("Vercel authentication is unavailable. Set VERCEL_TOKEN or sign in with the Vercel CLI.");
