@@ -1,8 +1,8 @@
 {
   "_meta": {
-    "pulledAt": "2026-08-07T15:20:25.089Z",
-    "totalInBlob": 2720,
-    "freshCount": 395
+    "pulledAt": "2026-08-07T21:29:00.604Z",
+    "totalInBlob": 2731,
+    "freshCount": 406
   },
   "events": [
     {
@@ -18,6 +18,21 @@
       "sourceUrl": "https://www.eventbrite.com/o/santa-clara-county-fire-department-11074830922",
       "cityKey": "los-altos",
       "cityName": "Los Altos",
+      "status": "new"
+    },
+    {
+      "id": "inbound_msjaohzf_n5cfs3",
+      "receivedAt": "2026-08-07T18:45:00.871Z",
+      "fromEmail": "info@pafarmersmarket.org",
+      "emailSubject": "Downtown Palo Alto Farmers' Market - August 8, 2026",
+      "title": "Downtown Palo Alto Farmers' Market - Customer Appreciation Day",
+      "startsAt": "2026-08-08T08:00:00-07:00",
+      "endsAt": "2026-08-08T12:00:00-07:00",
+      "location": "Gilman Street between Hamilton and Forest, Palo Alto, CA",
+      "description": "Weekly farmers' market with a special Customer Appreciation Day featuring hourly raffles for free bags of market goodies, plus live music from Highway to Pluto starting at 9:30am.",
+      "sourceUrl": null,
+      "cityKey": "palo-alto",
+      "cityName": "Palo Alto",
       "status": "new"
     },
     {
@@ -817,6 +832,22 @@
       "status": "new"
     },
     {
+      "id": "inbound_msj70eal_v8egmk",
+      "receivedAt": "2026-08-07T17:02:01.555Z",
+      "fromEmail": "MountainView@public.govdelivery.com",
+      "emailSubject": "I Got a Rent Increase...What's Next? Workshop/ Taller de Me subieron la renta... ¿y ahora que pasa?",
+      "title": "I Got a Rent Increase...What's Next? Workshop",
+      "startsAt": "2026-08-14T18:00:00-07:00",
+      "endsAt": null,
+      "location": "Virtual",
+      "description": "A virtual workshop hosted by Mountain View's Rent Stabilization Division explaining this year's rent increase limits and how tenants' rent can be raised.",
+      "sourceUrl": null,
+      "cityKey": "mountain-view",
+      "cityName": "Mountain View",
+      "status": "new",
+      "virtual": true
+    },
+    {
       "id": "inbound_mpvcc4i4_872k1k",
       "receivedAt": "2026-06-01 15:02:25.747606+00",
       "fromEmail": "news@jamsj.org",
@@ -1226,6 +1257,21 @@
       "sourceUrl": "https://www.library.sunnyvale.ca.gov/Home/Components/Calendar/Event/12332/74",
       "cityKey": "sunnyvale",
       "cityName": "Sunnyvale",
+      "status": "new"
+    },
+    {
+      "id": "inbound_msj7mjrk_w4pilq",
+      "receivedAt": "2026-08-07T17:19:30.818Z",
+      "fromEmail": "donny.foley@pacificartleague-newsletters.com",
+      "emailSubject": "Call to Artists: Postcard Exhibit (October 2 -27)",
+      "title": "Postcard Exhibition Opening Reception",
+      "startsAt": "2026-10-02T17:30:00-07:00",
+      "endsAt": "2026-10-02T20:00:00-07:00",
+      "location": "Pacific Art League, 668 Ramona Street, Palo Alto, CA 94301",
+      "description": "Opening reception for the Postcard Exhibition, a juried show of small-scale artwork (4x6\") in all media, open to the public.",
+      "sourceUrl": "https://go.levitate.ai/call-to-artists-postcard-exhibition-2026?t=914e3d47e8564af983fda1e9ab608c86",
+      "cityKey": "palo-alto",
+      "cityName": "Palo Alto",
       "status": "new"
     },
     {
@@ -2313,6 +2359,67 @@
       "sourceUrl": null,
       "cityKey": "santa-clara",
       "cityName": "Santa Clara",
+      "status": "new"
+    },
+    {
+      "id": "inbound_msjdie9n_tr0p16",
+      "receivedAt": "2026-08-07T20:04:08.978Z",
+      "fromEmail": "noreply@civicplus.com",
+      "emailSubject": "Saratoga Source: August 7, 2026",
+      "title": "Summer Movie Night: The Bad Guys 2",
+      "startsAt": "2026-08-07T19:30:00-07:00",
+      "endsAt": null,
+      "location": "El Quito Park, Saratoga, CA",
+      "description": "Free outdoor screening of The Bad Guys 2 with community resource tables starting at 7:30 p.m. and the movie beginning at sunset around 8:30 p.m.",
+      "sourceUrl": null,
+      "cityKey": "saratoga",
+      "cityName": "Saratoga",
+      "status": "new"
+    },
+    {
+      "id": "inbound_msjdie9n_oby1c0",
+      "receivedAt": "2026-08-07T20:04:08.978Z",
+      "fromEmail": "noreply@civicplus.com",
+      "emailSubject": "Saratoga Source: August 7, 2026",
+      "title": "Meet the Mayor and New City Manager at the Farmers' Market",
+      "startsAt": "2026-08-08T10:00:00-07:00",
+      "endsAt": "2026-08-08T12:00:00-07:00",
+      "location": "Saratoga Farmers' Market, West Valley Community College, Saratoga, CA",
+      "description": "Mayor Chuck Page and new City Manager Leslie Arroyo will be at the Saratoga Farmers' Market to connect with residents and discuss community topics.",
+      "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
+      "cityKey": "saratoga",
+      "cityName": "Saratoga",
+      "status": "new"
+    },
+    {
+      "id": "inbound_msjdie9n_i6otkt",
+      "receivedAt": "2026-08-07T20:04:08.978Z",
+      "fromEmail": "noreply@civicplus.com",
+      "emailSubject": "Saratoga Source: August 7, 2026",
+      "title": "Wildfire Safety Town Hall",
+      "startsAt": "2026-08-12T18:00:00-07:00",
+      "endsAt": "2026-08-12T19:30:00-07:00",
+      "location": "Saratoga Prospect Center, Friendship Hall, 19848 Prospect Road, Saratoga, CA",
+      "description": "A free town hall with Mayor Chuck Page, Supervisor Margaret Abe-Koga, and Representative Sam Liccardo featuring a panel of fire safety experts discussing home hardening, wildfire prevention, and evacuation planning, with a live Q&A and resource tables.",
+      "sourceUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfPsMViBon3NMSxmwjJf0L2WAQNfb3ymOUgcLyeqFP9Bk2e3g/viewform?usp=send_form",
+      "cityKey": "saratoga",
+      "cityName": "Saratoga",
+      "status": "new",
+      "sourceUrlOriginal": "https://tinyurl.com/WildfireSafetyTownhall"
+    },
+    {
+      "id": "inbound_msjdie9n_8u4vn4",
+      "receivedAt": "2026-08-07T20:04:08.978Z",
+      "fromEmail": "noreply@civicplus.com",
+      "emailSubject": "Saratoga Source: August 7, 2026",
+      "title": "Saratoga's 70th Birthday Celebration",
+      "startsAt": "2026-08-22T12:00:00-07:00",
+      "endsAt": "2026-08-22T17:00:00-07:00",
+      "location": "Wildwood Park, Saratoga, CA",
+      "description": "A free community celebration marking Saratoga's 70th anniversary with live music from the Kibort Brothers and Daze on the Green, family activities, a petting zoo, community booths, food trucks, and beer and wine for purchase.",
+      "sourceUrl": "https://saratoga70.eventbrite.com/",
+      "cityKey": "saratoga",
+      "cityName": "Saratoga",
       "status": "new"
     },
     {
@@ -4280,6 +4387,36 @@
       "status": "new"
     },
     {
+      "id": "inbound_msjdua3b_z6sp2q",
+      "receivedAt": "2026-08-07T20:13:15.893Z",
+      "fromEmail": "cardinal@mail.gostanford.com",
+      "emailSubject": "Checking In From Camp",
+      "title": "Pacific Islander Heritage Celebration & Cardinal Kids Day (Stanford vs. Hawai'i)",
+      "startsAt": "2026-08-29T16:00:00-07:00",
+      "endsAt": null,
+      "location": "Stanford Stadium, Stanford, CA 94305",
+      "description": "Stanford Football's home opener against Hawai'i features a Pacific Islander Heritage celebration and Cardinal Kids Day, presented by Stanford Children's Health, with free admission for kids.",
+      "sourceUrl": "https://app.mail.gostanford.com/e/er?s=1855418&lid=2240&elqTrackId=F2063DBD088056E76429229124992713&elq=27dbb04b031b48d58d8967ca6fc1ab5c&elqaid=898&elqat=1&elqak=8AF5B04413AD7082A5C35A8ABF90747E665FF416B97D6992F5B4D60EDA3A67E4DD22",
+      "cityKey": null,
+      "cityName": null,
+      "status": "new"
+    },
+    {
+      "id": "inbound_msjdua3b_u3uuya",
+      "receivedAt": "2026-08-07T20:13:15.893Z",
+      "fromEmail": "cardinal@mail.gostanford.com",
+      "emailSubject": "Checking In From Camp",
+      "title": "E-40 Halftime Show at Stanford vs. Miami",
+      "startsAt": "2026-09-04T00:00:00-07:00",
+      "endsAt": null,
+      "location": "Stanford Stadium, Stanford, CA 94305",
+      "description": "Multiplatinum recording artist E-40 will perform during halftime of the Friday night football game between Stanford and Miami.",
+      "sourceUrl": "https://app.mail.gostanford.com/e/er?s=1855418&lid=2242&elqTrackId=FECE639BBFF44211EAA630EF0EDAD3E9&elq=27dbb04b031b48d58d8967ca6fc1ab5c&elqaid=898&elqat=1&elqak=8AF53EAE5BC1DB970B0BDB8560B4E1690D12F416B97D6992F5B4D60EDA3A67E4DD22",
+      "cityKey": null,
+      "cityName": null,
+      "status": "new"
+    },
+    {
       "id": "inbound_mqbk9gk8_vztcgy",
       "receivedAt": "2026-06-12T23:31:38.432Z",
       "fromEmail": "noreply@civicplus.com",
@@ -5453,6 +5590,36 @@
       "location": "SAP Center at San Jose, 525 W Santa Clara St, San Jose, CA 95113",
       "description": "The San Jose Sharks host the Edmonton Oilers in a home game.",
       "sourceUrl": "https://link.sjsharks.com/u/nrd.php?p=4a3DEG8Klj_9223_838332_1_35&ems_l=1204260&i=1&d=MTIxNDI2NjAy%7CNGEzREVHOEtsag%3D%3D%7CMmM3YWNhZTRmNGZlMTZjYzE%3D%7C&_esuh=_11_a0fbc818e9b7af04e690717d477c93bdb8af816996ae326c65ad084dba765e82",
+      "cityKey": "san-jose",
+      "cityName": "San Jose",
+      "status": "new"
+    },
+    {
+      "id": "inbound_msjd2bke_67pqqw",
+      "receivedAt": "2026-08-07T19:51:20.856Z",
+      "fromEmail": "dana@cmtsj.org",
+      "emailSubject": "Upcoming Classes, CMT Pride, and More",
+      "title": "San Jose Giants Pride Night with CMT",
+      "startsAt": "2026-08-07T00:00:00-07:00",
+      "endsAt": null,
+      "location": "San Jose Giants Ballpark, San Jose, CA",
+      "description": "CMT San Jose is attending the San Jose Giants' Pride Night baseball game, with a portion of ticket sales benefiting the theater.",
+      "sourceUrl": null,
+      "cityKey": "san-jose",
+      "cityName": "San Jose",
+      "status": "new"
+    },
+    {
+      "id": "inbound_msjd2bke_ndi81n",
+      "receivedAt": "2026-08-07T19:51:20.856Z",
+      "fromEmail": "dana@cmtsj.org",
+      "emailSubject": "Upcoming Classes, CMT Pride, and More",
+      "title": "Silicon Valley Pride Parade",
+      "startsAt": "2026-08-30T00:00:00-07:00",
+      "endsAt": null,
+      "location": null,
+      "description": "CMT San Jose is participating in the Silicon Valley Pride Parade; performers ages 12+ can dance with the group, and everyone else can join the parade or cheer from the sidelines.",
+      "sourceUrl": null,
       "cityKey": "san-jose",
       "cityName": "San Jose",
       "status": "new"
