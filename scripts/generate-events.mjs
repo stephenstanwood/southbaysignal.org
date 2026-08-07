@@ -560,6 +560,10 @@ const CANCELLED_BODY_PATTERNS = [
   /\bhas had to cancel (?:your |the |this )?event\b/i,
   /\bthis (?:show|performance) (?:has been|is) cancell?ed\b/i,
   /\bcancell?ed[;.]\s+refunds? (?:will be|are being)\s+issued\b/i,
+  // Library notice-style cancellations (SCCL Knit Alongs, 2026-08-07):
+  // "Cupertino Knit Alongs Cancelled August 7…" / "There will be no Knit Alongs On Friday…"
+  /\bcancell?ed\s+(?:on\s+)?(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|january|february|march|april|may|june|july|august|september|october|november|december|\d)/i,
+  /\bthere will be no\b.{0,80}\b(?:on\s+)?(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|january|february|march|april|may|june|july|august|september|october|november|december|\d)/i,
 ];
 
 function looksCancelled(description, blurb) {
@@ -3603,6 +3607,9 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
       // their own page's entities — don't hoist this out of the loop.
       const mapped = freshEvents
         .map((ev) => {
+          // BiblioCommons marks cancelled series/occurrences with definition.isCancelled.
+          if (ev.definition?.isCancelled === true) return null;
+
           const startStr = ev.start || ev.definition?.start;
           const endStr = ev.end || ev.definition?.end;
           const start = parseDatePT(startStr);
@@ -3759,6 +3766,9 @@ async function fetchScclEvents() {
       for (const ev of eventList) {
         if (seenIds.has(ev.id)) continue;
         seenIds.add(ev.id);
+
+        // BiblioCommons marks cancelled series/occurrences with definition.isCancelled.
+        if (ev.definition?.isCancelled === true) continue;
 
         const locationCode = ev.definition?.branchLocationId || "";
         const city = scclCityMapper("", "", locationCode);
