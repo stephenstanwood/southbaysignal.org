@@ -3577,6 +3577,10 @@ async function fetchSanJoseCityEvents() {
 const BIBLIO_MAX_PAGES = 200;
 const BIBLIO_PAGE_SIZE = 50;
 
+function isBiblioEventCancelled(ev) {
+  return ev?.definition?.isCancelled === true;
+}
+
 async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
   console.log(`  ⏳ ${libraryName} (paginating all branches)...`);
   const results = [];
@@ -3607,8 +3611,7 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
       // their own page's entities — don't hoist this out of the loop.
       const mapped = freshEvents
         .map((ev) => {
-          // BiblioCommons marks cancelled series/occurrences with definition.isCancelled.
-          if (ev.definition?.isCancelled === true) return null;
+          if (isBiblioEventCancelled(ev)) return null;
 
           const startStr = ev.start || ev.definition?.start;
           const endStr = ev.end || ev.definition?.end;
@@ -3767,8 +3770,7 @@ async function fetchScclEvents() {
         if (seenIds.has(ev.id)) continue;
         seenIds.add(ev.id);
 
-        // BiblioCommons marks cancelled series/occurrences with definition.isCancelled.
-        if (ev.definition?.isCancelled === true) continue;
+        if (isBiblioEventCancelled(ev)) continue;
 
         const locationCode = ev.definition?.branchLocationId || "";
         const city = scclCityMapper("", "", locationCode);
@@ -7942,6 +7944,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
 export {
   cleanTitle,
+  isBiblioEventCancelled,
+  looksCancelled,
   fetchFarmersMarketEvents,
   fetchHappyHollowEvents,
   fetchJazzOnThePlazzEvents,
