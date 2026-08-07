@@ -8,7 +8,9 @@ interface DigestData {
   summary: string;
   keyTopics: string[];
   nextMeeting?: string | null;
-  schedule: string;
+  // null when the digest covers a committee/commission rather than the council,
+  // whose published cadence wouldn't apply.
+  schedule: string | null;
   sourceUrl: string;
   generatedAt?: string;
 }

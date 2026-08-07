@@ -41,7 +41,9 @@ const CITIES = [
   { id: "mountain-view", name: "Mountain View" },
   { id: "saratoga",      name: "Saratoga" },
   { id: "sunnyvale",     name: "Sunnyvale" },
-  { id: "san-jose",      name: "San Jose" },
+  // Accented — matches the canonical registry in src/lib/south-bay/cities.ts,
+  // the city's own styling, and every other generated file.
+  { id: "san-jose",      name: "San José" },
   { id: "santa-clara",   name: "Santa Clara" },
   { id: "los-altos",     name: "Los Altos" },
   { id: "palo-alto",     name: "Palo Alto" },

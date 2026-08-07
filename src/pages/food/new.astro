@@ -5,6 +5,7 @@
 // month-stamped, regenerated nightly.
 import CalendarShell from "../../layouts/CalendarShell.astro";
 import openingsJson from "../../data/south-bay/scc-food-openings.json";
+import { CITY_MAP } from "../../lib/south-bay/cities";
 
 interface Opening {
   id: string;
@@ -31,8 +32,11 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
 const title = `South Bay food openings and permits (${monthLabel}) — South Bay Today`;
 const description = `${opened.length} verified openings, ${inspections.length} recent final inspections, and ${comingSoon.length} coming-soon food businesses across the South Bay.`;
 
-// "PALO ALTO" → "Palo Alto"
-const tidyCity = (s?: string | null) =>
+// The county dataset ships cityName in caps ("SAN JOSE"). Prefer the canonical
+// registry name via cityId so this page says "San José" like the rest of the
+// site; plain title-casing the raw string drops the accent.
+const tidyCity = (s?: string | null, cityId?: string | null) =>
+  (cityId && CITY_MAP[cityId as keyof typeof CITY_MAP]?.name) ||
   (s ?? "")
     .toLowerCase()
     .replace(/\b[a-z]/g, (c) => c.toUpperCase());
@@ -78,7 +82,7 @@ const breadcrumbJsonLd = JSON.stringify({
           <div class="cal-time">{fmtDate(r.date) ?? "—"}</div>
           <div class="cal-body">
             <h3 class="fn-name">{r.name}</h3>
-            <p class="cal-meta">{[r.address, tidyCity(r.cityName)].filter(Boolean).join(" · ")}</p>
+            <p class="cal-meta">{[r.address, tidyCity(r.cityName, r.cityId)].filter(Boolean).join(" · ")}</p>
             {r.blurb && <p class="cal-copy">{r.blurb}</p>}
           </div>
         </li>
@@ -94,7 +98,7 @@ const breadcrumbJsonLd = JSON.stringify({
           <div class="cal-time">{fmtDate(r.inspectionDate) ?? "—"}</div>
           <div class="cal-body">
             <h3 class="fn-name">{r.name}</h3>
-            <p class="cal-meta">{[r.address, tidyCity(r.cityName)].filter(Boolean).join(" · ")}</p>
+            <p class="cal-meta">{[r.address, tidyCity(r.cityName, r.cityId)].filter(Boolean).join(" · ")}</p>
             {r.blurb && <p class="cal-copy">{r.blurb}</p>}
           </div>
         </li>
@@ -110,7 +114,7 @@ const breadcrumbJsonLd = JSON.stringify({
           <div class="cal-time">{fmtDate(r.date) ?? "—"}</div>
           <div class="cal-body">
             <h3 class="fn-name">{r.name}</h3>
-            <p class="cal-meta">{[r.address, tidyCity(r.cityName)].filter(Boolean).join(" · ")}</p>
+            <p class="cal-meta">{[r.address, tidyCity(r.cityName, r.cityId)].filter(Boolean).join(" · ")}</p>
             {r.blurb && <p class="cal-copy">{r.blurb}</p>}
           </div>
         </li>

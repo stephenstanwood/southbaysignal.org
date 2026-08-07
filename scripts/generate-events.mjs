@@ -2154,8 +2154,12 @@ function inferCategory(title, desc, type, venue = "") {
   // contain "park"/"garden" but the events themselves aren't outdoor activities.
   // Use word-boundary anchors so substrings like "spark"/"sparking" don't trigger the
   // park rule (real bug: "Fandom Swap" desc with "sparking joy" got tagged outdoor).
+  // Match only "park"/"parks" — NOT "parking"/"parked"/"parkway". Logistics boilerplate
+  // ("arrive early to find parking", "parking is validated") appears in a huge share of
+  // event descriptions and is not a signal about the event (real bug: SJSU's indoor
+  // "ISSS Campus Tours" shipped as outdoor, with a nature stock photo, on that word alone).
   const outdoorHaystack = `${title} ${desc} ${type}`.toLowerCase();
-  const hasOutdoorWord = /\b(hik\w*|outdoor\w*|garden\w*|nature|trail\w*|park\w*)\b/.test(outdoorHaystack);
+  const hasOutdoorWord = /\b(hik\w*|outdoor\w*|garden\w*|nature|trail\w*|parks?)\b/.test(outdoorHaystack);
   if (!isIndoorVenue && hasOutdoorWord) return "outdoor";
   if (t.includes("book") || t.includes("reading") || t.includes("lecture") || t.includes("workshop") || t.includes("class") || t.includes("learn") || t.includes("seminar") || t.includes("talk") || t.includes("discussion") || t.includes("curator") || t.includes("stem") || t.includes("science") || t.includes("coding") || t.includes("tech")) return "education";
   if (t.includes("food") || t.includes("cooking") || t.includes("taste") || t.includes("chef") || t.includes("wine") || t.includes("beer") || t.includes("culinary") || /\b(pancake|breakfast|brunch|bake sale|food truck|barbecue|bbq|bake-off|chili cook-off)\b/.test(t)) return "food";
@@ -2179,6 +2183,15 @@ function inferUniversityCategory(title, desc, type, venue = "") {
   const titleLower = String(title || "").toLowerCase();
   const cleanDesc = stripHtml(desc || "");
   const haystack = `${title || ""} ${cleanDesc} ${type || ""} ${venue || ""}`.toLowerCase();
+
+  // College athletics schedule preseason games as "- Exhibition" / "(exhibition)".
+  // That word hits the `exhibit` art-show pattern in isOngoingExhibitLike below,
+  // so every SCU/SJSU exhibition match shipped as `arts` (and, on the SJSU path,
+  // as `cost: free` since the cost rule keys off `category === "sports"`).
+  // inferCategory already guards this case, but it only runs as the fallback at
+  // the bottom of this function — too late. Run the same matchup test first.
+  const hasMatchup = titleLower.includes("vs.") || titleLower.includes(" vs ");
+  if (hasMatchup && /\b(football|basketball|baseball|softball|soccer|hockey|volleyball|lacrosse|water polo|rugby)\b/.test(titleLower)) return "sports";
 
   if (isOngoingExhibitLike(title, desc, venue)) return "arts";
   if (/\b(yoga|pilates|meditation|mindfulness|wellness|al-anon|worship|volunteer|volunteering)\b/.test(haystack)) return "community";
@@ -2479,7 +2492,11 @@ function isStudentOnlyEvent(item) {
 // the feed so the displayed title and description match the real program.
 function restoreSjsuAcronyms(text) {
   if (!text) return text;
-  return text.replace(/\bShrm\b/g, "SHRM");
+  // SJSU's Localist feed title-cases acronyms, so "ISSS Campus Tours" arrives as
+  // "Isss Campus Tours". Restore the ones that actually appear in the feed.
+  return text
+    .replace(/\bShrm\b/g, "SHRM")
+    .replace(/\bIsss\b/g, "ISSS");
 }
 
 // SJSU's Localist feed defaults every event to the San Jose campus, but

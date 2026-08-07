@@ -157,6 +157,45 @@ async function fetchLegistarPastMeeting(client) {
   return null;
 }
 
+// Upstream records carry a `meetingType` we display verbatim, and it defaults to
+// "City Council" when absent. On 2026-08-05 San José's record was labeled City
+// Council but the only meeting that day was the Joint Rules and Open Government
+// Committee / Committee of the Whole — so the digest told residents the Council
+// met when it had not. Ask Legistar what actually convened on that date: if no
+// City Council event exists, return the real body name so the digest is honest.
+// Returns null on any error or when the label already checks out, leaving the
+// existing behavior untouched.
+async function verifyLegistarBodyOnDate(client, dateIso) {
+  try {
+    const url =
+      `https://webapi.legistar.com/v1/${client}/Events` +
+      `?$filter=EventDate ge datetime'${dateIso}T00:00:00'` +
+      ` and EventDate lt datetime'${dateIso}T23:59:59'`;
+    const res = await fetch(url, {
+      headers: { "User-Agent": LEGISTAR_UA, Accept: "application/json" },
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!res.ok) return null;
+    const events = await res.json();
+    if (!Array.isArray(events) || events.length === 0) return null;
+
+    const bodies = events.map((e) => String(e.EventBodyName || "").trim()).filter(Boolean);
+    if (bodies.some((b) => /^city council\b/i.test(b))) return null; // label is correct
+
+    // Prefer the body whose name reads like the deliberative one (committee /
+    // commission / council-of-the-whole) over incidental same-day staff hearings.
+    const preferred =
+      bodies.find((b) => /\b(committee|commission)\b/i.test(b)) ?? bodies[0];
+    if (!preferred) return null;
+    // Strip meeting-type boilerplate Legistar prepends to some body names
+    // ("Joint Meeting for the Rules and Open Government Committee…"). It's not
+    // part of the body's name and it makes the card heading unreadable.
+    return preferred.replace(/^(?:joint|special|regular)\s+meeting\s+(?:for|of)\s+the\s+/i, "").trim();
+  } catch {
+    return null;
+  }
+}
+
 // ── Claude summarization ──
 
 // Meta-commentary parentheticals occasionally leak into keyTopics even though
@@ -432,7 +471,14 @@ async function main() {
       // councilBody (when set) hard-overrides — Los Gatos is officially a Town
       // and its body is the Town Council, but Stoa records sometimes come back
       // labeled "City Council".
-      const bodyLabel = config.councilBody ?? meeting.meetingType ?? "City Council";
+      let bodyLabel = config.councilBody ?? meeting.meetingType ?? "City Council";
+      if (!config.councilBody && config.legistarApi && /^city council\b/i.test(bodyLabel)) {
+        const actualBody = await verifyLegistarBodyOnDate(config.legistarApi, meeting.date);
+        if (actualBody) {
+          console.warn(`  ⚠️  ${config.cityName}: no City Council meeting on ${meeting.date} — relabeling as "${actualBody}" (city=${config.city})`);
+          bodyLabel = actualBody;
+        }
+      }
       digests[config.city] = {
         city: config.city,
         cityName: config.cityName,
@@ -443,7 +489,10 @@ async function main() {
         summary: enforceCityName(config.cityName, parsed.summary ?? ""),
         keyTopics: cleanKeyTopics(parsed.keyTopics ?? meeting.keywords.slice(0, 5))
           .map((t) => enforceCityName(config.cityName, t)),
-        schedule: config.schedule,
+        // config.schedule describes the *council's* cadence. When the digest is
+        // relabeled to a committee or commission above, that cadence doesn't
+        // apply — omit it rather than pair the wrong body with the wrong meets-on.
+        schedule: /council\b/i.test(bodyLabel) ? config.schedule : null,
         sourceUrl: config.legistar ? legistarMeetingUrl(config.legistar, meeting.date) : config.agendaUrl,
         generatedAt: new Date().toISOString(),
       };
