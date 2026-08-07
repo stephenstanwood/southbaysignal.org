@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-06T06:11:25.206Z"
+    "auditedAt": "2026-08-07T02:28:19.096Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1832,
+    "total": 1829,
     "totals": {
       "hard": 2,
       "soft": 1,
@@ -64,33 +64,19 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 394,
+    "total": 403,
     "totals": {
-      "hard": 9,
-      "soft": 3,
+      "hard": 7,
+      "soft": 2,
       "info": 0
     },
     "byReason": {
-      "virtual-not-flagged": 2,
+      "virtual-not-flagged": 1,
       "unknown-slug": 1,
-      "out-of-area": 7,
+      "out-of-area": 5,
       "slug-mismatch": 2
     },
     "hard": [
-      {
-        "id": "inbound_mrjemwp7_iyonq6",
-        "title": "Paper Wisteria",
-        "city": null,
-        "date": "2026-08-05T14:00:00-07:00",
-        "location": "Gilroy Library",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "out-of-area",
-            "detail": "location mentions \"gilroy\" with no in-area city token"
-          }
-        ]
-      },
       {
         "id": "inbound_mrnq6jm3_72hw23",
         "title": "East Bay Hills Hike & Ride",
@@ -176,20 +162,6 @@
         ]
       },
       {
-        "id": "inbound_mrjemtr8_28tpwx",
-        "title": "Paper Wisteria",
-        "city": null,
-        "date": "2026-08-05T14:00:00-07:00",
-        "location": "Gilroy Library",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "out-of-area",
-            "detail": "location mentions \"gilroy\" with no in-area city token"
-          }
-        ]
-      },
-      {
         "id": "inbound_ms6pyqyx_denzxu",
         "title": "Giants vs. Dodgers Day Trip",
         "city": null,
@@ -205,20 +177,6 @@
       }
     ],
     "soft": [
-      {
-        "id": "inbound_ms96yzli_6nl03l",
-        "title": "Overcoming Burnout to Lead with Resilience and Alignment featuring Jane Chen",
-        "city": "sunnyvale",
-        "date": "2026-08-05T09:00:00-07:00",
-        "location": "",
-        "findings": [
-          {
-            "severity": "soft",
-            "reason": "virtual-not-flagged",
-            "detail": "matched /description mention/ in description"
-          }
-        ]
-      },
       {
         "id": "inbound_ms96yzli_mny668",
         "title": "Preserving the Seasons: The Art of Canning, Jamming, and More with Holly Capelle",
