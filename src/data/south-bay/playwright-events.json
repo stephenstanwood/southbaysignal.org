@@ -1,12 +1,12 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-07T06:13:31.823Z",
+    "generatedAt": "2026-08-07T12:16:32.044Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 411,
+    "eventCount": 407,
     "sourceCount": 23,
     "sources": [
-      "Mountain View Public Library (14)",
+      "Mountain View Public Library (15)",
       "Los Gatos Library (22)",
       "San Jose Museum of Art (28)",
       "Linden Tree Books (10)",
@@ -18,10 +18,10 @@
       "Mountain Winery (38)",
       "San Jose Theaters (20)",
       "Children's Discovery Museum (1)",
-      "Midpen Open Space (4)",
-      "Guadalupe River Park Conservancy (10)",
+      "Midpen Open Space (3)",
+      "Guadalupe River Park Conservancy (8)",
       "Santana Row (6)",
-      "City of Cupertino (82)",
+      "City of Cupertino (80)",
       "Opera San José (5)",
       "TheatreWorks Silicon Valley (90)",
       "Levi's Stadium (16)",
@@ -63,7 +63,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 14,
+        "count": 15,
         "error": null
       },
       {
@@ -175,14 +175,14 @@
         "id": "midpen-open-space",
         "label": "Midpen Open Space",
         "status": "ok",
-        "count": 4,
+        "count": 3,
         "error": null
       },
       {
         "id": "guadalupe-river-park",
         "label": "Guadalupe River Park",
         "status": "ok",
-        "count": 10,
+        "count": 8,
         "error": null
       },
       {
@@ -203,7 +203,7 @@
         "id": "city-of-cupertino",
         "label": "City of Cupertino",
         "status": "ok",
-        "count": 82,
+        "count": 80,
         "error": null
       },
       {
@@ -514,6 +514,23 @@
       "cost": "free",
       "description": "",
       "url": "https://mountainview.libcal.com/event/17149999",
+      "source": "Mountain View Public Library",
+      "kidFriendly": false
+    },
+    {
+      "id": "b0958a6c0688",
+      "title": "Tech Take Apart",
+      "date": "2026-08-14",
+      "displayDate": "Fri, Aug 14",
+      "time": "3:00 pm",
+      "endTime": null,
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/16727119",
       "source": "Mountain View Public Library",
       "kidFriendly": false
     },
@@ -3220,10 +3237,10 @@
       "kidFriendly": false
     },
     {
-      "id": "1826c3ee02a1",
+      "id": "cddc7fbe9e81",
       "title": "All Ages Storytime",
-      "date": "2026-08-06",
-      "displayDate": "Thu, Aug 6",
+      "date": "2026-08-07",
+      "displayDate": "Fri, Aug 7",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
@@ -3235,23 +3252,6 @@
       "url": "https://www.cdm.org/calendar/",
       "source": "Children's Discovery Museum",
       "kidFriendly": true
-    },
-    {
-      "id": "a7d51d8db500",
-      "title": "Trail Maintenance: New Easy Access Trail (Pt. 2)",
-      "date": "2026-08-06",
-      "displayDate": "Thu, Aug 6",
-      "time": "9:00 am",
-      "endTime": null,
-      "venue": "Bear Creek Redwoods Preserve",
-      "address": "Bear Creek Redwoods Preserve, Los Gatos",
-      "city": "los-gatos",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.openspace.org/events/volunteer-projects/trail-maintenance-new-easy-access-trail-pt-2",
-      "source": "Midpen Open Space",
-      "kidFriendly": false
     },
     {
       "id": "b41618387410",
@@ -3303,50 +3303,6 @@
       "url": "https://www.openspace.org/events/volunteer-projects/fence-maintenance-deer-hollow-farm",
       "source": "Midpen Open Space",
       "kidFriendly": false
-    },
-    {
-      "id": "524c4a0d1583",
-      "title": "Bootcamp in the River Park with GymParty",
-      "date": "2026-08-06",
-      "displayDate": "Thu, Aug 6",
-      "time": "6:00 pm",
-      "endTime": null,
-      "venue": "Guadalupe River Park",
-      "address": "438 Coleman Ave, San Jose, CA 95110",
-      "city": "san-jose",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.instagram.com/gymparty_/",
-      "source": "Guadalupe River Park Conservancy",
-      "kidFriendly": false,
-      "occurrenceEvidence": {
-        "kind": "first-party-occurrence-page",
-        "sourceUrl": "https://grpg.org/calendar/events/",
-        "date": "2026-08-06"
-      }
-    },
-    {
-      "id": "49eda4c8a9d2",
-      "title": "Yoga in the River Park: Sunset Sessions with GymParty",
-      "date": "2026-08-06",
-      "displayDate": "Thu, Aug 6",
-      "time": "7:00 pm",
-      "endTime": null,
-      "venue": "Guadalupe River Park",
-      "address": "438 Coleman Ave, San Jose, CA 95110",
-      "city": "san-jose",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.instagram.com/gymparty_/",
-      "source": "Guadalupe River Park Conservancy",
-      "kidFriendly": false,
-      "occurrenceEvidence": {
-        "kind": "first-party-occurrence-page",
-        "sourceUrl": "https://grpg.org/calendar/events/",
-        "date": "2026-08-06"
-      }
     },
     {
       "id": "e04f0ff10534",
@@ -3627,23 +3583,6 @@
       "kidFriendly": false
     },
     {
-      "id": "d4c50d979f90",
-      "title": "Bell Ringing for World Peace",
-      "date": "2026-08-06",
-      "displayDate": "Thu, Aug 6",
-      "time": "06:00 PM",
-      "endTime": null,
-      "venue": "Memorial Park",
-      "address": "Memorial Park, 21121 Stevens Creek Boulevard, 95014, View Map",
-      "city": "cupertino",
-      "category": "community",
-      "cost": "free",
-      "description": "Bell Ringing for World Peace is managed by an external organization. For details, visit the event organizer's webpage.",
-      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Festivals/Bell-Ringing-for-World-Peace",
-      "source": "City of Cupertino",
-      "kidFriendly": false
-    },
-    {
       "id": "948e46efcefa",
       "title": "Join-A-Ranger: Wildlife Tracking",
       "date": "2026-08-07",
@@ -3914,23 +3853,6 @@
       "url": "https://www.cupertino.gov/OC-Events/India-Independence-Day-Flag-Raising-2026",
       "source": "City of Cupertino",
       "kidFriendly": false
-    },
-    {
-      "id": "2d6ab9bb1364",
-      "title": "Summer Concert Series",
-      "date": "2026-08-06",
-      "displayDate": "Thu, Aug 6",
-      "time": "06:30 PM",
-      "endTime": "08:00 PM",
-      "venue": "Memorial Park Amphitheater",
-      "address": "Memorial Park Amphitheater, 21163 Anton Way, Cupertino, CA, 95014, View Map",
-      "city": "cupertino",
-      "category": "music",
-      "cost": "free",
-      "description": "Spend your Thursday evenings outdoors with free live music at the Memorial Park Amphitheater. Bring a blanket or low-back chair, settle in on the lawn, and enjoy a lineup of bands spanning classic rock, Latin rock, blues, R&B, and more. For more information and band lineup, visit the Summer Concert Series webpage.",
-      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Summer-Concert-Series/Summer-Concert-Series-Event",
-      "source": "City of Cupertino",
-      "kidFriendly": true
     },
     {
       "id": "dd251a67fb74",

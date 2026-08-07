@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-07T06:14:21.341Z"
+    "auditedAt": "2026-08-07T12:18:18.454Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1831,
+    "total": 1938,
     "totals": {
       "hard": 2,
       "soft": 1,
@@ -64,14 +64,13 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 403,
+    "total": 389,
     "totals": {
       "hard": 7,
-      "soft": 2,
+      "soft": 1,
       "info": 0
     },
     "byReason": {
-      "virtual-not-flagged": 1,
       "unknown-slug": 1,
       "out-of-area": 5,
       "slug-mismatch": 2
@@ -177,20 +176,6 @@
       }
     ],
     "soft": [
-      {
-        "id": "inbound_ms96yzli_mny668",
-        "title": "Preserving the Seasons: The Art of Canning, Jamming, and More with Holly Capelle",
-        "city": "sunnyvale",
-        "date": "2026-08-06T11:00:00-07:00",
-        "location": "",
-        "findings": [
-          {
-            "severity": "soft",
-            "reason": "virtual-not-flagged",
-            "detail": "matched /description mention/ in description"
-          }
-        ]
-      },
       {
         "id": "inbound_mqpugxt4_wkbmmw",
         "title": "Community Police Academy",

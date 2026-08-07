@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-07T10:02:45.497Z",
-  "eventCount": 1937,
+  "generatedAt": "2026-08-07T12:18:18.041Z",
+  "eventCount": 1938,
   "sources": [
     "Stanford Events",
     "SJSU Events",
@@ -51,6 +51,7 @@
     "City Lights Theater",
     "ICA San José",
     "Mountain Winery",
+    "Children's Discovery Museum",
     "Midpen Open Space",
     "Guadalupe River Park Conservancy",
     "Santana Row",
@@ -1876,9 +1877,9 @@
       "label": "Meetup",
       "critical": true,
       "status": "ok",
-      "count": 120,
+      "count": 119,
       "dateCounts": {
-        "2026-08-07": 11,
+        "2026-08-07": 10,
         "2026-08-08": 12,
         "2026-08-09": 14,
         "2026-08-10": 4,
@@ -2161,9 +2162,8 @@
       "label": "fetchSjMuseumOfArtEvents",
       "critical": false,
       "status": "ok",
-      "count": 19,
+      "count": 18,
       "dateCounts": {
-        "2026-08-07": 1,
         "2026-08-08": 2,
         "2026-08-09": 1,
         "2026-08-14": 1,
@@ -2553,16 +2553,16 @@
       "label": "Playwright source snapshot",
       "critical": true,
       "status": "ok",
-      "count": 404,
+      "count": 406,
       "dateCounts": {
-        "2026-08-07": 11,
+        "2026-08-07": 12,
         "2026-08-08": 13,
         "2026-08-09": 12,
         "2026-08-10": 4,
         "2026-08-11": 5,
         "2026-08-12": 8,
         "2026-08-13": 8,
-        "2026-08-14": 5,
+        "2026-08-14": 6,
         "2026-08-15": 6,
         "2026-08-16": 3,
         "2026-08-18": 3,
@@ -2817,6 +2817,24 @@
         "2027-06-18": 1
       },
       "error": null
+    }
+  ],
+  "inputSnapshots": [
+    {
+      "name": "playwright-events",
+      "status": "ok",
+      "count": 407,
+      "timestamp": "2026-08-07T12:16:32.044Z",
+      "ageHours": 0,
+      "reason": null
+    },
+    {
+      "name": "inbound-events",
+      "status": "ok",
+      "count": 389,
+      "timestamp": "2026-08-07T12:16:36.360Z",
+      "ageHours": 0,
+      "reason": null
     }
   ],
   "events": [
@@ -3682,27 +3700,6 @@
       "firstSeenAt": "2026-07-20T03:31:13.255Z"
     },
     {
-      "id": "sjma-097343af317c775f",
-      "title": "First Friday | Jazz Jam: Generations of 'Trane",
-      "date": "2026-08-07",
-      "displayDate": "Fri, Aug 7",
-      "time": "6:00 PM",
-      "endTime": "9:00 PM",
-      "venue": "San Jose Museum of Art",
-      "address": "110 S Market St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sjmusart.org/event/first-friday-jazz-jam-generations-trane",
-      "source": "San Jose Museum of Art",
-      "kidFriendly": false,
-      "audienceAge": "all",
-      "photoRef": "places/ChIJVx91TrvMj4ARzWqeIcRwuXs/photos/AWCwydhG6bI71KHACRgJyMQHTR6yd2AzCklKPk_6OJhOy2P9sKBJ5buRPBhLbk3N96e5PbamktukGIkm79WQ9qC-pHkVofoHbhNi1nIITPdl97NibyY7dJXLIK8kdm90JDmQ-54gB_ziYpV9AB-ZBlj4cmnuf404Jsq_sSFlBpeM88LPUnlhsYuh4diIcAKX_cPxbIDPXlHtzh96u0xBGI_QdnFIXHmeQ68sdcDNv9auWAfbGgEdwHFGTa_ats5p-UABwTdz2czN_yY59icFp4FkbHtVKH93h6zLe3mQ6v85ElAknryidAMjD7bP6MYM1z5XLyD9S1C2iAUNHvjg-rumDhr_7_6uOt-VNpTiloxibC9kl4IwfTs9d_3A-xkctdaXtuBZATwWIVJ5IBWq49rHHLqDRyCRoFs9W8kPS2bngBkRsQ",
-      "blurb": "Catch local musicians trade solos on a Coltrane-inspired set during this First Friday jazz jam at the museum.",
-      "firstSeenAt": "2026-07-22T02:18:03.956Z"
-    },
-    {
       "id": "sjma-66ce9f3de84111a7",
       "title": "Mark Arroyo at SJMA",
       "date": "2026-08-08",
@@ -3913,6 +3910,27 @@
       "firstSeenAt": "2026-08-04T03:09:50.517Z"
     },
     {
+      "id": "30690c29ff79",
+      "title": "First Friday | Jazz Jam: Generations of 'Trane",
+      "date": "2026-08-07",
+      "displayDate": "Fri, Aug 7",
+      "time": "12:00 PM",
+      "endTime": null,
+      "venue": "San Jose Museum of Art",
+      "address": "110 S Market St, San Jose, CA 95113",
+      "city": "san-jose",
+      "category": "arts",
+      "cost": "paid",
+      "description": "",
+      "url": "https://sjmusart.org/event/first-friday-jazz-jam-generations-trane",
+      "source": "San Jose Museum of Art",
+      "kidFriendly": false,
+      "audienceAge": "all",
+      "photoRef": "places/ChIJVx91TrvMj4ARzWqeIcRwuXs/photos/AWCwydhG6bI71KHACRgJyMQHTR6yd2AzCklKPk_6OJhOy2P9sKBJ5buRPBhLbk3N96e5PbamktukGIkm79WQ9qC-pHkVofoHbhNi1nIITPdl97NibyY7dJXLIK8kdm90JDmQ-54gB_ziYpV9AB-ZBlj4cmnuf404Jsq_sSFlBpeM88LPUnlhsYuh4diIcAKX_cPxbIDPXlHtzh96u0xBGI_QdnFIXHmeQ68sdcDNv9auWAfbGgEdwHFGTa_ats5p-UABwTdz2czN_yY59icFp4FkbHtVKH93h6zLe3mQ6v85ElAknryidAMjD7bP6MYM1z5XLyD9S1C2iAUNHvjg-rumDhr_7_6uOt-VNpTiloxibC9kl4IwfTs9d_3A-xkctdaXtuBZATwWIVJ5IBWq49rHHLqDRyCRoFs9W8kPS2bngBkRsQ",
+      "blurb": "Catch local musicians trade solos on a Coltrane-inspired set during this First Friday jazz jam at the museum.",
+      "firstSeenAt": "2026-08-07T12:18:18.019Z"
+    },
+    {
       "id": "5f92e9014b15",
       "title": "Friends of the Library Book Sale",
       "date": "2026-08-08",
@@ -4121,6 +4139,27 @@
       "photoRef": "places/ChIJiVyFzMywj4ARPLuAlYVzhmE/photos/AWCwydhCg4wVCsvYy6CW7QeLTi5DgISCgHenApb0cy9OQJ0V6TrlD0W9gIxvp86qGlOWfCQwfKT2B7BA3GPADXgmf7S8Dpjh4puiG5lOCHO28Kcfv4y6n_RCMsMZgFtky9sAEIqBaqvlWqo-MU4TfupsIputOy3H4OQ5D_cHRXrFfBm6bqZZR-vc30d1l72ndhBRy_FVxvjMOA-aPh9OTxfa-d1nhMpLVlM4VVLWAOMKD920WFJ5p8tj_cFCGEMCnicIo3lDYSJwYaQom1qFHkJNQLqhRpDYejVM9Wgh5YjrBvk6yNgijTq-YZUwXyGosdOpwZSiKGmnWukV6kEtRQ37fImRFsAdenQ1GoqsDapdLOjaCkVDMLlfXHUdqPjZB1KVCblFWj_tnbJzBDs_PDYrjukbK-c4vuGGRh87ChyJl3jUutJI",
       "blurb": "Bring old photos and documents to get scanned and digitized by preservation experts.",
       "firstSeenAt": "2026-08-07T06:14:20.922Z"
+    },
+    {
+      "id": "b0958a6c0688",
+      "title": "Tech Take Apart",
+      "date": "2026-08-14",
+      "displayDate": "Fri, Aug 14",
+      "time": "3:00 PM",
+      "endTime": null,
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/16727119",
+      "source": "Mountain View Public Library",
+      "kidFriendly": false,
+      "audienceAge": "all",
+      "photoRef": "places/ChIJiVyFzMywj4ARPLuAlYVzhmE/photos/AWCwydhCg4wVCsvYy6CW7QeLTi5DgISCgHenApb0cy9OQJ0V6TrlD0W9gIxvp86qGlOWfCQwfKT2B7BA3GPADXgmf7S8Dpjh4puiG5lOCHO28Kcfv4y6n_RCMsMZgFtky9sAEIqBaqvlWqo-MU4TfupsIputOy3H4OQ5D_cHRXrFfBm6bqZZR-vc30d1l72ndhBRy_FVxvjMOA-aPh9OTxfa-d1nhMpLVlM4VVLWAOMKD920WFJ5p8tj_cFCGEMCnicIo3lDYSJwYaQom1qFHkJNQLqhRpDYejVM9Wgh5YjrBvk6yNgijTq-YZUwXyGosdOpwZSiKGmnWukV6kEtRQ37fImRFsAdenQ1GoqsDapdLOjaCkVDMLlfXHUdqPjZB1KVCblFWj_tnbJzBDs_PDYrjukbK-c4vuGGRh87ChyJl3jUutJI",
+      "blurb": "Take apart old laptops and gadgets with real tools to see how circuits and drives actually work inside.",
+      "firstSeenAt": "2026-08-07T12:18:18.019Z"
     },
     {
       "id": "sjma-59663ff30afd5231",
@@ -5136,7 +5175,7 @@
         "kind": "first-party-occurrence-page",
         "sourceUrl": "https://my.montalvoarts.org/2917/3234",
         "date": "2026-08-26",
-        "checkedAt": "2026-08-07T10:00:13.921Z"
+        "checkedAt": "2026-08-07T12:16:41.930Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJ4YSL3_tKjoARpGsLdUkxppM/photos/AWCwydh1juxp9VpbRo0RkBYCf7qNT4TEYPPV64urb6umI08AeeBZxf4wp9qBYXsKGgLj3o6Z4CxJrl3ZpelsoHf1_QoFyciBQ-mo7-e-EXhITwE6hznkdq12FIluNBAdBLEccfIuARaMVjWHIzSoc4cAsK0h2K3k4Svlcrb9Kj_i0xZWskYbA2sjBqFUhijXLq78jRWly_Xq4Bfquu6BIQttXWTyI7glZW-PDxIyVZAbQCYH7MGXbLSfzP15l2i8TyoHyKjfwl0rAMrkaeRlBIfi_TfY_sxjO__ctjQqp_0Xvk_q4aEBTWxcsCyqz0Cd9D7jOjLUJw97drsqWzzlUaOknIKX7PvXCrTZGDdOvIS8EzzXjjvzabROA21Iay93Uzns3-A4Y-trk1_GdV-MzqOjcfNJM2a6oN1vo6eTczAOHDXvbGVpHVJ_vhirfinAbYHk",
@@ -5163,12 +5202,33 @@
         "kind": "first-party-occurrence-page",
         "sourceUrl": "https://my.montalvoarts.org/overview/3051",
         "date": "2026-08-26",
-        "checkedAt": "2026-08-07T10:00:12.815Z"
+        "checkedAt": "2026-08-07T12:16:40.837Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJ4YSL3_tKjoARpGsLdUkxppM/photos/AWCwydh1juxp9VpbRo0RkBYCf7qNT4TEYPPV64urb6umI08AeeBZxf4wp9qBYXsKGgLj3o6Z4CxJrl3ZpelsoHf1_QoFyciBQ-mo7-e-EXhITwE6hznkdq12FIluNBAdBLEccfIuARaMVjWHIzSoc4cAsK0h2K3k4Svlcrb9Kj_i0xZWskYbA2sjBqFUhijXLq78jRWly_Xq4Bfquu6BIQttXWTyI7glZW-PDxIyVZAbQCYH7MGXbLSfzP15l2i8TyoHyKjfwl0rAMrkaeRlBIfi_TfY_sxjO__ctjQqp_0Xvk_q4aEBTWxcsCyqz0Cd9D7jOjLUJw97drsqWzzlUaOknIKX7PvXCrTZGDdOvIS8EzzXjjvzabROA21Iay93Uzns3-A4Y-trk1_GdV-MzqOjcfNJM2a6oN1vo6eTczAOHDXvbGVpHVJ_vhirfinAbYHk",
       "blurb": "Taste a curated snack box paired with the Homes & Watson exhibit at Montalvo.",
       "firstSeenAt": "2026-07-28T03:10:19.504Z"
+    },
+    {
+      "id": "cddc7fbe9e81",
+      "title": "All Ages Storytime",
+      "date": "2026-08-07",
+      "displayDate": "Fri, Aug 7",
+      "time": "11:30 AM",
+      "endTime": null,
+      "venue": "Children's Discovery Museum",
+      "address": "180 Woz Way, San Jose, CA 95110",
+      "city": "san-jose",
+      "category": "family",
+      "cost": "paid",
+      "description": "",
+      "url": "https://www.cdm.org/calendar/",
+      "source": "Children's Discovery Museum",
+      "kidFriendly": true,
+      "audienceAge": "kids",
+      "photoRef": "places/ChIJHyD5sa_Mj4ARURwnBwmTwTU/photos/AWCwydg01D4bUIhRAOua4Tjwu7C47F1ZB_wuN0ir_gfZ46qAV7-riDA97GDYHyaCMnZWSq8mL6-4-iDVw8d8GRXnERLlTLIQCqlqUs5BZ4Oz-huagYz4Hr7EUUifMaFKMS3LmxYXrLMT5eKyVWmyOGE7qWOA-hXHdNE77jnGF1lm7ZUhMAhZvcKJX0nZqVcoZ9J8-dq5MTJrxmIE4_2aJcm_s-OQgZzNyx8oRvd5SJ9tyEzK5aUGdbXX2asIeUbhXGJPKqaJiRXdJTM-DpEi-KZm0vfg_GJ1__xFCYG2EhlnNTGzko8Mp-K6LL1cfXxr0RuJj5jav1lJwAigJtvyjL9y6xJo2u3xb_POwsbTRAkNQLOOxLFT6A965HFCUZs-CPIDhGRm6BsQB-UOF367zLIjDyrT7AvLZgQfd_5XWDZ2muebukUS",
+      "blurb": "Listen to staff read picture books aloud to kids in the museum's story space.",
+      "firstSeenAt": "2026-08-07T12:18:18.019Z"
     },
     {
       "id": "08df388b6594",
@@ -5399,7 +5459,7 @@
         "kind": "first-party-occurrence-page",
         "sourceUrl": "https://my.montalvoarts.org/2964/3220",
         "date": "2026-08-12",
-        "checkedAt": "2026-08-07T10:00:13.920Z"
+        "checkedAt": "2026-08-07T12:16:41.992Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJ4YSL3_tKjoARpGsLdUkxppM/photos/AWCwydh1juxp9VpbRo0RkBYCf7qNT4TEYPPV64urb6umI08AeeBZxf4wp9qBYXsKGgLj3o6Z4CxJrl3ZpelsoHf1_QoFyciBQ-mo7-e-EXhITwE6hznkdq12FIluNBAdBLEccfIuARaMVjWHIzSoc4cAsK0h2K3k4Svlcrb9Kj_i0xZWskYbA2sjBqFUhijXLq78jRWly_Xq4Bfquu6BIQttXWTyI7glZW-PDxIyVZAbQCYH7MGXbLSfzP15l2i8TyoHyKjfwl0rAMrkaeRlBIfi_TfY_sxjO__ctjQqp_0Xvk_q4aEBTWxcsCyqz0Cd9D7jOjLUJw97drsqWzzlUaOknIKX7PvXCrTZGDdOvIS8EzzXjjvzabROA21Iay93Uzns3-A4Y-trk1_GdV-MzqOjcfNJM2a6oN1vo6eTczAOHDXvbGVpHVJ_vhirfinAbYHk",
@@ -6854,7 +6914,7 @@
       "category": "music",
       "cost": "paid",
       "description": "This event will be an evening of classical and contemporary music performed by the Mission Chamber Orchestra of San Jose with pianist Jon Nakamatsu. The Mcosj presents professional level performances…",
-      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=190508&s=a6374212-f591-4551-ae48-f501ba465d81",
+      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=190508&s=20560f0f-7b90-45c4-99b3-5e75273be3c3",
       "source": "Hammer Theatre",
       "image": "https://vboblobprod-cdn-01-cjcngvarcqfja3gw.a03.azurefd.net/awsvboticketscom/_images/events/190508_event_md_426.jpg",
       "kidFriendly": false,
@@ -6938,7 +6998,7 @@
       "category": "music",
       "cost": "paid",
       "description": "This event will be an evening of classical and contemporary music performed by the Mission Chamber Orchestra of San Jose with guitarist Pepe Romero. The Mcosj presents professional level performances…",
-      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=197777&s=a6374212-f591-4551-ae48-f501ba465d81",
+      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=197777&s=20560f0f-7b90-45c4-99b3-5e75273be3c3",
       "source": "Hammer Theatre",
       "image": "https://vboblobprod-cdn-01-cjcngvarcqfja3gw.a03.azurefd.net/awsvboticketscom/_images/events/197777_event_md_861.jpg",
       "kidFriendly": false,
@@ -7085,7 +7145,7 @@
       "category": "arts",
       "cost": "paid",
       "description": "Silicon Valley's flagship policy festival is back! Now in its fourth year, our premier all-day event features marquee names in media and politics for exclusive interviews, expert panels and in-depth…",
-      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=195604&s=a6374212-f591-4551-ae48-f501ba465d81",
+      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=195604&s=20560f0f-7b90-45c4-99b3-5e75273be3c3",
       "source": "Hammer Theatre",
       "image": "https://vboblobprod-cdn-01-cjcngvarcqfja3gw.a03.azurefd.net/awsvboticketscom/_images/events/195604_event_md_157.jpg",
       "kidFriendly": false,
@@ -7169,7 +7229,7 @@
       "category": "arts",
       "cost": "paid",
       "description": "Celebrate New Ballet's 10th Anniversary Gala with an exclusive theatrical performance at the iconic Hammer Theatre Center. Featuring highlights from New Ballet's acclaimed classical and contemporary…",
-      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=195948&s=a6374212-f591-4551-ae48-f501ba465d81",
+      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=195948&s=20560f0f-7b90-45c4-99b3-5e75273be3c3",
       "source": "Hammer Theatre",
       "image": "https://vboblobprod-cdn-01-cjcngvarcqfja3gw.a03.azurefd.net/awsvboticketscom/_images/events/195948_event_md_728.jpg",
       "kidFriendly": false,
@@ -7190,7 +7250,7 @@
       "category": "arts",
       "cost": "paid",
       "description": "Hammer Presents Merry-Achi Christmas 2026 10-time Latin Grammy and US Grammy Nominee (Best Regional Mexican Music Album) 2024 Latin Grammy Nominee (Best Ranchero/Mariachi Album) Mariachi Master Jóse…",
-      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=198571&s=a6374212-f591-4551-ae48-f501ba465d81",
+      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=198571&s=20560f0f-7b90-45c4-99b3-5e75273be3c3",
       "source": "Hammer Theatre",
       "image": "https://vboblobprod-cdn-01-cjcngvarcqfja3gw.a03.azurefd.net/awsvboticketscom/_images/events/198571_event_md_295.png",
       "kidFriendly": false,
@@ -7211,7 +7271,7 @@
       "category": "arts",
       "cost": "paid",
       "description": "Hammer Presents Merry-Achi Christmas 2026 10-time Latin Grammy and US Grammy Nominee (Best Regional Mexican Music Album) 2024 Latin Grammy Nominee (Best Ranchero/Mariachi Album) Mariachi Master Jóse…",
-      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=198571&s=a6374212-f591-4551-ae48-f501ba465d81",
+      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=198571&s=20560f0f-7b90-45c4-99b3-5e75273be3c3",
       "source": "Hammer Theatre",
       "image": "https://vboblobprod-cdn-01-cjcngvarcqfja3gw.a03.azurefd.net/awsvboticketscom/_images/events/198571_event_md_295.png",
       "kidFriendly": false,
@@ -7232,7 +7292,7 @@
       "category": "arts",
       "cost": "paid",
       "description": "Established in 1999, Lōkahi Polynesian Dance Group proudly celebrates its 27th annual Hō'ike. Last year, we invited you on a journey through Oʻahu. Tonight, we continue that adventure as we welcome…",
-      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=198240&s=a6374212-f591-4551-ae48-f501ba465d81",
+      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=198240&s=20560f0f-7b90-45c4-99b3-5e75273be3c3",
       "source": "Hammer Theatre",
       "image": "https://vboblobprod-cdn-01-cjcngvarcqfja3gw.a03.azurefd.net/awsvboticketscom/_images/events/198240_event_md_177.png",
       "kidFriendly": false,
@@ -7253,7 +7313,7 @@
       "category": "arts",
       "cost": "paid",
       "description": "Established in 1999, Lōkahi Polynesian Dance Group proudly celebrates its 27th annual Hō'ike. Last year, we invited you on a journey through Oʻahu. Tonight, we continue that adventure as we welcome…",
-      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=198240&s=a6374212-f591-4551-ae48-f501ba465d81",
+      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=198240&s=20560f0f-7b90-45c4-99b3-5e75273be3c3",
       "source": "Hammer Theatre",
       "image": "https://vboblobprod-cdn-01-cjcngvarcqfja3gw.a03.azurefd.net/awsvboticketscom/_images/events/198240_event_md_177.png",
       "kidFriendly": false,
@@ -7274,7 +7334,7 @@
       "category": "arts",
       "cost": "paid",
       "description": "Fifty years after the startling discovery that monarch butterflies spend winters in the forests of Mexico, photographer and National Geographic Explorer Jaime Rojo reveals this winged wonder of the…",
-      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=198541&s=a6374212-f591-4551-ae48-f501ba465d81",
+      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=198541&s=20560f0f-7b90-45c4-99b3-5e75273be3c3",
       "source": "Hammer Theatre",
       "image": "https://vboblobprod-cdn-01-cjcngvarcqfja3gw.a03.azurefd.net/awsvboticketscom/_images/events/198541_event_md_410.png",
       "kidFriendly": false,
@@ -7694,7 +7754,7 @@
       "category": "arts",
       "cost": "paid",
       "description": "Pulitzer Prize winning author Barbara Kingsolver receives the 2026 \"In the Souls of the People\" John Steinbeck Award, which is given annually by SJSU to writers, artists, thinkers, and activists…",
-      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=202330&s=a6374212-f591-4551-ae48-f501ba465d81",
+      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=202330&s=20560f0f-7b90-45c4-99b3-5e75273be3c3",
       "source": "Hammer Theatre",
       "image": "https://vboblobprod-cdn-01-cjcngvarcqfja3gw.a03.azurefd.net/awsvboticketscom/_images/events/202330_event_md_85.png",
       "kidFriendly": false,
@@ -8277,7 +8337,7 @@
       "category": "arts",
       "cost": "paid",
       "description": "A vivid journey through Silk Road dance traditions, brought to life with original choreography, rich costuming, and immersive design.",
-      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=193168&s=a6374212-f591-4551-ae48-f501ba465d81",
+      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=193168&s=20560f0f-7b90-45c4-99b3-5e75273be3c3",
       "source": "Hammer Theatre",
       "image": "https://vboblobprod-cdn-01-cjcngvarcqfja3gw.a03.azurefd.net/awsvboticketscom/_images/events/193168_event_md_621.png",
       "kidFriendly": false,
@@ -10860,7 +10920,7 @@
       "category": "arts",
       "cost": "paid",
       "description": "",
-      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=198572&s=a6374212-f591-4551-ae48-f501ba465d81",
+      "url": "https://plugin.vbotickets.com/v5.0/event.asp?eid=198572&s=20560f0f-7b90-45c4-99b3-5e75273be3c3",
       "source": "Hammer Theatre",
       "image": "https://vboblobprod-cdn-01-cjcngvarcqfja3gw.a03.azurefd.net/awsvboticketscom/_images/events/167990_event_md_478.png",
       "kidFriendly": false,
@@ -29897,7 +29957,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-08-08",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -29925,7 +29985,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-08-08",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -29995,7 +30055,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-08-09",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30023,7 +30083,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-08-09",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30051,7 +30111,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/campbell-sundays",
         "date": "2026-08-09",
-        "checkedAt": "2026-08-07T10:00:11.332Z"
+        "checkedAt": "2026-08-07T12:16:40.478Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJXZDxu2E1joAR_cHEl7LMQW0/photos/AWCwydjYoUn_Pvp5SLlLBJ_Pref4YcqR48i8ZRqIfxs3vkaCN6YZpHo1zwOmUf1Xw3DaBFeQQsNT2Xld15euliOz2yQ8cZSz2cnUMb7yBKA14zIsPwu8TJ0JdsNFTX2XTok-fRmYKkiqqKwcL0OPgTEEBnw-PMEEKCvDL4VOmpiTuokdhVf9VtT_H4g1I8-K9Omm1cvvvf7Zm9KUpnoSXvNwgC0ZjQj7oncNeTg7Hk7MZPGv6AbMbQv5U4hxQL_hr2O-m2HwVewUDawivq3I1rrjCUUFbZXAaeCCiJRstd0SVJEwHQVinG-0kYvxq5VPZGP4IP-QmYieEEZI8E98rwrfQNGgJz_kSSYRtKxbYqdi9EiFZpnVirHh0D5bKvEnTgqmEQCdRVpIaBhRkEsiKXA-SXNjUR3Z2y8yad6fb4atzeLrGRrYUwgULjeI0EtoXeT9",
@@ -30079,7 +30139,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-08-09",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -30107,7 +30167,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-08-15",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -30135,7 +30195,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-08-15",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30163,7 +30223,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-08-16",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30191,7 +30251,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-08-16",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30219,7 +30279,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/campbell-sundays",
         "date": "2026-08-16",
-        "checkedAt": "2026-08-07T10:00:11.332Z"
+        "checkedAt": "2026-08-07T12:16:40.478Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJXZDxu2E1joAR_cHEl7LMQW0/photos/AWCwydjYoUn_Pvp5SLlLBJ_Pref4YcqR48i8ZRqIfxs3vkaCN6YZpHo1zwOmUf1Xw3DaBFeQQsNT2Xld15euliOz2yQ8cZSz2cnUMb7yBKA14zIsPwu8TJ0JdsNFTX2XTok-fRmYKkiqqKwcL0OPgTEEBnw-PMEEKCvDL4VOmpiTuokdhVf9VtT_H4g1I8-K9Omm1cvvvf7Zm9KUpnoSXvNwgC0ZjQj7oncNeTg7Hk7MZPGv6AbMbQv5U4hxQL_hr2O-m2HwVewUDawivq3I1rrjCUUFbZXAaeCCiJRstd0SVJEwHQVinG-0kYvxq5VPZGP4IP-QmYieEEZI8E98rwrfQNGgJz_kSSYRtKxbYqdi9EiFZpnVirHh0D5bKvEnTgqmEQCdRVpIaBhRkEsiKXA-SXNjUR3Z2y8yad6fb4atzeLrGRrYUwgULjeI0EtoXeT9",
@@ -30247,7 +30307,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-08-16",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -30275,7 +30335,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-08-22",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -30303,7 +30363,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-08-22",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30331,7 +30391,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-08-23",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30359,7 +30419,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-08-23",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30387,7 +30447,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/campbell-sundays",
         "date": "2026-08-23",
-        "checkedAt": "2026-08-07T10:00:11.332Z"
+        "checkedAt": "2026-08-07T12:16:40.478Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJXZDxu2E1joAR_cHEl7LMQW0/photos/AWCwydjYoUn_Pvp5SLlLBJ_Pref4YcqR48i8ZRqIfxs3vkaCN6YZpHo1zwOmUf1Xw3DaBFeQQsNT2Xld15euliOz2yQ8cZSz2cnUMb7yBKA14zIsPwu8TJ0JdsNFTX2XTok-fRmYKkiqqKwcL0OPgTEEBnw-PMEEKCvDL4VOmpiTuokdhVf9VtT_H4g1I8-K9Omm1cvvvf7Zm9KUpnoSXvNwgC0ZjQj7oncNeTg7Hk7MZPGv6AbMbQv5U4hxQL_hr2O-m2HwVewUDawivq3I1rrjCUUFbZXAaeCCiJRstd0SVJEwHQVinG-0kYvxq5VPZGP4IP-QmYieEEZI8E98rwrfQNGgJz_kSSYRtKxbYqdi9EiFZpnVirHh0D5bKvEnTgqmEQCdRVpIaBhRkEsiKXA-SXNjUR3Z2y8yad6fb4atzeLrGRrYUwgULjeI0EtoXeT9",
@@ -30415,7 +30475,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-08-23",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -30443,7 +30503,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-08-29",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -30471,7 +30531,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-08-29",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30499,7 +30559,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-08-30",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30527,7 +30587,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-08-30",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30555,7 +30615,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/campbell-sundays",
         "date": "2026-08-30",
-        "checkedAt": "2026-08-07T10:00:11.332Z"
+        "checkedAt": "2026-08-07T12:16:40.478Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJXZDxu2E1joAR_cHEl7LMQW0/photos/AWCwydjYoUn_Pvp5SLlLBJ_Pref4YcqR48i8ZRqIfxs3vkaCN6YZpHo1zwOmUf1Xw3DaBFeQQsNT2Xld15euliOz2yQ8cZSz2cnUMb7yBKA14zIsPwu8TJ0JdsNFTX2XTok-fRmYKkiqqKwcL0OPgTEEBnw-PMEEKCvDL4VOmpiTuokdhVf9VtT_H4g1I8-K9Omm1cvvvf7Zm9KUpnoSXvNwgC0ZjQj7oncNeTg7Hk7MZPGv6AbMbQv5U4hxQL_hr2O-m2HwVewUDawivq3I1rrjCUUFbZXAaeCCiJRstd0SVJEwHQVinG-0kYvxq5VPZGP4IP-QmYieEEZI8E98rwrfQNGgJz_kSSYRtKxbYqdi9EiFZpnVirHh0D5bKvEnTgqmEQCdRVpIaBhRkEsiKXA-SXNjUR3Z2y8yad6fb4atzeLrGRrYUwgULjeI0EtoXeT9",
@@ -30583,7 +30643,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-08-30",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -30611,7 +30671,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-09-05",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -30639,7 +30699,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-09-05",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30667,7 +30727,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-09-06",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30695,7 +30755,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-09-06",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30723,7 +30783,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/campbell-sundays",
         "date": "2026-09-06",
-        "checkedAt": "2026-08-07T10:00:11.332Z"
+        "checkedAt": "2026-08-07T12:16:40.478Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJXZDxu2E1joAR_cHEl7LMQW0/photos/AWCwydjYoUn_Pvp5SLlLBJ_Pref4YcqR48i8ZRqIfxs3vkaCN6YZpHo1zwOmUf1Xw3DaBFeQQsNT2Xld15euliOz2yQ8cZSz2cnUMb7yBKA14zIsPwu8TJ0JdsNFTX2XTok-fRmYKkiqqKwcL0OPgTEEBnw-PMEEKCvDL4VOmpiTuokdhVf9VtT_H4g1I8-K9Omm1cvvvf7Zm9KUpnoSXvNwgC0ZjQj7oncNeTg7Hk7MZPGv6AbMbQv5U4hxQL_hr2O-m2HwVewUDawivq3I1rrjCUUFbZXAaeCCiJRstd0SVJEwHQVinG-0kYvxq5VPZGP4IP-QmYieEEZI8E98rwrfQNGgJz_kSSYRtKxbYqdi9EiFZpnVirHh0D5bKvEnTgqmEQCdRVpIaBhRkEsiKXA-SXNjUR3Z2y8yad6fb4atzeLrGRrYUwgULjeI0EtoXeT9",
@@ -30751,7 +30811,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-09-06",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -30779,7 +30839,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-09-12",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -30807,7 +30867,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-09-12",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30835,7 +30895,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-09-13",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30863,7 +30923,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-09-13",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -30891,7 +30951,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/campbell-sundays",
         "date": "2026-09-13",
-        "checkedAt": "2026-08-07T10:00:11.332Z"
+        "checkedAt": "2026-08-07T12:16:40.478Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJXZDxu2E1joAR_cHEl7LMQW0/photos/AWCwydjYoUn_Pvp5SLlLBJ_Pref4YcqR48i8ZRqIfxs3vkaCN6YZpHo1zwOmUf1Xw3DaBFeQQsNT2Xld15euliOz2yQ8cZSz2cnUMb7yBKA14zIsPwu8TJ0JdsNFTX2XTok-fRmYKkiqqKwcL0OPgTEEBnw-PMEEKCvDL4VOmpiTuokdhVf9VtT_H4g1I8-K9Omm1cvvvf7Zm9KUpnoSXvNwgC0ZjQj7oncNeTg7Hk7MZPGv6AbMbQv5U4hxQL_hr2O-m2HwVewUDawivq3I1rrjCUUFbZXAaeCCiJRstd0SVJEwHQVinG-0kYvxq5VPZGP4IP-QmYieEEZI8E98rwrfQNGgJz_kSSYRtKxbYqdi9EiFZpnVirHh0D5bKvEnTgqmEQCdRVpIaBhRkEsiKXA-SXNjUR3Z2y8yad6fb4atzeLrGRrYUwgULjeI0EtoXeT9",
@@ -30919,7 +30979,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-09-13",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -30947,7 +31007,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-09-19",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -30975,7 +31035,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-09-19",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31003,7 +31063,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-09-20",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31031,7 +31091,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-09-20",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31059,7 +31119,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/campbell-sundays",
         "date": "2026-09-20",
-        "checkedAt": "2026-08-07T10:00:11.332Z"
+        "checkedAt": "2026-08-07T12:16:40.478Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJXZDxu2E1joAR_cHEl7LMQW0/photos/AWCwydjYoUn_Pvp5SLlLBJ_Pref4YcqR48i8ZRqIfxs3vkaCN6YZpHo1zwOmUf1Xw3DaBFeQQsNT2Xld15euliOz2yQ8cZSz2cnUMb7yBKA14zIsPwu8TJ0JdsNFTX2XTok-fRmYKkiqqKwcL0OPgTEEBnw-PMEEKCvDL4VOmpiTuokdhVf9VtT_H4g1I8-K9Omm1cvvvf7Zm9KUpnoSXvNwgC0ZjQj7oncNeTg7Hk7MZPGv6AbMbQv5U4hxQL_hr2O-m2HwVewUDawivq3I1rrjCUUFbZXAaeCCiJRstd0SVJEwHQVinG-0kYvxq5VPZGP4IP-QmYieEEZI8E98rwrfQNGgJz_kSSYRtKxbYqdi9EiFZpnVirHh0D5bKvEnTgqmEQCdRVpIaBhRkEsiKXA-SXNjUR3Z2y8yad6fb4atzeLrGRrYUwgULjeI0EtoXeT9",
@@ -31087,7 +31147,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-09-20",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -31136,7 +31196,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-09-26",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -31164,7 +31224,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-09-26",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31192,7 +31252,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-09-27",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31220,7 +31280,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-09-27",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31248,7 +31308,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/campbell-sundays",
         "date": "2026-09-27",
-        "checkedAt": "2026-08-07T10:00:11.332Z"
+        "checkedAt": "2026-08-07T12:16:40.478Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJXZDxu2E1joAR_cHEl7LMQW0/photos/AWCwydjYoUn_Pvp5SLlLBJ_Pref4YcqR48i8ZRqIfxs3vkaCN6YZpHo1zwOmUf1Xw3DaBFeQQsNT2Xld15euliOz2yQ8cZSz2cnUMb7yBKA14zIsPwu8TJ0JdsNFTX2XTok-fRmYKkiqqKwcL0OPgTEEBnw-PMEEKCvDL4VOmpiTuokdhVf9VtT_H4g1I8-K9Omm1cvvvf7Zm9KUpnoSXvNwgC0ZjQj7oncNeTg7Hk7MZPGv6AbMbQv5U4hxQL_hr2O-m2HwVewUDawivq3I1rrjCUUFbZXAaeCCiJRstd0SVJEwHQVinG-0kYvxq5VPZGP4IP-QmYieEEZI8E98rwrfQNGgJz_kSSYRtKxbYqdi9EiFZpnVirHh0D5bKvEnTgqmEQCdRVpIaBhRkEsiKXA-SXNjUR3Z2y8yad6fb4atzeLrGRrYUwgULjeI0EtoXeT9",
@@ -31276,7 +31336,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-09-27",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -31304,7 +31364,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-10-03",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -31332,7 +31392,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-10-03",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31360,7 +31420,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-10-04",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31388,7 +31448,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-10-04",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31416,7 +31476,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/campbell-sundays",
         "date": "2026-10-04",
-        "checkedAt": "2026-08-07T10:00:11.332Z"
+        "checkedAt": "2026-08-07T12:16:40.478Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJXZDxu2E1joAR_cHEl7LMQW0/photos/AWCwydjYoUn_Pvp5SLlLBJ_Pref4YcqR48i8ZRqIfxs3vkaCN6YZpHo1zwOmUf1Xw3DaBFeQQsNT2Xld15euliOz2yQ8cZSz2cnUMb7yBKA14zIsPwu8TJ0JdsNFTX2XTok-fRmYKkiqqKwcL0OPgTEEBnw-PMEEKCvDL4VOmpiTuokdhVf9VtT_H4g1I8-K9Omm1cvvvf7Zm9KUpnoSXvNwgC0ZjQj7oncNeTg7Hk7MZPGv6AbMbQv5U4hxQL_hr2O-m2HwVewUDawivq3I1rrjCUUFbZXAaeCCiJRstd0SVJEwHQVinG-0kYvxq5VPZGP4IP-QmYieEEZI8E98rwrfQNGgJz_kSSYRtKxbYqdi9EiFZpnVirHh0D5bKvEnTgqmEQCdRVpIaBhRkEsiKXA-SXNjUR3Z2y8yad6fb4atzeLrGRrYUwgULjeI0EtoXeT9",
@@ -31444,7 +31504,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-10-04",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -31472,7 +31532,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-10-10",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -31500,7 +31560,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-10-10",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31528,7 +31588,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-10-11",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31556,7 +31616,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-10-11",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31584,7 +31644,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/campbell-sundays",
         "date": "2026-10-11",
-        "checkedAt": "2026-08-07T10:00:11.332Z"
+        "checkedAt": "2026-08-07T12:16:40.478Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJXZDxu2E1joAR_cHEl7LMQW0/photos/AWCwydjYoUn_Pvp5SLlLBJ_Pref4YcqR48i8ZRqIfxs3vkaCN6YZpHo1zwOmUf1Xw3DaBFeQQsNT2Xld15euliOz2yQ8cZSz2cnUMb7yBKA14zIsPwu8TJ0JdsNFTX2XTok-fRmYKkiqqKwcL0OPgTEEBnw-PMEEKCvDL4VOmpiTuokdhVf9VtT_H4g1I8-K9Omm1cvvvf7Zm9KUpnoSXvNwgC0ZjQj7oncNeTg7Hk7MZPGv6AbMbQv5U4hxQL_hr2O-m2HwVewUDawivq3I1rrjCUUFbZXAaeCCiJRstd0SVJEwHQVinG-0kYvxq5VPZGP4IP-QmYieEEZI8E98rwrfQNGgJz_kSSYRtKxbYqdi9EiFZpnVirHh0D5bKvEnTgqmEQCdRVpIaBhRkEsiKXA-SXNjUR3Z2y8yad6fb4atzeLrGRrYUwgULjeI0EtoXeT9",
@@ -31612,7 +31672,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-10-11",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -31640,7 +31700,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-10-17",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -31668,7 +31728,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-10-17",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31696,7 +31756,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-10-18",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31724,7 +31784,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-10-18",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31752,7 +31812,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-10-18",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -31780,7 +31840,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-10-24",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -31808,7 +31868,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-10-24",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31836,7 +31896,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-10-25",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31864,7 +31924,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-10-25",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -31892,7 +31952,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/campbell-sundays",
         "date": "2026-10-25",
-        "checkedAt": "2026-08-07T10:00:11.332Z"
+        "checkedAt": "2026-08-07T12:16:40.478Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJXZDxu2E1joAR_cHEl7LMQW0/photos/AWCwydjYoUn_Pvp5SLlLBJ_Pref4YcqR48i8ZRqIfxs3vkaCN6YZpHo1zwOmUf1Xw3DaBFeQQsNT2Xld15euliOz2yQ8cZSz2cnUMb7yBKA14zIsPwu8TJ0JdsNFTX2XTok-fRmYKkiqqKwcL0OPgTEEBnw-PMEEKCvDL4VOmpiTuokdhVf9VtT_H4g1I8-K9Omm1cvvvf7Zm9KUpnoSXvNwgC0ZjQj7oncNeTg7Hk7MZPGv6AbMbQv5U4hxQL_hr2O-m2HwVewUDawivq3I1rrjCUUFbZXAaeCCiJRstd0SVJEwHQVinG-0kYvxq5VPZGP4IP-QmYieEEZI8E98rwrfQNGgJz_kSSYRtKxbYqdi9EiFZpnVirHh0D5bKvEnTgqmEQCdRVpIaBhRkEsiKXA-SXNjUR3Z2y8yad6fb4atzeLrGRrYUwgULjeI0EtoXeT9",
@@ -31920,7 +31980,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-10-25",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -31948,7 +32008,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/saratoga-farmers-market",
         "date": "2026-10-31",
-        "checkedAt": "2026-08-07T10:00:10.647Z"
+        "checkedAt": "2026-08-07T12:16:39.066Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJDViEEb9KjoARegWhRfN299A/photos/AWCwydjcciXPOK-hPqdiVGYpIt2VqN6Ex8vTE8oLgSx_iSBcGQJyvET-iQwlMhQYbzkxRi2bwAipZFeMTsYd_FSgnq2sE82MvGTl03j-Z7IB6PS9OLtEPRsNZiib91488inf1WQRBrBIv1Xc0hi6uybIEqJDGJqhm92MBQLx55-1whAeQJ2b6f4FyiBe6kFvIlPI9FcrZAH2omW2hEn0EeF6G74O9OmI9-CBZIvrPDsVOZWpcRfnepygx4vJ71gZaz3im0y1qdPBsaOrwSlAUkiHMn56QyA8owQrdbXcZz_VgzoZ376Oj77eLzHWFEQHX_UUT3MP22ye-9wzY1KwrNFb7pRP9BquLVkdSkUGvjKsCa1s-trjsxg6fSa1oSiEviHuksEnvXsseh9dZcnFK6Nh_m_vz5Nn0GWoaGyBOxKBeVU4_A",
@@ -31976,7 +32036,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/sunnyvale-saturday",
         "date": "2026-10-31",
-        "checkedAt": "2026-08-07T10:00:11.571Z"
+        "checkedAt": "2026-08-07T12:16:41.537Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -32004,7 +32064,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/mountain-view-farmers-market/",
         "date": "2026-11-01",
-        "checkedAt": "2026-08-07T10:00:10.020Z"
+        "checkedAt": "2026-08-07T12:16:36.913Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -32032,7 +32092,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://www.cafarmersmkts.com/losgatos-farmers-market/",
         "date": "2026-11-01",
-        "checkedAt": "2026-08-07T10:00:10.583Z"
+        "checkedAt": "2026-08-07T12:16:38.996Z"
       },
       "audienceAge": "all",
       "image": "https://images.unsplash.com/photo-1766977752227-4131b0033b47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5MTk0MTN8MHwxfHNlYXJjaHwxfHxyZXN0YXVyYW50JTIwbWVhbCUyMGNhbGlmb3JuaWF8ZW58MHwyfHx8MTc3NzE5NTgyOHww&ixlib=rb-4.1.0&q=80&w=400",
@@ -32060,7 +32120,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/campbell-sundays",
         "date": "2026-11-01",
-        "checkedAt": "2026-08-07T10:00:11.332Z"
+        "checkedAt": "2026-08-07T12:16:40.478Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJXZDxu2E1joAR_cHEl7LMQW0/photos/AWCwydjYoUn_Pvp5SLlLBJ_Pref4YcqR48i8ZRqIfxs3vkaCN6YZpHo1zwOmUf1Xw3DaBFeQQsNT2Xld15euliOz2yQ8cZSz2cnUMb7yBKA14zIsPwu8TJ0JdsNFTX2XTok-fRmYKkiqqKwcL0OPgTEEBnw-PMEEKCvDL4VOmpiTuokdhVf9VtT_H4g1I8-K9Omm1cvvvf7Zm9KUpnoSXvNwgC0ZjQj7oncNeTg7Hk7MZPGv6AbMbQv5U4hxQL_hr2O-m2HwVewUDawivq3I1rrjCUUFbZXAaeCCiJRstd0SVJEwHQVinG-0kYvxq5VPZGP4IP-QmYieEEZI8E98rwrfQNGgJz_kSSYRtKxbYqdi9EiFZpnVirHh0D5bKvEnTgqmEQCdRVpIaBhRkEsiKXA-SXNjUR3Z2y8yad6fb4atzeLrGRrYUwgULjeI0EtoXeT9",
@@ -32088,7 +32148,7 @@
         "kind": "first-party-market-schedule",
         "sourceUrl": "https://uvfm.org/palo-alto-sundays",
         "date": "2026-11-01",
-        "checkedAt": "2026-08-07T10:00:11.628Z"
+        "checkedAt": "2026-08-07T12:16:41.599Z"
       },
       "audienceAge": "all",
       "photoRef": "places/ChIJefba-OW6j4AR9wxmBnwZek4/photos/AWCwydgyRm1NoRUTb0pG3KojUSXfxKpqQmRiPHoGTFoTLqtXEb2BIBZJWBx_oytX5Zsf0inMTV1dDncm0R9pJSwg1w7VigoBzPt7OAltRys4WbKUyem406AMyJbxosF-Ze6kIdUxevqcx9nfdHowVd9QlSaOHO6T4zPAC-XaSculRcrAtbJPd2cGh1HqU1_Cptr0mgFLb6S91-sKcStkPbdGMLfAYqHQNowqZoOXPWZNE8-5O5ikIdW89YJxnQr3IrW9PshXJoLqqLkMVqP82uEELCW_NuBfxfOKpMFGEqATuNc3gOklnfEd4cBOK3ZEeQ2zhgOh1GGJeGqXgOmsVP4GRi4XtdlBPWZNxUSJEOo593vaNuLAm4DiPLXffUzZTE966tqVlqtrhbKJwG-tb4_0HPAkPxZdtN7bHK18gRPC8fnh6eVC",
@@ -35354,27 +35414,6 @@
       "image": "https://secure.meetupstatic.com/photos/event/b/0/c/c/600_535425260.jpeg",
       "blurb": "Get hands-on with atomic force microscopy equipment alongside fellow makers at BioCurious.",
       "firstSeenAt": "2026-08-03T11:09:06.240Z"
-    },
-    {
-      "id": "meetup-22e93137a83d93a7",
-      "title": "Community BBQ",
-      "date": "2026-08-07",
-      "displayDate": "Fri, Aug 7",
-      "time": "12:00 PM",
-      "endTime": "1:30 PM",
-      "venue": "Hacker Dojo",
-      "address": "855 Maude Ave, Mountain View",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": null,
-      "description": "Meetup event by Hacker Dojo.",
-      "url": "https://www.meetup.com/hackerdojo/events/315590401/",
-      "source": "Meetup",
-      "kidFriendly": false,
-      "audienceAge": "all",
-      "image": "https://secure.meetupstatic.com/photos/event/9/1/f/b/600_534937371.jpeg",
-      "blurb": "Grill up and share food with the Hacker Dojo community at their open BBQ.",
-      "firstSeenAt": "2026-08-06T03:09:53.267Z"
     },
     {
       "id": "meetup-2dcf368981b793c0",
