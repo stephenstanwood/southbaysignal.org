@@ -489,14 +489,18 @@ export const SCC_SPOTLIGHT: SccTechSpotlight[] = [
     employeesNote: "20K employees globally",
   },
   {
+    // Renamed 2026-08-07: Pure Storage rebranded to Everpure on 2026-02-23 and
+    // began trading under the new name on the NYSE 2026-03-05 (ticker stays PSTG).
+    // The purestorage.com domain now redirects to everpuredata.com. The `id` and
+    // logo-manifest key stay "pure-storage" so the existing logo keeps resolving.
     id: "pure-storage",
-    name: "Pure Storage",
+    name: "Everpure",
     city: "Santa Clara",
     category: "hardware",
     stage: "public",
-    tagline: "All-flash storage arrays for enterprise and AI data infrastructure. Growing with AI boom.",
+    tagline: "All-flash storage arrays for enterprise and AI data infrastructure, sold as Pure Storage until a February 2026 rebrand that pushed the company past storage hardware into managing the data itself.",
     color: "#FF6900",
-    url: "https://www.purestorage.com",
+    url: "https://www.everpuredata.com",
     employeesNote: "5K employees globally",
   },
   {
@@ -955,17 +959,11 @@ export const SCC_SPOTLIGHT: SccTechSpotlight[] = [
     url: "https://www.quantumscape.com",
     employeesNote: "~700 employees",
   },
-  {
-    id: "celestial-ai",
-    name: "Celestial AI",
-    city: "Santa Clara",
-    category: "chip",
-    stage: "growth",
-    tagline: "Optical interconnect fabric that replaces copper between AI accelerators with light — solving the memory bandwidth wall that limits GPU clusters. $924M raised; their Photonic Fabric already shipping to hyperscalers.",
-    color: "#7C3AED",
-    url: "https://celestial.ai",
-    employeesNote: "~200 employees",
-  },
+  // Celestial AI was removed 2026-08-07: Marvell completed its $3.25B acquisition
+  // on 2026-02-02, so it is no longer an independent company and doesn't belong in
+  // a startup/growth showcase (Marvell is already listed here). Its old celestial.ai
+  // domain now redirects to marvell.com/ai.html. Marvell kept the Photonic Fabric
+  // optical-interconnect line; if that work is worth covering, cover it under Marvell.
   {
     id: "flexiv-robotics",
     name: "Flexiv",
@@ -1062,6 +1060,26 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // second office in Toronto), and BetaKit describes it as an SF startup with
   // SF-based CEO Reza Farahani. Aggregator city labels are wrong here — out of
   // coverage. Do not add from the "Mountain View" tag alone.
+  // Note: Naïve's city labels conflict — the techstartups.com roundup files it
+  // under "Menlo Park" (San Mateo County, out of coverage). Primary sources win
+  // and all agree on Palo Alto: the company's own funding press release carries
+  // a "PALO ALTO, CA" dateline and calls itself "a Palo Alto-based AI lab," and
+  // SiliconANGLE's and Pulse 2's independent write-ups both say Palo Alto. Same
+  // aggregator-label problem as the Katalyze AI and Array Labs notes above, but
+  // resolving the opposite way — in coverage.
+  {
+    id: "naive",
+    name: "Naïve",
+    city: "Palo Alto",
+    category: "ai",
+    round: "Series A",
+    amount: "$28.5M",
+    date: "2026-08-06",
+    tagline:
+      "A coding agent can build an app in an afternoon, but turning that app into an actual business still means incorporating, opening payment processing, getting a phone number and email domain, and standing up cloud infrastructure — weeks of paperwork an agent can't do on its own. Naïve puts all of it behind one API and a config file, so software can incorporate a company, take payments, and run its own infrastructure, with capability policies and audit logs bounding what any given agent is allowed to do. Nexus Venture Partners led the $28.5M Series A, with Y Combinator, Zetta Venture Partners, and Liquid 2 Ventures joining, plus angels Gokul Rajaram, Apollo co-founder Tim Zheng, former HubSpot COO JD Sherman, Amazon's Gert Lanckriet, DocuSign's Robert Chatwani, and Codecademy co-founder Zachary Sims. Founders Sean Dorje and Dennis Zax are 20-year-old Berkeley dropouts who have built together since they were 14 and sold an earlier machine-learning company, ezML, before going through Y Combinator. The money funds four research tracks: serverless runtimes, inference optimization, shared memory, and multi-agent orchestration.",
+    color: "#7c3aed",
+    url: "https://usenaive.ai",
+  },
   {
     id: "antora-energy",
     name: "Antora Energy",
@@ -1126,6 +1144,19 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
       "Six months after closing a $74M Series A, the Santa Clara startup added $60M more and pushed the round to $134M. Its AI agents take a written chip spec and turn it into production-ready design code, the tests that prove the design works, and automated answers for why a test failed — work that normally eats months of engineer time. B Capital came in new alongside existing backers Bessemer Venture Partners, Micron, MediaTek, Ericsson, and ScOp. Founder and CEO William Wang says recurring revenue grew sixfold in the first half of 2026, with the platform now running at more than 120 semiconductor companies.",
     color: "#7c3aed",
     url: "https://chipagents.ai",
+  },
+  {
+    id: "fish-audio",
+    name: "Fish Audio",
+    city: "Palo Alto",
+    category: "ai",
+    round: "Seed",
+    amount: "$52M",
+    date: "2026-07-28",
+    tagline:
+      "Text-to-speech that doesn't sound like a robot reading a script: Fish Audio's models handle 83+ languages with emotion control down to the individual word, and can clone a voice from a five-second clip in about fifteen seconds. It sells real-time speech, voice cloning, and voice agents to creators, developers, and enterprises, and keeps releasing open models alongside the paid API. The company hit $21M in annual recurring revenue and 8 million users in its first year — it started as chief scientist Shijia Liao's bedroom project, an open-source repo called Fish Speech that collected more than 31,000 GitHub stars before he left an NVIDIA video-research job for it; Rissa Cao is co-founder and CEO. Coreline Ventures and Capital Today co-led the $52M seed, with 359 Capital, Play Time, HF0, 645 Ventures, Parable, Carya Venture Partners, and Alphalist Partners joining. Next up: voice-native language models, speech-to-speech, an enterprise sales team, and deeper integrations with partners like LiveKit and Retell.",
+    color: "#2563eb",
+    url: "https://fish.audio",
   },
   {
     id: "glow",

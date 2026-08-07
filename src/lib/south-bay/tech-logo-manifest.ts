@@ -35,7 +35,6 @@ export const TECH_LOGO_MANIFEST: Record<string, string> = {
   "broadcom": "/logos/broadcom.png",
   "cadence": "/logos/cadence.png",
   "canyon-code": "/logos/canyon-code.ico",
-  "celestial-ai": "/logos/celestial-ai.png",
   "cerebras": "/logos/cerebras.png",
   "chargepoint": "/logos/chargepoint.png",
   "chipagents": "/logos/chipagents.png",
