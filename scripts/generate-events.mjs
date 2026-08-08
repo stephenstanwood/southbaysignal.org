@@ -89,11 +89,20 @@ import {
 import {
   DEFAULT_SNAPSHOT_MAX_AGE_HOURS,
   buildSourceHealth,
+  carryForwardTransientCriticalSources,
+  isTransientSourceError,
   sourceProblems,
   eventRegressionProblem,
   sourceRegressionProblems,
   strictRefreshInputHealth,
 } from "./lib/event-source-health.mjs";
+
+/** Ticketmaster Discovery is bursty; honor Retry-After longer than the default. */
+const TICKETMASTER_FETCH = Object.freeze({
+  attempts: 5,
+  baseDelayMs: 1_000,
+  maxRetryDelayMs: 60_000,
+});
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -4098,12 +4107,10 @@ async function fetchTicketmasterEvents() {
         url.searchParams.set("latlong", latlong);
         url.searchParams.set("page", String(page));
 
-        const res = await fetch(url.toString(), {
-          headers: { "User-Agent": UA },
-          signal: AbortSignal.timeout(20_000),
+        const data = await fetchJson(url.toString(), {
+          timeout: 20_000,
+          ...TICKETMASTER_FETCH,
         });
-        if (!res.ok) throw new Error(`${res.status}`);
-        const data = await res.json();
 
         const raw = data?._embedded?.events || [];
         for (const e of raw) {
@@ -4116,8 +4123,8 @@ async function fetchTicketmasterEvents() {
         const totalPages = data.page?.totalPages ?? 1;
         if (page + 1 >= totalPages || raw.length === 0) break;
         page++;
-        // Respect Ticketmaster rate limit (5 req/sec)
-        await new Promise((r) => setTimeout(r, 250));
+        // Stay well under Ticketmaster's 5 req/sec ceiling across parallel adapters.
+        await new Promise((r) => setTimeout(r, 500));
       }
     }
 
@@ -4156,12 +4163,10 @@ async function fetchShorelineEvents() {
     url.searchParams.set("size", "100");
     url.searchParams.set("sort", "date,asc");
 
-    const res = await fetch(url.toString(), {
-      headers: { "User-Agent": UA },
-      signal: AbortSignal.timeout(15_000),
+    const data = await fetchJson(url.toString(), {
+      timeout: 15_000,
+      ...TICKETMASTER_FETCH,
     });
-    if (!res.ok) throw new Error(`${res.status}`);
-    const data = await res.json();
 
     const rawEvents = data?._embedded?.events || [];
     const events = rawEvents
@@ -4698,9 +4703,10 @@ async function fetchHeritageTheatreEvents() {
     url.searchParams.set("endDateTime", endStr);
     url.searchParams.set("size", "50");
     url.searchParams.set("sort", "date,asc");
-    const res = await fetch(url.toString(), { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(15_000) });
-    if (!res.ok) throw new Error(`${res.status}`);
-    const data = await res.json();
+    const data = await fetchJson(url.toString(), {
+      timeout: 15_000,
+      ...TICKETMASTER_FETCH,
+    });
     const rawEvents = data?._embedded?.events || [];
     const events = rawEvents.map((e) => {
       const dateInfo = e.dates?.start;
@@ -7261,23 +7267,48 @@ async function main() {
     source(fetchInboundEvents, { label: "Inbound newsletter snapshot", critical: true }),
   ];
 
-  const results = await Promise.allSettled(sources.map(({ fn }) => fn()));
+  let results = await Promise.allSettled(sources.map(({ fn }) => fn()));
+  const carriedForward = carryForwardTransientCriticalSources(
+    sources,
+    results,
+    prevRun?.events,
+  );
+  results = carriedForward.results;
+  if (carriedForward.carried.length > 0) {
+    for (const item of carriedForward.carried) {
+      console.warn(
+        `⚠️  ${item.label}: using ${item.count} cached events after transient failure (${item.error})`,
+      );
+    }
+  }
+
   const sourceHealth = buildSourceHealth(sources, results);
+  for (const item of carriedForward.carried) {
+    const entry = sourceHealth.find((source) => source.id === item.id);
+    if (!entry) continue;
+    entry.carriedForward = true;
+    entry.carryForwardReason = item.error;
+  }
   const { blocking, tolerated, toleranceExceeded } = sourceProblems(sourceHealth);
 
   // Degraded-but-publishable: these adapters contribute nothing today, and the
-  // rest of the refresh proceeds without them. Alert anyway — a permanently
-  // dead source otherwise shrinks coverage silently for weeks.
+  // rest of the refresh proceeds without them. Page only when something looks
+  // permanently broken — transient rate limits are retried on the next slot.
   if (tolerated.length > 0) {
     console.warn(`⚠️  events: continuing without ${tolerated.length} failed non-critical source(s)`);
     for (const problem of tolerated) console.warn(`   • ${problem}`);
-    await catSignal({
-      key: "events-refresh-degraded-source",
-      title: `Event refresh degraded — ${tolerated.length} source(s) down`,
-      body:
-        `${tolerated.join("\n")}\n\n` +
-        `The refresh continued without them. Fix or retire these adapters if it persists.`,
-    });
+    const transientOnly = tolerated.every((problem) => isTransientSourceError(problem));
+    if (!transientOnly) {
+      await catSignal({
+        key: "events-refresh-degraded-source",
+        title: `Event refresh degraded — ${tolerated.length} source(s) down`,
+        body:
+          `${tolerated.join("\n")}\n\n` +
+          `The refresh continued without them. Fix or retire these adapters if it persists.`,
+      });
+    } else {
+      console.warn("   (transient upstream errors only — not paging)");
+    }
   }
 
   if (STRICT_EVENT_REFRESH && blocking.length > 0) {

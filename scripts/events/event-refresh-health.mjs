@@ -1,3 +1,5 @@
+import { sourceProblems } from "../lib/event-source-health.mjs";
+
 export const DEFAULT_MINI_SUCCESS_MAX_AGE_HOURS = 26;
 export const DEFAULT_OUTPUT_MAX_AGE_HOURS = 30;
 export const DEFAULT_OUTPUT_SNAPSHOT_MAX_AGE_HOURS = 30;
@@ -67,13 +69,10 @@ export function inspectEventRefreshOutput({
     for (const sourceId of requiredSourceIds) {
       if (!byId.has(sourceId)) problems.push(`required source health is missing: ${sourceId}`);
     }
-    for (const source of sourceHealth) {
-      if (source?.status === "error" || (source?.critical && source?.status !== "ok")) {
-        problems.push(
-          `${source?.label || source?.id || "unknown source"} is ${source?.status || "invalid"}${source?.error ? `: ${source.error}` : ""}`,
-        );
-      }
-    }
+    // Match generate-events: absorb a few broken optional adapters; only page
+    // when a critical source is unhealthy or too many optionals fail at once.
+    const { blocking } = sourceProblems(sourceHealth);
+    problems.push(...blocking);
   }
 
   const snapshots = Array.isArray(data.inputSnapshots) ? data.inputSnapshots : null;

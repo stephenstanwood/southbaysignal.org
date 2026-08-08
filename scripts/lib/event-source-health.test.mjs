@@ -3,7 +3,9 @@ import test from "node:test";
 
 import {
   buildSourceHealth,
+  carryForwardTransientCriticalSources,
   eventRegressionProblem,
+  isTransientSourceError,
   sourceProblems,
   inspectSnapshot,
   sourceRegressionProblems,
@@ -44,6 +46,47 @@ test("strict input health requires credentials and both fresh snapshots", () => 
   });
   assert.equal(result.ok, true);
   assert.deepEqual(result.problems, []);
+});
+
+test("classifies rate limits and 5xx as transient source errors", () => {
+  assert.equal(isTransientSourceError(new Error("429")), true);
+  assert.equal(isTransientSourceError("Heritage Theatre is error: 429"), true);
+  assert.equal(isTransientSourceError(new Error("503")), true);
+  assert.equal(isTransientSourceError(new Error("403")), false);
+  assert.equal(isTransientSourceError(new Error("parser exploded")), false);
+});
+
+test("carries forward cached critical rows after a transient upstream failure", () => {
+  const sources = [
+    { id: "fetchTicketmasterEvents", label: "Ticketmaster", critical: true },
+    { id: "fetchHeritageTheatreEvents", label: "Heritage Theatre", critical: false },
+  ];
+  const previousEvents = [
+    { id: "tm-1", source: "Ticketmaster", date: "2026-08-10" },
+    { id: "tm-2", source: "Ticketmaster", date: "2026-08-11" },
+    { id: "ht-1", source: "Heritage Theatre", date: "2026-08-12" },
+  ];
+  const { results, carried } = carryForwardTransientCriticalSources(
+    sources,
+    [
+      { status: "rejected", reason: new Error("429") },
+      { status: "rejected", reason: new Error("429") },
+    ],
+    previousEvents,
+  );
+
+  assert.equal(results[0].status, "fulfilled");
+  assert.equal(results[0].value.length, 2);
+  assert.equal(results[1].status, "rejected");
+  assert.deepEqual(carried, [{
+    id: "fetchTicketmasterEvents",
+    label: "Ticketmaster",
+    count: 2,
+    error: "429",
+  }]);
+
+  const health = buildSourceHealth(sources, results);
+  assert.equal(sourceProblems(health).blocking.length, 0);
 });
 
 test("source health blocks a critical empty source but absorbs a broken optional one", () => {

@@ -29,9 +29,14 @@ bash scripts/events/install-mini-refresh.sh
 
 - Every adapter exception blocks a strict refresh, including errors that legacy
   adapters used to swallow and return as an empty array.
-- Shared HTTP fetches retry temporary network failures, rate limits, and 5xx
-  responses up to three times with bounded backoff before strict mode fails.
-  Permanent 4xx responses fail immediately.
+- Shared HTTP fetches (including Ticketmaster Discovery) retry temporary
+  network failures, rate limits, and 5xx responses with bounded backoff before
+  strict mode fails. Permanent 4xx responses fail immediately.
+- If a critical adapter still fails on a transient status after retries, the
+  refresh reuses that source's previous rows when available and continues
+  without paging. Optional adapters that 429 are absorbed unless many fail at
+  once; the heartbeat matches that tolerance so a single Heritage Theatre rate
+  limit cannot keep Discord red.
 - Missing credentials, stale/empty snapshots, critical empty sources, and
   aggregate event/source regressions block the output write.
 - Every adapter records per-date raw counts in `sourceHealth`. The next run
