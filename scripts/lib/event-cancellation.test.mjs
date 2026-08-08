@@ -2,7 +2,11 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { isBiblioEventCancelled, looksCancelled } from "../generate-events.mjs";
+import {
+  isBiblioEventCancelled,
+  looksCancelled,
+  resolveBiblioDisplayVenue,
+} from "../generate-events.mjs";
 
 const KNIT_ALONGS_CANCELLED_AUG_7 =
   "Cupertino Knit Alongs Cancelled August 7 and August 14. Dear Cupertino Knitters and Crocheters, There will be no Knit Alongs On Friday August 7 and Friday, August 14.";
@@ -35,6 +39,27 @@ test("BiblioCommons isCancelled flag marks inactive occurrences", () => {
   assert.equal(isBiblioEventCancelled({ definition: { isCancelled: false } }), false);
   assert.equal(isBiblioEventCancelled({ definition: {} }), false);
   assert.equal(isBiblioEventCancelled(null), false);
+});
+
+test("Palo Alto FOPAL sales use their actual Cubberley venue", () => {
+  assert.equal(
+    resolveBiblioDisplayVenue(
+      "paloalto",
+      "Palo Alto City Library",
+      "External Event: FOPAL Book Sale",
+      "",
+    ),
+    "Cubberley Community Center",
+  );
+  assert.equal(
+    resolveBiblioDisplayVenue(
+      "paloalto",
+      "Palo Alto City Library",
+      "Family Storytime",
+      "Mitchell Park",
+    ),
+    "Mitchell Park Library",
+  );
 });
 
 test("canonical upcoming data omits cancelled Cupertino Knit Alongs dates", () => {

@@ -3590,6 +3590,19 @@ function isBiblioEventCancelled(ev) {
   return ev?.definition?.isCancelled === true;
 }
 
+function resolveBiblioDisplayVenue(libraryId, libraryName, title, branchName) {
+  // Palo Alto publishes the external FOPAL sale through its library calendar,
+  // but the sale itself is held at Cubberley. With no branch entity attached,
+  // the generic fallback incorrectly labeled it "Palo Alto City Library."
+  if (libraryId === "paloalto" && /\bFOPAL Book Sale\b/i.test(title || "")) {
+    return "Cubberley Community Center";
+  }
+
+  return branchName
+    ? (branchName.toLowerCase().endsWith("library") ? branchName : `${branchName} Library`)
+    : libraryName;
+}
+
 async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
   console.log(`  ⏳ ${libraryName} (paginating all branches)...`);
   const results = [];
@@ -3648,9 +3661,12 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
           // (where "Online" isn't at the start). Trust the authoritative flag.
           const isVirtual = ev.definition?.isVirtual === true;
 
-          const displayVenue = branchName
-            ? (branchName.toLowerCase().endsWith("library") ? branchName : `${branchName} Library`)
-            : libraryName;
+          const displayVenue = resolveBiblioDisplayVenue(
+            libraryId,
+            libraryName,
+            title,
+            branchName,
+          );
 
           // Month-long exhibits arrive from BiblioCommons as start = open day @
           // arbitrary clock, end = close day @ same clock (e.g. Oil Painting
@@ -7977,6 +7993,7 @@ export {
   cleanTitle,
   isBiblioEventCancelled,
   looksCancelled,
+  resolveBiblioDisplayVenue,
   fetchFarmersMarketEvents,
   fetchHappyHollowEvents,
   fetchJazzOnThePlazzEvents,

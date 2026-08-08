@@ -119,26 +119,40 @@ test("replaces wrong and duplicate series rows without touching unrelated events
 });
 
 test("keeps the committed event database aligned with the verified schedule", () => {
-  const upcoming = JSON.parse(
+  const upcomingDocument = JSON.parse(
     readFileSync(
       new URL("../../src/data/south-bay/upcoming-events.json", import.meta.url),
       "utf8",
     ),
-  ).events;
-  const archive = JSON.parse(
+  );
+  const archiveDocument = JSON.parse(
     readFileSync(
       new URL("../../src/data/south-bay/events-archive.json", import.meta.url),
       "utf8",
     ),
-  ).events;
+  );
+  const upcoming = upcomingDocument.events;
+  const archive = archiveDocument.events;
+
+  // The event archive intentionally retains only 30 days. Anchor the expected
+  // slice to this committed refresh instead of wall-clock time so the test stays
+  // deterministic as older concerts age out of the database.
+  const refreshedAt = new Date(archiveDocument.updatedAt || upcomingDocument.generatedAt);
+  const archiveCutoff = new Date(refreshedAt);
+  archiveCutoff.setDate(archiveCutoff.getDate() - 30);
+  const archiveCutoffPt = archiveCutoff.toLocaleDateString("en-CA", {
+    timeZone: "America/Los_Angeles",
+  });
+  const allExpected = getLosGatosSummerConcerts().filter(
+    (event) => event.date >= archiveCutoffPt,
+  );
 
   const scheduleRows = [...upcoming, ...archive].filter((event) =>
     event.id?.startsWith("los-gatos-music-in-the-park-") ||
     event.id?.startsWith("los-gatos-jazz-on-the-plazz-"),
   );
 
-  assert.equal(scheduleRows.length, 14);
-  const allExpected = getLosGatosSummerConcerts();
+  assert.equal(scheduleRows.length, allExpected.length);
   assert.deepEqual(
     new Set(scheduleRows.map((event) => event.id)),
     new Set(allExpected.map((event) => event.id)),
