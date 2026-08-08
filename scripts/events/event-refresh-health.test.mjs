@@ -85,3 +85,30 @@ test("combines scheduler heartbeat and generated-output health", () => {
   assert.equal(health.ok, true);
   assert.deepEqual(health.problems, []);
 });
+
+test("absorbs a broken optional adapter the same way generate-events does", () => {
+  const data = healthyOutput();
+  data.sourceHealth.push({
+    id: "fetchHeritageTheatreEvents",
+    label: "Heritage Theatre",
+    critical: false,
+    status: "error",
+    count: 0,
+    dateCounts: {},
+    error: "429",
+  });
+  const health = inspectEventRefreshOutput({ data, now: NOW });
+  assert.equal(health.ok, true);
+  assert.deepEqual(health.problems, []);
+});
+
+test("still flags a critical Ticketmaster failure in the generated output", () => {
+  const data = healthyOutput();
+  const tm = data.sourceHealth.find((source) => source.id === "fetchTicketmasterEvents");
+  tm.status = "error";
+  tm.count = 0;
+  tm.error = "429";
+  const health = inspectEventRefreshOutput({ data, now: NOW });
+  assert.equal(health.ok, false);
+  assert.ok(health.problems.some((problem) => /fetchTicketmasterEvents is error: 429/.test(problem)));
+});

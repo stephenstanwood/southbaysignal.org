@@ -79,6 +79,30 @@ test("fetchText stops after the configured attempt limit", async () => {
   assert.deepEqual(delays, [100, 200]);
 });
 
+test("fetchJson retries a 429 before succeeding", async () => {
+  const delays = [];
+  let calls = 0;
+
+  const result = await fetchJson("https://example.com/tm", {
+    fetchImpl: async () => {
+      calls += 1;
+      if (calls === 1) {
+        return new Response("rate limited", {
+          status: 429,
+          headers: { "Retry-After": "1" },
+        });
+      }
+      return Response.json({ ok: true });
+    },
+    sleep: async (delayMs) => delays.push(delayMs),
+    onRetry: quiet,
+  });
+
+  assert.deepEqual(result, { ok: true });
+  assert.equal(calls, 2);
+  assert.deepEqual(delays, [1_000]);
+});
+
 test("fetchText honors and caps Retry-After", async () => {
   const delays = [];
   let calls = 0;

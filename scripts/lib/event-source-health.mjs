@@ -138,6 +138,49 @@ export function buildSourceHealth(sourceDefinitions, settledResults) {
   });
 }
 
+/** True for rate limits, timeouts, and other temporary upstream failures. */
+export function isTransientSourceError(error) {
+  const msg = String(error?.message || error || "");
+  if (/\b(408|425|429|5\d\d)\b/.test(msg)) return true;
+  return /timeout|AbortError|ECONNRESET|ENOTFOUND|EAI_AGAIN|network|fetch failed|socket/i.test(msg);
+}
+
+/**
+ * When a critical adapter dies on a transient upstream failure after retries,
+ * reuse last night's rows for that source label so the refresh can still publish
+ * instead of paging on a brief Ticketmaster 429.
+ */
+export function carryForwardTransientCriticalSources(
+  sourceDefinitions,
+  settledResults,
+  previousEvents = [],
+) {
+  const prev = Array.isArray(previousEvents) ? previousEvents : [];
+  const carried = [];
+  const results = (Array.isArray(settledResults) ? settledResults : []).map((result, index) => {
+    const source = sourceDefinitions[index];
+    if (!source?.critical || result?.status !== "rejected") return result;
+    if (!isTransientSourceError(result.reason)) return result;
+
+    const cached = prev.filter((event) => event?.source === source.label);
+    if (cached.length === 0) return result;
+
+    const error = result.reason?.message || String(result.reason);
+    carried.push({
+      id: source.id,
+      label: source.label,
+      count: cached.length,
+      error,
+    });
+    return {
+      status: "fulfilled",
+      value: cached.map((event) => ({ ...event })),
+    };
+  });
+
+  return { results, carried };
+}
+
 // How many non-critical adapters may fail before we treat the run as unsafe.
 // Above this, the failures look systemic (network, DNS, a shared upstream)
 // rather than a handful of individually dead feeds.
