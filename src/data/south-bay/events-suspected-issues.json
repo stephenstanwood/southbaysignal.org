@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-08T18:36:01.463Z"
+    "auditedAt": "2026-08-09T21:40:43.532Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1895,
+    "total": 1830,
     "totals": {
       "hard": 2,
       "soft": 1,
@@ -64,15 +64,15 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 390,
+    "total": 371,
     "totals": {
-      "hard": 7,
+      "hard": 6,
       "soft": 1,
       "info": 0
     },
     "byReason": {
       "unknown-slug": 1,
-      "out-of-area": 5,
+      "out-of-area": 4,
       "slug-mismatch": 2
     },
     "hard": [
@@ -124,20 +124,6 @@
         "city": null,
         "date": "2026-09-17T11:00:00-07:00",
         "location": "San Francisco Museum of Modern Art, San Francisco, CA",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "out-of-area",
-            "detail": "location mentions \"san francisco\" with no in-area city token"
-          }
-        ]
-      },
-      {
-        "id": "inbound_mqtt6fia_5yepy2",
-        "title": "Maggie Stiefvater: The Dream Thieves graphic novel release",
-        "city": "san-jose",
-        "date": "2026-08-08T18:00:00-07:00",
-        "location": "Books Inc. Opera Plaza, San Francisco, CA",
         "findings": [
           {
             "severity": "hard",
