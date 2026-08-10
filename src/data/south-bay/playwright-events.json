@@ -1,27 +1,27 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-09T21:38:09.710Z",
+    "generatedAt": "2026-08-10T12:42:49.459Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 405,
+    "eventCount": 396,
     "sourceCount": 23,
     "sources": [
       "Mountain View Public Library (15)",
       "Los Gatos Library (22)",
-      "San Jose Museum of Art (32)",
-      "Linden Tree Books (10)",
+      "San Jose Museum of Art (30)",
+      "Linden Tree Books (9)",
       "Hicklebee's (1)",
       "History San Jose (24)",
       "Montalvo Arts Center (4)",
       "City Lights Theater (7)",
       "ICA San José (4)",
-      "Mountain Winery (36)",
+      "Mountain Winery (35)",
       "San Jose Theaters (20)",
       "Children's Discovery Museum (1)",
-      "Midpen Open Space (4)",
-      "Guadalupe River Park Conservancy (7)",
-      "Santana Row (5)",
-      "City of Cupertino (76)",
+      "Midpen Open Space (3)",
+      "Guadalupe River Park Conservancy (5)",
+      "Santana Row (4)",
+      "City of Cupertino (75)",
       "Opera San José (5)",
       "TheatreWorks Silicon Valley (90)",
       "Levi's Stadium (16)",
@@ -84,14 +84,14 @@
         "id": "sj-museum-of-art",
         "label": "SJ Museum of Art",
         "status": "ok",
-        "count": 32,
+        "count": 30,
         "error": null
       },
       {
         "id": "linden-tree-books",
         "label": "Linden Tree Books",
         "status": "ok",
-        "count": 10,
+        "count": 9,
         "error": null
       },
       {
@@ -140,7 +140,7 @@
         "id": "mountain-winery",
         "label": "Mountain Winery",
         "status": "ok",
-        "count": 36,
+        "count": 35,
         "error": null
       },
       {
@@ -175,21 +175,21 @@
         "id": "midpen-open-space",
         "label": "Midpen Open Space",
         "status": "ok",
-        "count": 4,
+        "count": 3,
         "error": null
       },
       {
         "id": "guadalupe-river-park",
         "label": "Guadalupe River Park",
         "status": "ok",
-        "count": 7,
+        "count": 5,
         "error": null
       },
       {
         "id": "santana-row",
         "label": "Santana Row",
         "status": "ok",
-        "count": 5,
+        "count": 4,
         "error": null
       },
       {
@@ -203,7 +203,7 @@
         "id": "city-of-cupertino",
         "label": "City of Cupertino",
         "status": "ok",
-        "count": 76,
+        "count": 75,
         "error": null
       },
       {
@@ -279,23 +279,6 @@
     ]
   },
   "events": [
-    {
-      "id": "e533527e4aad",
-      "title": "Friends of the Library Book Sale",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
-      "time": "11:00 am",
-      "endTime": null,
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "arts",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/15817537",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
     {
       "id": "1ebcc3b59a79",
       "title": "Robot Challenge",
@@ -531,6 +514,23 @@
       "cost": "free",
       "description": "",
       "url": "https://mountainview.libcal.com/event/17155791",
+      "source": "Mountain View Public Library",
+      "kidFriendly": false
+    },
+    {
+      "id": "aa01122ff151",
+      "title": "Board of Library Trustees Meeting Canceled.",
+      "date": "2026-08-17",
+      "displayDate": "Mon, Aug 17",
+      "time": "7:00 pm",
+      "endTime": null,
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17132024",
       "source": "Mountain View Public Library",
       "kidFriendly": false
     },
@@ -909,40 +909,6 @@
       "kidFriendly": false
     },
     {
-      "id": "8c70728e6a63",
-      "title": "Destiny Muhammad at SJMA | San Jose Jazz Summer Fest 2026",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
-      "time": "Sunday, August 9, 2026",
-      "endTime": null,
-      "venue": "San Jose Museum of Art",
-      "address": "110 S Market St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sjmusart.org/event/destiny-muhammad-sjma-san-jose-jazz-summer-fest-2026",
-      "source": "San Jose Museum of Art",
-      "kidFriendly": false
-    },
-    {
-      "id": "8c70728e6a63",
-      "title": "Destiny Muhammad at SJMA | San Jose Jazz Summer Fest 2026",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
-      "time": "Sunday, August 9, 2026",
-      "endTime": null,
-      "venue": "San Jose Museum of Art",
-      "address": "110 S Market St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sjmusart.org/event/destiny-muhammad-sjma-san-jose-jazz-summer-fest-2026",
-      "source": "San Jose Museum of Art",
-      "kidFriendly": false
-    },
-    {
       "id": "4bacc84aa6de",
       "title": "Light Up the Night",
       "date": "2026-08-14",
@@ -1045,40 +1011,6 @@
       "kidFriendly": false
     },
     {
-      "id": "d7060023909f",
-      "title": "CityDance San José: Country Line Dancing",
-      "date": "2026-08-27",
-      "displayDate": "Thu, Aug 27",
-      "time": "Thursday, August 27, 2026",
-      "endTime": null,
-      "venue": "San Jose Museum of Art",
-      "address": "110 S Market St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sjmusart.org/citydance-san-jose-country-line-dancing",
-      "source": "San Jose Museum of Art",
-      "kidFriendly": false
-    },
-    {
-      "id": "d7060023909f",
-      "title": "CityDance San José: Country Line Dancing",
-      "date": "2026-08-27",
-      "displayDate": "Thu, Aug 27",
-      "time": "Thursday, August 27, 2026",
-      "endTime": null,
-      "venue": "San Jose Museum of Art",
-      "address": "110 S Market St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sjmusart.org/citydance-san-jose-country-line-dancing",
-      "source": "San Jose Museum of Art",
-      "kidFriendly": false
-    },
-    {
       "id": "f3108e4c9591",
       "title": "Content Pick-Up Party: 18.4 Profiles",
       "date": "2026-08-27",
@@ -1109,6 +1041,40 @@
       "cost": "paid",
       "description": "",
       "url": "https://sjmusart.org/event/content-pick-party-184-profiles",
+      "source": "San Jose Museum of Art",
+      "kidFriendly": false
+    },
+    {
+      "id": "d7060023909f",
+      "title": "CityDance San José: Country Line Dancing",
+      "date": "2026-08-27",
+      "displayDate": "Thu, Aug 27",
+      "time": "Thursday, August 27, 2026",
+      "endTime": null,
+      "venue": "San Jose Museum of Art",
+      "address": "110 S Market St, San Jose, CA 95113",
+      "city": "san-jose",
+      "category": "arts",
+      "cost": "paid",
+      "description": "",
+      "url": "https://sjmusart.org/citydance-san-jose-country-line-dancing",
+      "source": "San Jose Museum of Art",
+      "kidFriendly": false
+    },
+    {
+      "id": "d7060023909f",
+      "title": "CityDance San José: Country Line Dancing",
+      "date": "2026-08-27",
+      "displayDate": "Thu, Aug 27",
+      "time": "Thursday, August 27, 2026",
+      "endTime": null,
+      "venue": "San Jose Museum of Art",
+      "address": "110 S Market St, San Jose, CA 95113",
+      "city": "san-jose",
+      "category": "arts",
+      "cost": "paid",
+      "description": "",
+      "url": "https://sjmusart.org/citydance-san-jose-country-line-dancing",
       "source": "San Jose Museum of Art",
       "kidFriendly": false
     },
@@ -1181,8 +1147,8 @@
       "kidFriendly": false
     },
     {
-      "id": "a7ea9dfea6bb",
-      "title": "CityDance San José: Afrobeat",
+      "id": "c5bfc22b7015",
+      "title": "CityDance San José: Afrobeats",
       "date": "2026-09-24",
       "displayDate": "Thu, Sep 24",
       "time": "Thursday, September 24, 2026",
@@ -1193,13 +1159,13 @@
       "category": "arts",
       "cost": "paid",
       "description": "",
-      "url": "https://sjmusart.org/citydance-san-jose-afrobeat",
+      "url": "https://sjmusart.org/citydance-san-jose-afrobeats",
       "source": "San Jose Museum of Art",
       "kidFriendly": false
     },
     {
-      "id": "a7ea9dfea6bb",
-      "title": "CityDance San José: Afrobeat",
+      "id": "c5bfc22b7015",
+      "title": "CityDance San José: Afrobeats",
       "date": "2026-09-24",
       "displayDate": "Thu, Sep 24",
       "time": "Thursday, September 24, 2026",
@@ -1210,7 +1176,7 @@
       "category": "arts",
       "cost": "paid",
       "description": "",
-      "url": "https://sjmusart.org/citydance-san-jose-afrobeat",
+      "url": "https://sjmusart.org/citydance-san-jose-afrobeats",
       "source": "San Jose Museum of Art",
       "kidFriendly": false
     },
@@ -1451,28 +1417,6 @@
       "url": "https://sjmusart.org/event/first-fridays-december-2026",
       "source": "San Jose Museum of Art",
       "kidFriendly": false
-    },
-    {
-      "id": "bd7da16d8100",
-      "title": "Storytime with Charlotte Cheng",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
-      "time": "10:30am",
-      "endTime": null,
-      "venue": "Linden Tree Books",
-      "address": "265 State St, Los Altos, CA 94022",
-      "city": "los-altos",
-      "category": "arts",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.lindentreebooks.com/events-calendar/",
-      "source": "Linden Tree Books",
-      "kidFriendly": true,
-      "occurrenceEvidence": {
-        "kind": "first-party-occurrence-page",
-        "sourceUrl": "https://www.lindentreebooks.com/events-calendar/",
-        "date": "2026-08-09"
-      }
     },
     {
       "id": "a322f89dc40f",
@@ -2353,23 +2297,6 @@
       "kidFriendly": false
     },
     {
-      "id": "21f7f642c40e",
-      "title": "George Thorogood & The Destroyers with Special Guest: The Robert Cray Band",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
-      "time": "7:30 PM",
-      "endTime": null,
-      "venue": "The Mountain Winery",
-      "address": "14831 Pierce Rd, Saratoga, CA 95070",
-      "city": "saratoga",
-      "category": "music",
-      "cost": "paid",
-      "description": "",
-      "url": "https://www.mountainwinery.com/events/detail?event_id=1365878",
-      "source": "Mountain Winery",
-      "kidFriendly": false
-    },
-    {
       "id": "5f037b57d9c7",
       "title": "The Movement and Pepper with with special guest Cydeways",
       "date": "2026-08-15",
@@ -2965,23 +2892,6 @@
       "kidFriendly": false
     },
     {
-      "id": "47afdf7b4e59",
-      "title": "San Jose Jazz Summer Fest 2026 at the Montgomery Theater (Sunday)",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
-      "time": null,
-      "endTime": null,
-      "venue": "Montgomery Theater",
-      "address": "271 S Market St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "music",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sanjosetheaters.org/calendar-condensed/",
-      "source": "San Jose Theaters",
-      "kidFriendly": false
-    },
-    {
       "id": "c07c74e3f231",
       "title": "The Beths & Beach Bunny",
       "date": "2026-08-11",
@@ -3305,10 +3215,27 @@
       "kidFriendly": false
     },
     {
-      "id": "4cf6f02adb3a",
+      "id": "4a0ccf5d7bba",
+      "title": "Matt Mathews",
+      "date": "2026-09-17",
+      "displayDate": "Thu, Sep 17",
+      "time": "7:00pm",
+      "endTime": null,
+      "venue": "Center for the Performing Arts",
+      "address": "255 S Almaden Blvd, San Jose, CA 95113",
+      "city": "san-jose",
+      "category": "community",
+      "cost": "paid",
+      "description": "",
+      "url": "https://sanjosetheaters.org/calendar-condensed/",
+      "source": "San Jose Theaters",
+      "kidFriendly": false
+    },
+    {
+      "id": "7d0ed3a0c9f5",
       "title": "All Ages Storytime",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
+      "date": "2026-08-10",
+      "displayDate": "Mon, Aug 10",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
@@ -3320,23 +3247,6 @@
       "url": "https://www.cdm.org/calendar/",
       "source": "Children's Discovery Museum",
       "kidFriendly": true
-    },
-    {
-      "id": "cb02388244e4",
-      "title": "Sentinel in the Sky",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
-      "time": "1:00 pm",
-      "endTime": null,
-      "venue": "Sierra Azul Preserve",
-      "address": "Sierra Azul Preserve, Los Gatos",
-      "city": "los-gatos",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.openspace.org/events/guided-activities/sentinel-sky-17",
-      "source": "Midpen Open Space",
-      "kidFriendly": false
     },
     {
       "id": "e2a71795d76e",
@@ -3388,50 +3298,6 @@
       "url": "https://www.openspace.org/events/guided-activities/wildcard-ramble-rancho-3",
       "source": "Midpen Open Space",
       "kidFriendly": false
-    },
-    {
-      "id": "5773a13973e6",
-      "title": "GRPC's PlayHub: A Public Sports Equipment Library",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
-      "time": "9:00 am",
-      "endTime": null,
-      "venue": "Guadalupe River Park",
-      "address": "438 Coleman Ave, San Jose, CA 95110",
-      "city": "san-jose",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.google.com/calendar/event?eid=MnVjbGI0ZGs1dnNibGY0MzNqamw2cTlkOHJfMjAyNjA4MDhUMTYwMDAwWiBjX252amt1cGptNGxuNW50OXF0bHRiYWlrMHE4QGc&ctz=America/Los_Angeles",
-      "source": "Guadalupe River Park Conservancy",
-      "kidFriendly": false,
-      "occurrenceEvidence": {
-        "kind": "first-party-occurrence-page",
-        "sourceUrl": "https://grpg.org/calendar/events/",
-        "date": "2026-08-09"
-      }
-    },
-    {
-      "id": "bea9b14f3463",
-      "title": "Guided Meditations at RPG",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
-      "time": "10:00 am",
-      "endTime": null,
-      "venue": "Guadalupe River Park",
-      "address": "438 Coleman Ave, San Jose, CA 95110",
-      "city": "san-jose",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.google.com/calendar/event?eid=N2FoMnVjaG4xM2ZkODZyZGpjcmJmZm9yaGggY19udmprdXBqbTRsbjVudDlxdGx0YmFpazBxOEBn&ctz=America/Los_Angeles",
-      "source": "Guadalupe River Park Conservancy",
-      "kidFriendly": false,
-      "occurrenceEvidence": {
-        "kind": "first-party-occurrence-page",
-        "sourceUrl": "https://grpg.org/calendar/events/",
-        "date": "2026-08-09"
-      }
     },
     {
       "id": "1a6460898a19",
@@ -3544,23 +3410,6 @@
       }
     },
     {
-      "id": "4684de8e1377",
-      "title": "Cars & Croissants on The Row",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
-      "time": "9am",
-      "endTime": null,
-      "venue": "Santana Row",
-      "address": "377 Santana Row, San Jose, CA 95128",
-      "city": "san-jose",
-      "category": "community",
-      "cost": null,
-      "description": "",
-      "url": "https://santanarow.com/event/cars-croissants-on-the-row/",
-      "source": "Santana Row",
-      "kidFriendly": false
-    },
-    {
       "id": "6fdcda9e57f8",
       "title": "Farmers' Market",
       "date": "2026-08-12",
@@ -3627,23 +3476,6 @@
       "url": "https://santanarow.com/event/vine-to-wine/",
       "source": "Santana Row",
       "kidFriendly": false
-    },
-    {
-      "id": "b705d846ece8",
-      "title": "Free Shakespeare in the Park Event",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
-      "time": "06:00 PM",
-      "endTime": "08:30 PM",
-      "venue": "Memorial Park Amphitheater",
-      "address": "Memorial Park Amphitheater, 21163 Anton Way, 95014, View Map",
-      "city": "cupertino",
-      "category": "family",
-      "cost": "free",
-      "description": "Free Shakespeare in the Park brings you Anthony and Cleopatra directed by Katja Rivera. Set against the backdrop of the Roman Empire and Egypt, For show details, Anthony and Cleopatra examines the conflict between duty and desire, and the impact of personal relationships. Visit sfshakes.org.",
-      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Free-Shakespeare-in-the-Park-Event",
-      "source": "City of Cupertino",
-      "kidFriendly": true
     },
     {
       "id": "576e319dfa5a",
@@ -4983,7 +4815,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
       "url": "https://www.operasj.org/event/don-giovanni-4",
       "source": "Opera San José",
       "kidFriendly": false
@@ -5000,7 +4832,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
       "url": "https://www.operasj.org/event/don-giovanni-5",
       "source": "Opera San José",
       "kidFriendly": false
@@ -6808,23 +6640,6 @@
       "kidFriendly": false
     },
     {
-      "id": "a17fefa73a86",
-      "title": "Grupo Frontera",
-      "date": "2026-08-09",
-      "displayDate": "Sun, Aug 9",
-      "time": "8:00 pm",
-      "endTime": null,
-      "venue": "SAP Center",
-      "address": "525 W Santa Clara St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "community",
-      "cost": "paid",
-      "description": "Grupo Frontera is bringing their Triste Pero Bien C*bron Tour to the SAP Center at San Jose 🤠Tickets on sale Friday, March 13 at 10 am. Call the raza and get ready for a good time!",
-      "url": "https://www.sapcenter.com/events/detail/grupo-frontera",
-      "source": "SAP Center",
-      "kidFriendly": false
-    },
-    {
       "id": "8b58a9b1c877",
       "title": "Omar Courtz",
       "date": "2026-08-19",
@@ -7059,6 +6874,23 @@
       "cost": "paid",
       "description": "",
       "url": "https://www.sapcenter.com/events/detail/le-sserafim",
+      "source": "SAP Center",
+      "kidFriendly": false
+    },
+    {
+      "id": "99c952b03e05",
+      "title": "Sharks vs Ducks",
+      "date": "2026-09-24",
+      "displayDate": "Thu, Sep 24",
+      "time": "7:00 pm",
+      "endTime": null,
+      "venue": "SAP Center",
+      "address": "525 W Santa Clara St, San Jose, CA 95113",
+      "city": "san-jose",
+      "category": "sports",
+      "cost": "paid",
+      "description": "",
+      "url": "https://www.sapcenter.com/events/detail/sharks-vs-panthers-6",
       "source": "SAP Center",
       "kidFriendly": false
     },
