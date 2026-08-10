@@ -1084,6 +1084,19 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     url: "https://usenaive.ai",
   },
   {
+    id: "buzz-solutions",
+    name: "Buzz Solutions",
+    city: "Palo Alto",
+    category: "ai",
+    round: "Series A",
+    amount: "$20M",
+    date: "2026-08-04",
+    tagline:
+      "Utilities fly drones over transmission lines and substations and come back with tens of thousands of photos that human inspectors then have to sort through. Buzz's PowerAI platform reads that imagery instead, flagging the cracked insulator or leaning pole before it becomes an outage or an ignition source, and tracking asset health across transmission, distribution, and solar. S3 Ventures led the oversubscribed $20M Series A, with GoPoint Ventures joining and existing backers HearstLab and Blackhorn Ventures following on. Kaitlyn Albertoli and Vikhyat Chaudhry founded the company in 2017; it now counts Dominion Energy, American Electric Power, and the New York Power Authority among its utility customers, and says it tripled its customer count and grew revenue 400% over the past year. The money goes to product work, a bigger go-to-market team, and deeper deployments with existing utilities.",
+    color: "#2563eb",
+    url: "https://www.buzzsolutions.co",
+  },
+  {
     id: "antora-energy",
     name: "Antora Energy",
     city: "San Jose",

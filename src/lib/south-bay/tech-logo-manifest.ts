@@ -33,6 +33,7 @@ export const TECH_LOGO_MANIFEST: Record<string, string> = {
   "barracuda-networks": "/logos/barracuda-networks.png",
   "bespoke-labs": "/logos/bespoke-labs.png",
   "broadcom": "/logos/broadcom.png",
+  "buzz-solutions": "/logos/buzz-solutions.png",
   "cadence": "/logos/cadence.png",
   "canyon-code": "/logos/canyon-code.ico",
   "cerebras": "/logos/cerebras.png",
