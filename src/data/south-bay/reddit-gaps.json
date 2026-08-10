@@ -1,85 +1,202 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-07T03:16:45.239Z",
+    "generatedAt": "2026-08-10T11:15:15.269Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 11
+    "sourceCount": 13
   },
   "summary": {
-    "threadsMined": 11,
-    "placesExtracted": 2,
-    "placesMatched": 1,
-    "placeGaps": 1,
-    "eventsExtracted": 3,
+    "threadsMined": 13,
+    "placesExtracted": 8,
+    "placesMatched": 3,
+    "placeGaps": 5,
+    "eventsExtracted": 6,
     "eventsMatched": 0,
-    "eventGaps": 3,
+    "eventGaps": 6,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "Twin Creeks Soccer League",
+      "name": "Rooster T Feathers Comedy Club",
       "city": "Sunnyvale",
       "kind": "venue",
-      "context": "7v7 men's novice soccer league recruiting players",
+      "context": "hosting Salty Mom Comedy Tour",
       "sourceUrls": [
-        "https://www.reddit.com/r/Sunnyvale/comments/1veyyhi/twin_creeks_soccer_league_recruiting_players_7v7/"
+        "https://www.reddit.com/r/SanJose/comments/1vk91r1/things_to_do_in_san_jose_this_week_812_816_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vk3ct1/does_anyone_know_whats_happening_with_the_old/",
+        "https://www.reddit.com/r/SanJose/comments/1vk7e4h/voyagers_chocolate_chip_cookies/",
+        "https://www.reddit.com/r/SanJose/comments/1vjyq1c/local_taco_bar_catering/",
+        "https://www.reddit.com/r/SanJose/comments/1vjwmta/iso_looking_for_fresh_kimbap_in_sj/"
+      ]
+    },
+    {
+      "name": "San Jose Improv",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "hosting comedian Troy Bond",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vk91r1/things_to_do_in_san_jose_this_week_812_816_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vk3ct1/does_anyone_know_whats_happening_with_the_old/",
+        "https://www.reddit.com/r/SanJose/comments/1vk7e4h/voyagers_chocolate_chip_cookies/",
+        "https://www.reddit.com/r/SanJose/comments/1vjyq1c/local_taco_bar_catering/",
+        "https://www.reddit.com/r/SanJose/comments/1vjwmta/iso_looking_for_fresh_kimbap_in_sj/"
+      ]
+    },
+    {
+      "name": "CaliBunga",
+      "city": "San Jose",
+      "kind": "other",
+      "context": "former water park at Lake Cunningham, now gone",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vk91r1/things_to_do_in_san_jose_this_week_812_816_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vk3ct1/does_anyone_know_whats_happening_with_the_old/",
+        "https://www.reddit.com/r/SanJose/comments/1vk7e4h/voyagers_chocolate_chip_cookies/",
+        "https://www.reddit.com/r/SanJose/comments/1vjyq1c/local_taco_bar_catering/",
+        "https://www.reddit.com/r/SanJose/comments/1vjwmta/iso_looking_for_fresh_kimbap_in_sj/"
+      ]
+    },
+    {
+      "name": "Voyager",
+      "city": "San Jose",
+      "kind": "cafe",
+      "context": "known for chocolate chip cookies",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vk91r1/things_to_do_in_san_jose_this_week_812_816_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vk3ct1/does_anyone_know_whats_happening_with_the_old/",
+        "https://www.reddit.com/r/SanJose/comments/1vk7e4h/voyagers_chocolate_chip_cookies/",
+        "https://www.reddit.com/r/SanJose/comments/1vjyq1c/local_taco_bar_catering/",
+        "https://www.reddit.com/r/SanJose/comments/1vjwmta/iso_looking_for_fresh_kimbap_in_sj/"
+      ]
+    },
+    {
+      "name": "Santa Clara Hyatt",
+      "city": "Santa Clara",
+      "kind": "venue",
+      "context": "hosts California Extreme show",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vjthtx/im_back_with_another_california_extreme_wristband/",
+        "https://www.reddit.com/r/SanJose/comments/1vjtbie/psa_san_jose_laughs_crew/",
+        "https://www.reddit.com/r/SanJose/comments/1vjrp9s/recommend_daycares_in_sj/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "AC/DC Concert",
-      "when": "",
+      "name": "MagWest",
+      "when": "week of 8/12-8/16 2026",
       "city": "San Jose",
-      "context": "recent concert praised as a great show",
+      "context": "multi-day event, generated from community suggestion",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vh9yw5/the_best_cards_shop_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vgx58g/acdc_rocked_out/",
-        "https://www.reddit.com/r/SanJose/comments/1vgvz47/any_recs_for_things_going_on_this_weekend_that/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1vgp8bu/sunnyvale_indoor_hoops_run_saturdays_7pm_to_9pm/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1vezqjt/underwater_robotics_opportunity/"
+        "https://www.reddit.com/r/SanJose/comments/1vk91r1/things_to_do_in_san_jose_this_week_812_816_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vk3ct1/does_anyone_know_whats_happening_with_the_old/",
+        "https://www.reddit.com/r/SanJose/comments/1vk7e4h/voyagers_chocolate_chip_cookies/",
+        "https://www.reddit.com/r/SanJose/comments/1vjyq1c/local_taco_bar_catering/",
+        "https://www.reddit.com/r/SanJose/comments/1vjwmta/iso_looking_for_fresh_kimbap_in_sj/"
       ]
     },
     {
-      "name": "Sunnyvale Indoor Hoops Run",
-      "when": "Saturdays 7pm-9pm",
+      "name": "Invention Festival",
+      "when": "week of 8/12-8/16 2026",
+      "city": "San Jose",
+      "context": "multi-day event listed",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vk91r1/things_to_do_in_san_jose_this_week_812_816_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vk3ct1/does_anyone_know_whats_happening_with_the_old/",
+        "https://www.reddit.com/r/SanJose/comments/1vk7e4h/voyagers_chocolate_chip_cookies/",
+        "https://www.reddit.com/r/SanJose/comments/1vjyq1c/local_taco_bar_catering/",
+        "https://www.reddit.com/r/SanJose/comments/1vjwmta/iso_looking_for_fresh_kimbap_in_sj/"
+      ]
+    },
+    {
+      "name": "Hype Con",
+      "when": "week of 8/12-8/16 2026",
+      "city": "San Jose",
+      "context": "multi-day event listed",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vk91r1/things_to_do_in_san_jose_this_week_812_816_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vk3ct1/does_anyone_know_whats_happening_with_the_old/",
+        "https://www.reddit.com/r/SanJose/comments/1vk7e4h/voyagers_chocolate_chip_cookies/",
+        "https://www.reddit.com/r/SanJose/comments/1vjyq1c/local_taco_bar_catering/",
+        "https://www.reddit.com/r/SanJose/comments/1vjwmta/iso_looking_for_fresh_kimbap_in_sj/"
+      ]
+    },
+    {
+      "name": "Salty Mom Comedy Tour",
+      "when": "Wed 8/12, 8-9PM",
       "city": "Sunnyvale",
-      "context": "pickup basketball run, $13/session",
+      "context": "comedy show for moms at Rooster T Feathers",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vh9yw5/the_best_cards_shop_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vgx58g/acdc_rocked_out/",
-        "https://www.reddit.com/r/SanJose/comments/1vgvz47/any_recs_for_things_going_on_this_weekend_that/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1vgp8bu/sunnyvale_indoor_hoops_run_saturdays_7pm_to_9pm/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1vezqjt/underwater_robotics_opportunity/"
+        "https://www.reddit.com/r/SanJose/comments/1vk91r1/things_to_do_in_san_jose_this_week_812_816_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vk3ct1/does_anyone_know_whats_happening_with_the_old/",
+        "https://www.reddit.com/r/SanJose/comments/1vk7e4h/voyagers_chocolate_chip_cookies/",
+        "https://www.reddit.com/r/SanJose/comments/1vjyq1c/local_taco_bar_catering/",
+        "https://www.reddit.com/r/SanJose/comments/1vjwmta/iso_looking_for_fresh_kimbap_in_sj/"
       ]
     },
     {
-      "name": "MATE ROV Competition",
-      "when": "",
-      "city": "",
-      "context": "underwater robotics competition team forming in Santa Clara area",
+      "name": "Troy Bond stand-up show",
+      "when": "Thu 8/13, 8-9PM",
+      "city": "San Jose",
+      "context": "rising comedian performing at San Jose Improv",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vh9yw5/the_best_cards_shop_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vgx58g/acdc_rocked_out/",
-        "https://www.reddit.com/r/SanJose/comments/1vgvz47/any_recs_for_things_going_on_this_weekend_that/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1vgp8bu/sunnyvale_indoor_hoops_run_saturdays_7pm_to_9pm/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1vezqjt/underwater_robotics_opportunity/"
+        "https://www.reddit.com/r/SanJose/comments/1vk91r1/things_to_do_in_san_jose_this_week_812_816_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vk3ct1/does_anyone_know_whats_happening_with_the_old/",
+        "https://www.reddit.com/r/SanJose/comments/1vk7e4h/voyagers_chocolate_chip_cookies/",
+        "https://www.reddit.com/r/SanJose/comments/1vjyq1c/local_taco_bar_catering/",
+        "https://www.reddit.com/r/SanJose/comments/1vjwmta/iso_looking_for_fresh_kimbap_in_sj/"
+      ]
+    },
+    {
+      "name": "California Extreme",
+      "when": "today, 11am-9pm",
+      "city": "Santa Clara",
+      "context": "arcade/pinball show at Hyatt, wristband giveaway",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vjthtx/im_back_with_another_california_extreme_wristband/",
+        "https://www.reddit.com/r/SanJose/comments/1vjtbie/psa_san_jose_laughs_crew/",
+        "https://www.reddit.com/r/SanJose/comments/1vjrp9s/recommend_daycares_in_sj/"
       ]
     }
   ],
   "placeMatches": [
     {
+      "name": "Raging Waters",
+      "city": "San Jose",
+      "kind": "other",
+      "context": "former water park at Lake Cunningham, now closed",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vk91r1/things_to_do_in_san_jose_this_week_812_816_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vk3ct1/does_anyone_know_whats_happening_with_the_old/",
+        "https://www.reddit.com/r/SanJose/comments/1vk7e4h/voyagers_chocolate_chip_cookies/",
+        "https://www.reddit.com/r/SanJose/comments/1vjyq1c/local_taco_bar_catering/",
+        "https://www.reddit.com/r/SanJose/comments/1vjwmta/iso_looking_for_fresh_kimbap_in_sj/"
+      ],
+      "matchedName": "Raging Waters San Jose"
+    },
+    {
       "name": "Lake Cunningham",
       "city": "San Jose",
       "kind": "park",
-      "context": "has a skate park and bike tracks, free and open to public",
+      "context": "site of former water park, future unclear",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vhddbf/lake_cunningham_has_a_skate_park_and_some_really/",
-        "https://www.reddit.com/r/SanJose/comments/1vhjlz3/where_to_play_pickup_beach_volleyball/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1vhhz3n/park_with_toddlers_riding_striders/",
-        "https://www.reddit.com/r/Sunnyvale/comments/1vhgg6c/the_best_part_of_sunnyvale/",
-        "https://www.reddit.com/r/SanJose/comments/1vhb46w/looking_for_good_restaurants_for_a_date/"
+        "https://www.reddit.com/r/SanJose/comments/1vk91r1/things_to_do_in_san_jose_this_week_812_816_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vk3ct1/does_anyone_know_whats_happening_with_the_old/",
+        "https://www.reddit.com/r/SanJose/comments/1vk7e4h/voyagers_chocolate_chip_cookies/",
+        "https://www.reddit.com/r/SanJose/comments/1vjyq1c/local_taco_bar_catering/",
+        "https://www.reddit.com/r/SanJose/comments/1vjwmta/iso_looking_for_fresh_kimbap_in_sj/"
       ],
       "matchedName": "Lake Cunningham Regional Park"
+    },
+    {
+      "name": "Valley Fair",
+      "city": "Santa Clara",
+      "kind": "venue",
+      "context": "movie showing of Super Troopers 3",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vjthtx/im_back_with_another_california_extreme_wristband/",
+        "https://www.reddit.com/r/SanJose/comments/1vjtbie/psa_san_jose_laughs_crew/",
+        "https://www.reddit.com/r/SanJose/comments/1vjrp9s/recommend_daycares_in_sj/"
+      ],
+      "matchedName": "Bowlero Valley Fair"
     }
   ],
   "eventMatches": []

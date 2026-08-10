@@ -1,19 +1,31 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-07T03:09:13.050Z",
+      "generatedAt": "2026-08-10T11:06:01.905Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Jul 30 – Aug 6",
+      "dateRange": "Aug 3 – Aug 10",
       "stats": {
-        "total": 308,
-        "notable": 24,
-        "newUnits": 13,
-        "totalValuation": 12606244
+        "total": 475,
+        "notable": 34,
+        "newUnits": 32,
+        "totalValuation": 28611543
       },
       "permits": [
+        {
+          "id": "2026-131400-MF",
+          "address": "1803 Bradford Wy",
+          "category": "multi-family-new",
+          "categoryLabel": "New Multi-Family",
+          "workType": "New Construction",
+          "description": "1803 Bradford (Bemp 100%) New Construction",
+          "valuation": 1810686,
+          "units": 16,
+          "issueDate": "2026-08-07",
+          "subtype": "Apartment"
+        },
         {
           "id": "2025-116871-RS",
           "address": "3551 Chamberlain Dr",
@@ -27,51 +39,27 @@
           "subtype": "Single-Family"
         },
         {
-          "id": "2026-116995-RS",
-          "address": "1268 Eden Av",
+          "id": "2025-141614-RS",
+          "address": "1035 Avondale St #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "New Veev 2-Story SFR Per Sb9 Lot Split",
-          "valuation": 606698,
+          "description": "Attached ADU",
+          "valuation": 207674,
           "units": 1,
-          "issueDate": "2026-08-03",
-          "subtype": "Single-Family"
-        },
-        {
-          "id": "2025-111493-RS",
-          "address": "1028 Wilsham Dr",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "(Bemp100%) New 2-Story SFR Construction",
-          "valuation": 477573,
-          "units": 1,
-          "issueDate": "2026-07-31",
-          "subtype": "Single-Family"
-        },
-        {
-          "id": "2025-104717-RS",
-          "address": "2415 Verwood Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "New Detached ADU",
-          "valuation": 168180,
-          "units": 1,
-          "issueDate": "2026-08-03",
+          "issueDate": "2026-08-07",
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2026-106948-RS",
-          "address": "1298 Lennon Wy #2",
+          "id": "2025-144042-RS",
+          "address": "751 E Taylor St #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Detached Garage Conversion to ADU",
-          "valuation": 160087,
+          "description": "Detached ADU",
+          "valuation": 175040,
           "units": 1,
-          "issueDate": "2026-08-03",
+          "issueDate": "2026-08-05",
           "subtype": "2nd Unit Added"
         },
         {
@@ -99,57 +87,81 @@
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2026-126583-RS",
-          "address": "684 N 10th St #2",
+          "id": "2026-127703-RS",
+          "address": "3180 Rubino Dr #121",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Epr Code Amnesty Legalize Unpermitted Attach ADU",
-          "valuation": 107839,
+          "description": "Epr Villa Homes Prefab Adunew Mf ADU Near Building 'D'",
+          "valuation": 116987,
           "units": 1,
-          "issueDate": "2026-08-04",
+          "issueDate": "2026-08-06",
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2025-111485-RS",
-          "address": "1028 Wilsham Dr #2",
+          "id": "2026-127706-RS",
+          "address": "3180 Rubino Dr #123",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "(Pc) New Jadu @ 1st Floor",
-          "valuation": 84442,
+          "description": "Epr Villa Homes Prefab Adunew Mf ADU Near Building 'D'",
+          "valuation": 116987,
           "units": 1,
-          "issueDate": "2026-07-31",
+          "issueDate": "2026-08-06",
           "subtype": "2nd Unit Added"
         },
         {
-          "id": "2024-078071-RS",
-          "address": "1264 Paddington Wy #2",
+          "id": "2026-127709-RS",
+          "address": "3180 Rubino Dr #125",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Code Case - Attached ADU",
-          "valuation": 73723,
+          "description": "Epr Villa Homes Prefab Adunew Mf ADU Near Building 'D'",
+          "valuation": 116987,
           "units": 1,
-          "issueDate": "2026-08-04",
+          "issueDate": "2026-08-06",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2026-100962-RS",
+          "address": "1394 Heckman Wy #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Attached ADU",
+          "valuation": 109598,
+          "units": 1,
+          "issueDate": "2026-08-07",
           "subtype": "2nd Unit Added"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-07T03:09:15.273Z",
+      "generatedAt": "2026-08-10T11:06:04.482Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Jul 30 – Aug 6",
+      "dateRange": "Aug 3 – Aug 10",
       "stats": {
-        "total": 117,
-        "notable": 6,
+        "total": 166,
+        "notable": 9,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
+        {
+          "id": "26BLD-02221",
+          "address": "1390 Harker Av",
+          "category": "residential-remodel",
+          "categoryLabel": "Home Remodel",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-09",
+          "subtype": "Permit Issued"
+        },
         {
           "id": "26BLD-02162",
           "address": "737 Ensign Wy",
@@ -163,39 +175,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26PLN-00213",
-          "address": "491 W Charleston Rd",
+          "id": "26PLN-00220",
+          "address": "151 University Av",
           "category": "entitlement",
           "categoryLabel": "Entitlement / Zoning",
           "workType": "Entitlement",
-          "description": "Request for Architectural Review for the removal of one dead Deodar Cedar tree outside a day care center and replacement with a new 24-inch box size Cork Oak tree.",
+          "description": "Request for an Over-the-Counter Architectural Review to install one new non-illuminated channel letters sign mounted to an existing awning with a cleat. The proposed sign will be nine inches tall by 115 inches wide and constructed of aluminum painted black to read, 'Cleary Gottlieb'. Zone District: Downtown Commercial (CD-C(GF)(P)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-08-04",
-          "subtype": "Over the Counter Approved"
-        },
-        {
-          "id": "26PLN-00207",
-          "address": "1000 Welch Rd",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for an Over the Counter Architectural Review to remove two camphor trees and replace them with two 36-inch box size western redbud trees and pay an in-liue fee for eigth 24-inch box size trees (26TRE-00089). Zone District: Medical Office and Meidcal Research (MOR). CEQA Status: Exempt from the provisions of CEQA per Section 15304. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-07-31",
-          "subtype": "Over the Counter Approved"
-        },
-        {
-          "id": "26PLN-00209",
-          "address": "457 Kingsley Av",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for an Over the Counter Architectural Review to remove one dead 48-inch box Blue Atlas Cedar tree and replace it with one 24-inch box Chinese Pistache tree in the same location. Zone District: Single Family (R-1 (10,000)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-03",
+          "issueDate": "2026-08-07",
           "subtype": "Over the Counter Approved"
         },
         {
@@ -211,6 +199,42 @@
           "subtype": "Over the Counter Approved"
         },
         {
+          "id": "26PLN-00219",
+          "address": "1755 Embarcadero Rd",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for Architectural Review for removal of one Camphor tree due to root conflict with approved accessibility path and replacement with two 24-inch box size Crape Myrtle trees.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-07",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00221",
+          "address": "412 Olive Av",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for an Over-the-Counter Architectural Review to install one 40 inch tall by 78 inch wide non-illuminated aluminum sign, two 21 inch tall by 42 inch wide non-illuminated alumninum signs, and two nine inch tall by 18 inch wide window graphics. All signs will read, 'gloo'. CEQA Status: Not a project. Zone District: North Ventura Low Density Mixed Use District (NV-MXL). For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-07",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00213",
+          "address": "491 W Charleston Rd",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for Architectural Review for the removal of one dead Deodar Cedar tree outside a day care center and replacement with a new 24-inch box size Cork Oak tree.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-04",
+          "subtype": "Over the Counter Approved"
+        },
+        {
           "id": "26PLN-00215",
           "address": "353 University Av",
           "category": "entitlement",
@@ -220,6 +244,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-08-04",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00209",
+          "address": "457 Kingsley Av",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for an Over the Counter Architectural Review to remove one dead 48-inch box Blue Atlas Cedar tree and replace it with one 24-inch box Chinese Pistache tree in the same location. Zone District: Single Family (R-1 (10,000)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-03",
           "subtype": "Over the Counter Approved"
         }
       ]

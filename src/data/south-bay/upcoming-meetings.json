@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-07T03:09:24.958Z",
+  "generatedAt": "2026-08-10T11:06:18.282Z",
   "meetings": {
     "san-jose": {
       "date": "2026-08-11",
@@ -11,30 +11,30 @@
       "agendaItems": [
         {
           "title": "Proposition 1 - Veterans and Affordable Housing Bond Act of 2026.",
-          "sequence": 65
+          "sequence": 66
         },
         {
           "title": "Fiscal Year 2026-2027 Property Tax Levy for General Obligation Bonds.",
-          "sequence": 67
-        },
-        {
-          "title": "Public Hearing for the Fiscal Year 2026-2027 Annual Residential Solid Waste Collection Service Charges to be Placed on the 2026-2027 Santa Clara County Secured Property Tax Roll.",
           "sequence": 68
         },
         {
-          "title": "Public Hearing for the Fiscal Year 2026-2027 Sanitary Sewer Service and Use Charge and Storm Sewer Service Charge Assessments to be Placed on the 2026-2027 Santa Clara County Secured Property Tax Roll.",
+          "title": "Public Hearing for the Fiscal Year 2026-2027 Annual Residential Solid Waste Collection Service Charges to be Placed on the 2026-2027 Santa Clara County Secured Property Tax Roll.",
           "sequence": 69
         },
         {
+          "title": "Public Hearing for the Fiscal Year 2026-2027 Sanitary Sewer Service and Use Charge and Storm Sewer Service Charge Assessments to be Placed on the 2026-2027 Santa Clara County Secured Property Tax Roll.",
+          "sequence": 70
+        },
+        {
           "title": "Response to Santa Clara County Civil Grand Jury Report Entitled “A Canopy in Decline: Is San José serious about expanding its tree coverage?”",
-          "sequence": 74
+          "sequence": 75
         }
       ],
       "confirmation": {
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-06T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-10T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "sunnyvale": {
@@ -70,7 +70,7 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://webapi.legistar.com/v1/sunnyvaleca/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-06T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sunnyvaleca/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-10T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
@@ -99,7 +99,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-06T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-10T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     },
     "los-altos": {
@@ -114,7 +114,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-08-25",
-        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-06T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-10T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },
