@@ -2,6 +2,83 @@
 
 ---
 
+## 2026-08-10 — Cycle 204: Lumilens + Volta Rounds, 22 Wrong-Brand Logos Fixed
+
+### Context
+Monday August 10, 2026. Automated builder cycle. Ran the early-August funding
+watch Cycle 203 left open, then closed its first "Next 3" item — the pre-existing
+duplicate-logo clusters it deliberately left alone.
+
+### What Was Built
+
+**Tech tab: Lumilens Series C added to RECENTLY_FUNDED** (San Jose, $700M+,
+August 6, 2026). Came out of stealth with more than $700M at a $5.51B valuation,
+total funding past $900M, already shipping optical interconnects into a
+hyperscaler's live data centers. Atreides Management, Bain Capital Ventures,
+Meritech, Seligman Ventures, and Spark Capital co-led, with Qualcomm Ventures,
+J.P. Morgan Private Capital, Mayfield, Peak XV, Redpoint, and Thomvest among a
+dozen-plus others. Founder/CEO Ankur Singla previously sold Contrail to Juniper
+and Volterra to F5. Verified against the company's own release, whose dateline
+reads "San Jose, Calif. — August 6, 2026."
+
+**Tech tab: Volta added to RECENTLY_FUNDED** (Palo Alto, $300M seed + Series A,
+August 4, 2026). Vertically integrated AI infrastructure — raises the capital,
+buys the powered land, builds the data centers, runs the compute — at a $2.4B
+valuation, co-led by Andreessen Horowitz and Altimeter with Azora and NVIDIA also
+named leads, plus Michael Dell's family office and Matter Venture Partners.
+Founded January 2026 by ex-Brookfield operators Ricard Boada and Sofia Gumuzio;
+absorbed the Genesis Cloud team; ~100 people. **Coverage-boundary note recorded
+in-source:** Volta is tri-headquartered and its own release datelines "LONDON,
+PALO ALTO, Calif. and NEW YORK." Kept in coverage because a primary source puts
+an HQ inside Santa Clara County — the opposite of the Fireworks AI / Cognichip /
+Array Labs cases, where primary sources put the only HQ in San Mateo County.
+
+**Root-cause fix: 22 cards were rendering someone else's logo.** Cycle 203 fixed
+wrong-brand resolution for `RECENTLY_FUNDED` but explicitly left the older
+clusters alone. Diagnosed: `TECH_MILESTONES` entries carry **no `url`**, so every
+website/favicon/icon.horse strategy has no domain to work with and Wikipedia is
+their *only* source — and their `company` values are event phrases ("Apple IPO",
+"Intel 4004", "Moore's Law", "Apple 'Think Different'"), which land on article
+pages whose image lists are pure site chrome. All 16 rendered the Wikipedia
+puzzle-globe. Separately, **two existing pins pointed at Commons files that no
+longer exist** (`Palm_(PDA)_logo.svg`, `Android_2019_logo.svg`), so `android` and
+`palm-computing` fell through to the same place — joined by `supermicro`,
+`rsa-conference`, `kai-security`, and `mojo-vision` on the Wiktionary mark.
+Fixes: pin the milestone ids to the parent brand (same convention as the existing
+`atari-2600` / `netscape-ipo` aliases), repair the two dead filenames, and add
+real marks for Supermicro and RSA Conference.
+
+**Guardrail: post-run duplicate audit.** Nothing in the resolver ever compared
+the files on disk, which is why one wrong image served as 16 companies' logos for
+months. `auditDuplicateLogos()` now hashes every logo the manifest points at and
+flags any mark shared by ids outside a declared `SHARED_LOGO_GROUPS` alias group.
+It earned itself on the first run: caught `iphone-on-sale`, an Apple milestone
+missing from the pin list. Second run reports clean.
+
+**Verified:** `astro check` 0 errors, `check-home-locked` OK, full build clean,
+all 32 logo paths on the built `/tech` page resolve to real files, zero chrome
+images left on disk, and every remaining duplicate cluster is a declared alias.
+
+### Why This Was the Strongest Move
+Two verified Santa Clara County rounds — the largest local raises of the month so
+far — plus the fix for a trust bug that was worse than a stale page: a resident
+scrolling Silicon Valley history saw the Wikipedia puzzle-globe stamped on Intel,
+Apple, Google, and Yahoo milestones. The audit means the failure class can't
+recur silently. No protected Home, Events, or Food surface was touched.
+
+### Next 3 Strongest Ideas
+1. **Extend the Wikipedia skip to `SCC_SPOTLIGHT`** — still open from Cycle 203.
+   Same common-word exposure as the funding cards; needs a `--refresh` pass and a
+   visual check.
+2. **Wire the duplicate audit into CI** — it currently only warns inside a
+   resolver run, which nobody runs on a schedule. A `prebuild` check over the
+   committed manifest would catch a bad logo before it ships.
+3. **`mojo-vision`, `queue`, `architect-labs`, `vortex-imaging` resolve to
+   nothing** — correct (better than wrong), but they fall back to the render-time
+   favicon service. Worth a manual pin pass if their sites expose a usable mark.
+
+---
+
 ## 2026-08-03 — Cycle 203: Eliyan + Simile Rounds, Wikipedia Logo Resolver Fixed
 
 ### Context
