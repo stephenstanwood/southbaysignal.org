@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import {
   extractAnthropicText,
@@ -7,7 +10,13 @@ import {
   parseFpKey,
   isSameSeriesKey,
   migrateLegacyFingerprintKeys,
+  eventStartHour,
+  blurbTimeOfDayConflict,
+  timeLabelForOccurrences,
+  sweepTimeOfDayConflicts,
 } from "./eventBlurbs.mjs";
+
+const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 
 test("extracts the text block when adaptive thinking comes first", () => {
   const response = {
@@ -168,4 +177,189 @@ test("migration does not clobber an already-current entry", () => {
   };
   migrateLegacyFingerprintKeys(cache, [event]);
   assert.equal(cache.byKey[eventBlurbCacheKey(event)].blurb, "Current.");
+});
+
+// ── Time-of-day agreement ──────────────────────────────────────────────────
+//
+// Shipped 2026-08-10: the 7:00 PM "Monday Meditation & Mindfulness" at
+// Woodland Library went out telling subscribers to come "on Monday mornings".
+// Its 10:30 AM sibling at Los Altos Library is the same SCCL series with a
+// byte-identical description, so the two sat in one 30-event batch — and the
+// prompt carried no start time for either, leaving the sibling's title as the
+// only time signal in scope. Cache keys were never the problem: the two events
+// differ in both title and venue, so they had separate entries all along.
+
+const WOODLAND = {
+  title: "Monday Meditation & Mindfulness",
+  venue: "Woodland Library",
+  time: "7:00 PM",
+};
+const LOS_ALTOS = {
+  title: "Monday Morning Meditation & Mindfulness",
+  venue: "Los Altos Library",
+  time: "10:30 AM",
+};
+
+test("the shipped defect is caught", () => {
+  assert.equal(
+    blurbTimeOfDayConflict(
+      "Sit for a guided 20-minute meditation with instructor Manisha, then ask questions on Monday mornings.",
+      [WOODLAND],
+    ),
+    "mornings",
+  );
+});
+
+test("the morning sibling keeps its accurate copy", () => {
+  assert.equal(
+    blurbTimeOfDayConflict(
+      "Practice a guided meditation and pose questions to instructor Manisha at Los Altos Library on Monday mornings.",
+      [LOS_ALTOS],
+    ),
+    null,
+  );
+});
+
+test("the corrected Woodland copy passes", () => {
+  assert.equal(
+    blurbTimeOfDayConflict(
+      "Sit for a guided 20-minute meditation with instructor Manisha, then ask questions for the last ten.",
+      [WOODLAND],
+    ),
+    null,
+  );
+});
+
+test("each time-of-day word is checked against the start hour", () => {
+  const at = (time) => [{ title: "X", venue: "Y", time }];
+  assert.equal(blurbTimeOfDayConflict("Dance the afternoon away.", at("7:00 PM")), "afternoon");
+  assert.equal(blurbTimeOfDayConflict("Dance the night away.", at("4:00 PM")), "night");
+  assert.equal(blurbTimeOfDayConflict("Walk with a naturalist Wednesday morning.", at("12:00 PM")), "morning");
+  assert.equal(blurbTimeOfDayConflict("Sip coffee at brunch.", at("6:00 PM")), "brunch");
+  assert.equal(blurbTimeOfDayConflict("Watch the sunrise over the bay.", at("8:00 PM")), "sunrise");
+  assert.equal(blurbTimeOfDayConflict("Hear a midday concert.", at("8:00 PM")), "midday");
+});
+
+test("boundary hours read either way rather than failing a good blurb", () => {
+  const at = (time) => [{ title: "X", venue: "Y", time }];
+  assert.equal(blurbTimeOfDayConflict("Hear jazz in the afternoon.", at("5:00 PM")), null);
+  assert.equal(blurbTimeOfDayConflict("Hear jazz in the evening.", at("5:00 PM")), null);
+  assert.equal(blurbTimeOfDayConflict("Practice Qi Gong on Friday afternoons.", at("1:00 PM")), null);
+  assert.equal(blurbTimeOfDayConflict("Sit for a morning meditation.", at("11:30 AM")), null);
+});
+
+test("a time-of-day word from the event's own name is not a claim about when", () => {
+  // "Good Morning Vietnam" at 7:00 PM is a title being quoted, not an
+  // instruction to show up in the morning.
+  assert.equal(
+    blurbTimeOfDayConflict("Watch Good Morning Vietnam on the big screen.", [
+      { title: "Good Morning Vietnam screening", venue: "The Retro Dome", time: "7:00 PM" },
+    ]),
+    null,
+  );
+});
+
+test("word boundaries keep 'noon' out of 'afternoon' and 'night' out of 'tonight'", () => {
+  const at = (time) => [{ title: "X", venue: "Y", time }];
+  assert.equal(blurbTimeOfDayConflict("Tour the gardens in the afternoon.", at("2:00 PM")), null);
+  // "tonight" belongs to the date-leak filter, not this one.
+  assert.equal(blurbTimeOfDayConflict("Catch the band tonight downtown.", at("10:00 AM")), null);
+});
+
+test("an event with no usable time can't contradict anything", () => {
+  assert.equal(blurbTimeOfDayConflict("Sit for a morning meditation.", [{ title: "X", time: "" }]), null);
+  assert.equal(blurbTimeOfDayConflict("Sit for a morning meditation.", [{ title: "X" }]), null);
+  assert.equal(blurbTimeOfDayConflict("Sit for a morning meditation.", []), null);
+  assert.equal(blurbTimeOfDayConflict("", [WOODLAND]), null);
+});
+
+test("one entry serving several start times must hold for all of them", () => {
+  // Monster Jam runs 12:00 PM, 1:00 PM and 7:00 PM off a single cache key.
+  const showtimes = ["12:00 PM", "1:00 PM", "7:00 PM"].map((time) => ({
+    title: "Monster Jam",
+    venue: "SAP Center",
+    time,
+  }));
+  assert.equal(blurbTimeOfDayConflict("Watch trucks race in the evening.", showtimes), "evening");
+  assert.equal(blurbTimeOfDayConflict("Watch trucks race over crushed cars.", showtimes), null);
+});
+
+test("start hours parse the formats the event data actually uses", () => {
+  assert.equal(eventStartHour("7:00 PM"), 19);
+  assert.equal(eventStartHour("10:30 AM"), 10.5);
+  assert.equal(eventStartHour("12:00 PM"), 12);
+  assert.equal(eventStartHour("12:00 AM"), 0);
+  assert.equal(eventStartHour("9 am"), 9);
+  assert.equal(eventStartHour(""), null);
+  assert.equal(eventStartHour(null), null);
+  assert.equal(eventStartHour("all day"), null);
+});
+
+test("a key spanning several times tells the model to name no time of day", () => {
+  assert.equal(timeLabelForOccurrences([{ time: "7:00 PM" }, { time: "7:00 PM" }]), "7:00 PM");
+  assert.match(timeLabelForOccurrences([{ time: "12:00 PM" }, { time: "7:00 PM" }]), /do not name a time of day/);
+  assert.equal(timeLabelForOccurrences([{ time: "" }]), null);
+  assert.equal(timeLabelForOccurrences([]), null);
+});
+
+test("the cache sweep drops contradicted entries and keeps the rest", () => {
+  const cache = {
+    byKey: {
+      [eventBlurbCacheKey(WOODLAND)]: { blurb: "Sit for a meditation, then ask questions on Monday mornings." },
+      [eventBlurbCacheKey(LOS_ALTOS)]: { blurb: "Practice a guided meditation on Monday mornings." },
+      "fp:not in this run|somewhere|d:": { blurb: "Kept — nothing here proves it wrong." },
+    },
+  };
+
+  assert.equal(sweepTimeOfDayConflicts(cache, [WOODLAND, LOS_ALTOS]), 1);
+  assert.equal(cache.byKey[eventBlurbCacheKey(WOODLAND)], undefined);
+  assert.equal(cache.byKey[eventBlurbCacheKey(LOS_ALTOS)].blurb, "Practice a guided meditation on Monday mornings.");
+  assert.equal(cache.byKey["fp:not in this run|somewhere|d:"].blurb, "Kept — nothing here proves it wrong.");
+});
+
+// ── Guard on the committed data ────────────────────────────────────────────
+//
+// The unit tests above only prove the detector works. This one is what would
+// actually have caught the 2026-08-10 issue: it reads the materialized blurbs
+// that the newsletter and the Events tab render and fails if any of them
+// asserts a time of day its own event contradicts.
+
+test("no committed event blurb contradicts its own time", () => {
+  const path = join(REPO_ROOT, "src", "data", "south-bay", "upcoming-events.json");
+  const events = JSON.parse(readFileSync(path, "utf8")).events || [];
+
+  // Group by cache key: one blurb serves every occurrence sharing it, so it
+  // has to be true of all their start times.
+  const byKey = new Map();
+  for (const e of events) {
+    const k = eventBlurbCacheKey(e);
+    if (!byKey.has(k)) byKey.set(k, []);
+    byKey.get(k).push(e);
+  }
+
+  const offenders = [];
+  for (const group of byKey.values()) {
+    for (const e of group) {
+      if (!e.blurb) continue;
+      const conflict = blurbTimeOfDayConflict(e.blurb, group);
+      if (conflict) {
+        offenders.push(`${e.title} (${e.venue}, ${e.time}) says "${conflict}": ${e.blurb}`);
+      }
+    }
+  }
+
+  assert.deepEqual(offenders, [], `blurbs contradict their event time:\n${offenders.join("\n")}`);
+});
+
+test("no cached blurb contradicts the events it is keyed to", () => {
+  const cache = JSON.parse(
+    readFileSync(join(REPO_ROOT, "src", "data", "south-bay", "event-blurb-cache.json"), "utf8"),
+  );
+  const events = JSON.parse(
+    readFileSync(join(REPO_ROOT, "src", "data", "south-bay", "upcoming-events.json"), "utf8"),
+  ).events || [];
+
+  const probe = { byKey: { ...cache.byKey } };
+  const dropped = sweepTimeOfDayConflicts(probe, events);
+  assert.equal(dropped, 0, "event-blurb-cache.json holds blurbs contradicting their events' times");
 });

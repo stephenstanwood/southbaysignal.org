@@ -174,6 +174,147 @@ function dayOfWeek(dateStr) {
   return d.toLocaleDateString("en-US", { weekday: "long" });
 }
 
+// ---------------------------------------------------------------------------
+// Time-of-day agreement
+//
+// The 2026-08-07 pass gave the 7:00 PM "Monday Meditation & Mindfulness"
+// (Woodland Library) the copy "…ask questions on Monday mornings." Its sibling
+// "Monday Morning Meditation & Mindfulness" (Los Altos Library, 10:30 AM) is a
+// different session of the same SCCL series with a byte-identical description,
+// and both sat in the same 30-event batch. Nothing in the prompt carried
+// either event's start time, so the only time signal Sonnet had was the
+// sibling's title — and it borrowed it. Subscribers were told to show up in
+// the morning for an evening event.
+//
+// Two halves to the fix: the prompt now states each event's own time (below,
+// in buildUserPrompt), and every blurb is checked against that time before it
+// can land in the cache.
+// ---------------------------------------------------------------------------
+
+/** Start hour as a float ("7:30 PM" → 19.5). Null when unparseable/absent. */
+export function eventStartHour(timeStr) {
+  if (!timeStr) return null;
+  const m = String(timeStr).trim().match(/^(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?/i);
+  if (!m) return null;
+  const h = Number(m[1]) % 12;
+  const min = Number(m[2] || 0);
+  if (h > 11 || min > 59) return null;
+  return h + (m[3].toLowerCase() === "p" ? 12 : 0) + min / 60;
+}
+
+// Hour windows a time-of-day word is allowed to describe, as [start, end)
+// ranges. Deliberately generous — a 5:00 PM event reads fine as either
+// "afternoon" or "evening", and only a claim that is plainly wrong should cost
+// a cached blurb. `night` wraps past midnight.
+const TIME_OF_DAY_WINDOWS = {
+  morning: [[4, 12]],
+  afternoon: [[12, 17.5]],
+  evening: [[16, 24]],
+  night: [[17, 24], [0, 4]],
+  midday: [[10, 14]],
+  noon: [[10, 14]],
+  lunchtime: [[10, 14.5]],
+  brunch: [[8, 14.5]],
+  sunrise: [[4, 9]],
+  dawn: [[4, 9]],
+  sunset: [[16, 21.5]],
+  dusk: [[16, 21.5]],
+};
+
+// Longest-first so "afternoon" wins over "noon". Word boundaries already keep
+// "noon" out of "afternoon" and "night" out of "tonight" (which the date-leak
+// filter owns).
+const TIME_OF_DAY_RE = new RegExp(
+  `\\b(${Object.keys(TIME_OF_DAY_WINDOWS).sort((a, b) => b.length - a.length).join("|")})s?\\b`,
+  "gi",
+);
+
+function timeOfDayFits(word, hour) {
+  const windows = TIME_OF_DAY_WINDOWS[word];
+  if (!windows) return true;
+  return windows.some(([lo, hi]) => hour >= lo && hour < hi);
+}
+
+/**
+ * The time-of-day word in `blurb` that none of `events` supports, or null.
+ *
+ * `events` is the full set of occurrences the blurb is serving. One cache
+ * entry covers every occurrence sharing a title+venue+description, and 79 of
+ * those currently span more than one start time (Monster Jam runs 12:00 PM,
+ * 1:00 PM and 7:00 PM off one key), so a word has to hold for ALL of them —
+ * "evening" is wrong copy the moment the same entry is served for the noon
+ * show.
+ *
+ * A word that appears in an event's own title or venue is left alone: that's a
+ * proper noun the blurb is quoting ("Good Morning Vietnam", "Friday Night
+ * Lights"), not an independent claim about when to show up. Same suppression
+ * the date-leak filter uses, and the same trade — a missed flag keeps a
+ * title-derived phrase, a false flag burns a good blurb.
+ */
+export function blurbTimeOfDayConflict(blurb, events) {
+  if (!blurb) return null;
+  const list = (Array.isArray(events) ? events : [events]).filter(Boolean);
+  if (!list.length) return null;
+
+  const hours = list.map((e) => eventStartHour(e?.time)).filter((h) => h !== null);
+  if (!hours.length) return null;
+
+  const ctx = list.map((e) => `${e?.title || ""} ${e?.venue || ""}`).join(" ").toLowerCase();
+
+  for (const m of String(blurb).matchAll(TIME_OF_DAY_RE)) {
+    const matched = m[0].toLowerCase();
+    const word = m[1].toLowerCase();
+    if (ctx.includes(matched) || ctx.includes(word)) continue;
+    if (hours.every((h) => timeOfDayFits(word, h))) continue;
+    return matched;
+  }
+  return null;
+}
+
+/**
+ * What to tell Sonnet about when an event happens.
+ *
+ * When one cache key serves occurrences at several start times there is no
+ * single correct answer, so the model is told to stay off the subject rather
+ * than pick one and be wrong for the rest.
+ */
+export function timeLabelForOccurrences(events) {
+  const times = [...new Set((events || []).map((e) => String(e?.time || "").trim()).filter(Boolean))];
+  if (!times.length) return null;
+  if (times.length > 1) return "varies by date — do not name a time of day";
+  return times[0];
+}
+
+/**
+ * Drop cache entries whose blurb names a time of day that its own events
+ * contradict, so the next pass regenerates them against the real start time.
+ *
+ * Only entries with a matching live event are considered — the same rule the
+ * legacy-key migration follows, because an entry we can't check is not an
+ * entry we've shown to be wrong.
+ */
+export function sweepTimeOfDayConflicts(cache, events) {
+  const byKey = new Map();
+  for (const e of events || []) {
+    const k = cacheKey(e);
+    if (!byKey.has(k)) byKey.set(k, []);
+    byKey.get(k).push(e);
+  }
+  let dropped = 0;
+  for (const [key, group] of byKey) {
+    const blurb = cache?.byKey?.[key]?.blurb;
+    if (!blurb) continue;
+    const conflict = blurbTimeOfDayConflict(blurb, group);
+    if (!conflict) continue;
+    console.warn(
+      `[eventBlurbs] dropped (time-of-day "${conflict}" vs ${group.map((e) => e.time).join("/")}): "${blurb}"`,
+    );
+    delete cache.byKey[key];
+    dropped++;
+  }
+  return dropped;
+}
+
 /** Migrate legacy `url:<URL>` cache entries.
  *  Where exactly one current event uses a given URL, copy its blurb to the
  *  new fingerprint key — preserves work. Where multiple events share the
@@ -223,6 +364,7 @@ Strict rules:
 - NEVER mention distance, travel time, "near", "nearby", "close to", "minutes from".
 - NEVER mention star ratings or review scores.
 - NEVER include a specific date or month — the card displays those separately. No "June 14th", "May 21", "Saturday, June 14", "two May sessions", "today", "tomorrow", "tonight", etc. Recurring weekly patterns are fine ("Friday mornings", "every Tuesday"); specific calendar dates are not.
+- The "time:" field is when THIS event starts. Any time-of-day wording you use — "morning", "afternoon", "evening", "midday", "night" — must agree with it. A 7:00 PM event is never "mornings". Never take a time of day from a neighbouring event in the list, from another event's title, or from the description of a related session. When time says "varies by date", name no time of day at all.
 - Do not hedge ("might", "perhaps"). Recommend confidently.
 - Do not use em dashes in every sentence — vary sentence structure.
 - No hype. No exclamation points.`;
@@ -279,12 +421,18 @@ function isPlausibleBlurb(text) {
   return !refusalPhrases.some((p) => lower.includes(p));
 }
 
-function buildUserPrompt(events) {
-  const lines = events.map((e, i) => {
+function buildUserPrompt(items) {
+  const lines = items.map(({ event: e, timeLabel }, i) => {
     const parts = [`${i + 1}. ${e.title || "Untitled"}`];
     if (e.category) parts.push(`cat: ${e.category}`);
     if (e.venue) parts.push(`venue: ${e.venue}`);
     if (e.city) parts.push(`city: ${e.city}`);
+    // Time is per-event and never inherited from a neighbour in this batch —
+    // omitting it is what let the 7:00 PM Woodland meditation take "Monday
+    // mornings" from the 10:30 AM Los Altos session sharing its description.
+    const dow = dayOfWeek(e.date);
+    if (dow) parts.push(`day: ${dow}`);
+    if (timeLabel) parts.push(`time: ${timeLabel}`);
     if (e.ongoing) parts.push(`ongoing-exhibit`);
     if (e.description) {
       const d = String(e.description).replace(/\s+/g, " ").trim().slice(0, 280);
@@ -345,13 +493,14 @@ function parseBlurbArray(raw, expectedLen) {
   return out;
 }
 
-function buildUniqueUserPrompt(event, conflictBlurbs) {
+function buildUniqueUserPrompt(event, conflictBlurbs, timeLabel) {
   const parts = [`Event: ${event.title || "Untitled"}`];
   if (event.category) parts.push(`cat: ${event.category}`);
   if (event.venue) parts.push(`venue: ${event.venue}`);
   if (event.city) parts.push(`city: ${event.city}`);
   const dow = dayOfWeek(event.date);
   if (dow) parts.push(`day: ${dow}`);
+  if (timeLabel ?? event.time) parts.push(`time: ${timeLabel ?? event.time}`);
   if (event.ongoing) parts.push(`ongoing-exhibit`);
   if (event.description) {
     const d = String(event.description).replace(/\s+/g, " ").trim().slice(0, 280);
@@ -378,31 +527,31 @@ export function extractAnthropicText(response) {
   )?.text ?? "";
 }
 
-async function sonnetUniqueBlurb(client, event, conflictBlurbs) {
+async function sonnetUniqueBlurb(client, event, conflictBlurbs, timeLabel) {
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 500,
     output_config: { effort: "low" },
     system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: buildUniqueUserPrompt(event, conflictBlurbs) }],
+    messages: [{ role: "user", content: buildUniqueUserPrompt(event, conflictBlurbs, timeLabel) }],
   });
   const text = extractAnthropicText(response);
   return text.trim().replace(/^["']|["']$/g, "");
 }
 
-async function sonnetBatch(client, events) {
+async function sonnetBatch(client, items) {
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
     output_config: { effort: "low" },
     system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: buildUserPrompt(events) }],
+    messages: [{ role: "user", content: buildUserPrompt(items) }],
   });
   const text = extractAnthropicText(response);
-  const parsed = parseBlurbArray(text, events.length);
+  const parsed = parseBlurbArray(text, items.length);
   if (!parsed) {
-    console.warn(`[eventBlurbs] parse fail (batch of ${events.length}). raw: ${text.slice(0, 200)}`);
-    return new Array(events.length).fill(null);
+    console.warn(`[eventBlurbs] parse fail (batch of ${items.length}). raw: ${text.slice(0, 200)}`);
+    return new Array(items.length).fill(null);
   }
   return parsed;
 }
@@ -456,6 +605,21 @@ export async function resolveEventBlurbs(events, opts = {}) {
   }
   if (leakDropped) console.log(`[eventBlurbs] swept ${leakDropped} date-leak blurb(s) from cache`);
 
+  // Sweep blurbs whose time-of-day claim its own events contradict. Unlike the
+  // date-leak sweep above this needs the live event (the cache key carries no
+  // time), so it runs off `events` rather than the key list.
+  const timeDropped = sweepTimeOfDayConflicts(cache, events);
+  if (timeDropped) console.log(`[eventBlurbs] swept ${timeDropped} time-of-day-conflict blurb(s) from cache`);
+
+  // One entry serves every occurrence sharing a key, so a blurb may have to be
+  // true of several start times at once.
+  const occurrencesByKey = new Map();
+  for (const e of events) {
+    const k = cacheKey(e);
+    if (!occurrencesByKey.has(k)) occurrencesByKey.set(k, []);
+    occurrencesByKey.get(k).push(e);
+  }
+
   // Track every blurb currently in the cache so newly-generated blurbs can
   // be checked against OTHER events' blurbs, not just their own. Sonnet tends
   // to produce identical boilerplate for near-identical listings (e.g. every
@@ -504,7 +668,11 @@ export async function resolveEventBlurbs(events, opts = {}) {
     const batch = todo.slice(start, start + batchSize);
     if (dryRun) { stats.skipped += batch.length; continue; }
     try {
-      const blurbs = await sonnetBatch(client, batch.map((b) => b.event));
+      const items = batch.map((b) => {
+        const group = occurrencesByKey.get(b.key) || [b.event];
+        return { event: b.event, group, timeLabel: timeLabelForOccurrences(group) };
+      });
+      const blurbs = await sonnetBatch(client, items);
       for (let i = 0; i < batch.length; i++) {
         let blurb = blurbs[i];
         if (!blurb || blurb.length === 0) {
@@ -513,6 +681,12 @@ export async function resolveEventBlurbs(events, opts = {}) {
         }
         if (blurbLeaksDateContext(blurb, batch[i].event)) {
           console.warn(`[eventBlurbs] dropped (date leak): "${blurb}" for ${batch[i].event.title}`);
+          stats.failed++;
+          continue;
+        }
+        const timeConflict = blurbTimeOfDayConflict(blurb, items[i].group);
+        if (timeConflict) {
+          console.warn(`[eventBlurbs] dropped (time-of-day "${timeConflict}" vs ${items[i].timeLabel}): "${blurb}" for ${batch[i].event.title}`);
           stats.failed++;
           continue;
         }
@@ -534,12 +708,17 @@ export async function resolveEventBlurbs(events, opts = {}) {
           for (let attempt = 0; attempt < 2 && !deduped; attempt++) {
             let candidate;
             try {
-              candidate = await sonnetUniqueBlurb(client, batch[i].event, conflictBlurbs);
+              candidate = await sonnetUniqueBlurb(client, batch[i].event, conflictBlurbs, items[i].timeLabel);
             } catch (err) {
               console.warn(`[eventBlurbs] dedup retry failed for ${batch[i].event.title}: ${err.message}`);
               break;
             }
-            if (!candidate || !isPlausibleBlurb(candidate) || blurbLeaksDateContext(candidate, batch[i].event)) {
+            if (
+              !candidate ||
+              !isPlausibleBlurb(candidate) ||
+              blurbLeaksDateContext(candidate, batch[i].event) ||
+              blurbTimeOfDayConflict(candidate, items[i].group)
+            ) {
               if (candidate) conflictBlurbs.push(candidate);
               continue;
             }
@@ -604,7 +783,8 @@ export async function regenerateDuplicateCacheEntries(events, opts = {}) {
   const eventsByKey = new Map();
   for (const e of events) {
     const key = cacheKey(e);
-    if (!eventsByKey.has(key)) eventsByKey.set(key, e);
+    if (!eventsByKey.has(key)) eventsByKey.set(key, []);
+    eventsByKey.get(key).push(e);
   }
 
   const byBlurb = new Map();
@@ -642,19 +822,26 @@ export async function regenerateDuplicateCacheEntries(events, opts = {}) {
   for (const { blurb, keys } of clusters) {
     for (const key of keys) {
       const parsed = parseFpKey(key);
-      const event = eventsByKey.get(key) || { title: parsed.title, venue: parsed.venue };
+      const group = eventsByKey.get(key) || [{ title: parsed.title, venue: parsed.venue }];
+      const event = group[0];
+      const timeLabel = timeLabelForOccurrences(group);
 
       const conflictBlurbs = [blurb];
       let finalBlurb = null;
       for (let attempt = 0; attempt < 2 && !finalBlurb; attempt++) {
         let candidate;
         try {
-          candidate = await sonnetUniqueBlurb(client, event, conflictBlurbs);
+          candidate = await sonnetUniqueBlurb(client, event, conflictBlurbs, timeLabel);
         } catch (err) {
           console.warn(`[eventBlurbs] dedup regen failed for ${key}: ${err.message}`);
           break;
         }
-        if (!candidate || !isPlausibleBlurb(candidate) || blurbLeaksDateContext(candidate, event)) {
+        if (
+          !candidate ||
+          !isPlausibleBlurb(candidate) ||
+          blurbLeaksDateContext(candidate, event) ||
+          blurbTimeOfDayConflict(candidate, group)
+        ) {
           if (candidate) conflictBlurbs.push(candidate);
           continue;
         }
