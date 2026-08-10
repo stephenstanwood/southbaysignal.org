@@ -1,9 +1,9 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-10T12:42:49.459Z",
+    "generatedAt": "2026-08-10T15:10:15.834Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 396,
+    "eventCount": 397,
     "sourceCount": 23,
     "sources": [
       "Mountain View Public Library (15)",
@@ -15,7 +15,7 @@
       "Montalvo Arts Center (4)",
       "City Lights Theater (7)",
       "ICA San José (4)",
-      "Mountain Winery (35)",
+      "Mountain Winery (36)",
       "San Jose Theaters (20)",
       "Children's Discovery Museum (1)",
       "Midpen Open Space (3)",
@@ -140,7 +140,7 @@
         "id": "mountain-winery",
         "label": "Mountain Winery",
         "status": "ok",
-        "count": 35,
+        "count": 36,
         "error": null
       },
       {
@@ -2756,6 +2756,23 @@
       "kidFriendly": false
     },
     {
+      "id": "49ee26736d1b",
+      "title": "Los Horóscopos de Durango",
+      "date": "2026-10-10",
+      "displayDate": "Sat, Oct 10",
+      "time": "7:30 PM",
+      "endTime": null,
+      "venue": "The Mountain Winery",
+      "address": "14831 Pierce Rd, Saratoga, CA 95070",
+      "city": "saratoga",
+      "category": "music",
+      "cost": "paid",
+      "description": "",
+      "url": "https://www.mountainwinery.com/events/detail?event_id=1559119",
+      "source": "Mountain Winery",
+      "kidFriendly": false
+    },
+    {
       "id": "04191fd14079",
       "title": "Air Supply",
       "date": "2026-10-11",
@@ -4815,7 +4832,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
       "url": "https://www.operasj.org/event/don-giovanni-4",
       "source": "Opera San José",
       "kidFriendly": false
