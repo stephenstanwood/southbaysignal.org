@@ -1070,6 +1070,27 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // SiliconANGLE's and Pulse 2's independent write-ups both say Palo Alto. Same
   // aggregator-label problem as the Katalyze AI and Array Labs notes above, but
   // resolving the opposite way — in coverage.
+  // Note: Volta is tri-headquartered and its own Business Wire release datelines
+  // "LONDON, PALO ALTO, Calif. and NEW YORK" — Palo Alto is one of three co-equal
+  // HQs, not the single HQ the rest of this list is judged on. Kept in coverage
+  // because a primary source puts an HQ inside Santa Clara County and the
+  // company's own site lists Palo Alto first among its offices; that is the
+  // opposite of the Fireworks AI / Cognichip / Array Labs cases, where primary
+  // sources put the only HQ in San Mateo County. Do not re-litigate from the
+  // London or New York datelines alone.
+  {
+    id: "lumilens",
+    name: "Lumilens",
+    city: "San Jose",
+    category: "chip",
+    round: "Series C",
+    amount: "$700M+",
+    date: "2026-08-06",
+    tagline:
+      "An electrical signal only survives about a meter and a half over copper, and an AI training run now spans hundreds of thousands of chips — so the wiring, not the silicon, is what caps how big a cluster can get. Lumilens builds optical interconnects that carry that traffic as light instead: both the scale-up links that tie GPUs together inside one system and the scale-out fabric that stitches racks and clusters across a data center hall. It came out of stealth with more than $700M in a Series C at a $5.51B valuation, pushing total funding past $900M, and says it is already shipping product into a hyperscaler's live data centers under a multi-billion-dollar agreement. Atreides Management, Bain Capital Ventures, Meritech, Seligman Ventures, and Spark Capital co-led, with more than a dozen others joining including Qualcomm Ventures, J.P. Morgan Private Capital, Mayfield, Peak XV, Redpoint Ventures, and Thomvest. Founder and CEO Ankur Singla built and sold two infrastructure companies before this — Contrail to Juniper and Volterra to F5 — and staffed the team with Cisco, Meta, and Marvell veterans. The money goes into silicon, systems, software, process engineering, and high-volume manufacturing.",
+    color: "#0e7490",
+    url: "https://lumilens.com",
+  },
   {
     id: "naive",
     name: "Naïve",
@@ -1082,6 +1103,19 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
       "A coding agent can build an app in an afternoon, but turning that app into an actual business still means incorporating, opening payment processing, getting a phone number and email domain, and standing up cloud infrastructure — weeks of paperwork an agent can't do on its own. Naïve puts all of it behind one API and a config file, so software can incorporate a company, take payments, and run its own infrastructure, with capability policies and audit logs bounding what any given agent is allowed to do. Nexus Venture Partners led the $28.5M Series A, with Y Combinator, Zetta Venture Partners, and Liquid 2 Ventures joining, plus angels Gokul Rajaram, Apollo co-founder Tim Zheng, former HubSpot COO JD Sherman, Amazon's Gert Lanckriet, DocuSign's Robert Chatwani, and Codecademy co-founder Zachary Sims. Founders Sean Dorje and Dennis Zax are 20-year-old Berkeley dropouts who have built together since they were 14 and sold an earlier machine-learning company, ezML, before going through Y Combinator. The money funds four research tracks: serverless runtimes, inference optimization, shared memory, and multi-agent orchestration.",
     color: "#7c3aed",
     url: "https://usenaive.ai",
+  },
+  {
+    id: "volta",
+    name: "Volta",
+    city: "Palo Alto",
+    category: "cloud",
+    round: "Seed + Series A",
+    amount: "$300M",
+    date: "2026-08-04",
+    tagline:
+      "Long-term data center contracts go to whoever can sign for a decade of power and hardware, which leaves most AI startups renting GPUs at spot prices they can't plan around. Volta tries to close that gap by owning the whole chain — raising the institutional capital, buying the powered land, building the data centers, and running the compute and software on top — so a smaller customer can get committed capacity without being a hyperscaler. It came out of stealth on August 4 with $300M across a seed round and a Series A at a $2.4B valuation, co-led by Andreessen Horowitz and Altimeter with Azora and NVIDIA also named as leads, plus Michael Dell's family office and Matter Venture Partners. Alongside it: a $5B infrastructure financing program with Azora and a $10B, six-year contract with an AI lab, to be served from a 133 MW site in Norway built with Bitdeer. Ricard Boada and Sofia Gumuzio, who built Brookfield's AI infrastructure platform, founded the company in January 2026 and absorbed the team behind Genesis Cloud, a GPU cloud operator since 2018; it now runs about 100 people across Palo Alto, London, and New York.",
+    color: "#1d4ed8",
+    url: "https://volta.com",
   },
   {
     id: "buzz-solutions",
