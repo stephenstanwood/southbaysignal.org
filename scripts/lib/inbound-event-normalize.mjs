@@ -1,4 +1,6 @@
 import { isTrackerUrl } from "../../src/lib/south-bay/unwrapTrackerUrl.mjs";
+import { LOCAL_DEPARTURE_TRIP } from "../../src/lib/south-bay/eventFilters.mjs";
+import { SLUG_TO_CITY_TOKENS } from "../social/lib/content-rules.mjs";
 
 const PT = "America/Los_Angeles";
 
@@ -78,6 +80,83 @@ function officialOverride(event) {
     };
   }
   return null;
+}
+
+function deaccent(value) {
+  return value.normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
+
+// The 11 real city slugs the inbound feed can be re-homed to. Deliberately
+// excludes the curated catch-alls in SLUG_TO_CITY_TOKENS ("santa-clara-county",
+// "santa-cruz") — those are hand-picked landmark buckets, not somewhere an
+// address should silently reassign an event to.
+const REHOMEABLE_CITY_SLUGS = new Set([
+  "campbell", "cupertino", "los-altos", "los-gatos", "milpitas",
+  "mountain-view", "palo-alto", "san-jose", "santa-clara", "saratoga",
+  "sunnyvale",
+]);
+
+const CITY_TOKEN_ALTERNATION = [
+  ...new Set(
+    [...REHOMEABLE_CITY_SLUGS].flatMap((slug) => SLUG_TO_CITY_TOKENS[slug] || []),
+  ),
+]
+  .map((t) => deaccent(t))
+  .join("|");
+
+const STREET_SUFFIXES =
+  "st|street|ave|avenue|rd|road|blvd|boulevard|way|ln|lane|dr|drive|ct|court|pl|place|pkwy|parkway|cir|circle|ter|terrace|hwy|highway|expy|expressway";
+
+/** e.g. "Santa Clara St.", "Los Gatos Blvd", "Saratoga Avenue". */
+const STREET_NAMED_FOR_CITY = new RegExp(
+  `\\b(?:${CITY_TOKEN_ALTERNATION})\\s+(?:${STREET_SUFFIXES})\\b\\.?`,
+  "gi",
+);
+
+/**
+ * Pick the city slug an inbound newsletter event actually happens in.
+ *
+ * The email extractor sets cityKey from the sending organization, not the
+ * venue, so the Campbell Chamber's annual golf tournament — played at Cinnabar
+ * Hills Golf Club on McKean Road in south San Jose — arrives tagged "campbell".
+ * Worse, it isn't stable: that one tournament came in 14 times across three
+ * months of chamber blasts, 4 of them "campbell" and 10 "san-jose", so which
+ * city tab it landed on came down to which copy happened to survive dedup.
+ *
+ * The address is the better signal, because it's where a reader has to drive.
+ * If it names exactly one covered city, that city wins. Anything ambiguous
+ * keeps the extractor's answer:
+ *   - no covered city named (bare venue, bare street) → keep cityKey
+ *   - two or more named ("Los Gatos Blvd, San Jose") → keep cityKey
+ *   - cityKey isn't one of the 11 mapped slugs (e.g. "monte-sereno", which
+ *     shares tokens with los-gatos) → keep cityKey
+ *   - the title is a day trip → keep cityKey, since those belong under the
+ *     departure city, not the destination (see LOCAL_DEPARTURE_TRIP)
+ */
+export function resolveInboundCity(cityKey, location, title = "") {
+  if (!cityKey || !REHOMEABLE_CITY_SLUGS.has(cityKey)) return cityKey;
+  if (!location) return cityKey;
+  if (LOCAL_DEPARTURE_TRIP.test(title || "")) return cityKey;
+
+  // Strip diacritics on both sides: the token list carries "san josé", and
+  // /\bsan josé\b/ never matches "San José," because é isn't a word character,
+  // so the trailing \b lands between two non-word characters.
+  let hay = deaccent(location.toLowerCase());
+  // "Santa Clara County" would otherwise read as a Santa Clara address.
+  hay = hay.replace(/santa clara county/g, " ");
+  // South Bay streets are named after South Bay cities. San José City Hall sits
+  // on E. Santa Clara St; a Campbell storefront can have a Los Gatos Blvd
+  // address. A city name carrying a street suffix is part of the street, not
+  // the city, so drop those before counting.
+  hay = hay.replace(STREET_NAMED_FOR_CITY, " ");
+
+  const matches = [];
+  for (const slug of REHOMEABLE_CITY_SLUGS) {
+    const tokens = SLUG_TO_CITY_TOKENS[slug] || [];
+    if (tokens.some((t) => new RegExp(`\\b${deaccent(t)}\\b`, "i").test(hay))) matches.push(slug);
+  }
+  if (matches.length !== 1) return cityKey;
+  return matches[0];
 }
 
 export function normalizeInboundEventPresentation(event) {

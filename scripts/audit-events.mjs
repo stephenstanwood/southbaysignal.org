@@ -27,6 +27,7 @@ import {
   MEETING_TITLE_PATTERNS,
   BORDER_VENUE_ALLOWLIST,
 } from "./social/lib/content-rules.mjs";
+import { LOCAL_DEPARTURE_TRIP } from "../src/lib/south-bay/eventFilters.mjs";
 
 const ROOT = resolve(new URL("..", import.meta.url).pathname);
 const UPCOMING = resolve(ROOT, "src/data/south-bay/upcoming-events.json");
@@ -126,10 +127,18 @@ function classify(event) {
         const tokens = city ? SLUG_TO_CITY_TOKENS[city] : null;
         const inAreaHit = tokens && tokens.some(t => locLower.includes(t));
         if (!inAreaHit) {
+          // Organized outings that depart from a covered city are supposed to
+          // have an out-of-area destination — a Sunnyvale senior-center bus to
+          // the SF Zoo is Sunnyvale programming, and the ingest keeps it on
+          // purpose (LOCAL_DEPARTURE_TRIP in eventFilters.mjs). Report it as
+          // info so the hard tier stays a list of things actually worth fixing.
+          const departureTrip = LOCAL_DEPARTURE_TRIP.test(title);
           findings.push({
-            severity: "hard",
-            reason: "out-of-area",
-            detail: `location mentions "${ooaCity}" with no in-area city token`,
+            severity: departureTrip ? "info" : "hard",
+            reason: departureTrip ? "local-departure-trip" : "out-of-area",
+            detail: departureTrip
+              ? `destination "${ooaCity}" is out of area, but the title reads as a trip departing from a covered city — kept by design`
+              : `location mentions "${ooaCity}" with no in-area city token`,
           });
         }
         break;

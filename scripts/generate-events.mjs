@@ -75,7 +75,7 @@ import {
 } from "../src/lib/south-bay/marketOccurrence.mjs";
 import { parseMontalvoOccurrencePage } from "../src/lib/south-bay/montalvoOccurrence.mjs";
 import { mergeLosGatosSummerConcerts } from "./lib/los-gatos-summer-concerts-2026.mjs";
-import { normalizeInboundEventPresentation } from "./lib/inbound-event-normalize.mjs";
+import { normalizeInboundEventPresentation, resolveInboundCity } from "./lib/inbound-event-normalize.mjs";
 import {
   extractAddressLocality,
   extractSanJoseJazzDayUrls,
@@ -6987,6 +6987,12 @@ function fetchInboundEvents() {
         !LOCAL_DEPARTURE_TRIP.test(e.title)
       ) { skipCity++; continue; }
 
+      // The extractor tags cityKey from the sending organization, not the
+      // venue. When the address names exactly one covered city, that city
+      // wins — see resolveInboundCity for the ambiguity rules and the
+      // Campbell Chamber golf tournament that motivated it.
+      const inboundCity = resolveInboundCity(e.cityKey, inboundLocation, e.title);
+
       const startDate = new Date(e.startsAt);
       if (isNaN(startDate.getTime())) continue;
 
@@ -7060,7 +7066,7 @@ function fetchInboundEvents() {
         endTime,
         venue: venueName,
         address: location,
-        city: e.cityKey,
+        city: inboundCity,
         category,
         cost: null,
         description: e.description ?? "",

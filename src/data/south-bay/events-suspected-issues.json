@@ -1,50 +1,20 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-09T21:40:43.532Z"
+    "auditedAt": "2026-08-10T09:17:48.539Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
     "total": 1830,
     "totals": {
-      "hard": 2,
+      "hard": 0,
       "soft": 1,
-      "info": 0
+      "info": 1
     },
     "byReason": {
       "unknown-slug": 1,
-      "slug-mismatch": 1,
-      "out-of-area": 1
+      "local-departure-trip": 1
     },
-    "hard": [
-      {
-        "id": "inbound-94467bd307c78555",
-        "title": "61st Annual Campbell Chamber Foundation Golf Tournament",
-        "city": "campbell",
-        "date": "2026-08-26",
-        "location": "Cinnabar Hills Golf Club, 23600 McKean Rd, San Jose, CA",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "slug-mismatch",
-            "detail": "city=\"campbell\" but location references \"san-jose\""
-          }
-        ]
-      },
-      {
-        "id": "inbound-726bb763e31cb1f0",
-        "title": "August Day Trip to San Francisco Zoo & Gardens",
-        "city": "sunnyvale",
-        "date": "2026-08-18",
-        "location": "San Francisco Zoo & Gardens",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "out-of-area",
-            "detail": "location mentions \"san francisco\" with no in-area city token"
-          }
-        ]
-      }
-    ],
+    "hard": [],
     "soft": [
       {
         "id": "inbound-c2c988339dcae36f",
@@ -59,6 +29,20 @@
             "detail": "city=\"monte-sereno\" is not in the 11-city coverage map"
           }
         ]
+      },
+      {
+        "id": "inbound-726bb763e31cb1f0",
+        "title": "August Day Trip to San Francisco Zoo & Gardens",
+        "city": "sunnyvale",
+        "date": "2026-08-18",
+        "location": "San Francisco Zoo & Gardens",
+        "findings": [
+          {
+            "severity": "info",
+            "reason": "local-departure-trip",
+            "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
+          }
+        ]
       }
     ]
   },
@@ -66,14 +50,15 @@
     "label": "inbound-events.json",
     "total": 371,
     "totals": {
-      "hard": 6,
+      "hard": 3,
       "soft": 1,
-      "info": 0
+      "info": 3
     },
     "byReason": {
       "unknown-slug": 1,
-      "out-of-area": 4,
-      "slug-mismatch": 2
+      "out-of-area": 1,
+      "slug-mismatch": 2,
+      "local-departure-trip": 3
     },
     "hard": [
       {
@@ -117,48 +102,6 @@
             "detail": "city=\"campbell\" but location references \"san-jose\""
           }
         ]
-      },
-      {
-        "id": "inbound_msai2vme_p883q1",
-        "title": "September Day Trip to SFMOMA",
-        "city": null,
-        "date": "2026-09-17T11:00:00-07:00",
-        "location": "San Francisco Museum of Modern Art, San Francisco, CA",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "out-of-area",
-            "detail": "location mentions \"san francisco\" with no in-area city token"
-          }
-        ]
-      },
-      {
-        "id": "inbound_mr27g9wh_go9qhz",
-        "title": "August Day Trip to San Francisco Zoo & Gardens",
-        "city": "sunnyvale",
-        "date": "2026-08-18T09:00:00-07:00",
-        "location": "San Francisco Zoo & Gardens",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "out-of-area",
-            "detail": "location mentions \"san francisco\" with no in-area city token"
-          }
-        ]
-      },
-      {
-        "id": "inbound_ms6pyqyx_denzxu",
-        "title": "Giants vs. Dodgers Day Trip",
-        "city": null,
-        "date": "2026-09-27T10:15:00-07:00",
-        "location": "Oracle Park, San Francisco, CA",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "out-of-area",
-            "detail": "location mentions \"san francisco\" with no in-area city token"
-          }
-        ]
       }
     ],
     "soft": [
@@ -173,6 +116,48 @@
             "severity": "soft",
             "reason": "unknown-slug",
             "detail": "city=\"monte-sereno\" is not in the 11-city coverage map"
+          }
+        ]
+      },
+      {
+        "id": "inbound_msai2vme_p883q1",
+        "title": "September Day Trip to SFMOMA",
+        "city": null,
+        "date": "2026-09-17T11:00:00-07:00",
+        "location": "San Francisco Museum of Modern Art, San Francisco, CA",
+        "findings": [
+          {
+            "severity": "info",
+            "reason": "local-departure-trip",
+            "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
+          }
+        ]
+      },
+      {
+        "id": "inbound_mr27g9wh_go9qhz",
+        "title": "August Day Trip to San Francisco Zoo & Gardens",
+        "city": "sunnyvale",
+        "date": "2026-08-18T09:00:00-07:00",
+        "location": "San Francisco Zoo & Gardens",
+        "findings": [
+          {
+            "severity": "info",
+            "reason": "local-departure-trip",
+            "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
+          }
+        ]
+      },
+      {
+        "id": "inbound_ms6pyqyx_denzxu",
+        "title": "Giants vs. Dodgers Day Trip",
+        "city": null,
+        "date": "2026-09-27T10:15:00-07:00",
+        "location": "Oracle Park, San Francisco, CA",
+        "findings": [
+          {
+            "severity": "info",
+            "reason": "local-departure-trip",
+            "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
           }
         ]
       }
