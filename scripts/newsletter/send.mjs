@@ -76,7 +76,7 @@ async function main() {
   const { subject, html } = renderEmail(data);
 
   console.log(`subject: ${subject}`);
-  console.log(`events: ${data.todayEvents.length}, featured: ${data.featuredEvents.length}, openings: ${data.recentOpenings.length}, history: ${data.todayHistory.length}, meetings: ${data.tonightMeetings.length}, conversation: ${data.redditPosts.length}`);
+  console.log(`events: ${data.todayEvents.length}, featured: ${data.featuredEvents.length}, openings: ${data.recentOpenings.length}, history: ${data.todayHistory.length}, meetings: ${data.civicMeetings.length}, conversation: ${data.redditPosts.length}`);
   console.log(`editorial: ${data.editorialMeta?.status || "unknown"}`);
 
   if (!data.dayPlan && !data.todayEvents.length) {

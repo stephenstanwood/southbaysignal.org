@@ -1,11 +1,13 @@
 {
-  "generatedAt": "2026-08-11T03:09:11.018Z",
+  "generatedAt": "2026-08-11T12:22:22.755Z",
   "meetings": {
     "san-jose": {
       "date": "2026-08-11",
       "displayDate": "Tue, Aug 11",
+      "startTime": "13:30",
       "bodyName": "City Council",
       "location": "Council Chambers",
+      "closedSession": false,
       "url": "https://sanjose.legistar.com/MeetingDetail.aspx?LEGID=8109&GID=317&G=920296E4-80BE-4CA2-A78F-32C5EFCF78AF",
       "legistarEventId": 8109,
       "agendaItems": [
@@ -34,14 +36,16 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-10T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-11T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "sunnyvale": {
       "date": "2026-08-11",
       "displayDate": "Tue, Aug 11",
+      "startTime": "17:30",
       "bodyName": "City Council",
       "location": "Online and Council Chambers, City Hall",
+      "closedSession": false,
       "url": "https://sunnyvaleca.legistar.com/MeetingDetail.aspx?LEGID=4521&GID=270&G=FA76FAAA-7A74-41EA-9143-F2DB1947F9A5",
       "legistarEventId": 4521,
       "agendaItems": [
@@ -70,14 +74,16 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://webapi.legistar.com/v1/sunnyvaleca/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-10T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sunnyvaleca/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-11T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "cupertino": {
       "date": "2026-08-11",
       "displayDate": "Tue, Aug 11",
+      "startTime": "17:00",
       "bodyName": "City Council",
       "location": "Conference Room C",
+      "closedSession": true,
       "url": "https://cupertino.legistar.com/MeetingDetail.aspx?LEGID=5368&GID=341&G=74359C04-A5F0-4CB2-A97A-0032996BB90E",
       "legistarEventId": 5368,
       "agendaItems": [],
@@ -85,28 +91,32 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://webapi.legistar.com/v1/cupertino/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-10T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/cupertino/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-11T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
-      "date": "2026-08-10",
-      "displayDate": "Mon, Aug 10",
+      "date": "2026-08-17",
+      "displayDate": "Mon, Aug 17",
+      "startTime": "17:30",
       "bodyName": "City Council Regular Meeting",
       "location": null,
-      "url": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=2845",
+      "closedSession": false,
+      "url": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=2846",
       "agendaItems": [],
       "confirmation": {
         "status": "confirmed",
         "provider": "primegov",
-        "observedDate": "2026-08-10",
-        "sourceUrl": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=2845"
+        "observedDate": "2026-08-17",
+        "sourceUrl": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=2846"
       }
     },
     "milpitas": {
       "date": "2026-08-11",
       "displayDate": "Tue, Aug 11",
+      "startTime": "16:00",
       "bodyName": "City Council Special Meeting",
       "location": "Milpitas City Hall",
+      "closedSession": false,
       "url": "https://www.milpitas.gov/129/Agendas-Minutes",
       "civicClerkEventId": 2941,
       "agendaItems": [],
@@ -114,14 +124,16 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-08-11",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-10T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-11T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     },
     "los-altos": {
       "date": "2026-08-25",
       "displayDate": "Tue, Aug 25",
+      "startTime": "19:00",
       "bodyName": "City Council Regular Meeting",
       "location": null,
+      "closedSession": false,
       "url": "https://losaltosca.portal.civicclerk.com/event/2083/overview",
       "civicClerkEventId": 2083,
       "agendaItems": [],
@@ -129,7 +141,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-08-25",
-        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-10T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-11T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },
@@ -177,7 +189,7 @@
     "los-gatos": {
       "provider": "MuniCode",
       "status": "error",
-      "detail": "municodemeetings.com refused the connection (ERR_HTTP2_STREAM_ERROR) — town's only published agenda source; not worked around"
+      "detail": "municodemeetings.com refused the connection (UND_ERR_SOCKET) — town's only published agenda source; not worked around"
     }
   }
 }

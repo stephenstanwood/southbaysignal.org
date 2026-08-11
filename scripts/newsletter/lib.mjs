@@ -26,6 +26,7 @@ import {
   UNPROMPTED_AUDIENCE_PENALTY_CUTOFF,
 } from "../../src/lib/south-bay/editorialQuality.mjs";
 import { isVerifiedOpeningRecord } from "../lib/scc-food-openings.mjs";
+import { formatMeetingTime, meetingClockMinutes } from "../lib/civic-meetings.mjs";
 
 loadEnvLocal();
 
@@ -270,8 +271,12 @@ export async function assembleNewsletterData(date, opts = {}) {
     .filter((o) => isFreshOpening(o, date))
     .slice(0, 6);
 
+  // Every council meeting on today's calendar, at whatever hour it convenes —
+  // the section heading, not this filter, decides whether "tonight" is a claim
+  // the email is entitled to make. startTime and closedSession ride along from
+  // the artifact so the renderer can be specific about both.
   const meetings = loadMeetings().meetings || {};
-  const tonightMeetings = Object.entries(meetings)
+  const civicMeetings = Object.entries(meetings)
     .filter(([, m]) => m?.date === date)
     .map(([city, m]) => ({ city, ...m }));
 
@@ -307,7 +312,7 @@ export async function assembleNewsletterData(date, opts = {}) {
     todayEvents,
     featuredEvents,
     recentOpenings,
-    tonightMeetings,
+    civicMeetings,
     weather,
     todayHistory,
     redditPosts,
@@ -951,7 +956,7 @@ function buildEditorialPacket(data, candidates) {
         time: c.eventTime || c.timeBlock || "",
         venue: c.venue || "",
         city: cityName(c.city),
-        cost: c.cost === "free" ? "free" : (c.costNote || c.kidsCostNote || ""),
+        cost: planCardPriceBand(c) || "",
         blurb: compactText(c.blurb, 180),
       })),
     } : null,
@@ -964,12 +969,15 @@ function buildEditorialPacket(data, candidates) {
       opened: o.date || "",
       blurb: compactText(o.blurb, 180),
     })),
-    meetings: data.tonightMeetings.map((m, idx) => ({
+    // `time` read m.time, a field no meeting record has ever carried, so the
+    // editor wrote about tonight's civic calendar with no clock in front of it.
+    meetings: data.civicMeetings.map((m, idx) => ({
       idx,
       city: cityName(m.city),
       body: m.bodyName || "Meeting",
-      time: m.time || "",
+      time: formatMeetingTime(m.startTime) || "",
       location: m.location || "",
+      ...(m.closedSession ? { closedSession: true, note: CLOSED_SESSION_LABEL } : {}),
     })),
     history: data.todayHistory.map((h, idx) => ({
       idx,
@@ -1693,7 +1701,7 @@ export function renderEmail(data) {
     tonightPickBlock(safeData.tonightPick, safeData.tonightPickBlurb, safeData.visuals),
     eventsBlock(safeData.featuredEvents, safeData.todayEvents.length, safeData.editorial),
     openingsBlock(safeData.recentOpenings, safeData.date, safeData.editorial),
-    meetingsBlock(safeData.tonightMeetings),
+    meetingsBlock(safeData.civicMeetings),
     historyBlock(safeData.todayHistory),
     conversationBlock(safeData.redditPosts, safeData.editorial),
     footerBlock(),
@@ -1840,6 +1848,26 @@ function tonightPickBlock(pick, blurb, visuals = null) {
 </div>`;
 }
 
+const MEAL_BUCKETS = new Set(["breakfast", "lunch", "dinner"]);
+
+/**
+ * The price band a plan card may advertise.
+ *
+ * `cost` describes the door; `costNote` describes the bill. For a pillar those
+ * are the same thing — a free farmers market or a free workshop costs nothing
+ * to attend, so "Free" is honest. For a paired meal they are not: San Pedro
+ * Square Market carries cost:"free" (the food hall is free to walk into) beside
+ * costNote:"$15–30/person", and the 2026-08-11 issue printed "Dinner Nearby:
+ * San Pedro Square Market — Dinner · San Jose · Free" for a paid dinner because
+ * the door flag outranked the bill. On a meal card only the bill may speak; if
+ * no band is known the segment is omitted rather than guessed.
+ */
+export function planCardPriceBand(card) {
+  const band = card?.costNote || card?.kidsCostNote || null;
+  if (card?.role === "paired-meal" || MEAL_BUCKETS.has(card?.bucket)) return band;
+  return card?.cost === "free" ? "Free" : band;
+}
+
 function planCardRow(card) {
   const bucketLabel = BUCKET_LABEL[card.bucket] || card.timeBlock || "Idea";
   const label = card.role === "pillar"
@@ -1854,7 +1882,7 @@ function planCardRow(card) {
     card.eventTime || card.timeBlock,
     card.venue,
     card.city ? cityName(card.city) : null,
-    card.cost === "free" ? "Free" : (card.costNote || card.kidsCostNote),
+    planCardPriceBand(card),
   ].filter(Boolean).join(" · ");
   const blurb = card.blurb
     ? `<div style="font-size:13px;color:${PALETTE.muted};line-height:1.45;margin-top:3px;">${esc(card.blurb)}</div>`
@@ -1979,14 +2007,48 @@ function openingAge(openedDate, todayDate) {
   return `Opened ${days} days ago`;
 }
 
+// "Tonight" is a promise about the clock, so only an evening start may claim it.
+// The 2026-08-11 issue filed San José's 1:30 PM council meeting (over before
+// dinner) and Milpitas's 4:00 PM special meeting under "Civic Meetings
+// Tonight". Afternoon council business is still worth surfacing, so the section
+// keeps every meeting and steps the heading down to "today" instead.
+const EVENING_START_MINUTES = 17 * 60; // 5:00 PM
+const CLOSED_SESSION_LABEL = "Closed session, not open to the public";
+
+export function meetingStartsInEvening(meeting) {
+  const minutes = meetingClockMinutes(meeting?.startTime);
+  return minutes !== null && minutes >= EVENING_START_MINUTES;
+}
+
+/** An unknown start time can't be vouched for, so it reads as "today" too. */
+export function civicMeetingsHeading(meetings) {
+  if (!meetings?.length) return "";
+  return meetings.every((m) => meetingStartsInEvening(m))
+    ? "Civic meetings tonight"
+    : "Civic meetings today";
+}
+
+// Print the start time so a reader can tell a 1:30 PM sitting from a 7 PM one,
+// and say plainly when a meeting is closed. Cupertino's 2026-08-11 item was a
+// "Non-Televised Special Meeting Closed Session" published as a plain council
+// meeting in Conference Room C — nothing a reader could attend or watch.
+function civicMeetingDetail(meeting) {
+  return [
+    formatMeetingTime(meeting?.startTime),
+    meeting?.location,
+    meeting?.closedSession ? CLOSED_SESSION_LABEL : null,
+  ].filter(Boolean).join(" · ");
+}
+
 function meetingsBlock(meetings) {
   if (!meetings?.length) return "";
   const rows = meetings.map((m) => {
     const link = m.url ? `<a href="${esc(m.url)}" style="color:${PALETTE.blue};text-decoration:none;">${esc(m.bodyName || "Meeting")}</a>` : esc(m.bodyName || "Meeting");
-    return `<div style="font-size:14px;margin-bottom:6px;"><strong>${esc(cityName(m.city))}</strong> — ${link}${m.location ? ` <span style="color:${PALETTE.muted};">· ${esc(m.location)}</span>` : ""}</div>`;
+    const detail = civicMeetingDetail(m);
+    return `<div style="font-size:14px;margin-bottom:6px;"><strong>${esc(cityName(m.city))}</strong> — ${link}${detail ? ` <span style="color:${PALETTE.muted};">· ${esc(detail)}</span>` : ""}</div>`;
   }).join("");
   return `<div style="padding:28px;border-top:8px solid ${PALETTE.card};">
-  <div style="font-size:13px;letter-spacing:1.2px;text-transform:uppercase;color:${PALETTE.purple};font-weight:700;margin-bottom:14px;">Civic meetings tonight</div>
+  <div style="font-size:13px;letter-spacing:1.2px;text-transform:uppercase;color:${PALETTE.purple};font-weight:700;margin-bottom:14px;">${esc(civicMeetingsHeading(meetings))}</div>
   ${rows}
 </div>`;
 }
@@ -2184,9 +2246,12 @@ function renderDiscordDigest(data, subject) {
       lines.push(`• ${o.name}${o.cityName ? ` — ${o.cityName}` : ""}${o.blurb ? `: ${o.blurb}` : ""}`);
     }
   }
-  if (data.tonightMeetings?.length) {
-    lines.push("", "**Civic meetings tonight**");
-    for (const m of data.tonightMeetings) lines.push(`• ${cityName(m.city)} — ${m.bodyName || "Meeting"}`);
+  if (data.civicMeetings?.length) {
+    lines.push("", `**${civicMeetingsHeading(data.civicMeetings)}**`);
+    for (const m of data.civicMeetings) {
+      const detail = civicMeetingDetail(m);
+      lines.push(`• ${cityName(m.city)} — ${m.bodyName || "Meeting"}${detail ? ` · ${detail}` : ""}`);
+    }
   }
   if (data.todayHistory?.length) {
     lines.push("", "**On this day in Silicon Valley**");
@@ -2213,7 +2278,7 @@ function newsletterSelectionSnapshot(data) {
     featuredEvents: chronologicalEvents(data.featuredEvents || []).map((e) => e.title),
     featuredEventVenues: chronologicalEvents(data.featuredEvents || []).map((e) => e.venue || ""),
     openings: (data.recentOpenings || []).filter((o) => isFreshOpening(o, data.date)).map((o) => o.name),
-    meetings: (data.tonightMeetings || []).map((m) => `${cityName(m.city)} ${m.bodyName || "Meeting"}`),
+    meetings: (data.civicMeetings || []).map((m) => `${cityName(m.city)} ${m.bodyName || "Meeting"}`),
     history: (data.todayHistory || []).map((h) => h.company),
     reddit: (data.redditPosts || []).map((p) => p.displayTitle || p.title),
   };

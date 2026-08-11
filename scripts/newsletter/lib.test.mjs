@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  civicMeetingsHeading,
+  planCardPriceBand,
   renderEmail,
   finalizeNewsletterImages,
   formatLongDate,
@@ -181,7 +183,7 @@ test("newsletter renders each activity pick before its nearby meal", () => {
     dayPlanBlurb: "Three strong pairings.",
     tonightPick: null,
     tonightPickBlurb: "",
-    todayEvents: [], featuredEvents: [], recentOpenings: [], tonightMeetings: [], todayHistory: [], redditPosts: [],
+    todayEvents: [], featuredEvents: [], recentOpenings: [], civicMeetings: [], todayHistory: [], redditPosts: [],
     visuals: {}, editorial: null,
   });
   assert.ok(html.indexOf("Morning pick") < html.indexOf("Breakfast nearby"));
@@ -213,7 +215,7 @@ test("a virtual event in the calendar list is labelled Virtual and loses its cit
         url: "https://events.sjsu.edu/event/collegiate-recovery-community-crc-all-recovery-meeting",
       },
     ],
-    recentOpenings: [], tonightMeetings: [], todayHistory: [], redditPosts: [],
+    recentOpenings: [], civicMeetings: [], todayHistory: [], redditPosts: [],
     visuals: {}, editorial: null,
   });
   assert.match(html, /3:30 PM · Virtual · San Jose State University · Free/);
@@ -295,7 +297,7 @@ test("newsletter lead image renders before the opening briefing and is not dupli
     todayEvents: [],
     featuredEvents: [],
     recentOpenings: [],
-    tonightMeetings: [],
+    civicMeetings: [],
     todayHistory: [],
     redditPosts: [],
     visuals: {
@@ -327,7 +329,7 @@ test("newsletter footer uses Stephen's first-person signoff and closed-up em das
     todayEvents: [],
     featuredEvents: [],
     recentOpenings: [],
-    tonightMeetings: [],
+    civicMeetings: [],
     todayHistory: [],
     redditPosts: [],
     visuals: {},
@@ -366,7 +368,7 @@ test("newsletter renders also-calendar events chronologically and hides stale/bl
     recentOpenings: [
       { name: "Old Cafe", date: "2026-05-20", cityName: "Campbell", address: "1 Main St" },
     ],
-    tonightMeetings: [],
+    civicMeetings: [],
     todayHistory: [],
     redditPosts: [],
     visuals: { tonightPickImage: BLOCKED_UNSPLASH },
@@ -405,7 +407,7 @@ test("newsletter renders a border venue's public locality instead of its eligibi
       url: "https://www.keplers.org/upcoming-events-internal/rebecca-solnit",
     }],
     recentOpenings: [],
-    tonightMeetings: [],
+    civicMeetings: [],
     todayHistory: [],
     redditPosts: [],
     visuals: {},
@@ -445,7 +447,7 @@ test("newsletter never renders a final inspection date as an opening date", () =
         },
       },
     ],
-    tonightMeetings: [],
+    civicMeetings: [],
     todayHistory: [],
     redditPosts: [],
     visuals: {},
@@ -479,7 +481,7 @@ test("Tonight's Pick credits a rendered image with a direct event-page link", ()
     todayEvents: [],
     featuredEvents: [],
     recentOpenings: [],
-    tonightMeetings: [],
+    civicMeetings: [],
     todayHistory: [],
     redditPosts: [],
     visuals: {},
@@ -515,7 +517,7 @@ test("Tonight's Pick strips a dangling leading event-metadata fragment", () => {
     todayEvents: [],
     featuredEvents: [],
     recentOpenings: [],
-    tonightMeetings: [],
+    civicMeetings: [],
     todayHistory: [],
     redditPosts: [],
     visuals: {},
@@ -542,7 +544,7 @@ test("Tonight's Pick never presents a venue photo as event art", () => {
       photoRef: "places/venue-photo",
     },
     tonightPickBlurb: "Gladys Knight headlines tonight.",
-    todayEvents: [], featuredEvents: [], recentOpenings: [], tonightMeetings: [], todayHistory: [], redditPosts: [],
+    todayEvents: [], featuredEvents: [], recentOpenings: [], civicMeetings: [], todayHistory: [], redditPosts: [],
     visuals: { tonightPickImage: placePhoto, tonightPickImageAlt: "Gladys Knight with Patrick McDermott" },
     editorial: null,
   });
@@ -567,7 +569,7 @@ test("Tonight's Pick uses source-provided event alt text with exact occurrence a
       imageSourceUrl: eventUrl,
     },
     tonightPickBlurb: "Gladys Knight headlines tonight.",
-    todayEvents: [], featuredEvents: [], recentOpenings: [], tonightMeetings: [], todayHistory: [], redditPosts: [],
+    todayEvents: [], featuredEvents: [], recentOpenings: [], civicMeetings: [], todayHistory: [], redditPosts: [],
     visuals: {}, editorial: null,
   });
 
@@ -583,7 +585,7 @@ test("Tonight's Pick suppresses art without matching occurrence provenance and s
     longDate: "Wednesday, July 22, 2026",
     weather: null, dayPlan: null, dayPlanBlurb: "",
     tonightPickBlurb: "Gladys Knight headlines tonight.",
-    todayEvents: [], featuredEvents: [], recentOpenings: [], tonightMeetings: [], todayHistory: [], redditPosts: [],
+    todayEvents: [], featuredEvents: [], recentOpenings: [], civicMeetings: [], todayHistory: [], redditPosts: [],
     visuals: {}, editorial: null,
   };
   const withoutProvenance = renderEmail({
@@ -642,7 +644,7 @@ test("also-calendar events without an image span the full width (colspan), not t
       // With image → keeps the [thumb][text] two-cell layout.
       { title: "Morning Walk", time: "9:00 AM", venue: "Creek Trail", city: "campbell", url: "https://example.com/walk", image: "https://southbaytoday.org/img/walk.jpg" },
     ],
-    recentOpenings: [], tonightMeetings: [], todayHistory: [], redditPosts: [],
+    recentOpenings: [], civicMeetings: [], todayHistory: [], redditPosts: [],
     visuals: {}, editorial: null,
   });
 
@@ -674,7 +676,7 @@ test("events expose their image via photoRef (Places proxy), not just a full ima
       // photoRef only — the common case. Must still get an <img>.
       { title: "Museum Talk", time: "10:00 AM", venue: "Los Altos History Museum", city: "los-altos", url: "https://example.com/museum", photoRef: "places/ChIJabc123/photos/xyz789" },
     ],
-    recentOpenings: [], tonightMeetings: [], todayHistory: [], redditPosts: [],
+    recentOpenings: [], civicMeetings: [], todayHistory: [], redditPosts: [],
     visuals: {}, editorial: null,
   });
 
@@ -709,7 +711,7 @@ test("finalizeNewsletterImages drops events whose photoRef is dead (no broken ti
         { title: "Dead Ref Event", time: "10:00 AM", venue: "Some Museum", city: "campbell", url: "https://example.com/dead", photoRef: "places/ChIJdeadref/photos/expired99" },
         { title: "Live Image Event", time: "2:00 PM", venue: "Live Hall", city: "campbell", url: "https://example.com/live", image: "https://cdn.example.com/live-photo.jpg" },
       ],
-      recentOpenings: [], tonightMeetings: [], todayHistory: [], redditPosts: [],
+      recentOpenings: [], civicMeetings: [], todayHistory: [], redditPosts: [],
       visuals: {}, editorial: null,
     };
     await finalizeNewsletterImages(data);
@@ -741,7 +743,7 @@ test("finalizeNewsletterImages keeps images when the probe errors (transient), n
       featuredEvents: [
         { title: "Maybe Event", time: "11:00 AM", venue: "Maybe Hall", city: "campbell", url: "https://example.com/maybe", photoRef: "places/ChIJmaybe/photos/transient1" },
       ],
-      recentOpenings: [], tonightMeetings: [], todayHistory: [], redditPosts: [],
+      recentOpenings: [], civicMeetings: [], todayHistory: [], redditPosts: [],
       visuals: {}, editorial: null,
     };
     await finalizeNewsletterImages(data);
@@ -786,7 +788,7 @@ test("email head carries dark-mode overrides, keeps light styles, spares accents
     weather: null, dayPlan: null, dayPlanBlurb: "",
     tonightPick: null, tonightPickBlurb: "",
     todayEvents: [], featuredEvents: [], recentOpenings: [],
-    tonightMeetings: [], todayHistory: [], redditPosts: [],
+    civicMeetings: [], todayHistory: [], redditPosts: [],
     visuals: {}, editorial: null,
   });
   // Color-scheme signal + media query are present.
@@ -897,4 +899,129 @@ test("a reworded repeat bumps the original row rather than opening a second", ()
   ], "2026-08-06");
   assert.equal(day3.length, 2);
   assert.equal(dataDefectKey({ area: "duplicate", detail: "x y z" }).startsWith("duplicate:"), true);
+});
+
+// ── Civic meetings: the "tonight" promise and closed sessions ───────────────
+//
+// Regressions from the 2026-08-11 issue, which ran "Civic Meetings Tonight"
+// over San José's 1:30 PM council meeting, Milpitas's 4:00 PM special meeting,
+// and Cupertino's non-televised closed session.
+
+const AUG_11_MEETINGS = [
+  { city: "san-jose", date: "2026-08-11", startTime: "13:30", bodyName: "City Council", location: "Council Chambers", closedSession: false, url: "https://sanjose.legistar.com/MeetingDetail.aspx?LEGID=8109" },
+  { city: "sunnyvale", date: "2026-08-11", startTime: "17:30", bodyName: "City Council", location: "Online and Council Chambers, City Hall", closedSession: false, url: "https://sunnyvaleca.legistar.com/Calendar.aspx" },
+  { city: "cupertino", date: "2026-08-11", startTime: "17:00", bodyName: "City Council", location: "Conference Room C", closedSession: true, url: "https://cupertino.legistar.com/MeetingDetail.aspx?LEGID=5368" },
+  { city: "milpitas", date: "2026-08-11", startTime: "16:00", bodyName: "City Council Special Meeting", location: "Milpitas City Hall", closedSession: false, url: "https://www.milpitas.gov/129/Agendas-Minutes" },
+];
+
+function meetingsEmail(civicMeetings) {
+  return renderEmail({
+    date: "2026-08-11",
+    longDate: "Tuesday, August 11, 2026",
+    weather: null,
+    dayPlan: null,
+    dayPlanBlurb: "",
+    tonightPick: null,
+    tonightPickBlurb: "",
+    todayEvents: [], featuredEvents: [], recentOpenings: [],
+    civicMeetings,
+    todayHistory: [], redditPosts: [],
+    visuals: {}, editorial: null,
+  }).html;
+}
+
+test("an afternoon council meeting is kept but never called tonight", () => {
+  const html = meetingsEmail(AUG_11_MEETINGS);
+
+  assert.match(html, /Civic meetings today/);
+  assert.ok(!/Civic meetings tonight/i.test(html), "1:30 PM and 4:00 PM sittings cannot claim tonight");
+  // Honest heading, not a smaller section: every meeting still ships.
+  assert.match(html, /San Jose<\/strong> — <a[^>]*>City Council<\/a> <span[^>]*>· 1:30 PM · Council Chambers/);
+  assert.match(html, /Milpitas<\/strong>[\s\S]{0,220}?· 4:00 PM · Milpitas City Hall/);
+});
+
+test("a closed session says so instead of posing as a meeting readers can attend", () => {
+  const html = meetingsEmail(AUG_11_MEETINGS);
+
+  assert.match(
+    html,
+    /Cupertino<\/strong> — <a[^>]*>City Council<\/a> <span[^>]*>· 5:00 PM · Conference Room C · Closed session, not open to the public/,
+  );
+  // The televised evening meeting alongside it carries no such label.
+  assert.match(html, /Sunnyvale<\/strong>[\s\S]{0,240}?· 5:30 PM · Online and Council Chambers, City Hall<\/span>/);
+});
+
+test("an all-evening civic calendar still earns the word tonight", () => {
+  const evening = AUG_11_MEETINGS.filter((m) => m.city === "sunnyvale" || m.city === "cupertino");
+  assert.equal(civicMeetingsHeading(evening), "Civic meetings tonight");
+  assert.match(meetingsEmail(evening), /Civic meetings tonight/);
+
+  assert.equal(civicMeetingsHeading(AUG_11_MEETINGS), "Civic meetings today");
+  assert.equal(civicMeetingsHeading([]), "");
+});
+
+test("a meeting with no posted start time cannot vouch for tonight", () => {
+  // Saratoga's Agenda Center and Los Gatos's MuniCode page publish dates only.
+  const undated = [{ city: "saratoga", date: "2026-08-11", startTime: null, bodyName: "City Council", location: null, closedSession: false, url: "https://www.saratoga.ca.us/AgendaCenter/City-Council-13" }];
+  assert.equal(civicMeetingsHeading(undated), "Civic meetings today");
+
+  const html = meetingsEmail(undated);
+  assert.match(html, /Civic meetings today/);
+  // No clock invented to fill the gap.
+  assert.ok(!/· \d{1,2}:\d{2} [AP]M/.test(html), "must not print a start time it never received");
+});
+
+// ── Day plan: a paired meal's price band ───────────────────────────────────
+
+function planEmail(cards) {
+  return renderEmail({
+    date: "2026-08-11",
+    longDate: "Tuesday, August 11, 2026",
+    weather: null,
+    dayPlan: { selectionModel: "pillar-pairs-v1", cards },
+    dayPlanBlurb: "Three strong pairings.",
+    tonightPick: null,
+    tonightPickBlurb: "",
+    todayEvents: [], featuredEvents: [], recentOpenings: [], civicMeetings: [],
+    todayHistory: [], redditPosts: [],
+    visuals: {}, editorial: null,
+  }).html;
+}
+
+test("a paired meal prints its price band, never the food hall's free door", () => {
+  // The 2026-08-11 dinner card verbatim: San Pedro Square Market is free to
+  // walk into and $15–30 to eat in. The issue printed "Dinner · San Jose · Free".
+  const html = planEmail([
+    { id: "event:beths", name: "The Beths & Beach Bunny", bucket: "evening", timeBlock: "Evening", role: "pillar", pairedWithId: "place:spsm", city: "san-jose", category: "events", cost: "paid" },
+    { id: "place:spsm", name: "San Pedro Square Market", bucket: "dinner", timeBlock: "Dinner", role: "paired-meal", pairedWithId: "event:beths", city: "san-jose", category: "food", cost: "free", costNote: "$15–30/person" },
+  ]);
+
+  assert.match(html, /Dinner · San Jose · \$15–30\/person/);
+  assert.ok(!/San Pedro Square Market[\s\S]{0,200}?· Free/.test(html), "a paid dinner must not be advertised as Free");
+});
+
+test("a free pillar keeps saying Free — only the meal slot loses the door price", () => {
+  const html = planEmail([
+    { id: "place:market", name: "Campbell Farmers Market", bucket: "morning", timeBlock: "Morning", role: "pillar", pairedWithId: "place:stans", city: "campbell", category: "food", cost: "free" },
+    { id: "place:stans", name: "Stan's Donut Shop", bucket: "breakfast", timeBlock: "Breakfast", role: "paired-meal", pairedWithId: "place:market", city: "santa-clara", category: "food", cost: "free", costNote: "Under $15/person" },
+  ]);
+
+  assert.match(html, /Morning · Campbell · Free/);
+  assert.match(html, /Breakfast · Santa Clara · Under \$15\/person/);
+});
+
+test("a meal with no known price band omits the segment rather than guessing", () => {
+  const html = planEmail([
+    { id: "place:pillar", name: "Afternoon Pillar", bucket: "afternoon", timeBlock: "Afternoon", role: "pillar", pairedWithId: "place:lunch", city: "san-jose", category: "arts", cost: "free" },
+    { id: "place:lunch", name: "Unpriced Lunch Spot", bucket: "lunch", timeBlock: "Lunch", role: "paired-meal", pairedWithId: "place:pillar", city: "san-jose", category: "food", cost: "free" },
+  ]);
+
+  assert.match(html, /Lunch · San Jose<\/div>/);
+  assert.ok(!/Unpriced Lunch Spot[\s\S]{0,200}?· Free/.test(html), "an unknown bill is not a free meal");
+
+  assert.equal(planCardPriceBand({ bucket: "dinner", cost: "free" }), null);
+  assert.equal(planCardPriceBand({ bucket: "dinner", cost: "free", costNote: "$60+/person" }), "$60+/person");
+  assert.equal(planCardPriceBand({ bucket: "dinner", role: "paired-meal", cost: "low", kidsCostNote: "Under $20" }), "Under $20");
+  assert.equal(planCardPriceBand({ bucket: "evening", role: "pillar", cost: "free" }), "Free");
+  assert.equal(planCardPriceBand({ bucket: "evening", role: "pillar", cost: "paid" }), null);
 });
