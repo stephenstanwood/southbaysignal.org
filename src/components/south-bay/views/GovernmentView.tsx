@@ -20,8 +20,12 @@ interface AgendaItem {
 interface UpcomingMeeting {
   date: string;
   displayDate: string;
+  /** 24-hour local "HH:MM", or null when the portal posts no start time. */
+  startTime?: string | null;
   bodyName: string;
   location: string | null;
+  /** Closed/non-televised sitting — nothing a resident can attend or watch. */
+  closedSession?: boolean;
   url: string;
   agendaItems?: AgendaItem[];
 }

@@ -17,7 +17,9 @@ import { fileURLToPath } from "url";
 import { writeFileAtomic } from "./lib/io.mjs";
 import {
   confirmMeeting,
+  isClosedSessionMeeting,
   legistarMeetingUrl,
+  normalizeMeetingTime,
   onlyConfirmedMeetings,
   pickCivicClerkMeeting,
   ptDateISO,
@@ -281,8 +283,18 @@ async function fetchNextMeeting(client, site, body) {
       weekday: "short", month: "short", day: "numeric",
       timeZone: "America/Los_Angeles",
     }),
+    // EventDate is midnight for every Legistar row; the wall clock lives in
+    // EventTime. Without it nothing downstream could tell San José's 1:30 PM
+    // council meeting from Sunnyvale's 5:30 PM one, and the 2026-08-11 email
+    // filed both under "Civic meetings tonight".
+    startTime: normalizeMeetingTime(ev.EventTime),
     bodyName: ev.EventBodyName,
     location: cleanLocation(ev.EventLocation),
+    closedSession: isClosedSessionMeeting({
+      bodyName: ev.EventBodyName,
+      comment: ev.EventComment,
+      description: ev.EventDescription,
+    }),
     url: legistarMeetingUrl(site, dateIso, ev.EventInSiteURL),
     legistarEventId: ev.EventId,
     agendaItems,
@@ -291,6 +303,16 @@ async function fetchNextMeeting(client, site, body) {
 }
 
 // ── PrimeGov (Palo Alto) ────────────────────────────────────────────────────
+
+// PrimeGov dateTime is a naive local wall clock ("2026-08-17T17:30:00"), so the
+// Pacific calendar date is the literal prefix. The old path fed it through
+// `new Date(...).toISOString()`, which re-reads it as UTC and rolls every
+// evening meeting forward a day — enough for last night's 5:30 PM council
+// sitting to survive the `>= today` filter and ship as the next one up.
+function primeGovPacificIso(dateTime) {
+  const iso = String(dateTime || "").slice(0, 10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso : "";
+}
 
 async function fetchPrimeGovMeeting(domain, committeeId) {
   const url = `https://${domain}/api/v2/PublicPortal/ListUpcomingMeetings`;
@@ -311,24 +333,19 @@ async function fetchPrimeGovMeeting(domain, committeeId) {
     // canceled sitting shipped as Palo Alto's next meeting. The Legistar
     // path above has had this guard; PrimeGov was missing it.
     .filter((m) => !/cancel(?:led|ed)|postponed/i.test(m.title || ""))
-    .filter((m) => {
-      const d = new Date(m.dateTime).toISOString().split("T")[0];
-      return d >= today;
-    })
+    .filter((m) => primeGovPacificIso(m.dateTime) >= today)
     .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime));
 
   if (!council.length) return null;
 
   const ev = council[0];
-  const date = new Date(ev.dateTime);
+  const pacificIso = primeGovPacificIso(ev.dateTime);
+  // Noon anchor, same as every other provider here: the naive timestamp would
+  // otherwise be read in the host's zone, and the horizon and display label
+  // would disagree with the date field on any machine that isn't Pacific.
+  const date = new Date(`${pacificIso}T12:00:00`);
   const daysOut = (date.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
   if (daysOut > 60) return null;
-
-  // Use Pacific Time for both date fields — toISOString() is UTC and causes off-by-one errors
-  // when meetings are scheduled late in the day (UTC midnight crosses into the next calendar day)
-  const pacificIso = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit", day: "2-digit",
-  }).format(date);
 
   const meeting = {
     date: pacificIso,
@@ -336,8 +353,11 @@ async function fetchPrimeGovMeeting(domain, committeeId) {
       weekday: "short", month: "short", day: "numeric",
       timeZone: "America/Los_Angeles",
     }),
+    // PrimeGov dateTime is naive local ("2026-08-17T17:30:00" = 5:30 PM).
+    startTime: normalizeMeetingTime(ev.dateTime),
     bodyName: ev.title || "City Council",
     location: null,
+    closedSession: isClosedSessionMeeting({ bodyName: ev.title }),
     url: `https://${domain}/Portal/Meeting?meetingId=${ev.id}`,
     agendaItems: [],
   };
@@ -415,8 +435,11 @@ async function fetchCivicEngageMeeting(baseUrl, calendarId) {
       weekday: "short", month: "short", day: "numeric",
       timeZone: "America/Los_Angeles",
     }),
+    // The Agenda Center lists dates only — no posted start time to read.
+    startTime: null,
     bodyName: "City Council",
     location: null,
+    closedSession: false,
     url: `${baseUrl}/AgendaCenter/${calendarId}`,
     agendaItems: [],
   };
@@ -518,8 +541,16 @@ async function fetchEscribeMeeting(host) {
         weekday: "short", month: "short", day: "numeric",
         timeZone: "America/Los_Angeles",
       }),
+      // eScribe StartDate is "YYYY/MM/DD HH:mm:ss" in the city's local time.
+      startTime: normalizeMeetingTime(row.StartDate),
       bodyName: row.MeetingName || "City Council",
       location: cleanLocation(row.Location),
+      // Closed/executive sittings are already filtered out above; recorded so
+      // the artifact says "checked and public" rather than "never looked".
+      closedSession: isClosedSessionMeeting({
+        bodyName: row.MeetingName,
+        description: row.Description,
+      }),
       url: typeof row.Url === "string" && row.Url.startsWith(`https://${host}/`)
         ? row.Url
         : `https://${host}/`,
@@ -563,8 +594,16 @@ async function fetchCivicClerkMeeting({ apiHost, location = null, meetingUrl }) 
     displayDate: dateObject.toLocaleDateString("en-US", {
       weekday: "short", month: "short", day: "numeric", timeZone: "UTC",
     }),
+    // CivicClerk stamps the city's own wall clock with a trailing Z that is not
+    // UTC (see normalizeMeetingTime). Milpitas's 2026-08-11 special meeting
+    // reads "…T16:00:00Z" and starts at 4:00 PM, not 9:00 AM.
+    startTime: normalizeMeetingTime(event.startDateTime || event.eventDate),
     bodyName: event.eventName || "City Council",
     location,
+    closedSession: isClosedSessionMeeting({
+      bodyName: event.eventName,
+      description: event.eventDescription,
+    }),
     url: meetingUrl(event),
     civicClerkEventId: event.id,
     agendaItems: [],
@@ -654,8 +693,11 @@ async function fetchLosGatosMeeting() {
       weekday: "short", month: "short", day: "numeric",
       timeZone: "America/Los_Angeles",
     }),
+    // Scraped from a date list; MuniCode posts no machine-readable start time.
+    startTime: null,
     bodyName: "Town Council",
     location: null,
+    closedSession: false,
     url: "https://losgatos-ca.municodemeetings.com/",
     agendaItems: [],
   };
