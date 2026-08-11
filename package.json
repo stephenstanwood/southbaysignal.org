@@ -5,9 +5,10 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "prebuild": "node scripts/check-home-locked.mjs",
+    "prebuild": "node scripts/check-home-locked.mjs && node scripts/check-tech-logos.mjs",
     "preview": "astro preview",
     "check-home-locked": "node scripts/check-home-locked.mjs",
+    "check-tech-logos": "node scripts/check-tech-logos.mjs",
     "astro": "astro",
     "generate-digests": "node scripts/generate-digests.mjs",
     "generate-events": "node scripts/generate-events.mjs",

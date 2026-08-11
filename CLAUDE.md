@@ -41,6 +41,18 @@ well-regarded, or editorially notable; a generic branch is filler.
 - stanwood.dev/south-bay redirects here permanently
 - NEVER create files in a root `api/` directory — Vercel treats that as legacy serverless functions and routes all `/api/*` traffic away from Astro's `_render`, breaking every API route. All API routes must live in `src/pages/api/`.
 
+## Prebuild gates (both must pass or Vercel fails the build)
+- `scripts/check-home-locked.mjs` — Home tab import allowlist. Do NOT widen the
+  allowlist to make a build pass; revert the addition instead.
+- `scripts/check-tech-logos.mjs` — audits the committed tech logo manifest
+  offline. **Fails** on a manifest entry pointing at a file that isn't in
+  `/public/logos`, or on two unrelated ids resolving to byte-identical images
+  (one wrong mark once served as 16 companies' logos for months). Ids that
+  legitimately share a mark go in `SHARED_LOGO_GROUPS` in
+  `scripts/lib/logo-audit.mjs` — the same module `fetch-tech-logos.mjs` uses, so
+  the fetcher and the gate can't drift apart. It also prints non-fatal notes for
+  manifest rows whose company is gone and companies with no logo yet.
+
 ## Email DNS
 - Vercel DNS is authoritative; the intended ImprovMX + Resend/SES layout and change procedure are in `docs/email-dns.md`.
 - DMARC must retain `p=reject`, `pct=100`, `adkim=r`, and `aspf=r`; `rua` routes aggregate reports to Postmark's free analyzer instead of a human inbox.

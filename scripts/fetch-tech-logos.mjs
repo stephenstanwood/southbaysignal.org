@@ -15,11 +15,11 @@
 
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import { Resvg } from "@resvg/resvg-js";
+import { auditLogoManifest } from "./lib/logo-audit.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -98,23 +98,9 @@ const PINNED_WIKI_LOGOS = {
   "hp35-calculator": "HP_logo_2012.svg",
 };
 
-// Ids that legitimately share one mark — a milestone aliased to its parent
-// brand, or a funding round aliased to the company. Everything else sharing an
-// identical image file is a resolver bug (see the duplicate audit at the end of
-// the run), not a coincidence.
-const SHARED_LOGO_GROUPS = [
-  ["apple", "apple-wwdc", "app-store-launch", "apple-acquires-next", "apple-ipo",
-   "apple-retail", "apple-think-different", "iphone-announcement", "iphone-on-sale",
-   "ipod", "mac-introduction"],
-  ["intel", "intel-4004", "intel-8086", "intel-core2", "intel-pentium", "moores-law"],
-  ["google", "google-ipo"],
-  ["yahoo", "yahoo-ipo"],
-  ["hp", "hp35-calculator"],
-  ["atari", "atari-2600", "atari-founding"],
-  ["palm-computing", "palmpilot-launch"],
-  ["netscape", "netscape-ipo"],
-  ["glean", "glean-series-f"],
-];
+// SHARED_LOGO_GROUPS (ids that legitimately share one mark) and the audit
+// itself live in scripts/lib/logo-audit.mjs so the prebuild gate
+// (scripts/check-tech-logos.mjs) enforces the exact same rules on every build.
 
 // ── data parser ──────────────────────────────────────────────────────────────
 // Light TS-source parser for the entries we need.
@@ -787,37 +773,23 @@ ${sortedIds.map((id) => `  "${id}": "${manifest[id]}",`).join("\n")}
 }
 
 // One wrong image served as 16 different companies' logos for months because
-// nothing ever compared the files on disk. Hash every logo the manifest points
-// at and shout about any mark shared by ids that aren't a declared alias group —
+// nothing ever compared the files on disk. Report anything the audit flags —
 // identical bytes across unrelated brands means a strategy fell through to
 // somebody's site chrome, which is the one failure mode this page can't afford.
+// Warn-only here (the run has already written the manifest); the same audit is
+// a hard build failure in scripts/check-tech-logos.mjs.
 async function auditDuplicateLogos(manifest) {
-  const allowed = new Set();
-  for (const group of SHARED_LOGO_GROUPS) {
-    for (const a of group) for (const b of group) if (a !== b) allowed.add(`${a}|${b}`);
+  const { missing, duplicates } = await auditLogoManifest(manifest, ROOT);
+  if (missing.length) {
+    console.log(`\n⚠️  ${missing.length} manifest entr(ies) point at a missing file:`);
+    for (const { id, rel } of missing) console.log(`  ${id} → ${rel}`);
   }
-  const byHash = new Map();
-  for (const [id, rel] of Object.entries(manifest)) {
-    const abs = path.join(ROOT, "public", rel.replace(/^\//, ""));
-    if (!existsSync(abs)) continue;
-    const hash = createHash("sha256").update(await readFile(abs)).digest("hex");
-    if (!byHash.has(hash)) byHash.set(hash, []);
-    byHash.get(hash).push(id);
-  }
-  const suspicious = [];
-  for (const ids of byHash.values()) {
-    if (ids.length < 2) continue;
-    const unexpected = ids.filter((id) =>
-      ids.some((other) => other !== id && !allowed.has(`${id}|${other}`)),
-    );
-    if (unexpected.length > 1) suspicious.push(unexpected);
-  }
-  if (!suspicious.length) {
-    console.log("\nDuplicate audit: OK (no unexpected shared logos)");
+  if (!duplicates.length) {
+    if (!missing.length) console.log("\nDuplicate audit: OK (no unexpected shared logos)");
     return;
   }
-  console.log(`\n⚠️  Duplicate audit: ${suspicious.length} unexpected shared logo(s):`);
-  for (const ids of suspicious) console.log(`  ${ids.join(", ")}`);
+  console.log(`\n⚠️  Duplicate audit: ${duplicates.length} unexpected shared logo(s):`);
+  for (const ids of duplicates) console.log(`  ${ids.join(", ")}`);
   console.log(
     "  These ids resolved to byte-identical images. Either pin them in\n" +
       "  PINNED_WIKI_LOGOS or add them to SHARED_LOGO_GROUPS if intentional.",
