@@ -2,6 +2,89 @@
 
 ---
 
+## 2026-08-11 — Cycle 205: Logo Audit Becomes a Build Gate, Whatnot Excluded
+
+### Context
+Tuesday August 11, 2026. Automated builder cycle. Closed the second item on
+Cycle 204's "Next 3" list and ran the week's funding watch.
+
+### What Was Built
+
+**The duplicate-logo audit is now a prebuild gate.** Cycle 204 built
+`auditDuplicateLogos()` but it only ran inside a `fetch-tech-logos.mjs` run, and
+nobody runs the fetcher on a schedule — so the check that caught a real trust bug
+could never catch the next one before it shipped. Extracted the audit and
+`SHARED_LOGO_GROUPS` into `scripts/lib/logo-audit.mjs`, added
+`scripts/check-tech-logos.mjs`, and chained it into `prebuild` behind
+`check-home-locked`. Both the fetcher and the gate now import the same rules, so
+they cannot drift apart.
+
+The gate is offline — no network, no fetching — and **fails the build** on two
+conditions: a manifest entry pointing at a file that isn't on disk (a broken
+image on `/tech`), or two unrelated ids resolving to byte-identical images (a
+resolver strategy fell through to somebody's site chrome). Verified both
+directions: passes clean on the real manifest, and a deliberately broken entry
+stops `npm run prebuild` with the id, the bad path, and the fix.
+
+**Missing-file detection is new.** The Cycle 204 version silently `continue`d
+past a manifest row whose file didn't exist — which is exactly how the two dead
+Commons filenames it had to repair got there in the first place.
+
+**Manifest drift, found and pruned.** The new drift report surfaced 10 manifest
+rows for companies no longer in `tech-companies.ts` — `aheadcomputing`, `atari`,
+`chipstack`, `efficient-computer`, `fairchild`, `glean-series-f`, `palm`,
+`rivos`, `sun`, `zum-redwood-city` — each shipping an unreferenced PNG to
+Vercel on every deploy. Confirmed no remaining id aliased any of those files,
+then dropped the rows and the 10 files. Drift stays a non-fatal note, not a
+failure: a company can legitimately land before its logo is fetched, and
+removing a company shouldn't break a deploy.
+
+**Funding watch (Aug 4–11): coverage already current, one exclusion recorded.**
+The techstartups.com August 10 roundup files **Whatnot** ($545M Series G at a
+$20B valuation, Aug 7 — by dollars the largest "South Bay" round of the week)
+under "Palo Alto." No primary or independent source supports that city:
+Wikipedia's infobox reads "Los Angeles, California," the article says the
+company "was incorporated in Delaware but is based in Marina Del Rey,
+California," and the corporate directories agree on Marina del Rey. That's Los
+Angeles County — not adjacent the way the San Mateo County exclusions are. Same
+aggregator-mislabel class as Katalyze AI and Array Labs; note recorded in-source
+so a future cycle doesn't add it from the roundup tag. (`whatnot.com/terms` and
+`/careers` return 403 to automated fetches — a deliberate block, left alone.)
+Everything else the week's roundups surfaced inside Santa Clara County was
+already in the list: Lumilens and Volta from Cycle 204, Meshy (Sunnyvale, whose
+HQ its own Terms of Use confirms), Etched, Glow.
+
+**Retried the four logo-less companies** (`queue`, `architect-labs`,
+`vortex-imaging`, `mojo-vision`) — Cycle 204's third open item. All four still
+resolve to nothing through every strategy, and a Commons search for Mojo Vision
+returns no mark. The render-time favicon fallback stands; the gate now names
+them on every build instead of leaving it to a manual audit.
+
+**Verified:** `astro check` 0 errors, full `npm run build` clean with both gates
+chained, all 32 logo paths on the built `/tech` page resolve to real files, and
+the manifest diff is exactly the 10 pruned rows.
+
+### Why This Was the Strongest Move
+The failure class Cycle 204 fixed by hand can no longer reach production: a
+wrong or missing logo now stops the deploy instead of sitting on `/tech` for
+months. The audit went from something a person had to remember to run into
+something the build refuses to skip — and it earned itself immediately by
+finding 10 dead manifest rows nobody knew were shipping. No protected Home,
+Events, or Food surface was touched.
+
+### Next 3 Strongest Ideas
+1. **Extend the Wikipedia skip to `SCC_SPOTLIGHT`** — open since Cycle 203, now
+   the oldest item on this list. Same common-word exposure as the funding cards;
+   needs a `--refresh` pass and a visual check.
+2. **Manual pin pass for the four unresolved marks** — auto-resolution is
+   exhausted, so this needs a human-picked source per company (site SVG, press
+   kit) wired into `PINNED_WIKI_LOGOS` or an equivalent direct-URL pin list.
+3. **Tech tab: small-company coverage below the funding line** — the roundups
+   only surface big rounds. Headcount growth, office opens, and city business
+   license filings for 3–20 person South Bay teams are still untapped.
+
+---
+
 ## 2026-08-10 — Cycle 204: Lumilens + Volta Rounds, 22 Wrong-Brand Logos Fixed
 
 ### Context

@@ -1078,6 +1078,18 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // opposite of the Fireworks AI / Cognichip / Array Labs cases, where primary
   // sources put the only HQ in San Mateo County. Do not re-litigate from the
   // London or New York datelines alone.
+  // Note: Whatnot ($545M Series G at a $20B valuation, announced Aug 7 2026 —
+  // by dollars the largest "South Bay" round of the week) is NOT here, despite
+  // the techstartups.com Aug 10 roundup filing it under "Palo Alto." No primary
+  // or independent source supports that city: Wikipedia's infobox reads "Los
+  // Angeles, California," the article says the company "was incorporated in
+  // Delaware but is based in Marina Del Rey, California," and the corporate
+  // directories agree on 578 Washington Blvd, Marina del Rey. That is Los
+  // Angeles County — not adjacent to coverage the way the San Mateo County
+  // exclusions above are. Same aggregator-mislabel problem as Katalyze AI and
+  // Array Labs. Do not add from a roundup's "Palo Alto" tag alone.
+  // (whatnot.com/terms and /careers return 403 to automated fetches — that's a
+  // deliberate block, so it was left alone rather than worked around.)
   {
     id: "lumilens",
     name: "Lumilens",
