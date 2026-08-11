@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T11:06:18.282Z",
+  "generatedAt": "2026-08-11T03:09:11.018Z",
   "meetings": {
     "san-jose": {
       "date": "2026-08-11",
@@ -73,6 +73,21 @@
         "sourceUrl": "https://webapi.legistar.com/v1/sunnyvaleca/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-10T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
+    "cupertino": {
+      "date": "2026-08-11",
+      "displayDate": "Tue, Aug 11",
+      "bodyName": "City Council",
+      "location": "Conference Room C",
+      "url": "https://cupertino.legistar.com/MeetingDetail.aspx?LEGID=5368&GID=341&G=74359C04-A5F0-4CB2-A97A-0032996BB90E",
+      "legistarEventId": 5368,
+      "agendaItems": [],
+      "confirmation": {
+        "status": "confirmed",
+        "provider": "legistar",
+        "observedDate": "2026-08-11",
+        "sourceUrl": "https://webapi.legistar.com/v1/cupertino/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-10T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+      }
+    },
     "palo-alto": {
       "date": "2026-08-10",
       "displayDate": "Mon, Aug 10",
@@ -133,7 +148,7 @@
     },
     "cupertino": {
       "provider": "Legistar",
-      "status": "no-meeting"
+      "status": "ok"
     },
     "santa-clara": {
       "provider": "Legistar",
