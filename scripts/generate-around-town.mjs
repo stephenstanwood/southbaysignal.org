@@ -327,7 +327,12 @@ async function gatherPermitItems() {
     });
 
     if (permits.length) {
-      allNotable.push({ config, permits: permits.slice(0, 8) });
+      // No second truncation here. generate-permits.mjs already caps each city
+      // at its top 10 notable permits, and slicing to 8 silently hid the tail:
+      // on 2026-08-10 San José had three Villa Homes prefab ADUs at 3180 Rubino
+      // Dr (#121/#123/#125), #125 fell outside the slice, and the item shipped
+      // as "Two prefab ADUs permitted at same Rubino Drive complex".
+      allNotable.push({ config, permits });
     }
   }
 
@@ -352,6 +357,8 @@ Permits:
 ${permitText}
 
 IMPORTANT — a permit being issued means construction is *cleared to begin*, NOT that it has started. Do NOT write "breaks ground", "groundbreaking", "construction begins", "construction starts", or "launches" — those imply a milestone the data does not support. Use language like "permitted", "receives building permit", "cleared to build", "permit issued for". Do NOT label projects as "affordable", "workforce", or "luxury" unless that wording appears in the permit description.
+
+COUNTS: the list above is the notable permits only, not every permit issued. If you state a count ("two ADUs", "three units"), it must match exactly what is listed — count the lines, do not estimate. When several permits share one address, prefer wording that does not hinge on a total ("prefab ADUs permitted at…").
 
 NO FILLER ADJECTIVES: do not call a project "significant", "substantial", "major", "large-scale", "notable", or "important" without saying *why* the resident should care. Do not write "This represents …", "This reflects ongoing …", "This underscores …" — sentences that gesture at significance instead of stating it. If you can't name the concrete reason (square footage, units, tenant, dollar tag in context, neighborhood impact), drop the second sentence. One useful sentence beats two with one of them puffed up.
 

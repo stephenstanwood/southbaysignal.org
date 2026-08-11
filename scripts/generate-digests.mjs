@@ -246,7 +246,12 @@ function enforceCityName(cityName, text) {
   return out;
 }
 
-async function summarize(config, meeting) {
+// bodyLabel is the verified name of the body that actually convened (see
+// verifyLegistarBodyOnDate). It must be resolved *before* this call: on
+// 2026-08-11 Santa Clara's July 16 Station Area Task Force digest opened "This
+// Santa Clara City Council meeting agenda included…" because the relabel ran
+// after summarization, so the prompt still said City Council. Pass it in.
+async function summarize(config, meeting, bodyLabel) {
   const isYouTubeTranscript = meeting.source === "youtube-transcript";
   // Strip the VTT metadata prefix that appears in YouTube transcript records
   const rawExcerpt = (meeting.excerpt || "").replace(/^Kind:\s*captions\s+Language:\s*\w+\s*/i, "").trim();
@@ -259,7 +264,7 @@ async function summarize(config, meeting) {
     ? `Note: the content above is the opening segment of the meeting transcript. It may only capture roll call and procedural items. Summarize what you can and be honest if the substantive agenda items aren't captured.`
     : "";
 
-  const councilBody = config.councilBody ?? "City Council";
+  const councilBody = bodyLabel ?? config.councilBody ?? "City Council";
   // Agendas publish days ahead of the meeting, so a digest is often written for
   // a meeting that hasn't happened yet. Without this the model defaults to past
   // tense ("The Council met to approve…"), which reports a scheduled meeting as
@@ -460,12 +465,9 @@ async function main() {
 
     console.log(`  ⏳ ${config.cityName} (${meeting.date})...`);
     try {
-      const parsed = await summarize(config, meeting);
-
-      const meetingDateFormatted = new Date(meeting.date + "T12:00:00").toLocaleDateString("en-US", {
-        year: "numeric", month: "long", day: "numeric",
-      });
-
+      // Resolve the real body name BEFORE summarizing — the prompt names the
+      // body, so relabeling afterward leaves the summary describing a City
+      // Council meeting that never happened.
       // Use meetingType from Stoa (not hardcoded) so mislabeled records are
       // surfaced rather than masked. Falls back to "City Council" if absent.
       // councilBody (when set) hard-overrides — Los Gatos is officially a Town
@@ -479,6 +481,13 @@ async function main() {
           bodyLabel = actualBody;
         }
       }
+
+      const parsed = await summarize(config, meeting, bodyLabel);
+
+      const meetingDateFormatted = new Date(meeting.date + "T12:00:00").toLocaleDateString("en-US", {
+        year: "numeric", month: "long", day: "numeric",
+      });
+
       digests[config.city] = {
         city: config.city,
         cityName: config.cityName,

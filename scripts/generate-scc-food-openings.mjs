@@ -328,6 +328,11 @@ function cleanAddress(raw) {
   // SCC entry sometimes splits BLVD as "B L" (typo) — normalize before title-casing
   s = s.replace(/\bB\s+L\b\.?/gi, "Blvd");
 
+  // County records misspell San José's Barack Obama Boulevard as "BARAK OBAMA
+  // BLVD" (seen 2026-08-06 on Bay Padel San Jose at #87). It's a person's name
+  // on a street sign — ship the correct spelling.
+  s = s.replace(/\bBarak\b(?=\s+Obama\b)/gi, "Barack");
+
   // Title case. Each abbreviation rule consumes an optional trailing period
   // so a raw input that already has one (e.g. "DR.") doesn't double up to "Dr..".
   s = s

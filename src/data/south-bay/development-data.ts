@@ -207,17 +207,19 @@ export const DEV_PROJECTS: DevProject[] = [
 
   {
     id: "mv-east-middlefield-mixed-use",
-    name: "East Middlefield Road Mixed-Use Development",
+    name: "490 East Middlefield Road Mixed-Use Development",
     city: "Mountain View",
     cityId: "mountain-view",
     category: "mixed-use",
     status: "approved",
     description:
-      "Mountain View City Council approved a mixed-use housing project at East Middlefield Road at its March 24, 2026 meeting. The project adds residential units to one of Mountain View's key transit corridors, consistent with the city's goals for housing near employment centers and transit.",
+      "Mountain View City Council took up the development agreement for a mixed-use residential project at 490 East Middlefield Road on second reading at its March 24, 2026 meeting. The project adds residential units to one of Mountain View's key transit corridors, consistent with the city's goals for housing near employment centers and transit.",
     scale: "Residential + ground-floor uses",
     developer: "TBD",
     timeline: "Approved March 2026",
     featured: false,
+    sourceNote:
+      "Confirmed against Mountain View Legistar: the March 24, 2026 City Council agenda carries \"Mixed-Use Residential Development at 490 East Middlefield Road - Development Agreement (Second Reading)\" (event 3356). Developer not named on the agenda item. Verify at mountainview.legistar.com.",
   },
 
   {
