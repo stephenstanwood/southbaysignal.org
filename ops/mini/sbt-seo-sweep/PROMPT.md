@@ -10,8 +10,12 @@ Google Search Console is required scope, not an optional add-on. Use the
 Browser or Chrome control plugin to inspect and operate the verified
 `https://southbaytoday.org/` URL-prefix property under
 `stanwoodventures@gmail.com`. The optional service-account helper may preload
-data, but its absence is not a blocker when the browser is signed in. Do not
-report a crawl-only run as complete.
+data, but its absence is not a blocker when the browser is signed in. The Mini
+can expose multiple connected browser instances with different Google
+sessions: a signed-out result from the first one is not an auth blocker.
+Exhaust the skill's distinct extension and in-app browser instances, and verify
+the visible account email plus exact property; never trust an `authuser`
+ordinal alone. Do not report a crawl-only run as complete.
 
 If `/Users/stephenstanwood/.codex/automations/sbt-seo-sweep/smoke-test` exists,
 run smoke mode only: verify that the skill is readable, browser control is
