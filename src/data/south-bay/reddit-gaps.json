@@ -1,73 +1,182 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-11T03:17:56.553Z",
+    "generatedAt": "2026-08-12T03:17:39.472Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 6
+    "sourceCount": 14
   },
   "summary": {
-    "threadsMined": 6,
-    "placesExtracted": 2,
-    "placesMatched": 1,
-    "placeGaps": 1,
-    "eventsExtracted": 2,
-    "eventsMatched": 0,
-    "eventGaps": 2,
+    "threadsMined": 14,
+    "placesExtracted": 6,
+    "placesMatched": 3,
+    "placeGaps": 3,
+    "eventsExtracted": 6,
+    "eventsMatched": 1,
+    "eventGaps": 5,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "New Krung Thai",
+      "name": "Sakura Market",
       "city": "San Jose",
-      "kind": "restaurant",
-      "context": "ordered pad kee mao, was disappointing and not spicy",
+      "kind": "retail",
+      "context": "recently opened grocery store in downtown San Jose",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vkxpu4/best_milkshake/",
-        "https://www.reddit.com/r/mountainview/comments/1vl5rj9/trivia_stephens_green/",
-        "https://www.reddit.com/r/SanJose/comments/1vkrqq8/pad_kee_mao_drunken_noodles_with_wok_hei/",
-        "https://www.reddit.com/r/SanJose/comments/1vkt8ri/daycare_recommendations_for_1_year_old/",
-        "https://www.reddit.com/r/SanJose/comments/1vkpy5e/a_long_cat_tale/"
+        "https://www.reddit.com/r/SanJose/comments/1vlvirp/independent_boutique_grocery_store_coming_to/",
+        "https://www.reddit.com/r/mountainview/comments/1vjwyxc/chocolate_chip_cookie_festival_free_admission/",
+        "https://www.reddit.com/r/SanJose/comments/1vltv3r/free_tedx_event_featuring_high_school_speakers_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vliwx7/where_are_some_good_spots_to_get_a_haircutstylist/",
+        "https://www.reddit.com/r/mountainview/comments/1viylfr/coffee_recommendations/"
+      ]
+    },
+    {
+      "name": "Mt Hamilton",
+      "city": "San Jose",
+      "kind": "park",
+      "context": "suggested Perseids viewing spot, parking issues",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vlyszt/psa_you_can_request_a_curb_ramp/",
+        "https://www.reddit.com/r/SanJose/comments/1vlwcji/where_to_watch_perseids/",
+        "https://www.reddit.com/r/SanJose/comments/1vlqe7t/anyone_planning_to_see_the_meteor_shower_tomorrow/",
+        "https://www.reddit.com/r/mountainview/comments/1vln5y8/mvs_cert_program_disaster_preparedness/",
+        "https://www.reddit.com/r/SanJose/comments/1vlijeq/looking_for_recommendations_for_a_street_hot_dog/"
+      ]
+    },
+    {
+      "name": "Henry W. Coe State Park",
+      "city": "",
+      "kind": "park",
+      "context": "suggested Perseids viewing spot, mountain lions",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vlyszt/psa_you_can_request_a_curb_ramp/",
+        "https://www.reddit.com/r/SanJose/comments/1vlwcji/where_to_watch_perseids/",
+        "https://www.reddit.com/r/SanJose/comments/1vlqe7t/anyone_planning_to_see_the_meteor_shower_tomorrow/",
+        "https://www.reddit.com/r/mountainview/comments/1vln5y8/mvs_cert_program_disaster_preparedness/",
+        "https://www.reddit.com/r/SanJose/comments/1vlijeq/looking_for_recommendations_for_a_street_hot_dog/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "Trivia Night at Stephen's Green",
+      "name": "TEDx event featuring high school speakers",
+      "when": "October 10",
+      "city": "Cupertino",
+      "context": "free TEDx event",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vlvirp/independent_boutique_grocery_store_coming_to/",
+        "https://www.reddit.com/r/mountainview/comments/1vjwyxc/chocolate_chip_cookie_festival_free_admission/",
+        "https://www.reddit.com/r/SanJose/comments/1vltv3r/free_tedx_event_featuring_high_school_speakers_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vliwx7/where_are_some_good_spots_to_get_a_haircutstylist/",
+        "https://www.reddit.com/r/mountainview/comments/1viylfr/coffee_recommendations/"
+      ]
+    },
+    {
+      "name": "Perseid Meteor Shower",
+      "when": "tomorrow night (mid-August)",
+      "city": "",
+      "context": "discussion of best viewing spots near South Bay",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vlyszt/psa_you_can_request_a_curb_ramp/",
+        "https://www.reddit.com/r/SanJose/comments/1vlwcji/where_to_watch_perseids/",
+        "https://www.reddit.com/r/SanJose/comments/1vlqe7t/anyone_planning_to_see_the_meteor_shower_tomorrow/",
+        "https://www.reddit.com/r/mountainview/comments/1vln5y8/mvs_cert_program_disaster_preparedness/",
+        "https://www.reddit.com/r/SanJose/comments/1vlijeq/looking_for_recommendations_for_a_street_hot_dog/"
+      ]
+    },
+    {
+      "name": "CERT Academy",
+      "when": "",
+      "city": "Mountain View",
+      "context": "disaster preparedness training program",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vlyszt/psa_you_can_request_a_curb_ramp/",
+        "https://www.reddit.com/r/SanJose/comments/1vlwcji/where_to_watch_perseids/",
+        "https://www.reddit.com/r/SanJose/comments/1vlqe7t/anyone_planning_to_see_the_meteor_shower_tomorrow/",
+        "https://www.reddit.com/r/mountainview/comments/1vln5y8/mvs_cert_program_disaster_preparedness/",
+        "https://www.reddit.com/r/SanJose/comments/1vlijeq/looking_for_recommendations_for_a_street_hot_dog/"
+      ]
+    },
+    {
+      "name": "Trivia @ Stephen's Green",
       "when": "Monday, Aug 17",
       "city": "Mountain View",
       "context": "proposed trivia meetup for new friends",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vkxpu4/best_milkshake/",
+        "https://www.reddit.com/r/SanJose/comments/1vl7xei/its_not_cancer/",
         "https://www.reddit.com/r/mountainview/comments/1vl5rj9/trivia_stephens_green/",
-        "https://www.reddit.com/r/SanJose/comments/1vkrqq8/pad_kee_mao_drunken_noodles_with_wok_hei/",
-        "https://www.reddit.com/r/SanJose/comments/1vkt8ri/daycare_recommendations_for_1_year_old/",
-        "https://www.reddit.com/r/SanJose/comments/1vkpy5e/a_long_cat_tale/"
+        "https://www.reddit.com/r/mountainview/comments/1vk60b0/santana_mountview_shoreline_free_ticket_lawn/",
+        "https://www.reddit.com/r/mountainview/comments/1vjus9p/millennial_gardeners_in_the_sf_bay_area_open_to/"
       ]
     },
     {
-      "name": "Community Listening Session on Data Centers",
-      "when": "August 19, 6:00-8:00PM",
-      "city": "San Jose",
-      "context": "public input session on data center standards at City Hall",
+      "name": "Santana (Shoreline Amphitheatre)",
+      "when": "",
+      "city": "Mountain View",
+      "context": "free lawn ticket offered for concert",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vkjm9g/community_listening_session_on_data_centers_in/"
+        "https://www.reddit.com/r/SanJose/comments/1vl7xei/its_not_cancer/",
+        "https://www.reddit.com/r/mountainview/comments/1vl5rj9/trivia_stephens_green/",
+        "https://www.reddit.com/r/mountainview/comments/1vk60b0/santana_mountview_shoreline_free_ticket_lawn/",
+        "https://www.reddit.com/r/mountainview/comments/1vjus9p/millennial_gardeners_in_the_sf_bay_area_open_to/"
       ]
     }
   ],
   "placeMatches": [
     {
+      "name": "Museum of American Heritage",
+      "city": "Palo Alto",
+      "kind": "venue",
+      "context": "hosting chocolate chip cookie festival",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vlvirp/independent_boutique_grocery_store_coming_to/",
+        "https://www.reddit.com/r/mountainview/comments/1vjwyxc/chocolate_chip_cookie_festival_free_admission/",
+        "https://www.reddit.com/r/SanJose/comments/1vltv3r/free_tedx_event_featuring_high_school_speakers_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vliwx7/where_are_some_good_spots_to_get_a_haircutstylist/",
+        "https://www.reddit.com/r/mountainview/comments/1viylfr/coffee_recommendations/"
+      ],
+      "matchedName": "The Museum of American Heritage"
+    },
+    {
+      "name": "Alum Rock Park",
+      "city": "San Jose",
+      "kind": "park",
+      "context": "suggested spot for meteor shower viewing",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vlyszt/psa_you_can_request_a_curb_ramp/",
+        "https://www.reddit.com/r/SanJose/comments/1vlwcji/where_to_watch_perseids/",
+        "https://www.reddit.com/r/SanJose/comments/1vlqe7t/anyone_planning_to_see_the_meteor_shower_tomorrow/",
+        "https://www.reddit.com/r/mountainview/comments/1vln5y8/mvs_cert_program_disaster_preparedness/",
+        "https://www.reddit.com/r/SanJose/comments/1vlijeq/looking_for_recommendations_for_a_street_hot_dog/"
+      ],
+      "matchedName": "Alum Rock Park"
+    },
+    {
       "name": "Stephen's Green",
       "city": "Mountain View",
       "kind": "bar",
-      "context": "trivia night location mentioned for meetup",
+      "context": "trivia night location mentioned by poster",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vkxpu4/best_milkshake/",
+        "https://www.reddit.com/r/SanJose/comments/1vl7xei/its_not_cancer/",
         "https://www.reddit.com/r/mountainview/comments/1vl5rj9/trivia_stephens_green/",
-        "https://www.reddit.com/r/SanJose/comments/1vkrqq8/pad_kee_mao_drunken_noodles_with_wok_hei/",
-        "https://www.reddit.com/r/SanJose/comments/1vkt8ri/daycare_recommendations_for_1_year_old/",
-        "https://www.reddit.com/r/SanJose/comments/1vkpy5e/a_long_cat_tale/"
+        "https://www.reddit.com/r/mountainview/comments/1vk60b0/santana_mountview_shoreline_free_ticket_lawn/",
+        "https://www.reddit.com/r/mountainview/comments/1vjus9p/millennial_gardeners_in_the_sf_bay_area_open_to/"
       ],
       "matchedName": "St. Stephen's Green"
     }
   ],
-  "eventMatches": []
+  "eventMatches": [
+    {
+      "name": "Chocolate Chip Cookie Festival",
+      "when": "Saturday, August 22",
+      "city": "Palo Alto",
+      "context": "free end-of-summer bash with cookies, LEGO building, music",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vlvirp/independent_boutique_grocery_store_coming_to/",
+        "https://www.reddit.com/r/mountainview/comments/1vjwyxc/chocolate_chip_cookie_festival_free_admission/",
+        "https://www.reddit.com/r/SanJose/comments/1vltv3r/free_tedx_event_featuring_high_school_speakers_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vliwx7/where_are_some_good_spots_to_get_a_haircutstylist/",
+        "https://www.reddit.com/r/mountainview/comments/1viylfr/coffee_recommendations/"
+      ],
+      "matchedName": "Chocolate Chip Cookie Festival"
+    }
+  ]
 }

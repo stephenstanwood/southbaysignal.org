@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-11T03:08:57.075Z",
+      "generatedAt": "2026-08-12T03:09:09.640Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 3 – Aug 10",
+      "dateRange": "Aug 4 – Aug 11",
       "stats": {
-        "total": 475,
-        "notable": 34,
-        "newUnits": 32,
-        "totalValuation": 28611543
+        "total": 375,
+        "notable": 23,
+        "newUnits": 24,
+        "totalValuation": 27167580
       },
       "permits": [
         {
@@ -25,18 +25,6 @@
           "units": 16,
           "issueDate": "2026-08-07",
           "subtype": "Apartment"
-        },
-        {
-          "id": "2025-116871-RS",
-          "address": "3551 Chamberlain Dr",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Lot 5new 2-Story SFR",
-          "valuation": 681229,
-          "units": 1,
-          "issueDate": "2026-08-04",
-          "subtype": "Single-Family"
         },
         {
           "id": "2025-141614-RS",
@@ -60,30 +48,6 @@
           "valuation": 175040,
           "units": 1,
           "issueDate": "2026-08-05",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2026-129339-RS",
-          "address": "684 N 10th St #3",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Epr Code Amnesty Legalize Unpermitted Conversion Detach Accessory Structure to ADU",
-          "valuation": 145662,
-          "units": 1,
-          "issueDate": "2026-08-04",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2025-112043-RS",
-          "address": "3117 Julio Av #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "New Detached ADU",
-          "valuation": 139153,
-          "units": 1,
-          "issueDate": "2026-08-04",
           "subtype": "2nd Unit Added"
         },
         {
@@ -133,19 +97,55 @@
           "units": 1,
           "issueDate": "2026-08-07",
           "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2026-102232-RS",
+          "address": "2114 Ardis Dr #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Attached ADU",
+          "valuation": 73535,
+          "units": 1,
+          "issueDate": "2026-08-06",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2024-112372-RS",
+          "address": "828 Onyx Ct #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached ADU With Loft",
+          "valuation": 54447,
+          "units": 1,
+          "issueDate": "2026-08-07",
+          "subtype": "2nd Unit Added"
+        },
+        {
+          "id": "2026-131158-CI",
+          "address": "3055 Orchard Dr",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Advantest TI",
+          "valuation": 12000000,
+          "units": 0,
+          "issueDate": "2026-08-07",
+          "subtype": "Office"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-11T03:08:59.368Z",
+      "generatedAt": "2026-08-12T03:09:11.823Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 3 – Aug 10",
+      "dateRange": "Aug 4 – Aug 11",
       "stats": {
-        "total": 127,
-        "notable": 8,
+        "total": 118,
+        "notable": 5,
         "newUnits": 0,
         "totalValuation": 0
       },
@@ -163,72 +163,12 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-02162",
-          "address": "737 Ensign Wy",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-04",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26PLN-00213",
-          "address": "491 W Charleston Rd",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for Architectural Review for the removal of one dead Deodar Cedar tree outside a day care center and replacement with a new 24-inch box size Cork Oak tree.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-04",
-          "subtype": "Over the Counter Approved"
-        },
-        {
-          "id": "26PLN-00215",
-          "address": "353 University Av",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for a temporary sign permit to installation of one exterior wall-mounted sign at the building corner. The sign will be 48 inches wide by 96 and 1/8 inches tall made from aluminum composite (Dibond) panel, 45° folded to wrap building corner, mounted to existing brick with masonry anchors. The sign will be installed from August 4 through September 1 but will be removed before September 4 and the building will be returned to its original condition. Zone District: Downtown Commercial (CD-C(GF)(P)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-04",
-          "subtype": "Over the Counter Approved"
-        },
-        {
           "id": "26PLN-00221",
           "address": "412 Olive Av",
           "category": "entitlement",
           "categoryLabel": "Entitlement / Zoning",
           "workType": "Entitlement",
           "description": "Request for an Over-the-Counter Architectural Review to install one 40 inch tall by 78 inch wide non-illuminated aluminum sign, two 21 inch tall by 42 inch wide non-illuminated alumninum signs, and two nine inch tall by 18 inch wide window graphics. All signs will read, 'gloo'. CEQA Status: Not a project. Zone District: North Ventura Low Density Mixed Use District (NV-MXL). For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-07",
-          "subtype": "Over the Counter Approved"
-        },
-        {
-          "id": "26PLN-00220",
-          "address": "151 University Av",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for an Over-the-Counter Architectural Review to install one new non-illuminated channel letters sign mounted to an existing awning with a cleat. The proposed sign will be nine inches tall by 115 inches wide and constructed of aluminum painted black to read, 'Cleary Gottlieb'. Zone District: Downtown Commercial (CD-C(GF)(P)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-07",
-          "subtype": "Over the Counter Approved"
-        },
-        {
-          "id": "26PLN-00219",
-          "address": "1755 Embarcadero Rd",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for Architectural Review for removal of one Camphor tree due to root conflict with approved accessibility path and replacement with two 24-inch box size Crape Myrtle trees.",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-08-07",
@@ -244,6 +184,30 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-08-05",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00219",
+          "address": "1755 Embarcadero Rd",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for Architectural Review for removal of one Camphor tree due to root conflict with approved accessibility path and replacement with two 24-inch box size Crape Myrtle trees.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-07",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00220",
+          "address": "151 University Av",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for an Over-the-Counter Architectural Review to install one new non-illuminated channel letters sign mounted to an existing awning with a cleat. The proposed sign will be nine inches tall by 115 inches wide and constructed of aluminum painted black to read, 'Cleary Gottlieb'. Zone District: Downtown Commercial (CD-C(GF)(P)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-07",
           "subtype": "Over the Counter Approved"
         }
       ]

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-11T12:22:22.755Z",
+  "generatedAt": "2026-08-12T03:09:24.599Z",
   "meetings": {
     "san-jose": {
       "date": "2026-08-11",
@@ -189,7 +189,7 @@
     "los-gatos": {
       "provider": "MuniCode",
       "status": "error",
-      "detail": "municodemeetings.com refused the connection (UND_ERR_SOCKET) — town's only published agenda source; not worked around"
+      "detail": "municodemeetings.com refused the connection (ERR_HTTP2_STREAM_ERROR) — town's only published agenda source; not worked around"
     }
   }
 }
