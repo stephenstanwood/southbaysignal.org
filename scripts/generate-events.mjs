@@ -7870,16 +7870,30 @@ async function main() {
     }
   }
 
-  // Virtual-flag normalization — if the title or address has a strong virtual
-  // signal, mark the event virtual:true so downstream consumers (plan-day,
-  // tonight-pick) can filter it out. This prevents "Online Author Talk: …"
-  // from appearing as a place to "stop by" in a day-plan.
+  // Virtual-flag normalization — if the title, address, or venue has a strong
+  // virtual signal, mark the event virtual:true so downstream consumers
+  // (plan-day, tonight-pick) can filter it out. This prevents "Online Author
+  // Talk: …" from appearing as a place to "stop by" in a day-plan.
+  //
+  // Venue is scanned because some feeds put the only virtual signal there:
+  // Mountain View Public Library ships "Art Across Asia: Masterpieces of the
+  // Asian Art Museum" with venue "Online" and a title/description that never
+  // say so. Those fell through every check — plan-day filters on the flag
+  // alone, and the Events tab built a Google Maps link for "Online, Mountain
+  // View, CA". VIRTUAL_ADDRESS_SIGNALS is the right list here: it's anchored
+  // to the start of the field, so a real venue that merely mentions a
+  // livestream elsewhere in its name isn't swept up.
   let virtualFlagged = 0;
   for (const e of collapsedEvents) {
     if (e.virtual === true) continue;
     const title = e.title || "";
     const addr = e.address || e.location || "";
-    if (VIRTUAL_TITLE_SIGNALS.some(r => r.test(title)) || VIRTUAL_ADDRESS_SIGNALS.some(r => r.test(addr))) {
+    const venue = e.venue || "";
+    if (
+      VIRTUAL_TITLE_SIGNALS.some(r => r.test(title)) ||
+      VIRTUAL_ADDRESS_SIGNALS.some(r => r.test(addr)) ||
+      VIRTUAL_ADDRESS_SIGNALS.some(r => r.test(venue))
+    ) {
       e.virtual = true;
       virtualFlagged++;
     }
