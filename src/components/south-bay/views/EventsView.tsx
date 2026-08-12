@@ -15,7 +15,7 @@ import {
 } from "../../../lib/south-bay/holidays";
 import { currentHeritageMonths, matchesHeritage, type HeritageMonth } from "../../../lib/south-bay/heritageMonths";
 import { buildGoogleCalendarUrl } from "../../../lib/south-bay/calendarLink";
-import { isVirtualEvent } from "../../../lib/south-bay/eventFilters.mjs";
+import { isVirtualEvent, registrationLabel } from "../../../lib/south-bay/eventFilters.mjs";
 import { cleanDisplayCopy, cleanDisplayName } from "../../../lib/south-bay/displayText.mjs";
 import PageHero from "../PageHero";
 
@@ -445,6 +445,15 @@ function UpcomingEventCard({
               style={{ background: "#EFF6FF", color: "#1D4ED8", borderColor: "#BFDBFE" }}
             >
               Virtual
+            </span>
+          )}
+          {registrationLabel(event) && (
+            <span
+              className="sb-event-micro-badge"
+              title="You cannot just turn up — this event needs a booking or registration in advance"
+              style={{ background: "#FEF3C7", color: "#92400E", borderColor: "#FDE68A" }}
+            >
+              {registrationLabel(event)}
             </span>
           )}
           {urgency && (

@@ -105,6 +105,196 @@ export function resolveVirtualFlag(event, sourceSignal) {
 }
 
 // ---------------------------------------------------------------------------
+// Advance registration
+// ---------------------------------------------------------------------------
+// Single source of truth for "can a reader who saw this in the newsletter just
+// show up?" Same split as the virtual flag above: the source's own structured
+// field is the primary signal and free text is only a fallback.
+//
+// Shipped 2026-08-12 after the Aug 12 issue ran Palo Alto's "Vintage Media
+// Lab" as its afternoon field-guide pick — "spend the afternoon digitizing
+// family cassettes and photos", 1:00 PM, Mitchell Park Library, Free. The
+// program is appointment-only (one two-hour booking per person per week), so
+// a reader who followed the newsletter and walked up at 1:00 PM could not get
+// in. The BiblioCommons ingest was reading definition.title/start/end and
+// dropping definition.registrationInfo entirely, so every registration-gated
+// library event across SJPL, SCCL, Palo Alto and Mountain View reached the
+// planner indistinguishable from a drop-in storytime.
+// ---------------------------------------------------------------------------
+
+/** No advance action needed — walk up at the listed time. */
+export const REGISTRATION_NONE = "none";
+/** Must register/reserve ahead, but seats are open. */
+export const REGISTRATION_REQUIRED = "required";
+/** Must book an individual appointment slot; there is no general admission. */
+export const REGISTRATION_APPOINTMENT = "appointment-only";
+/** Registration is tracked and the event is out of seats. */
+export const REGISTRATION_FULL = "full";
+
+/** Instructions describing an individually booked slot rather than a seat. */
+const APPOINTMENT_PATTERNS = [
+  /\bappointments?\b/i,
+  /\bbook\s*@/i,
+  /\bbook\s+(an?|your)\s+(appointment|slot|time|session|visit)\b/i,
+  /\bschedule\s+(an?|your)\s+(appointment|slot|time|session|visit|consultation)\b/i,
+  /\bone[-\s]?on[-\s]?one\b/i,
+  /\b1\s*[-:]\s*1\b/,
+];
+
+/** Instructions describing advance registration for a seat. */
+const REGISTER_PATTERNS = [
+  /\bregist(er|ration|ering)\b/i,
+  /\breserv(e|ation|ations)\b/i,
+  /\bsign[-\s]?up\b/i,
+  /\bsign\s+up\b/i,
+  /\brsvp\b/i,
+  /\benroll(ment)?\b/i,
+];
+
+/**
+ * Text that explicitly promises walk-up access. Only consulted when the source
+ * published no registration provider — a provider is authoritative and text
+ * must never downgrade it.
+ *
+ * Earns its keep on SJPL's "Indoor Family Storytime with Stay and Play", whose
+ * instructions read "Seating ... is available on a first-come, first-served
+ * basis. A limited number of tickets will be distributed at the Information
+ * Desk 30 minutes prior." That is a drop-in with a door ticket, not a booking,
+ * and a bare "limited"/"tickets" heuristic would have wrongly gated it.
+ */
+const DROP_IN_PATTERNS = [
+  /\bfirst[-\s]come\b/i,
+  /\bdrop[-\s]?in\b/i,
+  /\bwalk[-\s]?ins?\b/i,
+  /\bno\s+(advance\s+)?(registration|reservation|sign[-\s]?up|rsvp)\b/i,
+  /\bregistration\s+(is\s+)?not\s+(required|needed|necessary)\b/i,
+];
+
+function stripInstructionMarkup(html) {
+  if (typeof html !== "string") return "";
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Classify free-text registration instructions.
+ * Returns an appointment/required state, or null when the text says nothing
+ * actionable. Appointment language wins over generic register language: "call
+ * to set up a one-on-one counseling appointment" is both, and the appointment
+ * reading is the one a reader needs.
+ */
+export function registrationFromInstructions(instructions) {
+  const text = stripInstructionMarkup(instructions);
+  if (!text) return null;
+  if (APPOINTMENT_PATTERNS.some((re) => re.test(text))) return REGISTRATION_APPOINTMENT;
+  if (REGISTER_PATTERNS.some((re) => re.test(text))) return REGISTRATION_REQUIRED;
+  return null;
+}
+
+/**
+ * Normalize one raw BiblioCommons event into a registration state.
+ *
+ * Reads the shape the gateway actually returns (verified against SJPL, SCCL,
+ * Palo Alto and Mountain View, 900 events, 2026-08-12):
+ *
+ *   ev.definition.registrationInfo = { provider, cap, maxSeats, isFull,
+ *                                      instructions, enabledMethods, ... }
+ *   ev.isFull / ev.registrationClosed          <- per-instance, top level
+ *
+ * `provider` is the load-bearing field:
+ *   null            no registration (657/900) — the ordinary storytime case
+ *   "BIBLIO_EVENTS" registration runs inside BiblioCommons, always capped
+ *   "EXTERNAL"      registration happens off-platform; instructions say how
+ *
+ * TWO TRAPS, both of which produced the Vintage Media Lab bug if ignored:
+ *
+ * 1. `isFull` is NOT a reliable sold-out signal. When provider is "EXTERNAL"
+ *    with cap and maxSeats both null, BiblioCommons has no seat accounting at
+ *    all, so `isFull` carries no information — 4 of the 40 Vintage Media Lab
+ *    instances in the live feed report isFull:true while the library's own
+ *    page advertises "August & September Appointments Still Available". So
+ *    `full` requires actual seat accounting; without it an EXTERNAL event
+ *    stays appointment-only/required and gets labelled rather than suppressed.
+ *
+ * 2. A non-null `cap` does NOT imply registration. Palo Alto's "Open Sewing
+ *    Studio", "Photography Meetup" and "Meditation with Sara" all carry
+ *    cap/maxSeats with provider null, no instructions, and numberRegistered
+ *    null — room capacity noted on a drop-in, nothing to book. Gating on cap
+ *    would have wrongly suppressed ~40 genuine walk-up events.
+ *
+ * `definition.registrationInfo.isFull` is deliberately ignored in favour of
+ * the top-level `ev.isFull`: the definition is shared across every instance of
+ * a recurring series, so its copy goes stale (Palo Alto's "STEAM Lab Saturday"
+ * reports definition isFull:false on an instance whose own isFull is true).
+ */
+export function registrationFromBiblioCommons(ev) {
+  if (!ev) return REGISTRATION_NONE;
+  const info = ev.definition?.registrationInfo || {};
+  const provider = typeof info.provider === "string" ? info.provider.toUpperCase() : null;
+  const cap = Number.isFinite(info.cap) ? info.cap : null;
+  const maxSeats = Number.isFinite(info.maxSeats) ? info.maxSeats : null;
+  const fromInstructions = registrationFromInstructions(info.instructions);
+
+  // Seats are only really being counted when a cap exists or BiblioCommons is
+  // itself the registrar. See trap 1 above.
+  const hasSeatAccounting =
+    provider === "BIBLIO_EVENTS" || cap !== null || maxSeats !== null;
+
+  if (!provider) {
+    // No registrar. Trust explicit walk-up language over a stray "reserve", and
+    // treat silence as a drop-in — that is the overwhelming majority case.
+    const text = stripInstructionMarkup(info.instructions);
+    if (text && DROP_IN_PATTERNS.some((re) => re.test(text))) return REGISTRATION_NONE;
+    return fromInstructions || REGISTRATION_NONE;
+  }
+
+  if (ev.isFull === true && hasSeatAccounting) return REGISTRATION_FULL;
+
+  if (provider === "EXTERNAL") {
+    // Off-platform registration always needs advance action; the instructions
+    // only decide whether it is an appointment or a seat.
+    return fromInstructions || REGISTRATION_REQUIRED;
+  }
+
+  // BIBLIO_EVENTS: registration runs on the library's own site.
+  return fromInstructions || REGISTRATION_REQUIRED;
+}
+
+/**
+ * True when a reader cannot simply turn up at the listed time. The gate for
+ * every walk-up recommendation slot: day-plan pillars and Tonight's Pick.
+ *
+ * Events with no `registration` field — every non-library source — read as
+ * walk-up, preserving existing behaviour.
+ */
+export function requiresAdvanceRegistration(event) {
+  if (!event) return false;
+  const state = typeof event === "string" ? event : event.registration;
+  return (
+    state === REGISTRATION_REQUIRED ||
+    state === REGISTRATION_APPOINTMENT ||
+    state === REGISTRATION_FULL
+  );
+}
+
+/**
+ * Short reader-facing label, or "" when nothing needs saying. Used by listing
+ * surfaces that still show the event (the Events tab, "Also on the calendar")
+ * so a gated event is labelled rather than silently dropped.
+ */
+export function registrationLabel(event) {
+  const state = typeof event === "string" ? event : event?.registration;
+  if (state === REGISTRATION_APPOINTMENT) return "Appointment required";
+  if (state === REGISTRATION_REQUIRED) return "Reserve ahead";
+  if (state === REGISTRATION_FULL) return "Registration full";
+  return "";
+}
+
+// ---------------------------------------------------------------------------
 // Geography
 // ---------------------------------------------------------------------------
 

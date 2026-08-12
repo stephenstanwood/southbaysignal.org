@@ -6,6 +6,10 @@ import {
   OUT_OF_AREA_LOCATION,
   hasOutOfAreaDestination,
   isVirtualEvent,
+  registrationFromBiblioCommons,
+  registrationFromInstructions,
+  registrationLabel,
+  requiresAdvanceRegistration,
   resolveVirtualFlag,
   virtualFromSourceSignal,
 } from "./eventFilters.mjs";
@@ -196,4 +200,151 @@ test("the trip exemption does not leak into the day-plan filter", () => {
   };
   assert.ok(LOCAL_DEPARTURE_TRIP.test(trip.title));
   assert.ok(hasOutOfAreaDestination(trip));
+});
+
+// ---------------------------------------------------------------------------
+// Advance registration
+// ---------------------------------------------------------------------------
+// Every fixture below is a verbatim shape from the live BiblioCommons gateway
+// (SJPL / SCCL / Palo Alto / Mountain View, sampled 2026-08-12).
+
+/** Build a raw BiblioCommons event with the fields the normalizer reads. */
+function biblioEvent({ provider = null, cap = null, maxSeats = null, instructions = null, isFull = false, registrationClosed = false, defIsFull = false } = {}) {
+  return {
+    id: "test-id",
+    isFull,
+    registrationClosed,
+    definition: {
+      title: "Test Event",
+      registrationInfo: { provider, cap, maxSeats, instructions, isFull: defIsFull, enabledMethods: [] },
+    },
+  };
+}
+
+test("an ordinary drop-in library event needs no registration", () => {
+  // 657 of 900 sampled events look exactly like this.
+  assert.equal(registrationFromBiblioCommons(biblioEvent()), "none");
+  assert.equal(requiresAdvanceRegistration({ registration: "none" }), false);
+  assert.equal(registrationLabel({ registration: "none" }), "");
+});
+
+test("a room capacity alone does NOT mean registration", () => {
+  // Palo Alto's Open Sewing Studio, Photography Meetup and Meditation with
+  // Sara all carry cap/maxSeats with no provider and nobody registered —
+  // that is a noted room capacity on a walk-in, not a booking. Gating on cap
+  // would wrongly suppress ~40 genuine drop-in events.
+  const openSewingStudio = biblioEvent({ cap: 15, maxSeats: 2 });
+  assert.equal(registrationFromBiblioCommons(openSewingStudio), "none");
+});
+
+test("BIBLIO_EVENTS and EXTERNAL providers both require advance action", () => {
+  assert.equal(registrationFromBiblioCommons(biblioEvent({ provider: "BIBLIO_EVENTS", cap: 30, maxSeats: 2 })), "required");
+  assert.equal(
+    registrationFromBiblioCommons(biblioEvent({
+      provider: "EXTERNAL", cap: 30, maxSeats: 2,
+      instructions: "Register in person at the Edenvale Branch Library, 101 Branham Lane East, San Jose.",
+    })),
+    "required",
+  );
+});
+
+test("appointment language outranks generic register language", () => {
+  // "call to set up a one-on-one counseling appointment" is both; the
+  // appointment reading is the one the reader needs.
+  assert.equal(
+    registrationFromInstructions("Please call (408) 350-3239 on Monday-Friday between 8am-5pm to set up a free one-on-one counseling appointment."),
+    "appointment-only",
+  );
+  assert.equal(registrationFromInstructions("Please call or email the branch to schedule an appointment."), "appointment-only");
+  assert.equal(registrationFromInstructions("Email lpasternack@sccl.org to register."), "required");
+  assert.equal(registrationFromInstructions("Bring your own yarn."), null);
+  assert.equal(registrationFromInstructions(null), null);
+});
+
+test("Vintage Media Lab is appointment-only, and isFull does not suppress it", () => {
+  // THE REGRESSION. Event 6a4bffddc52cdc3600ef3342 (2026-08-12T13:00) shipped
+  // as the Aug 12 issue's afternoon field-guide pick: "1:00 PM · Mitchell Park
+  // Library · Palo Alto · Free". It is appointment-only — one two-hour booking
+  // per person per week — so a reader who walked up at 1:00 PM could not
+  // get in.
+  //
+  // It reports isFull:true AND registrationClosed:true while the library's own
+  // page advertises "August & September Appointments Still Available", so
+  // isFull must NOT be read as sold-out here: provider is EXTERNAL with cap
+  // and maxSeats both null, meaning BiblioCommons is doing no seat accounting
+  // at all. Mapping it to "full" would silently drop a program that is running
+  // and genuinely good; the right answer is to label it.
+  const vintageMediaLab = biblioEvent({
+    provider: "EXTERNAL",
+    cap: null,
+    maxSeats: null,
+    isFull: true,
+    registrationClosed: true,
+    instructions: "<strong>Space is limited!</strong> Check the Vintage Media Lab page to see if appointments are still available for the month. If appointments are available, click the Book@Mitchell Park button near the top of the page.",
+  });
+  assert.equal(registrationFromBiblioCommons(vintageMediaLab), "appointment-only");
+  assert.equal(requiresAdvanceRegistration({ registration: "appointment-only" }), true);
+  assert.equal(registrationLabel({ registration: "appointment-only" }), "Appointment required");
+});
+
+test("isFull means full only when seats are actually being counted", () => {
+  // Palo Alto's STEAM Lab Saturday: BiblioCommons is the registrar, so its
+  // per-instance isFull is real.
+  assert.equal(
+    registrationFromBiblioCommons(biblioEvent({ provider: "BIBLIO_EVENTS", cap: 24, maxSeats: 4, isFull: true })),
+    "full",
+  );
+  // Same flag, no seat accounting anywhere → not a sold-out signal.
+  assert.equal(
+    registrationFromBiblioCommons(biblioEvent({ provider: "EXTERNAL", isFull: true, instructions: "Please register: HERE" })),
+    "required",
+  );
+});
+
+test("the per-instance isFull wins over the series definition copy", () => {
+  // definition.registrationInfo is shared by every instance of a recurring
+  // series, so its isFull goes stale. Palo Alto's "Philosophy For Life" has an
+  // instance whose own isFull is true while the definition still says false.
+  const staleSeriesDefinition = biblioEvent({ provider: "BIBLIO_EVENTS", cap: 20, maxSeats: 2, isFull: true, defIsFull: false });
+  assert.equal(registrationFromBiblioCommons(staleSeriesDefinition), "full");
+});
+
+test("explicit walk-up language beats a stray keyword when no provider is set", () => {
+  // SJPL's "Indoor Family Storytime with Stay and Play": a door ticket handed
+  // out 30 minutes before is a drop-in, not a booking. A naive
+  // "limited"/"tickets" heuristic would have wrongly gated it.
+  const storytime = biblioEvent({
+    instructions: "Seating for Storytime is available on a first-come, first-served basis. A limited number of tickets will be distributed at the Information Desk 30 minutes prior to the start of Storytime.",
+  });
+  assert.equal(registrationFromBiblioCommons(storytime), "none");
+
+  // But genuine reserve-ahead language with no provider still counts.
+  const crochet = biblioEvent({ instructions: "Call, email, or go to the info desk to reserve a spot." });
+  assert.equal(registrationFromBiblioCommons(crochet), "required");
+});
+
+test("a provider is authoritative — text cannot downgrade it to walk-up", () => {
+  // Mirrors the virtual-flag rule: the source's structured field wins, text is
+  // only a fallback for when the source said nothing.
+  const contradictory = biblioEvent({
+    provider: "BIBLIO_EVENTS",
+    cap: 20,
+    maxSeats: 2,
+    instructions: "Drop-in welcome, no registration required.",
+  });
+  assert.notEqual(registrationFromBiblioCommons(contradictory), "none");
+});
+
+test("events with no registration field read as walk-up", () => {
+  // Every non-library source. Absence must preserve existing behaviour.
+  assert.equal(requiresAdvanceRegistration({ title: "Concert in the Park" }), false);
+  assert.equal(requiresAdvanceRegistration(null), false);
+  assert.equal(registrationLabel({ title: "Concert in the Park" }), "");
+});
+
+test("every gated state is excluded from walk-up slots and carries a label", () => {
+  for (const state of ["required", "appointment-only", "full"]) {
+    assert.equal(requiresAdvanceRegistration({ registration: state }), true, state);
+    assert.notEqual(registrationLabel({ registration: state }), "", state);
+  }
 });

@@ -59,7 +59,9 @@ import {
   COVERED_LOCATION,
   LOCAL_DEPARTURE_TRIP,
   OUT_OF_AREA_LOCATION,
+  REGISTRATION_NONE,
   VIRTUAL_EVENT_PATTERNS,
+  registrationFromBiblioCommons,
   virtualFromSourceSignal,
 } from "../src/lib/south-bay/eventFilters.mjs";
 import { fuzzyDedupEvents } from "../src/lib/south-bay/eventFuzzyDedup.mjs";
@@ -3697,6 +3699,13 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
           // (where "Online" isn't at the start). Trust the authoritative flag.
           const isVirtual = ev.definition?.isVirtual === true;
 
+          // Advance-registration state from BiblioCommons' own registrationInfo
+          // (provider / cap / maxSeats / instructions). Without this, an
+          // appointment-only program like Palo Alto's Vintage Media Lab reaches the
+          // planner looking exactly like a drop-in storytime — which is how the
+          // Aug 12 2026 newsletter told readers to spend an afternoon at one.
+          const registration = registrationFromBiblioCommons(ev);
+
           const displayVenue = resolveBiblioDisplayVenue(
             libraryId,
             libraryName,
@@ -3734,6 +3743,7 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
             address: branchAddr,
             city,
             ...(isVirtual ? { virtual: true } : {}),
+            ...(registration !== REGISTRATION_NONE ? { registration } : {}),
             // Pass the rendered venue so isIndoorVenue can detect "library" — short
             // branch names like "Cambrian" (no "Library" suffix) used to slip past it.
             category: inferCategory(title, stripHtml(desc), ev.type || "", displayVenue),
@@ -3851,6 +3861,13 @@ async function fetchScclEvents() {
         // hits in current data), but mirror the handling so it stays in sync.
         const isVirtual = ev.definition?.isVirtual === true;
 
+        // Advance-registration state from BiblioCommons' own registrationInfo
+        // (provider / cap / maxSeats / instructions). Without this, an
+        // appointment-only program like Palo Alto's Vintage Media Lab reaches the
+        // planner looking exactly like a drop-in storytime — which is how the
+        // Aug 12 2026 newsletter told readers to spend an afternoon at one.
+        const registration = registrationFromBiblioCommons(ev);
+
         allEvents.push({
           id: `${libraryId}-${ev.id}`,
           title,
@@ -3862,6 +3879,7 @@ async function fetchScclEvents() {
           address: "",
           city,
           ...(isVirtual ? { virtual: true } : {}),
+          ...(registration !== REGISTRATION_NONE ? { registration } : {}),
           category: inferCategory(title, stripHtml(desc), ev.type || "", branchVenue),
           cost: "free",
           description: truncate(stripHtml(desc)),
