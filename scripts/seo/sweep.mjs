@@ -4,11 +4,12 @@
 //
 // Two legs, deliberately independent:
 //   crawl  — what a crawler would hold against us right now (needs nothing)
-//   gsc    — what Google already decided, plus what it is showing us for
-//            (needs a Search Console service account)
+//   gsc    — optional API preload of what Google decided (needs a Search
+//            Console service account). The native Codex task still performs a
+//            browser pass because UI-only actions cannot be replaced by this.
 //
-// The GSC leg degrades to a recorded reason rather than failing the run, so a
-// missing or revoked key costs us the Search Console findings and nothing else.
+// A missing API key is not a blocker: the native Codex automation uses the
+// signed-in Search Console UI. The helper remains useful for bulk query data.
 //
 // Usage:
 //   node scripts/seo/sweep.mjs              # human summary
@@ -318,7 +319,7 @@ if (process.argv.includes("--json")) {
   console.log(`${config.site} — weekly SEO sweep`);
   console.log(`  crawl: ${crawl.crawled}/${crawl.sitemapUrlCount} sitemap URLs`);
   if (gsc.available) {
-    console.log(`  search console: ${gsc.property} (${gsc.permissionLevel})`);
+    console.log(`  search console API helper: ${gsc.property} (${gsc.permissionLevel})`);
     if (gsc.window) {
       console.log(
         `  last ${WINDOW_DAYS}d: ${gsc.window.clicks} clicks / ${gsc.window.impressions} impressions` +
@@ -326,7 +327,8 @@ if (process.argv.includes("--json")) {
       );
     }
   } else {
-    console.log(`  search console: UNAVAILABLE — ${gsc.reason}`);
+    console.log(`  search console API helper: unavailable — ${gsc.reason}`);
+    console.log("  search console browser pass: REQUIRED (API credentials are optional)");
   }
   console.log(`  findings: ${counts.error} error, ${counts.warn} warn, ${counts.info} info\n`);
 
