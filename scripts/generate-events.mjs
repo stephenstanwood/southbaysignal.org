@@ -20,7 +20,9 @@
  *   - The Tech Interactive (RSS) — 404 as of 2026-03 (no /feed/ endpoint)
  *   - San Jose Public Library (BiblioCommons API)
  *   - Santa Clara County Library (BiblioCommons API)
- *   - Mountain View Public Library (BiblioCommons API) — site ID: "librarypoint"
+ *   - Mountain View Public Library (LibCal, via playwright-scrapers.mjs) — NOT
+ *     BiblioCommons; the "librarypoint" site ID is a Virginia library. See
+ *     fetchMvplEvents() below.
  *   - Sunnyvale Public Library (BiblioCommons API) — Events feature disabled (403)
  *   - Palo Alto City Library (BiblioCommons API)
  *   - Computer History Museum Events (RSS + title-based date extraction)
