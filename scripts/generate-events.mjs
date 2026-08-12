@@ -871,6 +871,13 @@ function cleanTitle(title) {
     // brand styling ("LETS") and substrings ("Outlets", "Tablets") stay intact.
     // Recurring manual copy-edit in the title data — handle it upstream.
     .replace(/\bLets\b/g, "Let's")
+    // Strip a bare trailing price. Meetup organizers append the ticket price to
+    // the event name ("UX Wizards Talk: with Josh Gold, Staff Product Designer
+    // @LinkedIn $12"), which reads as part of the title on a card. Price belongs
+    // in `cost`. Anchored to the very end and to a bare amount, so titles where
+    // the figure is the subject ("How to Save Your First $10,000", "The $5
+    // Dinner Challenge") keep it.
+    .replace(/\s+\$\d+(?:\.\d{2})?$/, "")
     .trim();
   // Downcase ALL-CAPS words that aren't known acronyms. Titles that are
   // mostly mixed-case (lowerRatio ≥ 0.5) get the aggressive 2+ letter rule:
@@ -2028,8 +2035,24 @@ function inferCategory(title, desc, type, venue = "") {
   // San Jose Civic books a lot of Spanish-language bills whose blurbs are also
   // in Spanish ("la banda", "rock latino"), so the Spanish cognates carry the
   // same weight — "banda" is both the word for band and a regional genre.
-  const hasBandWord = /\b(?:band|banda)\b/.test(t) || (/\bbands\b/.test(t) && /\b(play|playing|perform|stage|tour|album|concert)\b/.test(t));
-  if (/\bconcerts?\b|\bmusic(?:al|ians?)?\b|\bm[úu]sic[ao]s?\b|\bconciertos?\b|\bjazz\b|\bsymphon(?:y|ies)\b|\borchestras?\b|\bchoirs?\b/.test(t) || hasBandWord) return "music";
+  // Library programs routinely name-check music in passing — "snacks, music,
+  // and cozy vibes" at a teen self-care social, a STEAM club whose session list
+  // includes sound, a book sale that also moves music CDs, a line-dancing class
+  // set to "a variety of international music", an author talk about a record
+  // label. Against a bare keyword match that stray word beat the actual program
+  // and filed all five under music. Mirror the sports detector's treatment of
+  // library venues below and anchor on the TITLE: a library that books a
+  // concert says so up front ("Indian Carnatic Music Concert", "Indoor Music
+  // and Movement", "Band Jam: Guitar & Ukulele").
+  // Libraries do program real music, and their titles say so without ever using
+  // the word "music" — an open mic, a guitar/ukulele jam, a drum circle. Keep
+  // these in the title-anchored signal so narrowing the haystack doesn't strand
+  // them (Saratoga's Open Mic — "share your musical talents, bring your guitar,
+  // ukulele, voice" — is exactly the case).
+  const hasInstrumentTitle = /\b(open\s+mic|guitar|ukulele|drum\s+circle|sing[-\s]?along|karaoke)\b/.test(titleLower);
+  const musicHaystack = /\b(library|libraries)\b/.test(venueLower) && !hasInstrumentTitle ? titleLower : t;
+  const hasBandWord = /\b(?:band|banda)\b/.test(musicHaystack) || (/\bbands\b/.test(musicHaystack) && /\b(play|playing|perform|stage|tour|album|concert)\b/.test(musicHaystack));
+  if (/\bconcerts?\b|\bmusic(?:al|ians?)?\b|\bm[úu]sic[ao]s?\b|\bconciertos?\b|\bjazz\b|\bsymphon(?:y|ies)\b|\borchestras?\b|\bchoirs?\b/.test(musicHaystack) || hasBandWord) return "music";
   if (t.includes("comedy") || t.includes("stand-up") || t.includes("standup") || t.includes("improv show") || t.includes("comedian")) return "arts";
   // Comedy-club venues (San Jose Improv, Rooster T. Feathers, etc.) host
   // stand-up almost exclusively — many tour titles are just a performer's
@@ -2704,7 +2727,20 @@ async function fetchScuEvents() {
         skippedScu++;
         return null;
       }
-      const venue = cleanVenue(item.location || item.georssFeatureName || "") || "Santa Clara University";
+      // LiveWhale's location is whatever the campus department typed, which is
+      // often a bare room ("Learning Commons, Lab 206", "The Aloysius Varsi
+      // Hall, Room 222"). On the site that reads as a venue nobody can place —
+      // a city briefing shipped "Gmail: Conquering Your Inbox at Learning
+      // Commons, Lab 206" with no hint it was on the SCU campus. Qualify a
+      // room-only string with the university; leave named venues alone
+      // ("Stevens Stadium", "Mission Church") since they already locate
+      // themselves.
+      const scuLocation = cleanVenue(item.location || item.georssFeatureName || "");
+      const namesCampus = /\b(santa clara university|scu)\b/i.test(scuLocation);
+      const isRoomOnly = /\b(?:lab|room|rm|suite|ste)\.?\s*\d+/i.test(scuLocation);
+      const venue = !scuLocation
+        ? "Santa Clara University"
+        : (isRoomOnly && !namesCampus ? `Santa Clara University — ${scuLocation}` : scuLocation);
       const isVirtual =
         virtualFromSourceSignal(onlineTypeById.get(liveWhaleEventId(item.link))) === true;
       if (isVirtual) virtualFromSourceScu++;
@@ -7997,6 +8033,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
 export {
   cleanTitle,
+  inferCategory,
   isBiblioEventCancelled,
   looksCancelled,
   resolveBiblioDisplayVenue,
