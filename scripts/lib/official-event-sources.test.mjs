@@ -57,6 +57,26 @@ test("keeps Mountain Winery occurrence art tied to its exact event page", () => 
   }), null);
 });
 
+test("does not double the connector when the supporting act carries its own", () => {
+  const card = (supporting) => normalizeMountainWineryCard({
+    title: "Switchfoot",
+    supporting,
+    date: "Wed, Jul 22, 2026",
+    link: "/events/detail?event_id=1383144",
+  }).title;
+  assert.equal(card("with Anberlin"), "Switchfoot with Anberlin");
+  assert.equal(card("w/ Anberlin"), "Switchfoot with Anberlin");
+  assert.equal(card("Anberlin"), "Switchfoot with Anberlin");
+  // "special guest" reads correctly after the connector and carries real
+  // billing info, so only the connector itself is stripped.
+  assert.equal(
+    card("with special guest Anberlin"),
+    "Switchfoot with special guest Anberlin",
+  );
+  // A supporting line that is only a connector adds nothing — no dangling "with".
+  assert.equal(card("with"), "Switchfoot");
+});
+
 test("extracts the current VBO event.asp session redirect", () => {
   assert.equal(
     extractVboSession('window.location.href = "https://plugin.vbotickets.com/v5.0/event.asp?s=dad2e075-98fa-4855-951d-f2e41fe6f1d6";'),

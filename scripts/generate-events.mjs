@@ -986,6 +986,10 @@ function cleanTitle(title) {
     // in the poster filename and elsewhere on keplers.org. 4 letters, downcased
     // by the 4+ pass without coverage.
     "DCBC",
+    // Band name on the Mountain Winery bill ("UB40 with CRSB"). Support-act
+    // acronyms have no distinguishing shape, so they need explicit coverage the
+    // way the digit-glued guard below handles UB40 structurally.
+    "CRSB",
   ]);
   {
     const letters = t.replace(/[^A-Za-z]/g, "");
@@ -997,7 +1001,15 @@ function cleanTitle(title) {
     const re = lowerRatio >= 0.5
       ? /(?<!\p{Letter})[A-Z]{2,}(?!\p{Letter})/gu
       : /(?<!\p{Letter})[A-Z]{4,}(?!\p{Letter})/gu;
-    t = t.replace(re, (w) => (KEEP_UPPER.has(w) ? w : w[0] + w.slice(1).toLowerCase()));
+    // A short uppercase run glued directly to a following digit is a brand or
+    // band name, not shouting — "UB40 with CRSB" was rendering as "Ub40".
+    // Same shape covers B52s, MC5, SR71. Only guards a digit that FOLLOWS the
+    // run: a run preceded by a digit ("49ERS") is an ordinary shouted word.
+    const keepsCase = (w, offset, src) =>
+      KEEP_UPPER.has(w) || (w.length <= 3 && /^\d/.test(src.slice(offset + w.length)));
+    t = t.replace(re, (w, offset, src) =>
+      keepsCase(w, offset, src) ? w : w[0] + w.slice(1).toLowerCase(),
+    );
     // Second pass: when the first pass tipped a previously-all-caps title into
     // mixed-case, run the 2+ regex to catch stragglers the conservative 4+
     // rule left behind. Ticketmaster ships titles like "2026 AMPERS&ONE LIVE
@@ -1010,7 +1022,7 @@ function cleanTitle(title) {
       if (lowerRatio2 >= 0.5) {
         t = t.replace(
           /(?<!\p{Letter})[A-Z]{2,}(?!\p{Letter})/gu,
-          (w) => (KEEP_UPPER.has(w) ? w : w[0] + w.slice(1).toLowerCase()),
+          (w, offset, src) => (keepsCase(w, offset, src) ? w : w[0] + w.slice(1).toLowerCase()),
         );
       }
     }

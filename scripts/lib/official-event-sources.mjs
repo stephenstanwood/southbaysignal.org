@@ -96,8 +96,18 @@ export function normalizeMountainWineryCard(raw = {}) {
     // simply omit the Tonight's Pick image and attribution.
   }
 
-  const title = supporting && !headliner.toLowerCase().includes(supporting.toLowerCase())
-    ? `${headliner} with ${supporting}`
+  // The card's supporting-act line sometimes ships its own connector already
+  // attached ("with Anberlin", "w/ Ragged Glory", "special guest Cydeways"),
+  // so joining it with a bare "with" produced "Switchfoot with with Anberlin"
+  // on five live listings. Strip a leading connector before the join and let
+  // the template supply the single one. "special guest(s)" is deliberately NOT
+  // stripped — it reads correctly after "with" and carries real billing info.
+  // Deliberately excludes "and"/"&": those open real band names ("And So I
+  // Watch You From Afar") far more often than they act as a stray connector,
+  // and "with" is the only form the feed has actually shipped.
+  const billing = supporting.replace(/^(?:with|w\/|feat\.?|featuring)(?:\s+|$)/i, "").trim();
+  const title = billing && !headliner.toLowerCase().includes(billing.toLowerCase())
+    ? `${headliner} with ${billing}`
     : headliner;
   return {
     title,
