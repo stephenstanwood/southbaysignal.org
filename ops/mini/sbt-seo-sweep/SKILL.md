@@ -37,13 +37,20 @@ This is a browser-first Codex task. A crawl is useful evidence, but it is not a
 substitute for Search Console.
 
 1. Use the Browser or Chrome control plugin, following its skill. Start with
-   the runtime-selected browser for the Search Console URL; if it is not signed
-   in, try another available browser surface before declaring an auth block.
+   the runtime-selected browser for the Search Console URL. The Mini can expose
+   more than one connected extension instance, with different Google sessions.
+   If the first selection is signed out or shows the wrong account, enumerate
+   `agent.browsers.list()` and try every distinct untried `extension` and `iab`
+   instance before declaring an auth block. Do not inspect cookies, storage,
+   passwords, or browser profiles.
 2. Open the verified URL-prefix property `https://southbaytoday.org/` under
-   `stanwoodventures@gmail.com` (`authuser=0` in Google URLs). Do not use the
-   similarly named unverified property under `stephen@stoa.works`. Do not use
-   the `/welcome` page as a property test; use the property picker or an exact
-   property URL.
+   `stanwoodventures@gmail.com`. Google `authuser` ordinals are
+   browser-profile-relative: this account has appeared as `authuser=0`, but the
+   number is not identity proof and must not be treated as stable. Use the exact
+   property URL without an ordinal, the account picker, or an ordinal only as a
+   routing hint. Require visible Search Console UI to confirm both the account
+   email and exact property. Do not use the similarly named unverified property
+   under `stephen@stoa.works`, and do not use `/welcome` as a property test.
 3. Inspect, at minimum:
    - Search results performance for the latest complete 28 days compared with
      the prior 28 days, including top queries and pages;
@@ -61,9 +68,10 @@ substitute for Search Console.
 5. Never remove a property or user, change ownership, or use the Indexing API
    for ordinary pages.
 
-If no available Mini browser is authenticated, release the repo lock, stop,
-and report `GSC_BROWSER_LOGIN_REQUIRED` with the exact account and property. Do
-not call the run complete, and do not downgrade it to a crawl-only success.
+Only after every connected Mini browser instance has failed the visible
+account-and-property check, release the repo lock, stop, and report
+`GSC_BROWSER_LOGIN_REQUIRED` with the exact account and property. Do not call
+the run complete, and do not downgrade it to a crawl-only success.
 
 ## Measure first
 
