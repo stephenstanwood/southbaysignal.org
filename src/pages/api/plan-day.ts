@@ -24,7 +24,7 @@ import { CLAUDE_OPUS, extractText, stripFences } from "../../lib/models";
 import { CITY_MAP, getCityName } from "../../lib/south-bay/cities";
 import { normalizeName } from "../../lib/south-bay/normalizeName";
 import { logDecision } from "../../lib/south-bay/decisionLog.mjs";
-import { hasOutOfAreaDestination, isVirtualEvent } from "../../lib/south-bay/eventFilters.mjs";
+import { hasOutOfAreaDestination, isVirtualEvent, requiresAdvanceRegistration } from "../../lib/south-bay/eventFilters.mjs";
 import { canonicalCategory } from "../../lib/south-bay/categories.mjs";
 import { holidayOn, matchesHolidayTheme } from "../../lib/south-bay/holidays";
 import { cleanDisplayCopy, cleanDisplayName } from "../../lib/south-bay/displayText.mjs";
@@ -823,6 +823,18 @@ function buildCandidatePool(
     if (!isEventPublishable(evt)) continue;
     if (evt.virtual === true) continue;
     if (isVirtualEvent(evt)) continue;
+
+    // A pillar is somewhere a reader can walk into at the stated time. An
+    // appointment-only or registration-required program is not that, however
+    // good it is: the Aug 12 2026 issue sent readers to Palo Alto's Vintage
+    // Media Lab at 1:00 PM for an afternoon of digitizing family cassettes,
+    // and the lab takes one pre-booked two-hour appointment per person per
+    // week. Hard-excluded rather than demoted, exactly like `virtual` above —
+    // a score penalty is something a genuinely good event outruns.
+    //
+    // The event itself stays in the corpus and on the Events tab, where it is
+    // labelled (registrationLabel) instead of silently dropped.
+    if (requiresAdvanceRegistration(evt)) continue;
     if (evt.title && PLAN_TITLE_BLOCKLIST.some((re) => re.test(evt.title))) continue;
     if (isBlocked(evt.title) || isBlocked(evt.venue)) continue;
 

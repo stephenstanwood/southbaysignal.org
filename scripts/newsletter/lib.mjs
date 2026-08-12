@@ -14,7 +14,7 @@ import { fetchForecast, DEFAULT_WEATHER_LAT, DEFAULT_WEATHER_LON } from "../../s
 import { chainBrandKey, isNationalChain } from "../../src/lib/south-bay/chains.mjs";
 import { isPlaceTemporarilyUnavailable } from "../../src/lib/south-bay/placeAvailability.mjs";
 import { isEventPublishable } from "../../src/lib/south-bay/eventOccurrence.mjs";
-import { isVirtualEvent } from "../../src/lib/south-bay/eventFilters.mjs";
+import { isVirtualEvent, registrationLabel, requiresAdvanceRegistration } from "../../src/lib/south-bay/eventFilters.mjs";
 import { normalizeAbsoluteHttpUrl } from "../../src/lib/south-bay/httpUrl.mjs";
 import { dayKeyForIsoDate, mealServiceIssue } from "../../src/lib/south-bay/mealService.mjs";
 import { selectDatedDefaultPlan } from "../../src/lib/south-bay/defaultPlanSelection.mjs";
@@ -258,8 +258,21 @@ export async function assembleNewsletterData(date, opts = {}) {
       .filter((event) => isVirtualEvent(event))
       .map((event) => `event:${event.id}`),
   );
+  // Likewise for the advance-registration gate: plan cards carry no
+  // registration field, so the id set is rebuilt from the live feed. This is
+  // the layer that would have stopped the Aug 12 2026 issue even if the plan
+  // itself came from cache or predated the ingest fix.
+  const registrationGatedEventIds = new Set(
+    allEvents
+      .filter((event) => requiresAdvanceRegistration(event))
+      .map((event) => `event:${event.id}`),
+  );
   const selectedPlan = selectDefaultPlan(defaultPlans.plans, date);
-  const dayPlan = makeNewsletterPlan(selectedPlan, date, { validEventIds, virtualEventIds });
+  const dayPlan = makeNewsletterPlan(selectedPlan, date, {
+    validEventIds,
+    virtualEventIds,
+    registrationGatedEventIds,
+  });
 
   const todayEvents = allEvents
     .filter((e) => e.date === date && !e.ongoing)
@@ -340,7 +353,7 @@ export async function assembleNewsletterData(date, opts = {}) {
   }
 }
 
-export function makeNewsletterPlan(plan, date, { validEventIds = null, virtualEventIds = null } = {}) {
+export function makeNewsletterPlan(plan, date, { validEventIds = null, virtualEventIds = null, registrationGatedEventIds = null } = {}) {
   if (!plan?.cards?.length) return null;
   const isPairPlan = plan.selectionModel === "pillar-pairs-v1" || plan.cards.some((card) => card.role);
   // Defense-in-depth against bad picks: generic chain branches are excluded,
@@ -381,6 +394,14 @@ export function makeNewsletterPlan(plan, date, { validEventIds = null, virtualEv
     }
     if (isEventCard && isVirtualEvent({ title: c.name, description: c.description || c.blurb })) {
       rejectedCards.push({ card: c, reason: "virtual (no physical destination)" });
+      return false;
+    }
+    // Same shape of error, different gate: a field-guide card tells the reader
+    // to show up at a stated time. An appointment-only or registration-required
+    // program cannot honour that, so it is rejected whole rather than demoted.
+    // This is the check the Aug 12 2026 Vintage Media Lab card needed.
+    if (isEventCard && registrationGatedEventIds && registrationGatedEventIds.has(c.id)) {
+      rejectedCards.push({ card: c, reason: "requires advance registration" });
       return false;
     }
     return true;
@@ -753,6 +774,11 @@ function isTonightPickCandidate(e) {
   // an online-only event is never that, whether the feed flagged it or only
   // its copy gives it away.
   if (isVirtualEvent(e)) return false;
+  // Same reasoning: Tonight's Pick is a walk-up answer. An event that needs a
+  // booking made days earlier cannot be one, so it is excluded here rather
+  // than penalized. It remains eligible for the listing sections below, where
+  // it prints a "Reserve ahead" / "Appointment required" tag.
+  if (requiresAdvanceRegistration(e)) return false;
   if (audienceBreadthPenalty(e) >= UNPROMPTED_AUDIENCE_PENALTY_CUTOFF) return false;
   const minutes = parseTimeMinutes(e.time);
   if (!Number.isFinite(minutes) || minutes < 16 * 60 || minutes >= 24 * 60) return false;
@@ -833,7 +859,7 @@ function normalizeComparable(s) {
   return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
 
-export { isMarqueeEvent };
+export { isMarqueeEvent, isTonightPickCandidate };
 
 function scoreEvent(e, tonight) {
   let score = 0;
@@ -853,6 +879,12 @@ function scoreEvent(e, tonight) {
   // labelled "Virtual" by eventMeta(). The slots that imply a destination
   // (field-guide pillars, Tonight's Pick) exclude virtual outright upstream.
   if (isVirtualEvent(e)) score -= 20;
+  // Same treatment for an event that has run out of seats: still listed, still
+  // labelled "Registration full" (a waitlist may open), but it should not lead
+  // a list whose promise is "worth checking before you make plans". Events that
+  // merely need booking are NOT demoted — they are attendable if the reader
+  // acts, and the label tells them to.
+  if (e?.registration === "full") score -= 15;
   score -= titleQualityPenalty(e.title);
   score -= routineEventPenalty(e);
   score -= audienceBreadthPenalty(e);
@@ -1905,9 +1937,14 @@ function eventMeta(e) {
   // "San Jose State University · San Jose" for an online-only meeting is the
   // exact claim that made the 2026-08-05 issue wrong.
   const virtual = isVirtualEvent(e);
+  // "Free" without "Appointment required" is how the Aug 12 2026 issue made
+  // Palo Alto's Vintage Media Lab read as a walk-up afternoon. The gate is the
+  // single most decision-relevant fact about a listing, so it prints in the
+  // same slot as Virtual, ahead of the venue.
   return [
     e.time,
     virtual ? "Virtual" : null,
+    registrationLabel(e) || null,
     e.venue,
     virtual ? null : eventLocality(e),
     e.cost === "free" ? "Free" : null,

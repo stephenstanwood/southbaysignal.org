@@ -92,6 +92,54 @@ field at all, and the only defense was a `-20` score penalty a good event
 outruns. `scripts/audit-events.mjs` now exits non-zero on any hard
 `virtual-not-flagged` finding and runs in the nightly refresh before commit.
 
+### Registration-gated events are never pillars
+
+A pillar tells the reader to be somewhere at a stated time. A program that
+needs a booking made days earlier cannot honour that, so it is hard-excluded
+from every pillar lane and from Tonight's Pick — never merely demoted.
+
+`registration` is set at ingest from the **source's own registration fields**,
+not from title/description text:
+
+| Feed | Endpoint | Fields |
+| --- | --- | --- |
+| Libraries (BiblioCommons) | events API | `definition.registrationInfo.provider` / `.cap` / `.maxSeats` / `.instructions`, plus per-instance `isFull` |
+
+Values are `none`, `required`, `appointment-only`, and `full`;
+`requiresAdvanceRegistration()` in `src/lib/south-bay/eventFilters.mjs` is the
+gate, and `registrationLabel()` supplies the reader-facing tag. An event with
+no `registration` field reads as walk-up, so every non-library source keeps its
+existing behaviour.
+
+Gated events stay on listing surfaces (the Events tab, "Also on the calendar"),
+where they are labelled "Reserve ahead" / "Appointment required" /
+"Registration full" rather than silently dropped. A good program the reader
+must book is worth knowing about; the newsletter just must not imply they can
+walk in.
+
+Two properties of the source data are load-bearing, and both produced the bug
+when ignored:
+
+- **`isFull` is not a sold-out signal on its own.** When `provider` is
+  `EXTERNAL` with `cap` and `maxSeats` both null, BiblioCommons does no seat
+  accounting, so `isFull` carries no information — Vintage Media Lab reports
+  `isFull: true` on instances the library's own page advertises as available.
+  `full` therefore requires real seat accounting; without it the event stays
+  labelled rather than suppressed.
+- **A non-null `cap` does not imply registration.** Palo Alto's Open Sewing
+  Studio, Photography Meetup and Meditation with Sara all carry a capacity with
+  no registrar and nobody registered — a noted room size on a drop-in. Gating
+  on `cap` would wrongly suppress genuine walk-up events.
+
+On 2026-08-12 the newsletter ran Palo Alto's "Vintage Media Lab" as its
+afternoon pick — "spend the afternoon digitizing family cassettes and photos",
+1:00 PM, Mitchell Park Library, Free. The lab takes one pre-booked two-hour
+appointment per person per week. The ingest was reading `definition.title`,
+`.start` and `.end` and dropping `registrationInfo` entirely, so every
+registration-gated library event reached the planner indistinguishable from a
+drop-in storytime. `makeNewsletterPlan` now re-checks the live feed and rejects
+a gated pillar outright, the same defense-in-depth the virtual flag has.
+
 ## Scopes
 
 - `scope: "regional"` is the homepage, newsletter, graphics, scheduled hero,
@@ -121,6 +169,8 @@ partner too, or rejects/regenerates the whole plan at generation boundaries.
   and structural validation.
 - `src/lib/south-bay/editorialQuality.mjs`: shared marquee, title-quality, and
   routine-event and audience-breadth signals.
+- `src/lib/south-bay/eventFilters.mjs`: virtual and registration normalization,
+  shared by the ingest and the runtime safety net.
 - `scripts/social/generate-schedule.mjs`: nightly adults/kids today/tomorrow
   hero generation; never rotates an anchor city.
 - `scripts/newsletter/lib.mjs`: atomic validation and pillar-first rendering.

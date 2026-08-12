@@ -7,6 +7,7 @@ import {
   finalizeNewsletterImages,
   formatLongDate,
   isEventFeedFreshForNewsletter,
+  isTonightPickCandidate,
   makeNewsletterPlan,
   sanitizeGeographicBriefing,
   sanitizeTonightPickBlurb,
@@ -1024,4 +1025,67 @@ test("a meal with no known price band omits the segment rather than guessing", (
   assert.equal(planCardPriceBand({ bucket: "dinner", role: "paired-meal", cost: "low", kidsCostNote: "Under $20" }), "Under $20");
   assert.equal(planCardPriceBand({ bucket: "evening", role: "pillar", cost: "free" }), "Free");
   assert.equal(planCardPriceBand({ bucket: "evening", role: "pillar", cost: "paid" }), null);
+});
+
+// ---------------------------------------------------------------------------
+// Advance registration must never reach a walk-up recommendation slot
+// ---------------------------------------------------------------------------
+// Guards the Aug 12 2026 regression: Palo Alto's appointment-only "Vintage
+// Media Lab" ran as the afternoon field-guide pick, presented as a walk-up
+// ("spend the afternoon digitizing family cassettes", 1:00 PM, Free).
+
+test("a registration-gated event cannot be Tonight's Pick", () => {
+  const base = {
+    id: "paloalto-6a4bffddc52cdc3600ef3342",
+    title: "Vintage Media Lab",
+    url: "https://paloalto.bibliocommons.com/events/6a4bffddc52cdc3600ef3342",
+    venue: "Mitchell Park Library",
+    city: "palo-alto",
+    time: "6:00 PM",
+    cost: "free",
+  };
+  // Identical event, gate removed → eligible. The gate is what excludes it,
+  // not some incidental property of the fixture.
+  assert.equal(isTonightPickCandidate(base), true);
+  for (const registration of ["required", "appointment-only", "full"]) {
+    assert.equal(isTonightPickCandidate({ ...base, registration }), false, registration);
+  }
+  assert.equal(isTonightPickCandidate({ ...base, registration: "none" }), true);
+});
+
+test("a registration-gated pillar rejects the whole pillar-pairs plan", () => {
+  const cards = [
+    { id: "event:paloalto-vml", name: "Vintage Media Lab", source: "event", role: "pillar", bucket: "afternoon", timeBlock: "afternoon", pairedWithId: "place:lunch" },
+    { id: "place:lunch", name: "Bevri", role: "paired-meal", bucket: "lunch", timeBlock: "afternoon", pairedWithId: "event:paloalto-vml" },
+  ];
+  const validEventIds = new Set(["event:paloalto-vml"]);
+
+  // Ungated, the same plan survives card filtering (it may still fail later
+  // pair validation, but it is not rejected as a bad card).
+  const gated = makeNewsletterPlan(
+    { selectionModel: "pillar-pairs-v1", cards },
+    "2026-08-12",
+    { validEventIds, registrationGatedEventIds: new Set(["event:paloalto-vml"]) },
+  );
+  assert.equal(gated, null, "a gated pillar must reject the plan outright, never drop one card of a pair");
+});
+
+test("the registration gate leaves ordinary drop-in plans alone", () => {
+  const cards = [
+    { id: "event:sjpl-storytime", name: "Family Storytime", source: "event", role: "pillar", bucket: "morning", timeBlock: "morning", pairedWithId: "place:breakfast" },
+    { id: "place:breakfast", name: "Zombie Runner", role: "paired-meal", bucket: "breakfast", timeBlock: "morning", pairedWithId: "event:sjpl-storytime" },
+  ];
+  const withEmptyGate = makeNewsletterPlan(
+    { selectionModel: "pillar-pairs-v1", cards },
+    "2026-08-12",
+    { validEventIds: new Set(["event:sjpl-storytime"]), registrationGatedEventIds: new Set() },
+  );
+  const withoutGateArg = makeNewsletterPlan(
+    { selectionModel: "pillar-pairs-v1", cards },
+    "2026-08-12",
+    { validEventIds: new Set(["event:sjpl-storytime"]) },
+  );
+  // An absent gate set must behave exactly like an empty one — the parameter
+  // is optional and callers that predate it must not change behaviour.
+  assert.deepEqual(withEmptyGate, withoutGateArg);
 });

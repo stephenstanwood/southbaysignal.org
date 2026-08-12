@@ -37,6 +37,9 @@ export interface SchemaEventRecord {
   cost?: string | null;
   costNote?: string | null; // e.g. "From $30" — a floor, not a fixed price
   virtual?: boolean | null; // set at ingest from the source's own location type
+  // Advance-registration gate, set at ingest from the source's own
+  // registration fields. Absent means walk-up. See eventFilters.mjs.
+  registration?: "none" | "required" | "appointment-only" | "full" | null;
 }
 
 /** UTC offset suffix ("-07:00") for America/Los_Angeles on a given date. */
