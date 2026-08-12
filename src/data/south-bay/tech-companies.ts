@@ -1140,7 +1140,9 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     tagline:
       "Utilities fly drones over transmission lines and substations and come back with tens of thousands of photos that human inspectors then have to sort through. Buzz's PowerAI platform reads that imagery instead, flagging the cracked insulator or leaning pole before it becomes an outage or an ignition source, and tracking asset health across transmission, distribution, and solar. S3 Ventures led the oversubscribed $20M Series A, with GoPoint Ventures joining and existing backers HearstLab and Blackhorn Ventures following on. Kaitlyn Albertoli and Vikhyat Chaudhry founded the company in 2017; it now counts Dominion Energy, American Electric Power, and the New York Power Authority among its utility customers, and says it tripled its customer count and grew revenue 400% over the past year. The money goes to product work, a bigger go-to-market team, and deeper deployments with existing utilities.",
     color: "#2563eb",
-    url: "https://www.buzzsolutions.co",
+    // buzzsolutions.co now redirects to buzzsolutions.com — caught by
+    // audit-tech-urls 2026-08-12 as MOVED. Same company, canonical domain.
+    url: "https://www.buzzsolutions.com",
   },
   {
     id: "antora-energy",
@@ -2155,15 +2157,28 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     color: "#7c3aed",
     url: "https://neocognition.ai",
   },
+  // Note: this entry was the April 21 2026 "$76M Series B ext." card, updated in
+  // place on 2026-08-12 rather than duplicated. The August 10 announcement is a
+  // further extension of the SAME Series B — the release is headlined "Point2
+  // Completes $136M Series B Funding" and gives a cumulative total, not a
+  // separate raise, so a second card would restate money the April card already
+  // counted (the Upscale AI mistake noted further down). One card, current
+  // total. HQ verified in coverage: the Business Wire release datelines "SAN
+  // JOSE, Calif., August 10, 2026" and the About boilerplate says San Jose.
+  // A WOWTALE write-up (Aug 12) claims "$80M extension, $140M cumulative";
+  // that conflicts with the company's own release on both numbers — primary
+  // source wins, so $136M total stands. The release does not break out how much
+  // of the $136M is new money in this tranche, so don't invent a delta figure.
   {
     id: "point2-technology",
     name: "Point2 Technology",
     city: "San Jose",
     category: "chip",
-    round: "Series B ext.",
-    amount: "$76M",
-    date: "2026-04-21",
-    tagline: "RF-based interconnect chips for AI data centers — proprietary e-Tube platform transmits over plastic waveguides instead of copper, delivering 10x the reach at 3x lower power and near-zero latency. Backed by NVIDIA's NVentures and Maverick Silicon; targets the scale-up interconnect bottleneck as AI racks keep growing.",
+    round: "Series B",
+    amount: "$136M",
+    date: "2026-08-10",
+    tagline:
+      "Inside an AI rack, the copper cables tying accelerators together are running out of room — push the data rate up and the reach collapses, so racks get denser and hotter to keep the wires short. Point2's e-Tube platform sends that traffic as radio through a plastic waveguide instead of as electrical signal down copper, which its chips drive at roughly ten times the reach at a third of the power with near-zero added latency. It closed out a $136M Series B on August 10, adding a further extension led by Korea's LB Investment with Arm coming in as a new strategic investor and Maverick Silicon following on, alongside an existing roster that includes NVIDIA's NVentures, UMC Capital, Molex, and Bosch Ventures. The money goes to engineering, systems, operations, and go-to-market as the company commercializes three form factors — Active RF Cables plus near-packaged and co-packaged e-Tube — for the next generation of rack-scale compute.",
     color: "#0284c7",
     url: "https://point2tech.com",
   },
