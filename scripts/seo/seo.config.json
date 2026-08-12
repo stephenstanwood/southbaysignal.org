@@ -1,0 +1,14 @@
+{
+  "site": "https://southbaytoday.org",
+  "sitemap": "https://southbaytoday.org/sitemap-index.xml",
+  "searchConsoleProperty": "https://southbaytoday.org/",
+  "searchConsoleAccount": "stanwoodventures@gmail.com",
+  "discoverySurfaces": ["/llms.txt", "/rss.xml"],
+  "expectedJsonLd": ["Event", "Organization", "BreadcrumbList"],
+  "crawlLimit": 250,
+  "reportDir": "data/seo",
+  "notes": [
+    "The sitemap carries ~2,000 URLs, most of them dated /events/<date> leaves. Crawling all of them weekly is wasteful and would rate-limit our own origin, so the sweep samples crawlLimit URLs; orphan detection self-disables on a partial crawl.",
+    "Past-dated event URLs are filtered out of the sitemap by astro.config.mjs on purpose — their absence is not a coverage gap."
+  ]
+}

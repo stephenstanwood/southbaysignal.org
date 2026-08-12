@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Weekly SEO sweep for southbaytoday.org: Tuesday 01:15 local. The 60-min cap
+     in run.sh means it finishes by ~02:15 — clear of the 02:45 photoref-refresh
+     and the rest of the nightly SBT chain, and well before Stephen's 4am start. -->
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>org.southbaytoday.seo-sweep</string>
+	<key>Disabled</key>
+	<false/>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/zsh</string>
+		<string>/Users/stephenstanwood/.claude/scheduled-tasks/sbt-seo-sweep/run.sh</string>
+	</array>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>HOME</key>
+		<string>/Users/stephenstanwood</string>
+		<key>PATH</key>
+		<string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+	</dict>
+	<key>WorkingDirectory</key>
+	<string>/Users/stephenstanwood/Projects/southbaytoday.org</string>
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Weekday</key>
+		<integer>2</integer>
+		<key>Hour</key>
+		<integer>1</integer>
+		<key>Minute</key>
+		<integer>15</integer>
+	</dict>
+	<key>RunAtLoad</key>
+	<false/>
+	<key>StandardOutPath</key>
+	<string>/Users/stephenstanwood/Projects/southbaytoday.org/data/logs/sbt-seo-sweep.stdout.log</string>
+	<key>StandardErrorPath</key>
+	<string>/Users/stephenstanwood/Projects/southbaytoday.org/data/logs/sbt-seo-sweep.stderr.log</string>
+</dict>
+</plist>

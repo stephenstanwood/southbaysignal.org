@@ -48,7 +48,9 @@
     "verify:libcal": "node scripts/verify-libcal-locations.mjs",
     "social:publish": "node scripts/social/publish.mjs",
     "social:generate": "node scripts/social/generate-posts.mjs",
-    "social:sv-history": "node scripts/social/generate-sv-history.mjs"
+    "social:sv-history": "node scripts/social/generate-sv-history.mjs",
+    "seo:sweep": "node scripts/seo/sweep.mjs",
+    "seo:audit": "node scripts/seo/audit.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.74.0",
