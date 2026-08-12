@@ -2639,19 +2639,83 @@ async function main() {
     };
   });
 
-  // Summary
-  const bySrc = {};
-  for (const e of events) bySrc[e.source] = (bySrc[e.source] || 0) + 1;
+  let previous = null;
+  try { previous = JSON.parse(readFileSync(OUT_PATH, "utf8")); } catch { /* first run */ }
+
   const sourceHealth = tasks.map((task, index) => ({
     id: task.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
     label: task.name,
     status: results[index].error ? "error" : (results[index].events.length > 0 ? "ok" : "empty"),
     count: results[index].events.length,
     error: results[index].error,
+    // Record which `source` strings this task produced. Task names and event
+    // source labels don't always match ("SJ Museum of Art" emits "San Jose
+    // Museum of Art"), so the next run needs this mapping to know what to
+    // carry forward when the task errors and returns nothing.
+    sources: [...new Set(results[index].events.map((e) => e.source).filter(Boolean))],
   }));
 
-  let previous = null;
-  try { previous = JSON.parse(readFileSync(OUT_PATH, "utf8")); } catch { /* first run */ }
+  // A scraper that THREW must not delete its source. On 2026-08-11 the City of
+  // Cupertino scraper died with "Execution context was destroyed" and the run
+  // wrote out a file with all 77 of its events gone — taking real listings
+  // (India Independence Day Flag Raising at Community Hall among them) off the
+  // site and stranding a city briefing that referenced them. The aggregate
+  // regression guard below never fired: one source out of 23 is far under its
+  // thresholds. So carry the previous run's events forward per-source instead.
+  //
+  // Only `error` carries forward. `empty` is a legitimate result — plenty of
+  // these calendars really do go quiet — and pinning those would freeze stale
+  // listings in place forever.
+  const prevHealth = new Map((previous?._meta?.sourceHealth ?? []).map((h) => [h.id, h]));
+  const prevBySource = new Map();
+  for (const e of previous?.events ?? []) {
+    if (!prevBySource.has(e.source)) prevBySource.set(e.source, []);
+    prevBySource.get(e.source).push(e);
+  }
+  const today = new Date().toISOString().slice(0, 10);
+  const carriedForward = [];
+  for (const health of sourceHealth) {
+    if (health.status !== "error") continue;
+    const knownSources = prevHealth.get(health.id)?.sources ?? [];
+    const retained = knownSources
+      .flatMap((s) => prevBySource.get(s) ?? [])
+      .filter((e) => e.date >= today);
+    if (!retained.length) continue;
+    carriedForward.push(...retained);
+    health.count = retained.length;
+    health.sources = knownSources;
+    health.carriedForward = true;
+    health.carryForwardReason = "scraper errored; retained previous run's events";
+    console.warn(`  ⚠ ${health.label} errored — carrying forward ${retained.length} events from the previous run`);
+  }
+  if (carriedForward.length) {
+    const seen = new Set(events.map((e) => e.id));
+    for (const e of carriedForward) {
+      if (!seen.has(e.id)) { events.push(e); seen.add(e.id); }
+    }
+  }
+
+  // Collapse repeat ids. Several calendars list the same event on more than one
+  // index page, which produced 27 byte-identical duplicate rows in the shipped
+  // file and duplicate React keys downstream. The id already encodes
+  // source+date+title+venue+time, so a repeat id is a genuine duplicate.
+  const deduped = [];
+  const seenIds = new Set();
+  for (const e of events) {
+    if (seenIds.has(e.id)) continue;
+    seenIds.add(e.id);
+    deduped.push(e);
+  }
+  if (deduped.length !== events.length) {
+    console.log(`   Dropped ${events.length - deduped.length} duplicate event ids`);
+  }
+  events.length = 0;
+  events.push(...deduped);
+
+  // Summary
+  const bySrc = {};
+  for (const e of events) bySrc[e.source] = (bySrc[e.source] || 0) + 1;
+
   if (process.env.SBT_STRICT_EVENT_REFRESH === "1" && previous) {
     const previousEvents = Number(previous?._meta?.eventCount || previous?.events?.length || 0);
     const previousSources = Number(previous?._meta?.sources?.length || 0);
