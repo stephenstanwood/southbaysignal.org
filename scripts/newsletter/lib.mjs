@@ -25,6 +25,7 @@ import {
   titleQualityPenalty,
   UNPROMPTED_AUDIENCE_PENALTY_CUTOFF,
 } from "../../src/lib/south-bay/editorialQuality.mjs";
+import { collectCanonicalNames, repairCanonicalNames } from "../../src/lib/south-bay/canonicalNames.mjs";
 import { isVerifiedOpeningRecord } from "../lib/scc-food-openings.mjs";
 import { formatMeetingTime, meetingClockMinutes } from "../lib/civic-meetings.mjs";
 
@@ -622,11 +623,70 @@ export async function verifyNewsletterImages(data) {
   return { checked: tasks.length, dead };
 }
 
-// Verify reachability of all candidate images, then recompute visuals so the
-// hero / OG image also skip anything now known dead. Call this once on the
-// fully-assembled (post-editorial) data, right before renderEmail.
+// Every string the issue's own source data spells a proper name with. The
+// editorial pass sees these verbatim in its packet, so a name it hands back
+// spelled differently is a corruption, not a house-style call.
+function issueCanonicalNames(data) {
+  const texts = [];
+  const pushItem = (item) => {
+    if (!item) return;
+    for (const value of [item.rawTitle, item.title, item.name, item.venue, item.blurb, item.description]) {
+      const text = String(value || "").trim();
+      if (text) texts.push(text);
+    }
+  };
+  for (const card of orderedCards(data?.dayPlan)) pushItem(card);
+  pushItem(data?.tonightPick);
+  for (const list of [data?.featuredEvents, data?.todayEvents, data?.recentOpenings]) {
+    for (const item of list || []) pushItem(item);
+  }
+  return collectCanonicalNames(texts);
+}
+
+/**
+ * Deterministic guard on generated prose: the editorial pass may rewrite
+ * anything it likes except the spelling of a proper name the issue's own
+ * source data already spells correctly.
+ *
+ * The Aug 13 2026 issue shipped "Mistah F. A. B." in the preheader, the intro,
+ * and the field guide while the deterministic event card — rendered from the
+ * same source string — said "Mistah F.A.B." Prompt guidance alone cannot be
+ * trusted with this; the check has to run after the model, on its output.
+ *
+ * Mutates and returns `data`. Idempotent, so both call sites are cheap.
+ */
+export function repairNewsletterProperNames(data) {
+  if (!data) return data;
+  const names = issueCanonicalNames(data);
+  if (!names.length) return data;
+
+  for (const key of ["dayPlanBlurb", "tonightPickBlurb"]) {
+    if (typeof data[key] === "string") data[key] = repairCanonicalNames(data[key], names);
+  }
+  if (data.editorial && typeof data.editorial === "object") {
+    for (const [key, value] of Object.entries(data.editorial)) {
+      if (typeof value === "string") data.editorial[key] = repairCanonicalNames(value, names);
+    }
+  }
+  // Editor-supplied title overrides are generated prose too. Only the override
+  // copies carry rawTitle, so this never writes back onto a shared source event.
+  for (const event of [data.tonightPick, ...(data.featuredEvents || [])]) {
+    if (event?.rawTitle && typeof event.title === "string") {
+      event.title = repairCanonicalNames(event.title, names);
+    }
+  }
+  return data;
+}
+
+// The single pre-render pass over fully-assembled (post-editorial) data: repair
+// any proper name the editor respelled, verify reachability of all candidate
+// images, then recompute visuals so the hero / OG image also skip anything now
+// known dead. Call this once, right before renderEmail. The name repair also
+// runs where the editorial output lands; repeating it here is the catch-all for
+// any prose path that reaches render without going through applyEditorialJson.
 export async function finalizeNewsletterImages(data) {
   if (!data) return data;
+  repairNewsletterProperNames(data);
   await verifyNewsletterImages(data);
   data.visuals = newsletterVisuals({
     date: data.date,
@@ -1166,6 +1226,7 @@ Voice:
 
 Fact rules:
 - Use only facts in the packet. Do not infer addresses, prices, ages, quality, or popularity.
+- Spell proper names exactly as the packet spells them, punctuation and all. Initials keep their packet form: "Mistah F.A.B.", never "Mistah F. A. B." or "Mistah FAB".
 - Do not claim "every event." This is a selected briefing.
 - Selected indexes must come from the arrays provided.
 - If a section has weak material, select fewer items.
@@ -1454,6 +1515,8 @@ function applyEditorialJson(data, candidates, edit) {
       conversationNote: newsletterCopyString(edit.conversationNote, 320),
     },
   };
+
+  repairNewsletterProperNames(revised);
 
   revised.visuals = newsletterVisuals({
     date: revised.date,
