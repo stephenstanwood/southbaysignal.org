@@ -5,6 +5,7 @@ import {
   planCardPriceBand,
   renderEmail,
   finalizeNewsletterImages,
+  repairNewsletterProperNames,
   formatLongDate,
   isEventFeedFreshForNewsletter,
   isTonightPickCandidate,
@@ -1088,4 +1089,97 @@ test("the registration gate leaves ordinary drop-in plans alone", () => {
   // An absent gate set must behave exactly like an empty one — the parameter
   // is optional and callers that predate it must not change behaviour.
   assert.deepEqual(withEmptyGate, withoutGateArg);
+});
+
+// ── Proper names in generated prose (the Aug 13 2026 "Mistah F. A. B." bug) ──
+
+function mistahIssue(prose) {
+  return {
+    date: "2026-08-13",
+    longDate: "Thursday, August 13, 2026",
+    weather: null,
+    dayPlan: {
+      city: "san-jose",
+      cards: [
+        {
+          id: "event:back-2-the-bay", name: "Back 2 The Bay: SOB X RBE Live", bucket: "evening",
+          role: "pillar", pairedWithId: "place:dinner", venue: "The Habbas Law Epicenter at PayPal Park",
+          city: "san-jose",
+          blurb: "Hip-hop group SOB X RBE returns to the stage with a new song, joined by P-Lo, 310Babii, and Mistah F.A.B. as part of the Epicenter Music Series.",
+        },
+        {
+          id: "place:dinner", name: "Back A Yard", bucket: "dinner", role: "paired-meal",
+          pairedWithId: "event:back-2-the-bay", city: "san-jose",
+        },
+      ],
+    },
+    dayPlanBlurb: prose.dayPlanBlurb || "",
+    tonightPick: {
+      id: "event:back-2-the-bay", title: "Back 2 The Bay: SOB X RBE Live",
+      venue: "The Habbas Law Epicenter at PayPal Park", city: "san-jose", time: "6:00 PM",
+      description: "Hip hop and hyphy music festival featuring SOBxRBE, P-Lo, 310Babii, and Mistah F.A.B. VIP tickets available with exclusive perks.",
+    },
+    tonightPickBlurb: prose.tonightPickBlurb || "",
+    todayEvents: [], featuredEvents: [], recentOpenings: [],
+    civicMeetings: [], todayHistory: [], redditPosts: [], visuals: {},
+    editorial: { briefing: prose.briefing || "", dayPlanHeadline: prose.dayPlanHeadline || "" },
+  };
+}
+
+test("editorial prose cannot respell a name the issue's own source data spells correctly", () => {
+  // Every rendered surface that shipped the Aug 13 2026 corruption at once: the
+  // intro lede (which also feeds the preheader), the field guide, and the
+  // tonight-pick blurb, against a deterministic card that was always right.
+  const data = repairNewsletterProperNames(mistahIssue({
+    briefing: "Two stadiums switch on at 6 tonight, with Mistah F. A. B. at PayPal Park.",
+    dayPlanHeadline: "Free classes by day, hyphy by night with Mistah F. A. B.",
+    dayPlanBlurb: "The evening belongs to Mistah FAB and a stacked undercard.",
+    tonightPickBlurb: "Mistah F.A.B. joins SOB X RBE for the Epicenter Music Series.",
+  }));
+
+  assert.equal(data.editorial.briefing, "Two stadiums switch on at 6 tonight, with Mistah F.A.B. at PayPal Park.");
+  assert.equal(data.editorial.dayPlanHeadline, "Free classes by day, hyphy by night with Mistah F.A.B.");
+  assert.equal(data.dayPlanBlurb, "The evening belongs to Mistah F.A.B. and a stacked undercard.");
+  // Already correct → untouched.
+  assert.equal(data.tonightPickBlurb, "Mistah F.A.B. joins SOB X RBE for the Epicenter Music Series.");
+});
+
+test("the name guard leaves an ordinary sentence boundary alone", () => {
+  const prose = "Doors at 6 P.M. A new mural goes up next door. Mistah F.A.B. headlines.";
+  const data = repairNewsletterProperNames(mistahIssue({ briefing: prose, tonightPickBlurb: prose }));
+  assert.equal(data.editorial.briefing, prose);
+  assert.equal(data.tonightPickBlurb, prose);
+});
+
+test("the name guard repairs an editor-supplied title override, not the source event", () => {
+  const data = mistahIssue({});
+  const sourceEvent = {
+    id: "event:pete-soundhouse", title: "PETE'S SOUNDHOUSE \\- San Jose",
+    venue: "Pete BE Center", city: "san-jose",
+    blurb: "Hear live hip-hop performances from P-Lo, Kamaiyah, Mistah F.A.B., and more.",
+  };
+  // An override copy carries rawTitle; the untouched source event does not.
+  data.featuredEvents = [
+    { ...sourceEvent, title: "Pete's Soundhouse with Mistah F. A. B.", rawTitle: sourceEvent.title },
+    { ...sourceEvent, id: "event:untouched" },
+  ];
+  repairNewsletterProperNames(data);
+
+  assert.equal(data.featuredEvents[0].title, "Pete's Soundhouse with Mistah F.A.B.");
+  assert.equal(data.featuredEvents[1].title, "PETE'S SOUNDHOUSE \\- San Jose", "a source title with no override is never rewritten");
+});
+
+test("the name guard is idempotent and no-ops on an issue with no initialism names", () => {
+  const prose = "Two stadiums switch on at 6 tonight.";
+  const once = repairNewsletterProperNames(mistahIssue({ briefing: prose }));
+  const twice = repairNewsletterProperNames(once);
+  assert.equal(twice.editorial.briefing, prose);
+
+  const plain = {
+    date: "2026-08-13", dayPlan: null, dayPlanBlurb: "Ride the Guadalupe River Trail, then eat at Back A Yard.",
+    tonightPick: null, tonightPickBlurb: "", featuredEvents: [], todayEvents: [], recentOpenings: [],
+    editorial: { briefing: "A clear, hot Thursday across the valley." },
+  };
+  assert.deepEqual(repairNewsletterProperNames(plain), plain);
+  assert.equal(repairNewsletterProperNames(null), null);
 });
