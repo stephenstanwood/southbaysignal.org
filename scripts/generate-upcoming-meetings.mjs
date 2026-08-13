@@ -149,8 +149,18 @@ function cleanLocation(raw) {
   // Also strip a trailing ", City, ST zip" tail with no street number.
   s = s.replace(/,\s*[A-Za-z][A-Za-z\s]+,\s*[A-Z]{2}\s+\d{5}.*$/, "").trim();
 
+  // Strip meeting join links and anything trailing them. These feed
+  // civicMeetingSchema's `venue`, and the 80-char truncation below was cutting
+  // San José's Zoom link mid-URL ("... and Virtually - https://sanjoseca.zoom.us/j...").
+  s = s.replace(/https?:\/\/\S*[\s\S]*$/i, "").trim();
+  // Drop the now-orphaned connector that introduced the link.
+  s = s.replace(
+    /[\s,;:—–-]*\b(?:and\s+)?(?:virtually|via\s+zoom|via\s+teleconference|online|teleconference|remotely)\b[\s,;:—–-]*$/i,
+    "",
+  ).trim();
+
   // Trim trailing punctuation
-  s = s.replace(/[,;:]+\s*$/, "").trim();
+  s = s.replace(/[,;:—–-]+\s*$/, "").trim();
 
   if (!s) return null;
   if (s.length > 80) s = s.slice(0, 77) + "...";

@@ -40,16 +40,23 @@ const CLAUDE_SONNET = "claude-sonnet-5";
 
 const CITIES = [
   { stoaCity: "Campbell",      cityId: "campbell",      cityName: "Campbell",      agendaUrl: "https://www.campbellca.gov/AgendaCenter/City-Council-10",              permitUrl: null },
-  { stoaCity: "Saratoga",      cityId: "saratoga",      cityName: "Saratoga",      agendaUrl: "https://saratoga-ca.municodemeetings.com/",                            permitUrl: null },
-  { stoaCity: "Los Altos",     cityId: "los-altos",     cityName: "Los Altos",     agendaUrl: "https://losaltos-ca.municodemeetings.com/",                            permitUrl: null },
+  // Saratoga + Los Altos: the *-ca.municodemeetings.com hosts now serve a cert
+  // for *.teammunicode.com, so they fail TLS verification in a browser. Point at
+  // the cities' own agenda portals (same URLs generate-digests.mjs uses).
+  { stoaCity: "Saratoga",      cityId: "saratoga",      cityName: "Saratoga",      agendaUrl: "https://www.saratoga.ca.us/AgendaCenter/City-Council-13",              permitUrl: null },
+  { stoaCity: "Los Altos",     cityId: "los-altos",     cityName: "Los Altos",     agendaUrl: "https://losaltosca.portal.civicclerk.com/",                            permitUrl: null },
   { stoaCity: "Los Gatos",     cityId: "los-gatos",     cityName: "Los Gatos",     agendaUrl: "https://losgatos-ca.municodemeetings.com/",                            permitUrl: null },
   { stoaCity: "San Jose",      cityId: "san-jose",      cityName: "San José",      agendaUrl: "https://sanjose.legistar.com/Calendar.aspx",      legistar: "sanjose",      permitUrl: "https://sjpermits.org/" },
   { stoaCity: "Mountain View", cityId: "mountain-view", cityName: "Mountain View", agendaUrl: "https://mountainview.legistar.com/Calendar.aspx", legistar: "mountainview",  permitUrl: null },
   { stoaCity: "Sunnyvale",     cityId: "sunnyvale",     cityName: "Sunnyvale",     agendaUrl: "https://sunnyvale.legistar.com/Calendar.aspx",    legistar: "sunnyvale",     permitUrl: null },
   { stoaCity: "Cupertino",     cityId: "cupertino",     cityName: "Cupertino",     agendaUrl: "https://cupertino.legistar.com/Calendar.aspx",    legistar: "cupertino",     permitUrl: null },
   { stoaCity: "Santa Clara",   cityId: "santa-clara",   cityName: "Santa Clara",   agendaUrl: "https://santaclara.legistar.com/Calendar.aspx",   legistar: "santaclara",    permitUrl: null },
-  { stoaCity: "Milpitas",      cityId: "milpitas",      cityName: "Milpitas",      agendaUrl: "https://www.ci.milpitas.ca.gov/government/council/",                   permitUrl: null },
-  { stoaCity: "Palo Alto",     cityId: "palo-alto",     cityName: "Palo Alto",     agendaUrl: "https://www.cityofpaloalto.org/Government/City-Clerk/Meetings-Agendas-Minutes", legistar: "paloalto", permitUrl: "https://www.cityofpaloalto.org/Gov/Depts/PW/Permits/Permits.asp" },
+  // Milpitas: ci.milpitas.ca.gov no longer presents a valid cert — milpitas.gov
+  // is the live domain. Palo Alto: the cityofpaloalto.org paths 301 to
+  // paloalto.gov and 404 there; PermitView is the portal generate-permits.mjs
+  // actually reads.
+  { stoaCity: "Milpitas",      cityId: "milpitas",      cityName: "Milpitas",      agendaUrl: "https://www.milpitas.gov/129/Agendas-Minutes",                         permitUrl: null },
+  { stoaCity: "Palo Alto",     cityId: "palo-alto",     cityName: "Palo Alto",     agendaUrl: "https://www.paloalto.gov/City-Hall/City-Council/Council-Agendas-Minutes", legistar: "paloalto", permitUrl: "https://gis.cityofpaloalto.org/PermitView/" },
 ];
 
 const CITY_BY_STOA = Object.fromEntries(CITIES.map((c) => [c.stoaCity, c]));
@@ -389,6 +396,8 @@ Permits:
 ${permitText}
 
 IMPORTANT — a permit being issued means construction is *cleared to begin*, NOT that it has started. Do NOT write "breaks ground", "groundbreaking", "construction begins", "construction starts", or "launches" — those imply a milestone the data does not support. Use language like "permitted", "receives building permit", "cleared to build", "permit issued for". Do NOT label projects as "affordable", "workforce", or "luxury" unless that wording appears in the permit description.
+
+NOT NAMES: San José permit descriptions carry a trade-scope code in parentheses — "(Bemp 100%)", "(Bepm100%)", "(Bep 100%)", "(B 100%)", "(B)", and "Srp" prefixes. These are Building/Electrical/Plumbing/Mechanical scope markers, NOT developers, businesses, or project names. Never name them as a party ("developer Bemp"). Ignore them entirely. Only name a developer, owner, or tenant when it appears in the description as an actual name.
 
 COUNTS: the list above is the notable permits only, not every permit issued. If you state a count ("two ADUs", "three units"), it must match exactly what is listed — count the lines, do not estimate. When several permits share one address, prefer wording that does not hinge on a total ("prefab ADUs permitted at…").
 

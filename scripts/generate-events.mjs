@@ -894,6 +894,9 @@ function cleanTitle(title) {
     // 4-letter acronyms to preserve
     "SJSU", "SJPL", "SJPD", "SJFD", "FIFA", "UEFA", "ESPN", "STEM", "AAPI", "ACLU",
     "NASA", "IEEE", "YMCA", "YWCA", "ROTC", "FEMA", "NOAA", "WWII", "UCLA",
+    // SJSU's International Student & Scholar Services office — its Localist
+    // feed titles ("ISSS Campus Tours") were rendering as "Isss".
+    "ISSS",
     "FOPAL", "AANHPI", "PAUSD", "SJUSD", "FUHSD", "MVWSD", "CUSD", "BVAL", "SCVAL",
     // Japanese American Citizens League — appears as "SJ JACL" in JAMsj titles.
     // 4-letter so it survives the conservative pass, but the second 2+ pass
@@ -1528,7 +1531,7 @@ function polishDescription(text) {
     "ICYMI", "LGBTQ", "LGBTQIA", "BIPOC", "STEAM", "LEGO",
     "SJSU", "SJPL", "SJPD", "SJFD", "FIFA", "UEFA", "ESPN", "STEM", "AAPI", "ACLU",
     "NASA", "IEEE", "YMCA", "YWCA", "ROTC", "FEMA", "NOAA", "WWII", "UCLA",
-    "AAVE", "ADHD", "PTSD",
+    "AAVE", "ADHD", "PTSD", "ISSS",
     // South Bay / arts venues
     "SJMA", "MACLA", "SJZ", "SVLG", "SJDA", "SCCC", "MOFAD", "SVCF", "VTAA", "VTAS",
     "SJMADE", "SCCFD", "SCVMC", "PACL", "SJDT", "LGPNS",

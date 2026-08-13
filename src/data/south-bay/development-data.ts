@@ -315,6 +315,8 @@ export const DEV_PROJECTS: DevProject[] = [
     developer: "TBD",
     timeline: "Study session March 2026; approval pending",
     featured: false,
+    sourceNote:
+      "Still at the study-session stage — no applicant is named in the public record yet, so \"TBD\" reflects the March 2026 agenda rather than a withheld name, and no unit count has been published. Verify current status at cupertino.legistar.com or the city's planning projects page.",
   },
 
   {
