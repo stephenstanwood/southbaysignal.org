@@ -42,6 +42,11 @@ export const SHARED_LOGO_GROUPS = [
   ["palm-computing", "palmpilot-launch"],
   ["netscape", "netscape-ipo"],
   ["glean", "glean-series-f"],
+  // Same company on two surfaces: the "Smaller, But Notable" spotlight card and
+  // its Recently Funded round card. Converged once the spotlight entry started
+  // resolving off sambanova.ai instead of Wikipedia — same brand, so this is the
+  // pair agreeing, not a resolver falling through to shared site chrome.
+  ["sambanova", "sambanova-series-f"],
 ];
 
 // Parse the generated manifest TS without importing it (no TS runtime here).

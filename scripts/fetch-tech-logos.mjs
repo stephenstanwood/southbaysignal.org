@@ -128,7 +128,14 @@ async function loadCompanies() {
         matchField(item, "careersUrl") ||
         matchField(item, "url") ||
         matchField(item, "website");
-      out.push({ id, name: name || id, url: url || "", group: groupName });
+      const stage = matchField(item, "stage");
+      out.push({
+        id,
+        name: name || id,
+        url: url || "",
+        group: groupName,
+        stage: stage || "",
+      });
     }
   }
   // De-dupe by id (TECH_COMPANIES + TECH_MILESTONES often share IDs).
@@ -678,7 +685,29 @@ async function main() {
   // German stove maker). The company's own favicon is authoritative here, so
   // skip straight to it. Big public companies and historical milestones still
   // use Wikipedia, where it genuinely has the best mark.
-  const skipWiki = (c) => c.group === "RECENTLY_FUNDED" || SKIP_WIKI_IDS.has(c.id);
+  //
+  // SCC_SPOTLIGHT carries the same exposure for everything that isn't public
+  // yet: it mixes 22 listed companies (Intuit, Broadcom, Synopsys — real
+  // articles, best-in-class marks) with 29 private ones whose names are plain
+  // nouns. That mix is why the group can't be skipped wholesale, and why not
+  // skipping it at all shipped two wrong brands: "Nile" (nilesecure.com)
+  // resolved to a Wikimedia Commons UI icon off the river article, and "Kai"
+  // (kai.ai) resolved to the logo of KAI Bandara, the Indonesian state
+  // railway's airport line. Gate on `stage` instead — private means favicon.
+  //
+  // `stage` is a funding label, not a fame label, so a few private companies are
+  // household enough to have a real article with a clean mark AND a website that
+  // serves something useless. Both of these were verified by hand: ampere's own
+  // site yields a product photo of a chip on a circuit board, and cohesity's
+  // yields a banner whose wordmark is white-on-white. Wikipedia beats the site
+  // for exactly these; opt them back in by id rather than widening the rule.
+  const FORCE_WIKI_IDS = new Set(["ampere-computing", "cohesity"]);
+
+  const skipWiki = (c) =>
+    !FORCE_WIKI_IDS.has(c.id) &&
+    (c.group === "RECENTLY_FUNDED" ||
+      (c.group === "SCC_SPOTLIGHT" && c.stage !== "public") ||
+      SKIP_WIKI_IDS.has(c.id));
 
   async function resolveOne(c) {
     const domain = urlToDomain(c.url);

@@ -39,7 +39,7 @@ export const TECH_LOGO_MANIFEST: Record<string, string> = {
   "chipagents": "/logos/chipagents.png",
   "chipagents-series-a2": "/logos/chipagents-series-a2.png",
   "cisco": "/logos/cisco.png",
-  "cohesity": "/logos/cohesity.ico",
+  "cohesity": "/logos/cohesity.png",
   "coram-ai": "/logos/coram-ai.png",
   "countable-labs": "/logos/countable-labs.png",
   "crafting": "/logos/crafting.png",

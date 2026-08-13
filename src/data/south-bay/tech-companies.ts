@@ -1090,6 +1090,16 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // Array Labs. Do not add from a roundup's "Palo Alto" tag alone.
   // (whatnot.com/terms and /careers return 403 to automated fetches — that's a
   // deliberate block, so it was left alone rather than worked around.)
+  // Note: CodeRabbit ($143M Series C at a $1.5B valuation, announced Aug 12
+  // 2026; AI code review) is NOT here despite the techstartups.com Aug 12
+  // roundup filing it under "Mountain View." Nothing else agrees, and the
+  // disagreement doesn't even resolve to one city: the company's own Business
+  // Wire release and every write-up off it (Reuters/SRN, Verdict, TechFunding
+  // News) call it San Francisco-headquartered, while the corporate directories
+  // — ZoomInfo, Crunchbase — put HQ in Walnut Creek. San Francisco and Contra
+  // Costa County are both out of coverage, so the entry fails either way and
+  // the only source placing it inside Santa Clara County is the aggregator tag.
+  // Same class as Katalyze AI and Array Labs. Do not add from the roundup alone.
   {
     id: "lumilens",
     name: "Lumilens",
