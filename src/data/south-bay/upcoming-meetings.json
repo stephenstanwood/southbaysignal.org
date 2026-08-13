@@ -1,97 +1,42 @@
 {
-  "generatedAt": "2026-08-12T03:09:24.599Z",
+  "generatedAt": "2026-08-13T03:09:09.876Z",
   "meetings": {
     "san-jose": {
-      "date": "2026-08-11",
-      "displayDate": "Tue, Aug 11",
+      "date": "2026-08-18",
+      "displayDate": "Tue, Aug 18",
       "startTime": "13:30",
       "bodyName": "City Council",
-      "location": "Council Chambers",
+      "location": "Hybrid Meeting - Council Chambers and Virtually - https://sanjoseca.zoom.us/j...",
       "closedSession": false,
-      "url": "https://sanjose.legistar.com/MeetingDetail.aspx?LEGID=8109&GID=317&G=920296E4-80BE-4CA2-A78F-32C5EFCF78AF",
-      "legistarEventId": 8109,
+      "url": "https://sanjose.legistar.com/MeetingDetail.aspx?LEGID=8100&GID=317&G=920296E4-80BE-4CA2-A78F-32C5EFCF78AF",
+      "legistarEventId": 8100,
       "agendaItems": [
         {
-          "title": "Proposition 1 - Veterans and Affordable Housing Bond Act of 2026.",
-          "sequence": 66
+          "title": "Housing Department Loan Portfolio Audit Report.",
+          "sequence": 50
         },
         {
-          "title": "Fiscal Year 2026-2027 Property Tax Levy for General Obligation Bonds.",
-          "sequence": 68
+          "title": "Response to Santa Clara County Civil Grand Jury Report Entitled “San José Animal Care Center: The need to strengthen transparency, performance, and trust.”",
+          "sequence": 55
         },
         {
-          "title": "Public Hearing for the Fiscal Year 2026-2027 Annual Residential Solid Waste Collection Service Charges to be Placed on the 2026-2027 Santa Clara County Secured Property Tax Roll.",
-          "sequence": 69
+          "title": "C26-008 & ER26-088 - Conforming Rezoning for Certain Real Property Located at 650 Harry Road.",
+          "sequence": 61
         },
         {
-          "title": "Public Hearing for the Fiscal Year 2026-2027 Sanitary Sewer Service and Use Charge and Storm Sewer Service Charge Assessments to be Placed on the 2026-2027 Santa Clara County Secured Property Tax Roll.",
-          "sequence": 70
+          "title": "H25-021 & ER25-133 - Administrative Hearing on the Appeal of the Environmental Determination and Site Development Permit for Certain Real Property Located at 1295 Curtner Avenue.",
+          "sequence": 64
         },
         {
-          "title": "Response to Santa Clara County Civil Grand Jury Report Entitled “A Canopy in Decline: Is San José serious about expanding its tree coverage?”",
-          "sequence": 75
+          "title": "General Plan Four-Year Review Policy Framework.",
+          "sequence": 65
         }
       ],
       "confirmation": {
         "status": "confirmed",
         "provider": "legistar",
-        "observedDate": "2026-08-11",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-11T00:00:00%27&$orderby=EventDate%20asc&$top=10"
-      }
-    },
-    "sunnyvale": {
-      "date": "2026-08-11",
-      "displayDate": "Tue, Aug 11",
-      "startTime": "17:30",
-      "bodyName": "City Council",
-      "location": "Online and Council Chambers, City Hall",
-      "closedSession": false,
-      "url": "https://sunnyvaleca.legistar.com/MeetingDetail.aspx?LEGID=4521&GID=270&G=FA76FAAA-7A74-41EA-9143-F2DB1947F9A5",
-      "legistarEventId": 4521,
-      "agendaItems": [
-        {
-          "title": "Public Participation and Access",
-          "sequence": 1
-        },
-        {
-          "title": "5:30 P.M. SPECIAL COUNCIL MEETING (Study Session)",
-          "sequence": 2
-        },
-        {
-          "title": "Consider Increasing Inclusionary Housing Requirements and Updating Below Market Rate In-Lieu Fees for New Rental and Ownership Housing (Council Priority Project CDD 23-01)",
-          "sequence": 6
-        },
-        {
-          "title": "Adjourn Special Meeting",
-          "sequence": 7
-        },
-        {
-          "title": "Award a Consultant Services Agreement to Biggs Cardosa Associates, Inc. in the Amount of $435,591 for Professional Services for the Preventive Maintenance of Various Bridges Project and Approve Budget Modification No. 5 in the Amount of $446,100 (F26-285)",
-          "sequence": 15
-        }
-      ],
-      "confirmation": {
-        "status": "confirmed",
-        "provider": "legistar",
-        "observedDate": "2026-08-11",
-        "sourceUrl": "https://webapi.legistar.com/v1/sunnyvaleca/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-11T00:00:00%27&$orderby=EventDate%20asc&$top=10"
-      }
-    },
-    "cupertino": {
-      "date": "2026-08-11",
-      "displayDate": "Tue, Aug 11",
-      "startTime": "17:00",
-      "bodyName": "City Council",
-      "location": "Conference Room C",
-      "closedSession": true,
-      "url": "https://cupertino.legistar.com/MeetingDetail.aspx?LEGID=5368&GID=341&G=74359C04-A5F0-4CB2-A97A-0032996BB90E",
-      "legistarEventId": 5368,
-      "agendaItems": [],
-      "confirmation": {
-        "status": "confirmed",
-        "provider": "legistar",
-        "observedDate": "2026-08-11",
-        "sourceUrl": "https://webapi.legistar.com/v1/cupertino/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-11T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "observedDate": "2026-08-18",
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-12T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
@@ -111,20 +56,20 @@
       }
     },
     "milpitas": {
-      "date": "2026-08-11",
-      "displayDate": "Tue, Aug 11",
-      "startTime": "16:00",
-      "bodyName": "City Council Special Meeting",
+      "date": "2026-08-18",
+      "displayDate": "Tue, Aug 18",
+      "startTime": "19:00",
+      "bodyName": "City Council Meeting",
       "location": "Milpitas City Hall",
       "closedSession": false,
       "url": "https://www.milpitas.gov/129/Agendas-Minutes",
-      "civicClerkEventId": 2941,
+      "civicClerkEventId": 2942,
       "agendaItems": [],
       "confirmation": {
         "status": "confirmed",
         "provider": "civicclerk",
-        "observedDate": "2026-08-11",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-11T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "observedDate": "2026-08-18",
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-12T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     },
     "los-altos": {
@@ -141,7 +86,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-08-25",
-        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-11T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-12T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },
@@ -156,11 +101,11 @@
     },
     "sunnyvale": {
       "provider": "Legistar",
-      "status": "ok"
+      "status": "no-meeting"
     },
     "cupertino": {
       "provider": "Legistar",
-      "status": "ok"
+      "status": "no-meeting"
     },
     "santa-clara": {
       "provider": "Legistar",
