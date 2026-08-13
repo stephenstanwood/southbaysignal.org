@@ -675,6 +675,20 @@ export function repairNewsletterProperNames(data) {
       event.title = repairCanonicalNames(event.title, names);
     }
   }
+
+  // Card blurbs are generated prose as well: event-blurb-cache.json is written
+  // by an LLM off each event's description, and it is where the third live
+  // spelling ("Mistah FAB") sat. They render verbatim on the card, so they get
+  // the same treatment. Descriptions are left alone — they are the source the
+  // canonical spelling is read from, not something to rewrite.
+  for (const item of [
+    ...orderedCards(data?.dayPlan),
+    data.tonightPick,
+    ...(data.featuredEvents || []),
+    ...(data.recentOpenings || []),
+  ]) {
+    if (typeof item?.blurb === "string") item.blurb = repairCanonicalNames(item.blurb, names);
+  }
   return data;
 }
 
