@@ -2,6 +2,108 @@
 
 ---
 
+## 2026-08-13 — Cycle 206: A Railway Logo on the Tech Tab, and the Rule That Put It There
+
+### Context
+Thursday August 13, 2026. Automated builder cycle. Closed the oldest item on
+Cycle 205's "Next 3" list — the Wikipedia skip for `SCC_SPOTLIGHT`, open since
+Cycle 203 — and ran the week's funding watch. The roadmap is fully shipped, so
+this was a free-choice cycle.
+
+### What Was Built
+
+**Two wrong brands were live on `/tech`; both are fixed.** The "Smaller, But
+Notable" section renders the first 12 non-public `SCC_SPOTLIGHT` entries, and
+card #10 — **Kai**, the Palo Alto security startup — was showing the logo of
+**KAI Bandara**, the Indonesian state railway's airport line. **Nile**
+(nilesecure.com) had resolved to a **Wikimedia Commons UI icon** lifted off the
+river article. **Odyssey** was carrying a red wordmark belonging to some other
+Odyssey rather than the mark on odyssey.ml.
+
+**The cause was a rule that stopped one array short.** Cycle 203 exempted
+`RECENTLY_FUNDED` from the Wikipedia strategy because young private companies
+with plain-noun names land on the noun's article. `SCC_SPOTLIGHT` has exactly
+the same exposure and never got the exemption — that is what the Cycle 202,
+204, and 205 "extend the Wikipedia skip" note kept pointing at.
+
+**Gated the skip on `stage` rather than on the array.** `SCC_SPOTLIGHT` can't
+be skipped wholesale: 22 of its 51 entries are listed companies (Intuit,
+Broadcom, Synopsys) where Wikipedia genuinely has the best mark. The other 29
+are private and now resolve off their own sites. `loadCompanies()` carries
+`stage` through so the resolver can see it.
+
+**Refreshed all 29 and looked at every changed file.** Kai, Nile, and Odyssey
+were wrong or generic and are now correct; the rest came back same-brand at
+higher resolution (1X, Ayar, Rhoda, Lambda, Matx, Barracuda, Automation
+Anywhere and others went from 128px favicons to 512px marks).
+
+**Two regressions caught by that visual pass, and fixed by opt-in rather than
+by widening the rule.** `stage` is a funding label, not a fame label:
+**Ampere** and **Cohesity** are private but well-known, and their own sites
+serve a chip product photo and a white-on-white banner respectively. Wikipedia
+beats the site for exactly those two, so they opt back in by id through a new
+`FORCE_WIKI_IDS` set. Cohesity upgraded `.ico` → `.png` in the process; the
+orphaned `.ico` was dropped.
+
+**The Cycle 205 gate earned itself again.** `sambanova` and
+`sambanova-series-f` converged to byte-identical images once the spotlight card
+started resolving off sambanova.ai, and the prebuild check stopped the build.
+That pair is the same brand on two surfaces, not chrome fallthrough, so it
+joined `SHARED_LOGO_GROUPS` — the gate caught a real convergence and asked the
+right question about it.
+
+**Funding watch (Aug 11–13): nothing new in coverage, one exclusion recorded.**
+The Aug 11 and Aug 12 roundups surfaced no Santa Clara County company. The one
+candidate, **CodeRabbit** ($143M Series C at $1.5B, Aug 12), is tagged
+"Mountain View" by techstartups.com and nothing else agrees — and the
+disagreement doesn't resolve to a single city: its own Business Wire release
+and the coverage off it say San Francisco, while ZoomInfo and Crunchbase say
+Walnut Creek. Both are out of coverage, so the entry fails either way. Noted
+in-source. Whatnot was already excluded in Cycle 205; Lumilens and Point2 were
+already in.
+
+**Verified:** `astro check` 0 errors, full `npm run build` clean with both
+prebuild gates, all 32 logo paths on the built `/tech` page resolve to real
+files, and every one of the 27 changed images was inspected individually. No
+dev-server screenshot — dev servers can't start in an unattended run — so the
+check was against `dist/client/tech/index.html` and the files themselves.
+
+### Why This Was the Strongest Move
+A South Bay security startup's card was showing an Indonesian railway's logo on
+a live page. That is a trust bug, not a polish item, and the Cycle 205 gate
+could not catch it: a wrong logo that is unique on disk passes both the
+missing-file and byte-identical checks. Removing the strategy that produced it
+is the only fix that generalizes to the next startup with a common-word name.
+No protected Home, Events, or Food surface was touched.
+
+### Notes (flagged, not acted on — Rule #1)
+- `tech-briefing.json` is still an orphan with no consumer, and its `weekLabel`
+  now reads "Aug 4 – Aug 11" — a stale window that would be visible if anything
+  ever rendered it. Left alone. Same for `SvHistorySection`,
+  `AnnualConferencesSection`, `FundingTicker`, `TechEventsSection`, and
+  `GovTechCallout` in TechnologyView.tsx.
+- The spotlight section's `slice(0, 12)` sorts `startup` ahead of `growth`, and
+  there are 11 startups — so exactly one `growth` company (Groq) is ever
+  visible, and the other 17 never render. Nile is one of them, which is why its
+  wrong logo went unnoticed. Not changed; it's a curation call.
+- One Ticketmaster event carries the venue `PETE BE CENTER` in all caps
+  (Stunna Girl, Aug 29). Only all-caps venue in the feed besides MACLA, which
+  is a genuine acronym.
+
+### Next 3 Strongest Ideas
+1. **Manual pin pass for the four unresolved marks** (`queue`,
+   `architect-labs`, `vortex-imaging`, `mojo-vision`) — auto-resolution is
+   exhausted; needs a human-picked source per company. Carried from Cycle 205.
+2. **Record resolver provenance in the manifest** — the gate can check that no
+   private company's logo came from Wikipedia, which would have caught this
+   cycle's bug at build time instead of on a manual audit 5 months later.
+3. **Tech tab: small-company coverage below the funding line** — headcount
+   growth, office opens, and city business license filings for 3–20 person
+   South Bay teams. Carried from Cycle 205; the roundups only surface big
+   rounds, and this week they surfaced nothing at all.
+
+---
+
 ## 2026-08-11 — Cycle 205: Logo Audit Becomes a Build Gate, Whatnot Excluded
 
 ### Context
