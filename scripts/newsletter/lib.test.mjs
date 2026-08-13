@@ -1183,3 +1183,31 @@ test("the name guard is idempotent and no-ops on an issue with no initialism nam
   assert.deepEqual(repairNewsletterProperNames(plain), plain);
   assert.equal(repairNewsletterProperNames(null), null);
 });
+
+test("a cached card blurb cannot ship a respelled name either", () => {
+  // event-blurb-cache.json is LLM-written off each event's description and
+  // renders verbatim on the card — it is where the third live spelling of
+  // "Mistah F.A.B." was sitting.
+  const data = mistahIssue({});
+  data.featuredEvents = [{
+    id: "event:pete-soundhouse", title: "Pete's Soundhouse", venue: "Pete BE Center", city: "san-jose",
+    blurb: "Hear live hip-hop performances from P-Lo, Kamaiyah, Mistah FAB, and more.",
+    description: "Hear live hip-hop performances from P-Lo, Kamaiyah, Mistah F.A.B., and more.",
+  }];
+  data.recentOpenings = [{ name: "Epicenter Bar", blurb: "Opening night features Mistah F. A. B." }];
+  repairNewsletterProperNames(data);
+
+  assert.equal(
+    data.featuredEvents[0].blurb,
+    "Hear live hip-hop performances from P-Lo, Kamaiyah, Mistah F.A.B., and more.",
+  );
+  assert.equal(data.recentOpenings[0].blurb, "Opening night features Mistah F.A.B.");
+  // The description is the source the canonical spelling is read from, so it is
+  // never rewritten.
+  assert.equal(
+    data.featuredEvents[0].description,
+    "Hear live hip-hop performances from P-Lo, Kamaiyah, Mistah F.A.B., and more.",
+  );
+  // Day-plan card blurbs are on the same footing.
+  assert.match(data.dayPlan.cards[0].blurb, /Mistah F\.A\.B\./);
+});
