@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-12T03:52:05.322Z"
+    "auditedAt": "2026-08-13T02:19:55.346Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1754,
+    "total": 1832,
     "totals": {
       "hard": 0,
       "soft": 1,
@@ -48,13 +48,14 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 382,
+    "total": 409,
     "totals": {
       "hard": 3,
-      "soft": 1,
+      "soft": 2,
       "info": 3
     },
     "byReason": {
+      "virtual-not-flagged": 1,
       "unknown-slug": 1,
       "out-of-area": 1,
       "slug-mismatch": 2,
@@ -105,6 +106,20 @@
       }
     ],
     "soft": [
+      {
+        "id": "inbound_msqvq8jk_dnda9a",
+        "title": "Tennis & Pickleball Virtual Community Meeting",
+        "city": "santa-clara",
+        "date": "2026-08-27T18:00:00-07:00",
+        "location": "",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "virtual-not-flagged",
+            "detail": "matched /description mention/ in description"
+          }
+        ]
+      },
       {
         "id": "inbound_mqpugxt4_wkbmmw",
         "title": "Community Police Academy",
