@@ -193,3 +193,39 @@ export const TECH_LOGO_MANIFEST: Record<string, string> = {
   "zoom": "/logos/zoom.png",
   "zscaler": "/logos/zscaler.png",
 };
+
+// Which resolver strategy produced each committed file. scripts/check-tech-logos.mjs
+// fails the build when a company that isn't allowed to use Wikipedia has a
+// "wikipedia" row here — the check that would have caught an Indonesian
+// railway's logo on a Palo Alto security startup's card at build time.
+// Rows are added as logos are (re-)fetched; an id absent here predates
+// provenance recording and is reported, not failed.
+export const TECH_LOGO_SOURCES: Record<string, string> = {
+  "1x-technologies": "website",
+  "applied-intuition": "icon-horse",
+  "automation-anywhere": "website",
+  "axiado": "icon-horse",
+  "ayar-labs": "google-favicon",
+  "barracuda-networks": "icon-horse",
+  "d-matrix": "icon-horse",
+  "eridu": "icon-horse",
+  "figure-ai": "website",
+  "flexiv-robotics": "icon-horse",
+  "glean": "website",
+  "groq": "icon-horse",
+  "kai-security": "website",
+  "lambda-labs": "website",
+  "lightmatter": "website",
+  "lyte": "icon-horse",
+  "matx": "website",
+  "nile": "icon-horse",
+  "odyssey": "website",
+  "openai": "google-favicon",
+  "rhoda-ai": "website",
+  "sambanova": "icon-horse",
+  "stellar-cyber": "website",
+  "sunday-robotics": "website",
+  "tenstorrent": "icon-horse",
+  "trellix": "icon-horse",
+  "tylsemi": "website",
+};

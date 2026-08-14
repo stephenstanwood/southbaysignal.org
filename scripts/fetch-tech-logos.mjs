@@ -3,11 +3,13 @@
 // in /public/logos/. Writes a manifest at src/lib/south-bay/tech-logo-manifest.ts
 // that gets imported by tech-logos.ts.
 //
-// Resolution cascade per company:
-//   1. Wikipedia REST API (originalimage.source) — works for big brands
-//   2. icon.horse with high-res check (must be >= 64x64 and not 16x16 placeholder)
-//   3. og:image scraped from company URL
-//   4. apple-touch-icon scraped from company URL
+// Resolution cascade per company (the winning step is recorded as that row's
+// provenance in TECH_LOGO_SOURCES):
+//   1. PINNED_WIKI_LOGOS — a hand-picked Commons file for this id
+//   2. Wikipedia/Commons search — public companies and milestones only
+//   3. icon.horse with high-res check (must be >= 64x64 and not 16x16 placeholder)
+//   4. the company's own site (apple-touch-icon, rel=icon, <img> logo, og:image)
+//   5. DuckDuckGo, then Google favicon services
 //
 // Usage: node scripts/fetch-tech-logos.mjs            (only fetches missing)
 //        node scripts/fetch-tech-logos.mjs --refresh  (re-fetches all)
@@ -19,13 +21,20 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import { Resvg } from "@resvg/resvg-js";
-import { auditLogoManifest } from "./lib/logo-audit.mjs";
+import {
+  auditLogoManifest,
+  auditLogoProvenance,
+  loadCompanies,
+  parseRecordBlock,
+  shouldSkipWikipedia,
+  WIKIPEDIA_SOURCE,
+  PINNED_WIKI_SOURCE,
+} from "./lib/logo-audit.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const LOGO_DIR = path.join(ROOT, "public", "logos");
 const MANIFEST_PATH = path.join(ROOT, "src", "lib", "south-bay", "tech-logo-manifest.ts");
-const DATA_PATH = path.join(ROOT, "src", "data", "south-bay", "tech-companies.ts");
 
 const args = new Set(process.argv.slice(2));
 const REFRESH = args.has("--refresh");
@@ -98,98 +107,10 @@ const PINNED_WIKI_LOGOS = {
   "hp35-calculator": "HP_logo_2012.svg",
 };
 
-// SHARED_LOGO_GROUPS (ids that legitimately share one mark) and the audit
-// itself live in scripts/lib/logo-audit.mjs so the prebuild gate
-// (scripts/check-tech-logos.mjs) enforces the exact same rules on every build.
-
-// ── data parser ──────────────────────────────────────────────────────────────
-// Light TS-source parser for the entries we need.
-async function loadCompanies() {
-  const src = await readFile(DATA_PATH, "utf8");
-  const blocks = {
-    TECH_COMPANIES: extractArrayBlock(src, "TECH_COMPANIES"),
-    SCC_SPOTLIGHT: extractArrayBlock(src, "SCC_SPOTLIGHT"),
-    RECENTLY_FUNDED: extractArrayBlock(src, "RECENTLY_FUNDED"),
-    TECH_MILESTONES: extractArrayBlock(src, "TECH_MILESTONES"),
-    TECH_CONFERENCES: extractArrayBlock(src, "TECH_CONFERENCES"),
-  };
-  const out = [];
-  for (const [groupName, body] of Object.entries(blocks)) {
-    if (!body) continue;
-    const items = splitObjectLiterals(body);
-    for (const item of items) {
-      const id = matchField(item, "id");
-      if (!id) continue;
-      const name =
-        matchField(item, "name") ||
-        matchField(item, "company") ||
-        matchField(item, "title");
-      const url =
-        matchField(item, "careersUrl") ||
-        matchField(item, "url") ||
-        matchField(item, "website");
-      const stage = matchField(item, "stage");
-      out.push({
-        id,
-        name: name || id,
-        url: url || "",
-        group: groupName,
-        stage: stage || "",
-      });
-    }
-  }
-  // De-dupe by id (TECH_COMPANIES + TECH_MILESTONES often share IDs).
-  const seen = new Map();
-  for (const c of out) {
-    const prev = seen.get(c.id);
-    if (!prev) seen.set(c.id, c);
-    else if (!prev.url && c.url) seen.set(c.id, c); // prefer entry with url
-  }
-  return [...seen.values()];
-}
-
-function extractArrayBlock(src, name) {
-  const re = new RegExp(`export\\s+const\\s+${name}[^=]*=\\s*\\[`);
-  const m = re.exec(src);
-  if (!m) return "";
-  let i = m.index + m[0].length;
-  let depth = 1;
-  const start = i;
-  while (i < src.length && depth > 0) {
-    const ch = src[i];
-    if (ch === "[") depth++;
-    else if (ch === "]") depth--;
-    i++;
-  }
-  return src.slice(start, i - 1);
-}
-
-function splitObjectLiterals(body) {
-  const items = [];
-  let depth = 0;
-  let buf = "";
-  for (let i = 0; i < body.length; i++) {
-    const ch = body[i];
-    if (ch === "{") {
-      if (depth === 0) buf = "";
-      depth++;
-      buf += ch;
-    } else if (ch === "}") {
-      depth--;
-      buf += ch;
-      if (depth === 0) items.push(buf);
-    } else if (depth > 0) {
-      buf += ch;
-    }
-  }
-  return items;
-}
-
-function matchField(item, field) {
-  const re = new RegExp(`\\b${field}\\s*:\\s*"([^"]*)"`);
-  const m = re.exec(item);
-  return m ? m[1] : null;
-}
+// SHARED_LOGO_GROUPS (ids that legitimately share one mark), the
+// tech-companies.ts parser, the Wikipedia-eligibility rule and both audits all
+// live in scripts/lib/logo-audit.mjs, so this fetcher and the prebuild gate
+// (scripts/check-tech-logos.mjs) read the data and apply the rules identically.
 
 // ── image utilities ──────────────────────────────────────────────────────────
 async function sleep(ms) {
@@ -643,14 +564,16 @@ async function main() {
   const filtered = ONLY_ID ? companies.filter((c) => c.id === ONLY_ID) : companies;
   console.log(`Resolving logos for ${filtered.length} companies...`);
 
-  const manifest = {};
+  let manifest = {};
+  let sources = {};
   // Always load existing manifest. --refresh means "re-fetch entries we
   // process this run", not "wipe everything we don't touch."
   if (existsSync(MANIFEST_PATH)) {
     const raw = await readFile(MANIFEST_PATH, "utf8");
-    const m = /^\s+"([^"]+)":\s*"([^"]+)"/gm;
-    let mm;
-    while ((mm = m.exec(raw))) manifest[mm[1]] = mm[2];
+    // Per-constant parsing: the file holds two record exports, and a file-wide
+    // sweep would fold provenance labels into the path map.
+    manifest = parseRecordBlock(raw, "TECH_LOGO_MANIFEST");
+    sources = parseRecordBlock(raw, "TECH_LOGO_SOURCES");
   }
   // When NOT refreshing, the per-company loop below also short-circuits on
   // entries that already have a manifest value.
@@ -667,58 +590,29 @@ async function main() {
     return null;
   }
 
-  // Common-word startup names where Wikipedia search returns the wrong subject.
-  // Skip Wikipedia for these — go straight to website / icon.horse.
-  const SKIP_WIKI_IDS = new Set([
-    "sycamore", // matches Indiana State Sycamores sports team
-    "aria-networks", // matches Aria opera houses
-    "java", // ambiguous; covered by PINNED instead
-    "android", // covered by PINNED
-    "tesla", // covered by PINNED
-  ]);
+  // Which companies may take a logo from Wikipedia is decided by
+  // shouldSkipWikipedia() in scripts/lib/logo-audit.mjs — shared with the
+  // prebuild gate, which re-derives it against the recorded provenance below.
 
-  // Wikipedia is worse than useless for RECENTLY_FUNDED startups. These are
-  // young private companies with no article, and their names are often common
-  // words — "Glow", "Hark", "Simile", "Queue", "Terra AI", "Scout AI". The
-  // lookup lands on a dictionary or disambiguation page and returns that page's
-  // chrome or an unrelated same-named business (Glow → a kiwi bird, Hark → a
-  // German stove maker). The company's own favicon is authoritative here, so
-  // skip straight to it. Big public companies and historical milestones still
-  // use Wikipedia, where it genuinely has the best mark.
-  //
-  // SCC_SPOTLIGHT carries the same exposure for everything that isn't public
-  // yet: it mixes 22 listed companies (Intuit, Broadcom, Synopsys — real
-  // articles, best-in-class marks) with 29 private ones whose names are plain
-  // nouns. That mix is why the group can't be skipped wholesale, and why not
-  // skipping it at all shipped two wrong brands: "Nile" (nilesecure.com)
-  // resolved to a Wikimedia Commons UI icon off the river article, and "Kai"
-  // (kai.ai) resolved to the logo of KAI Bandara, the Indonesian state
-  // railway's airport line. Gate on `stage` instead — private means favicon.
-  //
-  // `stage` is a funding label, not a fame label, so a few private companies are
-  // household enough to have a real article with a clean mark AND a website that
-  // serves something useless. Both of these were verified by hand: ampere's own
-  // site yields a product photo of a chip on a circuit board, and cohesity's
-  // yields a banner whose wordmark is white-on-white. Wikipedia beats the site
-  // for exactly these; opt them back in by id rather than widening the rule.
-  const FORCE_WIKI_IDS = new Set(["ampere-computing", "cohesity"]);
-
-  const skipWiki = (c) =>
-    !FORCE_WIKI_IDS.has(c.id) &&
-    (c.group === "RECENTLY_FUNDED" ||
-      (c.group === "SCC_SPOTLIGHT" && c.stage !== "public") ||
-      SKIP_WIKI_IDS.has(c.id));
-
+  // Each strategy in the cascade, tagged with the provenance label stored
+  // alongside its manifest row. The label is written only when the strategy
+  // actually produced the bytes we write, so it always describes the committed
+  // file rather than what we'd resolve today.
   async function resolveOne(c) {
     const domain = urlToDomain(c.url);
-    return (
-      (await tryPinned(c.id)) ||
-      (skipWiki(c) ? null : await tryWikipedia(c.name)) ||
-      (await tryIconHorse(domain)) ||
-      (await tryWebsiteScrape(c.url)) ||
-      (await tryDuckDuckGo(domain)) ||
-      (await tryGoogleFavicon(domain))
-    );
+    const cascade = [
+      [PINNED_WIKI_SOURCE, () => tryPinned(c.id)],
+      [WIKIPEDIA_SOURCE, () => (shouldSkipWikipedia(c) ? null : tryWikipedia(c.name))],
+      ["icon-horse", () => tryIconHorse(domain)],
+      ["website", () => tryWebsiteScrape(c.url)],
+      ["duckduckgo", () => tryDuckDuckGo(domain)],
+      ["google-favicon", () => tryGoogleFavicon(domain)],
+    ];
+    for (const [source, run] of cascade) {
+      const got = await run();
+      if (got) return { ...got, source };
+    }
+    return null;
   }
 
   let resolved = 0;
@@ -743,8 +637,9 @@ async function main() {
     try {
       const logoUrl = await writeLogo(c.id, got.buffer, got.contentType);
       manifest[c.id] = logoUrl;
+      sources[c.id] = got.source;
       resolved++;
-      console.log(`✓ ${logoUrl}`);
+      console.log(`✓ ${logoUrl}  [${got.source}]`);
     } catch (e) {
       console.log(`✗ write failed: ${e.message}`);
       failed.push(c);
@@ -772,8 +667,9 @@ async function main() {
       try {
         const logoUrl = await writeLogo(c.id, got.buffer, got.contentType);
         manifest[c.id] = logoUrl;
+        sources[c.id] = got.source;
         resolved++;
-        console.log(`✓ ${logoUrl}`);
+        console.log(`✓ ${logoUrl}  [${got.source}]`);
       } catch (e) {
         console.log(`✗ write failed: ${e.message}`);
         stillFailed.push(c);
@@ -785,9 +681,20 @@ async function main() {
 
   // Write manifest TS file
   const sortedIds = Object.keys(manifest).sort();
+  const sourceIds = Object.keys(sources).sort();
   const ts = `// AUTO-GENERATED by scripts/fetch-tech-logos.mjs — do not edit by hand
 export const TECH_LOGO_MANIFEST: Record<string, string> = {
 ${sortedIds.map((id) => `  "${id}": "${manifest[id]}",`).join("\n")}
+};
+
+// Which resolver strategy produced each committed file. scripts/check-tech-logos.mjs
+// fails the build when a company that isn't allowed to use Wikipedia has a
+// "wikipedia" row here — the check that would have caught an Indonesian
+// railway's logo on a Palo Alto security startup's card at build time.
+// Rows are added as logos are (re-)fetched; an id absent here predates
+// provenance recording and is reported, not failed.
+export const TECH_LOGO_SOURCES: Record<string, string> = {
+${sourceIds.map((id) => `  "${id}": "${sources[id]}",`).join("\n")}
 };
 `;
   await writeFile(MANIFEST_PATH, ts, "utf8");
@@ -799,6 +706,25 @@ ${sortedIds.map((id) => `  "${id}": "${manifest[id]}",`).join("\n")}
   }
 
   await auditDuplicateLogos(manifest);
+  auditProvenance(sources, companies);
+}
+
+// Warn-only counterpart of the prebuild gate's provenance check, so a bad
+// resolve is visible in the run that caused it rather than at the next deploy.
+function auditProvenance(sources, companies) {
+  const { violations, unlabeled } = auditLogoProvenance(sources, companies);
+  if (unlabeled.length) {
+    console.log(
+      `\nProvenance: ${unlabeled.length} compan(ies) have no recorded source yet (fetched before provenance tracking).`,
+    );
+  }
+  if (!violations.length) {
+    console.log("Provenance audit: OK (no private company sourced from Wikipedia)");
+    return;
+  }
+  console.log(`\n⚠️  Provenance audit: ${violations.length} Wikipedia-sourced logo(s) that shouldn't be:`);
+  for (const v of violations) console.log(`  ${v.id} (${v.group}, stage=${v.stage})`);
+  console.log("  Re-fetch these with --refresh --id <id>; they'll resolve off the company's own site.");
 }
 
 // One wrong image served as 16 different companies' logos for months because
