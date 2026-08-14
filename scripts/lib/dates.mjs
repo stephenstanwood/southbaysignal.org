@@ -4,6 +4,20 @@
 
 const PT = "America/Los_Angeles";
 
+function pacificOffsetForCalendarDate(value) {
+  // Midnight UTC is the prior Pacific afternoon, which is on the same side of
+  // the 2 AM DST boundary as the target local midnight.
+  const probe = new Date(`${value}T00:00:00Z`);
+  const zoneName = new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    timeZone: PT,
+    timeZoneName: "longOffset",
+  }).formatToParts(probe).find(({ type }) => type === "timeZoneName")?.value;
+  const match = /^GMT([+-]\d{2}:\d{2})$/.exec(zoneName || "");
+  if (!match) throw new RangeError(`could not resolve Pacific offset for: ${value}`);
+  return match[1];
+}
+
 export function parseDate(str) {
   if (!str) return null;
   const d = new Date(str);
@@ -18,6 +32,21 @@ export function parseDate(str) {
 // the separator to T and append the correct PT offset before parsing.
 export function parseDatePT(str) {
   if (!str) return null;
+  // Date-only values are calendar dates, not UTC instants. BiblioCommons uses
+  // this shape for all-day events; `new Date("2026-08-15")` is midnight UTC,
+  // which renders as Aug 14 at 5:00 PM in Pacific time. Anchor the date at
+  // Pacific midnight so it stays on the source's day and displayTime() keeps
+  // treating it as all-day.
+  const dateOnly = /^(\d{4}-\d{2}-\d{2})$/.exec(str);
+  if (dateOnly) {
+    try {
+      isoDateParts(dateOnly[1]);
+    } catch {
+      return null;
+    }
+    const offset = pacificOffsetForCalendarDate(dateOnly[1]);
+    str = `${dateOnly[1]}T00:00:00${offset}`;
+  }
   // Accept both "T" and " " between date and time.
   const naive = /^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2}(?::\d{2})?)\s*$/.exec(str);
   if (naive) {
@@ -42,6 +71,47 @@ export function isoDate(d) {
 
 export function todayPT() {
   return new Date().toLocaleDateString("en-CA", { timeZone: PT });
+}
+
+export function isoDateParts(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+  if (!match) throw new TypeError(`invalid ISO calendar date: ${value}`);
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const probe = new Date(Date.UTC(year, month - 1, day));
+  if (
+    probe.getUTCFullYear() !== year
+    || probe.getUTCMonth() !== month - 1
+    || probe.getUTCDate() !== day
+  ) {
+    throw new RangeError(`invalid ISO calendar date: ${value}`);
+  }
+
+  return { year, month, day, weekday: probe.getUTCDay() };
+}
+
+export function addIsoDays(value, offset) {
+  const { year, month, day } = isoDateParts(value);
+  const probe = new Date(Date.UTC(year, month - 1, day + Number(offset)));
+  return probe.toISOString().slice(0, 10);
+}
+
+export function recurringWeekdayDates(startDate, weekday, horizonDays = 90) {
+  if (!Number.isInteger(weekday) || weekday < 0 || weekday > 6) {
+    throw new RangeError(`invalid weekday: ${weekday}`);
+  }
+  if (!Number.isInteger(horizonDays) || horizonDays < 0) {
+    throw new RangeError(`invalid recurrence horizon: ${horizonDays}`);
+  }
+
+  const dates = [];
+  for (let offset = 0; offset <= horizonDays; offset++) {
+    const date = addIsoDays(startDate, offset);
+    if (isoDateParts(date).weekday === weekday) dates.push(date);
+  }
+  return dates;
 }
 
 export function displayDate(d) {

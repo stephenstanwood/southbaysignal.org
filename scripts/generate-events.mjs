@@ -73,7 +73,16 @@ import { fuzzyDedupEvents } from "../src/lib/south-bay/eventFuzzyDedup.mjs";
 import { SLUG_TO_CITY_TOKENS } from "./social/lib/content-rules.mjs";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { fetchJson, fetchText, UA } from "./lib/http.mjs";
-import { parseDate, parseDatePT, isoDate, todayPT, displayDate, displayTime } from "./lib/dates.mjs";
+import {
+  parseDate,
+  parseDatePT,
+  isoDate,
+  isoDateParts,
+  recurringWeekdayDates,
+  todayPT,
+  displayDate,
+  displayTime,
+} from "./lib/dates.mjs";
 import { cleanDisplayCopy, cleanDisplayName } from "../src/lib/south-bay/displayText.mjs";
 import { isEventPublishable } from "../src/lib/south-bay/eventOccurrence.mjs";
 import {
@@ -83,6 +92,7 @@ import {
 import { parseMontalvoOccurrencePage } from "../src/lib/south-bay/montalvoOccurrence.mjs";
 import { mergeLosGatosSummerConcerts } from "./lib/los-gatos-summer-concerts-2026.mjs";
 import { normalizeInboundEventPresentation, resolveInboundCity } from "./lib/inbound-event-normalize.mjs";
+import { BOARDWALK_2026_EVENTS } from "./lib/santa-cruz-picks-2026.mjs";
 import {
   extractAddressLocality,
   extractSanJoseJazzDayUrls,
@@ -4291,26 +4301,15 @@ async function fetchShorelineEvents() {
 // Mystery Spot and Henry Cowell Redwoods are always-open destinations, not
 // event venues, so they're not represented here (would need POI treatment).
 //
-// Update cadence: refresh seasonally. Boardwalk Free Friday Night Bands runs
-// June–August; Roaring Camp has themed rides around holidays; SC Shakespeare
+// Update cadence: refresh seasonally. The Boardwalk's 2026 summer schedule
+// ended Aug 7; Roaring Camp has themed rides around holidays; SC Shakespeare
 // runs a summer rep season Jun–Aug plus Monday Night Revels in spring.
 
 function fetchSantaCruzPicks() {
   console.log("  ⏳ Santa Cruz picks (hardcoded)...");
   const raw = [
     // ── Santa Cruz Beach Boardwalk — Free Friday Night Bands 2026 ──
-    // 10 weeks starting late June. Specific bands announced ~4 weeks out;
-    // update this list once the official lineup drops.
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-06-19", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand. Bring a blanket — seating is first-come-first-served. Lineup announced monthly at beachboardwalk.com.", category: "music", cost: "free" },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-06-26", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-03", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand. Stay for the fireworks.", category: "music", cost: "free" },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-10", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-17", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-24", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-07-31", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-08-07", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-08-14", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
-    { title: "Free Friday Night Bands at the Boardwalk", date: "2026-08-21", time: "6:30 PM", venue: "Santa Cruz Beach Boardwalk", address: "400 Beach St, Santa Cruz, CA 95060", url: "https://beachboardwalk.com/Free-Friday-Night-Bands", description: "Free live music on the beach bandstand.", category: "music", cost: "free" },
+    ...BOARDWALK_2026_EVENTS,
 
     // ── Roaring Camp Railroads — themed seasonal train rides ──
     { title: "Mother's Day Brunch Train", date: "2026-05-10", time: "10:30 AM", venue: "Roaring Camp Railroads", address: "5401 Graham Hill Rd, Felton, CA 95018", url: "https://roaringcamp.com/events/mothers-day-brunch-train", description: "Steam train ride through the redwoods followed by brunch on the grounds of Roaring Camp. Advance tickets required.", costNote: "From $55" },
@@ -5006,19 +5005,13 @@ async function fetchFarmersMarketEvents() {
   }
 
   const events = [];
-  const now = new Date();
   const today = todayPT();
-  // Generate instances for the next 90 days
-  for (let offset = 0; offset <= 90; offset++) {
-    const d = new Date(now);
-    d.setDate(d.getDate() + offset);
-    const dayOfWeek = d.getDay(); // 0=Sun
-    const month = d.getMonth() + 1; // 1-indexed
-    const dateStr = isoDate(d);
-    if (dateStr < today) continue;
-
-    for (const { market: m, verification } of verifiedMarkets) {
-      if (dayOfWeek !== m.day) continue;
+  // Generate instances for the next 90 Pacific calendar days. Deriving the
+  // weekday from the host-local Date while formatting in PT made the UTC
+  // GitHub watchdog publish Saturday markets on Fridays after 5 PM Pacific.
+  for (const { market: m, verification } of verifiedMarkets) {
+    for (const dateStr of recurringWeekdayDates(today, m.day, 90)) {
+      const { month } = isoDateParts(dateStr);
       if (month < m.season[0] || month > m.season[1]) continue;
       if (m.startDate && dateStr < m.startDate) continue;
       if (m.endDate && dateStr > m.endDate) continue;
