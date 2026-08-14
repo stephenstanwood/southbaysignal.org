@@ -24,6 +24,26 @@ test("inbound city follows the venue address, not the sending organization", () 
   );
 });
 
+test("inbound city pins landmark venues against a wrong city in the address", () => {
+  // The Earthquakes' own list sent "Levi's Stadium, San Jose, CA" for the
+  // Sep 19 2026 LAFC match. The stadium is in Santa Clara; the club is branded
+  // for San Jose. Without the pin the bad string won and split one game across
+  // two city tabs, since every other feed had the same match under santa-clara.
+  assert.equal(
+    resolveInboundCity("san-jose", "Levi's Stadium, San Jose, CA", "San Jose Earthquakes vs. LAFC with USA Scarf Giveaway"),
+    "santa-clara",
+  );
+  // The correctly-addressed copy of the same match is unchanged.
+  assert.equal(
+    resolveInboundCity("santa-clara", "Levi's Stadium, 4900 Marie P. DeBartolo Way, Santa Clara, CA 95054", "San Jose Earthquakes vs. LAFC (Prime Time)"),
+    "santa-clara",
+  );
+  // Pinned venues resolve even when the address names no city at all, which the
+  // token count would otherwise pass through to the sender's slug.
+  assert.equal(resolveInboundCity("santa-clara", "PayPal Park", "Earthquakes vs. Minnesota United FC"), "san-jose");
+  assert.equal(resolveInboundCity("san-jose", "Shoreline Amphitheatre", "Summer Tour"), "mountain-view");
+});
+
 test("inbound city keeps the extractor's answer when the address is ambiguous", () => {
   // No covered city in the address at all.
   assert.equal(resolveInboundCity("campbell", "Cinnabar Hills Golf Club", "61st Annual Golf Tournament"), "campbell");

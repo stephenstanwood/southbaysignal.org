@@ -54,8 +54,21 @@ const SOUTH_BAY_CITIES = new Set([
   "LOS CATOS", // occasional typo in SCC data for Los Gatos
 ]);
 
+// Non-restaurant facilities that nonetheless hold a county food permit, so they
+// arrive in the feed looking like openings. A padel club, a senior PACE health
+// center, and an office landlord's barista bar all shipped to the food radar on
+// 2026-08-13 as "coming soon" restaurants. Kept separate from SKIP_PATTERNS
+// because these are whole business types, not permit-line descriptors.
+const NON_RESTAURANT_FACILITY = /\bPADEL\b|\bPICKLEBALL\b|\bPACE\b|\bDIALYSIS\b|SKILLED\s+NURSING|\bURGENT\s+CARE\b|\bCLINIC\b|ASSISTED\s+LIVING/i;
+
+// ...but only when nothing in the name says "this serves the public food".
+// "Pace Pizzeria", "Clinic Cafe Bakery" and "Padel Thai Kitchen" are all
+// plausible restaurant names that the acronyms above would otherwise eat.
+const FOOD_BUSINESS_WORD =
+  /\b(RESTAURANT|CAFE|CAFF?[EÉ]|COFFEE|BAKERY|PIZZ(?:A|ERIA)|KITCHEN|GRILL|TAQUER[IÍ]A|TACO|SUSHI|RAMEN|PHO|BOBA|TEA\s+HOUSE|JUICE|DELI|BBQ|BAR\s*&\s*GRILL|BISTRO|DINER|EATERY|CREAMERY|DONUTS?|SANDWICH|NOODLE|BUFFET\s+RESTAURANT)\b/i;
+
 // Patterns that indicate non-restaurant entries to skip
-const SKIP_PATTERNS = /\bPOOLS?\b|ELEM\b|SCHOOL\b|\bAPTS?\b|\bHOA\b|HOMEOWNER|COMMUNITY\s+ASSOC|MICRO KITCHEN|MODERNIZATION|MFF\b|MOBILE FOOD\b|CART\b|COMMISSARY\b|VENDING|\bCAFETERIA\b|PANTRY\b.*LEVEL|\bPANTRY\s+ROOM\b|\bSTORAGE\s+PANTRY\b|\bLVL\s+\d|\bRELOCATION\b|CORPORATE|EXTERIOR STORAGE|BARISTA AREA|COFFEE AREA|KITCHEN UNIT|BEVERAGE UNIT|AIRPORT BLVD|SJC AIRPORT|PLTR#|\bPRO SHOP\b|\bSPA\b|\bHOT TUB\b|\bAPT\s+SPA\b|APARTMENT\s+SPA|PARK\s+SPA\b|BREAKROOM|BREAK\s+ROOM|NSVC\s+B\d|EMPLOYEE\s+LOUNGE|\bREPLASTER\b|\bENCLOSURE\b|\bBLDG\b|\bYMCA\b|\bMEETING\s+ROOM\b|\bHQ\d+\s+KITCHEN\b|\bFENCE\b|\bGATES?\b|\bSECURITY\b|\bALARM\b|\bSPRINKLER\b|\bRE-?ROOF\b|\bSIGNAGE\b|\bMONUMENT\s+SIGN\b|\bPARKING\s+(LOT|GARAGE|STRUCTURE)\b|\bELEVATOR\b|\bRETAINING\s+WALL\b|\bINNOVATION\s+CAMPUS\b|\b(?:1ST|2ND|3RD|\d+TH)\s+FLOOR\b/i;
+const SKIP_PATTERNS = /BARISTA\s+BAR|BUFFET\s+TABLE|\bPOOLS?\b|ELEM\b|SCHOOL\b|\bAPTS?\b|\bHOA\b|HOMEOWNER|COMMUNITY\s+ASSOC|MICRO KITCHEN|MODERNIZATION|MFF\b|MOBILE FOOD\b|CART\b|COMMISSARY\b|VENDING|\bCAFETERIA\b|PANTRY\b.*LEVEL|\bPANTRY\s+ROOM\b|\bSTORAGE\s+PANTRY\b|\bLVL\s+\d|\bRELOCATION\b|CORPORATE|EXTERIOR STORAGE|BARISTA AREA|COFFEE AREA|KITCHEN UNIT|BEVERAGE UNIT|AIRPORT BLVD|SJC AIRPORT|PLTR#|\bPRO SHOP\b|\bSPA\b|\bHOT TUB\b|\bAPT\s+SPA\b|APARTMENT\s+SPA|PARK\s+SPA\b|BREAKROOM|BREAK\s+ROOM|NSVC\s+B\d|EMPLOYEE\s+LOUNGE|\bREPLASTER\b|\bENCLOSURE\b|\bBLDG\b|\bYMCA\b|\bMEETING\s+ROOM\b|\bHQ\d+\s+KITCHEN\b|\bFENCE\b|\bGATES?\b|\bSECURITY\b|\bALARM\b|\bSPRINKLER\b|\bRE-?ROOF\b|\bSIGNAGE\b|\bMONUMENT\s+SIGN\b|\bPARKING\s+(LOT|GARAGE|STRUCTURE)\b|\bELEVATOR\b|\bRETAINING\s+WALL\b|\bINNOVATION\s+CAMPUS\b|\b(?:1ST|2ND|3RD|\d+TH)\s+FLOOR\b/i;
 
 // Equipment/maintenance-only permits — not openings, just upgrades to existing places.
 // Anything matching here is a re-inspection of an existing facility, not a new business.
@@ -446,6 +459,7 @@ function shouldSkip(item) {
   if (CORPORATE_PATTERNS.test(rawName)) return true;
   if (CITYLINE_OFFICE_PATTERN.test(rawName)) return true;
   if (NON_FOOD_PATTERNS.test(rawName)) return true;
+  if (NON_RESTAURANT_FACILITY.test(rawName) && !FOOD_BUSINESS_WORD.test(rawName)) return true;
   if (VARIETY_STORE_PATTERNS.test(rawName)) return true;
   if (GAS_STATION_PATTERNS.test(rawName)) return true;
   if (VENUE_CONCESSION_PATTERNS.test(rawName)) return true;

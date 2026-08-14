@@ -114,6 +114,25 @@ const STREET_NAMED_FOR_CITY = new RegExp(
 );
 
 /**
+ * Landmark venues whose city is a matter of public record, checked against the
+ * raw location string before the city-token count in resolveInboundCity.
+ *
+ * Deliberately short: only venues that sit in one fixed spot AND get written
+ * with the wrong city by senders, usually because the team or tenant is branded
+ * for a neighbouring city (the San Jose Earthquakes and the San Francisco 49ers
+ * both play in Santa Clara). Do not add ordinary venues here — the address is
+ * the better signal everywhere else, which is the whole point of the function.
+ */
+const FIXED_VENUE_CITY = [
+  [/\blevi'?s\s+stadium\b/i, "santa-clara"],
+  [/\bsap\s+center\b/i, "san-jose"],
+  [/\bpaypal\s+park\b/i, "san-jose"],
+  [/\bexcite\s+ballpark\b/i, "san-jose"],
+  [/\bshoreline\s+amphitheatre\b/i, "mountain-view"],
+  [/\bmountain\s+winery\b/i, "saratoga"],
+];
+
+/**
  * Pick the city slug an inbound newsletter event actually happens in.
  *
  * The email extractor sets cityKey from the sending organization, not the
@@ -137,6 +156,15 @@ export function resolveInboundCity(cityKey, location, title = "") {
   if (!cityKey || !REHOMEABLE_CITY_SLUGS.has(cityKey)) return cityKey;
   if (!location) return cityKey;
   if (LOCAL_DEPARTURE_TRIP.test(title || "")) return cityKey;
+
+  // A named venue that only exists in one place outranks the city token in the
+  // address, because the address is the part senders get wrong. The Earthquakes'
+  // own mailing list sent "Levi's Stadium, San Jose, CA" for the Sep 19 LAFC
+  // match — the stadium is in Santa Clara, and every other feed had it right, so
+  // the one bad string split a single game across two city tabs.
+  for (const [re, slug] of FIXED_VENUE_CITY) {
+    if (re.test(location)) return slug;
+  }
 
   // Strip diacritics on both sides: the token list carries "san josé", and
   // /\bsan josé\b/ never matches "San José," because é isn't a word character,

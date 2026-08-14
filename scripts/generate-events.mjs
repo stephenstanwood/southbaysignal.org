@@ -1969,6 +1969,16 @@ function inferCategory(title, desc, type, venue = "") {
   // hits the family rule. All three shipped as miscategorized games.
   const titleHasVs = titleLower.includes("vs.") || titleLower.includes(" vs ");
   if (titleHasVs && /\b(football|basketball|baseball|softball|soccer|hockey|volleyball|lacrosse|water polo|rugby)\b/.test(titleLower)) return "sports";
+  // Pro and club matchups name the teams, not the sport, so the rule above
+  // misses them: "San Jose Earthquakes vs LAFC - Prime Time" has no sport word
+  // anywhere in the title. Feeds that carry a classification (Ticketmaster)
+  // still land these on sports, but the City Newsletter feed carries none, and
+  // that one shipped as ARTS because its blurb mentioned a "halftime
+  // performance by Clave Especial" — the same incidental-wording trap the rule
+  // above was written for, one rung lower. Anchor on the local club names so a
+  // matchup title beats a description's stray performance/artist cue.
+  const LOCAL_TEAM = /\b(earthquakes|quakes|sharks|barracuda|bay fc|sj giants|san jose giants|49ers|valkyries|warriors|athletics|lafc|mls|nwsl|nhl|nfl|broncos|cardinal|spartans)\b/;
+  if (titleHasVs && LOCAL_TEAM.test(titleLower)) return "sports";
   // Title-anchored "concert" / "choir" / "symphony" / "orchestra" / "philharmonic"
   // wins over the arts rule below — venues like "Heritage Theatre" or "Hammer
   // Theatre Center" otherwise capture symphony/concert performances (Peninsula
