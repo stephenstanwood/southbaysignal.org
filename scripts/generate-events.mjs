@@ -39,7 +39,10 @@
  *   - Museum of American Heritage (Squarespace events)
  *   - Silicon Valley Leadership Group (RSS)
  *   - Happy Hollow Park & Zoo (RSS)
- *   - LibCal (Los Gatos, Milpitas) — BLOCKED: API requires OAuth (see note below)
+ *   - LibCal (Mountain View, Los Gatos) — via playwright-scrapers.mjs, using
+ *     Springshare's public calendar list endpoint. The authenticated LibCal
+ *     API v1/v2 still needs OAuth; the calendar page's own listing does not.
+ *     Milpitas has no LibCal instance — it's covered by SCCL BiblioCommons.
  *   - Santa Clara County Fire Department (Eventbrite — hardcoded; /v3/events/search/ removed)
  *
  * NOTE: Mountain View/Sunnyvale/SJ city/Cupertino CivicPlus iCal feeds return 403/404.
@@ -4663,7 +4666,9 @@ async function fetchBayFCSchedule() {
 async function fetchMvplEvents() {
   // Mountain View Public Library uses LibCal, not BiblioCommons.
   // The "librarypoint" site is Central Rappahannock Regional Library in Virginia
-  // — NOT Mountain View. Previous mapping was wrong. Disabled pending LibCal ingest.
+  // — NOT Mountain View. Previous mapping was wrong. The library is now ingested
+  // through scrapeLibCal in playwright-scrapers.mjs; this stays a no-op so the
+  // wrong BiblioCommons site ID can't be reintroduced here.
   return [];
 }
 
@@ -4677,11 +4682,12 @@ async function fetchPaloAltoLibraryEvents() {
   return fetchBiblioEvents("paloalto", "Palo Alto City Library", () => "palo-alto");
 }
 
-// NOTE: LibCal (Springshare) API v1/v2 require OAuth tokens — not publicly accessible.
-// Los Gatos (losgatosca.libcal.com) and Milpitas library calendars use LibCal but
-// the API endpoints return 403/offline. Their events are partially covered via SCCL
-// BiblioCommons (which includes Los Gatos and Milpitas branch programming).
-// If OAuth credentials become available, implement fetchLibCalEvents(slug, name, city).
+// NOTE: LibCal (Springshare) API v1/v2 still require OAuth tokens. The calendar
+// page's own list endpoint does not, and returns the same public listing as
+// JSON, so Mountain View and Los Gatos are ingested through scrapeLibCal in
+// playwright-scrapers.mjs rather than through this file. Milpitas has no LibCal
+// instance (milpitas.libcal.com 404s); its branch programming comes from SCCL
+// BiblioCommons. Don't add a second LibCal path here — it would double-count.
 
 // ── Happy Hollow Park & Zoo ──
 

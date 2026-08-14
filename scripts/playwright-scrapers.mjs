@@ -417,12 +417,14 @@ function isBookmobileStopTitle(title) {
 // so its events really are at 585 Franklin St. Anything not listed here and not
 // room-shaped is treated as off-site — see the header of libcal-location.mjs for
 // why that asymmetry is deliberate.
+// `urls[0]` is both the origin scrapeLibCal queries and the link an event falls
+// back to when LibCal omits its own. It is no longer a list of layouts to try in
+// turn — the list endpoint is the same on every instance.
 export const LIBCAL_LIBRARIES = [
   {
     name: "Mountain View Public Library",
     urls: [
       "https://mountainview.libcal.com/calendar",
-      "https://mountainview.libcal.com/events",
     ],
     city: "mountain-view",
     address: "585 Franklin St, Mountain View, CA 94041",
@@ -445,142 +447,140 @@ export const LIBCAL_LIBRARIES = [
   // Milpitas: SCCL LibCal returns 404; covered by SCCL BiblioCommons in generate-events.mjs
 ];
 
-export async function scrapeLibCal(page, config) {
-  for (const url of config.urls) {
+// LibCal renders its calendar client-side and the default view is a single day,
+// so scraping the rendered DOM returned roughly a tenth of what these libraries
+// actually publish — 23 of 227 upcoming events in Los Gatos, 9 of 198 in
+// Mountain View — and the title-level dedup dropped every repeat of a recurring
+// program, so a reader looking at next Tuesday never saw Storytime at all.
+//
+// Springshare's calendar page calls its own list endpoint for the same public
+// listing, and that JSON carries what the DOM only implied: the canonical event
+// URL, the room, an end time, and the audience tags. robots.txt on *.libcal.com
+// allows `*` everywhere except /process_, with Crawl-delay: 10 — honored below.
+// An empty `date` selects the calendar's "Upcoming Events" mode.
+const LIBCAL_CRAWL_DELAY_MS = 10_000;
+const LIBCAL_PAGE_SIZE = 100;
+const LIBCAL_MAX_PAGES = 8;
+const LIBCAL_HORIZON_DAYS = 90;
+
+function libcalHorizonISO() {
+  const d = new Date();
+  d.setDate(d.getDate() + LIBCAL_HORIZON_DAYS);
+  return isoDate(d);
+}
+
+// LibCal's audience tags are more reliable than guessing from the title: a
+// "Social Stitching" session tagged Children is a kids' event, and "Baby Bash"
+// tagged Adults is not.
+const LIBCAL_KID_AUDIENCES = /\b(child|kid|teen|tween|youth|famil|baby|babies|toddler|preschool|infant|grade)/i;
+
+function libcalTime(raw) {
+  // Instances differ on spacing — Mountain View emits "3:00 pm", Los Gatos
+  // "3:00pm" — and the rest of the feed stores "3:00 PM", so normalize both
+  // rather than passing the source's formatting through. All-day events report
+  // no time at all.
+  if (!raw) return null;
+  const m = String(raw).trim().match(/^(\d{1,2})(?::(\d{2}))?\s*([ap])\.?m\.?$/i);
+  if (!m) return normalizeTime(String(raw));
+  return `${Number(m[1])}:${m[2] ?? "00"} ${m[3].toUpperCase()}M`;
+}
+
+// `_page` is the Playwright page every scraper in this file is handed. LibCal
+// no longer needs a browser — the list endpoint is plain JSON — but the shared
+// runScraper wrapper still supplies one.
+export async function scrapeLibCal(_page, config) {
+  const origin = new URL(config.urls[0]).origin;
+  const horizon = libcalHorizonISO();
+  const raw = [];
+  const seenIds = new Set();
+
+  for (let pageNum = 1; pageNum <= LIBCAL_MAX_PAGES; pageNum++) {
+    if (pageNum > 1) await new Promise((r) => setTimeout(r, LIBCAL_CRAWL_DELAY_MS));
+
+    const url = `${origin}/ajax/calendar/list?c=-1&date=&perpage=${LIBCAL_PAGE_SIZE}`
+      + `&page=${pageNum}&audience=&cats=&camps=&inc=0`;
+
+    let data;
     try {
-      const resp = await page.goto(url, { waitUntil: "networkidle", timeout: 25_000 });
-      if (!resp || resp.status() >= 400) continue;
-
-      // LibCal renders event listings client-side with Springshare JS
-      await page.waitForTimeout(3000); // let JS hydrate
-
-      const raw = await page.evaluate(() => {
-        const events = [];
-        const now = new Date();
-        const currentYear = now.getFullYear();
-
-        // LibCal publishes a per-event location in both layouts. The eventcard
-        // layout puts it in the second .s-lc-eventcard-heading-text (the first
-        // holds the time range and the In-Person/Online pill); the media-body
-        // layout uses a <dt>Location:</dt><dd> pair.
-        const cardLocation = (card) => {
-          const nodes = [...card.querySelectorAll(".s-lc-eventcard-heading-text")];
-          for (const n of nodes) {
-            if (n.querySelector(".s-lc-eventcard-pill")) continue; // time + pill row
-            const text = (n.textContent || "").replace(/\s+/g, " ").trim();
-            if (!text) continue;
-            // Skip the time row on cards that render no pill at all.
-            if (/\d{1,2}(:\d{2})?\s*[ap]m/i.test(text) || /all\s+day\s+event/i.test(text)) continue;
-            return text;
-          }
-          return "";
-        };
-        const dlLocation = (root) => {
-          for (const dt of root.querySelectorAll("dl dt")) {
-            if (!/location/i.test(dt.textContent || "")) continue;
-            const dd = dt.nextElementSibling;
-            if (dd) return (dd.textContent || "").replace(/\s+/g, " ").trim();
-          }
-          return "";
-        };
-
-        // Strategy 1: LibCal eventcard layout (Los Gatos style)
-        // Cards have .s-lc-eventcard with h2.s-lc-eventcard-title containing the title link
-        const cards = document.querySelectorAll(".s-lc-eventcard");
-        const seenTitles = new Set();
-        for (const card of cards) {
-          // Title is in h2.s-lc-eventcard-title > a, or .s-lc-eventcard-body > a
-          const titleLink = card.querySelector(".s-lc-eventcard-title a[href*='/event/'], .s-lc-eventcard-body a[href*='/event/']");
-          if (!titleLink) continue;
-          const title = titleLink.textContent?.trim();
-          if (!title || title.length < 3 || /^(More|Show more|Register)/.test(title)) continue;
-          if (seenTitles.has(title)) continue;
-          seenTitles.add(title);
-          // Date heading contains "Apr\n13\n...\nMon, 11:00am..." — extract just month + day
-          const heading = card.querySelector(".s-lc-eventcard-heading");
-          const headingText = heading?.textContent?.trim()?.replace(/\s+/g, " ") || "";
-          const monthDay = headingText.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+\d{1,2}/i);
-          const dateStr = monthDay ? `${monthDay[0]}, ${currentYear}` : null;
-          // Time like "11:00am" from card body
-          const timeMatch = card.textContent?.match(/\d{1,2}:\d{2}\s*[ap]m/i);
-          events.push({ title, date: dateStr, time: timeMatch?.[0], link: titleLink.href, location: cardLocation(card), cardText: card.textContent || "" });
-        }
-
-        // Strategy 2: LibCal media-body layout (Mountain View style)
-        // Events are in .media-body with a[href*="/event/"]
-        if (events.length === 0) {
-          const bodies = document.querySelectorAll(".media-body");
-          for (const body of bodies) {
-            const titleLink = body.querySelector("a[href*='/event/']");
-            if (!titleLink) continue;
-            const title = titleLink.textContent?.trim();
-            if (!title || title.length < 3) continue;
-            // No explicit date element — extract from event page URL or surrounding text
-            // Date often appears in nearby text like "April 14" or "Tue, Apr 14"
-            const bodyText = body.textContent || "";
-            const dateMatch = bodyText.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+\d{1,2}/i);
-            const date = dateMatch ? `${dateMatch[0]}, ${currentYear}` : null;
-            const timeMatch = bodyText.match(/\d{1,2}:\d{2}\s*[ap]m/i);
-            events.push({ title, date, time: timeMatch?.[0], link: titleLink.href, location: dlLocation(body), cardText: bodyText });
-          }
-        }
-
-        // Strategy 3: Any a[href*="/event/"] as last resort
-        if (events.length === 0) {
-          const links = document.querySelectorAll('a[href*="/event/"]');
-          const seen = new Set();
-          for (const a of links) {
-            const title = a.textContent?.trim();
-            if (!title || title.length < 3 || seen.has(title) || /register|more|image/i.test(title)) continue;
-            seen.add(title);
-            events.push({ title, date: null, time: null, link: a.href, location: "" });
-          }
-        }
-
-        return events;
+      const res = await fetch(url, {
+        headers: {
+          "User-Agent": "SouthBaySignal/1.0 (southbaytoday.org; public event calendar aggregator)",
+          "Accept": "application/json",
+        },
+        signal: AbortSignal.timeout(30_000),
       });
-
-      if (raw.length > 0) {
-        return raw
-          .map((r) => {
-            const date = tryParseDate(r.date);
-            if (!date || date < TODAY) return null;
-            // Where this event actually is — the library's own building is
-            // only one of the answers. See lib/libcal-location.mjs.
-            const place = classifyLibCalLocation(r.location, config);
-            // Bookmobile stops live on the library's calendar but aren't public
-            // events. The parsed Location names them exactly; the card-text scan
-            // and title shape stay as fallbacks for layouts that omit the label.
-            if (place.kind === "bookmobile") return null;
-            if (isMobileLibraryStop(r.cardText) || isBookmobileStopTitle(r.title)) return null;
-            return {
-              title: r.title,
-              date,
-              time: normalizeTime(r.time),
-              endTime: null,
-              venue: place.venue,
-              address: place.address,
-              city: config.city,
-              url: r.link || url,
-              source: config.name,
-              category: inferCategory(r.title),
-              cost: "free",
-              ...(place.virtual ? { virtual: true } : {}),
-              // Prefix-only boundary so "Storytime" matches "story", "Babies"
-            // matches "baby", "Grades K-6" matches "grade", etc. Library kid-
-            // event titles use a wide variety of compounds: Storytime,
-            // Storyteller, Lap-Sit, Preschool, Youth, plus explicit
-            // "(Ages 0-5)" / "Grades K-6" suffixes — match all of them.
-            kidFriendly: /\b(kid|child|family|story|youth|teen|toddler|baby|preschool|infant|lap[-\s]?sit|ages?\s*\d|grades?\s+[K0-9])/i.test(r.title),
-            };
-          })
-          .filter(Boolean);
-      }
-    } catch {
-      continue;
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      data = await res.json();
+    } catch (err) {
+      // A mid-pagination failure keeps whatever pages already succeeded rather
+      // than throwing the whole library away; page 1 failing is a real outage
+      // and surfaces as a zero-event source in runScraper's log.
+      if (pageNum === 1) throw new Error(`${config.name} LibCal list endpoint: ${err.message}`);
+      break;
     }
+
+    const results = Array.isArray(data?.results) ? data.results : [];
+    if (results.length === 0) break;
+
+    let pastHorizon = false;
+    for (const ev of results) {
+      const id = ev?.id;
+      if (id != null) {
+        if (seenIds.has(id)) continue;
+        seenIds.add(id);
+      }
+      const date = typeof ev?.startdt === "string" ? ev.startdt.slice(0, 10) : null;
+      if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+      if (date < TODAY) continue;
+      // Results come back in date order, so the first event past the horizon
+      // means every remaining page is too.
+      if (date > horizon) { pastHorizon = true; break; }
+      raw.push({ ev, date });
+    }
+    if (pastHorizon) break;
+
+    const total = Number(data?.total_results);
+    if (Number.isFinite(total) && seenIds.size >= total) break;
+    if (results.length < LIBCAL_PAGE_SIZE) break;
   }
-  return [];
+
+  return raw
+    .map(({ ev, date }) => {
+      const title = String(ev.title || "").trim();
+      if (title.length < 3) return null;
+
+      // Where this event actually is — the library's own building is only one
+      // of the answers. See lib/libcal-location.mjs.
+      const place = classifyLibCalLocation(ev.location || "", config);
+      // Bookmobile stops live on the library's calendar but aren't public
+      // events — Mountain View publishes a whole second calendar of them. The
+      // list endpoint exposes LibCal's own labels as discrete fields, so the
+      // first-party signal is checked on both before falling back to the title.
+      if (place.kind === "bookmobile") return null;
+      if (isMobileLibraryStop(`Categories: ${ev.categories || ""}\nLocation: ${ev.location || ""}`)) return null;
+      if (isBookmobileStopTitle(title)) return null;
+
+      const audiences = Array.isArray(ev.audiences)
+        ? ev.audiences.map((a) => a?.name || "").join(" ")
+        : "";
+
+      return {
+        title,
+        date,
+        time: ev.all_day ? null : libcalTime(ev.start),
+        endTime: ev.all_day ? null : libcalTime(ev.end),
+        venue: place.venue,
+        address: place.address,
+        city: config.city,
+        url: ev.url || config.urls[0],
+        source: config.name,
+        category: inferCategory(title),
+        cost: String(ev.registration_cost || "").trim() || "free",
+        ...(place.virtual || ev.online_event === true ? { virtual: true } : {}),
+        kidFriendly: KID_RE.test(title) || LIBCAL_KID_AUDIENCES.test(audiences),
+      };
+    })
+    .filter(Boolean);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
