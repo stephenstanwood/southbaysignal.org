@@ -1,12 +1,12 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-14T02:17:02.828Z",
+    "generatedAt": "2026-08-14T03:57:56.932Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
     "eventCount": 387,
     "sourceCount": 24,
     "sources": [
-      "Mountain View Public Library (13)",
+      "Mountain View Public Library (12)",
       "Los Gatos Library (25)",
       "San Jose Jazz (12)",
       "Linden Tree Books (9)",
@@ -27,7 +27,7 @@
       "Levi's Stadium (16)",
       "SAP Center (15)",
       "The Tech Interactive (5)",
-      "Books Inc (3)",
+      "Books Inc (4)",
       "Peninsula Open Space Trust (2)",
       "San Jose Museum of Art (15)"
     ],
@@ -68,7 +68,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 13,
+        "count": 12,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -330,7 +330,7 @@
         "id": "books-inc",
         "label": "Books Inc",
         "status": "ok",
-        "count": 3,
+        "count": 4,
         "error": null,
         "sources": [
           "Books Inc"
@@ -365,23 +365,6 @@
     ]
   },
   "events": [
-    {
-      "id": "41488c40133c",
-      "title": "Community Preservation Lab Scanning Service",
-      "date": "2026-08-13",
-      "displayDate": "Thu, Aug 13",
-      "time": "4:00 pm",
-      "endTime": null,
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17149999",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
     {
       "id": "b0958a6c0688",
       "title": "Tech Take Apart",
@@ -3156,40 +3139,6 @@
       "kidFriendly": false
     },
     {
-      "id": "dd251a67fb74",
-      "title": "Summer Concert Series",
-      "date": "2026-08-13",
-      "displayDate": "Thu, Aug 13",
-      "time": "06:30 PM",
-      "endTime": "08:00 PM",
-      "venue": "Memorial Park Amphitheater",
-      "address": "Memorial Park Amphitheater, 21163 Anton Way, Cupertino, CA, 95014, View Map",
-      "city": "cupertino",
-      "category": "music",
-      "cost": "free",
-      "description": "Spend your Thursday evenings outdoors with free live music at the Memorial Park Amphitheater. Bring a blanket or low-back chair, settle in on the lawn, and enjoy a lineup of bands spanning classic rock, Latin rock, blues, R&B, and more. For more information and band lineup, visit the Summer Concert Series webpage.",
-      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Summer-Concert-Series/Summer-Concert-Series-Event",
-      "source": "City of Cupertino",
-      "kidFriendly": true
-    },
-    {
-      "id": "baa2a4083e35",
-      "title": "Summer Concert Series",
-      "date": "2026-08-20",
-      "displayDate": "Thu, Aug 20",
-      "time": "06:30 PM",
-      "endTime": "08:00 PM",
-      "venue": "Memorial Park Amphitheater",
-      "address": "Memorial Park Amphitheater, 21163 Anton Way, Cupertino, CA, 95014, View Map",
-      "city": "cupertino",
-      "category": "music",
-      "cost": "free",
-      "description": "Spend your Thursday evenings outdoors with free live music at the Memorial Park Amphitheater. Bring a blanket or low-back chair, settle in on the lawn, and enjoy a lineup of bands spanning classic rock, Latin rock, blues, R&B, and more. For more information and band lineup, visit the Summer Concert Series webpage.",
-      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Summer-Concert-Series/Summer-Concert-Series-Event",
-      "source": "City of Cupertino",
-      "kidFriendly": true
-    },
-    {
       "id": "a80fea20f653",
       "title": "Movies in the Park",
       "date": "2026-08-14",
@@ -3373,6 +3322,40 @@
       "cost": null,
       "description": "Climb, swing, balance, and play at the Sweet Pea Gymnastics and Lil’ Ninjas Open House! Families can explore the Gymnastics Room, meet the Bay Aerials team, and learn about year-round programs for ages 1 to 12. Children will also have a chance to try the equipment and take on a few ninja obstacles. Join us Saturday, August 15, from 2 to 4 p.m. at Monta Vista Recreation Center. The event is free,. RSVP at reg4rec.org using activity number 34168.",
       "url": "https://www.cupertino.gov/Parks-Recreation/Events/Sweet-Pea-and-Lil-Ninjas-Open-House",
+      "source": "City of Cupertino",
+      "kidFriendly": true
+    },
+    {
+      "id": "dd251a67fb74",
+      "title": "Summer Concert Series",
+      "date": "2026-08-13",
+      "displayDate": "Thu, Aug 13",
+      "time": "06:30 PM",
+      "endTime": "08:00 PM",
+      "venue": "Memorial Park Amphitheater",
+      "address": "Memorial Park Amphitheater, 21163 Anton Way, Cupertino, CA, 95014, View Map",
+      "city": "cupertino",
+      "category": "music",
+      "cost": "free",
+      "description": "Spend your Thursday evenings outdoors with free live music at the Memorial Park Amphitheater. Bring a blanket or low-back chair, settle in on the lawn, and enjoy a lineup of bands spanning classic rock, Latin rock, blues, R&B, and more. For more information and band lineup, visit the Summer Concert Series webpage.",
+      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Summer-Concert-Series/Summer-Concert-Series-Event",
+      "source": "City of Cupertino",
+      "kidFriendly": true
+    },
+    {
+      "id": "baa2a4083e35",
+      "title": "Summer Concert Series",
+      "date": "2026-08-20",
+      "displayDate": "Thu, Aug 20",
+      "time": "06:30 PM",
+      "endTime": "08:00 PM",
+      "venue": "Memorial Park Amphitheater",
+      "address": "Memorial Park Amphitheater, 21163 Anton Way, Cupertino, CA, 95014, View Map",
+      "city": "cupertino",
+      "category": "music",
+      "cost": "free",
+      "description": "Spend your Thursday evenings outdoors with free live music at the Memorial Park Amphitheater. Bring a blanket or low-back chair, settle in on the lawn, and enjoy a lineup of bands spanning classic rock, Latin rock, blues, R&B, and more. For more information and band lineup, visit the Summer Concert Series webpage.",
+      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Summer-Concert-Series/Summer-Concert-Series-Event",
       "source": "City of Cupertino",
       "kidFriendly": true
     },
@@ -6714,6 +6697,23 @@
       "date": "2026-08-31",
       "displayDate": "Mon, Aug 31",
       "time": "6:00 PM",
+      "endTime": null,
+      "venue": "Books Inc. Mountain View",
+      "address": "",
+      "city": "mountain-view",
+      "category": "arts",
+      "cost": "free",
+      "description": "",
+      "url": "https://www.booksinc.com/pages/events",
+      "source": "Books Inc",
+      "kidFriendly": false
+    },
+    {
+      "id": "4c340e91b70c",
+      "title": "RAJIV MEHTA: CAMARADERIE",
+      "date": "2026-09-09",
+      "displayDate": "Wed, Sep 9",
+      "time": "7:00 PM",
       "endTime": null,
       "venue": "Books Inc. Mountain View",
       "address": "",
