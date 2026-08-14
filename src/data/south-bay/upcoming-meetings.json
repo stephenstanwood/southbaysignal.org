@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-13T03:09:09.876Z",
+  "generatedAt": "2026-08-14T03:09:04.892Z",
   "meetings": {
     "san-jose": {
       "date": "2026-08-18",
@@ -36,7 +36,7 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-08-18",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-12T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-13T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
@@ -55,21 +55,37 @@
         "sourceUrl": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=2846"
       }
     },
-    "milpitas": {
+    "campbell": {
       "date": "2026-08-18",
       "displayDate": "Tue, Aug 18",
+      "startTime": "19:00",
+      "bodyName": "City Council Regular Session Meeting",
+      "location": "Campbell Community Center - Room C-35",
+      "closedSession": false,
+      "url": "https://pub-campbell.escribemeetings.com/MeetingsCalendarView.aspx/Meeting?Id=6561dfc6-9aed-4336-b160-074b064d588b",
+      "agendaItems": [],
+      "confirmation": {
+        "status": "confirmed",
+        "provider": "escribe",
+        "observedDate": "2026-08-18",
+        "sourceUrl": "https://pub-campbell.escribemeetings.com/MeetingsCalendarView.aspx/GetCalendarMeetings"
+      }
+    },
+    "milpitas": {
+      "date": "2026-09-01",
+      "displayDate": "Tue, Sep 1",
       "startTime": "19:00",
       "bodyName": "City Council Meeting",
       "location": "Milpitas City Hall",
       "closedSession": false,
       "url": "https://www.milpitas.gov/129/Agendas-Minutes",
-      "civicClerkEventId": 2942,
+      "civicClerkEventId": 2954,
       "agendaItems": [],
       "confirmation": {
         "status": "confirmed",
         "provider": "civicclerk",
-        "observedDate": "2026-08-18",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-12T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "observedDate": "2026-09-01",
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-13T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     },
     "los-altos": {
@@ -86,7 +102,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-08-25",
-        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-12T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-13T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },
@@ -121,7 +137,7 @@
     },
     "campbell": {
       "provider": "eScribe",
-      "status": "no-meeting"
+      "status": "ok"
     },
     "milpitas": {
       "provider": "CivicClerk",

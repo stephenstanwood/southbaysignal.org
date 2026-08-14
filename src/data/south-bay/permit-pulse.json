@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-13T03:08:58.519Z",
+      "generatedAt": "2026-08-14T03:08:49.874Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 5 – Aug 12",
+      "dateRange": "Aug 6 – Aug 13",
       "stats": {
-        "total": 406,
-        "notable": 28,
-        "newUnits": 26,
-        "totalValuation": 33323995
+        "total": 389,
+        "notable": 30,
+        "newUnits": 24,
+        "totalValuation": 36538885
       },
       "permits": [
         {
@@ -27,6 +27,18 @@
           "subtype": "Apartment"
         },
         {
+          "id": "2022-702720-RS",
+          "address": "100 S Capitol Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached Garage & 2nd Story ADU",
+          "valuation": 231175,
+          "units": 1,
+          "issueDate": "2026-08-11",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
           "id": "2025-141614-RS",
           "address": "1035 Avondale St #2",
           "category": "residential-new",
@@ -36,7 +48,7 @@
           "valuation": 207674,
           "units": 1,
           "issueDate": "2026-08-07",
-          "subtype": "2nd Unit Added"
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
           "id": "2026-101566-RS",
@@ -48,43 +60,7 @@
           "valuation": 131764,
           "units": 1,
           "issueDate": "2026-08-10",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2026-127703-RS",
-          "address": "3180 Rubino Dr #121",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Epr Villa Homes Prefab Adunew Mf ADU Near Building 'D'",
-          "valuation": 116987,
-          "units": 1,
-          "issueDate": "2026-08-06",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2026-127706-RS",
-          "address": "3180 Rubino Dr #123",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Epr Villa Homes Prefab Adunew Mf ADU Near Building 'D'",
-          "valuation": 116987,
-          "units": 1,
-          "issueDate": "2026-08-06",
-          "subtype": "2nd Unit Added"
-        },
-        {
-          "id": "2026-127709-RS",
-          "address": "3180 Rubino Dr #125",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Epr Villa Homes Prefab Adunew Mf ADU Near Building 'D'",
-          "valuation": 116987,
-          "units": 1,
-          "issueDate": "2026-08-06",
-          "subtype": "2nd Unit Added"
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
           "id": "2026-100962-RS",
@@ -96,7 +72,7 @@
           "valuation": 109598,
           "units": 1,
           "issueDate": "2026-08-07",
-          "subtype": "2nd Unit Added"
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
           "id": "2025-146385-RS",
@@ -108,7 +84,19 @@
           "valuation": 99219,
           "units": 1,
           "issueDate": "2026-08-10",
-          "subtype": "2nd Unit Added"
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
+          "id": "2026-116423-RS",
+          "address": "1841 Bermuda Wy #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Code Case Attached ADU",
+          "valuation": 82858,
+          "units": 1,
+          "issueDate": "2026-08-11",
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
           "id": "2026-116742-RS",
@@ -120,31 +108,43 @@
           "valuation": 77405,
           "units": 1,
           "issueDate": "2026-08-10",
-          "subtype": "2nd Unit Added"
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2026-102232-RS",
-          "address": "2114 Ardis Dr #2",
+          "id": "2024-112372-RS",
+          "address": "828 Onyx Ct #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Attached ADU",
-          "valuation": 73535,
+          "description": "New Detached ADU With Loft",
+          "valuation": 54447,
           "units": 1,
-          "issueDate": "2026-08-06",
-          "subtype": "2nd Unit Added"
+          "issueDate": "2026-08-07",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
+          "id": "2026-131158-CI",
+          "address": "3055 Orchard Dr",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Advantest TI",
+          "valuation": 12000000,
+          "units": 0,
+          "issueDate": "2026-08-07",
+          "subtype": "Office"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-13T03:09:00.389Z",
+      "generatedAt": "2026-08-14T03:08:52.224Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 5 – Aug 12",
+      "dateRange": "Aug 6 – Aug 13",
       "stats": {
-        "total": 93,
+        "total": 61,
         "notable": 4,
         "newUnits": 0,
         "totalValuation": 0
@@ -163,24 +163,24 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26PLN-00221",
-          "address": "412 Olive Av",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for an Over-the-Counter Architectural Review to install one 40 inch tall by 78 inch wide non-illuminated aluminum sign, two 21 inch tall by 42 inch wide non-illuminated alumninum signs, and two nine inch tall by 18 inch wide window graphics. All signs will read, 'gloo'. CEQA Status: Not a project. Zone District: North Ventura Low Density Mixed Use District (NV-MXL). For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-07",
-          "subtype": "Over the Counter Approved"
-        },
-        {
           "id": "26PLN-00220",
           "address": "151 University Av",
           "category": "entitlement",
           "categoryLabel": "Entitlement / Zoning",
           "workType": "Entitlement",
           "description": "Request for an Over-the-Counter Architectural Review to install one new non-illuminated channel letters sign mounted to an existing awning with a cleat. The proposed sign will be nine inches tall by 115 inches wide and constructed of aluminum painted black to read, 'Cleary Gottlieb'. Zone District: Downtown Commercial (CD-C(GF)(P)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-07",
+          "subtype": "Over the Counter Approved"
+        },
+        {
+          "id": "26PLN-00221",
+          "address": "412 Olive Av",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for an Over-the-Counter Architectural Review to install one 40 inch tall by 78 inch wide non-illuminated aluminum sign, two 21 inch tall by 42 inch wide non-illuminated alumninum signs, and two nine inch tall by 18 inch wide window graphics. All signs will read, 'gloo'. CEQA Status: Not a project. Zone District: North Ventura Low Density Mixed Use District (NV-MXL). For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-08-07",

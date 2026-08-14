@@ -1,160 +1,292 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-13T03:16:53.188Z",
+    "generatedAt": "2026-08-14T03:17:08.171Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 5
+    "sourceCount": 9
   },
   "summary": {
-    "threadsMined": 5,
-    "placesExtracted": 4,
-    "placesMatched": 2,
-    "placeGaps": 2,
-    "eventsExtracted": 6,
+    "threadsMined": 9,
+    "placesExtracted": 13,
+    "placesMatched": 5,
+    "placeGaps": 8,
+    "eventsExtracted": 7,
     "eventsMatched": 3,
-    "eventGaps": 3,
+    "eventGaps": 4,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "Veggielution",
-      "city": "San Jose",
-      "kind": "other",
-      "context": "youth garden and farm stand at Prusch Park",
+      "name": "Arc'teryx",
+      "city": "Santa Clara",
+      "kind": "retail",
+      "context": "new store opening at Valley Fair mall",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vm2n22/weekend_kid_events_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vmogoh/does_anyone_recognize_this_pho_restaurant/",
-        "https://www.reddit.com/r/SanJose/comments/1vmo7hl/looking_for_recommendations_for_acting_classes_or/",
-        "https://www.reddit.com/r/SanJose/comments/1vmdjds/free_tutoring_for_needful/",
-        "https://www.reddit.com/r/SanJose/comments/1vm307f/city_council_11_august_summarya_lot_of_talk_about/"
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
       ]
     },
     {
-      "name": "Excite Ballpark",
+      "name": "Cider",
+      "city": "Santa Clara",
+      "kind": "retail",
+      "context": "new store opening at Valley Fair mall",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+      ]
+    },
+    {
+      "name": "Chubby Tan",
+      "city": "Santa Clara",
+      "kind": "restaurant",
+      "context": "new restaurant opening at Valley Fair mall",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+      ]
+    },
+    {
+      "name": "Calabazas BMX Course",
+      "city": "San Jose",
+      "kind": "park",
+      "context": "renovated BMX park reopens after seven weeks of repairs",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+      ]
+    },
+    {
+      "name": "Lake Cunningham Action Sports Park",
+      "city": "San Jose",
+      "kind": "park",
+      "context": "second BMX park in the city, also popular hiking spot",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+      ]
+    },
+    {
+      "name": "Mt. Pleasant Branch",
       "city": "San Jose",
       "kind": "venue",
-      "context": "San Jose Giants vs. Fresno Grizzlies game",
+      "context": "library hosting envelope kite-building event",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vm2n22/weekend_kid_events_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vmogoh/does_anyone_recognize_this_pho_restaurant/",
-        "https://www.reddit.com/r/SanJose/comments/1vmo7hl/looking_for_recommendations_for_acting_classes_or/",
-        "https://www.reddit.com/r/SanJose/comments/1vmdjds/free_tutoring_for_needful/",
-        "https://www.reddit.com/r/SanJose/comments/1vm307f/city_council_11_august_summarya_lot_of_talk_about/"
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+      ]
+    },
+    {
+      "name": "Civic Center Plaza",
+      "city": "Mountain View",
+      "kind": "venue",
+      "context": "site of KidStock kids festival",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+      ]
+    },
+    {
+      "name": "Pioneer Park",
+      "city": "Mountain View",
+      "kind": "park",
+      "context": "site of KidStock kids festival",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "Saturday Crafternoons X Arts",
-      "when": "Saturday 8/15 3:00pm",
+      "name": "Build & Fly Envelope Kites",
+      "when": "Friday Aug. 14, 3-4 p.m.",
       "city": "San Jose",
-      "context": "free trial summer kids art classes",
+      "context": "kids kite-building event at Mt. Pleasant Branch",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vm2n22/weekend_kid_events_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vmogoh/does_anyone_recognize_this_pho_restaurant/",
-        "https://www.reddit.com/r/SanJose/comments/1vmo7hl/looking_for_recommendations_for_acting_classes_or/",
-        "https://www.reddit.com/r/SanJose/comments/1vmdjds/free_tutoring_for_needful/",
-        "https://www.reddit.com/r/SanJose/comments/1vm307f/city_council_11_august_summarya_lot_of_talk_about/"
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
       ]
     },
     {
-      "name": "LEGO® Club - Club LEGO®",
-      "when": "Saturday 8/15 3:00pm",
-      "city": "San Jose",
-      "context": "kids library event",
+      "name": "Concert in the Park: Aja Vu",
+      "when": "Friday Aug. 14, 6:30-8 p.m.",
+      "city": "Santa Clara",
+      "context": "Steely Dan and Chicago tribute concert at Live Oak Park",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vm2n22/weekend_kid_events_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vmogoh/does_anyone_recognize_this_pho_restaurant/",
-        "https://www.reddit.com/r/SanJose/comments/1vmo7hl/looking_for_recommendations_for_acting_classes_or/",
-        "https://www.reddit.com/r/SanJose/comments/1vmdjds/free_tutoring_for_needful/",
-        "https://www.reddit.com/r/SanJose/comments/1vm307f/city_council_11_august_summarya_lot_of_talk_about/"
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
       ]
     },
     {
-      "name": "City Council Meeting",
-      "when": "August 11",
-      "city": "San Jose",
-      "context": "weekly summary discussing trees and consent calendar items",
+      "name": "Japanese Taiko Drumming with Kristy Aki Oshiro",
+      "when": "weekend of Aug. 15",
+      "city": "",
+      "context": "taiko drum and bamboo flute performance",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vm2n22/weekend_kid_events_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vmogoh/does_anyone_recognize_this_pho_restaurant/",
-        "https://www.reddit.com/r/SanJose/comments/1vmo7hl/looking_for_recommendations_for_acting_classes_or/",
-        "https://www.reddit.com/r/SanJose/comments/1vmdjds/free_tutoring_for_needful/",
-        "https://www.reddit.com/r/SanJose/comments/1vm307f/city_council_11_august_summarya_lot_of_talk_about/"
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+      ]
+    },
+    {
+      "name": "Foodie Week",
+      "when": "starts Sept. 19",
+      "city": "Santa Clara",
+      "context": "food event at Valley Fair mall",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
       ]
     }
   ],
   "placeMatches": [
     {
-      "name": "Emma Prusch Farm Park",
-      "city": "San Jose",
-      "kind": "park",
-      "context": "hosts Veggielution Youth Garden and Farm Stand events",
+      "name": "Valley Fair",
+      "city": "Santa Clara",
+      "kind": "retail",
+      "context": "mall revealing new merchants ahead of Foodie Week",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vm2n22/weekend_kid_events_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vmogoh/does_anyone_recognize_this_pho_restaurant/",
-        "https://www.reddit.com/r/SanJose/comments/1vmo7hl/looking_for_recommendations_for_acting_classes_or/",
-        "https://www.reddit.com/r/SanJose/comments/1vmdjds/free_tutoring_for_needful/",
-        "https://www.reddit.com/r/SanJose/comments/1vm307f/city_council_11_august_summarya_lot_of_talk_about/"
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
       ],
-      "matchedName": "Emma Prusch Farm Park"
+      "matchedName": "Bowlero Valley Fair"
     },
     {
-      "name": "The Tech Interactive",
+      "name": "Vineland Branch",
       "city": "San Jose",
       "kind": "venue",
-      "context": "special open weekend during annual maintenance closure",
+      "context": "library hosting Tanabata Star Festival wish-making event",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vm2n22/weekend_kid_events_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vmogoh/does_anyone_recognize_this_pho_restaurant/",
-        "https://www.reddit.com/r/SanJose/comments/1vmo7hl/looking_for_recommendations_for_acting_classes_or/",
-        "https://www.reddit.com/r/SanJose/comments/1vmdjds/free_tutoring_for_needful/",
-        "https://www.reddit.com/r/SanJose/comments/1vm307f/city_council_11_august_summarya_lot_of_talk_about/"
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
       ],
-      "matchedName": "The Tech Interactive"
+      "matchedName": "Vineland Branch Library"
+    },
+    {
+      "name": "Pearl Avenue Branch",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "library hosting 3D hot air balloon craft event",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+      ],
+      "matchedName": "Pearl Avenue Branch Library"
+    },
+    {
+      "name": "Live Oak Park",
+      "city": "Santa Clara",
+      "kind": "park",
+      "context": "site of Concert in the Park: Aja Vu tribute show",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+      ],
+      "matchedName": "Live Oak Park"
+    },
+    {
+      "name": "Guildhouse",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "local game store for playing Magic: The Gathering commander",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vnts5n/indian_tiffin_service/",
+        "https://www.reddit.com/r/SanJose/comments/1vnt1j1/new_wave_goth_clubs/",
+        "https://www.reddit.com/r/SanJose/comments/1vnj2fu/where_should_i_go_for_a_quick_getaway_trip/",
+        "https://www.reddit.com/r/SanJose/comments/1vn3c58/mtg_commander/"
+      ],
+      "matchedName": "Guildhouse"
     }
   ],
   "eventMatches": [
     {
-      "name": "Super Simple Science: The Magic of Magnets",
-      "when": "Saturday 8/15 2:00pm",
+      "name": "Make a Wish for Tanabata / Star Festival",
+      "when": "Friday Aug. 14 (also Sat/Sun)",
       "city": "San Jose",
-      "context": "kids science event at North San Jose Libraries",
+      "context": "write wishes on bamboo grove at Vineland Branch library",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vm2n22/weekend_kid_events_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vmogoh/does_anyone_recognize_this_pho_restaurant/",
-        "https://www.reddit.com/r/SanJose/comments/1vmo7hl/looking_for_recommendations_for_acting_classes_or/",
-        "https://www.reddit.com/r/SanJose/comments/1vmdjds/free_tutoring_for_needful/",
-        "https://www.reddit.com/r/SanJose/comments/1vm307f/city_council_11_august_summarya_lot_of_talk_about/"
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
       ],
-      "matchedName": "Super Simple Science: The Magic of Magnets"
+      "matchedName": "Make a Wish for Tanabata/Star Festival!"
     },
     {
-      "name": "San Jose Giants vs. Fresno Grizzlies",
-      "when": "Saturday 8/15 evening",
+      "name": "Friday Fun: 3D Hot Air Balloon Craft",
+      "when": "Friday Aug. 14, 4 p.m.",
       "city": "San Jose",
-      "context": "baseball game at Excite Ballpark",
+      "context": "paper craft event at Pearl Avenue Branch",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vm2n22/weekend_kid_events_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vmogoh/does_anyone_recognize_this_pho_restaurant/",
-        "https://www.reddit.com/r/SanJose/comments/1vmo7hl/looking_for_recommendations_for_acting_classes_or/",
-        "https://www.reddit.com/r/SanJose/comments/1vmdjds/free_tutoring_for_needful/",
-        "https://www.reddit.com/r/SanJose/comments/1vm307f/city_council_11_august_summarya_lot_of_talk_about/"
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
       ],
-      "matchedName": "San Jose Giants vs Fresno Grizzlies"
+      "matchedName": "Friday Fun: 3D Hot Air Balloon Craft"
     },
     {
-      "name": "Back-to-School Party: Math Festival",
-      "when": "Saturday 8/15 1:00pm",
-      "city": "San Jose",
-      "context": "library kids event",
+      "name": "KidStock",
+      "when": "Saturday Aug. 15, 10 a.m.-1 p.m.",
+      "city": "Mountain View",
+      "context": "kid-focused festival with DJ dance party and STEM activities",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vm2n22/weekend_kid_events_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vmogoh/does_anyone_recognize_this_pho_restaurant/",
-        "https://www.reddit.com/r/SanJose/comments/1vmo7hl/looking_for_recommendations_for_acting_classes_or/",
-        "https://www.reddit.com/r/SanJose/comments/1vmdjds/free_tutoring_for_needful/",
-        "https://www.reddit.com/r/SanJose/comments/1vm307f/city_council_11_august_summarya_lot_of_talk_about/"
+        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
+        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
+        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
+        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
+        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
       ],
-      "matchedName": "Back-to-School Party: Math Festival"
+      "matchedName": "KidStock Family Festival"
     }
   ]
 }
