@@ -2,6 +2,115 @@
 
 ---
 
+## 2026-08-14 — Cycle 207: A Book Launch in the Wrong City, and a Gate That Can See Sources
+
+### Context
+Friday August 14, 2026. Automated builder cycle. The tightening roadmap is
+fully shipped, so this was a free-choice cycle. Closed the second item on
+Cycle 206's "Next 3" list — resolver provenance in the manifest — and ran a
+copy/fact sweep over the 2,023-event feed that turned up a worse bug than the
+one it was looking for.
+
+### What Was Built
+
+**A ticketed Palo Alto event was listed as free in Los Altos.** The Sept 13
+Baby-Sitters Club launch with Raina Telgemeier and Gale Galligan is at
+**Spangenberg Theatre, 780 Arastradero Rd, Palo Alto** — a ticketed event.
+South Bay Today had it at **Linden Tree Books, 265 State St, Los Altos**, free.
+Wrong venue, wrong city, wrong price on one card, with a Directions button
+pointing at the bookstore.
+
+**All three errors came from one line of DOM reading.** Linden Tree's calendar
+packs title, subtitle, off-site venue and date into a single `<h3>` separated
+by `<br>`, and the scraper read `h.textContent`, which drops `<br>` entirely.
+That is also why two titles shipped welded together — "…Love Across Eons and
+Galaxies**YA** Fantasy Author Panel…" (live on the site today, Aug 14) and
+"Book Launch with Mike Chen**In** conversation with Randy Ribay". Reading
+`innerText` renders each `<br>` as a newline and makes the parts separable
+again.
+
+**The line structure carries two facts `textContent` could not express.** An
+"at <Venue>" line means the event is not at the store; a "Buy Tickets" link
+means it is not free (the store's free events say "RSVP Now"). Off-site venues
+now resolve through a hand-verified table, and an unrecognized one **drops the
+event** rather than stamping the store's address on it — missing beats wrong,
+same rule the camp prices follow. Verified against the live page: all 9 events
+parse correctly, the two glued titles separate, and only the Telgemeier event
+relocates.
+
+**Also cut the title at the date regex's match index instead of
+`indexOf(dayName)`,** so a title carrying a weekday can no longer truncate
+itself at its own first word.
+
+**Provenance: the gate can finally see where a logo came from.** Cycle 206's
+wrong marks — an Indonesian railway's logo on Kai, a Wikimedia UI icon on Nile
+— were invisible to both existing checks, because a wrong logo that is unique
+on disk passes the missing-file and byte-identical tests alike. The fetcher now
+records the winning strategy per row in `TECH_LOGO_SOURCES`, and
+`check-tech-logos.mjs` fails the build when a company that may not source from
+Wikipedia has a `wikipedia` row. Confirmed by injecting one: the gate exits 1
+naming `kai-security (SCC_SPOTLIGHT, stage=startup)`.
+
+**The rule is re-derived against the data file, not frozen at fetch time.** A
+company moving from public to private turns its now-stale Wikipedia mark into a
+build failure instead of a silent wrong logo. The tech-companies.ts parser and
+the eligibility rule moved into `scripts/lib/logo-audit.mjs` so the fetcher and
+the gate cannot drift — the Cycle 206 bug *was* that drift, a rule that stopped
+one array short.
+
+**Labeled the 27 private SCC_SPOTLIGHT companies — the exact surface the bug was
+on — and every one came back byte-identical.** No logo changed, which is what
+makes the labels trustworthy: they describe the committed images, not what we
+would resolve today. `pinned-wiki` is exempt (a hand-picked Commons file is a
+human decision, not a search that went wrong), and the 169 rows fetched before
+tracking are reported, never failed; retrofitting a label would assert a source
+we never observed.
+
+**Verified:** 31 new tests across two new suites, full `npm test` green, `astro
+check` 0 errors, full `npm run build` clean with both prebuild gates, and the
+built `/event/2026-09-13-book-launch-with-raina-telgemeier-and-gale-galligan/`
+page confirmed carrying Spangenberg Theatre, Palo Alto and the correct street
+address.
+
+### Why This Was the Strongest Move
+A resident planning a Sunday afternoon would have driven to a bookstore in Los
+Altos for a ticketed event happening in Palo Alto, and the card gave them a
+Directions button to do it with. Location and price are the two facts an events
+page exists to get right. The provenance gate is the same shape of fix one
+layer up: Cycle 206 found its wrong logos by hand five months late, and this
+makes the next one a build failure. No protected Home, Events, or Food surface
+was touched.
+
+### Notes (flagged, not acted on — Rule #1)
+- **"PETE BE CENTER" is not scraper cruft** — Cycle 206 flagged it as the only
+  all-caps venue besides MACLA. It is a real venue at 439 **S.** First St in the
+  SOFA district, named after owner Pete Be, and Ticketweb/Yelp/VividSeats all
+  render it in caps. Left as-is. Its address in our feed omits the "S", as does
+  Guildhouse's at 420 S First St — San Jose has both a N and S First Street, so
+  both are ambiguous. Two events; not worth an ingest-layer normalizer yet.
+- `tech-briefing.json` remains an orphan with no consumer; its `weekLabel` now
+  reads "Aug 4 – Aug 11" and is 10 days stale. Still left alone, along with
+  `SvHistorySection`, `AnnualConferencesSection`, `FundingTicker`,
+  `TechEventsSection`, and `GovTechCallout` in TechnologyView.tsx.
+- The spotlight `slice(0, 12)` still shows 12 of 29 private companies. Carried
+  from Cycle 206; it's a curation call, not a bug.
+
+### Next 3 Strongest Ideas
+1. **Label the remaining 169 logo rows** — the gate only judges what it can
+   see, and 89 `RECENTLY_FUNDED` rows are the largest unlabeled at-risk group.
+   The spotlight pass showed a refresh is byte-safe when the files are current;
+   do it in batches and inspect anything whose bytes move.
+2. **Manual pin pass for the four unresolved marks** (`queue`,
+   `architect-labs`, `vortex-imaging`, `mojo-vision`) — auto-resolution is
+   exhausted; needs a human-picked source per company. Carried from Cycles 205
+   and 206.
+3. **Tech tab: small-company coverage below the funding line** — headcount
+   growth, office opens, and city business license filings for 3–20 person
+   South Bay teams. Carried from Cycles 205 and 206; the roundups only surface
+   big rounds.
+
+---
+
 ## 2026-08-13 — Cycle 206: A Railway Logo on the Tech Tab, and the Rule That Put It There
 
 ### Context
