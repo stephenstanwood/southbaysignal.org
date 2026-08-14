@@ -7344,7 +7344,9 @@ async function main() {
     source(fetchKeplersEvents),
     source(fetchHicklebeesEvents),
     source(fetchSjdaEvents),
-    source(fetchSjMuseumOfArtEvents),
+    // fetchSjMuseumOfArtEvents — retired 2026-08-13 after Cloudflare began
+    // challenging every direct HTTP request. SJMA remains covered by the
+    // Playwright snapshot, which carries its last healthy rows on browser errors.
     source(fetchJamsjEvents),
     source(fetchHistorySanJoseEvents),
     source(fetchPearTheatreEvents, { label: "The Pear Theatre" }),
