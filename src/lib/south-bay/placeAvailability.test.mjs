@@ -8,7 +8,23 @@ import {
 } from "./placeAvailability.mjs";
 
 const DE_SAISSET_ID = "ChIJUVuaM6zLj4ARoQSjNyb1ebQ";
+const MIMIS_KITCHEN_ID = "ChIJWzt9SsAxjoARxdjosLm4AjE";
 const ROSE_GARDEN_MARKET_ID = "ChIJuZpNGzXLj4ARIrlguZcNUOc";
+
+test("MiMi's Kitchen keeps its live Blossom Hill ordering URL", () => {
+  assert.deepEqual(
+    applyPlaceEditorialOverride({
+      id: MIMIS_KITCHEN_ID,
+      name: "MiMi's Kitchen",
+      url: "https://order.online/business/mimis-kitchen-11649027",
+    }),
+    {
+      id: MIMIS_KITCHEN_ID,
+      name: "MiMi's Kitchen",
+      url: "https://order.online/store/mimi-s-kitchen-blossom-hill-rd-25105409",
+    },
+  );
+});
 
 test("Rose Garden market keeps its first-party canonical name and URL", () => {
   assert.deepEqual(
