@@ -47,6 +47,9 @@ bash scripts/events/install-mini-refresh.sh
   Jose Jazz starts at `/lineup`; if that official view is semantically empty,
   it tries `/chronological` and the current day pages discovered from the
   first-party menu instead of hardcoding yearly filter slugs.
+- San Jose Museum of Art is owned by the Playwright snapshot. Its redundant
+  direct HTTP adapter was retired after Cloudflare began returning a managed
+  403 challenge; browser failures retain that source's last healthy future rows.
 - A failed Mini run rolls back only its uncommitted generated data, leaves the
   last known-good database deployed, alerts, and retries.
 
