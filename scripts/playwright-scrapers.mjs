@@ -26,6 +26,11 @@ import { createHash } from "crypto";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { classifyLibCalLocation } from "./lib/libcal-location.mjs";
 import {
+  parseLindenTreeHeadingLines,
+  resolveLindenTreeOffsiteVenue,
+  lindenTreeIsTicketed,
+} from "./lib/linden-tree-heading.mjs";
+import {
   normalizeMidpenOccurrenceUrl,
   normalizeMountainWineryCard,
 } from "./lib/official-event-sources.mjs";
@@ -713,21 +718,29 @@ async function scrapeLindenTree(page) {
     const events = [];
     const currentYear = new Date().getFullYear();
 
-    // Linden Tree has h3 elements containing: "Title + Day, Month DD at time"
-    // e.g. "Book Launch with Marissa Meyer & Tamara MossTuesday, April 7 at 6pm"
+    // Linden Tree has h3 elements holding "Title / [Subtitle] / Day, Month DD
+    // at time", separated by <br> rather than by block elements:
+    //
+    //   <b>Book Launch with Mike Chen<br>In conversation with Randy Ribay<br></b>
+    //   <b>Saturday, September 12 at 6pm</b>
+    //
+    // `textContent` drops <br>, which welded those parts into "Book Launch
+    // with Mike ChenIn conversation with Randy Ribay" and shipped it that way.
+    // `innerText` renders each <br> as a newline, so the parts stay separable.
     const headings = document.querySelectorAll("h3");
     for (const h of headings) {
-      const text = h.textContent?.trim();
+      const text = (h.innerText || h.textContent || "").trim();
       if (!text || text.length < 10) continue;
 
       // Try to split on day name (Monday, Tuesday, etc.)
       const dayMatch = text.match(/(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})\s+at\s+(\d{1,2}(?::\d{2})?\s*[ap]m)/i);
       if (!dayMatch) continue;
 
-      // Title is everything before the day name
-      const dayIdx = text.indexOf(dayMatch[1]);
-      const title = text.slice(0, dayIdx).trim();
-      if (!title || title.length < 5) continue;
+      // Everything before the date line is title/subtitle/venue. Cut at the
+      // match index, not at indexOf(dayName) — a title carrying a weekday
+      // ("Sunday Matinee…") would otherwise truncate at its own first word.
+      const headLines = text.slice(0, dayMatch.index).split(/\n+/);
+      if (!headLines.some((l) => l.trim().length >= 5)) continue;
 
       const month = dayMatch[2];
       const day = dayMatch[3];
@@ -735,7 +748,7 @@ async function scrapeLindenTree(page) {
       const dateStr = `${month} ${day}, ${currentYear}`;
 
       const link = h.querySelector("a")?.href || h.parentElement?.querySelector("a")?.href;
-      events.push({ title, date: dateStr, time, link });
+      events.push({ headLines, headingText: text, date: dateStr, time, link });
     }
 
     // Also check the text-based listing before the h3s
@@ -746,7 +759,13 @@ async function scrapeLindenTree(page) {
       let match;
       while ((match = eventPattern.exec(bodyText)) !== null) {
         const dateStr = `${match[2]} ${match[3]}, ${currentYear}`;
-        events.push({ title: match[5].trim(), date: dateStr, time: match[4], link: null });
+        events.push({
+          headLines: [match[5].trim()],
+          headingText: match[0],
+          date: dateStr,
+          time: match[4],
+          link: null,
+        });
       }
     }
 
@@ -757,6 +776,32 @@ async function scrapeLindenTree(page) {
     .map((r) => {
       const date = tryParseDate(r.date);
       if (!date || date < TODAY) return null;
+
+      const { title, offsiteVenueText } = parseLindenTreeHeadingLines(r.headLines);
+      if (!title || title.length < 5) return null;
+
+      // Most events are at the store, so the store's own address is the
+      // default. An "at <Venue>" line means it isn't — stamping the Los Altos
+      // address on those sent readers to the wrong city (the Sept 13
+      // Baby-Sitters Club launch is at Spangenberg Theatre in Palo Alto).
+      // Only venues we've verified get published; an unrecognized one is
+      // dropped rather than guessed at.
+      let place = {
+        venue: "Linden Tree Books",
+        address: "265 State St, Los Altos, CA 94022",
+        city: "los-altos",
+      };
+      if (offsiteVenueText) {
+        const resolved = resolveLindenTreeOffsiteVenue(offsiteVenueText);
+        if (!resolved) {
+          console.log(
+            `    Linden Tree: skipping "${title}" — off-site at "${offsiteVenueText}", no verified address`,
+          );
+          return null;
+        }
+        place = resolved;
+      }
+
       // Links ending in .html are Lightspeed PRODUCT pages — the "featured book"
       // anchor inside each listing, not an event page. Five events once shipped
       // all pointing at the same sticker-book product (and inherited its white
@@ -769,18 +814,18 @@ async function scrapeLindenTree(page) {
         if (isFirstParty && !/\.html(\?|$)/i.test(candidate.pathname)) eventLink = candidate.href;
       } catch { /* use the organizer calendar below */ }
       return {
-        title: r.title,
+        title,
         date,
         time: normalizeTime(r.time),
         endTime: null,
-        venue: "Linden Tree Books",
-        address: "265 State St, Los Altos, CA 94022",
-        city: "los-altos",
+        ...place,
         url: eventLink || occurrenceSourceUrl,
         source: "Linden Tree Books",
         category: "arts",
-        cost: "free",
-        kidFriendly: /\b(kid|child|family|story|youth|teen|toddler|baby|preschool|infant|lap[-\s]?sit|ages?\s*\d|grades?\s+[K0-9]|picture\s+book)/i.test(r.title),
+        // Store events are free; the calendar flags the ticketed ones with a
+        // "Buy Tickets" link, which is the only price evidence on the page.
+        cost: lindenTreeIsTicketed(r.headingText) ? "paid" : "free",
+        kidFriendly: /\b(kid|child|family|story|youth|teen|toddler|baby|preschool|infant|lap[-\s]?sit|ages?\s*\d|grades?\s+[K0-9]|picture\s+book)/i.test(title),
         occurrenceEvidence: {
           kind: "first-party-occurrence-page",
           sourceUrl: occurrenceSourceUrl,
