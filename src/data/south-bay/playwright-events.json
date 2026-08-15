@@ -1,15 +1,15 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-14T11:43:28.613Z",
+    "generatedAt": "2026-08-15T16:02:01.739Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 633,
+    "eventCount": 634,
     "sourceCount": 24,
     "sources": [
-      "Mountain View Public Library (143)",
+      "Mountain View Public Library (144)",
       "Los Gatos Library (143)",
-      "San Jose Jazz (12)",
-      "Linden Tree Books (9)",
+      "San Jose Jazz (14)",
+      "Linden Tree Books (8)",
       "Hicklebee's (2)",
       "History San Jose (11)",
       "Montalvo Arts Center (5)",
@@ -20,8 +20,8 @@
       "Children's Discovery Museum (2)",
       "Midpen Open Space (4)",
       "Guadalupe River Park Conservancy (5)",
-      "Santana Row (5)",
-      "City of Cupertino (75)",
+      "Santana Row (6)",
+      "City of Cupertino (74)",
       "Opera San José (5)",
       "TheatreWorks Silicon Valley (90)",
       "Levi's Stadium (15)",
@@ -29,7 +29,7 @@
       "The Tech Interactive (5)",
       "Books Inc (4)",
       "Peninsula Open Space Trust (2)",
-      "San Jose Museum of Art (15)"
+      "San Jose Museum of Art (14)"
     ],
     "sourceHealth": [
       {
@@ -68,7 +68,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 145,
+        "count": 146,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -88,7 +88,7 @@
         "id": "san-jose-jazz",
         "label": "San Jose Jazz",
         "status": "ok",
-        "count": 12,
+        "count": 14,
         "error": null,
         "sources": [
           "San Jose Jazz"
@@ -98,7 +98,7 @@
         "id": "sj-museum-of-art",
         "label": "SJ Museum of Art",
         "status": "error",
-        "count": 15,
+        "count": 14,
         "error": "page.goto: Timeout 25000ms exceeded.\nCall log:\n  - navigating to \"https://sjmusart.org/calendar\", waiting until \"networkidle\"\n",
         "sources": [
           "San Jose Museum of Art"
@@ -110,7 +110,7 @@
         "id": "linden-tree-books",
         "label": "Linden Tree Books",
         "status": "ok",
-        "count": 9,
+        "count": 8,
         "error": null,
         "sources": [
           "Linden Tree Books"
@@ -244,7 +244,7 @@
         "id": "santana-row",
         "label": "Santana Row",
         "status": "ok",
-        "count": 5,
+        "count": 6,
         "error": null,
         "sources": [
           "Santana Row"
@@ -262,7 +262,7 @@
         "id": "city-of-cupertino",
         "label": "City of Cupertino",
         "status": "ok",
-        "count": 75,
+        "count": 74,
         "error": null,
         "sources": [
           "City of Cupertino"
@@ -365,23 +365,6 @@
     ]
   },
   "events": [
-    {
-      "id": "ce47f8a77d52",
-      "title": "Tech Take Apart",
-      "date": "2026-08-14",
-      "displayDate": "Fri, Aug 14",
-      "time": "3:00 PM",
-      "endTime": "5:00 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "education",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/16727119",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
     {
       "id": "62d31b7d5e19",
       "title": "Drop-in Bike Clinic",
@@ -1352,6 +1335,23 @@
       "kidFriendly": true
     },
     {
+      "id": "a04ad7cf6729",
+      "title": "Amplify: TOTALS Youth Life Skills",
+      "date": "2026-09-11",
+      "displayDate": "Fri, Sep 11",
+      "time": "4:00 PM",
+      "endTime": "5:00 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "family",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/16755117",
+      "source": "Mountain View Public Library",
+      "kidFriendly": true
+    },
+    {
       "id": "422e26d7948d",
       "title": "Mid-Autumn Festival Story Celebration",
       "date": "2026-09-12",
@@ -1841,6 +1841,23 @@
       "cost": "free",
       "description": "",
       "url": "https://mountainview.libcal.com/event/17170828",
+      "source": "Mountain View Public Library",
+      "kidFriendly": true
+    },
+    {
+      "id": "73c1f71728db",
+      "title": "Amplify: TOTALS Youth Life Skills: Public Speaking",
+      "date": "2026-09-25",
+      "displayDate": "Fri, Sep 25",
+      "time": "4:00 PM",
+      "endTime": "5:00 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "family",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/16755118",
       "source": "Mountain View Public Library",
       "kidFriendly": true
     },
@@ -5432,26 +5449,38 @@
       "kidFriendly": false
     },
     {
-      "id": "a322f89dc40f",
-      "title": "To the Stars and Back: Love Across Eons and Galaxies — YA Fantasy Author Panel with T.A. Chan, Samantha Chong, and S.G. Prince",
-      "date": "2026-08-14",
-      "displayDate": "Fri, Aug 14",
-      "time": "6:00pm",
+      "id": "eef6058e13d7",
+      "title": "Scott Amendola, Jeff Parker & Paul Bryan",
+      "date": "2026-12-05",
+      "displayDate": "Sat, Dec 5",
+      "time": "7pm",
       "endTime": null,
-      "venue": "Linden Tree Books",
-      "address": "265 State St, Los Altos, CA 94022",
-      "city": "los-altos",
+      "venue": "San Jose Jazz Venue",
+      "address": "",
+      "city": "san-jose",
       "category": "arts",
-      "cost": "free",
+      "cost": null,
       "description": "",
-      "url": "https://www.lindentreebooks.com/events-calendar/",
-      "source": "Linden Tree Books",
-      "kidFriendly": false,
-      "occurrenceEvidence": {
-        "kind": "first-party-occurrence-page",
-        "sourceUrl": "https://www.lindentreebooks.com/events-calendar/",
-        "date": "2026-08-14"
-      }
+      "url": "https://sanjosejazz.org/events/scott-amendola-jeff-parker-paul-bryan/",
+      "source": "San Jose Jazz",
+      "kidFriendly": false
+    },
+    {
+      "id": "35a26c59648e",
+      "title": "Scott Amendola, Jeff Parker & Paul Bryan",
+      "date": "2026-12-05",
+      "displayDate": "Sat, Dec 5",
+      "time": "30pm",
+      "endTime": null,
+      "venue": "San Jose Jazz Venue",
+      "address": "",
+      "city": "san-jose",
+      "category": "arts",
+      "cost": null,
+      "description": "",
+      "url": "https://sanjosejazz.org/events/scott-amendola-jeff-parker-paul-bryan-2/",
+      "source": "San Jose Jazz",
+      "kidFriendly": false
     },
     {
       "id": "8a095975adbe",
@@ -5564,7 +5593,7 @@
       }
     },
     {
-      "id": "789c9bb1224e",
+      "id": "7393e71c89b4",
       "title": "Book Launch with Mike Chen — In conversation with Randy Ribay",
       "date": "2026-09-12",
       "displayDate": "Sat, Sep 12",
@@ -5608,7 +5637,7 @@
       }
     },
     {
-      "id": "e6484c1344d2",
+      "id": "6717e2234345",
       "title": "Book Launch with Raina Telgemeier and Gale Galligan",
       "date": "2026-09-13",
       "displayDate": "Sun, Sep 13",
@@ -6191,8 +6220,8 @@
       "kidFriendly": false
     },
     {
-      "id": "4b5919b2ffe5",
-      "title": "Tucker Wetmore with William Beckmann, Line dancing with Nanci in Adele's Garden 4:30pm-6:15pm",
+      "id": "8a2d2f9cf028",
+      "title": "Tucker Wetmore with William Beckmann, Ashley Anne | Line dancing with Nanci in Adele's Garden 4:30pm-6:15pm",
       "date": "2026-08-21",
       "displayDate": "Fri, Aug 21",
       "time": "6:30 PM",
@@ -6718,23 +6747,6 @@
       "kidFriendly": false
     },
     {
-      "id": "0a97a5ae46ef",
-      "title": "George Lopez",
-      "date": "2026-08-14",
-      "displayDate": "Fri, Aug 14",
-      "time": "8:00pm",
-      "endTime": null,
-      "venue": "San Jose Civic",
-      "address": "135 W San Carlos St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "community",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sanjosetheaters.org/calendar-condensed/",
-      "source": "San Jose Theaters",
-      "kidFriendly": false
-    },
-    {
       "id": "3609170c67cf",
       "title": "Luo Zhenyu's Journey of Civilization U.S. Screening Event",
       "date": "2026-08-15",
@@ -7058,10 +7070,27 @@
       "kidFriendly": false
     },
     {
-      "id": "d525c224bebf",
+      "id": "eac406be2044",
+      "title": "Anupam Kher Live: Jaane Pehchaane Anjaane | Play",
+      "date": "2026-09-18",
+      "displayDate": "Fri, Sep 18",
+      "time": "8:00pm",
+      "endTime": null,
+      "venue": "Center for the Performing Arts",
+      "address": "255 S Almaden Blvd, San Jose, CA 95113",
+      "city": "san-jose",
+      "category": "arts",
+      "cost": "paid",
+      "description": "",
+      "url": "https://sanjosetheaters.org/calendar-condensed/",
+      "source": "San Jose Theaters",
+      "kidFriendly": false
+    },
+    {
+      "id": "c650e59eda82",
       "title": "Toddler Storytime",
-      "date": "2026-08-14",
-      "displayDate": "Fri, Aug 14",
+      "date": "2026-08-15",
+      "displayDate": "Sat, Aug 15",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
@@ -7075,10 +7104,10 @@
       "kidFriendly": true
     },
     {
-      "id": "10b7018baa20",
+      "id": "c9060007db88",
       "title": "All Ages Storytime",
-      "date": "2026-08-14",
-      "displayDate": "Fri, Aug 14",
+      "date": "2026-08-15",
+      "displayDate": "Sat, Aug 15",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
@@ -7355,54 +7384,20 @@
       "kidFriendly": false
     },
     {
-      "id": "a80fea20f653",
-      "title": "Movies in the Park",
-      "date": "2026-08-14",
-      "displayDate": "Fri, Aug 14",
-      "time": "08:00 PM",
-      "endTime": "09:45 PM",
-      "venue": "Creekside Park",
-      "address": "Creekside Park, 10455 Miller Avenue, Cupertino, CA, 95014, View Map",
-      "city": "cupertino",
-      "category": "family",
-      "cost": "free",
-      "description": "Enjoy popular releases of new, modern, and classic films to enjoy on a projector-screen at Creekside Park. Watch from genres of fantasy, comedy, drama, and action under the stars. For more information, visit the Movies in the Park webpage.",
-      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Movies-in-the-Park/Movies-in-the-Park-Event",
-      "source": "City of Cupertino",
-      "kidFriendly": true
-    },
-    {
-      "id": "b54f396d39e9",
-      "title": "Movies in the Park",
-      "date": "2026-08-21",
-      "displayDate": "Fri, Aug 21",
-      "time": "08:00 PM",
-      "endTime": "09:45 PM",
-      "venue": "Creekside Park",
-      "address": "Creekside Park, 10455 Miller Avenue, Cupertino, CA, 95014, View Map",
-      "city": "cupertino",
-      "category": "family",
-      "cost": "free",
-      "description": "Enjoy popular releases of new, modern, and classic films to enjoy on a projector-screen at Creekside Park. Watch from genres of fantasy, comedy, drama, and action under the stars. For more information, visit the Movies in the Park webpage.",
-      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Movies-in-the-Park/Movies-in-the-Park-Event",
-      "source": "City of Cupertino",
-      "kidFriendly": true
-    },
-    {
-      "id": "3ad4a9dddee1",
-      "title": "Movies in the Park",
-      "date": "2026-08-28",
-      "displayDate": "Fri, Aug 28",
-      "time": "08:00 PM",
-      "endTime": "10:15 PM",
-      "venue": "Creekside Park",
-      "address": "Creekside Park, 10455 Miller Avenue, Cupertino, CA, 95014, View Map",
-      "city": "cupertino",
-      "category": "family",
-      "cost": "free",
-      "description": "Enjoy popular releases of new, modern, and classic films to enjoy on a projector-screen at Creekside Park. Watch from genres of fantasy, comedy, drama, and action under the stars. For more information, visit the Movies in the Park webpage.",
-      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Movies-in-the-Park/Movies-in-the-Park-Event",
-      "source": "City of Cupertino",
+      "id": "431ec7465cdd",
+      "title": "Glass Pumpkin Festival",
+      "date": "2026-10-02",
+      "displayDate": "Fri, Oct 2",
+      "time": "3 pm",
+      "endTime": null,
+      "venue": "Santana Row",
+      "address": "377 Santana Row, San Jose, CA 95128",
+      "city": "san-jose",
+      "category": "community",
+      "cost": null,
+      "description": "",
+      "url": "https://santanarow.com/event/glass-pumpkin-festival/",
+      "source": "Santana Row",
       "kidFriendly": true
     },
     {
@@ -7574,6 +7569,40 @@
       "url": "https://www.cupertino.gov/Parks-Recreation/Events/Senior-Center-Open-House/Senior-Center-Open-House-Event",
       "source": "City of Cupertino",
       "kidFriendly": false
+    },
+    {
+      "id": "b54f396d39e9",
+      "title": "Movies in the Park",
+      "date": "2026-08-21",
+      "displayDate": "Fri, Aug 21",
+      "time": "08:00 PM",
+      "endTime": "09:45 PM",
+      "venue": "Creekside Park",
+      "address": "Creekside Park, 10455 Miller Avenue, Cupertino, CA, 95014, View Map",
+      "city": "cupertino",
+      "category": "family",
+      "cost": "free",
+      "description": "Enjoy popular releases of new, modern, and classic films to enjoy on a projector-screen at Creekside Park. Watch from genres of fantasy, comedy, drama, and action under the stars. For more information, visit the Movies in the Park webpage.",
+      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Movies-in-the-Park/Movies-in-the-Park-Event",
+      "source": "City of Cupertino",
+      "kidFriendly": true
+    },
+    {
+      "id": "3ad4a9dddee1",
+      "title": "Movies in the Park",
+      "date": "2026-08-28",
+      "displayDate": "Fri, Aug 28",
+      "time": "08:00 PM",
+      "endTime": "10:15 PM",
+      "venue": "Creekside Park",
+      "address": "Creekside Park, 10455 Miller Avenue, Cupertino, CA, 95014, View Map",
+      "city": "cupertino",
+      "category": "family",
+      "cost": "free",
+      "description": "Enjoy popular releases of new, modern, and classic films to enjoy on a projector-screen at Creekside Park. Watch from genres of fantasy, comedy, drama, and action under the stars. For more information, visit the Movies in the Park webpage.",
+      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Movies-in-the-Park/Movies-in-the-Park-Event",
+      "source": "City of Cupertino",
+      "kidFriendly": true
     },
     {
       "id": "78a769140c11",
@@ -8335,7 +8364,7 @@
       "city": "cupertino",
       "category": "family",
       "cost": "free",
-      "description": "Anyone can fall victim to cybercrimes. Join the City’s panel presentation where cybersecurity experts will inform and educate you to avoid becoming a victim. After the presentation, attendees can ask questions during the Q&A. Cybersecurity Panel Don Hester - Cybersecurity Advisor, CISA, Dept. of Homeland Security Dr. May Wang - CTO, IoT Security, Palo Alto Networks Ilaiy Elangovan - Head of Cyber Security Development at Visa Ramesh Gupta - CEO, Indentra.AI Balaram Donthi - Panel Moderator, TICC Commissioner Sudeep Kumar - Co-Host, TICC Vice Chair View Past Events Cybersecurity Public Education 2025 Cybersecurity Public Education 2023 Protect Yourself from Being Hacked on the Wild, Wild Internet",
+      "description": "Anyone can fall victim to cybercrimes. Join the City’s panel presentation where cybersecurity experts will inform and educate you to avoid becoming a victim. After the presentation, attendees can ask questions during the Q&A. Cybersecurity Panel Don Hester - Cybersecurity Advisor, CISA, Dept. of Homeland Security Dr. May Wang - CTO, IoT Security, Palo Alto Networks Ilaiy Elangovan - Head of Cyber Security Development at Visa Ramesh Gupta - CEO, Indentra.AI Sandip Patel - SCC Deputy District Attorney Balaram Donthi - Panel Moderator, TICC Commissioner Sudeep Kumar - Co-Host, TICC Vice Chair View Past Events Cybersecurity Public Education 2025 Cybersecurity Public Education 2023 Protect Yourself from Being Hacked on the Wild, Wild Internet",
       "url": "https://www.cupertino.gov/Events-directory/Cupertino-Cybersecurity-Public-Awareness-Events",
       "source": "City of Cupertino",
       "kidFriendly": true
@@ -10939,23 +10968,6 @@
       "description": "",
       "url": "https://www.eventbrite.com/e/hellyer-county-park-bioblitz-tickets-1992774014722?aff=post",
       "source": "Peninsula Open Space Trust",
-      "kidFriendly": false
-    },
-    {
-      "id": "4bacc84aa6de",
-      "title": "Light Up the Night",
-      "date": "2026-08-14",
-      "displayDate": "Fri, Aug 14",
-      "time": "Friday, August 14, 2026",
-      "endTime": null,
-      "venue": "San Jose Museum of Art",
-      "address": "110 S Market St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sjmusart.org/event/light-night",
-      "source": "San Jose Museum of Art",
       "kidFriendly": false
     },
     {
