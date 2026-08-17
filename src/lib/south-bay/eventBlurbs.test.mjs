@@ -14,6 +14,8 @@ import {
   blurbTimeOfDayConflict,
   timeLabelForOccurrences,
   sweepTimeOfDayConflicts,
+  isTruncatedDescription,
+  blurbInventsTruncatedDetail,
 } from "./eventBlurbs.mjs";
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
@@ -362,4 +364,109 @@ test("no cached blurb contradicts the events it is keyed to", () => {
   const probe = { byKey: { ...cache.byKey } };
   const dropped = sweepTimeOfDayConflicts(probe, events);
   assert.equal(dropped, 0, "event-blurb-cache.json holds blurbs contradicting their events' times");
+});
+
+// --- Truncated-description invention (2026-08-17 "bring your own mat") --------
+
+test("detects descriptions the upstream scraper cut mid-sentence", () => {
+  assert.equal(isTruncatedDescription("No registration required. Bring your own\u2026"), true);
+  assert.equal(isTruncatedDescription("Bring your own..."), true);
+  assert.equal(isTruncatedDescription("Mats are provided."), false);
+  assert.equal(isTruncatedDescription(""), false);
+  assert.equal(isTruncatedDescription(null), false);
+});
+
+test("drops a blurb that inverts a truncated bring-your-own instruction", () => {
+  const event = {
+    title: "Gentle Yoga / Yoga Relajante",
+    venue: "Hillview Library",
+    description:
+      "Discover a soothing practice designed for all bodies and all levels. Gentle Yoga invites you to relax, restore, and feel better from the inside out. Free. No registration required. Bring your own\u2026",
+  };
+
+  // The blurb that actually shipped in the 2026-08-17 newsletter.
+  assert.equal(
+    blurbInventsTruncatedDetail(
+      "Stretch through a slow-paced practice with poses adapted for every body, mat included from home.",
+      event,
+    ),
+    "contradicts bring-your-own",
+  );
+
+  // The correction reads the truncation the right way round.
+  assert.equal(
+    blurbInventsTruncatedDetail(
+      "Stretch through a slow-paced practice with poses adapted for every body; bring your own mat.",
+      event,
+    ),
+    null,
+  );
+});
+
+test("drops a provision claim invented past the cut", () => {
+  const event = {
+    title: "Kids Craft Hour",
+    venue: "Saratoga Library",
+    description: "Join us for an afternoon of open-ended crafting for all ages. Space is\u2026",
+  };
+  assert.equal(
+    blurbInventsTruncatedDetail("Craft freely with all materials provided at this drop-in hour.", event),
+    "unsupported provision claim",
+  );
+});
+
+test("leaves provision claims alone when the description supports them", () => {
+  // Truncated, but the visible half already says supplies are provided.
+  const supported = {
+    title: "Craftapalooza",
+    venue: "Saratoga Library",
+    description: "A wide variety of materials will be supplied in this free form activity where you can\u2026",
+  };
+  assert.equal(
+    blurbInventsTruncatedDetail("Kids craft freely with supplies provided in an open-ended session.", supported),
+    null,
+  );
+
+  // A complete description is authoritative — the guard must not second-guess it.
+  const complete = {
+    title: "Sewing Studio",
+    venue: "Mitchell Park Library",
+    description: "Machines and thread are provided; drop in any time.",
+  };
+  assert.equal(
+    blurbInventsTruncatedDetail("Sew a project with machines and thread provided.", complete),
+    null,
+  );
+});
+
+test("does not flag content enumeration as a logistics claim", () => {
+  // "including" enumerates songs, not supplies — flagging it would kill correct
+  // concert blurbs.
+  const event = {
+    title: "Jorge Medina",
+    venue: "San Jose Civic",
+    description: 'Jorge Medina presents his solo album, featuring songs like "Lo M\u00e1s Seguro" and "Espero Que\u2026',
+  };
+  assert.equal(
+    blurbInventsTruncatedDetail(
+      "Hear Jorge Medina play songs from his solo catalog, including 'Lo M\u00e1s Seguro'.",
+      event,
+    ),
+    null,
+  );
+});
+
+test("no shipped blurb invents detail past a truncated description", () => {
+  const events = JSON.parse(
+    readFileSync(join(REPO_ROOT, "src", "data", "south-bay", "upcoming-events.json"), "utf8"),
+  ).events || [];
+
+  const offenders = [];
+  for (const e of events) {
+    if (!e.blurb) continue;
+    const reason = blurbInventsTruncatedDetail(e.blurb, e);
+    if (reason) offenders.push(`${e.title} (${e.venue}) ${reason}: ${e.blurb}`);
+  }
+
+  assert.deepEqual(offenders, [], `blurbs invent detail past a truncated description:\n${offenders.join("\n")}`);
 });
