@@ -2,6 +2,120 @@
 
 ---
 
+## 2026-08-17 — Cycle 209: The History Cards Had Been Getting Silicon Valley Wrong
+
+### Context
+Sunday August 17, 2026. Automated builder cycle, second of the day. Cycle 208
+shipped a few hours earlier (River AI, Google IPO milestone) and left a ranked
+"Next 3." Item 1 — the funding sweep — was closed by 208 itself. Item 2 was
+this: **43 milestones, each rendering for a 15-day window, and nobody had read
+them in months.** 208 found a real error in the one card that happened to be
+live. That was a sampling result, not a clean bill of health.
+
+Tree started dirty with an interrupted data-refresh (20 generated JSON files)
+and one unpushed local commit against a new origin commit. Committed the data
+churn, rebased clean, then worked the milestone sweep.
+
+### What Was Built
+
+A full fact pass over all 43 entries in `TECH_MILESTONES`. Nine corrections
+across seven cards, every one verified against a primary or reference source
+rather than adjusted from memory:
+
+**Two are outright wrong-fact errors, not staleness:**
+
+- **Moore's Law card mis-stated Moore's own prediction.** Both the tagline and
+  the note said the 1965 paper predicted doubling "every two years." It
+  predicted **every year** — "a factor of two per year" is the paper's own
+  language. Moore stretched it to two years in **1975**. The card was
+  reproducing the single most common misquotation of the most important
+  document in Valley history, on the card whose entire subject is that
+  document. Rewritten to carry both numbers and the revision date.
+- **Moore was in Palo Alto, not Mountain View.** He wrote the paper as director
+  of Fairchild's R&D lab in **Palo Alto**. The `city` field and the note both
+  said Mountain View. Fixed both — this is a local-geography claim on a site
+  whose whole premise is local geography.
+
+**Fairchild card had the walkout in the wrong city and invented a garage:**
+
+- The Traitorous Eight walked out of **Shockley Semiconductor Laboratory in
+  Mountain View** (391 San Antonio Road), not Palo Alto as the card said.
+- The card closed by crediting the chips to "this Palo Alto garage." Fairchild's
+  site was a **rented commercial building on East Charleston Road** — not a
+  garage. The garage detail appears to have drifted over from the HP card two
+  entries up, where it's true and load-bearing.
+
+**Three stale or overclaimed statements:**
+
+- **Apple, "a $3 trillion company."** Apple touched **$5 trillion** in late July
+  2026 and sits near $4.5T today. Same failure class as the Google IPO price
+  snapshot 208 fixed. Replaced with "the first company ever valued at $3
+  trillion" — a permanent historical fact that never needs re-checking.
+- **Pentium, "the world's first processor to be named with a word instead of a
+  number."** False — DEC Alpha and PowerPC both predate it by a year. The true
+  story is better anyway: it was **Intel's** first, and it happened because a
+  1991 court ruling held that "386" was too generic to trademark. Rewritten to
+  the accurate version.
+- **Atari 2600, "On October 14, 1977."** No source supports that precision; the
+  ship date is genuinely unknown, somewhere between August and October 1977.
+  The card now says so instead of inventing a day. Safe to do because the
+  milestone UI renders `city · est. year` and the note — `month`/`day` are only
+  the scheduling window, never displayed.
+
+**Two Apple-comeback numbers, both repaired the same way:**
+
+- Two separate cards claimed Apple was "two weeks from insolvency" / "two weeks
+  from bankruptcy" in 1997. Jobs's own figure, in Isaacson, is **90 days**.
+  Both now attribute it to him.
+- The Think Different card said Apple "returned to profitability" by **2003**
+  and that the iPod was in development within 18 months of the ad. Apple closed
+  **fiscal 1998** with a $309M profit, and iPod development didn't start until
+  2001. Both corrected. Also fixed "within 4 years, the iPod" on the NeXT card
+  to five — Dec 1996 to Oct 2001.
+
+### Why This Was the Strongest Move
+These cards are the Tech tab's editorial voice, and they're the one surface on
+the site that claims authority about local history. A resident who knows the
+Valley would catch the Shockley/Mountain View error immediately, and the Moore's
+Law misquote is the kind of thing that quietly discredits everything next to it.
+Nine errors in 43 cards is a ~20% defect rate on a surface that had never been
+audited — well worth the cycle, and now it's done rather than sampled.
+
+### Verification
+- `npx astro check` — 0 errors, 112 pre-existing hints (unchanged)
+- `npm run build` — passes, including the `check-home-locked` prebuild gate
+- `npm test` — 11/11 pass
+- Grepped all nine superseded strings out of the source: zero remaining
+- Confirmed the corrected copy propagates into
+  `.vercel/output/functions/_render.func/src/data/south-bay/tech-companies.ts`
+- Confirmed `TECH_MILESTONES` is consumed only by `TechnologyView` and filtered
+  by date, not city — so changing Moore's `city` has no routing side effect
+
+### Notes
+- Could not smoke-test in a browser: dev servers are blocked in unattended
+  scheduled runs. Build + typecheck + tests were the available gates. None of
+  the seven edited cards is inside today's ±7-day window anyway (only the Aug 19
+  Google IPO card is live right now), so there is no visible change today —
+  these land as their anniversaries come around.
+- `tech-briefing.json` remains an orphan with no consumer; its `weekLabel` is now
+  three weeks stale. Fourth cycle noting it. It needs either a consumer or
+  deletion, and that is a Stephen call — left alone per the orphan rule.
+
+### Next 3 Strongest Ideas
+1. **Audit `SCC_SPOTLIGHT` and `TECH_COMPANIES` prose the same way.** The
+   milestone sweep found a 20% defect rate in hand-written copy nobody had
+   re-read. `TECH_COMPANIES` has 40+ `highlights` and `trendNote` fields full of
+   exactly the same kind of decaying quantitative claim ("stabilized after 2023
+   layoffs", headcount estimates), and they render year-round rather than in a
+   15-day window.
+2. **Funding sweep cadence** — carried from 208 and still right: make the
+   Crunchbase weekly top-ten the standing first stop each cycle. The Aug 10→17
+   gap that hid River AI was seven days wide.
+3. **City Newsletter: review time extraction** — carried from 207 and 208; many
+   events carry a time in the body that the extractor still misses.
+
+---
+
 ## 2026-08-17 — Cycle 208: The Biggest Palo Alto Round of the Month Was Missing
 
 ### Context
