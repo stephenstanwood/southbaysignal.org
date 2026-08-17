@@ -1,30 +1,90 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-14T03:08:49.874Z",
+      "generatedAt": "2026-08-17T11:05:54.968Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 6 – Aug 13",
+      "dateRange": "Aug 10 – Aug 17",
       "stats": {
-        "total": 389,
-        "notable": 30,
-        "newUnits": 24,
-        "totalValuation": 36538885
+        "total": 447,
+        "notable": 45,
+        "newUnits": 15,
+        "totalValuation": 22002930
       },
       "permits": [
         {
-          "id": "2026-131400-MF",
-          "address": "1803 Bradford Wy",
-          "category": "multi-family-new",
-          "categoryLabel": "New Multi-Family",
+          "id": "2023-085521-RS",
+          "address": "1370 Fleming Av",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "1803 Bradford (Bemp 100%) New Construction",
-          "valuation": 1810686,
-          "units": 16,
-          "issueDate": "2026-08-07",
-          "subtype": "Apartment"
+          "description": "New SFR",
+          "valuation": 1994121,
+          "units": 1,
+          "issueDate": "2026-08-14",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-130816-RS",
+          "address": "1300 Britton Av",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Lot 3 (Bemp 100%) New SFR",
+          "valuation": 672256,
+          "units": 1,
+          "issueDate": "2026-08-13",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-130825-RS",
+          "address": "1304 Britton Av",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Lot 4 (Bemp 100%) New SFR",
+          "valuation": 531215,
+          "units": 1,
+          "issueDate": "2026-08-13",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-130783-RS",
+          "address": "1205 Camino Ramon",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Lot 2 (Bemp 100%) New SFR",
+          "valuation": 529104,
+          "units": 1,
+          "issueDate": "2026-08-13",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-130726-RS",
+          "address": "1225 Camino Ramon",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Lot 1 (Bemp 100%) New SFR",
+          "valuation": 529104,
+          "units": 1,
+          "issueDate": "2026-08-13",
+          "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-130846-RS",
+          "address": "1308 Britton Av",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Lot 5 (Bemp 100%) New SFR",
+          "valuation": 525200,
+          "units": 1,
+          "issueDate": "2026-08-13",
+          "subtype": "Single-Family"
         },
         {
           "id": "2022-702720-RS",
@@ -39,166 +99,57 @@
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2025-141614-RS",
-          "address": "1035 Avondale St #2",
+          "id": "2026-130854-RS",
+          "address": "1308 Britton Av #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Attached ADU",
-          "valuation": 207674,
+          "description": "Lot 5 (Bemp 100%) New Attached ADU",
+          "valuation": 207556,
           "units": 1,
-          "issueDate": "2026-08-07",
+          "issueDate": "2026-08-13",
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2026-101566-RS",
-          "address": "5965 Monteverde Dr #2",
+          "id": "2026-130792-RS",
+          "address": "1205 Camino Ramon #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Attached ADU",
-          "valuation": 131764,
+          "description": "Lot 2 (Bemp 100%) New Attached ADU",
+          "valuation": 175920,
           "units": 1,
-          "issueDate": "2026-08-10",
+          "issueDate": "2026-08-13",
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2026-100962-RS",
-          "address": "1394 Heckman Wy #2",
+          "id": "2026-130733-RS",
+          "address": "1225 Camino Ramon #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Attached ADU",
-          "valuation": 109598,
+          "description": "Lot 1 (Bemp 100%) New Attached ADU",
+          "valuation": 175920,
           "units": 1,
-          "issueDate": "2026-08-07",
+          "issueDate": "2026-08-13",
           "subtype": "ADU   Accessory Dwelling Unit"
-        },
-        {
-          "id": "2025-146385-RS",
-          "address": "3255 Cropley Av #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Attached ADU",
-          "valuation": 99219,
-          "units": 1,
-          "issueDate": "2026-08-10",
-          "subtype": "ADU   Accessory Dwelling Unit"
-        },
-        {
-          "id": "2026-116423-RS",
-          "address": "1841 Bermuda Wy #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Code Case Attached ADU",
-          "valuation": 82858,
-          "units": 1,
-          "issueDate": "2026-08-11",
-          "subtype": "ADU   Accessory Dwelling Unit"
-        },
-        {
-          "id": "2026-116742-RS",
-          "address": "2075 Lockwood Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Garage Conversion to ADU",
-          "valuation": 77405,
-          "units": 1,
-          "issueDate": "2026-08-10",
-          "subtype": "ADU   Accessory Dwelling Unit"
-        },
-        {
-          "id": "2024-112372-RS",
-          "address": "828 Onyx Ct #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "New Detached ADU With Loft",
-          "valuation": 54447,
-          "units": 1,
-          "issueDate": "2026-08-07",
-          "subtype": "ADU   Accessory Dwelling Unit"
-        },
-        {
-          "id": "2026-131158-CI",
-          "address": "3055 Orchard Dr",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Advantest TI",
-          "valuation": 12000000,
-          "units": 0,
-          "issueDate": "2026-08-07",
-          "subtype": "Office"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-14T03:08:52.224Z",
+      "generatedAt": "2026-08-17T11:05:57.310Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 6 – Aug 13",
+      "dateRange": "Aug 10 – Aug 17",
       "stats": {
-        "total": 61,
-        "notable": 4,
+        "total": 29,
+        "notable": 0,
         "newUnits": 0,
         "totalValuation": 0
       },
-      "permits": [
-        {
-          "id": "26BLD-02221",
-          "address": "1390 Harker Av",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-09",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26PLN-00220",
-          "address": "151 University Av",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for an Over-the-Counter Architectural Review to install one new non-illuminated channel letters sign mounted to an existing awning with a cleat. The proposed sign will be nine inches tall by 115 inches wide and constructed of aluminum painted black to read, 'Cleary Gottlieb'. Zone District: Downtown Commercial (CD-C(GF)(P)). CEQA Status: Not a project. For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-07",
-          "subtype": "Over the Counter Approved"
-        },
-        {
-          "id": "26PLN-00221",
-          "address": "412 Olive Av",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for an Over-the-Counter Architectural Review to install one 40 inch tall by 78 inch wide non-illuminated aluminum sign, two 21 inch tall by 42 inch wide non-illuminated alumninum signs, and two nine inch tall by 18 inch wide window graphics. All signs will read, 'gloo'. CEQA Status: Not a project. Zone District: North Ventura Low Density Mixed Use District (NV-MXL). For more information contact the project planner Garrett Sauls at Garrett.Sauls@PaloAlto.gov.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-07",
-          "subtype": "Over the Counter Approved"
-        },
-        {
-          "id": "26PLN-00219",
-          "address": "1755 Embarcadero Rd",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for Architectural Review for removal of one Camphor tree due to root conflict with approved accessibility path and replacement with two 24-inch box size Crape Myrtle trees.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-07",
-          "subtype": "Over the Counter Approved"
-        }
-      ]
+      "permits": []
     }
   }
 }

@@ -1,292 +1,155 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-14T03:17:08.171Z",
+    "generatedAt": "2026-08-17T11:14:45.872Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 9
+    "sourceCount": 6
   },
   "summary": {
-    "threadsMined": 9,
-    "placesExtracted": 13,
-    "placesMatched": 5,
-    "placeGaps": 8,
-    "eventsExtracted": 7,
-    "eventsMatched": 3,
-    "eventGaps": 4,
+    "threadsMined": 6,
+    "placesExtracted": 7,
+    "placesMatched": 3,
+    "placeGaps": 4,
+    "eventsExtracted": 3,
+    "eventsMatched": 1,
+    "eventGaps": 2,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "Arc'teryx",
-      "city": "Santa Clara",
-      "kind": "retail",
-      "context": "new store opening at Valley Fair mall",
+      "name": "The Ritz",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "hosting IV and The Strange Band show",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
+        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
       ]
     },
     {
-      "name": "Cider",
-      "city": "Santa Clara",
-      "kind": "retail",
-      "context": "new store opening at Valley Fair mall",
+      "name": "Rooster T Feathers Comedy Club",
+      "city": "Sunnyvale",
+      "kind": "venue",
+      "context": "Erik Griffin comedy show",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
+        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
       ]
     },
     {
-      "name": "Chubby Tan",
-      "city": "Santa Clara",
+      "name": "Kajiken",
+      "city": "San Jose",
       "kind": "restaurant",
-      "context": "new restaurant opening at Valley Fair mall",
+      "context": "ramen restaurant possibly opening at Valley Fair",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
+        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
       ]
     },
     {
-      "name": "Calabazas BMX Course",
+      "name": "Stan's Donuts",
       "city": "San Jose",
-      "kind": "park",
-      "context": "renovated BMX park reopens after seven weeks of repairs",
+      "kind": "bakery",
+      "context": "long line at 6am, donuts considered just okay",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
-      ]
-    },
-    {
-      "name": "Lake Cunningham Action Sports Park",
-      "city": "San Jose",
-      "kind": "park",
-      "context": "second BMX park in the city, also popular hiking spot",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
-      ]
-    },
-    {
-      "name": "Mt. Pleasant Branch",
-      "city": "San Jose",
-      "kind": "venue",
-      "context": "library hosting envelope kite-building event",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
-      ]
-    },
-    {
-      "name": "Civic Center Plaza",
-      "city": "Mountain View",
-      "kind": "venue",
-      "context": "site of KidStock kids festival",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
-      ]
-    },
-    {
-      "name": "Pioneer Park",
-      "city": "Mountain View",
-      "kind": "park",
-      "context": "site of KidStock kids festival",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+        "https://www.reddit.com/r/SanJose/comments/1vq0bf5/stans_donuts/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "Build & Fly Envelope Kites",
-      "when": "Friday Aug. 14, 3-4 p.m.",
+      "name": "IV and The Strange Band / Samiam",
+      "when": "Tuesday August 18, 7PM",
       "city": "San Jose",
-      "context": "kids kite-building event at Mt. Pleasant Branch",
+      "context": "concert at The Ritz",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
+        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
       ]
     },
     {
-      "name": "Concert in the Park: Aja Vu",
-      "when": "Friday Aug. 14, 6:30-8 p.m.",
-      "city": "Santa Clara",
-      "context": "Steely Dan and Chicago tribute concert at Live Oak Park",
+      "name": "Erik Griffin live comedy show",
+      "when": "Thursday August 20, 8PM",
+      "city": "Sunnyvale",
+      "context": "comedy show at Rooster T Feathers",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
-      ]
-    },
-    {
-      "name": "Japanese Taiko Drumming with Kristy Aki Oshiro",
-      "when": "weekend of Aug. 15",
-      "city": "",
-      "context": "taiko drum and bamboo flute performance",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
-      ]
-    },
-    {
-      "name": "Foodie Week",
-      "when": "starts Sept. 19",
-      "city": "Santa Clara",
-      "context": "food event at Valley Fair mall",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
+        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
       ]
     }
   ],
   "placeMatches": [
     {
-      "name": "Valley Fair",
-      "city": "Santa Clara",
-      "kind": "retail",
-      "context": "mall revealing new merchants ahead of Foodie Week",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
-      ],
-      "matchedName": "Bowlero Valley Fair"
-    },
-    {
-      "name": "Vineland Branch",
+      "name": "San Jose Civic",
       "city": "San Jose",
       "kind": "venue",
-      "context": "library hosting Tanabata Star Festival wish-making event",
+      "context": "hosting '90s Corridos Tour",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
+        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
       ],
-      "matchedName": "Vineland Branch Library"
+      "matchedName": "San Jose Civic"
     },
     {
-      "name": "Pearl Avenue Branch",
+      "name": "Alum Rock Park",
       "city": "San Jose",
-      "kind": "venue",
-      "context": "library hosting 3D hot air balloon craft event",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
-      ],
-      "matchedName": "Pearl Avenue Branch Library"
-    },
-    {
-      "name": "Live Oak Park",
-      "city": "Santa Clara",
       "kind": "park",
-      "context": "site of Concert in the Park: Aja Vu tribute show",
+      "context": "hiking spot mentioned",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
+        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
       ],
-      "matchedName": "Live Oak Park"
+      "matchedName": "Alum Rock Park"
     },
     {
-      "name": "Guildhouse",
+      "name": "Westfield Valley Fair",
       "city": "San Jose",
-      "kind": "venue",
-      "context": "local game store for playing Magic: The Gathering commander",
+      "kind": "retail",
+      "context": "mall where Kajiken may open",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnts5n/indian_tiffin_service/",
-        "https://www.reddit.com/r/SanJose/comments/1vnt1j1/new_wave_goth_clubs/",
-        "https://www.reddit.com/r/SanJose/comments/1vnj2fu/where_should_i_go_for_a_quick_getaway_trip/",
-        "https://www.reddit.com/r/SanJose/comments/1vn3c58/mtg_commander/"
+        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
+        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
       ],
-      "matchedName": "Guildhouse"
+      "matchedName": "Westfield Valley Fair"
     }
   ],
   "eventMatches": [
     {
-      "name": "Make a Wish for Tanabata / Star Festival",
-      "when": "Friday Aug. 14 (also Sat/Sun)",
+      "name": "'90s Corridos Tour",
+      "when": "Friday August 21, 8PM",
       "city": "San Jose",
-      "context": "write wishes on bamboo grove at Vineland Branch library",
+      "context": "concert at San Jose Civic",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
+        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
+        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
       ],
-      "matchedName": "Make a Wish for Tanabata/Star Festival!"
-    },
-    {
-      "name": "Friday Fun: 3D Hot Air Balloon Craft",
-      "when": "Friday Aug. 14, 4 p.m.",
-      "city": "San Jose",
-      "context": "paper craft event at Pearl Avenue Branch",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
-      ],
-      "matchedName": "Friday Fun: 3D Hot Air Balloon Craft"
-    },
-    {
-      "name": "KidStock",
-      "when": "Saturday Aug. 15, 10 a.m.-1 p.m.",
-      "city": "Mountain View",
-      "context": "kid-focused festival with DJ dance party and STEM activities",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vnpu0s/free_family_events_around_san_jose_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1vnkhet/valley_fair_mall_reveals_new_merchants_ahead_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vnqb50/photos_renovated_calabazas_bmx_park_reopens_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vnmm2a/another_hike_another_photo_dump_lake_cunningham/",
-        "https://www.reddit.com/r/SanJose/comments/1vn2lt9/my_last_remaining_foster_kitten_is_still_looking/"
-      ],
-      "matchedName": "KidStock Family Festival"
+      "matchedName": "'90s Corridos Tour"
     }
   ]
 }
