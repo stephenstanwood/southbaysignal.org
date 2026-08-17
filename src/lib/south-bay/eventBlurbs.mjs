@@ -359,6 +359,8 @@ Strict rules:
 - Describe what happens THERE (specific action, not generic "swing by").
 - Lead with a concrete action verb (See, Hear, Tour, Walk, Make, Watch, Taste, Learn). Avoid the vague openers "explore" and "discover" — name what visitors actually do.
 - If a description is given, rewrite its substance in planner voice — don't copy marketing prose.
+- A description marked [NONE] means we have no description. Write only what the title, venue, and category state plainly, and stay general. Do not invent difficulty, distance, duration, terrain, skill level, age suitability, price, or what is provided.
+- A description marked [TRUNCATED] is cut off mid-sentence. Write only from the text you can actually see. NEVER complete or guess the missing part, and never state what attendees should bring, what is provided or included, whether registration is needed, or what anything costs unless that fact appears in full in the visible text. Getting this backwards sends readers to an event unprepared.
 - NEVER say: "real event", "only today", "one-time", "unforgettable", "anchor event", "right now".
 - NEVER use AI-marketing tone words: "legendary", "iconic", "magical", "whimsical", "cozy", "laid-back", "charming", "delightful", "must-see", "world-class", "hidden gem", "nestled", "tucked away", "quaint", "powerhouse", "vibrant", "bustling", "immersive", "tapestry", "delve". State what the act/event is concretely instead (e.g. "Grammy-winning vocalist", "six-piece Hawaiian reggae band").
 - NEVER mention distance, travel time, "near", "nearby", "close to", "minutes from".
@@ -421,6 +423,79 @@ function isPlausibleBlurb(text) {
   return !refusalPhrases.some((p) => lower.includes(p));
 }
 
+// ---------------------------------------------------------------------------
+// Truncated-description invention
+//
+// The 2026-08-17 newsletter shipped "Gentle Yoga / Yoga Relajante" (5:00 PM,
+// Hillview Library) with the blurb "…poses adapted for every body, mat
+// included from home." The SJPL page says "Bring your own mat." The scraped
+// description had been cut mid-sentence at ~200 chars — it ended on the literal
+// fragment "Bring your own…" — and Sonnet completed the dangling thought in
+// exactly the wrong direction. A reader would have shown up without a mat.
+//
+// 36% of ingested events (736 of 2023 on the day this was found) carry a
+// description truncated by the upstream scraper, so the dangling-instruction
+// shape is common; the inversion just hadn't been caught before. Two halves to
+// the fix: buildUserPrompt now marks a truncated description as truncated and
+// the system prompt forbids completing past the cut, and every blurb is checked
+// against the visible description before it can land in the cache.
+// ---------------------------------------------------------------------------
+
+/** True when a scraped description was cut mid-sentence by the upstream feed. */
+export function isTruncatedDescription(desc) {
+  return /(?:…|\.\.\.)\s*$/.test(String(desc || "").trim());
+}
+
+/** The part of a description we can actually trust — everything before the cut. */
+function visibleDescription(desc) {
+  return String(desc || "").trim().replace(/(?:…|\.\.\.)\s*$/, "").trim();
+}
+
+// Claims that the venue supplies something. Deliberately excludes
+// "including"/"includes": those enumerate content ("songs including 'Lo Más
+// Seguro'"), not logistics, and matching them flagged two correct concert
+// blurbs in testing.
+const PROVISION_CLAIM = /\b(provided|supplied|furnished|loaner|on hand|no need to bring|materials? (?:are|is) (?:available|free)|(?:mat|kit|supplies|materials|equipment|instrument)s? included)\b/i;
+
+// Cues that the attendee has to supply it themselves.
+const BRING_CLAIM = /\b(bring your own|bring a |bring their own|byo\b|provide your own)\b/i;
+
+/** Returns a reason string when a blurb asserts a logistics fact the truncated
+ *  description does not support, or null when the blurb is safe. Only fires on
+ *  truncated descriptions — a complete description is authoritative, and a
+ *  blurb that paraphrases it is fine. */
+export function blurbInventsTruncatedDetail(blurb, event) {
+  if (!blurb || !event) return null;
+  const desc = event.description;
+  if (!isTruncatedDescription(desc)) return null;
+  const visible = visibleDescription(desc);
+  if (!visible) return null;
+  if (!PROVISION_CLAIM.test(blurb)) return null;
+  // Direct contradiction: the surviving text tells you to bring it.
+  if (BRING_CLAIM.test(visible)) return "contradicts bring-your-own";
+  // Invented past the cut: nothing visible supports the provision claim.
+  if (!PROVISION_CLAIM.test(visible)) return "unsupported provision claim";
+  return null;
+}
+
+/** The `desc:` prompt line for one event. Both prompt builders share
+ *  SYSTEM_PROMPT, so both must emit the same [TRUNCATED]/[NONE] markers the
+ *  rules there refer to.
+ *
+ *  A description reaches us incomplete two ways: the upstream scraper already
+ *  cut it (trailing "…"), or our own 280-char cap cuts it here. Either way it
+ *  used to arrive as a bare dangling fragment — which is what let "Bring your
+ *  own…" come back as "mat included from home". 37% of ingested events carry
+ *  no description at all (all four Midpen hikes, every SJDA listing); with only
+ *  a title to work from, a 7.75-mile docent hike became "rolling trails". */
+function descPromptLine(description) {
+  const full = String(description || "").replace(/\s+/g, " ").trim();
+  if (!full) return "desc: [NONE — no description available for this event]";
+  const d = full.slice(0, 280);
+  const cut = isTruncatedDescription(full) || d.length < full.length;
+  return `desc: ${d}${cut ? " [TRUNCATED — text is cut off here]" : ""}`;
+}
+
 function buildUserPrompt(items) {
   const lines = items.map(({ event: e, timeLabel }, i) => {
     const parts = [`${i + 1}. ${e.title || "Untitled"}`];
@@ -434,10 +509,7 @@ function buildUserPrompt(items) {
     if (dow) parts.push(`day: ${dow}`);
     if (timeLabel) parts.push(`time: ${timeLabel}`);
     if (e.ongoing) parts.push(`ongoing-exhibit`);
-    if (e.description) {
-      const d = String(e.description).replace(/\s+/g, " ").trim().slice(0, 280);
-      if (d) parts.push(`desc: ${d}`);
-    }
+    parts.push(descPromptLine(e.description));
     return parts.join(" | ");
   });
 
@@ -502,10 +574,7 @@ function buildUniqueUserPrompt(event, conflictBlurbs, timeLabel) {
   if (dow) parts.push(`day: ${dow}`);
   if (timeLabel ?? event.time) parts.push(`time: ${timeLabel ?? event.time}`);
   if (event.ongoing) parts.push(`ongoing-exhibit`);
-  if (event.description) {
-    const d = String(event.description).replace(/\s+/g, " ").trim().slice(0, 280);
-    if (d) parts.push(`desc: ${d}`);
-  }
+  parts.push(descPromptLine(event.description));
   const line = parts.join(" | ");
   const conflictList = conflictBlurbs.map((b) => `- "${b}"`).join("\n");
 
@@ -690,6 +759,12 @@ export async function resolveEventBlurbs(events, opts = {}) {
           stats.failed++;
           continue;
         }
+        const invented = blurbInventsTruncatedDetail(blurb, batch[i].event);
+        if (invented) {
+          console.warn(`[eventBlurbs] dropped (${invented} past truncated description): "${blurb}" for ${batch[i].event.title}`);
+          stats.failed++;
+          continue;
+        }
 
         // Cross-event duplicate check: if this exact blurb is already used
         // by a DIFFERENT event/venue, ask Sonnet to make it distinct instead
@@ -717,7 +792,8 @@ export async function resolveEventBlurbs(events, opts = {}) {
               !candidate ||
               !isPlausibleBlurb(candidate) ||
               blurbLeaksDateContext(candidate, batch[i].event) ||
-              blurbTimeOfDayConflict(candidate, items[i].group)
+              blurbTimeOfDayConflict(candidate, items[i].group) ||
+              blurbInventsTruncatedDetail(candidate, batch[i].event)
             ) {
               if (candidate) conflictBlurbs.push(candidate);
               continue;
@@ -840,7 +916,8 @@ export async function regenerateDuplicateCacheEntries(events, opts = {}) {
           !candidate ||
           !isPlausibleBlurb(candidate) ||
           blurbLeaksDateContext(candidate, event) ||
-          blurbTimeOfDayConflict(candidate, group)
+          blurbTimeOfDayConflict(candidate, group) ||
+          blurbInventsTruncatedDetail(candidate, event)
         ) {
           if (candidate) conflictBlurbs.push(candidate);
           continue;
