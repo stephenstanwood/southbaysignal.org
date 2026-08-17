@@ -1100,6 +1100,23 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // Costa County are both out of coverage, so the entry fails either way and
   // the only source placing it inside Santa Clara County is the aggregator tag.
   // Same class as Katalyze AI and Array Labs. Do not add from the roundup alone.
+  // Note on River AI's round label: the Business Wire release says only "$1.1
+  // billion in funding" and names no series, so this is filed as a Venture
+  // Round rather than inventing a letter. Crunchbase's weekly roundup guessed
+  // "Seed/Series A"; the primary source doesn't say, so neither do we.
+  {
+    id: "river-ai",
+    name: "River AI",
+    city: "Palo Alto",
+    category: "ai",
+    round: "Venture Round",
+    amount: "$1.1B",
+    date: "2026-08-11",
+    tagline:
+      "Fine-tuning a frontier model on your own data usually means renting a GPU cluster and hiring someone who knows how to keep it fed — which is why most companies just call somebody else's API and accept the model they're given. River AI sells the other path: an API that runs LoRA fine-tuning and reinforcement learning against open-weight models, bills by the token, and deploys straight to production, with the company claiming full RL training runs finish in 15 to 20 minutes at two to four times lower cost than closed-source alternatives. The pitch is ownership — train it, tune it, keep it. CEO Igor Babuschkin co-founded xAI and worked on generative modeling and reinforcement learning at Google DeepMind and OpenAI before that, and the founding team pulls from xAI and Tesla. General Catalyst and AMP PBC led the $1.1B round, with strategic money from NVIDIA and AMD Ventures and participation from Y Combinator and Temasek. Roughly 20 people, headquartered in Palo Alto with a second office in Austin.",
+    color: "#0369a1",
+    url: "https://river.ai",
+  },
   {
     id: "lumilens",
     name: "Lumilens",
@@ -2830,7 +2847,7 @@ export const TECH_MILESTONES: TechMilestone[] = [
     month: 8,
     day: 19,
     tagline: "Google went public August 19, 2004 at $85 a share — the Mountain View search engine that became one of the most valuable companies in history.",
-    anniversaryNote: "On August 19, 2004, Google held its IPO on NASDAQ at $85 per share, valuing the company at $23 billion. Larry Page and Sergey Brin had founded the company six years earlier in a Menlo Park garage, moved to Mountain View, and turned a PhD research project into the world's dominant search engine. The IPO made Google's founders and early employees instantly wealthy — and funded the infrastructure that would soon include Gmail, Google Maps, YouTube, and Android. At the time, $85 seemed like a lot. By 2021, a single share would be worth over $2,900. Google is now Alphabet, headquartered in Mountain View, with more than 180,000 employees — and it all started with two Stanford grad students arguing about how to rank web pages.",
+    anniversaryNote: "On August 19, 2004, Google held its IPO on NASDAQ at $85 per share, valuing the company at $23 billion. Larry Page and Sergey Brin had founded the company six years earlier in a Menlo Park garage, moved to Mountain View, and turned a PhD research project into the world's dominant search engine. The IPO made Google's founders and early employees instantly wealthy — and funded the infrastructure that would soon include Gmail, Google Maps, YouTube, and Android. At the time, $85 seemed like a lot. Two splits later — 2-for-1 in April 2014, which created the non-voting Class C shares, and 20-for-1 in July 2022 — that one IPO share has become 40. Google now sits under Alphabet, still headquartered in Mountain View, with more than 180,000 employees — and it all started with two Stanford grad students arguing about how to rank web pages.",
     url: "https://en.wikipedia.org/wiki/History_of_Google",
     defunct: false,
   },

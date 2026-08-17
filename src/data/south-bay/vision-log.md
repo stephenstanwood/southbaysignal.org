@@ -2,6 +2,85 @@
 
 ---
 
+## 2026-08-17 — Cycle 208: The Biggest Palo Alto Round of the Month Was Missing
+
+### Context
+Sunday August 17, 2026. Automated builder cycle. Roadmap fully shipped, so
+free choice. Tree clean, `astro check` at 0 errors, event feed clean (1,992
+events, zero stale rows, zero exact duplicates in the future window). The
+pipeline is in good shape — so the gap was in the hand-curated Tech data.
+
+### What Was Built
+
+**River AI's $1.1B was not in the funding list.** The latest tracked round was
+Point2 Technology on Aug 10; today is Aug 17. In that gap sat the single
+largest South Bay round of the month: **River AI, Palo Alto, $1.1B**, announced
+Aug 11, led by General Catalyst and AMP PBC with strategic money from NVIDIA
+and AMD Ventures, plus Y Combinator and Temasek. Founded by xAI co-founder
+Igor Babuschkin; the product is an API for LoRA fine-tuning and reinforcement
+learning against open-weight models, token-metered, with the company claiming
+full RL runs in 15–20 minutes at 2–4× lower cost than closed alternatives.
+
+**Why the previous cycle missed it.** Cycle 207-era notes show someone worked
+the Aug 12 techstartups roundup carefully — the CodeRabbit exclusion note is
+right there in the file, correctly resolving Walnut Creek/SF and rejecting the
+"Mountain View" aggregator tag. River AI just wasn't in that roundup. It was in
+Crunchbase's Aug 8–14 top-ten, at #2 behind Databricks.
+
+**HQ verified against a primary source**, per the standing rule that aggregator
+city tags don't count: the Business Wire release datelines **"PALO ALTO,
+Calif., August 11, 2026"**, and the company's own careers page lists Palo Alto
+first with Austin as a second office. That is the Volta pattern (kept), not the
+Array Labs / Katalyze AI pattern (rejected).
+
+**Round label left unlabeled on purpose.** The release says only "$1.1 billion
+in funding" and names no series. Crunchbase's roundup guessed "Seed/Series A."
+Filed as `Venture Round` with a comment explaining why — inventing a letter the
+primary source doesn't state is the same class of error as trusting a city tag.
+
+**Fact-check: the Google IPO milestone was understating itself.** The Aug 19
+milestone card — live on the Tech tab right now, since the ±7-day window covers
+today — closed with "By 2021, a single share would be worth over $2,900." That
+quietly ignores both splits. One 2004 IPO share became 2 shares in the April
+2014 Class C split and 40 shares after the July 2022 20-for-1. Replaced the
+stale price snapshot with the split math, which is both accurate and permanent —
+no annual re-check. Also fixed "Google is now Alphabet" to "Google now sits
+under Alphabet"; Google is a subsidiary, not a rename.
+
+### Why This Was the Strongest Move
+The Tech tab's funding list is the differentiator, and a missing $1.1B round is
+the most visible possible failure of it — it also silently understated the YTD
+recap stat every resident sees at the top of the section. That stat now reads
+**$14B across 97 rounds, Q1–Q3 2026**.
+
+### Verification
+- `npx astro check` — 0 errors (112 pre-existing hints, untouched)
+- `npm run build` — passes, including the `check-home-locked` prebuild gate
+- Built `dist/client/tech/index.html` confirms River AI in the ticker and
+  highlights, "97 South Bay startup rounds", "$14B", "Raised in Q1–Q3 2026"
+
+### Notes
+- `tech-briefing.json` is still an orphan with no consumer, and its `weekLabel`
+  now reads "Aug 4 – Aug 11" — two weeks stale. Left alone per the orphan rule.
+  Third cycle this has been noted; it either needs a consumer or deletion, and
+  that's a Stephen call.
+- FinSMEs, hpcwire, morningstar and businesswire all 403 automated fetches.
+  Left alone rather than worked around; the HQ verification went through Yahoo
+  Finance's syndication of the same Business Wire release and the company's own
+  careers page.
+
+### Next 3 Strongest Ideas
+1. **Funding sweep cadence** — the Aug 10→17 gap was seven days wide. Crunchbase's
+   weekly top-ten roundup is the highest-yield single source and is trivially
+   checkable each cycle; make it a standing first stop.
+2. **Milestone fact sweep** — the Google IPO card had a real error and nobody had
+   read it in months. 43 milestones, each rendering for a 15-day window; worth a
+   pass for other stale price/employee-count claims.
+3. **City Newsletter: review time extraction** — carried from Cycle 207; many
+   events include a time in the body that the extractor still fails to capture.
+
+---
+
 ## 2026-08-14 — Cycle 207: A Book Launch in the Wrong City, and a Gate That Can See Sources
 
 ### Context
