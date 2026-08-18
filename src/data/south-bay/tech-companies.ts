@@ -536,16 +536,26 @@ export const SCC_SPOTLIGHT: SccTechSpotlight[] = [
     url: "https://cerebras.ai",
     employeesNote: "500 employees",
   },
+  // Groq moved to San Jose and is no longer a chip company — both facts were
+  // stale here for months. HQ: the company's SEC Form D filed 2026-07-24 lists
+  // 2700 Zanker Road, Suite 150, San Jose 95134 as Groq LLC's business and
+  // mailing address, and EDGAR carries the same address on the entity record.
+  // That beats the older 400 Castro St, Mountain View address the directories
+  // and Wikipedia still repeat. Groq's own 2026 press releases dateline "San
+  // Francisco, CA" — that is where the announcements are issued, not an HQ
+  // claim, and the boilerplate on both names no city at all, so the filing wins.
+  // Business: the December 2025 NVIDIA licensing agreement took the LPU chip
+  // line and the founding leadership; what is left is an inference cloud.
   {
     id: "groq",
     name: "Groq",
-    city: "Mountain View",
-    category: "chip",
+    city: "San Jose",
+    category: "cloud",
     stage: "growth",
-    tagline: "LPU inference chip clocking record token speeds. Built by ex-Google TPU team.",
+    tagline: "Built the LPU inference chip, then licensed the technology to NVIDIA in a non-exclusive December 2025 deal reported at roughly $20B — one that took founder Jonathan Ross, president Sunny Madra, and much of the staff to NVIDIA with it. Groq stayed independent and rebuilt around the cloud instead of the silicon, running inference for more than six million developers under CEO Adam Winter.",
     color: "#00D4AA",
     url: "https://groq.com",
-    employeesNote: "500 employees",
+    employeesNote: "13 data centers across North America, Europe, the Middle East, and Asia-Pacific",
   },
   {
     id: "tenstorrent",
@@ -1104,6 +1114,32 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // billion in funding" and names no series, so this is filed as a Venture
   // Round rather than inventing a letter. Crunchbase's weekly roundup guessed
   // "Seed/Series A"; the primary source doesn't say, so neither do we.
+  // Note on Groq's city: the aggregators file the August round under "Mountain
+  // View" and Wikipedia's infobox still says the same, but that address (400
+  // Castro St) is stale. Groq LLC's SEC Form D filed 2026-07-24 gives 2700
+  // Zanker Road, Suite 150, San Jose 95134 as both business and mailing
+  // address, and EDGAR's entity record matches. San Jose is in coverage either
+  // way, so this is a precision fix rather than an include/exclude call — the
+  // SCC_SPOTLIGHT entry above was corrected to match. Groq's own release
+  // datelines "San Francisco, CA"; that is announcement issuance, not an HQ
+  // claim, and its boilerplate names no city.
+  // Note on the round label: "Series A" is the company's own headline for a
+  // ten-year-old company that had already raised well over $1B, which reads
+  // oddly, but the primary source says Series A and that is what is recorded.
+  // TechCrunch and Bloomberg describe it only as a funding round.
+  {
+    id: "groq-series-a",
+    name: "Groq",
+    city: "San Jose",
+    category: "cloud",
+    round: "Series A",
+    amount: "$350M",
+    date: "2026-08-17",
+    tagline:
+      "Groq spent a decade building the LPU, an inference chip fast enough to make its token counts a benchmark, and then in December 2025 licensed that technology to NVIDIA in a non-exclusive deal reported at roughly $20B — an arrangement that also sent founder Jonathan Ross, president Sunny Madra, and much of the team to NVIDIA while Groq itself stayed independent. What it kept was the cloud: GroqCloud now runs inference out of 13 data centers across North America, Europe, the Middle East, and Asia-Pacific for more than six million developers, and the company says it is pushing total capacity from 54 megawatts past 200 in 2027. Disruptive, the Dallas firm whose CEO Alex Davis is also Groq's executive chairman, led the $350M at a $3.5B valuation — about half the $6.9B Groq carried in September 2025 — with NVIDIA expected to participate. It follows a $650M round in June, and Adam Winter, who joined in 2024 to run the international business, is CEO.",
+    color: "#00D4AA",
+    url: "https://groq.com",
+  },
   {
     id: "river-ai",
     name: "River AI",
