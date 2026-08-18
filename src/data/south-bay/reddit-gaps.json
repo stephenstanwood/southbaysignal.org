@@ -1,155 +1,319 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-17T11:14:45.872Z",
+    "generatedAt": "2026-08-18T03:17:00.636Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 6
+    "sourceCount": 7
   },
   "summary": {
-    "threadsMined": 6,
-    "placesExtracted": 7,
-    "placesMatched": 3,
-    "placeGaps": 4,
-    "eventsExtracted": 3,
-    "eventsMatched": 1,
+    "threadsMined": 7,
+    "placesExtracted": 17,
+    "placesMatched": 5,
+    "placeGaps": 12,
+    "eventsExtracted": 5,
+    "eventsMatched": 3,
     "eventGaps": 2,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "The Ritz",
+      "name": "Archbishop Mitty High School",
       "city": "San Jose",
+      "kind": "other",
+      "context": "student launched Global Math Access nonprofit",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ]
+    },
+    {
+      "name": "Mission West",
+      "city": "",
       "kind": "venue",
-      "context": "hosting IV and The Strange Band show",
+      "context": "hosts Monthly Cribbage Tournament",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
-        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
-        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
       ]
     },
     {
-      "name": "Rooster T Feathers Comedy Club",
-      "city": "Sunnyvale",
-      "kind": "venue",
-      "context": "Erik Griffin comedy show",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
-        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
-        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
-      ]
-    },
-    {
-      "name": "Kajiken",
+      "name": "Great Gas",
       "city": "San Jose",
-      "kind": "restaurant",
-      "context": "ramen restaurant possibly opening at Valley Fair",
+      "kind": "other",
+      "context": "cheapest gas station in West SJ/Winchester area",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
-        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
-        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
       ]
     },
     {
-      "name": "Stan's Donuts",
+      "name": "Gulf",
       "city": "San Jose",
-      "kind": "bakery",
-      "context": "long line at 6am, donuts considered just okay",
+      "kind": "other",
+      "context": "cheapest gas station in Blossom Valley (Snell Ave)",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vq0bf5/stans_donuts/"
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ]
+    },
+    {
+      "name": "Excel Gas & Mart",
+      "city": "San Jose",
+      "kind": "other",
+      "context": "cheapest gas station near North 1st St",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ]
+    },
+    {
+      "name": "Poppy",
+      "city": "San Jose",
+      "kind": "other",
+      "context": "cheapest gas station in Edenvale/Seven Trees",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ]
+    },
+    {
+      "name": "Speedway Express",
+      "city": "San Jose",
+      "kind": "other",
+      "context": "cheapest gas station in Alum Rock and Evergreen areas",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ]
+    },
+    {
+      "name": "Top Fuel",
+      "city": "San Jose",
+      "kind": "other",
+      "context": "cheapest gas station in Berryessa",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ]
+    },
+    {
+      "name": "Costco Gas Station",
+      "city": "San Jose",
+      "kind": "other",
+      "context": "cheapest gas station in Santa Teresa",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ]
+    },
+    {
+      "name": "Union Gas",
+      "city": "San Jose",
+      "kind": "other",
+      "context": "cheapest gas station in Cambrian",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ]
+    },
+    {
+      "name": "Foxworthy Gas",
+      "city": "San Jose",
+      "kind": "other",
+      "context": "cheapest gas station on Foxworthy Ave",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ]
+    },
+    {
+      "name": "American Gas",
+      "city": "San Jose",
+      "kind": "other",
+      "context": "cheapest gas station in East SJ/Story-King",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "IV and The Strange Band / Samiam",
-      "when": "Tuesday August 18, 7PM",
+      "name": "Data Center Standards Session",
+      "when": "2026-08-19",
       "city": "San Jose",
-      "context": "concert at The Ritz",
+      "context": "local policy talk at San José City Hall",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
-        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
-        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
       ]
     },
     {
-      "name": "Erik Griffin live comedy show",
-      "when": "Thursday August 20, 8PM",
-      "city": "Sunnyvale",
-      "context": "comedy show at Rooster T Feathers",
+      "name": "Monthly Cribbage Tournament",
+      "when": "2026-08-19",
+      "city": "",
+      "context": "card game tournament at Mission West",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
-        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
-        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
       ]
     }
   ],
   "placeMatches": [
     {
-      "name": "San Jose Civic",
+      "name": "Cupertino Library",
+      "city": "Cupertino",
+      "kind": "venue",
+      "context": "hosting Jen Fisher wellness talk",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ],
+      "matchedName": "Cupertino Library"
+    },
+    {
+      "name": "Saratoga Library",
+      "city": "Saratoga",
+      "kind": "venue",
+      "context": "hosting Opioid Overdose Prevention event",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ],
+      "matchedName": "Saratoga Library"
+    },
+    {
+      "name": "San José City Hall",
       "city": "San Jose",
       "kind": "venue",
-      "context": "hosting '90s Corridos Tour",
+      "context": "hosting Data Center Standards Session",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
-        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
-        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
       ],
-      "matchedName": "San Jose Civic"
+      "matchedName": "City Hall Cafe"
+    },
+    {
+      "name": "Los Gatos Town Plaza",
+      "city": "Los Gatos",
+      "kind": "venue",
+      "context": "live music venue for Pamela Parker's Fantastic Machine",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ],
+      "matchedName": "Los Gatos Town Plaza Park"
     },
     {
       "name": "Alum Rock Park",
       "city": "San Jose",
       "kind": "park",
-      "context": "hiking spot mentioned",
+      "context": "new trail status sign at entrance",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
-        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
-        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
       ],
       "matchedName": "Alum Rock Park"
-    },
-    {
-      "name": "Westfield Valley Fair",
-      "city": "San Jose",
-      "kind": "retail",
-      "context": "mall where Kajiken may open",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
-        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
-        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
-      ],
-      "matchedName": "Westfield Valley Fair"
     }
   ],
   "eventMatches": [
     {
-      "name": "'90s Corridos Tour",
-      "when": "Friday August 21, 8PM",
-      "city": "San Jose",
-      "context": "concert at San Jose Civic",
+      "name": "Jen Fisher: Hope is the Strategy",
+      "when": "2026-08-17",
+      "city": "Cupertino",
+      "context": "wellness talk at Cupertino Library",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vqbrjk/things_to_do_in_san_jose_this_week_818_823_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1vqf599/new_to_sj/",
-        "https://www.reddit.com/r/SanJose/comments/1vpyxe3/where_do_people_go_to_look_up_hiking_groups_and/",
-        "https://www.reddit.com/r/SanJose/comments/1vqfer7/big_kitties_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vq2mg5/is_kajiken_even_coming_to_valley_fair_anymore/"
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
       ],
-      "matchedName": "'90s Corridos Tour"
+      "matchedName": "Author Event with Jen Fisher: Hope is the Strategy"
+    },
+    {
+      "name": "Opioid Overdose Prevention",
+      "when": "2026-08-19",
+      "city": "Saratoga",
+      "context": "community event at Saratoga Library",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ],
+      "matchedName": "Opioid Overdose Prevention Training"
+    },
+    {
+      "name": "Pamela Parker's Fantastic Machine",
+      "when": "2026-08-19",
+      "city": "Los Gatos",
+      "context": "live music at Los Gatos Town Plaza",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vr001x/archbishop_mitty_student_launches_global_math/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxbgx/a_few_things_happening_around_san_jose_this_week/",
+        "https://www.reddit.com/r/SanJose/comments/1vr24wg/new_trail_status_sign_at_alum_rock_park_entrance/",
+        "https://www.reddit.com/r/SanJose/comments/1vqxtqk/these_are_the_cheapest_gas_stations_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vrbo0h/furniture_shops/"
+      ],
+      "matchedName": "Jazz on the Plazz - Pamela Parker's Fantastic Machine"
     }
   ]
 }
