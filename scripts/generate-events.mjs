@@ -83,6 +83,7 @@ import {
   todayPT,
   displayDate,
   displayTime,
+  displayEndTime,
 } from "./lib/dates.mjs";
 import { cleanDisplayCopy, cleanDisplayName } from "../src/lib/south-bay/displayText.mjs";
 import { isEventPublishable } from "../src/lib/south-bay/eventOccurrence.mjs";
@@ -5501,7 +5502,10 @@ async function fetchMeetupEvents() {
       date: isoDate(start),
       displayDate: displayDate(start),
       time: displayTime(start),
-      endTime: node.endTime ? displayTime(parseDate(node.endTime)) : null,
+      // Meetup end times are organizer-entered and occasionally land on the
+      // next day; displayEndTime drops the ones that can't be reconciled with
+      // the start instead of printing an event that finishes before it begins.
+      endTime: displayEndTime(start, parseDate(node.endTime)),
       venue,
       address,
       city: citySlug,

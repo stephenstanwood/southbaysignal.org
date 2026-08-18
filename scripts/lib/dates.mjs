@@ -122,6 +122,36 @@ export function displayDate(d) {
   });
 }
 
+// Longest run we'll believe from a source that reports its own end timestamp.
+// Wide enough for an all-day festival, narrow enough that a next-day end reads
+// as bad data rather than a very long party.
+const MAX_BELIEVABLE_SPAN_MS = 12 * 60 * 60 * 1000;
+
+/**
+ * Format an end time only when the source's own end timestamp is consistent
+ * with its start. Formatting a raw end with displayTime() throws away the
+ * calendar day, so an end that belongs to *tomorrow* renders as if it were
+ * today: Meetup's Aug 30 2026 Silicon Valley Pride listing carries "Sun, Aug 30,
+ * 10:30 PM to Mon, Aug 31, 5:00 PM" (the organizer typed PM for a parade that
+ * steps off at 10:30 AM), and the card read "10:30 PM – 5:00 PM" — an event
+ * finishing seventeen hours before it began. We can't repair someone else's
+ * start time, but an end we can't reconcile is better dropped than rendered.
+ *
+ * A run that crosses midnight is fine and stays: 10 PM – 1 AM is an ordinary
+ * night out, and the span check, not the calendar date, is what separates it
+ * from a corrupt record.
+ *
+ * @param {Date|null} start parsed event start
+ * @param {Date|null} end   parsed event end
+ * @returns {string|null} formatted end time, or null when it can't be trusted
+ */
+export function displayEndTime(start, end) {
+  if (!start || !end) return null;
+  const span = end.getTime() - start.getTime();
+  if (span <= 0 || span > MAX_BELIEVABLE_SPAN_MS) return null;
+  return displayTime(end);
+}
+
 export function displayTime(d) {
   if (!d) return null;
   // Format in PT first, then check the formatted output for midnight. Using
