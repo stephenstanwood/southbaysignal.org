@@ -27,9 +27,10 @@
 //   2 — could not load the tech data module
 //
 // Politeness: reuses the shared SouthBaySignal UA and hits each company's own
-// homepage at most once, four at a time. Sites that block non-browser agents
-// come back as BLOCKED, which is informational — an honest UA is worth more
-// than a lower false-positive count here.
+// homepage once, four at a time — twice only when the first attempt fails at
+// the transport level, which is a retry rather than a second opinion. Sites
+// that block non-browser agents come back as BLOCKED, which is informational —
+// an honest UA is worth more than a lower false-positive count here.
 // ---------------------------------------------------------------------------
 
 import { UA } from "./lib/http.mjs";
@@ -40,6 +41,7 @@ const asJson = args.includes("--json");
 
 const CONCURRENCY = 4;
 const TIMEOUT_MS = 25_000;
+const RETRY_DELAY_MS = 2_000;
 
 // 401/403/406/429 from a homepage means a bot wall, not a broken link. These
 // are reported separately so they never drown out the findings that matter.
@@ -76,19 +78,34 @@ function host(url) {
   }
 }
 
+/** One homepage request. Throws on transport-level failure. */
+function request(url) {
+  return fetch(url, {
+    headers: { "user-agent": UA, accept: "text/html,*/*" },
+    redirect: "follow",
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+}
+
 async function check(target) {
   const from = host(target.url);
   if (!from) return { ...target, status: "INVALID", detail: "unparseable url" };
 
+  // A transport-level failure (connection reset, DNS blip, timeout under
+  // concurrency) reads identically to a domain that no longer resolves, so
+  // retry once before calling it DEAD. The 2026-08-18 run reported Hang Ten
+  // Systems dead on a single "fetch failed"; hangten.ai answered 200 on every
+  // retry moments later. A false DEAD costs a cycle chasing a live site.
   let res;
   try {
-    res = await fetch(target.url, {
-      headers: { "user-agent": UA, accept: "text/html,*/*" },
-      redirect: "follow",
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-    });
-  } catch (err) {
-    return { ...target, status: "DEAD", detail: err.message || "request failed" };
+    res = await request(target.url);
+  } catch (first) {
+    await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
+    try {
+      res = await request(target.url);
+    } catch (err) {
+      return { ...target, status: "DEAD", detail: err.message || "request failed" };
+    }
   }
 
   const to = host(res.url);
