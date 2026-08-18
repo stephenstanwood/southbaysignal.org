@@ -6,6 +6,7 @@ import {
   formatMeetingTime,
   isClosedSessionMeeting,
   legistarMeetingUrl,
+  primeGovAgendaUrl,
   normalizeMeetingTime,
   onlyConfirmedMeetings,
   pickCivicClerkMeeting,
@@ -102,4 +103,46 @@ test("a public meeting that merely mentions an earlier closed session stays publ
   }), false);
   assert.equal(isClosedSessionMeeting({}), false);
   assert.equal(isClosedSessionMeeting(), false);
+});
+
+// ---------------------------------------------------------------------------
+// primeGovAgendaUrl
+// ---------------------------------------------------------------------------
+
+// Shape of a PrimeGov ListArchivedMeetings record: the HTML agenda is
+// compileOutputType 3; the PDF agenda and packet are compileOutputType 1.
+const PALO_ALTO_ARB_AUG_6 = {
+  id: 3055,
+  title: "Architectural Review Board Regular Meeting",
+  dateTime: "2026-08-06T08:30:00",
+  documentList: [
+    { id: 21163, compileOutputType: 3, publishStatus: 1, templateName: "HTML Agenda" },
+    { id: 21128, compileOutputType: 1, publishStatus: 1, templateName: "Agenda" },
+    { id: 21127, compileOutputType: 1, publishStatus: 1, templateName: "Packet" },
+  ],
+};
+
+test("primeGovAgendaUrl links the meeting's own HTML agenda", () => {
+  assert.equal(
+    primeGovAgendaUrl("cityofpaloalto.primegov.com", PALO_ALTO_ARB_AUG_6),
+    "https://cityofpaloalto.primegov.com/Portal/Meeting?compiledMeetingDocumentFileId=21163",
+  );
+});
+
+test("primeGovAgendaUrl refuses hosts outside primegov.com", () => {
+  assert.equal(primeGovAgendaUrl("evil.example", PALO_ALTO_ARB_AUG_6), null);
+  assert.equal(primeGovAgendaUrl("primegov.com.evil.example", PALO_ALTO_ARB_AUG_6), null);
+  assert.equal(primeGovAgendaUrl("", PALO_ALTO_ARB_AUG_6), null);
+});
+
+test("primeGovAgendaUrl returns null when no HTML agenda is published", () => {
+  assert.equal(primeGovAgendaUrl("cityofpaloalto.primegov.com", { documentList: [] }), null);
+  assert.equal(primeGovAgendaUrl("cityofpaloalto.primegov.com", {}), null);
+  assert.equal(
+    primeGovAgendaUrl("cityofpaloalto.primegov.com", {
+      documentList: [{ id: 1, compileOutputType: 3, publishStatus: 0 }],
+    }),
+    null,
+    "unpublished agendas are not linkable",
+  );
 });

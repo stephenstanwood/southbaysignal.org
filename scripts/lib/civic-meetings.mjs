@@ -124,6 +124,31 @@ export function legistarMeetingUrl(site, date, eventInSiteUrl = null) {
   return calendar.href;
 }
 
+/**
+ * Per-meeting agenda link for a PrimeGov-hosted body.
+ *
+ * A digest's sourceUrl otherwise falls back to the city's configured
+ * agendaUrl, which points at the *City Council* agenda page. When the digest
+ * is relabeled to another body — Palo Alto's Architectural Review Board, say —
+ * that link attributes the item to a body that never heard it. PrimeGov
+ * publishes one HTML agenda per meeting (compileOutputType 3); link to that
+ * instead so the cited source is the agenda actually summarized.
+ *
+ * @param {string} domain PrimeGov host, e.g. "cityofpaloalto.primegov.com"
+ * @param {object} meeting a ListArchivedMeetings record
+ * @returns {string|null} the agenda URL, or null when no HTML agenda is published
+ */
+export function primeGovAgendaUrl(domain, meeting) {
+  const host = String(domain || "").toLowerCase();
+  if (!/^[a-z0-9-]+(?:\.[a-z0-9-]+)*\.primegov\.com$/.test(host)) return null;
+  const docs = Array.isArray(meeting?.documentList) ? meeting.documentList : [];
+  const agenda = docs.find(
+    (d) => d?.compileOutputType === 3 && d?.publishStatus === 1 && Number.isInteger(d?.id),
+  );
+  if (!agenda) return null;
+  return `https://${host}/Portal/Meeting?compiledMeetingDocumentFileId=${agenda.id}`;
+}
+
 /** Attach the exact first-party observation that makes a meeting publishable. */
 export function confirmMeeting(meeting, { provider, sourceUrl, observedDate = meeting?.date } = {}) {
   if (!meeting || !ISO_DATE.test(String(meeting.date || ""))) return null;

@@ -17,7 +17,7 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { writeFileAtomic } from "./lib/io.mjs";
-import { legistarMeetingUrl, ptDateISO } from "./lib/civic-meetings.mjs";
+import { legistarMeetingUrl, primeGovAgendaUrl, ptDateISO } from "./lib/civic-meetings.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "digests.json");
@@ -193,7 +193,10 @@ async function verifyLegistarBodyOnDate(client, dateIso) {
     // Strip meeting-type boilerplate Legistar prepends to some body names
     // ("Joint Meeting for the Rules and Open Government Committee…"). It's not
     // part of the body's name and it makes the card heading unreadable.
-    return preferred.replace(/^(?:joint|special|regular)\s+meeting\s+(?:for|of)\s+the\s+/i, "").trim();
+    const body = preferred.replace(/^(?:joint|special|regular)\s+meeting\s+(?:for|of)\s+the\s+/i, "").trim();
+    // Legistar's calendar link is already filtered to the meeting date, so the
+    // existing legistarMeetingUrl fallback stays correct for this body.
+    return body ? { body, sourceUrl: null } : null;
   } catch {
     return null;
   }
@@ -228,15 +231,21 @@ async function verifyPrimeGovBodyOnDate(domain, dateIso) {
     const live = sameDay.filter((m) => !/cancel(?:led|ed)|postponed/i.test(m.title || ""));
     if (live.length === 0) return null;
 
-    const titles = live.map((m) => String(m.title || "").trim()).filter(Boolean);
-    if (titles.some((t) => /^city council\b/i.test(t))) return null; // label is correct
+    // Keep the meeting record, not just its title — the agenda link we cite as
+    // the digest's source hangs off the same record.
+    const named = live.filter((m) => String(m.title || "").trim());
+    if (named.some((m) => /^city council\b/i.test(String(m.title).trim()))) return null; // label is correct
 
     const preferred =
-      titles.find((t) => /\b(board|committee|commission)\b/i.test(t)) ?? titles[0];
+      named.find((m) => /\b(board|committee|commission)\b/i.test(String(m.title))) ?? named[0];
     if (!preferred) return null;
     // Drop the "Regular Meeting" / "Special Meeting" suffix PrimeGov appends —
     // it is meeting type, not the body's name.
-    return preferred.replace(/\s+(?:regular|special|joint)\s+meeting\b.*$/i, "").trim();
+    const body = String(preferred.title)
+      .replace(/\s+(?:regular|special|joint)\s+meeting\b.*$/i, "")
+      .trim();
+    if (!body) return null;
+    return { body, sourceUrl: primeGovAgendaUrl(domain, preferred) };
   } catch {
     return null;
   }
@@ -334,7 +343,9 @@ Return JSON with:
 Be concrete. Write for someone who wants to know what's happening in their city.
 Do not include meta-commentary about incomplete or truncated source data (e.g. "vendor name incomplete in agenda", "details not publicly shared", "agenda item unclear"). If a detail isn't in the source, just omit that bullet — pick a different concrete topic instead.
 
-Match the source's wording on sensitive framing. If the agenda says "federal civil enforcement," do not narrow it to "immigration enforcement," "tax enforcement," or any specific subtype unless the source explicitly uses that word.`;
+Match the source's wording on sensitive framing. If the agenda says "federal civil enforcement," do not narrow it to "immigration enforcement," "tax enforcement," or any specific subtype unless the source explicitly uses that word.
+
+Match the agenda's exact CEQA determination. "Not a Project" and "Exempt" are different findings — an item the agenda marks "Not a Project" is outside CEQA entirely, so never describe it as exempt or as having an exemption.`;
 
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -534,13 +545,17 @@ async function main() {
       // and its body is the Town Council, but Stoa records sometimes come back
       // labeled "City Council".
       let bodyLabel = config.councilBody ?? meeting.meetingType ?? "City Council";
+      // Set when the relabel can cite the retitled body's own agenda, so the
+      // digest doesn't source an ARB/commission item to the Council's page.
+      let bodySourceUrl = null;
       if (!config.councilBody && (config.legistarApi || config.primegov) && /^city council\b/i.test(bodyLabel)) {
-        const actualBody = config.legistarApi
+        const actual = config.legistarApi
           ? await verifyLegistarBodyOnDate(config.legistarApi, meeting.date)
           : await verifyPrimeGovBodyOnDate(config.primegov, meeting.date);
-        if (actualBody) {
-          console.warn(`  ⚠️  ${config.cityName}: no City Council meeting on ${meeting.date} — relabeling as "${actualBody}" (city=${config.city})`);
-          bodyLabel = actualBody;
+        if (actual) {
+          console.warn(`  ⚠️  ${config.cityName}: no City Council meeting on ${meeting.date} — relabeling as "${actual.body}" (city=${config.city})`);
+          bodyLabel = actual.body;
+          bodySourceUrl = actual.sourceUrl;
         }
       }
 
@@ -564,7 +579,14 @@ async function main() {
         // relabeled to a committee or commission above, that cadence doesn't
         // apply — omit it rather than pair the wrong body with the wrong meets-on.
         schedule: /council\b/i.test(bodyLabel) ? config.schedule : null,
-        sourceUrl: config.legistar ? legistarMeetingUrl(config.legistar, meeting.date) : config.agendaUrl,
+        // config.agendaUrl is the *City Council* agenda page. When the digest
+        // was relabeled to another body above, citing it misattributes the item
+        // to a body that never heard it — Palo Alto's Aug 6 2026 ARB wireless
+        // item shipped pointing at the Council page. Prefer the relabeled
+        // body's own per-meeting agenda whenever the verifier found one.
+        sourceUrl:
+          bodySourceUrl
+          ?? (config.legistar ? legistarMeetingUrl(config.legistar, meeting.date) : config.agendaUrl),
         generatedAt: new Date().toISOString(),
       };
 
