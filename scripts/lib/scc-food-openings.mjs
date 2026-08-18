@@ -95,7 +95,14 @@ export function isVerifiedOpeningRecord(record) {
 
 /** Normalize recurring South Bay street-name variants from SCC permit data. */
 export function normalizeSouthBayAddress(value) {
-  return String(value ?? "").replace(/\bDeanza\b/gi, "De Anza");
+  return String(value ?? "")
+    .replace(/\bDeanza\b/gi, "De Anza")
+    // SCC permit rows sometimes repeat the street number where the source form
+    // concatenated a house number field with an already-complete street line,
+    // shipping "1026 1026 W Evelyn Ave" (Spice Fusion, Sunnyvale, 2026-08-12).
+    // Collapse the duplicate — only when the two numbers are identical and lead
+    // the string, so a genuine range ("82-96") or "1 1st St" is untouched.
+    .replace(/^(\s*)(\d+[a-z]?)\s+\2\b/i, "$1$2");
 }
 
 /**

@@ -56,7 +56,10 @@ const CITIES = [
   // provisioned client (500 "connection string not set up") even though the
   // public paloalto.legistar.com calendar exists for source links.
   { city: "milpitas",      stoaCity: "Milpitas",      cityName: "Milpitas",      schedule: "1st and 3rd Tuesday",   agendaUrl: "https://www.milpitas.gov/129/Agendas-Minutes" },
-  { city: "palo-alto",     stoaCity: "Palo Alto",     cityName: "Palo Alto",     schedule: "1st and 3rd Monday",    agendaUrl: "https://www.paloalto.gov/City-Hall/City-Council/Council-Agendas-Minutes", legistar: "paloalto" },
+  // Palo Alto left Legistar — paloalto.legistar.com answers "Invalid parameters!"
+  // for every request, so `legistar:` here only produced dead source links and a
+  // body check that silently no-opped. PrimeGov is the live system of record.
+  { city: "palo-alto",     stoaCity: "Palo Alto",     cityName: "Palo Alto",     schedule: "1st and 3rd Monday",    agendaUrl: "https://www.paloalto.gov/City-Hall/City-Council/Council-Agendas-Minutes", primegov: "cityofpaloalto.primegov.com" },
 ];
 
 // If Stoa's most recent record for a city is older than this many days, we try
@@ -191,6 +194,49 @@ async function verifyLegistarBodyOnDate(client, dateIso) {
     // ("Joint Meeting for the Rules and Open Government Committee…"). It's not
     // part of the body's name and it makes the card heading unreadable.
     return preferred.replace(/^(?:joint|special|regular)\s+meeting\s+(?:for|of)\s+the\s+/i, "").trim();
+  } catch {
+    return null;
+  }
+}
+
+// Same honesty check as above, for cities on PrimeGov instead of Legistar.
+// Palo Alto's Legistar instance is decommissioned (paloalto.legistar.com answers
+// every request with "Invalid parameters!"), so the Legistar verifier could
+// never run for it and upstream mislabels sailed through. On 2026-08-17 the
+// Aug 6 digest was published as "Palo Alto City Council" when PrimeGov shows
+// the only Aug 6 meeting was the Architectural Review Board — the Council's
+// Aug 3 sitting was canceled and its next one was Aug 10.
+async function verifyPrimeGovBodyOnDate(domain, dateIso) {
+  try {
+    const year = dateIso.slice(0, 4);
+    const url = `https://${domain}/api/v2/PublicPortal/ListArchivedMeetings?year=${year}`;
+    const res = await fetch(url, {
+      headers: { "User-Agent": LEGISTAR_UA, Accept: "application/json" },
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!res.ok) return null;
+    const meetings = await res.json();
+    if (!Array.isArray(meetings)) return null;
+
+    // PrimeGov dateTime is a naive local wall clock, so the Pacific calendar
+    // date is the literal prefix — never re-read it as UTC.
+    const sameDay = meetings.filter((m) => String(m.dateTime || "").slice(0, 10) === dateIso);
+    if (sameDay.length === 0) return null;
+
+    // PrimeGov marks cancellations in the title. A canceled council sitting must
+    // not count as confirmation that the council met.
+    const live = sameDay.filter((m) => !/cancel(?:led|ed)|postponed/i.test(m.title || ""));
+    if (live.length === 0) return null;
+
+    const titles = live.map((m) => String(m.title || "").trim()).filter(Boolean);
+    if (titles.some((t) => /^city council\b/i.test(t))) return null; // label is correct
+
+    const preferred =
+      titles.find((t) => /\b(board|committee|commission)\b/i.test(t)) ?? titles[0];
+    if (!preferred) return null;
+    // Drop the "Regular Meeting" / "Special Meeting" suffix PrimeGov appends —
+    // it is meeting type, not the body's name.
+    return preferred.replace(/\s+(?:regular|special|joint)\s+meeting\b.*$/i, "").trim();
   } catch {
     return null;
   }
@@ -463,6 +509,20 @@ async function main() {
       continue;
     }
 
+    // Never replace a published digest with an OLDER meeting. Stoa serves a
+    // sliding 10-record window, so when newer meetings fall out of it (or come
+    // back without excerpts, failing hasRealContent) the "most recent with real
+    // content" pick can land months behind what is already live. That regression
+    // reads to a visitor as the city having gone quiet, which is worse than
+    // holding the last good digest. Hit 2026-08-17: Los Gatos Aug 4 → May 19 and
+    // Saratoga May 20 → March 18, neither city having a Legistar fallback.
+    const publishedIso = previousDigests[config.city]?.meetingDateIso;
+    if (publishedIso && meeting.date < publishedIso) {
+      console.warn(`  ⏮️  ${config.cityName}: source meeting ${meeting.date} predates published ${publishedIso} — holding previous digest (city=${config.city})`);
+      carryForward(config, "source-regressed");
+      continue;
+    }
+
     console.log(`  ⏳ ${config.cityName} (${meeting.date})...`);
     try {
       // Resolve the real body name BEFORE summarizing — the prompt names the
@@ -474,8 +534,10 @@ async function main() {
       // and its body is the Town Council, but Stoa records sometimes come back
       // labeled "City Council".
       let bodyLabel = config.councilBody ?? meeting.meetingType ?? "City Council";
-      if (!config.councilBody && config.legistarApi && /^city council\b/i.test(bodyLabel)) {
-        const actualBody = await verifyLegistarBodyOnDate(config.legistarApi, meeting.date);
+      if (!config.councilBody && (config.legistarApi || config.primegov) && /^city council\b/i.test(bodyLabel)) {
+        const actualBody = config.legistarApi
+          ? await verifyLegistarBodyOnDate(config.legistarApi, meeting.date)
+          : await verifyPrimeGovBodyOnDate(config.primegov, meeting.date);
         if (actualBody) {
           console.warn(`  ⚠️  ${config.cityName}: no City Council meeting on ${meeting.date} — relabeling as "${actualBody}" (city=${config.city})`);
           bodyLabel = actualBody;

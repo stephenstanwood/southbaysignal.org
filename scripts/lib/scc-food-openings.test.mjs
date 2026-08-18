@@ -14,6 +14,20 @@ test("normalizes De Anza street names from SCC permit spelling", () => {
   assert.equal(normalizeSouthBayAddress("South Deanza Boulevard"), "South De Anza Boulevard");
 });
 
+test("collapses a street number SCC repeated at the front of the address", () => {
+  // Spice Fusion, Sunnyvale, 2026-08-12 shipped as "1026 1026 W Evelyn Ave".
+  assert.equal(normalizeSouthBayAddress("1026 1026 W Evelyn Ave"), "1026 W Evelyn Ave");
+  assert.equal(normalizeSouthBayAddress("1205 1205 Camino Ramon"), "1205 Camino Ramon");
+});
+
+test("leaves address numbers that only look duplicated alone", () => {
+  assert.equal(normalizeSouthBayAddress("1 1st St"), "1 1st St");
+  assert.equal(normalizeSouthBayAddress("82-96 E Santa Clara St."), "82-96 E Santa Clara St.");
+  assert.equal(normalizeSouthBayAddress("1205 Camino Ramon"), "1205 Camino Ramon");
+  // A repeat that isn't at the front is real data, not a concatenation artifact.
+  assert.equal(normalizeSouthBayAddress("100 W 100 Ave"), "100 W 100 Ave");
+});
+
 test("rejects the two SCC records whose deduped prefix recreated Great American P", () => {
   const siteLocation = "4988 GREAT AMERICAN PY., SANTA CLARA, CA 95054";
 
