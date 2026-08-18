@@ -2,6 +2,127 @@
 
 ---
 
+## 2026-08-18 — Cycle 210: A Chip Company That Isn't One, and Three Fabricated Clock Times
+
+### Context
+Tuesday August 18, 2026. Tree clean on pull except one unpushed data-refresh
+commit. Roadmap fully closed, so this ran off 209's ranked "Next 3": item 1 was
+"audit `SCC_SPOTLIGHT` prose the same way you audited the milestones," item 3
+was the thrice-carried "City Newsletter time extraction misses times." Both got
+closed, and the spotlight audit turned up the bigger story.
+
+### What Was Built
+
+**Groq is not a Mountain View chip company anymore, and the card still said it
+was.** The spotlight entry read "LPU inference chip clocking record token
+speeds. Built by ex-Google TPU team. 500 employees," city Mountain View,
+category Chips. Every clause of that is now wrong:
+
+- **The chip business is gone.** In December 2025 Groq licensed its inference
+  technology to NVIDIA non-exclusively in a deal reported around $20B, and
+  founder Jonathan Ross, president Sunny Madra, and most of the staff went with
+  it. What stayed independent is a neocloud — 13 data centers across four
+  regions, six million developers, CEO Adam Winter.
+- **The HQ moved to San Jose.** This one took a filing to settle. Groq's own
+  2026 press releases dateline "San Francisco, CA" and name no city in the
+  boilerplate; Wikipedia and every directory still repeat 400 Castro Street,
+  Mountain View. The tiebreaker is Groq LLC's SEC Form D filed 2026-07-24,
+  which gives 2700 Zanker Road, Suite 150, San Jose 95134 as both business and
+  mailing address, matching EDGAR's entity record. A press-release dateline is
+  where an announcement is issued; a Form D address is sworn.
+- **And it raised $350M yesterday**, at a $3.5B valuation led by Disruptive —
+  roughly half the $6.9B it carried in September 2025. Added to
+  `RECENTLY_FUNDED` with the city reasoning recorded inline, because the
+  aggregators are filing this one under "Mountain View" and the next cycle will
+  meet the same conflict.
+
+**Three event cards were showing clock times nobody published.** The audit's
+duration scan surfaced them; each traced to a different bug:
+
+- **Silicon Valley Pride, "10:30 PM – 5:00 PM."** The Meetup organizer typed PM
+  for a 10:30 AM parade *and* put the end on the next day. The mapper took
+  `displayTime()` off the raw end timestamp, which throws away the calendar day,
+  so tomorrow's 5 PM rendered as today's. New `displayEndTime(start, end)` in
+  `dates.mjs` keeps an end only when it lands after the start and inside twelve
+  hours — which still preserves the ordinary 10 PM – 1 AM show that crosses
+  midnight.
+- **Community Police Academy, "9:00 AM – 11:00 PM."** Both halves invented. The
+  9 AM came from the time backfill's last-resort body-text scan matching "Open 9
+  am-12 pm" in Monte Sereno's City Hall footer — the same failure the
+  domain-root guard was written for after Montalvo's gallery hours leaked, except
+  a CivicPlus news item is a deep path and sails past it. The 11 PM came from
+  `endsAt` being the **graduation date** eight weeks out, stamped with July's
+  -07:00 offset on a November date, which lands at 11 PM Pacific on Nov 11 and
+  so never looked like the midnight sentinel it was.
+- **Hooray for Happy Hollow, "10:00 AM."** The park's daily hours, same
+  mechanism as Monte Sereno. The page publishes no event time at all.
+
+Fixes: a business-hours context guard on the backfill extractor (asymmetric
+window — tight behind, wide ahead, so "Gallery hours: 10 am-5 pm daily. The
+lecture begins at 6:30 pm" still yields 6:30), and a span check on inbound
+`endsAt` so a multi-week program's last date can't be read as a closing time.
+Re-ran the extractor against all 361 cached times: 30 changed, and the three
+that matter — the only future-dated ones — all correctly went to null.
+
+**Also:** `audit-tech-urls` now retries once on a transport-level failure before
+declaring a link dead. This morning's run reported Hang Ten Systems dead on a
+single "fetch failed"; hangten.ai answered 200 on three consecutive retries
+moments later. A false DEAD costs a cycle chasing a live site.
+
+### Why This Was the Strongest Move
+The spotlight card is the more embarrassing of the two. Groq is one of the
+best-known names on the Tech tab, and the card described a company that stopped
+existing in December — wrong business, wrong city, wrong headcount, wrong
+category — while a $350M round went untracked. 209 predicted exactly this defect
+class in hand-written prose that renders year-round rather than in a 15-day
+window; it was right.
+
+The time bugs are smaller per card but structural: three cards, three distinct
+mechanisms, all producing the one thing `CLAUDE.md` explicitly forbids —
+fabricated hours. Each is now a named function with tests rather than a patched
+regex.
+
+### Verification
+- `npx astro check` — 0 errors, 112 pre-existing hints (unchanged)
+- `npm run build` — passes, both prebuild gates (`check-home-locked`,
+  `check-tech-logos`) green
+- `npm test` — 0 failures; 12 new assertions across `dates.test.mjs`,
+  `inbound-event-normalize.test.mjs`, and a new `event-time-extract.test.mjs`
+  registered in the npm test chain
+- `npm run audit-tech-urls` — 152 links, 0 moved, 0 dead, 8 blocked (bot walls)
+- Confirmed the new Groq copy renders: funding card shows "Series A · $350M ·
+  San Jose · Cloud · today"; spotlight card shows San Jose / Growth
+- Verified the fixed extractor returns `null` against the live Monte Sereno page
+
+### Notes
+- No browser smoke test — dev servers are blocked in unattended scheduled runs.
+- Groq's SCC_SPOTLIGHT category moved chip → cloud. It is not in
+  `TECH_COMPANIES`, so the Anchor Employers leaderboard and Hiring Pulse are
+  untouched; the only consumer is the "Smaller, But Notable" grid, where Groq
+  renders 12th of 12.
+- Left the ~27 past-dated cache entries whose extraction changed on re-check
+  alone. They can never be read again, and rewriting them would churn the file
+  against the data-refresh cron for no reader benefit.
+- `tech-briefing.json` still has no consumer and its `weekLabel` is now four
+  weeks stale. Fifth cycle noting it. Stephen's call — left alone per the orphan
+  rule.
+
+### Next 3 Strongest Ideas
+1. **Finish the `SCC_SPOTLIGHT` / `TECH_COMPANIES` prose audit.** Groq was found
+   by chasing a funding round, not by sweeping. 50 spotlight entries and 40+
+   `TECH_COMPANIES` `highlights`/`trendNote` fields have never been read end to
+   end, and Groq proves the defect class is "company changed shape," which no
+   link audit can catch — celestial.ai still resolves.
+2. **Apply `displayEndTime` to the other scrapers.** Only the Meetup mapper uses
+   it. Several sources compare `isoDate(end) === isoDate(start)` instead, which
+   correctly drops the next-day case but also drops legitimate runs across
+   midnight; one shared rule would be better than four spellings of it.
+3. **Extend the duration scan into `audit-events.mjs`.** The >=8h span check
+   that found all three bad cards was an ad-hoc script this cycle. As a standing
+   audit rule it would have caught them months ago.
+
+---
+
 ## 2026-08-17 — Cycle 209: The History Cards Had Been Getting Silicon Valley Wrong
 
 ### Context
