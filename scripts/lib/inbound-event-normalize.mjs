@@ -187,10 +187,39 @@ export function resolveInboundCity(cityKey, location, title = "") {
   return matches[0];
 }
 
+// Longest run we'll read as a single sitting. Past this, an `endsAt` is
+// describing something other than when the doors close.
+const MAX_INBOUND_SPAN_MS = 12 * 60 * 60 * 1000;
+
+/**
+ * True when `endsAt` can be read as a closing time for `startsAt`.
+ *
+ * Newsletters use `endsAt` for two different things. Sometimes it's a real end
+ * time; sometimes it's the last date of a multi-week program, and rendering
+ * that as a clock time produces nonsense. Monte Sereno's Community Police
+ * Academy runs eight weeks — startsAt Sep 17, endsAt Nov 12, the graduation —
+ * and the card read "9:00 AM – 11:00 PM".
+ *
+ * That 11 PM is also a DST artifact worth knowing about: the extractor stamped
+ * the November date with the July offset (`2026-11-12T00:00:00-07:00`), and
+ * -07:00 in November is 11 PM the previous evening in Pacific time, so
+ * inboundClock's midnight sentinel never saw a midnight to reject. Comparing
+ * the two instants catches it without having to trust the offset.
+ */
+function endsAtLooksLikeAClosingTime(startsAt, endsAt) {
+  const start = new Date(startsAt ?? "");
+  const end = new Date(endsAt ?? "");
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return false;
+  const span = end.getTime() - start.getTime();
+  return span > 0 && span <= MAX_INBOUND_SPAN_MS;
+}
+
 export function normalizeInboundEventPresentation(event) {
   const override = officialOverride(event);
   const time = override?.time || inboundClock(event?.startsAt);
-  const parsedEndTime = inboundClock(event?.endsAt);
+  const parsedEndTime = endsAtLooksLikeAClosingTime(event?.startsAt, event?.endsAt)
+    ? inboundClock(event?.endsAt)
+    : null;
   const endTime = override?.endTime || (parsedEndTime && parsedEndTime !== time ? parsedEndTime : null);
   return {
     time,

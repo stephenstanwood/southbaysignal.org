@@ -164,3 +164,36 @@ test("inbound events prefer an explicit canonical URL", () => {
     sourceUrl: "https://tracker.example.com/example",
   }).url, "https://venue.example.com/events/example");
 });
+
+test("a multi-week program's last date is not an end time", () => {
+  // The real Monte Sereno record: an eight-week academy that starts Sep 17 and
+  // graduates Nov 12. The extractor stamped the November date with July's
+  // -07:00 offset, which lands at 11 PM Pacific on Nov 11 — past the midnight
+  // sentinel — and the card read "9:00 AM – 11:00 PM".
+  assert.deepEqual(normalizeInboundEventPresentation({
+    title: "Community Police Academy",
+    startsAt: "2026-09-17T00:00:00-07:00",
+    endsAt: "2026-11-12T00:00:00-07:00",
+    sourceUrl: "https://www.montesereno.org/civicalerts.aspx?AID=689",
+  }), {
+    time: null,
+    endTime: null,
+    url: "https://www.montesereno.org/civicalerts.aspx?AID=689",
+  });
+});
+
+test("a same-evening end time survives, including one that crosses midnight", () => {
+  assert.deepEqual(normalizeInboundEventPresentation({
+    title: "Council study session",
+    startsAt: "2026-09-17T18:00:00-07:00",
+    endsAt: "2026-09-17T20:30:00-07:00",
+    sourceUrl: "https://example.gov/agenda",
+  }).endTime, "8:30 PM");
+  assert.deepEqual(normalizeInboundEventPresentation({
+    title: "Late set",
+    startsAt: "2026-09-17T22:00:00-07:00",
+    endsAt: "2026-09-18T01:00:00-07:00",
+    sourceUrl: "https://example.com/show",
+  }).endTime, "1:00 AM");
+});
+

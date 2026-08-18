@@ -5750,6 +5750,40 @@ function saveTimeBackfillCache(cache) {
   } catch { /* non-fatal */ }
 }
 
+// Civic sites and venues print their office hours in the chrome of every page,
+// and "Open 9 am-12 pm; Closed for lunch" satisfies the "opens?" label below as
+// readily as "Doors open at 7 PM" does. backfillEventTimes() already refuses
+// domain-root URLs because of this (Montalvo's homepage gallery hours leaked
+// onto every event pointing at the bare domain), but that guard can't help a
+// deep page: Monte Sereno's City Hall footer hours became the start time of an
+// eight-week police academy on a CivicPlus news item. Reject a candidate whose
+// immediate surroundings read as an hours-of-operation block and keep scanning.
+// Dropping a time we can't trust is the right failure — a blank beats a wrong
+// one on the card.
+const BUSINESS_HOURS_CONTEXT =
+  /\b(?:hours?|closed|by\s+appointment|lunch|front\s+counter|walk-?ins?|holidays?)\b/i;
+// Asymmetric on purpose. An hours label sits right on top of its times
+// ("Front counter hours: 10 am-12 pm"), so looking far back only catches
+// sentences that merely follow one — "Gallery hours: 10 am-5 pm daily. The
+// lecture begins at 6:30 pm" is a real event time and has to survive. The
+// trailing side needs more room, because what marks the footer block is the
+// rest of the schedule after the first time ("Open 9 am-12 pm; Closed for
+// lunch").
+const BUSINESS_HOURS_LOOKBEHIND = 30;
+const BUSINESS_HOURS_LOOKAHEAD = 70;
+
+/** First capture of `re` whose surroundings don't read as opening hours. */
+function matchOutsideBusinessHours(text, re) {
+  for (const m of text.matchAll(re)) {
+    const matchEnd = m.index + m[0].length;
+    const before = text.slice(Math.max(0, m.index - BUSINESS_HOURS_LOOKBEHIND), m.index);
+    const after = text.slice(matchEnd, matchEnd + BUSINESS_HOURS_LOOKAHEAD);
+    if (BUSINESS_HOURS_CONTEXT.test(before) || BUSINESS_HOURS_CONTEXT.test(after)) continue;
+    return m[1];
+  }
+  return null;
+}
+
 /** Try to extract a clock time string from arbitrary HTML.
  *  Strategies (in order):
  *   1. JSON-LD Event with startDate that includes a time component
@@ -5815,14 +5849,16 @@ function extractTimeFromHtml(html, eventDate) {
     .replace(/\s+/g, " ");
   // Time patterns prefixed by labels like "doors at", "show", "starts", "@".
   // Two regexes — `@` doesn't sit at a word boundary so it needs its own pattern.
-  const labelMatch = text.match(/\b(?:doors|starts?|begins?|opens?|show(?:time)?|curtain)\s*(?:at|:)?\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm))/i);
-  if (labelMatch) return formatHourClock(labelMatch[1]);
-  const atSignMatch = text.match(/@\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm))/i);
-  if (atSignMatch) return formatHourClock(atSignMatch[1]);
+  const labelMatch = matchOutsideBusinessHours(text, /\b(?:doors|starts?|begins?|opens?|show(?:time)?|curtain)\s*(?:at|:)?\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm))/gi);
+  if (labelMatch) return formatHourClock(labelMatch);
+  const atSignMatch = matchOutsideBusinessHours(text, /@\s*(\d{1,2}(?::\d{2})?\s*(?:am|pm))/gi);
+  if (atSignMatch) return formatHourClock(atSignMatch);
   // Fallback: first time mention in the first 2KB of body text
   const head = text.slice(0, 2000);
-  const generalMatch = head.match(/\b(\d{1,2}:\d{2}\s*(?:am|pm))\b/i) || head.match(/\b(\d{1,2}\s*(?:am|pm))\b/i);
-  if (generalMatch) return formatHourClock(generalMatch[1]);
+  const generalMatch =
+    matchOutsideBusinessHours(head, /\b(\d{1,2}:\d{2}\s*(?:am|pm))\b/gi) ||
+    matchOutsideBusinessHours(head, /\b(\d{1,2}\s*(?:am|pm))\b/gi);
+  if (generalMatch) return formatHourClock(generalMatch);
 
   return null;
 }
@@ -8103,6 +8139,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
 export {
   cleanTitle,
+  extractTimeFromHtml,
   inferCategory,
   isBiblioEventCancelled,
   looksCancelled,
