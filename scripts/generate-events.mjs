@@ -57,6 +57,7 @@ import { readFileSync, existsSync } from "fs";
 import { writeFileAtomic } from "./lib/io.mjs";
 import { catSignal } from "./lib/notify.mjs";
 import { extractVenueFromTitle, stripRedundantVenueSuffix } from "./lib/venue-suffix.mjs";
+import { dropUnmatchedClosers } from "./lib/bracket-balance.mjs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { createHash, createSign } from "crypto";
@@ -1135,6 +1136,11 @@ function cleanTitle(title) {
   // "中/英文雙語說故事時間 Mandarin/English…" → "Mandarin/English…"
   if (/^[\u2E80-\u9FFF\uF900-\uFAFF]/.test(t)) {
     t = t.replace(/^.*?(?=[A-Za-z])/, "");
+    // The cut lands on the first Latin letter, so when the English half sits
+    // inside brackets it eats the opener and orphans the closer:
+    // "大朋友(50+)社區团体活动 ( Chinese Orchestra)" → "Chinese Orchestra)".
+    // Drop closers that lost their opener; balanced titles are untouched.
+    t = dropUnmatchedClosers(t).replace(/\s{2,}/g, " ").trim();
   }
   // Strip non-Latin bilingual suffix after " / ":
   // "Bilingual Family Storytime / 中英雙語故事時間" → "Bilingual Family Storytime"
