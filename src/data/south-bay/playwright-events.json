@@ -1,14 +1,14 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-17T16:12:02.151Z",
+    "generatedAt": "2026-08-18T07:16:10.623Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 632,
+    "eventCount": 633,
     "sourceCount": 24,
     "sources": [
       "Mountain View Public Library (145)",
       "Los Gatos Library (142)",
-      "San Jose Jazz (14)",
+      "San Jose Jazz (15)",
       "Linden Tree Books (10)",
       "Hicklebee's (2)",
       "History San Jose (12)",
@@ -18,7 +18,7 @@
       "Mountain Winery (33)",
       "San Jose Theaters (20)",
       "Children's Discovery Museum (2)",
-      "Midpen Open Space (4)",
+      "Midpen Open Space (3)",
       "Guadalupe River Park Conservancy (4)",
       "Santana Row (6)",
       "City of Cupertino (72)",
@@ -27,7 +27,7 @@
       "Levi's Stadium (15)",
       "SAP Center (15)",
       "The Tech Interactive (5)",
-      "Books Inc (4)",
+      "Books Inc (5)",
       "Peninsula Open Space Trust (2)",
       "San Jose Museum of Art (14)"
     ],
@@ -88,7 +88,7 @@
         "id": "san-jose-jazz",
         "label": "San Jose Jazz",
         "status": "ok",
-        "count": 14,
+        "count": 15,
         "error": null,
         "sources": [
           "San Jose Jazz"
@@ -224,7 +224,7 @@
         "id": "midpen-open-space",
         "label": "Midpen Open Space",
         "status": "ok",
-        "count": 4,
+        "count": 3,
         "error": null,
         "sources": [
           "Midpen Open Space"
@@ -330,7 +330,7 @@
         "id": "books-inc",
         "label": "Books Inc",
         "status": "ok",
-        "count": 4,
+        "count": 5,
         "error": null,
         "sources": [
           "Books Inc"
@@ -365,23 +365,6 @@
     ]
   },
   "events": [
-    {
-      "id": "000ccde3bd14",
-      "title": "Board of Library Trustees Meeting Canceled.",
-      "date": "2026-08-17",
-      "displayDate": "Mon, Aug 17",
-      "time": "7:00 PM",
-      "endTime": "9:00 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17132024",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
     {
       "id": "40611bf2388a",
       "title": "Community Preservation Lab Scanning Service",
@@ -1692,6 +1675,23 @@
       "kidFriendly": false
     },
     {
+      "id": "f2e4eca828bc",
+      "title": "Words at Play Game Night",
+      "date": "2026-09-23",
+      "displayDate": "Wed, Sep 23",
+      "time": "6:30 PM",
+      "endTime": "7:30 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "arts",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17281039",
+      "source": "Mountain View Public Library",
+      "kidFriendly": true
+    },
+    {
       "id": "07a6e01ef814",
       "title": "Let's Create",
       "date": "2026-09-24",
@@ -2829,40 +2829,6 @@
       "url": "https://mountainview.libcal.com/event/17329177",
       "source": "Mountain View Public Library",
       "kidFriendly": true
-    },
-    {
-      "id": "6b44fd3148a9",
-      "title": "ESL Conversation Club",
-      "date": "2026-08-17",
-      "displayDate": "Mon, Aug 17",
-      "time": "11:00 AM",
-      "endTime": "12:00 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/16831237",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "716fb7133501",
-      "title": "Social Stitching",
-      "date": "2026-08-17",
-      "displayDate": "Mon, Aug 17",
-      "time": "4:30 PM",
-      "endTime": "6:00 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/16025969",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
     },
     {
       "id": "f39265314b3f",
@@ -5245,6 +5211,40 @@
       "kidFriendly": false
     },
     {
+      "id": "2bd7a2a7f9a1",
+      "title": "ESL Conversation Club",
+      "date": "2026-11-16",
+      "displayDate": "Mon, Nov 16",
+      "time": "11:00 AM",
+      "endTime": "12:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/16831250",
+      "source": "Los Gatos Library",
+      "kidFriendly": false
+    },
+    {
+      "id": "6662650fb9d3",
+      "title": "Social Stitching",
+      "date": "2026-11-16",
+      "displayDate": "Mon, Nov 16",
+      "time": "4:30 PM",
+      "endTime": "6:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/16025982",
+      "source": "Los Gatos Library",
+      "kidFriendly": false
+    },
+    {
       "id": "fc5dfddd2a53",
       "title": "Bokani Dyer Trio",
       "date": "2026-09-25",
@@ -5275,6 +5275,23 @@
       "cost": null,
       "description": "",
       "url": "https://sanjosejazz.org/events/secret-sidewalk/",
+      "source": "San Jose Jazz",
+      "kidFriendly": false
+    },
+    {
+      "id": "efde582201d6",
+      "title": "Mara Hruby",
+      "date": "2026-10-10",
+      "displayDate": "Sat, Oct 10",
+      "time": "8pm",
+      "endTime": null,
+      "venue": "San Jose Jazz Venue",
+      "address": "",
+      "city": "san-jose",
+      "category": "arts",
+      "cost": null,
+      "description": "",
+      "url": "https://sanjosejazz.org/events/mara-hruby/",
       "source": "San Jose Jazz",
       "kidFriendly": false
     },
@@ -7114,10 +7131,10 @@
       "kidFriendly": false
     },
     {
-      "id": "01e4928a6286",
+      "id": "f3e4e48d53b4",
       "title": "All Ages Storytime",
-      "date": "2026-08-17",
-      "displayDate": "Mon, Aug 17",
+      "date": "2026-08-18",
+      "displayDate": "Tue, Aug 18",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
@@ -7131,10 +7148,10 @@
       "kidFriendly": true
     },
     {
-      "id": "84f239380841",
+      "id": "011ff3ae25cf",
       "title": "Toddler Storytime",
-      "date": "2026-08-17",
-      "displayDate": "Mon, Aug 17",
+      "date": "2026-08-18",
+      "displayDate": "Tue, Aug 18",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
@@ -7146,23 +7163,6 @@
       "url": "https://www.cdm.org/calendar/",
       "source": "Children's Discovery Museum",
       "kidFriendly": true
-    },
-    {
-      "id": "009581d6c4e8",
-      "title": "Wildcard Ramble at Rancho",
-      "date": "2026-08-17",
-      "displayDate": "Mon, Aug 17",
-      "time": "9:00 am",
-      "endTime": null,
-      "venue": "Rancho San Antonio Preserve",
-      "address": "Rancho San Antonio Preserve, Los Altos",
-      "city": "los-altos",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.openspace.org/events/guided-activities/wildcard-ramble-rancho-3",
-      "source": "Midpen Open Space",
-      "kidFriendly": false
     },
     {
       "id": "2be6ed94a122",
@@ -8641,7 +8641,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
       "url": "https://www.operasj.org/event/don-giovanni",
       "source": "Opera San José",
       "kidFriendly": false
@@ -8658,7 +8658,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
       "url": "https://www.operasj.org/event/don-giovanni-2",
       "source": "Opera San José",
       "kidFriendly": false
@@ -8675,7 +8675,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
       "url": "https://www.operasj.org/event/don-giovanni-3",
       "source": "Opera San José",
       "kidFriendly": false
@@ -8692,7 +8692,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
       "url": "https://www.operasj.org/event/don-giovanni-4",
       "source": "Opera San José",
       "kidFriendly": false
@@ -8709,7 +8709,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
       "url": "https://www.operasj.org/event/don-giovanni-5",
       "source": "Opera San José",
       "kidFriendly": false
@@ -10534,11 +10534,11 @@
       "kidFriendly": false
     },
     {
-      "id": "6bc61838ab4a",
+      "id": "3295bb4f4af7",
       "title": "Mamamoo",
       "date": "2026-08-27",
       "displayDate": "Thu, Aug 27",
-      "time": "7:00 pm",
+      "time": "7:30 pm",
       "endTime": null,
       "venue": "SAP Center",
       "address": "525 W Santa Clara St, San Jose, CA 95113",
@@ -10878,6 +10878,23 @@
       "title": "HAPPY BOOKERS BOOK CLUB: SWORDHEART BY T. KINGFISHER",
       "date": "2026-08-31",
       "displayDate": "Mon, Aug 31",
+      "time": "6:00 PM",
+      "endTime": null,
+      "venue": "Books Inc. Mountain View",
+      "address": "",
+      "city": "mountain-view",
+      "category": "arts",
+      "cost": "free",
+      "description": "",
+      "url": "https://www.booksinc.com/pages/events",
+      "source": "Books Inc",
+      "kidFriendly": false
+    },
+    {
+      "id": "205681556353",
+      "title": "CASSIDY ELLIS-SALTER: THESE SHATTERED SPIRES",
+      "date": "2026-09-02",
+      "displayDate": "Wed, Sep 2",
       "time": "6:00 PM",
       "endTime": null,
       "venue": "Books Inc. Mountain View",
