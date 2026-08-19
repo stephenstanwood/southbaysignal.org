@@ -1110,6 +1110,18 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // Costa County are both out of coverage, so the entry fails either way and
   // the only source placing it inside Santa Clara County is the aggregator tag.
   // Same class as Katalyze AI and Array Labs. Do not add from the roundup alone.
+  // Note: the Aug 2026 small-round sweep — the seed / sub-$25M tier the big
+  // weekly roundups skip, which is where this list's real differentiation sits —
+  // surfaced three stealth exits and none of them are in coverage. Recorded so
+  // the next cycle doesn't re-verify the same three:
+  //   • Actualyze AI ($7M seed, Aug 3 2026; enterprise AI governance layer).
+  //     Its own PR Newswire release datelines Pasadena and the boilerplate says
+  //     Pasadena. Los Angeles County. The Morado Ventures / AME Cloud (Jerry
+  //     Yang) cap table reads South Bay, but investors are not an HQ.
+  //   • June AI ($20M pre-seed led by Marc Benioff's TIME Ventures, Aug 3 2026).
+  //     New York City — the GlobeNewswire release and every write-up agree.
+  //   • Arrakis ($38M out of stealth, Jul 22 2026; industrial AI agents).
+  //     London and Paris, expanding to New York and the Middle East.
   // Note on River AI's round label: the Business Wire release says only "$1.1
   // billion in funding" and names no series, so this is filed as a Venture
   // Round rather than inventing a letter. Crunchbase's weekly roundup guessed
