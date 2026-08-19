@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T03:08:56.314Z",
+  "generatedAt": "2026-08-19T03:08:47.013Z",
   "meetings": {
     "san-jose": {
       "date": "2026-08-18",
@@ -36,23 +36,23 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-08-18",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-17T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-18T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
-      "date": "2026-08-17",
-      "displayDate": "Mon, Aug 17",
+      "date": "2026-08-19",
+      "displayDate": "Wed, Aug 19",
       "startTime": "17:30",
-      "bodyName": "City Council Regular Meeting",
+      "bodyName": "City Council Special Meeting - State of the City 2026",
       "location": null,
       "closedSession": false,
-      "url": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=2846",
+      "url": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=3136",
       "agendaItems": [],
       "confirmation": {
         "status": "confirmed",
         "provider": "primegov",
-        "observedDate": "2026-08-17",
-        "sourceUrl": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=2846"
+        "observedDate": "2026-08-19",
+        "sourceUrl": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=3136"
       }
     },
     "campbell": {
@@ -85,7 +85,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-09-01",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-17T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-18T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     },
     "los-altos": {
@@ -102,7 +102,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-08-25",
-        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-17T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-18T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },

@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-18T03:08:44.706Z",
+      "generatedAt": "2026-08-19T03:08:33.905Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 10 – Aug 17",
+      "dateRange": "Aug 11 – Aug 18",
       "stats": {
-        "total": 447,
-        "notable": 45,
-        "newUnits": 15,
-        "totalValuation": 22002930
+        "total": 352,
+        "notable": 33,
+        "newUnits": 13,
+        "totalValuation": 14877248
       },
       "permits": [
         {
@@ -87,18 +87,6 @@
           "subtype": "Single-Family"
         },
         {
-          "id": "2022-702720-RS",
-          "address": "100 S Capitol Av #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "New Detached Garage & 2nd Story ADU",
-          "valuation": 231175,
-          "units": 1,
-          "issueDate": "2026-08-11",
-          "subtype": "ADU   Accessory Dwelling Unit"
-        },
-        {
           "id": "2026-130854-RS",
           "address": "1308 Britton Av #2",
           "category": "residential-new",
@@ -133,16 +121,28 @@
           "units": 1,
           "issueDate": "2026-08-13",
           "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
+          "id": "2026-130835-RS",
+          "address": "1304 Britton Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Lot 4 (Bemp 100%) New Attached ADU",
+          "valuation": 175216,
+          "units": 1,
+          "issueDate": "2026-08-13",
+          "subtype": "ADU   Accessory Dwelling Unit"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-18T03:08:46.978Z",
+      "generatedAt": "2026-08-19T03:08:36.552Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 10 – Aug 17",
+      "dateRange": "Aug 11 – Aug 18",
       "stats": {
         "total": 0,
         "notable": 0,
