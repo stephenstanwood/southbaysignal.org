@@ -1,35 +1,20 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-18T14:15:15.085Z"
+    "auditedAt": "2026-08-19T02:20:00.210Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 2012,
+    "total": 2034,
     "totals": {
       "hard": 0,
-      "soft": 1,
+      "soft": 0,
       "info": 1
     },
     "byReason": {
-      "unknown-slug": 1,
       "local-departure-trip": 1
     },
     "hard": [],
     "soft": [
-      {
-        "id": "inbound-c2c988339dcae36f",
-        "title": "Community Police Academy",
-        "city": "monte-sereno",
-        "date": "2026-09-17",
-        "location": "",
-        "findings": [
-          {
-            "severity": "soft",
-            "reason": "unknown-slug",
-            "detail": "city=\"monte-sereno\" is not in the 11-city coverage map"
-          }
-        ]
-      },
       {
         "id": "inbound-726bb763e31cb1f0",
         "title": "August Day Trip to San Francisco Zoo & Gardens",
@@ -48,7 +33,7 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 391,
+    "total": 393,
     "totals": {
       "hard": 3,
       "soft": 2,

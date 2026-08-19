@@ -1,14 +1,14 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-18T15:08:02.642Z",
+    "generatedAt": "2026-08-19T02:17:23.695Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 633,
+    "eventCount": 648,
     "sourceCount": 24,
     "sources": [
-      "Mountain View Public Library (145)",
-      "Los Gatos Library (142)",
-      "San Jose Jazz (15)",
+      "Mountain View Public Library (150)",
+      "Los Gatos Library (148)",
+      "San Jose Jazz (19)",
       "Linden Tree Books (10)",
       "Hicklebee's (2)",
       "History San Jose (12)",
@@ -68,7 +68,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 147,
+        "count": 152,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -78,7 +78,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 142,
+        "count": 148,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -88,7 +88,7 @@
         "id": "san-jose-jazz",
         "label": "San Jose Jazz",
         "status": "ok",
-        "count": 15,
+        "count": 19,
         "error": null,
         "sources": [
           "San Jose Jazz"
@@ -365,23 +365,6 @@
     ]
   },
   "events": [
-    {
-      "id": "40611bf2388a",
-      "title": "Community Preservation Lab Scanning Service",
-      "date": "2026-08-18",
-      "displayDate": "Tue, Aug 18",
-      "time": "1:00 PM",
-      "endTime": "5:00 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17150000",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
     {
       "id": "335caba6bfb2",
       "title": "Sewing with FabMo: Roll-Up Organizers",
@@ -1250,6 +1233,23 @@
       "kidFriendly": false
     },
     {
+      "id": "ddc8a30b253a",
+      "title": "Sci-Fi Trivia Night",
+      "date": "2026-09-10",
+      "displayDate": "Thu, Sep 10",
+      "time": "6:30 PM",
+      "endTime": "8:00 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17211493",
+      "source": "Mountain View Public Library",
+      "kidFriendly": false
+    },
+    {
       "id": "ec58b2ef0a30",
       "title": "Baby Storytime: Rerun",
       "date": "2026-09-11",
@@ -1267,8 +1267,8 @@
       "kidFriendly": true
     },
     {
-      "id": "a04ad7cf6729",
-      "title": "Amplify: TOTALS Youth Life Skills",
+      "id": "1c0ab24e9bf6",
+      "title": "Amplify: TOTALS Youth Life Skills: Social Skills",
       "date": "2026-09-11",
       "displayDate": "Fri, Sep 11",
       "time": "4:00 PM",
@@ -1299,6 +1299,23 @@
       "url": "https://mountainview.libcal.com/event/16188977",
       "source": "Mountain View Public Library",
       "kidFriendly": true
+    },
+    {
+      "id": "798988d5a333",
+      "title": "Sci-Fi Fur-endship Charm Workshop",
+      "date": "2026-09-13",
+      "displayDate": "Sun, Sep 13",
+      "time": "1:30 PM",
+      "endTime": "3:00 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17268400",
+      "source": "Mountain View Public Library",
+      "kidFriendly": false
     },
     {
       "id": "8c0d54b49683",
@@ -1471,6 +1488,23 @@
       "kidFriendly": true
     },
     {
+      "id": "e7d85784cef6",
+      "title": "Sci-Fi: Build Your Alien",
+      "date": "2026-09-18",
+      "displayDate": "Fri, Sep 18",
+      "time": "4:30 PM",
+      "endTime": "5:30 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17350829",
+      "source": "Mountain View Public Library",
+      "kidFriendly": true
+    },
+    {
       "id": "0b27c19e08be",
       "title": "Drop-in Bike Clinic",
       "date": "2026-09-19",
@@ -1486,6 +1520,40 @@
       "url": "https://mountainview.libcal.com/event/15917713",
       "source": "Mountain View Public Library",
       "kidFriendly": false
+    },
+    {
+      "id": "a22f9983ad08",
+      "title": "Dogbotic Build a Synth",
+      "date": "2026-09-19",
+      "displayDate": "Sat, Sep 19",
+      "time": "11:00 AM",
+      "endTime": "1:30 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/16910625",
+      "source": "Mountain View Public Library",
+      "kidFriendly": true
+    },
+    {
+      "id": "9e65b9120c05",
+      "title": "Dogbotic Sound Petting Zoo",
+      "date": "2026-09-19",
+      "displayDate": "Sat, Sep 19",
+      "time": "2:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17193004",
+      "source": "Mountain View Public Library",
+      "kidFriendly": true
     },
     {
       "id": "8666a689f1aa",
@@ -2185,6 +2253,23 @@
       "kidFriendly": true
     },
     {
+      "id": "39f7ed701987",
+      "title": "Planning Your Cool Vegetable Garden  in Our Mediterranean Climate",
+      "date": "2026-10-10",
+      "displayDate": "Sat, Oct 10",
+      "time": "11:00 AM",
+      "endTime": "12:30 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/14959850",
+      "source": "Mountain View Public Library",
+      "kidFriendly": false
+    },
+    {
       "id": "95b09c52f77f",
       "title": "Outdoor Storytime",
       "date": "2026-10-13",
@@ -2829,57 +2914,6 @@
       "url": "https://mountainview.libcal.com/event/17329177",
       "source": "Mountain View Public Library",
       "kidFriendly": true
-    },
-    {
-      "id": "f39265314b3f",
-      "title": "Storytime (Ages 0-5)",
-      "date": "2026-08-18",
-      "displayDate": "Tue, Aug 18",
-      "time": "11:00 AM",
-      "endTime": "11:30 AM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/17249557",
-      "source": "Los Gatos Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "510450782064",
-      "title": "Drop-In Tech Help",
-      "date": "2026-08-18",
-      "displayDate": "Tue, Aug 18",
-      "time": "3:00 PM",
-      "endTime": "4:30 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "education",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/16035524",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "f9adfa684f98",
-      "title": "Tuesday PM Bookclub",
-      "date": "2026-08-18",
-      "displayDate": "Tue, Aug 18",
-      "time": "5:00 PM",
-      "endTime": "5:55 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/15855706",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
     },
     {
       "id": "4f97da4b12dd",
@@ -3766,6 +3800,23 @@
       "kidFriendly": false
     },
     {
+      "id": "e20d24348ab4",
+      "title": "Girls Who Code",
+      "date": "2026-09-19",
+      "displayDate": "Sat, Sep 19",
+      "time": "3:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17444935",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
       "id": "1207c13a95be",
       "title": "ESL Conversation Club",
       "date": "2026-09-21",
@@ -3970,6 +4021,23 @@
       "kidFriendly": true
     },
     {
+      "id": "7cdd1e9ee422",
+      "title": "Girls Who Code",
+      "date": "2026-09-26",
+      "displayDate": "Sat, Sep 26",
+      "time": "3:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17444950",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
       "id": "cdc23159eea2",
       "title": "Learn to Play Mahjong",
       "date": "2026-09-27",
@@ -4155,6 +4223,23 @@
       "url": "https://losgatosca.libcal.com/event/14510549",
       "source": "Los Gatos Library",
       "kidFriendly": false
+    },
+    {
+      "id": "b6e855f65959",
+      "title": "Girls Who Code",
+      "date": "2026-10-03",
+      "displayDate": "Sat, Oct 3",
+      "time": "3:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17444951",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
     },
     {
       "id": "0bc7e325e93e",
@@ -4361,6 +4446,23 @@
       "kidFriendly": false
     },
     {
+      "id": "c47c7415351b",
+      "title": "Girls Who Code",
+      "date": "2026-10-10",
+      "displayDate": "Sat, Oct 10",
+      "time": "3:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17444952",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
       "id": "fe2d7a944bf9",
       "title": "Alzuleycha Wall Decors",
       "date": "2026-10-11",
@@ -4527,6 +4629,23 @@
       "cost": "free",
       "description": "",
       "url": "https://losgatosca.libcal.com/event/17008173",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
+      "id": "ece6851ef2eb",
+      "title": "Girls Who Code",
+      "date": "2026-10-17",
+      "displayDate": "Sat, Oct 17",
+      "time": "3:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17444953",
       "source": "Los Gatos Library",
       "kidFriendly": true
     },
@@ -4701,6 +4820,23 @@
       "kidFriendly": true
     },
     {
+      "id": "bda05f3ec00a",
+      "title": "Girls Who Code",
+      "date": "2026-10-24",
+      "displayDate": "Sat, Oct 24",
+      "time": "3:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17444954",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
       "id": "091bffe36548",
       "title": "ESL Conversation Club",
       "date": "2026-10-26",
@@ -4867,6 +5003,23 @@
       "cost": "free",
       "description": "",
       "url": "https://losgatosca.libcal.com/event/17036703",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
+      "id": "60481f721ccc",
+      "title": "Girls Who Code",
+      "date": "2026-10-31",
+      "displayDate": "Sat, Oct 31",
+      "time": "3:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17444955",
       "source": "Los Gatos Library",
       "kidFriendly": true
     },
@@ -5041,6 +5194,23 @@
       "kidFriendly": false
     },
     {
+      "id": "f7327290dde4",
+      "title": "Girls Who Code",
+      "date": "2026-11-07",
+      "displayDate": "Sat, Nov 7",
+      "time": "3:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17444956",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
       "id": "04a87fce6b1d",
       "title": "ESL Conversation Club",
       "date": "2026-11-09",
@@ -5211,6 +5381,23 @@
       "kidFriendly": false
     },
     {
+      "id": "799eab2b0cc4",
+      "title": "Girls Who Code",
+      "date": "2026-11-14",
+      "displayDate": "Sat, Nov 14",
+      "time": "3:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17444957",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
       "id": "2bd7a2a7f9a1",
       "title": "ESL Conversation Club",
       "date": "2026-11-16",
@@ -5245,6 +5432,23 @@
       "kidFriendly": false
     },
     {
+      "id": "32e3d2884f2a",
+      "title": "SJZ Break Room Jazz Jam",
+      "date": "2026-09-04",
+      "displayDate": "Fri, Sep 4",
+      "time": "6pm",
+      "endTime": null,
+      "venue": "San Jose Jazz Venue",
+      "address": "",
+      "city": "san-jose",
+      "category": "arts",
+      "cost": null,
+      "description": "",
+      "url": "https://sanjosejazz.org/events/u19s-sjz-break-room/",
+      "source": "San Jose Jazz",
+      "kidFriendly": false
+    },
+    {
       "id": "fc5dfddd2a53",
       "title": "Bokani Dyer Trio",
       "date": "2026-09-25",
@@ -5258,6 +5462,23 @@
       "cost": null,
       "description": "",
       "url": "https://sanjosejazz.org/events/bokani-dyer-trio/",
+      "source": "San Jose Jazz",
+      "kidFriendly": false
+    },
+    {
+      "id": "5e011473ea46",
+      "title": "SJZ Break Room Jazz Jam",
+      "date": "2026-10-02",
+      "displayDate": "Fri, Oct 2",
+      "time": "20pm",
+      "endTime": null,
+      "venue": "San Jose Jazz Venue",
+      "address": "",
+      "city": "san-jose",
+      "category": "arts",
+      "cost": null,
+      "description": "",
+      "url": "https://sanjosejazz.org/events/sjz-break-room-jazz-jam/",
       "source": "San Jose Jazz",
       "kidFriendly": false
     },
@@ -5398,6 +5619,23 @@
       "kidFriendly": false
     },
     {
+      "id": "1babaa2012b3",
+      "title": "SJZ Break Room Jazz Jam",
+      "date": "2026-11-06",
+      "displayDate": "Fri, Nov 6",
+      "time": "20pm",
+      "endTime": null,
+      "venue": "San Jose Jazz Venue",
+      "address": "",
+      "city": "san-jose",
+      "category": "arts",
+      "cost": null,
+      "description": "",
+      "url": "https://sanjosejazz.org/events/sjz-break-room-jazz-jam-2/",
+      "source": "San Jose Jazz",
+      "kidFriendly": false
+    },
+    {
       "id": "2fdb7144c2d8",
       "title": "Emily Day Cosmo Alleycats",
       "date": "2026-11-13",
@@ -5462,6 +5700,23 @@
       "cost": null,
       "description": "",
       "url": "https://sanjosejazz.org/events/sandra-katrina-pacheco-music-of-amalia-rodrigues/",
+      "source": "San Jose Jazz",
+      "kidFriendly": false
+    },
+    {
+      "id": "488a6c10ca64",
+      "title": "SJZ Break Room Jazz Jam",
+      "date": "2026-12-04",
+      "displayDate": "Fri, Dec 4",
+      "time": "20pm",
+      "endTime": null,
+      "venue": "San Jose Jazz Venue",
+      "address": "",
+      "city": "san-jose",
+      "category": "arts",
+      "cost": null,
+      "description": "",
+      "url": "https://sanjosejazz.org/events/sjz-break-room-jazz-jam-3/",
       "source": "San Jose Jazz",
       "kidFriendly": false
     },
@@ -7131,8 +7386,8 @@
       "kidFriendly": false
     },
     {
-      "id": "f3e4e48d53b4",
-      "title": "All Ages Storytime",
+      "id": "011ff3ae25cf",
+      "title": "Toddler Storytime",
       "date": "2026-08-18",
       "displayDate": "Tue, Aug 18",
       "time": "11:30 am",
@@ -7148,8 +7403,8 @@
       "kidFriendly": true
     },
     {
-      "id": "011ff3ae25cf",
-      "title": "Toddler Storytime",
+      "id": "f3e4e48d53b4",
+      "title": "All Ages Storytime",
       "date": "2026-08-18",
       "displayDate": "Tue, Aug 18",
       "time": "11:30 am",
@@ -7403,7 +7658,7 @@
       "description": "",
       "url": "https://santanarow.com/event/glass-pumpkin-festival/",
       "source": "Santana Row",
-      "kidFriendly": true
+      "kidFriendly": false
     },
     {
       "id": "baa2a4083e35",
@@ -8035,8 +8290,8 @@
       "kidFriendly": false
     },
     {
-      "id": "2618f9777537",
-      "title": "Technical Assistance Business Workshop",
+      "id": "a267bdd3d373",
+      "title": "Digital Marketing & Branding Business Workshop",
       "date": "2026-09-10",
       "displayDate": "Thu, Sep 10",
       "time": "10:00 AM",
@@ -8047,7 +8302,7 @@
       "category": "community",
       "cost": "free",
       "description": "",
-      "url": "https://www.cupertino.gov/Meetings/September-10-2026-Technical-Assistance-Business-Workshop",
+      "url": "https://www.cupertino.gov/Meetings/September-10-2026-Digital-Marketing-Branding-Business-Workshop",
       "source": "City of Cupertino",
       "kidFriendly": false
     },
@@ -8641,7 +8896,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
       "url": "https://www.operasj.org/event/don-giovanni",
       "source": "Opera San José",
       "kidFriendly": false
@@ -8658,7 +8913,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
       "url": "https://www.operasj.org/event/don-giovanni-2",
       "source": "Opera San José",
       "kidFriendly": false
@@ -8675,7 +8930,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
       "url": "https://www.operasj.org/event/don-giovanni-3",
       "source": "Opera San José",
       "kidFriendly": false
@@ -8692,7 +8947,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
       "url": "https://www.operasj.org/event/don-giovanni-4",
       "source": "Opera San José",
       "kidFriendly": false
@@ -8709,7 +8964,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
       "url": "https://www.operasj.org/event/don-giovanni-5",
       "source": "Opera San José",
       "kidFriendly": false
