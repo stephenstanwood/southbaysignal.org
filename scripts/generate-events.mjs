@@ -7776,6 +7776,33 @@ async function main() {
     return true;
   });
 
+  // Label a gallery opening reception so it doesn't read as a duplicate of the
+  // run. Galleries publish two rows for one show: the opening night (a real
+  // event, with a clock time) and the exhibition run (flagged ongoing above).
+  // Both carry the identical title, so the Events tab shows the same line
+  // twice with no way to tell which is which — only the description says
+  // "Exhibition Opening:". Retitle the timed one.
+  //
+  // Deliberately narrow: the description signal alone is not enough, because a
+  // run's blurb often mentions its own reception ("join us at the opening").
+  // Requiring a same-source, same-title sibling already marked ongoing is what
+  // proves this row is the reception and the run is listed separately.
+  const ongoingSiblings = new Set(
+    finalEvents.filter((e) => e.ongoing).map((e) => `${e.source}|${normTitle(e)}`),
+  );
+  let receptionsLabeled = 0;
+  for (const e of finalEvents) {
+    if (e.ongoing || !e.title || !e.description) continue;
+    if (/\b(opening|reception|preview|closing)\b/i.test(e.title)) continue;
+    if (!/\b(exhibition opening|opening reception|opening celebration)\b/i.test(e.description)) continue;
+    if (!ongoingSiblings.has(`${e.source}|${normTitle(e)}`)) continue;
+    e.title = `${e.title} — Opening Reception`;
+    receptionsLabeled++;
+  }
+  if (receptionsLabeled > 0) {
+    console.log(`  ✅ Labeled ${receptionsLabeled} gallery opening reception(s) distinct from the exhibition run`);
+  }
+
   // Collapse multi-branch library closures: when the same source posts 2+ "closed" events
   // on the same date, collapse into one "All [Source] Locations Closed" entry.
   const closureKey = (e) => {
