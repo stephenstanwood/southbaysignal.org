@@ -2,6 +2,122 @@
 
 ---
 
+## 2026-08-19 — Cycle 211: PayPal Had a Different CEO for Five Months
+
+### Context
+Wednesday August 19, 2026. Tree clean on pull except one unpushed data-refresh
+commit. Roadmap fully closed (6/6), so this ran off 210's ranked "Next 3."
+Items 1 and 2 both closed as no-ops on inspection, which pushed the cycle into
+an audit the list hadn't had yet.
+
+### What Was Checked and Found Already Done
+- **210's item 1 (funding watch)** — the Aug 17 techstartups roundup and the
+  AlleyWatch 8/17 report were both pulled. Every in-coverage round in them
+  (Groq, River AI, Point2 Technology) was already in `RECENTLY_FUNDED`, added
+  by 210 the day before. Note the techstartups roundup files Groq under
+  "Mountain View"; 210's SEC Form D resolution to San Jose stands.
+- **210's item 2 (ongoing exhibit dedup)** — the described bug is gone. A scan
+  for same-URL, no-time, non-`ongoing` multi-date groups across all 2,022 events
+  returned zero. MACLA is no longer in the feed at all.
+- **Hot Chips** — the one conference in the window (Aug 23–25, four days out).
+  Verified against hotchips.org: dates, Memorial Auditorium, Palo Alto all
+  correct. Simulated `getConferenceNextDate` at four timestamps; it puts the
+  event under "Coming Up" today, holds it there through Aug 25, and rolls to
+  2027 on Aug 26. No bug.
+
+### What Was Built
+
+**PayPal's card named the wrong CEO, and had for five months.** The highlight
+read "New CEO Alex Chriss refocusing on core checkout experience and Venmo
+monetization." Chriss was pushed out; Enrique Lores has been CEO since
+March 1, 2026. PayPal's own PR Newswire release (San Jose dateline) confirms the
+date and the succession, with Jamie Miller as interim during the handoff. The
+board moved because branded checkout — roughly half of PayPal's profit — grew
+1% in Q4, down from 5% in Q3. Replaced both highlights: the succession, and the
+April 2026 reorg into three operating units that carved Venmo out as a
+standalone business for the first time. `trendNote` had also been anchored to a
+2024 layoff round; it now describes the leadership churn.
+
+This is the failure mode worth naming: a card that is *specific and confident*
+about a named person decays silently. A CEO audit across the whole file turned
+up only this one — "former Intel CEO Pat Gelsinger" and "Intel CEO Lip-Bu Tan"
+both check out, and every other named CEO is a founder attached to a dated
+funding announcement, which can't rot the same way.
+
+**Intel's card was carrying a stale headcount and a superseded foundry story.**
+Three fixes:
+- `trendNote` said Tan's restructuring cut global headcount "~20% to ~88K."
+  The FY2025 10-K puts it at 85,100, down from 108,900. Now uses both real
+  numbers instead of one approximation.
+- The highlight "Reported preliminary foundry deals with Apple and Tesla" has
+  been overtaken: Fortinet became the foundry's first *publicly named* outside
+  customer on July 21, 2026. Written with the caveat that matters — it's the
+  mature Intel 4 node, not the 18A/14A the turnaround actually rides on. That
+  qualifier is the whole story; a bare "landed its first customer" would read
+  as a bigger win than it is.
+- The single most unusual fact about Intel was missing entirely: the US
+  government has held ~9.9% since August 2025, when $8.9B of CHIPS Act grants
+  were converted to shares, and NVIDIA put in $5B that autumn.
+
+Deliberately *not* included: the Santa Clara-specific WARN numbers. They'd be
+the most locally relevant angle, but CoStar 403s and the only other sources are
+aggregators. Missing > wrong.
+
+**Adobe's Figma line had gone stale in a quiet way.** "Figma remains
+independent" was true but three years behind — Figma is publicly traded on the
+NYSE as FIG. Sources conflict hard on the IPO specifics (one says Apr 2026 at
+~$24B, better-sourced reporting says Jul 2025 at $33 → ~$68B), so the entry
+asserts only what both agree on: it went public on the NYSE as FIG and trades
+well above the $20B Adobe offered. Added the $1B break fee.
+
+**A gallery's opening night now reads differently from the show it opens.**
+SJSU published two rows for the Thompson Gallery's Pictorial Arts Faculty
+Exhibition with byte-identical titles — one Aug 25 at 5 PM (the opening
+reception), one Aug 26 flagged `ongoing` (the run through Oct 9). Only the
+description distinguished them. A resident scanning the Events tab saw the same
+line twice.
+
+The durable fix in `generate-events.mjs` appends "— Opening Reception" to the
+timed row. It is deliberately narrow: the description signal alone is *not*
+sufficient, because a run's own blurb routinely mentions its reception ("join us
+at the opening"). The rule additionally requires a same-source, same-title
+sibling already flagged `ongoing` — that sibling is what proves this row is the
+reception and the run is separately listed. Simulated against the full feed:
+fires exactly once, on the right event, zero false positives across 2,022
+events. Also patched the live JSON so it shows today rather than after the next
+cron.
+
+**Three August small-round exits recorded as out-of-coverage.** The sub-$25M
+tier the big roundups skip is where this list's differentiation actually lives,
+so it got swept. All three misses, all now noted inline so the next cycle
+doesn't re-verify them: Actualyze AI ($7M seed) datelines Pasadena in its own
+release despite a South Bay cap table (Morado, Jerry Yang's AME Cloud) —
+investors are not an HQ; June AI ($20M pre-seed, TIME Ventures) is NYC; Arrakis
+($38M out of stealth) is London/Paris.
+
+### Why This Was the Strongest Move
+Naming the wrong CEO of a Fortune 500 company headquartered in San Jose is the
+most embarrassing kind of error this site can make — it's checkable in one
+search by any resident who works there, and PayPal is a major local employer.
+Everything else this cycle was either verification that came back clean or a
+durable guard against recurrence.
+
+### Next 3 Strongest Ideas
+1. **Audit the remaining `TECH_COMPANIES` trendNotes for date anchoring.** The
+   PayPal and Adobe fixes both traced to a `trendNote` pinned to a 2023–24
+   event still framing 2026 headcount. Google's "stabilized after 2023 layoffs"
+   and Cisco's "stable following Splunk integration" are the same shape and
+   were left alone this cycle only for lack of a verified replacement fact.
+2. **Intel's Santa Clara WARN filings.** The locally relevant number — how many
+   Intel jobs are actually leaving Santa Clara — is currently unciteable
+   because CoStar 403s. California's EDD publishes the WARN report directly;
+   that would be a primary source and a genuinely local stat no aggregator has.
+3. **Permit Pulse: Mountain View** — all known MV permit portals remain
+   blocked/ECONNREFUSED. Monitor cityofmountainview.gov for changes. (Carried
+   from 210 and several cycles before it; unchanged.)
+
+---
+
 ## 2026-08-18 — Cycle 210: A Chip Company That Isn't One, and Three Fabricated Clock Times
 
 ### Context
