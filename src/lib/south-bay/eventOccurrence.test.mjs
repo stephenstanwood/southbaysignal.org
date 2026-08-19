@@ -7,6 +7,7 @@ import {
   isEventExplicitlyInactive,
   isEventPublishable,
 } from "./eventOccurrence.mjs";
+import { isEventEditoriallySuppressed } from "./eventAvailability.mjs";
 
 const grpgEvent = {
   source: "Guadalupe River Park Conservancy",
@@ -125,6 +126,47 @@ test("canonical evidence-required rows contain exact occurrence evidence", () =>
 
   assert.equal(evidenceRequiredEvents.every((event) => hasRequiredOccurrenceEvidence(event)), true);
   assert.equal(evidenceRequiredEvents.every((event) => isEventPublishable(event)), true);
+});
+
+test("unconfirmed 2026-08-19 library rows stay unpublished until first-party confirm", () => {
+  const lotus = {
+    id: "sccl-6a5a7fe7fa641fe01af3cb52",
+    title: "Lotus Lantern Craft",
+    date: "2026-08-19",
+    time: "4:00 PM",
+    venue: "Cupertino Library",
+    source: "Santa Clara County Library",
+  };
+  const weeExplore = {
+    id: "sjpl-69d5759be2a2952aed0d5074",
+    title: "Wee Explore Outdoors: Sand and Water Play",
+    date: "2026-08-19",
+    time: "10:30 AM",
+    venue: "Educational Park Library",
+    source: "San Jose Public Library",
+  };
+  const knitting = {
+    id: "sjpl-6a7e0ae8d4b10d0030064691",
+    title: "Knitting/Crocheting/Tatting/Bobbin Lace Club",
+    date: "2026-08-19",
+    time: "5:00 PM",
+    venue: "East SJ Carnegie Library",
+    source: "San Jose Public Library",
+  };
+
+  assert.equal(isEventEditoriallySuppressed(lotus), true);
+  assert.equal(isEventEditoriallySuppressed(weeExplore), true);
+  assert.equal(isEventEditoriallySuppressed(knitting), true);
+  assert.equal(isEventPublishable(lotus), false);
+  assert.equal(isEventPublishable({
+    ...lotus,
+    id: "sccl-other",
+  }), false);
+  assert.equal(isEventEditoriallySuppressed({
+    ...knitting,
+    date: "2026-08-26",
+    id: "sjpl-next-week",
+  }), false);
 });
 
 test("canonical events suppress the unconfirmed Cupertino market projection", () => {

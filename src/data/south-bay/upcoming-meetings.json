@@ -1,74 +1,58 @@
 {
-  "generatedAt": "2026-08-19T03:08:47.013Z",
+  "generatedAt": "2026-08-19T13:05:39.891Z",
   "meetings": {
     "san-jose": {
-      "date": "2026-08-18",
-      "displayDate": "Tue, Aug 18",
+      "date": "2026-08-25",
+      "displayDate": "Tue, Aug 25",
       "startTime": "13:30",
       "bodyName": "City Council",
       "location": "Hybrid Meeting - Council Chambers",
       "closedSession": false,
-      "url": "https://sanjose.legistar.com/MeetingDetail.aspx?LEGID=8100&GID=317&G=920296E4-80BE-4CA2-A78F-32C5EFCF78AF",
-      "legistarEventId": 8100,
+      "url": "https://sanjose.legistar.com/MeetingDetail.aspx?LEGID=8101&GID=317&G=920296E4-80BE-4CA2-A78F-32C5EFCF78AF",
+      "legistarEventId": 8101,
       "agendaItems": [
         {
-          "title": "Housing Department Loan Portfolio Audit Report.",
-          "sequence": 50
+          "title": "Association of Indo Americans",
+          "sequence": 23
         },
         {
-          "title": "Response to Santa Clara County Civil Grand Jury Report Entitled “San José Animal Care Center: The need to strengthen transparency, performance, and trust.”",
-          "sequence": 55
+          "title": "Mayor and Council Excused Absence Requests.",
+          "sequence": 39
         },
         {
-          "title": "C26-008 & ER26-088 - Conforming Rezoning for Certain Real Property Located at 650 Harry Road.",
-          "sequence": 61
+          "title": "City Council Travel Reports.",
+          "sequence": 40
         },
         {
-          "title": "H25-021 & ER25-133 - Administrative Hearing on the Appeal of the Environmental Determination and Site Development Permit for Certain Real Property Located at 1295 Curtner Avenue.",
-          "sequence": 64
+          "title": "Report from the Council Liaison to the Retirement Boards.",
+          "sequence": 41
         },
         {
-          "title": "General Plan Four-Year Review Policy Framework.",
-          "sequence": 65
+          "title": "Report of the City Manager, Jennifer Maguire (Verbal Report).",
+          "sequence": 48
         }
       ],
       "confirmation": {
         "status": "confirmed",
         "provider": "legistar",
-        "observedDate": "2026-08-18",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-18T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "observedDate": "2026-08-25",
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-19T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
       "date": "2026-08-19",
       "displayDate": "Wed, Aug 19",
-      "startTime": "17:30",
-      "bodyName": "City Council Special Meeting - State of the City 2026",
-      "location": null,
+      "startTime": "18:00",
+      "bodyName": "Mayor's State of the City",
+      "location": "Paly PAC · doors 5:30 PM",
       "closedSession": false,
-      "url": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=3136",
+      "url": "https://www.paloalto.gov/stateofthecity",
       "agendaItems": [],
       "confirmation": {
         "status": "confirmed",
-        "provider": "primegov",
+        "provider": "city-of-palo-alto",
         "observedDate": "2026-08-19",
-        "sourceUrl": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=3136"
-      }
-    },
-    "campbell": {
-      "date": "2026-08-18",
-      "displayDate": "Tue, Aug 18",
-      "startTime": "19:00",
-      "bodyName": "City Council Regular Session Meeting",
-      "location": "Campbell Community Center - Room C-35",
-      "closedSession": false,
-      "url": "https://pub-campbell.escribemeetings.com/MeetingsCalendarView.aspx/Meeting?Id=6561dfc6-9aed-4336-b160-074b064d588b",
-      "agendaItems": [],
-      "confirmation": {
-        "status": "confirmed",
-        "provider": "escribe",
-        "observedDate": "2026-08-18",
-        "sourceUrl": "https://pub-campbell.escribemeetings.com/MeetingsCalendarView.aspx/GetCalendarMeetings"
+        "sourceUrl": "https://www.paloalto.gov/stateofthecity"
       }
     },
     "milpitas": {
@@ -85,7 +69,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-09-01",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-18T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-19T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     },
     "los-altos": {
@@ -102,7 +86,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-08-25",
-        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-18T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-19T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },
@@ -137,7 +121,7 @@
     },
     "campbell": {
       "provider": "eScribe",
-      "status": "ok"
+      "status": "no-meeting"
     },
     "milpitas": {
       "provider": "CivicClerk",

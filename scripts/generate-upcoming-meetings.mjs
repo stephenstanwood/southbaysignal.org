@@ -24,6 +24,7 @@ import {
   pickCivicClerkMeeting,
   ptDateISO,
 } from "./lib/civic-meetings.mjs";
+import { overlayPaloAltoStateOfTheCity } from "./lib/palo-alto-state-of-the-city-2026.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "upcoming-meetings.json");
@@ -41,7 +42,7 @@ const LEGISTAR_CITIES = [
 // Phrases that indicate a boilerplate/procedural agenda item to skip
 const SKIP_PREFIXES = [
   "please scroll", "for live translation", "any member of the public",
-  "you may speak", "by email", "members of the public", "to request",
+  "you may speak", "to speak online", "by email", "members of the public", "to request",
   "the levine act", "how to", "fill out a", "each speaker", "notice to the public",
   "all public records", "page break", "open forum",
 ];
@@ -357,7 +358,7 @@ async function fetchPrimeGovMeeting(domain, committeeId) {
   const daysOut = (date.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
   if (daysOut > 60) return null;
 
-  const meeting = {
+  const meeting = overlayPaloAltoStateOfTheCity({
     date: pacificIso,
     displayDate: date.toLocaleDateString("en-US", {
       weekday: "short", month: "short", day: "numeric",
@@ -370,9 +371,9 @@ async function fetchPrimeGovMeeting(domain, committeeId) {
     closedSession: isClosedSessionMeeting({ bodyName: ev.title }),
     url: `https://${domain}/Portal/Meeting?meetingId=${ev.id}`,
     agendaItems: [],
-  };
+  }, ev);
   return confirmMeeting(meeting, {
-    provider: "primegov",
+    provider: /paloalto\.gov\/stateofthecity/i.test(meeting.url) ? "city-of-palo-alto" : "primegov",
     sourceUrl: meeting.url,
     observedDate: pacificIso,
   });

@@ -1,3 +1,4 @@
+import { isEventEditoriallySuppressed } from "./eventAvailability.mjs";
 import { isPlaceTemporarilyUnavailable } from "./placeAvailability.mjs";
 
 // Most event sources already provide exact dated rows. GRPG previously had a
@@ -88,6 +89,7 @@ export function hasRequiredOccurrenceEvidence(event) {
 
 export function isEventPublishable(event) {
   return !isPlaceTemporarilyUnavailable(event)
+    && !isEventEditoriallySuppressed(event)
     && !isEventExplicitlyInactive(event)
     && hasRequiredOccurrenceEvidence(event);
 }

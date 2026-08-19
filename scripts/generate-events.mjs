@@ -93,6 +93,7 @@ import {
 } from "../src/lib/south-bay/marketOccurrence.mjs";
 import { parseMontalvoOccurrencePage } from "../src/lib/south-bay/montalvoOccurrence.mjs";
 import { mergeLosGatosSummerConcerts } from "./lib/los-gatos-summer-concerts-2026.mjs";
+import { mergePaloAltoStateOfTheCity } from "./lib/palo-alto-state-of-the-city-2026.mjs";
 import { normalizeInboundEventPresentation, resolveInboundCity } from "./lib/inbound-event-normalize.mjs";
 import { BOARDWALK_2026_EVENTS } from "./lib/santa-cruz-picks-2026.mjs";
 import {
@@ -7529,6 +7530,23 @@ async function main() {
     `  ✅ Los Gatos summer concerts: ${losGatosSummer.canonicalEvents.length} canonical `
       + `(${losGatosSummer.replacedCount} source row(s) replaced, ${losGatosSummer.addedCount} added)`,
   );
+
+  // PrimeGov files the Mayor's address as a City Council Special Meeting at
+  // 5:30 in Council Chamber. The city's public event page is first-party:
+  // Paly PAC, doors 5:30, program 6:00. TITLE_BLOCKLIST would also drop any
+  // "city council" / "special meeting" scrape of the same sitting.
+  const paloAltoStateOfTheCity = mergePaloAltoStateOfTheCity(allEvents, {
+    fromDate: todayPT(),
+  });
+  allEvents.length = 0;
+  allEvents.push(...paloAltoStateOfTheCity.events);
+  if (paloAltoStateOfTheCity.addedCount > 0) {
+    if (!sourceNames.includes("City of Palo Alto")) sourceNames.push("City of Palo Alto");
+    console.log(
+      `  ✅ Palo Alto State of the City: official Paly PAC record `
+        + `(${paloAltoStateOfTheCity.replacedCount} source row(s) replaced)`,
+    );
+  }
 
   // Clean titles: strip calendar-artifact date prefixes, apply to all events
   allEvents.forEach((e) => { e.title = cleanTitle(e.title); });
