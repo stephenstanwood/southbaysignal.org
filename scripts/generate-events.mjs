@@ -5323,6 +5323,19 @@ function isIntersectionVenue(value) {
   return /\b(?:st|street|ave|avenue|rd|road|blvd|boulevard|dr|drive|ct|court|ln|lane|way|pkwy|parkway|cir|circle|pl|place)\b\.?\s*(?:&|and|\/)\s*.+\b(?:st|street|ave|avenue|rd|road|blvd|boulevard|dr|drive|ct|court|ln|lane|way|pkwy|parkway|cir|circle|pl|place)\b/i.test(String(value || ""));
 }
 
+// Meetup organizers sometimes type a bare street name into the venue-name field
+// ("Civic Center Dr") with no house number, so none of cleanVenue's address
+// strippers fire and the street renders as if it were the venue. The whole string
+// must BE the street name — a venue that merely contains one ("Los Gatos Civic
+// Center Lawn", "Stanford Shopping Center") ends in a place noun, not a street
+// suffix, and is left alone. Meetup-only, so the farmers markets that legitimately
+// use a street as their venue ("Murphy Avenue") are never routed through here.
+function isBareStreetVenue(value) {
+  const v = String(value || "").trim();
+  if (!v || /\d/.test(v)) return false;
+  return /^[A-Z][A-Za-z'’.-]*(?:\s+[A-Za-z'’.-]+){0,2}\s+(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ct|Court|Ln|Lane|Way|Pkwy|Parkway|Cir|Circle|Pl|Place|Ter|Terrace|Hwy|Highway|Expy|Expressway)\.?$/.test(v);
+}
+
 function meetupVenueFromTitle(title) {
   const match = String(title || "").match(
     /\b(?:at|in)\s+(?:the\s+)?([A-Z][A-Za-z0-9'&.-]*(?:\s+[A-Z][A-Za-z0-9'&.-]*){0,5}\s+(?:Park|Garden|Preserve|Trail|Library|Center|Museum|Theater|Theatre|Winery))\b/,
@@ -5489,7 +5502,7 @@ async function fetchMeetupEvents() {
     // name rather than rendering a bare address as the venue.
     const address = normalizeMeetupAddress(node.venue?.address, city);
     let venue = cleanVenue(node.venue?.name?.trim() || "");
-    if (isIntersectionVenue(venue)) {
+    if (isIntersectionVenue(venue) || isBareStreetVenue(venue)) {
       venue = meetupVenueFromTitle(title) || "";
     }
     venue ||= node.group?.name || "TBD";

@@ -18,7 +18,11 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { createHash } from "crypto";
 import { loadEnvLocal } from "./lib/env.mjs";
-import { legistarMeetingUrl } from "./lib/civic-meetings.mjs";
+import {
+  legistarMeetingUrl,
+  verifyLegistarBodyOnDate,
+  verifyPrimeGovBodyOnDate,
+} from "./lib/civic-meetings.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "around-town.json");
@@ -46,17 +50,24 @@ const CITIES = [
   { stoaCity: "Saratoga",      cityId: "saratoga",      cityName: "Saratoga",      agendaUrl: "https://www.saratoga.ca.us/AgendaCenter/City-Council-13",              permitUrl: null },
   { stoaCity: "Los Altos",     cityId: "los-altos",     cityName: "Los Altos",     agendaUrl: "https://losaltosca.portal.civicclerk.com/",                            permitUrl: null },
   { stoaCity: "Los Gatos",     cityId: "los-gatos",     cityName: "Los Gatos",     agendaUrl: "https://losgatos-ca.municodemeetings.com/",                            permitUrl: null },
-  { stoaCity: "San Jose",      cityId: "san-jose",      cityName: "San José",      agendaUrl: "https://sanjose.legistar.com/Calendar.aspx",      legistar: "sanjose",      permitUrl: "https://sjpermits.org/" },
-  { stoaCity: "Mountain View", cityId: "mountain-view", cityName: "Mountain View", agendaUrl: "https://mountainview.legistar.com/Calendar.aspx", legistar: "mountainview",  permitUrl: null },
-  { stoaCity: "Sunnyvale",     cityId: "sunnyvale",     cityName: "Sunnyvale",     agendaUrl: "https://sunnyvale.legistar.com/Calendar.aspx",    legistar: "sunnyvale",     permitUrl: null },
-  { stoaCity: "Cupertino",     cityId: "cupertino",     cityName: "Cupertino",     agendaUrl: "https://cupertino.legistar.com/Calendar.aspx",    legistar: "cupertino",     permitUrl: null },
-  { stoaCity: "Santa Clara",   cityId: "santa-clara",   cityName: "Santa Clara",   agendaUrl: "https://santaclara.legistar.com/Calendar.aspx",   legistar: "santaclara",    permitUrl: null },
+  // legistarApi is the Web API client name, which is NOT always the public
+  // subdomain (Sunnyvale's site is "sunnyvale", its API client "sunnyvaleca").
+  // It drives the body check below; `legistar` only builds the source link.
+  { stoaCity: "San Jose",      cityId: "san-jose",      cityName: "San José",      agendaUrl: "https://sanjose.legistar.com/Calendar.aspx",      legistar: "sanjose",      legistarApi: "sanjose",      permitUrl: "https://sjpermits.org/" },
+  { stoaCity: "Mountain View", cityId: "mountain-view", cityName: "Mountain View", agendaUrl: "https://mountainview.legistar.com/Calendar.aspx", legistar: "mountainview",  legistarApi: "mountainview", permitUrl: null },
+  { stoaCity: "Sunnyvale",     cityId: "sunnyvale",     cityName: "Sunnyvale",     agendaUrl: "https://sunnyvale.legistar.com/Calendar.aspx",    legistar: "sunnyvale",     legistarApi: "sunnyvaleca",  permitUrl: null },
+  { stoaCity: "Cupertino",     cityId: "cupertino",     cityName: "Cupertino",     agendaUrl: "https://cupertino.legistar.com/Calendar.aspx",    legistar: "cupertino",     legistarApi: "cupertino",    permitUrl: null },
+  { stoaCity: "Santa Clara",   cityId: "santa-clara",   cityName: "Santa Clara",   agendaUrl: "https://santaclara.legistar.com/Calendar.aspx",   legistar: "santaclara",    legistarApi: "santaclara",   permitUrl: null },
   // Milpitas: ci.milpitas.ca.gov no longer presents a valid cert — milpitas.gov
   // is the live domain. Palo Alto: the cityofpaloalto.org paths 301 to
   // paloalto.gov and 404 there; PermitView is the portal generate-permits.mjs
   // actually reads.
   { stoaCity: "Milpitas",      cityId: "milpitas",      cityName: "Milpitas",      agendaUrl: "https://www.milpitas.gov/129/Agendas-Minutes",                         permitUrl: null },
-  { stoaCity: "Palo Alto",     cityId: "palo-alto",     cityName: "Palo Alto",     agendaUrl: "https://www.paloalto.gov/City-Hall/City-Council/Council-Agendas-Minutes", legistar: "paloalto", permitUrl: "https://gis.cityofpaloalto.org/PermitView/" },
+  // Palo Alto left Legistar: paloalto.legistar.com answers "Invalid parameters!"
+  // for the date-filtered Calendar.aspx links this file builds, so `legistar:
+  // "paloalto"` here published a dead source link on every Palo Alto item.
+  // PrimeGov is the live system of record — same call generate-digests.mjs makes.
+  { stoaCity: "Palo Alto",     cityId: "palo-alto",     cityName: "Palo Alto",     agendaUrl: "https://www.paloalto.gov/City-Hall/City-Council/Council-Agendas-Minutes", primegov: "cityofpaloalto.primegov.com", permitUrl: "https://gis.cityofpaloalto.org/PermitView/" },
 ];
 
 const CITY_BY_STOA = Object.fromEntries(CITIES.map((c) => [c.stoaCity, c]));
@@ -143,12 +154,35 @@ async function fetchStoaMeetings(meetingType) {
   return allRecords;
 }
 
-async function findInterestingItems(config, meetings, bodyType) {
+// Ask the city's own portal what actually convened on a date, so an advisory
+// board's meeting is never narrated as a Council action. Stoa labels everything
+// "City Council"; on 2026-08-06 that shipped Palo Alto's Architectural Review
+// Board as "Council to weigh rules for cell equipment on streets". Returns the
+// records keyed by date, and leaves the Stoa label alone on any error.
+async function resolveMeetingBodies(config, meetings) {
+  const resolved = new Map();
+  if (!config.legistarApi && !config.primegov) return resolved;
+  for (const date of new Set(meetings.map((m) => m.date))) {
+    try {
+      const actual = config.legistarApi
+        ? await verifyLegistarBodyOnDate(config.legistarApi, date)
+        : await verifyPrimeGovBodyOnDate(config.primegov, date);
+      if (actual?.body) {
+        console.warn(`  ⚠️  ${config.cityName}: no City Council meeting on ${date} — using "${actual.body}"`);
+        resolved.set(date, actual);
+      }
+    } catch {}
+  }
+  return resolved;
+}
+
+async function findInterestingItems(config, meetings, bodyType, bodies = new Map()) {
   const content = meetings.map((m) => {
     const excerpt = (m.excerpt || "")
       .replace(/^Kind:\s*captions\s+Language:\s*\w+\s*/i, "")
       .trim();
-    return `Date: ${m.date}\nBody: ${bodyType}\nTitle: ${m.title || ""}\nAgenda: ${excerpt}\nKeywords: ${(m.keywords || []).join(", ")}`;
+    const body = bodies.get(m.date)?.body || bodyType;
+    return `Date: ${m.date}\nBody: ${body}\nTitle: ${m.title || ""}\nAgenda: ${excerpt}\nKeywords: ${(m.keywords || []).join(", ")}`;
   }).join("\n\n---\n\n");
 
   const bodyNote = bodyType === "Planning Commission"
@@ -169,6 +203,8 @@ NEVER FABRICATE: do not invent case names, party names, dollar amounts, vote cou
 NEVER NAME STAFF CONTACTS: Legistar agendas include bureaucratic metadata like "Staff Contact: Jane Doe" or "Project Manager: John Smith" or "Sponsoring Department: …". These identify the city employee handling the paperwork, NOT the subject of the action. Never write "This follows the staff contact listing X", "named X as the new …", or treat a staff-contact name as the appointee/principal of the item. Omit these names entirely.
 
 MATCH THE SOURCE'S FRAMING — DO NOT NARROW: if a council resolution restricts "federal civil enforcement," do not narrow it to "immigration enforcement," "tax enforcement," or any specific subtype unless the agenda explicitly uses that word. Do not invent illustrative examples ("for immigration, tax, or other..."). Stick to the source's wording on sensitive framing.
+
+DO NOT ASSERT THE BODY UNLESS THE AGENDA SUPPORTS IT: the "Body" label above is how the upstream feed classified the record, and it is sometimes wrong — advisory bodies (Architectural Review Board, Historic Resources Board, Teen/Youth Commission) get ingested under "City Council". If the agenda title reads as a recommendation TO the council ("Recommendation on …") or otherwise indicates a board or commission, do not write "Council approved/will weigh". Either name the body the agenda itself names, or write it body-neutrally ("Palo Alto is weighing …", "city staff recommended …"). Never upgrade an advisory recommendation into a council action.
 
 DO NOT ASSERT APPROVAL FOR FUTURE OR SAME-DAY MEETINGS: if a meeting's date matches today's date and the agenda is forward-looking (e.g. "proposed", "to consider", "study session"), do not write that it was approved or adopted. Use forward-looking language ("to hear", "to consider", "scheduled to review") or skip the item.
 
@@ -308,11 +344,17 @@ async function gatherMeetingItems(meetingType) {
     console.log(`  ⏳ ${config.cityName} (${label}): evaluating ${cityMeetings.length} meetings...`);
 
     try {
-      const found = await findInterestingItems(config, cityMeetings, label);
+      // Only the council path needs this — the planning path already asks Stoa
+      // for Planning Commission records by type.
+      const bodies = sourceTag === "council"
+        ? await resolveMeetingBodies(config, cityMeetings)
+        : new Map();
+      const found = await findInterestingItems(config, cityMeetings, label, bodies);
       for (const item of found) {
-        const sourceUrl = config.legistar
-          ? legistarMeetingUrl(config.legistar, item.date)
-          : config.agendaUrl;
+        // A relabeled item must cite the agenda the retitled body actually
+        // heard, not the Council calendar page for that date.
+        const sourceUrl = bodies.get(item.date)?.sourceUrl
+          ?? (config.legistar ? legistarMeetingUrl(config.legistar, item.date) : config.agendaUrl);
         items.push({
           id: makeId(config.cityId, item.date, item.headline),
           cityId: config.cityId,

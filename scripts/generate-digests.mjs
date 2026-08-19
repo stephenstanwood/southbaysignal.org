@@ -17,7 +17,12 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { writeFileAtomic } from "./lib/io.mjs";
-import { legistarMeetingUrl, primeGovAgendaUrl, ptDateISO } from "./lib/civic-meetings.mjs";
+import {
+  legistarMeetingUrl,
+  ptDateISO,
+  verifyLegistarBodyOnDate,
+  verifyPrimeGovBodyOnDate,
+} from "./lib/civic-meetings.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "digests.json");
@@ -160,96 +165,6 @@ async function fetchLegistarPastMeeting(client) {
   return null;
 }
 
-// Upstream records carry a `meetingType` we display verbatim, and it defaults to
-// "City Council" when absent. On 2026-08-05 San José's record was labeled City
-// Council but the only meeting that day was the Joint Rules and Open Government
-// Committee / Committee of the Whole — so the digest told residents the Council
-// met when it had not. Ask Legistar what actually convened on that date: if no
-// City Council event exists, return the real body name so the digest is honest.
-// Returns null on any error or when the label already checks out, leaving the
-// existing behavior untouched.
-async function verifyLegistarBodyOnDate(client, dateIso) {
-  try {
-    const url =
-      `https://webapi.legistar.com/v1/${client}/Events` +
-      `?$filter=EventDate ge datetime'${dateIso}T00:00:00'` +
-      ` and EventDate lt datetime'${dateIso}T23:59:59'`;
-    const res = await fetch(url, {
-      headers: { "User-Agent": LEGISTAR_UA, Accept: "application/json" },
-      signal: AbortSignal.timeout(15_000),
-    });
-    if (!res.ok) return null;
-    const events = await res.json();
-    if (!Array.isArray(events) || events.length === 0) return null;
-
-    const bodies = events.map((e) => String(e.EventBodyName || "").trim()).filter(Boolean);
-    if (bodies.some((b) => /^city council\b/i.test(b))) return null; // label is correct
-
-    // Prefer the body whose name reads like the deliberative one (committee /
-    // commission / council-of-the-whole) over incidental same-day staff hearings.
-    const preferred =
-      bodies.find((b) => /\b(committee|commission)\b/i.test(b)) ?? bodies[0];
-    if (!preferred) return null;
-    // Strip meeting-type boilerplate Legistar prepends to some body names
-    // ("Joint Meeting for the Rules and Open Government Committee…"). It's not
-    // part of the body's name and it makes the card heading unreadable.
-    const body = preferred.replace(/^(?:joint|special|regular)\s+meeting\s+(?:for|of)\s+the\s+/i, "").trim();
-    // Legistar's calendar link is already filtered to the meeting date, so the
-    // existing legistarMeetingUrl fallback stays correct for this body.
-    return body ? { body, sourceUrl: null } : null;
-  } catch {
-    return null;
-  }
-}
-
-// Same honesty check as above, for cities on PrimeGov instead of Legistar.
-// Palo Alto's Legistar instance is decommissioned (paloalto.legistar.com answers
-// every request with "Invalid parameters!"), so the Legistar verifier could
-// never run for it and upstream mislabels sailed through. On 2026-08-17 the
-// Aug 6 digest was published as "Palo Alto City Council" when PrimeGov shows
-// the only Aug 6 meeting was the Architectural Review Board — the Council's
-// Aug 3 sitting was canceled and its next one was Aug 10.
-async function verifyPrimeGovBodyOnDate(domain, dateIso) {
-  try {
-    const year = dateIso.slice(0, 4);
-    const url = `https://${domain}/api/v2/PublicPortal/ListArchivedMeetings?year=${year}`;
-    const res = await fetch(url, {
-      headers: { "User-Agent": LEGISTAR_UA, Accept: "application/json" },
-      signal: AbortSignal.timeout(15_000),
-    });
-    if (!res.ok) return null;
-    const meetings = await res.json();
-    if (!Array.isArray(meetings)) return null;
-
-    // PrimeGov dateTime is a naive local wall clock, so the Pacific calendar
-    // date is the literal prefix — never re-read it as UTC.
-    const sameDay = meetings.filter((m) => String(m.dateTime || "").slice(0, 10) === dateIso);
-    if (sameDay.length === 0) return null;
-
-    // PrimeGov marks cancellations in the title. A canceled council sitting must
-    // not count as confirmation that the council met.
-    const live = sameDay.filter((m) => !/cancel(?:led|ed)|postponed/i.test(m.title || ""));
-    if (live.length === 0) return null;
-
-    // Keep the meeting record, not just its title — the agenda link we cite as
-    // the digest's source hangs off the same record.
-    const named = live.filter((m) => String(m.title || "").trim());
-    if (named.some((m) => /^city council\b/i.test(String(m.title).trim()))) return null; // label is correct
-
-    const preferred =
-      named.find((m) => /\b(board|committee|commission)\b/i.test(String(m.title))) ?? named[0];
-    if (!preferred) return null;
-    // Drop the "Regular Meeting" / "Special Meeting" suffix PrimeGov appends —
-    // it is meeting type, not the body's name.
-    const body = String(preferred.title)
-      .replace(/\s+(?:regular|special|joint)\s+meeting\b.*$/i, "")
-      .trim();
-    if (!body) return null;
-    return { body, sourceUrl: primeGovAgendaUrl(domain, preferred) };
-  } catch {
-    return null;
-  }
-}
 
 // ── Claude summarization ──
 
