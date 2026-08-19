@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-19T04:20:10.919Z",
+    "generatedAt": "2026-08-19T15:08:43.107Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 647,
+    "eventCount": 649,
     "sourceCount": 24,
     "sources": [
       "Mountain View Public Library (149)",
-      "Los Gatos Library (148)",
+      "Los Gatos Library (151)",
       "San Jose Jazz (19)",
       "Linden Tree Books (10)",
       "Hicklebee's (2)",
@@ -15,7 +15,7 @@
       "Montalvo Arts Center (5)",
       "City Lights Theater (7)",
       "ICA San José (4)",
-      "Mountain Winery (33)",
+      "Mountain Winery (32)",
       "San Jose Theaters (20)",
       "Children's Discovery Museum (2)",
       "Midpen Open Space (3)",
@@ -78,7 +78,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 148,
+        "count": 151,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -178,7 +178,7 @@
         "id": "mountain-winery",
         "label": "Mountain Winery",
         "status": "ok",
-        "count": 33,
+        "count": 32,
         "error": null,
         "sources": [
           "Mountain Winery"
@@ -5415,6 +5415,57 @@
       "kidFriendly": false
     },
     {
+      "id": "7bd67b687955",
+      "title": "Storytime (Ages 0-5)",
+      "date": "2026-11-17",
+      "displayDate": "Tue, Nov 17",
+      "time": "11:00 AM",
+      "endTime": "11:30 AM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "family",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17249583",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
+      "id": "25106120abdc",
+      "title": "Drop-In Tech Help",
+      "date": "2026-11-17",
+      "displayDate": "Tue, Nov 17",
+      "time": "3:00 PM",
+      "endTime": "4:30 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/16035537",
+      "source": "Los Gatos Library",
+      "kidFriendly": false
+    },
+    {
+      "id": "8c9e03cb3291",
+      "title": "Tuesday PM Bookclub",
+      "date": "2026-11-17",
+      "displayDate": "Tue, Nov 17",
+      "time": "5:00 PM",
+      "endTime": "5:55 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/15855709",
+      "source": "Los Gatos Library",
+      "kidFriendly": false
+    },
+    {
       "id": "32e3d2884f2a",
       "title": "SJZ Break Room Jazz Jam",
       "date": "2026-09-04",
@@ -6468,23 +6519,6 @@
       "kidFriendly": false
     },
     {
-      "id": "8f350148be13",
-      "title": "Gipsy Kings Featuring Nicolas Reyes with Reyes Heritage",
-      "date": "2026-08-18",
-      "displayDate": "Tue, Aug 18",
-      "time": "7:30 PM",
-      "endTime": null,
-      "venue": "The Mountain Winery",
-      "address": "14831 Pierce Rd, Saratoga, CA 95070",
-      "city": "saratoga",
-      "category": "music",
-      "cost": "paid",
-      "description": "",
-      "url": "https://www.mountainwinery.com/events/detail?event_id=1326860",
-      "source": "Mountain Winery",
-      "kidFriendly": false
-    },
-    {
       "id": "f1eda39d9cca",
       "title": "Men at Work with Toad the Wet Sprocket, Shonen Knife",
       "date": "2026-08-19",
@@ -7369,10 +7403,10 @@
       "kidFriendly": false
     },
     {
-      "id": "011ff3ae25cf",
+      "id": "c2ef3f1163c9",
       "title": "Toddler Storytime",
-      "date": "2026-08-18",
-      "displayDate": "Tue, Aug 18",
+      "date": "2026-08-19",
+      "displayDate": "Wed, Aug 19",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
@@ -7386,10 +7420,10 @@
       "kidFriendly": true
     },
     {
-      "id": "f3e4e48d53b4",
+      "id": "96d9b6e451be",
       "title": "All Ages Storytime",
-      "date": "2026-08-18",
-      "displayDate": "Tue, Aug 18",
+      "date": "2026-08-19",
+      "displayDate": "Wed, Aug 19",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
