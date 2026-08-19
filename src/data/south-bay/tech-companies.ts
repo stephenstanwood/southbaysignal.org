@@ -99,10 +99,10 @@ export const TECH_COMPANIES: TechCompany[] = [
     category: "chip",
     sccEmployeesK: 14,
     trend: "down",
-    trendNote: "14K in SCC; Tan's 2025 restructuring cut global headcount ~20% to ~88K",
+    trendNote: "14K in SCC; global headcount closed 2025 at 85,100, down from 108,900 a year earlier",
     highlights: [
-      "Lip-Bu Tan took over as CEO in March 2025 and has since stripped out layers of management and cut more than 25K jobs; further cuts depend on the foundry business landing outside customers",
-      "Reported preliminary foundry deals with Apple and Tesla; chip yields still trail TSMC",
+      "The US government has held a roughly 9.9% stake since August 2025, when the Trump administration converted $8.9B of CHIPS Act grants into Intel shares; NVIDIA invested a further $5B that autumn",
+      "Fortinet became Intel Foundry's first publicly named outside customer in July 2026 — a real win, but for the mature Intel 4 node rather than the leading-edge 18A and 14A the turnaround actually rides on",
     ],
     description:
       "CPU pioneer mid-restructuring under CEO Lip-Bu Tan. Once the defining company of Silicon Valley.",
@@ -175,10 +175,10 @@ export const TECH_COMPANIES: TechCompany[] = [
     category: "software",
     sccEmployeesK: 5,
     trend: "flat",
-    trendNote: "5K at SJ HQ; stable after abandoned $20B Figma acquisition",
+    trendNote: "5K at SJ HQ; steady headcount as Firefly carries the AI story",
     highlights: [
       "Firefly generative AI now integrated throughout Creative Cloud product line",
-      "Dropped $20B Figma acquisition in 2023 after regulatory pressure; Figma remains independent",
+      "The $20B Figma deal collapsed in 2023 under regulatory pressure and cost Adobe a $1B break fee; Figma has since gone public on the NYSE as FIG, trading well above what Adobe offered",
     ],
     description:
       "Creative software for design, video, and documents. Firefly AI reshaping how creators work.",
@@ -194,13 +194,13 @@ export const TECH_COMPANIES: TechCompany[] = [
     category: "fintech",
     sccEmployeesK: 5,
     trend: "down",
-    trendNote: "5K at SJ HQ; down after cutting 2,500 jobs in 2024 restructuring",
+    trendNote: "5K at SJ HQ; second CEO change in three years after branded checkout stalled",
     highlights: [
-      "New CEO Alex Chriss refocusing on core checkout experience and Venmo monetization",
-      "Fastlane one-click checkout targeting merchant conversion improvement",
+      "Enrique Lores became CEO on March 1, 2026, succeeding Alex Chriss — the board moved after branded checkout, roughly half of PayPal's profit, grew just 1% in the fourth quarter",
+      "Reorganized in April 2026 into three operating units, with Venmo carved out as a standalone business for the first time",
     ],
     description:
-      "Digital payments and Venmo. Rebuilding focus and momentum after years of stock decline.",
+      "Digital payments and Venmo. The San Jose fintech resetting under a CEO it recruited away from HP.",
     color: "#003087",
     careersUrl: "https://careers.pypl.com",
   },
