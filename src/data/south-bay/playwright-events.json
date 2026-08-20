@@ -1,12 +1,12 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-20T02:17:14.090Z",
+    "generatedAt": "2026-08-20T04:24:09.045Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 648,
+    "eventCount": 647,
     "sourceCount": 24,
     "sources": [
-      "Mountain View Public Library (149)",
+      "Mountain View Public Library (148)",
       "Los Gatos Library (147)",
       "San Jose Jazz (19)",
       "Linden Tree Books (11)",
@@ -68,7 +68,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 151,
+        "count": 150,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -365,23 +365,6 @@
     ]
   },
   "events": [
-    {
-      "id": "d46c0264ab94",
-      "title": "Friends of the Library Board Meeting",
-      "date": "2026-08-19",
-      "displayDate": "Wed, Aug 19",
-      "time": "7:00 PM",
-      "endTime": "9:00 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/15668062",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
     {
       "id": "86487547826a",
       "title": "Community Preservation Lab Scanning Service",
@@ -7272,11 +7255,11 @@
       "kidFriendly": false
     },
     {
-      "id": "792d6e415e74",
+      "id": "9ad2ec31a4aa",
       "title": "Don Giovanni – Opera San José",
       "date": "2026-09-13",
       "displayDate": "Sun, Sep 13",
-      "time": null,
+      "time": "2:00pm",
       "endTime": null,
       "venue": "California Theatre",
       "address": "345 S 1st St, San Jose, CA 95113",
@@ -10760,11 +10743,11 @@
       "kidFriendly": false
     },
     {
-      "id": "8b58a9b1c877",
+      "id": "e59752d8cdd4",
       "title": "Omar Courtz",
       "date": "2026-08-19",
       "displayDate": "Wed, Aug 19",
-      "time": "8:00 pm",
+      "time": "8:00 PM",
       "endTime": null,
       "venue": "SAP Center",
       "address": "525 W Santa Clara St, San Jose, CA 95113",
