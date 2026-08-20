@@ -1,62 +1,306 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-19T03:16:24.317Z",
+    "generatedAt": "2026-08-20T03:43:38.428Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 5
+    "sourceCount": 14
   },
   "summary": {
-    "threadsMined": 5,
-    "placesExtracted": 2,
-    "placesMatched": 0,
-    "placeGaps": 2,
-    "eventsExtracted": 1,
-    "eventsMatched": 0,
-    "eventGaps": 1,
+    "threadsMined": 14,
+    "placesExtracted": 12,
+    "placesMatched": 4,
+    "placeGaps": 8,
+    "eventsExtracted": 9,
+    "eventsMatched": 6,
+    "eventGaps": 3,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "AMC Saratoga 14",
-      "city": "Saratoga",
-      "kind": "venue",
-      "context": "hosting open caption movie screening",
+      "name": "Crepevine",
+      "city": "Palo Alto",
+      "kind": "restaurant",
+      "context": "hosts free chess Monday nights",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vrugwy/state_bill_could_speed_up_san_jose_diridon/",
-        "https://www.reddit.com/r/SanJose/comments/1vrgk2b/psa_for_san_jose_deafhard_of_hearing_open_caption/",
-        "https://www.reddit.com/r/SanJose/comments/1vs3ymh/im_a_22yearold_guy_looking_to_make_friends_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1vs3dhc/san_josé_leaders_eying_more_multifamily_homes_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vrr1mj/first_time_in_san_jose_traveling_from_uk_any/"
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
       ]
     },
     {
-      "name": "McEnery Convention Center",
+      "name": "Bar Underdog",
+      "city": "Palo Alto",
+      "kind": "restaurant",
+      "context": "restaurant news discussion",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ]
+    },
+    {
+      "name": "Aldea Home & Baby",
+      "city": "San Jose",
+      "kind": "retail",
+      "context": "Willow Glen location hosting Kids Craft Day",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ]
+    },
+    {
+      "name": "Town and Country Village",
+      "city": "San Jose",
+      "kind": "retail",
+      "context": "shopping center where first Chuck E Cheese was located",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt3xqr/best_place_for_a_massage/",
+        "https://www.reddit.com/r/SanJose/comments/1vsrwpe/what_is_the_strangest_thing_to_see_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vskz7q/newly_discovered_photos_from_1983_of_the_first/",
+        "https://www.reddit.com/r/paloalto/comments/1vq4rdi/cal_ave_farmers_market_opening_hrs/",
+        "https://www.reddit.com/r/SanJose/comments/1vt2x2e/looking_for_a_personal_trainer_in_and_around/"
+      ]
+    },
+    {
+      "name": "Winchester Mansion",
       "city": "San Jose",
       "kind": "venue",
-      "context": "site of upcoming convention/event",
+      "context": "well-known oddity visitor wants to avoid",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vrugwy/state_bill_could_speed_up_san_jose_diridon/",
-        "https://www.reddit.com/r/SanJose/comments/1vrgk2b/psa_for_san_jose_deafhard_of_hearing_open_caption/",
-        "https://www.reddit.com/r/SanJose/comments/1vs3ymh/im_a_22yearold_guy_looking_to_make_friends_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1vs3dhc/san_josé_leaders_eying_more_multifamily_homes_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vrr1mj/first_time_in_san_jose_traveling_from_uk_any/"
+        "https://www.reddit.com/r/SanJose/comments/1vt3xqr/best_place_for_a_massage/",
+        "https://www.reddit.com/r/SanJose/comments/1vsrwpe/what_is_the_strangest_thing_to_see_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vskz7q/newly_discovered_photos_from_1983_of_the_first/",
+        "https://www.reddit.com/r/paloalto/comments/1vq4rdi/cal_ave_farmers_market_opening_hrs/",
+        "https://www.reddit.com/r/SanJose/comments/1vt2x2e/looking_for_a_personal_trainer_in_and_around/"
+      ]
+    },
+    {
+      "name": "Japantown",
+      "city": "San Jose",
+      "kind": "other",
+      "context": "restaurants and weird karaoke bars mentioned",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt3xqr/best_place_for_a_massage/",
+        "https://www.reddit.com/r/SanJose/comments/1vsrwpe/what_is_the_strangest_thing_to_see_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vskz7q/newly_discovered_photos_from_1983_of_the_first/",
+        "https://www.reddit.com/r/paloalto/comments/1vq4rdi/cal_ave_farmers_market_opening_hrs/",
+        "https://www.reddit.com/r/SanJose/comments/1vt2x2e/looking_for_a_personal_trainer_in_and_around/"
+      ]
+    },
+    {
+      "name": "Cal Ave Farmers Market",
+      "city": "Palo Alto",
+      "kind": "other",
+      "context": "Sunday farmers market opening hours question",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt3xqr/best_place_for_a_massage/",
+        "https://www.reddit.com/r/SanJose/comments/1vsrwpe/what_is_the_strangest_thing_to_see_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vskz7q/newly_discovered_photos_from_1983_of_the_first/",
+        "https://www.reddit.com/r/paloalto/comments/1vq4rdi/cal_ave_farmers_market_opening_hrs/",
+        "https://www.reddit.com/r/SanJose/comments/1vt2x2e/looking_for_a_personal_trainer_in_and_around/"
+      ]
+    },
+    {
+      "name": "Second Harvest",
+      "city": "",
+      "kind": "service",
+      "context": "possible donation spot for infant items",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt1wk6/where_to_donate_infant_items/",
+        "https://www.reddit.com/r/SanJose/comments/1vt0j7s/non_dairy_cold_foam_matcha/",
+        "https://www.reddit.com/r/paloalto/comments/1vraql2/how_to_get_rid_of_seven_bottles_of_wine/",
+        "https://www.reddit.com/r/paloalto/comments/1vrakeu/palo_alto_adult_soccer_league_paasl_competitive/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "Open Caption Screening of Spa Weekend",
-      "when": "Sunday, August 30 at 4pm",
-      "city": "Saratoga",
-      "context": "open caption screening for Deaf/HoH community at AMC Saratoga 14",
+      "name": "TeenHQ Theater Performance: Beowulf and the Bard",
+      "when": "Saturday 8/22, 2:00pm",
+      "city": "San Jose",
+      "context": "Downtown San Jose Libraries teen theater event",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vrugwy/state_bill_could_speed_up_san_jose_diridon/",
-        "https://www.reddit.com/r/SanJose/comments/1vrgk2b/psa_for_san_jose_deafhard_of_hearing_open_caption/",
-        "https://www.reddit.com/r/SanJose/comments/1vs3ymh/im_a_22yearold_guy_looking_to_make_friends_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1vs3dhc/san_josé_leaders_eying_more_multifamily_homes_in/",
-        "https://www.reddit.com/r/SanJose/comments/1vrr1mj/first_time_in_san_jose_traveling_from_uk_any/"
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ]
+    },
+    {
+      "name": "Kids Craft Day",
+      "when": "Saturday 8/22, 10:00am",
+      "city": "San Jose",
+      "context": "event at Aldea Home & Baby Willow Glen",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ]
+    },
+    {
+      "name": "Palo Alto Adult Soccer League (PAASL)",
+      "when": "",
+      "city": "Palo Alto",
+      "context": "asking about competitiveness of league",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt1wk6/where_to_donate_infant_items/",
+        "https://www.reddit.com/r/SanJose/comments/1vt0j7s/non_dairy_cold_foam_matcha/",
+        "https://www.reddit.com/r/paloalto/comments/1vraql2/how_to_get_rid_of_seven_bottles_of_wine/",
+        "https://www.reddit.com/r/paloalto/comments/1vrakeu/palo_alto_adult_soccer_league_paasl_competitive/"
       ]
     }
   ],
-  "placeMatches": [],
-  "eventMatches": []
+  "placeMatches": [
+    {
+      "name": "Spectra",
+      "city": "San Jose",
+      "kind": "cafe",
+      "context": "popular WFH cafe, often packed",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ],
+      "matchedName": "Spectra Coffee"
+    },
+    {
+      "name": "Chromatic",
+      "city": "San Jose",
+      "kind": "cafe",
+      "context": "popular WFH cafe, often packed",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ],
+      "matchedName": "Chromatic Coffee"
+    },
+    {
+      "name": "Rose Garden Branch Library",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "20th anniversary community celebration with magician",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ],
+      "matchedName": "Rose Garden Branch Library"
+    },
+    {
+      "name": "Chuck E Cheese's Pizza Time Theater",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "first ever location, Town and Country Village, 1983 photos",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt3xqr/best_place_for_a_massage/",
+        "https://www.reddit.com/r/SanJose/comments/1vsrwpe/what_is_the_strangest_thing_to_see_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vskz7q/newly_discovered_photos_from_1983_of_the_first/",
+        "https://www.reddit.com/r/paloalto/comments/1vq4rdi/cal_ave_farmers_market_opening_hrs/",
+        "https://www.reddit.com/r/SanJose/comments/1vt2x2e/looking_for_a_personal_trainer_in_and_around/"
+      ],
+      "matchedName": "Chuck E. Cheese"
+    }
+  ],
+  "eventMatches": [
+    {
+      "name": "Little Explorers Petting Zoo",
+      "when": "Saturday 8/22, 10:00am",
+      "city": "San Jose",
+      "context": "North San Jose Libraries kid event",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ],
+      "matchedName": "Little Explorers Petting Zoo"
+    },
+    {
+      "name": "ARTrepreneurs: Teen Craft Fair",
+      "when": "Saturday 8/22, 1:00pm",
+      "city": "San Jose",
+      "context": "Downtown San Jose Libraries teen event",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ],
+      "matchedName": "ARTrepreneurs: Teen Craft Fair"
+    },
+    {
+      "name": "Be a Scientist: Fossils",
+      "when": "Saturday 8/22, 1:00pm",
+      "city": "San Jose",
+      "context": "Downtown library event, registration required",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ],
+      "matchedName": "Be a Scientist: Fossils"
+    },
+    {
+      "name": "Rose Garden Branch Library's 20th Anniversary Community Celebration",
+      "when": "Saturday 8/22, 1:00pm",
+      "city": "San Jose",
+      "context": "magician and family festivities",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ],
+      "matchedName": "Rose Garden Branch Library's 20th Anniversary Community Celebration"
+    },
+    {
+      "name": "Saturday STEM: Ice Cream!",
+      "when": "Saturday 8/22, 2:00pm",
+      "city": "San Jose",
+      "context": "South San Jose library event, limited to 15",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ],
+      "matchedName": "Saturday STEM: Ice Cream!"
+    },
+    {
+      "name": "Soul 4Kidz",
+      "when": "Saturday 8/22",
+      "city": "San Jose",
+      "context": "musical trio performance for kids",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vt5r72/best_shawarma_wrap_in_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1vt5eje/weekend_kid_events_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vt280c/what_are_your_favorite_wfh_café_recs_innearby_sj/",
+        "https://www.reddit.com/r/paloalto/comments/1vt0yyu/chess_yes/",
+        "https://www.reddit.com/r/paloalto/comments/1vsnf6y/bar_underdog_palo_alto/"
+      ],
+      "matchedName": "Soul 4Kidz"
+    }
+  ]
 }

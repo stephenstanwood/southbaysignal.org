@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-19T03:08:33.905Z",
+      "generatedAt": "2026-08-20T03:35:30.995Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 11 – Aug 18",
+      "dateRange": "Aug 12 – Aug 19",
       "stats": {
-        "total": 352,
-        "notable": 33,
+        "total": 354,
+        "notable": 35,
         "newUnits": 13,
-        "totalValuation": 14877248
+        "totalValuation": 15351689
       },
       "permits": [
         {
@@ -123,33 +123,82 @@
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2026-130835-RS",
-          "address": "1304 Britton Av #2",
+          "id": "2025-117936-RS",
+          "address": "1216 Briarcreek Ct",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Lot 4 (Bemp 100%) New Attached ADU",
-          "valuation": 175216,
+          "description": "New Two Story Detached ADU 999 Sqft",
+          "valuation": 175744,
           "units": 1,
-          "issueDate": "2026-08-13",
+          "issueDate": "2026-08-17",
           "subtype": "ADU   Accessory Dwelling Unit"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-19T03:08:36.552Z",
+      "generatedAt": "2026-08-20T03:35:33.130Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 11 – Aug 18",
+      "dateRange": "Aug 12 – Aug 19",
       "stats": {
-        "total": 0,
-        "notable": 0,
+        "total": 114,
+        "notable": 4,
         "newUnits": 0,
         "totalValuation": 0
       },
-      "permits": []
+      "permits": [
+        {
+          "id": "26REV-00404",
+          "address": "701 Tennyson Av",
+          "category": "new-construction",
+          "categoryLabel": "New Construction",
+          "workType": "Revision",
+          "description": "26BLD-00777: Reusing existing windows in the new JADU addition.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-14",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-02328",
+          "address": "370 Shasta Dr",
+          "category": "residential-remodel",
+          "categoryLabel": "Home Remodel",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-18",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-02313",
+          "address": "745 Barron Av",
+          "category": "residential-remodel",
+          "categoryLabel": "Home Remodel",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-17",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-02316",
+          "address": "1575 Edgewood Dr",
+          "category": "residential-remodel",
+          "categoryLabel": "Home Remodel",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-17",
+          "subtype": "Permit Issued"
+        }
+      ]
     }
   }
 }
