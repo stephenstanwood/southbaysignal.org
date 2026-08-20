@@ -1,50 +1,33 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-19T04:21:50.514Z"
+    "auditedAt": "2026-08-20T02:19:25.592Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 2032,
+    "total": 2052,
     "totals": {
       "hard": 0,
       "soft": 0,
-      "info": 1
+      "info": 0
     },
-    "byReason": {
-      "local-departure-trip": 1
-    },
+    "byReason": {},
     "hard": [],
-    "soft": [
-      {
-        "id": "inbound-726bb763e31cb1f0",
-        "title": "August Day Trip to San Francisco Zoo & Gardens",
-        "city": "sunnyvale",
-        "date": "2026-08-18",
-        "location": "San Francisco Zoo & Gardens",
-        "findings": [
-          {
-            "severity": "info",
-            "reason": "local-departure-trip",
-            "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
-          }
-        ]
-      }
-    ]
+    "soft": []
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 393,
+    "total": 397,
     "totals": {
       "hard": 3,
       "soft": 2,
-      "info": 3
+      "info": 2
     },
     "byReason": {
       "virtual-not-flagged": 1,
       "unknown-slug": 1,
       "out-of-area": 1,
       "slug-mismatch": 2,
-      "local-departure-trip": 3
+      "local-departure-trip": 2
     },
     "hard": [
       {
@@ -125,20 +108,6 @@
         "city": null,
         "date": "2026-09-17T11:00:00-07:00",
         "location": "San Francisco Museum of Modern Art, San Francisco, CA",
-        "findings": [
-          {
-            "severity": "info",
-            "reason": "local-departure-trip",
-            "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
-          }
-        ]
-      },
-      {
-        "id": "inbound_mr27g9wh_go9qhz",
-        "title": "August Day Trip to San Francisco Zoo & Gardens",
-        "city": "sunnyvale",
-        "date": "2026-08-18T09:00:00-07:00",
-        "location": "San Francisco Zoo & Gardens",
         "findings": [
           {
             "severity": "info",
