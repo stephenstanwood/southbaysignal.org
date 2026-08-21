@@ -1,21 +1,21 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-20T04:24:09.045Z",
+    "generatedAt": "2026-08-21T02:17:26.581Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 647,
+    "eventCount": 648,
     "sourceCount": 24,
     "sources": [
       "Mountain View Public Library (148)",
-      "Los Gatos Library (147)",
+      "Los Gatos Library (149)",
       "San Jose Jazz (19)",
-      "Linden Tree Books (11)",
+      "Linden Tree Books (12)",
       "Hicklebee's (2)",
       "History San Jose (12)",
       "Montalvo Arts Center (5)",
       "City Lights Theater (7)",
       "ICA San José (4)",
-      "Mountain Winery (32)",
+      "Mountain Winery (31)",
       "San Jose Theaters (20)",
       "Children's Discovery Museum (2)",
       "Midpen Open Space (4)",
@@ -27,7 +27,7 @@
       "Levi's Stadium (15)",
       "SAP Center (15)",
       "The Tech Interactive (5)",
-      "Books Inc (5)",
+      "Books Inc (4)",
       "Peninsula Open Space Trust (2)",
       "San Jose Museum of Art (14)"
     ],
@@ -78,7 +78,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 147,
+        "count": 149,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -110,7 +110,7 @@
         "id": "linden-tree-books",
         "label": "Linden Tree Books",
         "status": "ok",
-        "count": 11,
+        "count": 12,
         "error": null,
         "sources": [
           "Linden Tree Books"
@@ -178,7 +178,7 @@
         "id": "mountain-winery",
         "label": "Mountain Winery",
         "status": "ok",
-        "count": 32,
+        "count": 31,
         "error": null,
         "sources": [
           "Mountain Winery"
@@ -330,7 +330,7 @@
         "id": "books-inc",
         "label": "Books Inc",
         "status": "ok",
-        "count": 5,
+        "count": 4,
         "error": null,
         "sources": [
           "Books Inc"
@@ -434,8 +434,8 @@
       "kidFriendly": false
     },
     {
-      "id": "f6276cb04a5c",
-      "title": "Sleepy Stories",
+      "id": "1161a87c2e50",
+      "title": "Canceled--Sleepy Stories",
       "date": "2026-08-24",
       "displayDate": "Mon, Aug 24",
       "time": "6:30 PM",
@@ -1420,8 +1420,8 @@
       "kidFriendly": true
     },
     {
-      "id": "e7d85784cef6",
-      "title": "Sci-Fi: Build Your Alien",
+      "id": "ed0b5d0c2b46",
+      "title": "Space Buddies: Alien Maker Lab",
       "date": "2026-09-18",
       "displayDate": "Fri, Sep 18",
       "time": "4:30 PM",
@@ -2879,23 +2879,6 @@
       "description": "",
       "url": "https://mountainview.libcal.com/event/17329177",
       "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "92ebc0b49210",
-      "title": "Online Author Talk : G. Neri",
-      "date": "2026-08-20",
-      "displayDate": "Thu, Aug 20",
-      "time": "4:00 PM",
-      "endTime": "5:00 PM",
-      "venue": "Online",
-      "address": "",
-      "city": "los-gatos",
-      "category": "arts",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/17371381",
-      "source": "Los Gatos Library",
       "kidFriendly": true
     },
     {
@@ -5381,6 +5364,57 @@
       "kidFriendly": false
     },
     {
+      "id": "30c20a2b9908",
+      "title": "Storytime (Ages 0-5)",
+      "date": "2026-11-18",
+      "displayDate": "Wed, Nov 18",
+      "time": "11:00 AM",
+      "endTime": "11:30 AM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "family",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17249584",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
+      "id": "4989cd8631da",
+      "title": "Kids Knitting (Ages 7+)",
+      "date": "2026-11-18",
+      "displayDate": "Wed, Nov 18",
+      "time": "3:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "family",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/16887029",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
+      "id": "7b572ac629aa",
+      "title": "STEAM Wednesdays in the Teen Room",
+      "date": "2026-11-18",
+      "displayDate": "Wed, Nov 18",
+      "time": "3:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "family",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17261941",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
       "id": "32e3d2884f2a",
       "title": "SJZ Break Room Jazz Jam",
       "date": "2026-09-04",
@@ -5767,6 +5801,28 @@
         "kind": "first-party-occurrence-page",
         "sourceUrl": "https://www.lindentreebooks.com/events-calendar/",
         "date": "2026-08-30"
+      }
+    },
+    {
+      "id": "69772f0c733c",
+      "title": "Story Writing Workshops for Kids",
+      "date": "2026-09-06",
+      "displayDate": "Sun, Sep 6",
+      "time": "2:30pm",
+      "endTime": null,
+      "venue": "Linden Tree Books",
+      "address": "265 State St, Los Altos, CA 94022",
+      "city": "los-altos",
+      "category": "arts",
+      "cost": "free",
+      "description": "",
+      "url": "https://www.lindentreebooks.com/events-calendar/",
+      "source": "Linden Tree Books",
+      "kidFriendly": true,
+      "occurrenceEvidence": {
+        "kind": "first-party-occurrence-page",
+        "sourceUrl": "https://www.lindentreebooks.com/events-calendar/",
+        "date": "2026-09-06"
       }
     },
     {
@@ -6453,23 +6509,6 @@
       "description": "",
       "url": "https://www.icasanjose.org/upcoming-exhibitions/gregito-togiveandtake/",
       "source": "ICA San José",
-      "kidFriendly": false
-    },
-    {
-      "id": "f1eda39d9cca",
-      "title": "Men at Work with Toad the Wet Sprocket, Shonen Knife",
-      "date": "2026-08-19",
-      "displayDate": "Wed, Aug 19",
-      "time": "7:00 PM",
-      "endTime": null,
-      "venue": "The Mountain Winery",
-      "address": "14831 Pierce Rd, Saratoga, CA 95070",
-      "city": "saratoga",
-      "category": "music",
-      "cost": "paid",
-      "description": "",
-      "url": "https://www.mountainwinery.com/events/detail?event_id=1339270",
-      "source": "Mountain Winery",
       "kidFriendly": false
     },
     {
@@ -7340,10 +7379,10 @@
       "kidFriendly": false
     },
     {
-      "id": "c2ef3f1163c9",
+      "id": "8da684054202",
       "title": "Toddler Storytime",
-      "date": "2026-08-19",
-      "displayDate": "Wed, Aug 19",
+      "date": "2026-08-20",
+      "displayDate": "Thu, Aug 20",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
@@ -7357,10 +7396,10 @@
       "kidFriendly": true
     },
     {
-      "id": "96d9b6e451be",
+      "id": "67e57ce8f7c4",
       "title": "All Ages Storytime",
-      "date": "2026-08-19",
-      "displayDate": "Wed, Aug 19",
+      "date": "2026-08-20",
+      "displayDate": "Thu, Aug 20",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
@@ -8884,7 +8923,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
       "url": "https://www.operasj.org/event/don-giovanni",
       "source": "Opera San José",
       "kidFriendly": false
@@ -8901,7 +8940,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
       "url": "https://www.operasj.org/event/don-giovanni-2",
       "source": "Opera San José",
       "kidFriendly": false
@@ -10743,23 +10782,6 @@
       "kidFriendly": false
     },
     {
-      "id": "e59752d8cdd4",
-      "title": "Omar Courtz",
-      "date": "2026-08-19",
-      "displayDate": "Wed, Aug 19",
-      "time": "8:00 PM",
-      "endTime": null,
-      "venue": "SAP Center",
-      "address": "525 W Santa Clara St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "community",
-      "cost": "paid",
-      "description": "You asked. Omar Courtz delivered! POR SI MAÑANA NO ESTOY USA TOUR is hitting the road BIGGER AND STRONGER. 🎟 Tickets on sale Friday, May 8 @ 10am local.",
-      "url": "https://www.sapcenter.com/events/detail/omar-courtz",
-      "source": "SAP Center",
-      "kidFriendly": false
-    },
-    {
       "id": "f699a71532dd",
       "title": "MOUNT WESTMORE",
       "date": "2026-08-21",
@@ -10998,6 +11020,23 @@
       "kidFriendly": false
     },
     {
+      "id": "ebb92fddd522",
+      "title": "Marco Antonio Solís",
+      "date": "2026-09-26",
+      "displayDate": "Sat, Sep 26",
+      "time": "8:00 pm",
+      "endTime": null,
+      "venue": "SAP Center",
+      "address": "525 W Santa Clara St, San Jose, CA 95113",
+      "city": "san-jose",
+      "category": "community",
+      "cost": "paid",
+      "description": "",
+      "url": "https://www.sapcenter.com/events/detail/marco-antonio-solis-5",
+      "source": "SAP Center",
+      "kidFriendly": false
+    },
+    {
       "id": "ae6e434de9d4",
       "title": "Girl Scout Program: Home Scientist (Brownies)",
       "date": "2026-11-01",
@@ -11083,23 +11122,6 @@
       "kidFriendly": true
     },
     {
-      "id": "479394230afd",
-      "title": "SHELBY ANN HARMS: BY ORDER OF THE KING",
-      "date": "2026-08-20",
-      "displayDate": "Thu, Aug 20",
-      "time": "7:00 PM",
-      "endTime": null,
-      "venue": "Books Inc. Mountain View",
-      "address": "",
-      "city": "mountain-view",
-      "category": "arts",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.booksinc.com/pages/events",
-      "source": "Books Inc",
-      "kidFriendly": false
-    },
-    {
       "id": "ea237c08ae42",
       "title": "JOSS RICHARD: LET'S KISS & TELL",
       "date": "2026-08-25",
@@ -11168,23 +11190,6 @@
       "kidFriendly": false
     },
     {
-      "id": "2c9af5fbd8ac",
-      "title": "Feathers of the Forests (Online Event)",
-      "date": "2026-08-20",
-      "displayDate": "Thu, Aug 20",
-      "time": "7 PM",
-      "endTime": "8 PM",
-      "venue": "Online (POST Webinar)",
-      "address": "",
-      "city": "santa-clara-county",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://openspacetrust.org/event/feathers-of-the-forests-online-event/",
-      "source": "Peninsula Open Space Trust",
-      "kidFriendly": false
-    },
-    {
       "id": "b8dcae100526",
       "title": "Hellyer County Park BioBlitz",
       "date": "2026-08-30",
@@ -11198,6 +11203,23 @@
       "cost": "free",
       "description": "",
       "url": "https://www.eventbrite.com/e/hellyer-county-park-bioblitz-tickets-1992774014722?aff=post",
+      "source": "Peninsula Open Space Trust",
+      "kidFriendly": false
+    },
+    {
+      "id": "22942963d2d2",
+      "title": "Representation Matters Film Festival (In-Person & Virtual Viewing)",
+      "date": "2026-09-26",
+      "displayDate": "Sat, Sep 26",
+      "time": "6 PM",
+      "endTime": "9 PM",
+      "venue": "Online (POST Webinar)",
+      "address": "",
+      "city": "santa-clara-county",
+      "category": "outdoor",
+      "cost": "free",
+      "description": "",
+      "url": "https://openspacetrust.org/event/representation-matters-film-festival/",
       "source": "Peninsula Open Space Trust",
       "kidFriendly": false
     },

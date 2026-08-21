@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-20T04:25:52.532Z"
+    "auditedAt": "2026-08-21T02:19:59.286Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 2057,
+    "total": 2042,
     "totals": {
       "hard": 0,
       "soft": 0,
@@ -16,14 +16,14 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 397,
+    "total": 415,
     "totals": {
       "hard": 3,
-      "soft": 2,
+      "soft": 3,
       "info": 2
     },
     "byReason": {
-      "virtual-not-flagged": 1,
+      "virtual-not-flagged": 2,
       "unknown-slug": 1,
       "out-of-area": 1,
       "slug-mismatch": 2,
@@ -99,6 +99,20 @@
             "severity": "soft",
             "reason": "unknown-slug",
             "detail": "city=\"monte-sereno\" is not in the 11-city coverage map"
+          }
+        ]
+      },
+      {
+        "id": "inbound_mt1o4thl_xglq2q",
+        "title": "Big Basin, Six Years Later: Recovery, Mortality, and the Science Still Unfolding",
+        "city": null,
+        "date": "2026-08-25T00:00:00-07:00",
+        "location": "",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "virtual-not-flagged",
+            "detail": "matched /description mention/ in description"
           }
         ]
       },
