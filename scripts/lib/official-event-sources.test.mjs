@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { mapTicketmasterEvent } from "../generate-events.mjs";
+
 import {
   extractAddressLocality,
   extractSanJoseJazzDayUrls,
@@ -186,4 +188,46 @@ test("derives Happy Hollow's published recurring and dated events", () => {
   assert.equal(entries.length, 7);
   assert.deepEqual(entries.slice(0, 2).map((entry) => entry.date), ["2026-05-28", "2026-06-25"]);
   assert.equal(entries.at(-1).date, "2026-09-12");
+});
+
+function ticketmasterEvent(overrides = {}) {
+  return {
+    id: "example",
+    name: "Example Show",
+    dates: {
+      start: { localDate: "2026-08-21", localTime: "19:30:00" },
+      status: { code: "onsale" },
+    },
+    priceRanges: [{ type: "standard", currency: "USD", min: 0, max: 0 }],
+    url: "https://www.ticketmaster.com/example/event/example",
+    classifications: [{ segment: { name: "Arts & Theatre" }, genre: { name: "Comedy" } }],
+    _embedded: {
+      venues: [{
+        name: "Example Venue",
+        city: { name: "San Jose" },
+        address: { line1: "1 Example St" },
+      }],
+    },
+    ...overrides,
+  };
+}
+
+test("keeps credible Ticketmaster zero-price events free", () => {
+  assert.equal(mapTicketmasterEvent(ticketmasterEvent()).cost, "free");
+});
+
+test("does not call paid TicketWeb Improv shows free", () => {
+  const mapped = mapTicketmasterEvent(ticketmasterEvent({
+    url: "https://www.ticketweb.com/event/desi-banks-san-jose-improv-tickets/14880633",
+    _embedded: {
+      venues: [{
+        name: "San Jose Improv",
+        city: { name: "San Jose" },
+        address: { line1: "62 S Second St" },
+      }],
+    },
+  }));
+
+  assert.equal(mapped.cost, "paid");
+  assert.equal(mapped.costNote, undefined);
 });
