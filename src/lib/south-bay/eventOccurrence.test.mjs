@@ -169,6 +169,24 @@ test("unconfirmed 2026-08-19 library rows stay unpublished until first-party con
   }), false);
 });
 
+test("suppresses Ticketmaster-only Dru Hill at Mountain Winery", () => {
+  const druHill = {
+    id: "tm-Z7r9jZ1A7x78p",
+    title: "Dru Hill w/ Ginuwine & Troop",
+    date: "2026-08-22",
+    time: "7:30 PM",
+    venue: "Mountain Winery",
+    source: "Ticketmaster",
+  };
+  assert.equal(isEventEditoriallySuppressed(druHill), true);
+  assert.equal(isEventPublishable(druHill), false);
+  assert.equal(isEventEditoriallySuppressed({
+    ...druHill,
+    date: "2026-08-29",
+    id: "tm-other-dru",
+  }), false);
+});
+
 test("canonical events suppress the unconfirmed Cupertino market projection", () => {
   const upcoming = JSON.parse(readFileSync(
     new URL("../../data/south-bay/upcoming-events.json", import.meta.url),
