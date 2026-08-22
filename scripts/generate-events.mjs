@@ -4058,7 +4058,16 @@ function mapTicketmasterEvent(e) {
 
   const priceRange = e.priceRanges?.[0];
   const minPrice = priceRange?.min;
-  const cost = minPrice === 0 ? "free" : minPrice && minPrice < 25 ? "low" : "paid";
+  // Ticketmaster's TicketWeb passthrough reports San Jose Improv events as
+  // $0 even when the venue's canonical event page lists a paid ticket price.
+  // Do not surface those shows as free; keep the ordinary $0 behavior for
+  // every other Ticketmaster event.
+  const isTicketWebImprov = /ticketweb\.com/i.test(e.url || "") && /\bimprov\b/i.test(venueName);
+  const cost = minPrice === 0 && !isTicketWebImprov
+    ? "free"
+    : minPrice && minPrice < 25
+      ? "low"
+      : "paid";
 
   const classification = e.classifications?.[0];
   const genre = classification?.genre?.name || "";
@@ -8201,6 +8210,7 @@ export {
   inferCategory,
   isBiblioEventCancelled,
   looksCancelled,
+  mapTicketmasterEvent,
   resolveBiblioDisplayVenue,
   fetchFarmersMarketEvents,
   fetchHappyHollowEvents,
