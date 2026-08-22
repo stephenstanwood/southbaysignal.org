@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-21T02:19:59.286Z"
+    "auditedAt": "2026-08-22T02:19:30.188Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 2042,
+    "total": 2015,
     "totals": {
       "hard": 0,
       "soft": 0,
@@ -16,14 +16,14 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 415,
+    "total": 434,
     "totals": {
       "hard": 3,
-      "soft": 3,
+      "soft": 7,
       "info": 2
     },
     "byReason": {
-      "virtual-not-flagged": 2,
+      "virtual-not-flagged": 6,
       "unknown-slug": 1,
       "out-of-area": 1,
       "slug-mismatch": 2,
@@ -117,6 +117,48 @@
         ]
       },
       {
+        "id": "inbound_mt3oas2t_wz1vxv",
+        "title": "Tennis & Pickleball Community Meeting (Virtual)",
+        "city": "santa-clara",
+        "date": "2026-08-27T18:00:00-07:00",
+        "location": "",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "virtual-not-flagged",
+            "detail": "matched /description mention/ in description"
+          }
+        ]
+      },
+      {
+        "id": "inbound_mt37873l_44w0js",
+        "title": "When Trees Testify: Reclaiming America's Black Botanical Legacy with Beronda Montgomery",
+        "city": "sunnyvale",
+        "date": "2026-08-25T11:00:00-07:00",
+        "location": "",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "virtual-not-flagged",
+            "detail": "matched /description mention/ in description"
+          }
+        ]
+      },
+      {
+        "id": "inbound_mt37873l_m2txlv",
+        "title": "High Altitudes and High Stakes: A Miss Marple Mystery with Lucy Foley",
+        "city": "sunnyvale",
+        "date": "2026-08-27T11:00:00-07:00",
+        "location": "",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "virtual-not-flagged",
+            "detail": "matched /description mention/ in description"
+          }
+        ]
+      },
+      {
         "id": "inbound_msai2vme_p883q1",
         "title": "September Day Trip to SFMOMA",
         "city": null,
@@ -127,6 +169,20 @@
             "severity": "info",
             "reason": "local-departure-trip",
             "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
+          }
+        ]
+      },
+      {
+        "id": "inbound_mt3h7y9x_gyr24n",
+        "title": "Youth Climate Project Workshop (Zoom)",
+        "city": "san-jose",
+        "date": "2026-09-02T13:00:00-07:00",
+        "location": "",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "virtual-not-flagged",
+            "detail": "matched /description mention/ in description"
           }
         ]
       },
