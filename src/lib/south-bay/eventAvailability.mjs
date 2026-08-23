@@ -33,6 +33,16 @@ export const EVENT_EDITORIAL_SUPPRESSIONS = Object.freeze([
       "SJPL BiblioCommons occurrence page and gateway record do not confirm this date or time.",
     source: "https://sjpl.bibliocommons.com/events/6a7e0ae8d4b10d0030064691",
   }),
+  Object.freeze({
+    ids: Object.freeze(["tm-Z7r9jZ1A7x78p"]),
+    title: /dru hill/i,
+    venue: /mountain winery/i,
+    date: "2026-08-22",
+    reviewOn: "2026-08-29",
+    reason:
+      "Mountain Winery first-party concert pages do not confirm this date; Ticketmaster is the only listing.",
+    source: "https://www.ticketmaster.com/dru-hill-w-ginuwine-saratoga-california-08-22-2026/event/Z7r9jZ1A7x78p",
+  }),
 ]);
 
 function normalizeDate(value) {
