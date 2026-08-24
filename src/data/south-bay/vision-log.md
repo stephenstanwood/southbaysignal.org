@@ -2,6 +2,124 @@
 
 ---
 
+## 2026-08-24 — Cycle 213: The Hiring Guide Was Telling Residents Cisco and LinkedIn Were Stable
+
+### Context
+Monday August 24, 2026. Clean tree on pull. Roadmap still closed (6/6), so this
+ran off 211's ranked "Next 3." Today's earlier run (03:35–03:48, conferences +
+three funding rounds) shipped without a log entry, so cycle numbering skips to
+213 here.
+
+Items 1 and 2 on that list turned out to be the same job. Item 1 was "audit the
+remaining `TECH_COMPANIES` trendNotes for date anchoring" — Google's "stabilized
+after 2023 layoffs" and Cisco's "stable following Splunk integration" were both
+flagged as PayPal-shaped, and both were left alone last cycle for lack of a
+verified replacement fact. Item 2 was Intel's Santa Clara WARN filings, blocked
+because CoStar 403s. California's EDD publishes the WARN report itself, and it
+turns out to be the replacement fact for the whole list, not just Intel.
+
+### What Was Built
+
+**The Tech tab's hiring guide had Cisco and LinkedIn under "Selective Hiring —
+stable or post-restructuring, open roles but no broad expansion."** Both cut
+hundreds of Santa Clara County jobs effective July 13, 2026 — five weeks before
+this cycle ran. That grouping is the most actionable thing on the tab: a
+resident deciding where to send a résumé reads it as a signal. It was wrong for
+the two companies where it mattered most.
+
+The correction came from EDD's WARN report, which every California employer
+must file before a mass layoff and which nobody aggregates at the county level.
+Two files cover the window: the current fiscal year as XLSX (7/1/26–8/19/26)
+and FY2025-26 as PDF. Together they give 203 Santa Clara County filings.
+
+What the primary source says about the 17 companies on the tab:
+
+| Company | SCC jobs on WARN | Window |
+|---|---|---|
+| Intel | 996 | Jul 2025 – Jul 2026, five rounds |
+| Cisco | 547 | Aug 2025 + Jun 2026 |
+| LinkedIn | 477 | May 2026, effective Jul 13 |
+| Meta | 439 | three 2026 rounds, all Sunnyvale |
+| Applied Materials | 363 | Oct 2025 |
+| eBay | 243 | Feb 2026 |
+| ServiceNow | 208 | Jun + Jul 2026 |
+| Western Digital | 134 | Jan 2026 |
+| Google | 127 | Sep 2025 + Jan 2026 |
+| Apple, NVIDIA, AMD, Adobe, PayPal, Palo Alto Networks, Zoom, Supermicro | none | — |
+
+Five trend flips followed, each moving a company out of a group its own filings
+contradict: **Cisco**, **LinkedIn**, **Meta**, and **eBay** to Reduced Hiring,
+and **Applied Materials** from Actively Hiring to Selective — it is cutting
+locally (363 jobs, including 14 VPs) while its equipment backlog grows, which
+is exactly what "stable or post-restructuring" describes. ServiceNow stays in
+Actively Hiring: 208 Lawson Lane roles is real, but so is 20%+ revenue growth.
+
+Eleven trendNotes were rewritten to carry a dated, checkable number instead of a
+vibe. The two 211 called out by name are gone: Google's "stabilized after 2023
+layoffs" now reads "two WARN rounds cut 127 local jobs since mid-2025, all in
+Sunnyvale" — which says the same thing, but with a number a resident can check
+and a date that can't quietly rot. Cisco's "stable following Splunk
+integration" is now the 547.
+
+Zoom was the third stale-shaped note and had no WARN filings to fix it with.
+"Post-pandemic normalization, pivoting to AI Companion" is 2023 framing on a
+2026 card; it now carries FY26 revenue reacceleration to 4.4% and the July 2026
+Common Room acquisition.
+
+**Apple's card gained the most unusual fact on the tab: nothing.** Zero WARN
+filings in Santa Clara County across the full 14-month window, at 25K local
+jobs. Absence of a filing is not absence of layoffs — WARN only triggers at
+scale, per site — so it is stated as exactly what it is.
+
+**`scripts/warn-scc.mjs` makes this repeatable.** `npm run warn-scc` pulls the
+current EDD workbook and prints Santa Clara filings newest-first with a
+per-company rollup. The workbook is XLSX and the repo has no spreadsheet
+dependency, so `scripts/lib/warn-scc.mjs` reads it directly — .xlsx is a ZIP of
+XML and Node ships `inflateRawSync`. Sizes come from the central directory, not
+the local header, so entries written with a trailing data descriptor still read.
+Eight tests, including a hand-built ZIP fixture so the reader is exercised
+against real bytes.
+
+The module header carries the rule that matters for anyone writing copy from
+it: a WARN filing is a notice, not a headcount. It covers one site, only
+triggers at scale, and the number is what the employer expects to cut. Say
+"cut on WARN filings," never "lost N jobs." Every line shipped today follows it.
+
+**A library craft blurb promised supplies the source says are limited.** `npm
+test` was already red before this cycle touched anything: Evergreen Library's
+Arts & Crafts for Adults shipped as "…tiny art projects with supplies provided,"
+while the SJPL description truncates mid-sentence at "Supplies are limited and
+available only…". `blurbInventsTruncatedDetail` exists for exactly this and had
+caught it. Fixed in both `upcoming-events.json` and `event-blurb-cache.json` so
+the next regen doesn't restore the claim.
+
+### Why This Was the Strongest Move
+The company cards are reference material — a resident reads them once. The
+hiring groups are advice. Telling someone Cisco and LinkedIn are stable six
+weeks after both cut hundreds of local jobs is the kind of error that costs a
+reader something real, and unlike the PayPal CEO error it was invisible: no
+single wrong sentence, just two words in the wrong bucket. The WARN reader is
+what keeps it from coming back, since the next cycle can re-check the whole tab
+in one command instead of trusting a note written months ago.
+
+### Next 3 Strongest Ideas
+1. **Extend the WARN reader to the prior-year PDFs.** Only the current fiscal
+   year is machine-readable; FY2025-26 was parsed by hand this cycle with
+   `pdftotext -layout` and the numbers above depend on it. The repo already has
+   `unpdf`. That would make the full multi-year history queryable and let a
+   trendNote cite a trajectory rather than a single round.
+2. **The non-tech Santa Clara filings are unused local news.** FY2025-26 has
+   10,672 county jobs on WARN across 192 filings, and the ones residents would
+   actually feel are not on the Tech tab: New Leaf Community Markets closing on
+   Silver Creek Valley Road, Monterey Mushrooms cutting 253 in Morgan Hill, Six
+   Flags 184. No home/events surface for it — Rule #1 stands — but a city page
+   is the natural home if one ever wants it.
+3. **Permit Pulse: Mountain View** — all known MV permit portals remain
+   blocked/ECONNREFUSED. Monitor cityofmountainview.gov for changes. (Carried
+   from 210 and 211; unchanged.)
+
+---
+
 ## 2026-08-19 — Cycle 211: PayPal Had a Different CEO for Five Months
 
 ### Context
