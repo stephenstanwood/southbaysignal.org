@@ -1,19 +1,35 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-24T13:31:58.153Z"
+    "auditedAt": "2026-08-24T20:14:52.776Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1946,
+    "total": 1769,
     "totals": {
-      "hard": 0,
+      "hard": 1,
       "soft": 1,
       "info": 0
     },
     "byReason": {
-      "virtual-not-flagged": 1
+      "virtual-not-flagged": 1,
+      "out-of-area": 1
     },
-    "hard": [],
+    "hard": [
+      {
+        "id": "scu-e31d8ebaefab80fb",
+        "title": "Magnifica Humanitas: What is a Christian Approach to AI?",
+        "city": "santa-clara",
+        "date": "2026-09-16",
+        "location": "JST-SCU, Berkeley Campus, Loyola Room",
+        "findings": [
+          {
+            "severity": "hard",
+            "reason": "out-of-area",
+            "detail": "location mentions \"berkeley\" with no in-area city token"
+          }
+        ]
+      }
+    ],
     "soft": [
       {
         "id": "sjpl-6920dd8fb864f029002592fe",
@@ -33,7 +49,7 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 362,
+    "total": 366,
     "totals": {
       "hard": 3,
       "soft": 8,
