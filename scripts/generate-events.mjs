@@ -4604,12 +4604,27 @@ async function fetchSJGiantsSchedule() {
           "fresno", "inland empire", "lake elsinore", "modesto",
           "rancho cucamonga", "san jose", "stockton", "visalia",
         ]);
-        const awayLoc = game.teams?.away?.team?.locationName;
-        const awayMascot = game.teams?.away?.team?.teamName;
+        //
+        // The schedule endpoint now returns a bare `{id, name, link}` team
+        // object — `locationName` and `teamName` are gone (confirmed
+        // 2026-08-24). Keying the guard on `locationName` alone therefore
+        // rejected *every* home game: six real Visalia Rawhide dates silently
+        // vanished from the calendar. Fall back to the full name and match the
+        // market as a prefix, which still throws out a Copa promo identity
+        // ("Ontario Tower Buzzers" starts with no California League market).
+        const awayName = (game.teams?.away?.team?.name || "").trim();
+        const awayLoc =
+          game.teams?.away?.team?.locationName ||
+          [...CAL_LEAGUE_LOCATIONS].find((loc) =>
+            awayName.toLowerCase().startsWith(loc),
+          );
         if (!awayLoc || !CAL_LEAGUE_LOCATIONS.has(awayLoc.toLowerCase())) {
           continue;
         }
-        const awayTeam = `${awayLoc} ${awayMascot}`;
+        const awayMascot = game.teams?.away?.team?.teamName;
+        const awayTeam = awayMascot
+          ? `${awayLoc} ${awayMascot}`
+          : awayName || awayLoc;
         const gameDate = dateRec.date;
         const startUtc = game.gameDate ? new Date(game.gameDate) : null;
         events.push({
@@ -7443,7 +7458,12 @@ async function main() {
     source(fetchSharksSchedule),
     source(fetchSantaCruzWarriorsSchedule),
     source(fetchSantaCruzPicks),
-    source(fetchMvplEvents),
+    // fetchMvplEvents, — hardcoded `return []`; Mountain View Public Library is
+    //   ingested by scrapeLibCal in playwright-scrapers.mjs (150 events/run).
+    //   Registering the stub made it report `status: "empty"` on every single
+    //   refresh, which is indistinguishable in sourceHealth from an adapter that
+    //   broke. The function stays put as a tombstone so the wrong BiblioCommons
+    //   site ID can't be reintroduced — it just isn't a source any more.
     // fetchSunnyvaleLibraryEvents, — 403 (Events feature disabled on their BiblioCommons); covered by SCCL
     source(fetchPaloAltoLibraryEvents),
     source(fetchHappyHollowEvents, { label: "Happy Hollow Park & Zoo" }),
