@@ -6029,6 +6029,10 @@ function isoTimeToClockLocal(iso) {
 // ── San Jose Downtown Association (Tribe Events REST API) ──
 // Covers City Lights Theater, San Jose Museum of Art events, SoFA district, First Fridays, etc.
 
+// RETIRED 2026-08-24 — no longer in the source list; see the retirement note at
+// its former `source(...)` registration. Kept, like fetchSjMuseumOfArtEvents,
+// so the normalization it taught us stays readable. Do not re-register it
+// without a sanctioned feed from SJDA.
 async function fetchSjdaEvents() {
   console.log("  ⏳ SJDA (Downtown San Jose)...");
   try {
@@ -7478,7 +7482,18 @@ async function main() {
     source(fetchEastWestBookshopEvents),
     source(fetchKeplersEvents),
     source(fetchHicklebeesEvents),
-    source(fetchSjdaEvents),
+    // fetchSjdaEvents — retired 2026-08-24. sjdowntown.com began answering 403
+    // on its Tribe Events REST API that day, and its robots.txt is now
+    // Cloudflare-managed with ai-train=no plus explicit Disallow rules for
+    // ClaudeBot, GPTBot, CCBot, Bytespider, and friends. The host is refusing
+    // automated access on purpose, so we take it at its word rather than
+    // working around the block. Stephen's call, 2026-08-24.
+    //
+    // Coverage cost is real: this was ~332 upcoming downtown San Jose records
+    // and nothing else on the source list covers that beat. SJDA does still
+    // reach us through the sanctioned channel — sjda@sjdowntown.com mails
+    // events to the inbound address — but at 2 events, not 332. If downtown
+    // coverage needs restoring, ask SJDA for a feed rather than re-scraping.
     // fetchSjMuseumOfArtEvents — retired 2026-08-13 after Cloudflare began
     // challenging every direct HTTP request. SJMA remains covered by the
     // Playwright snapshot, which carries its last healthy rows on browser errors.
