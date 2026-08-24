@@ -70,26 +70,52 @@ try {
 }
 
 // 2. Per-email shards (race-free writes).
-try {
-  const { blobs } = await list({ prefix: SHARD_PREFIX, token });
-  const shards = await Promise.all(
-    blobs.map(async (b) => {
-      try {
-        const res = await fetch(`${b.url}?_cb=${Date.now()}`, { cache: "no-store" });
-        if (!res.ok) {
-          sourceErrors.push(`${b.pathname}: HTTP ${res.status}`);
-          return null;
-        }
-        return JSON.parse(await res.text());
-      } catch (err) {
-        sourceErrors.push(`${b.pathname}: ${err.message}`);
+//
+// The shard count grows without bound (860+ as of 2026-08), and a bare
+// Promise.all over all of them opened that many sockets at once. Under
+// SBT_STRICT_EVENT_REFRESH a single transient `fetch failed` aborts the whole
+// refresh and pings Discord, so a network blip read as a data outage — that is
+// what broke the 2026-08-23/24 runs. Read with bounded concurrency and retry
+// transient failures before recording a source error.
+const SHARD_CONCURRENCY = 24;
+const SHARD_ATTEMPTS = 3;
+
+async function fetchShard(b) {
+  let lastErr = null;
+  for (let attempt = 1; attempt <= SHARD_ATTEMPTS; attempt++) {
+    try {
+      const res = await fetch(`${b.url}?_cb=${Date.now()}`, { cache: "no-store" });
+      if (res.ok) return JSON.parse(await res.text());
+      // 4xx is a real, non-transient problem; retrying only wastes time.
+      if (res.status < 500 && res.status !== 429) {
+        sourceErrors.push(`${b.pathname}: HTTP ${res.status}`);
         return null;
       }
-    })
-  );
-  for (const arr of shards) {
-    if (Array.isArray(arr)) events.push(...arr);
+      lastErr = `HTTP ${res.status}`;
+    } catch (err) {
+      lastErr = err.message;
+    }
+    if (attempt < SHARD_ATTEMPTS) {
+      await new Promise((r) => setTimeout(r, 250 * 2 ** (attempt - 1)));
+    }
   }
+  sourceErrors.push(`${b.pathname}: ${lastErr} (after ${SHARD_ATTEMPTS} attempts)`);
+  return null;
+}
+
+try {
+  const { blobs } = await list({ prefix: SHARD_PREFIX, token });
+  let cursor = 0;
+  const workers = Array.from(
+    { length: Math.min(SHARD_CONCURRENCY, blobs.length) },
+    async () => {
+      while (cursor < blobs.length) {
+        const arr = await fetchShard(blobs[cursor++]);
+        if (Array.isArray(arr)) events.push(...arr);
+      }
+    }
+  );
+  await Promise.all(workers);
 } catch (err) {
   console.error("⚠️  shard list failed:", err.message);
   sourceErrors.push(`shard list: ${err.message}`);

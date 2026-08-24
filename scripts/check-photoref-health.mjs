@@ -36,25 +36,59 @@ while (sample.length < SAMPLE_SIZE && sample.length < withRefs.length) {
   sample.push(withRefs[idx]);
 }
 
+// This sentinel exists to catch photoRefs that Google has silently expired.
+// A network blip is not an expiration: on 2026-08-23 the Mini briefly lost
+// connectivity and every one of the 20 samples timed out, which paged Stephen
+// with a 100%-failure alarm for refs that were fine. So each sample gets a
+// retry, and a run whose failures are ALL transport errors is reported as an
+// inconclusive network problem instead of a photoRef alarm.
+const ATTEMPTS = 2;
+
+async function probe(place) {
+  let last = null;
+  for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
+    try {
+      const r = await fetch(
+        `https://places.googleapis.com/v1/${place.photoRef}/media?maxWidthPx=120&maxHeightPx=120&key=${apiKey}`,
+        { signal: AbortSignal.timeout(8000) },
+      );
+      if (r.ok) return { ok: true };
+      // A 4xx other than 429 is Google rejecting the ref itself — the exact
+      // condition this sentinel watches for. Don't retry it.
+      if (r.status < 500 && r.status !== 429) {
+        return { ok: false, transport: false, label: `${r.status} ${place.name}` };
+      }
+      last = { transport: true, label: `${r.status} ${place.name}` };
+    } catch (err) {
+      last = { transport: true, label: `err ${place.name}: ${err.message}` };
+    }
+    if (attempt < ATTEMPTS) await new Promise((r) => setTimeout(r, 1500));
+  }
+  return { ok: false, ...last };
+}
+
 let ok = 0, fail = 0;
 const failures = [];
-await Promise.all(sample.map(async (p) => {
-  try {
-    const r = await fetch(
-      `https://places.googleapis.com/v1/${p.photoRef}/media?maxWidthPx=120&maxHeightPx=120&key=${apiKey}`,
-      { signal: AbortSignal.timeout(8000) },
-    );
-    if (r.ok) ok++;
-    else { fail++; failures.push(`${r.status} ${p.name}`); }
-  } catch (err) {
-    fail++;
-    failures.push(`err ${p.name}: ${err.message}`);
-  }
-}));
+let transportFailures = 0;
+const results = await Promise.all(sample.map(probe));
+for (const r of results) {
+  if (r.ok) { ok++; continue; }
+  fail++;
+  failures.push(r.label);
+  if (r.transport) transportFailures++;
+}
 
 const failPct = fail / sample.length;
 console.log(`ok=${ok} fail=${fail} (${(failPct * 100).toFixed(0)}%)`);
 if (failures.length) failures.forEach((f) => console.log("  -", f));
+
+if (fail > 0 && transportFailures === fail) {
+  console.log(
+    `inconclusive: all ${fail} failures were network/transport errors, not ` +
+      "photoRef rejections — treating as a connectivity blip, not alerting",
+  );
+  process.exit(0);
+}
 
 if (failPct > ALERT_THRESHOLD) {
   await catSignal({
