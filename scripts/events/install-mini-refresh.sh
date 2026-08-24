@@ -5,6 +5,37 @@ REPO="/Users/stephenstanwood/Projects/southbaytoday.org"
 DOMAIN="gui/$(id -u)"
 MODE="${1:-all}"
 
+# The eventCount pre-commit hook is tracked in the repo but has to be linked
+# into the git hooks dir to run. Symlink rather than copy so the tracked file is
+# always what executes — the first version of this hook was an untracked copy in
+# the Mini's .git/hooks and silently diverged from the repo. Leaves the Mini-only
+# pre-push repo-lock backstop alone.
+install_hooks() {
+  local hooks_dir source target
+  # rev-parse returns a path relative to $REPO for a main checkout and an
+  # absolute one from a linked worktree, so anchor it before appending.
+  hooks_dir="$(git -C "$REPO" rev-parse --git-common-dir 2>/dev/null || true)"
+  [[ -z "$hooks_dir" ]] && return 0
+  [[ "$hooks_dir" != /* ]] && hooks_dir="$REPO/$hooks_dir"
+  hooks_dir="$hooks_dir/hooks"
+  source="$REPO/scripts/hooks/pre-commit"
+
+  if [[ ! -f "$source" ]]; then
+    echo "missing $source" >&2
+    return 0
+  fi
+  if [[ ! -d "$hooks_dir" ]]; then
+    mkdir -p "$hooks_dir" || return 0
+  fi
+
+  chmod +x "$source" 2>/dev/null || true
+  target="$hooks_dir/pre-commit"
+  if [[ "$(readlink "$target" 2>/dev/null || true)" != "$source" ]]; then
+    ln -sfn "$source" "$target"
+    echo "Linked pre-commit hook -> $source"
+  fi
+}
+
 install_agent() {
   local label="$1"
   local source="$2"
@@ -34,6 +65,8 @@ install_agent() {
   launchctl enable "$DOMAIN/$label"
   launchctl print "$DOMAIN/$label" | grep -E 'state =|runs =|last exit code' || true
 }
+
+install_hooks
 
 case "$MODE" in
   all)

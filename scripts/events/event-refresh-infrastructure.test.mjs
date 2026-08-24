@@ -40,3 +40,33 @@ test("GitHub is a same-night independent check with explicit failure alerting", 
   assert.match(workflow, /if: \$\{\{ failure\(\) \}\}/);
   assert.match(workflow, /notify-workflow-failure\.mjs/);
 });
+
+test("the eventCount pre-commit hook is tracked and self-installs", () => {
+  // The first version of this hook existed only in the Mini's untracked
+  // .git/hooks, so the repo had no idea it was load-bearing. Assert both
+  // halves: the hook is in the tree, and something actually links it in.
+  const hook = read("../hooks/pre-commit");
+  const installer = read("./install-mini-refresh.sh");
+  const scheduled = read("./scheduled-refresh.mjs");
+
+  assert.match(hook, /eventCount = d\.events\.length/);
+  assert.match(hook, /src\/data\/south-bay/);
+  assert.match(hook, /exit 0/);
+  assert.match(installer, /install_hooks/);
+  assert.match(installer, /scripts\/hooks\/pre-commit/);
+  // --watchdog-only runs on every scheduled pass, so the link self-heals.
+  assert.match(installer, /^install_hooks$/m);
+  assert.match(scheduled, /install-mini-refresh\.sh"\), "--watchdog-only"/);
+});
+
+test("partial inbound shard loss degrades, systemic loss still blocks", () => {
+  // 2026-08-23/24: three unreachable shards out of 860 aborted the nightly
+  // refresh after the 40-minute scrape had already succeeded.
+  const puller = read("../pull-inbound-events.mjs");
+  assert.match(puller, /inboundReadProblems/);
+  assert.match(puller, /readHealth\.blocking\.length > 0/);
+  // The coverage guards this degradation leans on must stay.
+  assert.match(puller, /inbound source returned zero events/);
+  assert.match(puller, /inbound coverage regression/);
+  assert.doesNotMatch(puller, /sourceErrors\.length > 0/);
+});

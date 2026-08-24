@@ -1,0 +1,63 @@
+#!/bin/bash
+# Keep the derived `eventCount` stamp honest.
+#
+# upcoming-events.json carries `eventCount` alongside `events`. generate-events
+# writes both from the same array so they always agree, but the SBT editing
+# routines (fact-check, copy-edit, the one-off backfills) remove entries from
+# `events` directly and have no reason to remember a redundant counter. On
+# 2026-08-24 sbs-fact-check dropped 18 events and left the stamp at 1964, which
+# tripped the event-refresh health check and paged Stephen twice for a field
+# that is pure derived data.
+#
+# Prose in a SKILL.md cannot enforce this — every future writer would have to
+# remember. So normalize it here, at the moment anything persists the file.
+# Never block a commit over it: these run unattended.
+#
+# This file is TRACKED and installed into the git hooks dir by
+# scripts/events/install-mini-refresh.sh, which the scheduled refresh runs on
+# every pass. The first version of this hook lived only in the Mini's untracked
+# .git/hooks/, so it was invisible to the repo, absent on every other checkout,
+# and would have vanished on the next clone.
+set -uo pipefail
+
+NODE_BIN="${SBT_NODE:-}"
+if [ -z "$NODE_BIN" ]; then
+  if [ -x /opt/homebrew/bin/node ]; then
+    NODE_BIN=/opt/homebrew/bin/node
+  else
+    NODE_BIN="$(command -v node || true)"
+  fi
+fi
+[ -n "$NODE_BIN" ] || exit 0
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^src/data/south-bay/.*\.json$' || true)
+[ -z "$STAGED" ] && exit 0
+
+FIXED=""
+for f in $STAGED; do
+  [ -f "$f" ] || continue
+  # Skip partially staged files: the fix below re-adds the whole working-tree
+  # file, which would silently widen a `git add -p` commit.
+  if ! git diff --quiet -- "$f"; then
+    continue
+  fi
+  out=$("$NODE_BIN" -e '
+    const fs = require("fs");
+    const p = process.argv[1];
+    let d;
+    try { d = JSON.parse(fs.readFileSync(p, "utf8")); } catch { process.exit(0); }
+    if (!Array.isArray(d?.events) || typeof d.eventCount !== "number") process.exit(0);
+    if (d.eventCount === d.events.length) process.exit(0);
+    const was = d.eventCount;
+    d.eventCount = d.events.length;
+    fs.writeFileSync(p, JSON.stringify(d, null, 2) + "\n");
+    console.log(`${was}->${d.events.length}`);
+  ' "$f" 2>/dev/null) || continue
+  if [ -n "$out" ]; then
+    git add "$f"
+    FIXED="$FIXED $f($out)"
+  fi
+done
+
+[ -n "$FIXED" ] && echo "  pre-commit: normalized eventCount:$FIXED"
+exit 0
