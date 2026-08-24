@@ -51,6 +51,15 @@ bash scripts/events/install-mini-refresh.sh
 - San Jose Museum of Art is owned by the Playwright snapshot. Its redundant
   direct HTTP adapter was retired after Cloudflare began returning a managed
   403 challenge; browser failures retain that source's last healthy future rows.
+- SJDA (Downtown San Jose) was retired 2026-08-24 for the same reason, and the
+  whole site is walled rather than one endpoint: the events API, `/events/feed/`,
+  `?ical=1` and the sitemap that sjdowntown.com's own robots.txt advertises all
+  answer 403 with a Cloudflare interstitial. robots.txt still publishes
+  `Allow: /` for `*`, so the refusal is the bot wall and not a stated policy —
+  but a browser driven through the challenge to get around it is a sidestep, and
+  we do not do that. Downtown venues remain covered by their own adapters. Do not
+  re-register the adapter or give it a browser User-Agent; re-register only if
+  SJDA publishes a feed that serves a self-declaring client.
 - Inbound events arrive as one Vercel Blob shard per intake email (866 as of
   2026-08). Shard reads are bounded to 24 at a time and retry transient
   failures. What still fails is weighed, not simply counted: a subset (up to 5%,
