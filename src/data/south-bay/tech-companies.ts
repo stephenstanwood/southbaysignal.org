@@ -61,7 +61,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     category: "cloud",
     sccEmployeesK: 25,
     trend: "flat",
-    trendNote: "25K at Googleplex + SCC offices; stabilized after 2023 layoffs",
+    trendNote: "25K at Googleplex + SCC offices; two WARN rounds cut 127 local jobs since mid-2025, all in Sunnyvale",
     highlights: [
       "Gemini AI driving search, Cloud, and device integration across all products",
       "Waymo robotaxi service expanding commercially to multiple US cities",
@@ -80,7 +80,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     category: "hardware",
     sccEmployeesK: 25,
     trend: "flat",
-    trendNote: "25K at Apple Park + SCC offices; roughly stable since 2023",
+    trendNote: "25K at Apple Park + SCC offices; no Santa Clara County WARN layoff filings since mid-2025",
     highlights: [
       "Apple Intelligence on-device AI rolling out across iPhone, Mac, and iPad",
       "M5 chip family now spans iPad Pro (Oct 2025) and MacBook Pro (Mar 2026); M5 MacBook Air and Mac mini next",
@@ -99,7 +99,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     category: "chip",
     sccEmployeesK: 14,
     trend: "down",
-    trendNote: "14K in SCC; global headcount closed 2025 at 85,100, down from 108,900 a year earlier",
+    trendNote: "14K in SCC; 996 Santa Clara jobs cut on WARN notices since July 2025; global headcount 85,100, down from 108,900",
     highlights: [
       "The US government has held a roughly 9.9% stake since August 2025, when the Trump administration converted $8.9B of CHIPS Act grants into Intel shares; NVIDIA invested a further $5B that autumn",
       "Fortinet became Intel Foundry's first publicly named outside customer in July 2026 — a real win, but for the mature Intel 4 node rather than the leading-edge 18A and 14A the turnaround actually rides on",
@@ -117,14 +117,14 @@ export const TECH_COMPANIES: TechCompany[] = [
     city: "San Jose",
     category: "network",
     sccEmployeesK: 12,
-    trend: "flat",
-    trendNote: "12K at SJ HQ + SCC offices; stable following Splunk integration",
+    trend: "down",
+    trendNote: "12K at SJ HQ + SCC offices; 547 local jobs cut on WARN filings since August 2025",
     highlights: [
       "Splunk acquisition ($28B) transforms Cisco into a major security + observability platform",
-      "Networking hardware and software being repositioned for AI infrastructure demand",
+      "A May 2026 restructuring cuts close to 4,000 roles globally — under 5% of staff — to move spending toward silicon, optics, security, and AI; 236 of the cuts hit the Tasman Drive headquarters",
     ],
     description:
-      "Enterprise networking, security, and observability. The largest employer in downtown San Jose.",
+      "Enterprise networking, security, and observability. Its North San Jose campus is one of the city's biggest private employers.",
     color: "#1BA0D7",
     careersUrl: "https://jobs.cisco.com",
   },
@@ -136,11 +136,11 @@ export const TECH_COMPANIES: TechCompany[] = [
     city: "Menlo Park",
     category: "social",
     sccEmployeesK: 2,
-    trend: "up",
-    trendNote: "HQ is in San Mateo County; 2K in SCC offices (Sunnyvale, SJ)",
+    trend: "down",
+    trendNote: "HQ is in San Mateo County; 2K in SCC, where three 2026 rounds cut 439 Sunnyvale jobs",
     highlights: [
       "Llama open-source AI models advancing Meta AI across Facebook, Instagram, and WhatsApp",
-      "Ray-Ban Meta smart glasses gaining traction as low-key consumer wearable AI",
+      "Ray-Ban Meta smart glasses remain the consumer bright spot, but the Sunnyvale cuts landed mostly on Reality Labs and the wearables and XR teams behind them",
     ],
     description:
       "Social media, VR/AR, and open-source AI. Menlo Park HQ just over the county line.",
@@ -232,7 +232,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     category: "saas",
     sccEmployeesK: 6,
     trend: "up",
-    trendNote: "6K at Santa Clara HQ; headcount growing with 20%+ revenue growth",
+    trendNote: "6K at Santa Clara HQ; still growing on 20%+ revenue, though 208 Lawson Lane roles were cut on summer 2026 filings",
     highlights: [
       "Now Platform AI Agents automating enterprise IT, HR, and customer workflows at scale",
       "One of the fastest-growing large enterprise software companies in the world",
@@ -249,10 +249,10 @@ export const TECH_COMPANIES: TechCompany[] = [
     city: "Sunnyvale",
     category: "social",
     sccEmployeesK: 8,
-    trend: "flat",
-    trendNote: "8K at Sunnyvale HQ; stable under Microsoft ownership",
+    trend: "down",
+    trendNote: "8K across the Sunnyvale–Mountain View campus; 477 local jobs cut effective July 13, 2026",
     highlights: [
-      "AI-assisted job matching, writing tools, and profile optimization launching for Premium users",
+      "Cut 606 California roles in May 2026, about two-thirds of them in software development — 411 at the Silicon Valley campus that straddles Mountain View and Sunnyvale",
       "B2B advertising and Premium subscriptions driving revenue growth for Microsoft",
     ],
     description:
@@ -287,7 +287,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     category: "hardware",
     sccEmployeesK: 4,
     trend: "flat",
-    trendNote: "4K at SJ HQ; focused on hard drives after SanDisk spin-off Feb 2025",
+    trendNote: "4K at SJ HQ; 134 Great Oaks Parkway jobs cut in January 2026",
     highlights: [
       "SanDisk spin-off completed February 2025 — WD now a focused hard drive company",
       "Hard drive demand rising again with AI data center storage needs driving enterprise sales",
@@ -305,10 +305,10 @@ export const TECH_COMPANIES: TechCompany[] = [
     city: "San Jose",
     category: "ecommerce",
     sccEmployeesK: 3,
-    trend: "flat",
-    trendNote: "3K at SJ HQ; focused category strategy stabilizing",
+    trend: "down",
+    trendNote: "3K at SJ HQ; 243 headquarters jobs cut in February 2026",
     highlights: [
-      "AI-powered listing tools cutting seller friction and improving listing quality significantly",
+      "Cut 800 jobs — 6% of the company — in February 2026, a week after agreeing to buy resale app Depop for $1.2B; 243 of those were at the San Jose headquarters",
       "Authenticity Guarantee expanding to more collectible and luxury product categories",
     ],
     description:
@@ -344,10 +344,10 @@ export const TECH_COMPANIES: TechCompany[] = [
     category: "saas",
     sccEmployeesK: 2,
     trend: "flat",
-    trendNote: "2K at SJ HQ; post-pandemic normalization, pivoting to AI Companion",
+    trendNote: "2K at SJ HQ; revenue growth reaccelerated to 4.4% in FY26 as AI Companion adoption climbed",
     highlights: [
       "Zoom Workplace platform adds AI Companion for meeting summaries and conversation intelligence",
-      "Adapting to hybrid work normalization after extraordinary pandemic-era growth period",
+      "Agreed in July 2026 to acquire Common Room, an AI go-to-market intelligence platform, pushing Zoom past meetings and into sales workflows",
     ],
     description:
       "Video meetings and workplace collaboration. A COVID-era breakout finding its steady state.",
@@ -362,8 +362,8 @@ export const TECH_COMPANIES: TechCompany[] = [
     city: "Santa Clara",
     category: "chip",
     sccEmployeesK: 12,
-    trend: "up",
-    trendNote: "12K at Santa Clara HQ + SCC campus; growing with record AI chip fab investment",
+    trend: "flat",
+    trendNote: "12K at Santa Clara HQ + SCC campus; 363 local jobs cut in the October 2025 restructuring",
     highlights: [
       "Deposition, etch, and inspection equipment used in every advanced AI chip — from TSMC's A16 to HBM memory stacks",
       "Record equipment backlog driven by TSMC, Samsung, and Intel expanding AI chip capacity",

@@ -1612,7 +1612,7 @@ export default function TechnologyView() {
     },
     {
       label: "Reduced Hiring",
-      note: "Post-layoff recovery — limited openings, cautious on headcount",
+      note: "Shrinking or restructuring locally — limited openings, cautious on headcount",
       companies: TECH_COMPANIES.filter((c) => c.trend === "down").sort(
         (a, b) => b.sccEmployeesK - a.sccEmployeesK
       ),
