@@ -7494,6 +7494,12 @@ async function main() {
     // reach us through the sanctioned channel — sjda@sjdowntown.com mails
     // events to the inbound address — but at 2 events, not 332. If downtown
     // coverage needs restoring, ask SJDA for a feed rather than re-scraping.
+    //
+    // Note before reaching for the SJMA fix below: robots.txt also disallows
+    // CloudflareBrowserRenderingCrawler, and /events/feed/, ?ical=1 and the
+    // sitemap robots.txt itself advertises all 403 with the same interstitial.
+    // A headless browser is refused as explicitly as an HTTP client here, so
+    // the Playwright route that kept SJMA alive is closed for this host.
     // fetchSjMuseumOfArtEvents — retired 2026-08-13 after Cloudflare began
     // challenging every direct HTTP request. SJMA remains covered by the
     // Playwright snapshot, which carries its last healthy rows on browser errors.
