@@ -2990,8 +2990,10 @@ export const TECH_CONFERENCES: TechConference[] = [
     venue: "San Jose Convention Center",
     city: "San Jose",
     typicalMonth: 3,
-    typicalDay: 17,
-    typicalEndDay: 21,
+    // 2026 ran Mar 16–19 (announced at the Oct 2025 keynote); 2025 was Mar 17–21.
+    // Keep typical timing pinned to the most recent actual run.
+    typicalDay: 16,
+    typicalEndDay: 19,
     description: "The premier AI and accelerated computing conference — 300+ sessions, 1,000+ speakers. Jensen Huang's keynotes have become unmissable Silicon Valley events. Held annually at the San Jose Convention Center.",
     url: "https://www.nvidia.com/gtc/",
     scale: "global",
@@ -3061,6 +3063,45 @@ export const TECH_CONFERENCES: TechConference[] = [
     // 2026 event passed (May 7); next occurrence rolls to May 2027. The prior
     // applicationDeadline ("2026-04-26") is a year in the past and can never
     // re-fire correctly — re-add a deadline once the 2027 apply-by date is known.
+  },
+  {
+    id: "dreamforce",
+    name: "Dreamforce",
+    organizer: "Salesforce",
+    venue: "Moscone Center",
+    city: "San Francisco",
+    typicalMonth: 9,
+    typicalDay: 15,
+    typicalEndDay: 17,
+    description: "Salesforce's flagship conference and the largest software event on the Bay Area calendar — 1,600+ sessions across Moscone North, South, and West. Keynotes stream free on Salesforce+, and the whole week reshapes enterprise-software hiring and roadmaps that South Bay teams build against.",
+    url: "https://www.salesforce.com/dreamforce/",
+    scale: "global",
+  },
+  {
+    id: "ocp-global-summit",
+    name: "OCP Global Summit",
+    organizer: "Open Compute Project",
+    venue: "San Jose Convention Center",
+    city: "San Jose",
+    typicalMonth: 10,
+    typicalDay: 12,
+    typicalEndDay: 15,
+    description: "The open-hardware industry's yearly gathering, held in downtown San Jose — where hyperscalers and chipmakers publish the rack, cooling, and interconnect designs behind AI data centers. One of the most consequential events on the South Bay calendar for anyone building infrastructure.",
+    url: "https://www.opencompute.org/summit/global-summit",
+    scale: "global",
+  },
+  {
+    id: "techcrunch-disrupt",
+    name: "TechCrunch Disrupt",
+    organizer: "TechCrunch",
+    venue: "Moscone West",
+    city: "San Francisco",
+    typicalMonth: 10,
+    typicalDay: 13,
+    typicalEndDay: 15,
+    description: "Startup Battlefield 200, 250+ speakers, and 10,000+ founders and investors. Disrupt is where a lot of South Bay seed-stage companies do their first public pitch — the closest thing the region has to an annual startup demo day.",
+    url: "https://techcrunch.com/events/techcrunch-disrupt/",
+    scale: "global",
   },
   {
     id: "hot-chips",
