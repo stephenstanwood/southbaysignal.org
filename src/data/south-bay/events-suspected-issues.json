@@ -1,29 +1,46 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-23T03:52:46.093Z"
+    "auditedAt": "2026-08-24T12:42:53.548Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1961,
+    "total": 1964,
     "totals": {
       "hard": 0,
-      "soft": 0,
+      "soft": 1,
       "info": 0
     },
-    "byReason": {},
+    "byReason": {
+      "virtual-not-flagged": 1
+    },
     "hard": [],
-    "soft": []
+    "soft": [
+      {
+        "id": "sjpl-6920dd8fb864f029002592fe",
+        "title": "Full Bloom Book Club (Hybrid)",
+        "city": "san-jose",
+        "date": "2026-08-27",
+        "location": "1580 Naglee Ave. San Jose",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "virtual-not-flagged",
+            "detail": "matched /description mention/ in description"
+          }
+        ]
+      }
+    ]
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 423,
+    "total": 362,
     "totals": {
       "hard": 3,
-      "soft": 7,
+      "soft": 8,
       "info": 2
     },
     "byReason": {
-      "virtual-not-flagged": 6,
+      "virtual-not-flagged": 7,
       "unknown-slug": 1,
       "out-of-area": 1,
       "slug-mismatch": 2,
@@ -177,6 +194,20 @@
         "title": "Youth Climate Project Workshop (Zoom)",
         "city": "san-jose",
         "date": "2026-09-02T13:00:00-07:00",
+        "location": "",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "virtual-not-flagged",
+            "detail": "matched /description mention/ in description"
+          }
+        ]
+      },
+      {
+        "id": "inbound_mt5v22bl_v01bj6",
+        "title": "Below Market Rate (BMR) Rental Informational Call",
+        "city": "mountain-view",
+        "date": "2026-08-27T18:00:00-07:00",
         "location": "",
         "findings": [
           {
