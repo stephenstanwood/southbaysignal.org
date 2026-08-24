@@ -111,7 +111,24 @@ async function fetchShard(b) {
 
 let shardTotal = 0;
 try {
-  const { blobs } = await list({ prefix: SHARD_PREFIX, token });
+  // list() caps at 1000 per page and reports the rest through hasMore/cursor.
+  // A single unpaginated call would therefore start silently dropping shards
+  // the moment the count crosses 1000 — 866 as of 2026-08 — and a silent
+  // undercount is the one failure this stage cannot detect: every shard it did
+  // read succeeds, so the run looks perfectly clean. Page until the listing is
+  // exhausted, and treat a non-advancing cursor as a listing failure rather
+  // than looping forever.
+  const blobs = [];
+  let pageCursor;
+  for (;;) {
+    const page = await list({ prefix: SHARD_PREFIX, token, cursor: pageCursor, limit: 1000 });
+    blobs.push(...page.blobs);
+    if (!page.hasMore) break;
+    if (!page.cursor || page.cursor === pageCursor) {
+      throw new Error("shard listing reported more pages but did not advance the cursor");
+    }
+    pageCursor = page.cursor;
+  }
   shardTotal = blobs.length;
   let cursor = 0;
   const workers = Array.from(
