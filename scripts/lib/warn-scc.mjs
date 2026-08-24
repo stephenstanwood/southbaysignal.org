@@ -10,9 +10,10 @@
 //   Current FY   : /siteassets/files/jobs_and_training/warn/warn_report1.xlsx
 //   Prior FYs    : /siteassets/files/jobs_and_training/warn/warn-report-for-7-1-25-to-6-30-26.pdf
 //
-// The current-fiscal-year workbook is the machine-readable one; prior years are
-// PDF only. This module reads the workbook with no third-party dependency —
-// .xlsx is a ZIP of XML, and Node ships everything needed to open both.
+// The current fiscal year ships as a workbook; every prior year back to
+// FY2014-15 is PDF only and is read by scripts/lib/warn-pdf.mjs. This module
+// reads the workbook with no third-party dependency — .xlsx is a ZIP of XML,
+// and Node ships everything needed to open it.
 //
 // This is a verification tool, not a data pipeline. Nothing renders from it.
 // A WARN filing is a notice, not a headcount: it covers a single site, only

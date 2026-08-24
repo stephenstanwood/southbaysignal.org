@@ -72,6 +72,7 @@ export const RUNTIME = {
 
 export const TEMP = {
   socialCards: "/tmp/sbs-social-cards",
+  warnPdfs: "/tmp/sbs-warn-pdfs",
   watchdogLog: "/tmp/sbs-watchdog.log",
 };
 
