@@ -69,4 +69,8 @@ test("partial inbound shard loss degrades, systemic loss still blocks", () => {
   assert.match(puller, /inbound source returned zero events/);
   assert.match(puller, /inbound coverage regression/);
   assert.doesNotMatch(puller, /sourceErrors\.length > 0/);
+  // list() caps at 1000 per page; an unpaginated call silently drops shards
+  // past that with every read it *did* make succeeding, so the run looks clean.
+  assert.match(puller, /page\.hasMore/);
+  assert.match(puller, /pageCursor/);
 });
