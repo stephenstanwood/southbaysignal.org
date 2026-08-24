@@ -1139,6 +1139,50 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // ten-year-old company that had already raised well over $1B, which reads
   // oddly, but the primary source says Series A and that is what is recorded.
   // TechCrunch and Bloomberg describe it only as a funding round.
+  // Etched's Aug 18 raise is NEW money four weeks after the July 23 Series C —
+  // two distinct rounds at two distinct valuations ($10.3B then $21B), so both
+  // entries stay (same call as the ChipAgents A1/A2 pair above, not the Upscale
+  // AI restatement case). Round is recorded as "Venture Round": Etched's own
+  // release assigned no letter, and only secondary coverage calls it a Series D.
+  {
+    id: "etched-aug-2026",
+    name: "Etched",
+    city: "San Jose",
+    category: "chip",
+    round: "Venture Round",
+    amount: "$700M",
+    date: "2026-08-18",
+    tagline:
+      "Four weeks after closing a $300M Series C at $10.3B, Etched raised $700M more at $21B — and the thing that changed in between was a customer. Jane Street, the quantitative trading firm, tested Etched's first shipped cluster against its most demanding workloads, installed a rack in its own data center, and then led the round; Kleiner Perkins, Sequoia, Andreessen Horowitz, Tiger Global, Bain Capital Ventures, Blackstone, Neo, Stripes, Primary, and Positive Sum followed. Etched's bet since 2022 has been that transformers won, so the chip should only do transformers: the Sohu design drops everything a general-purpose GPU carries for other workloads, and the company added a dedicated prefill chip and a cluster-scale memory architecture alongside it. It manufactured its first homegrown silicon with TSMC in June against roughly $1B in booked orders, and runs production out of an 80,000-square-foot San Jose facility minutes from headquarters.",
+    color: "#7c3aed",
+    url: "https://etched.com",
+  },
+  {
+    id: "velaura-ai",
+    name: "Velaura AI",
+    city: "Santa Clara",
+    category: "chip",
+    round: "Series A",
+    amount: "$110M",
+    date: "2026-08-18",
+    tagline:
+      "The constraint on AI data centers stopped being chips and became electricity, which is the opening Velaura is selling into. Its Titan Core digital chip IP and design platform claims a 2–4x improvement in performance per watt on the math AI accelerators actually run — no clock-speed sacrifice, and the underlying technology has shipped across more than 30 million ASICs. The same efficiency argument extends to physical AI, where robots and autonomous machines run on a battery instead of a substation. Co-founder and CEO Rajiv Khemani and co-founder Manu Gulati have built and sold chip companies before, and the team pulls from Apple, NVIDIA, Google, Qualcomm, and Marvell. Seligman Ventures led the $110M Series A at a valuation above $1B, with Capricorn Investment Group new and Mayfield, Maverick Silicon, MARA, Premji Invest, Samsung Catalyst Fund, and StepStone Group returning. The money goes to commercializing Titan Core and hiring engineering and customer-facing staff.",
+    color: "#4338ca",
+    url: "https://velaura.ai",
+  },
+  {
+    id: "infinig",
+    name: "InfiniG",
+    city: "Los Gatos",
+    category: "network",
+    round: "Seed",
+    amount: "$5.2M",
+    date: "2026-08-18",
+    tagline:
+      "Cell service inside a big building is somebody's problem and traditionally nobody's budget — carriers won't fund a distributed antenna system for one office park, and the enterprise doesn't want to run a mobile network. InfiniG sells the middle path as a subscription: Mobile Coverage as a Service, built on shared CBRS spectrum and MOCN multi-operator technology so one cloud-managed neutral-host system carries every major U.S. carrier's traffic at once, with analytics on top and an upgrade path to 5G and private networks. Co-founder and CEO Joel Lindholm leads a team whose founders deployed multi-operator enterprise cellular at Meta. J2 Ventures and Stormbreaker Ventures co-led the $5.2M seed, which funds enterprise deployments, automated operator integration, and the analytics product.",
+    color: "#0e7490",
+    url: "https://infinig.io",
+  },
   {
     id: "groq-series-a",
     name: "Groq",

@@ -42,6 +42,7 @@ export const SHARED_LOGO_GROUPS = [
   ["palm-computing", "palmpilot-launch"],
   ["netscape", "netscape-ipo"],
   ["glean", "glean-series-f"],
+  ["etched", "etched-aug-2026"],
   // Same company on two surfaces: the "Smaller, But Notable" spotlight card and
   // its Recently Funded round card. Converged once the spotlight entry started
   // resolving off sambanova.ai instead of Wikipedia — same brand, so this is the
