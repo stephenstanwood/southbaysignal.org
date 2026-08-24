@@ -19,7 +19,8 @@ failure must never be represented as a successful empty season.
    snapshot ceiling. It is an independent same-night check and alerts on any
    workflow failure.
 
-Install or repair both Mini agents with:
+Install or repair both Mini agents — and relink the tracked pre-commit hook —
+with:
 
 ```bash
 bash scripts/events/install-mini-refresh.sh
@@ -50,6 +51,23 @@ bash scripts/events/install-mini-refresh.sh
 - San Jose Museum of Art is owned by the Playwright snapshot. Its redundant
   direct HTTP adapter was retired after Cloudflare began returning a managed
   403 challenge; browser failures retain that source's last healthy future rows.
+- Inbound events arrive as one Vercel Blob shard per intake email (866 as of
+  2026-08). Shard reads are bounded to 24 at a time and retry transient
+  failures. What still fails is weighed, not simply counted: a subset (up to 5%,
+  minimum 2) degrades the pull with a warning and a `shardFailures` stamp in
+  `_meta`, while a larger share blocks. This is not a catch-and-empty path — the
+  failures are reported, and the zero-events and coverage-regression guards
+  still gate the write. A failed shard *listing* always blocks, because without
+  a denominator a silent undercount is indistinguishable from a clean read.
+  Three unreachable shards out of 860 aborted the 2026-08-23/24 refreshes after
+  the 40-minute Playwright stage had already produced good data.
+- `eventCount` in `upcoming-events.json` is derived data. `generate-events`
+  writes it with `events` so they cannot disagree, but the editing routines
+  (fact-check, copy-edit, one-off backfills) mutate `events` directly. The
+  tracked `scripts/hooks/pre-commit` hook normalizes the stamp whenever anything
+  under `src/data/south-bay/` is staged, and never blocks a commit. It is
+  installed by `install-mini-refresh.sh`, which the scheduled refresh runs on
+  every pass, so the link self-heals.
 - A failed Mini run rolls back only its uncommitted generated data, leaves the
   last known-good database deployed, alerts, and retries.
 
