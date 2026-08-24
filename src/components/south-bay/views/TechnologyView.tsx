@@ -1192,7 +1192,7 @@ const MONTH_NAMES_FULL = [
 function getConferenceNextDate(
   conf: TechConference,
   now: Date
-): { label: string; sortMs: number; isUpcoming: boolean } {
+): { label: string; sortMs: number; isUpcoming: boolean; isHappeningNow: boolean } {
   const startMonth = conf.typicalMonth;
   const endMonth = conf.typicalEndMonth ?? startMonth;
   const endDayForBound = conf.typicalEndDay ?? conf.typicalDay ?? 15;
@@ -1213,6 +1213,14 @@ function getConferenceNextDate(
   // Upcoming = starts within the next 90 days AND hasn't ended yet (so it stays
   // highlighted while in progress, then drops out the moment it's over).
   const isUpcoming = diffDays <= 90 && endMsForYear >= now.getTime();
+  // Happening now = we know the real start day (not the month-only fallback) and
+  // today falls inside the run. Without an explicit typicalDay the start is a
+  // guess, and calling a conference underway on a guessed date would be a
+  // fabricated fact — those stay under "Coming Up".
+  const isHappeningNow =
+    conf.typicalDay !== undefined &&
+    targetMs <= now.getTime() &&
+    endMsForYear >= now.getTime();
   let label = `${startMonthName} ${year}`;
   if (conf.typicalDay) {
     if (conf.typicalEndDay && endMonth !== startMonth) {
@@ -1223,7 +1231,7 @@ function getConferenceNextDate(
       label = `${startMonthName} ${conf.typicalDay}, ${year}`;
     }
   }
-  return { label, sortMs: targetMs, isUpcoming };
+  return { label, sortMs: targetMs, isUpcoming, isHappeningNow };
 }
 
 function getDeadlineBadge(deadline?: string): { label: string; urgent: boolean } | null {
@@ -1239,15 +1247,23 @@ function getDeadlineBadge(deadline?: string): { label: string; urgent: boolean }
   return { label, urgent: days <= 5 };
 }
 
+type ConferenceStatus = "now" | "soon" | "plain";
+
+const CONFERENCE_STATUS_ACCENT: Record<Exclude<ConferenceStatus, "plain">, string> = {
+  now: "#6d28d9",
+  soon: "#16a34a",
+};
+
 function ConferenceRow({
   conf,
   dateLabel,
-  highlight,
+  status,
 }: {
   conf: TechConference;
   dateLabel: string;
-  highlight: boolean;
+  status: ConferenceStatus;
 }) {
+  const accent = status === "plain" ? null : CONFERENCE_STATUS_ACCENT[status];
   const scaleStyle =
     conf.scale === "global"
       ? { bg: "#eff6ff", color: "#1e40af", border: "#bfdbfe", text: "Global" }
@@ -1273,25 +1289,25 @@ function ConferenceRow({
           style={{
             fontSize: 11,
             fontFamily: "'Space Mono', monospace",
-            color: highlight ? "#16a34a" : "var(--sb-muted)",
-            fontWeight: highlight ? 700 : 400,
+            color: accent ?? "var(--sb-muted)",
+            fontWeight: accent ? 700 : 400,
             lineHeight: 1.3,
           }}
         >
           {dateLabel}
         </div>
-        {highlight && (
+        {accent && (
           <div
             style={{
               fontSize: 9,
               fontFamily: "'Space Mono', monospace",
-              color: "#16a34a",
+              color: accent,
               textTransform: "uppercase",
               letterSpacing: "0.05em",
               marginTop: 2,
             }}
           >
-            Coming up
+            {status === "now" ? "Happening now" : "Coming up"}
           </div>
         )}
       </div>
@@ -1391,7 +1407,8 @@ function AnnualConferencesSection() {
     ...getConferenceNextDate(conf, now),
   })).sort((a, b) => a.sortMs - b.sortMs);
 
-  const upcoming = withDates.filter((c) => c.isUpcoming);
+  const happeningNow = withDates.filter((c) => c.isHappeningNow);
+  const upcoming = withDates.filter((c) => c.isUpcoming && !c.isHappeningNow);
   const laterThisYear = withDates.filter(
     (c) => !c.isUpcoming && new Date(c.sortMs).getFullYear() === currentYear,
   );
@@ -1399,7 +1416,8 @@ function AnnualConferencesSection() {
     (c) => !c.isUpcoming && new Date(c.sortMs).getFullYear() > currentYear,
   );
 
-  const hasAny = upcoming.length + laterThisYear.length + nextYear.length > 0;
+  const hasAny =
+    happeningNow.length + upcoming.length + laterThisYear.length + nextYear.length > 0;
 
   return (
     <div className="tech-section">
@@ -1410,11 +1428,28 @@ function AnnualConferencesSection() {
         </span>
       </div>
 
+      {happeningNow.length > 0 && (
+        <>
+          <div style={{ ...CONFERENCE_GROUP_HEAD_STYLE, color: "#6d28d9" }}>Happening Now</div>
+          {happeningNow.map(({ conf, label }) => (
+            <ConferenceRow key={conf.id} conf={conf} dateLabel={label} status="now" />
+          ))}
+        </>
+      )}
+
       {upcoming.length > 0 && (
         <>
-          <div style={{ ...CONFERENCE_GROUP_HEAD_STYLE, color: "#16a34a" }}>Coming Up</div>
+          <div
+            style={{
+              ...CONFERENCE_GROUP_HEAD_STYLE,
+              color: "#16a34a",
+              marginTop: happeningNow.length > 0 ? 16 : 0,
+            }}
+          >
+            Coming Up
+          </div>
           {upcoming.map(({ conf, label }) => (
-            <ConferenceRow key={conf.id} conf={conf} dateLabel={label} highlight />
+            <ConferenceRow key={conf.id} conf={conf} dateLabel={label} status="soon" />
           ))}
         </>
       )}
@@ -1425,13 +1460,13 @@ function AnnualConferencesSection() {
             style={{
               ...CONFERENCE_GROUP_HEAD_STYLE,
               color: "#6b7280",
-              marginTop: upcoming.length > 0 ? 16 : 0,
+              marginTop: happeningNow.length + upcoming.length > 0 ? 16 : 0,
             }}
           >
             Later This Year
           </div>
           {laterThisYear.map(({ conf, label }) => (
-            <ConferenceRow key={conf.id} conf={conf} dateLabel={label} highlight={false} />
+            <ConferenceRow key={conf.id} conf={conf} dateLabel={label} status="plain" />
           ))}
         </>
       )}
@@ -1442,13 +1477,14 @@ function AnnualConferencesSection() {
             style={{
               ...CONFERENCE_GROUP_HEAD_STYLE,
               color: "#6b7280",
-              marginTop: upcoming.length + laterThisYear.length > 0 ? 16 : 0,
+              marginTop:
+                happeningNow.length + upcoming.length + laterThisYear.length > 0 ? 16 : 0,
             }}
           >
             Next Year
           </div>
           {nextYear.map(({ conf, label }) => (
-            <ConferenceRow key={conf.id} conf={conf} dateLabel={label} highlight={false} />
+            <ConferenceRow key={conf.id} conf={conf} dateLabel={label} status="plain" />
           ))}
         </>
       )}
