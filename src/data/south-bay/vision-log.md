@@ -2,6 +2,107 @@
 
 ---
 
+## 2026-08-24 — Cycle 214: Apple's Card Said No Layoffs. It Meant No Layoffs Since Mid-2025.
+
+### Context
+Monday August 24, 2026, later the same day as 213. Clean tree on pull, roadmap
+still closed (6/6), so this ran off 213's ranked "Next 3." Item 1 — extend the
+WARN reader to the prior-year PDFs — was the whole cycle. Item 2 (non-tech
+county filings) still has no surface and Rule #1 stands. Item 3 (Mountain View
+permits) is unchanged and still blocked.
+
+### What Was Built
+
+**`scripts/lib/warn-pdf.mjs` reads all twelve prior fiscal years EDD publishes.**
+213 could only check the current workbook; FY2025-26 was parsed by hand with
+`pdftotext -layout`, and everything before it was unreachable. Twelve years of
+Santa Clara County history — 1,757 filings covering 127,439 jobs — is now one
+command:
+
+```
+npm run warn-scc -- --history                 # per-year table, all employers
+npm run warn-scc -- --history --company Cisco # one employer's trajectory
+npm run warn-scc -- --year 2023-24            # a single fiscal year
+```
+
+The hard part was that EDD has reshuffled this table four times in twelve years.
+FY2019-20 and earlier run notice/effective/received; FY2021-22 onward run
+notice/received/effective — read positionally, every date before 2021 lands in
+the wrong field. FY2014-15 has no County column at all, only a mailing city.
+Address only appears from FY2021-22. And line-based extraction fails outright on
+FY2017-18, which comes out of the text layer column-major: every notice date in
+one block, ahead of any company name.
+
+So the reader ignores lines and reads glyph positions. Items group into rows by
+y; the three date columns are ordered by the x of their header labels; every
+other field is identified by what it contains. Company, City, and County are the
+exception — plenty of employers have "County" in their own name (Catholic
+Charities of Santa Clara County, Yellow Cab of Greater Orange County), so those
+three are separated by which header they sit under, not by content. That one
+change recovered 27 filings, including Broadcom's 1,267-job Palo Alto round,
+which was being dropped because its count prints as "1,267".
+
+Across all twelve reports, 17,242 rows parse and **two** do not — both filings
+EDD published with no employee count at all. Those two are surfaced as a count,
+not swallowed. Eleven tests pin the layouts, each fixture built from glyph
+positions copied off a real report.
+
+**The reader agrees with 213's hand-parse on every number.** FY2025-26 comes
+back as 192 Santa Clara filings covering 10,672 jobs — exactly what 213 counted
+by hand — and Cisco's 547, LinkedIn's 477, Meta's 439, Applied Materials' 363,
+eBay's 243, Western Digital's 134 and Google's 127 all reproduce. That is the
+useful result: the automated reader is not a second opinion, it is the same
+opinion arrived at without a human transcribing a PDF.
+
+**Apple's card was the find.** 213 wrote "no Santa Clara County WARN layoff
+filings since mid-2025," which was true and read as a clean record. Apple filed
+614 Santa Clara jobs across eight sites on one day in March 2024 — Kifer Road,
+San Ysidro Way, Wyatt Drive, Coronado, Scott Blvd — effective that May. A
+job-seeker reading "no filings" would not guess that. The note now names the
+round and its date, which is both more honest and still the most reassuring
+sentence on the tab: nothing in the twenty-nine months since.
+
+Eight more notes traded a single round for the shape it sits in:
+
+| Company | Was | Now rests on |
+|---|---|---|
+| Google | "two WARN rounds cut 127 since mid-2025" | 127 now, down from 752 in FY2023-24 |
+| Intel | "996 since July 2025" | 996 — more than any full year EDD has published |
+| Cisco | "547 since August 2025" | 547, plus filings in 11 of the last 12 years |
+| LinkedIn | "477 effective July 13, 2026" | a fourth straight year of filings |
+| Applied Materials | "363 in the October 2025 restructuring" | its first Santa Clara round in twelve years |
+| ServiceNow | "208 on summer 2026 filings" | its first filings in twelve years |
+| eBay | "243 in February 2026" | its fifth Jan–Feb round since 2019 |
+| Western Digital | "134 in January 2026" | filings in eight of the last twelve years |
+
+Google's is the one that reads better than it did: 127 against 752 two years ago
+is a company that stopped cutting, and the single-year window hid that.
+
+### Why This Was the Strongest Move
+213 fixed the hiring groups but left every note anchored to a window one year
+wide, which is exactly long enough to make a first-ever filing and a twelfth
+consecutive one look identical. Applied Materials cutting 363 for the first time
+in twelve years and Cisco cutting 547 for the eleventh are different facts about
+different companies, and the tab was printing them the same way. The reader is
+also what keeps 213's work from rotting: the whole tab can be re-checked against
+the primary source in one command instead of a PDF and a careful afternoon.
+
+### Next 3 Strongest Ideas
+1. **Fold the current workbook into `--history`.** The table stops at FY2025-26
+   because the current fiscal year is .xlsx, not PDF, and the two readers do not
+   share a caller. Merging them would make the per-year table complete through
+   today and remove the "run without --history for the current year" footnote.
+2. **The non-tech Santa Clara filings are still unused local news.** Now
+   queryable across twelve years, not just one: New Leaf on Silver Creek Valley
+   Road, Monterey Mushrooms' 253 in Morgan Hill, Six Flags' 184. No home/events
+   surface for it — Rule #1 stands — but a city page remains the natural home.
+   (Carried from 213.)
+3. **Permit Pulse: Mountain View** — all known MV permit portals remain
+   blocked/ECONNREFUSED. Monitor cityofmountainview.gov for changes. (Carried
+   from 210, 211, and 213; unchanged.)
+
+---
+
 ## 2026-08-24 — Cycle 213: The Hiring Guide Was Telling Residents Cisco and LinkedIn Were Stable
 
 ### Context
