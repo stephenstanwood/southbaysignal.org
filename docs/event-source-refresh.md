@@ -51,15 +51,22 @@ bash scripts/events/install-mini-refresh.sh
 - San Jose Museum of Art is owned by the Playwright snapshot. Its redundant
   direct HTTP adapter was retired after Cloudflare began returning a managed
   403 challenge; browser failures retain that source's last healthy future rows.
-- SJDA (Downtown San Jose) was retired 2026-08-24 for the same reason, and the
-  whole site is walled rather than one endpoint: the events API, `/events/feed/`,
+- SJDA (Downtown San Jose) was retired 2026-08-24, and unlike SJMA the whole
+  site is walled rather than one endpoint: the events API, `/events/feed/`,
   `?ical=1` and the sitemap that sjdowntown.com's own robots.txt advertises all
-  answer 403 with a Cloudflare interstitial. robots.txt still publishes
-  `Allow: /` for `*`, so the refusal is the bot wall and not a stated policy —
-  but a browser driven through the challenge to get around it is a sidestep, and
-  we do not do that. Downtown venues remain covered by their own adapters. Do not
-  re-register the adapter or give it a browser User-Agent; re-register only if
-  SJDA publishes a feed that serves a self-declaring client.
+  answer 403 with a Cloudflare interstitial. The refusal is deliberate and
+  stated, not just a bot wall — robots.txt names and disallows ClaudeBot, GPTBot,
+  CCBot, Bytespider, Amazonbot, Google-Extended and meta-externalagent, and it
+  disallows `CloudflareBrowserRenderingCrawler` too, so a headless browser is
+  refused as explicitly as an HTTP client. Do not re-register the adapter, give
+  it a browser User-Agent, or move it to the Playwright snapshot the way SJMA
+  went; every one of those is the sidestep the host has asked us not to make.
+  The coverage cost is real — roughly 332 upcoming downtown records, and no other
+  adapter covers that beat, though downtown venues with their own adapters (SAP
+  Center, San Jose Theaters, Hammer, City Lights) are unaffected. SJDA does still
+  reach us through the sanctioned channel: sjda@sjdowntown.com mails events to
+  the inbound intake address, at a couple of events rather than hundreds. If
+  downtown coverage needs restoring, ask SJDA for a feed — do not re-scrape.
 - Inbound events arrive as one Vercel Blob shard per intake email (866 as of
   2026-08). Shard reads are bounded to 24 at a time and retry transient
   failures. What still fails is weighed, not simply counted: a subset (up to 5%,
