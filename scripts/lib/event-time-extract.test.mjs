@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { extractTimeFromHtml } from "../generate-events.mjs";
+import { extractTimeFromHtml, parseIcalDate } from "../generate-events.mjs";
+import { displayTime, isoDate } from "./dates.mjs";
 
 const page = (body) => `<html><body>${body}</body></html>`;
 
@@ -45,4 +46,10 @@ test("an hours block is skipped in favor of the event time further down", () => 
 test("a page with nothing but opening hours yields no time", () => {
   const html = page("<p>Front counter hours: 10 am-12 pm. Walk-ins welcome.</p>");
   assert.equal(extractTimeFromHtml(html, "2026-09-17"), null);
+});
+
+test("date-only iCal values stay on their Pacific calendar date in winter", () => {
+  const date = parseIcalDate("20261104");
+  assert.equal(isoDate(date), "2026-11-04");
+  assert.equal(displayTime(date), null);
 });

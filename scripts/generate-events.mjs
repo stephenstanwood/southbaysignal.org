@@ -58,6 +58,7 @@ import { writeFileAtomic } from "./lib/io.mjs";
 import { catSignal } from "./lib/notify.mjs";
 import { extractVenueFromTitle, stripRedundantVenueSuffix } from "./lib/venue-suffix.mjs";
 import { dropUnmatchedClosers } from "./lib/bracket-balance.mjs";
+import { canonicalHistorySjUrl, historySjEndTime, inferHistorySjCost } from "./lib/history-sj.mjs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { createHash, createSign } from "crypto";
@@ -1248,7 +1249,13 @@ function cleanTitle(title) {
   for (const [bad, fix] of Object.entries(TITLE_FIXES)) {
     t = t.replaceAll(bad, fix);
   }
-  return cleanDisplayName(t);
+  const cleaned = cleanDisplayName(t);
+  // Some library feeds publish titles entirely in CJK. The English-display
+  // cleanup above intentionally removes the CJK prefix, but when no English
+  // translation follows it can leave only structural punctuation (":" was
+  // published as an event title on 2026-08-24). An event card needs at least
+  // one displayable letter or number; the main validity filter drops "".
+  return /[\p{Letter}\p{Number}]/u.test(cleaned) ? cleaned : "";
 }
 
 function truncate(text, len = 200) {
@@ -1810,17 +1817,20 @@ function cleanVenue(raw) {
   if (/^[A-Za-z][a-zA-Z\s]+,?\s+CA\s+\d{5}/.test(v) && v.split(",").length <= 3) return "";
   // Remove trailing "  City ST zip" pattern (double-space before city)
   v = v.replace(/\s{2,}[A-Za-z][A-Za-z\s]+[A-Z]{2}\s+\d{5}.*$/, "");
-  // Remove trailing ", City, CA 9xxxx" or " City CA 9xxxx" pattern (handles commas too)
-  v = v.replace(/[,\s]+[A-Za-z][a-zA-Z\s,]+CA[,\s]+9\d{4}.*$/, "");
   // Remove inline address blob: "Name  123 Street..." or "Name 123 Street..." with double-space
   v = v.replace(/\s{2,}\d+\s+.*$/, "");
   // Remove single-space inline address blob: "Vasona Park 233 Blossom Hill Rd." → "Vasona Park"
   // Trigger only when the trailing chunk starts with a number and ends with a street suffix
   // so we don't chop legitimate venue names that contain numbers (e.g. "Building 5").
   v = v.replace(
-    /[,\s]+\d+\s+[A-Z][a-zA-Z\.\s]*?\b(St|Ave|Avenue|Blvd|Boulevard|Rd|Road|Way|Ln|Lane|Dr|Drive|Ct|Court|Pl|Place|Hwy|Highway|Pkwy|Parkway|Cir|Circle|Ter|Terrace)\b\.?\s*(?:,?\s+(Campbell|Cupertino|Los Altos|Los Gatos|Milpitas|Mountain View|Palo Alto|San Jose|San José|Santa Clara|Saratoga|Sunnyvale))?\s*$/i,
+    /[,\s]+\d+\s+[A-Z][a-zA-Z\.\s]*?\b(St|Ave|Avenue|Blvd|Boulevard|Rd|Road|Way|Ln|Lane|Dr|Drive|Ct|Court|Pl|Place|Hwy|Highway|Pkwy|Parkway|Cir|Circle|Ter|Terrace)\b\.?\s*(?:,?\s+(Campbell|Cupertino|Los Altos|Los Gatos|Milpitas|Mountain View|Palo Alto|San Jose|San José|Santa Clara|Saratoga|Sunnyvale))?(?:,?\s+CA(?:\s+\d{5})?)?\s*$/i,
     "",
   );
+  // Remove trailing ", City, CA 9xxxx" or " City CA 9xxxx" pattern only
+  // after the street-address pass. Running this first turned
+  // "History Park, 635 Phelan Ave, San Jose, CA 95112" into
+  // "History Park, 635", leaving a raw house number in the display venue.
+  v = v.replace(/[,\s]+[A-Za-z][a-zA-Z\s,]+CA[,\s]+9\d{4}.*$/, "");
   // Some sources omit the street suffix after a numbered street:
   // "UC Student and Policy Center, 1115 11th" → "UC Student and Policy Center".
   v = v.replace(/,\s*\d+\s+\d+(?:st|nd|rd|th)?\s*$/i, "");
@@ -1976,6 +1986,10 @@ function inferCategory(title, desc, type, venue = "") {
   // arts). Trivia and live music are unambiguous when present in the title.
   if (/\btrivia\b/.test(titleLower)) return "community";
   if (/\blive\s+music\b/.test(titleLower)) return "music";
+  // One-on-one computer/technology help is an educational service. SJPL's
+  // description mentions ebooks, which otherwise lets the broad literary/art
+  // heuristic below misclassify the series as arts.
+  if (/\b(digital\s+skills?|tech\s+(?:help|assistance|mentor(?:ing)?)|computer\s+(?:help|assistance|skills?))\b/.test(titleLower)) return "education";
   // National Night Out is a nationwide police/neighborhood block party. Cities
   // list it with whatever entertainment they booked ("chalk art, live DJ
   // music"), which split one evening across three categories — Los Altos and
@@ -2387,6 +2401,11 @@ function parseIcalDate(dtStr) {
     const y = clean.substring(0, 4);
     const m = clean.substring(4, 6);
     const d = clean.substring(6, 8);
+    // VALUE=DATE entries are all-day calendar dates. Treating midnight as
+    // hard-coded PDT shifts winter dates back to 11 PM on the prior day once
+    // Pacific time is on UTC-8. parseDatePT preserves the source calendar day
+    // and displayTime() correctly returns null for the midnight marker.
+    if (clean.length === 8) return parseDatePT(`${y}-${m}-${d}`);
     const h = clean.length >= 11 ? clean.substring(9, 11) : "00";
     const min = clean.length >= 13 ? clean.substring(11, 13) : "00";
     return new Date(`${y}-${m}-${d}T${h}:${min}:00-07:00`); // PDT
@@ -7288,12 +7307,16 @@ async function fetchHistorySanJoseEvents() {
         // Link: prefer backend-button href, fall back to any link
         const linkMatch = block.match(/<a[^>]*class="[^"]*backend-button[^"]*"[^>]*href="([^"]+)"/i)
           || block.match(/href="(https?:\/\/[^"]+)"/i);
-        const eventUrl = linkMatch?.[1] || "https://historysanjose.org/programs-events/";
+        const eventUrl = canonicalHistorySjUrl(
+          title,
+          linkMatch?.[1] || "https://historysanjose.org/programs-events/",
+        );
+        const eventCopy = stripHtml(block).replace(/\s+/g, " ").trim();
 
         // Location from <span class="eventlocation">
         const locMatch = block.match(/<span class="eventlocation">\s*(.*?)\s*<\/span>/i);
         const location = locMatch ? locMatch[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() : "History Park";
-        const venue = location.split("|")[0].trim() || "History Park";
+        const venue = cleanVenue(location.split("|")[0].trim()) || "History Park";
         // History San Jose's "eventlocation" field sometimes carries trailing
         // editorial copy ("Stay tuned for ticket information!"). When we know
         // we're at History Park, use its canonical street address; otherwise
@@ -7310,12 +7333,12 @@ async function fetchHistorySanJoseEvents() {
           date: isoDate(start),
           displayDate: displayDate(start),
           time,
-          endTime,
+          endTime: historySjEndTime(eventUrl, endTime),
           venue,
           address,
           city: "san-jose",
           category: inferCategory(title, "", ""),
-          cost: "paid",
+          cost: inferHistorySjCost(eventCopy, eventUrl),
           description: "",
           url: eventUrl,
           source: "History San Jose",
@@ -8206,6 +8229,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
 export {
   cleanTitle,
+  cleanVenue,
   extractTimeFromHtml,
   inferCategory,
   isBiblioEventCancelled,
@@ -8221,5 +8245,6 @@ export {
   fetchPearTheatreEvents,
   fetchSjJazzEvents,
   polishDescription,
+  parseIcalDate,
   stripRedundantVenueSuffix,
 };

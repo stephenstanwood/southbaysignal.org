@@ -1,12 +1,54 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { cleanTitle, polishDescription } from "../generate-events.mjs";
+import { cleanTitle, cleanVenue, inferCategory, polishDescription } from "../generate-events.mjs";
+import { canonicalHistorySjUrl, inferHistorySjCost } from "./history-sj.mjs";
 
 test("preserves the official BentPeter performer spelling", () => {
   assert.equal(
     polishDescription("Free outdoor concert featuring The BentPeter Band."),
     "Free outdoor concert featuring The BentPeter Band.",
+  );
+});
+
+test("classifies one-on-one technology help as education", () => {
+  assert.equal(
+    inferCategory(
+      "Digital Skills: One-On-One Tech Help for Seniors",
+      "Get help using Libby to read ebooks.",
+      "",
+      "Almaden Library",
+    ),
+    "education",
+  );
+});
+
+test("strips a complete inline address from a display venue", () => {
+  assert.equal(
+    cleanVenue("History Park, 635 Phelan Ave, San Jose, CA 95112"),
+    "History Park",
+  );
+});
+
+test("History San Jose costs come only from explicit listing evidence", () => {
+  assert.equal(inferHistorySjCost("Cost: Free, Register Online"), "free");
+  assert.equal(inferHistorySjCost("Cost: $5 – $10"), "paid");
+  assert.equal(inferHistorySjCost("Pumpkin supplies included in ticket price"), "paid");
+  assert.equal(inferHistorySjCost("Stay tuned for ticket information!"), null);
+  assert.equal(
+    inferHistorySjCost("", "https://www.chcp.org/event-6795488"),
+    "free",
+  );
+});
+
+test("History San Jose generic listings resolve to first-party event pages", () => {
+  assert.equal(
+    canonicalHistorySjUrl("San José Roots", "https://historysanjose.org/programs-events/"),
+    "https://historysanjose.org/event/san-jose-roots/",
+  );
+  assert.equal(
+    canonicalHistorySjUrl("Children’s Halloween Haunt 2026", "https://historysanjose.org/programs-events/"),
+    "https://historysanjose.org/event/childrens-halloween-haunt/",
   );
 });
 

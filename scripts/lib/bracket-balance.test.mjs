@@ -70,3 +70,8 @@ test("cleanTitle leaves an all-Latin parenthetical untouched", () => {
   // "Chinese Orchestra)" would have corrupted this title too.
   assert.equal(cleanTitle("Concert (Chinese Orchestra)"), "Concert (Chinese Orchestra)");
 });
+
+test("cleanTitle rejects punctuation left after a CJK-only title", () => {
+  assert.equal(cleanTitle("星期一下午: 水浒传 (儿童读书会)"), "");
+  assert.equal(cleanTitle(":"), "");
+});

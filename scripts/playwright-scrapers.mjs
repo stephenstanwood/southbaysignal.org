@@ -25,6 +25,7 @@ import { fileURLToPath } from "url";
 import { createHash } from "crypto";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { classifyLibCalLocation } from "./lib/libcal-location.mjs";
+import { canonicalHistorySjUrl, historySjEndTime, inferHistorySjCost } from "./lib/history-sj.mjs";
 import {
   parseLindenTreeHeadingLines,
   resolveLindenTreeOffsiteVenue,
@@ -928,8 +929,9 @@ async function scrapeHistorySJ(page) {
           const location = locEl?.textContent?.trim() || "";
           const link = linkEl?.href;
 
+          const details = block.textContent?.replace(/\s+/g, " ").trim() || "";
           if (title && title.length > 3) {
-            events.push({ title, date: dateText, time, endTime, location, link });
+            events.push({ title, date: dateText, time, endTime, location, link, details });
           }
         }
         return events;
@@ -938,8 +940,18 @@ async function scrapeHistorySJ(page) {
       for (const r of raw) {
         const date = tryParseDate(r.date);
         if (!date || date < TODAY) continue;
+        const eventUrl = canonicalHistorySjUrl(
+          r.title,
+          r.link || "https://historysanjose.org/programs-events/",
+        );
 
-        const venue = r.location?.split("|")[0]?.trim() || "History Park";
+        const rawVenue = r.location?.split("|")[0]?.trim() || "";
+        // History SJ sometimes puts its full street address in the venue half
+        // of the location field. Keep the display name canonical; the address
+        // is already stored separately.
+        const venue = /^History Park(?:\s*[,|]|$)/i.test(rawVenue)
+          ? "History Park"
+          : rawVenue || "History Park";
         // Address can contain extra newlines + appeals ("Stay tuned for ticket information!",
         // "Cost: Free, Register Online", "Pumpkin and carving supplies included…") —
         // strip on first newline OR on those known suffix phrases.
@@ -957,14 +969,14 @@ async function scrapeHistorySJ(page) {
           title: r.title,
           date,
           time: normalizeTime(r.time),
-          endTime: normalizeTime(r.endTime),
+          endTime: historySjEndTime(eventUrl, normalizeTime(r.endTime)),
           venue,
           address,
           city: "san-jose",
-          url: r.link || "https://historysanjose.org/programs-events/",
+          url: eventUrl,
           source: "History San Jose",
           category: inferCategory(r.title),
-          cost: "paid",
+          cost: inferHistorySjCost(r.details, eventUrl),
           kidFriendly: /\b(kid|child|family|story|youth|teen|toddler|baby|preschool|infant|lap[-\s]?sit|ages?\s*\d|grades?\s+[K0-9])/i.test(r.title),
         });
       }
