@@ -6028,7 +6028,21 @@ async function fetchSjdaEvents() {
     for (let page = 1; page <= 10; page++) {
       const url = `https://sjdowntown.com/wp-json/tribe/events/v1/events?per_page=${perPage}&page=${page}&start_date=${startStr}&end_date=${endStr}`;
       const res = await fetch(url, { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(20_000) });
-      if (!res.ok) break;
+      if (!res.ok) {
+        // `break` was this loop's end-of-pagination signal, so a refusal on the
+        // very first page returned an empty array that looked exactly like
+        // "downtown has nothing on" — and the per-source regression guard then
+        // blocked the whole refresh because SJDA "lost 332 still-upcoming
+        // records". sjdowntown.com began answering 403 on 2026-08-24; report
+        // that honestly as a source error (which sourceRegressionProblems skips
+        // and the failure tolerance absorbs) and stop requesting further pages
+        // from a host that just told us no.
+        if (page === 1) {
+          throw new Error(`sjdowntown.com refused the events API: HTTP ${res.status}`);
+        }
+        console.log(`  ⚠️  SJDA: page ${page} returned HTTP ${res.status}; keeping ${events.length} events from earlier pages`);
+        break;
+      }
       const data = await res.json();
       const pageEvents = data.events || [];
       if (pageEvents.length === 0) break;
@@ -7463,7 +7477,33 @@ async function main() {
     source(fetchInboundEvents, { label: "Inbound newsletter snapshot", critical: true }),
   ];
 
-  let results = await Promise.allSettled(sources.map(({ fn }) => fn()));
+  // All 51 adapters used to fire at once. Each one fans out further on its own
+  // (day pages, detail pages, per-event enrichment), so one refresh opened
+  // hundreds of concurrent sockets from a single Mac Mini and the adapters timed
+  // each other out. On 2026-08-24 that surfaced as "26 critical event sources
+  // failed" in one run — not 26 dead upstreams, one saturated uplink; the
+  // playwright half of the pipeline has always run 35 scrapers 4-at-a-time and
+  // does not show this. A bounded pool lets each adapter spend its full timeout
+  // budget on the upstream instead of on contention.
+  //
+  // Results stay index-aligned with `sources`: carryForwardTransientCriticalSources
+  // and buildSourceHealth both pair the two arrays positionally.
+  const SOURCE_CONCURRENCY = 8;
+  const settled = new Array(sources.length);
+  let nextSource = 0;
+  await Promise.all(
+    Array.from({ length: Math.min(SOURCE_CONCURRENCY, sources.length) }, async () => {
+      while (nextSource < sources.length) {
+        const index = nextSource++;
+        try {
+          settled[index] = { status: "fulfilled", value: await sources[index].fn() };
+        } catch (reason) {
+          settled[index] = { status: "rejected", reason };
+        }
+      }
+    }),
+  );
+  let results = settled;
   const carriedForward = carryForwardTransientCriticalSources(
     sources,
     results,
