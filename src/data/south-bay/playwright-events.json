@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-24T20:43:32.100Z",
+    "generatedAt": "2026-08-24T20:54:28.772Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 628,
-    "sourceCount": 23,
+    "eventCount": 626,
+    "sourceCount": 22,
     "sources": [
       "Mountain View Public Library (150)",
       "Los Gatos Library (149)",
@@ -27,7 +27,6 @@
       "Levi's Stadium (13)",
       "SAP Center (15)",
       "The Tech Interactive (5)",
-      "Peninsula Open Space Trust (2)",
       "San Jose Museum of Art (13)"
     ],
     "sourceHealth": [
@@ -352,12 +351,10 @@
       {
         "id": "post-peninsula-open-space-trust",
         "label": "POST (Peninsula Open Space Trust)",
-        "status": "ok",
-        "count": 2,
+        "status": "empty",
+        "count": 0,
         "error": null,
-        "sources": [
-          "Peninsula Open Space Trust"
-        ]
+        "sources": []
       }
     ]
   },
@@ -8730,7 +8727,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
       "url": "https://www.operasj.org/event/don-giovanni-4",
       "source": "Opera San José",
       "kidFriendly": false
@@ -8747,7 +8744,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
       "url": "https://www.operasj.org/event/don-giovanni-5",
       "source": "Opera San José",
       "kidFriendly": false
@@ -10842,40 +10839,6 @@
       "url": "https://www.thetech.org/explore/upcoming-events/",
       "source": "The Tech Interactive",
       "kidFriendly": true
-    },
-    {
-      "id": "b8dcae100526",
-      "title": "Hellyer County Park BioBlitz",
-      "date": "2026-08-30",
-      "displayDate": "Sun, Aug 30",
-      "time": "9:00 AM",
-      "endTime": "11:30 AM",
-      "venue": "Hellyer County Park",
-      "address": "",
-      "city": "san-jose",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.eventbrite.com/e/hellyer-county-park-bioblitz-tickets-1992774014722?aff=post",
-      "source": "Peninsula Open Space Trust",
-      "kidFriendly": false
-    },
-    {
-      "id": "22942963d2d2",
-      "title": "Representation Matters Film Festival (In-Person & Virtual Viewing)",
-      "date": "2026-09-26",
-      "displayDate": "Sat, Sep 26",
-      "time": "6 PM",
-      "endTime": "9 PM",
-      "venue": "Online (POST Webinar)",
-      "address": "",
-      "city": "santa-clara-county",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://openspacetrust.org/event/representation-matters-film-festival/",
-      "source": "Peninsula Open Space Trust",
-      "kidFriendly": false
     },
     {
       "id": "0b45a7f2c955",
