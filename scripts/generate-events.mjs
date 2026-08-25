@@ -756,6 +756,8 @@ function isPublicEvent(title, source, description, venue) {
 // Add entries here when a source consistently sends bad data.
 const TITLE_FIXES = {
   "Fun Runa": "Fun Run",
+  // See PROPER_NOUN_FIXES below — misspellings that also appear in blurbs are
+  // corrected in both places, so a card's title and its description agree.
   "Pop Up Art Event": "Pop Up Art Gallery",
   "San Benito Co. Line": "San Benito County Line",
   // These match AFTER the all-caps regex runs (NITE→Nite, JOSE→Jose via 4+ regex, but HIP/HOP/IN/SAN survive)
@@ -813,6 +815,21 @@ const TITLE_FIXES = {
   // capitalize the pronoun ("Makes US"). Override the specific pronoun cases.
   "Makes US": "Makes Us",
 };
+
+// Misspelled proper nouns that a source repeats in BOTH the title and the blurb.
+// Correcting only the title leaves a card whose heading and description spell the
+// same person's name differently, so these run over description text as well.
+const PROPER_NOUN_FIXES = {
+  // SCCL's Milpitas book-group listings spell the Newbery medalist's name two
+  // different ways across the same book's two sessions; "Barba" is correct.
+  "Donna Barbra Higuera": "Donna Barba Higuera",
+};
+
+function fixProperNouns(text) {
+  let t = String(text ?? "");
+  for (const [bad, fix] of Object.entries(PROPER_NOUN_FIXES)) t = t.replaceAll(bad, fix);
+  return t;
+}
 
 function cleanTitle(title) {
   if (!title) return title;
@@ -1249,6 +1266,7 @@ function cleanTitle(title) {
   for (const [bad, fix] of Object.entries(TITLE_FIXES)) {
     t = t.replaceAll(bad, fix);
   }
+  t = fixProperNouns(t);
   const cleaned = cleanDisplayName(t);
   // Some library feeds publish titles entirely in CJK. The English-display
   // cleanup above intentionally removes the CJK prefix, but when no English
@@ -2023,7 +2041,14 @@ function inferCategory(title, desc, type, venue = "") {
   if (/\bconcert\b/.test(titleLower) || /\bchoir\b/.test(titleLower) || /\bsymphony\b/.test(titleLower) || /\borchestra\b/.test(titleLower) || /\bphilharmonic\b/.test(titleLower)) return "music";
   // "baby" check: only match when it's not a proper name (e.g. "Baby Bash" the rapper)
   const hasBaby = /\bbaby\b/.test(t) && !/\bbaby\s+bash\b/i.test(t);
-  if (t.includes("story time") || t.includes("storytime") || t.includes("toddler") || hasBaby || t.includes("preschool") || t.includes("kids") || t.includes("children") || /\bbedtime\b/.test(titleLower) || /\bpuppet\s+show\b/.test(t)) return "family";
+  // A title that says the program is FOR adults outranks a keyword that only
+  // appears in the blurb. "Milpitas Adult Book Discussion Group - The Last
+  // Cuentista" shipped as `family` because the library blurb describes a
+  // children's book — the group itself is for adults. Mirrors the title-anchored
+  // adult-only override on kidFriendly in the SCCL fetcher.
+  const titleSaysAdult = /\b(adults?|seniors?|18\+|21\+)\b/.test(titleLower)
+    && !/\b(kid|kids|child|children|family|families|teen|toddler|baby|preschool|all ages)\b/.test(titleLower);
+  if (!titleSaysAdult && (t.includes("story time") || t.includes("storytime") || t.includes("toddler") || hasBaby || t.includes("preschool") || t.includes("kids") || t.includes("children") || /\bbedtime\b/.test(titleLower) || /\bpuppet\s+show\b/.test(t))) return "family";
   // Medical/clinical procedure courses are always education, never arts — even if descriptions
   // contain "performance" (as in "procedural performance") or the venue has "theater" (OR).
   const isMedicalProcedureEvent = /\b(bronchoscopy|endoscopy|radiology|biopsy|anesthesia|cone beam ct|cbct imaging|surgical technique|clinical training|colonoscopy|laparoscopy|bronchoscop)\b/.test(t);
@@ -2049,6 +2074,12 @@ function inferCategory(title, desc, type, venue = "") {
   // "language arts" framing. Anchor on the title and short-circuit before the arts
   // heuristic so a stray "art" in the description can't override the actual subject.
   if (/\b(esl|literacy|english\s+(class|conversation|tutoring))\b/i.test(titleLower)) return "education";
+  // Library travel-talk series ("Tuesday Travel Nights - Mexico: Exploring Cabo
+  // and the Baja Peninsula") are presentations about a destination, but the
+  // blurbs sell that destination's cuisine and wine — which the broad food rule
+  // further down reads as a food event. A talk about traveling somewhere is
+  // education no matter what the blurb name-drops.
+  if (/\btravel\s+(?:night|talk|series|presentation|program)s?\b/i.test(titleLower)) return "education";
   if (/\b(qi\s*gong|qigong|falun\s+dafa|tai\s+chi)\b/i.test(titleLower)) return "community";
   // Meditation / mindfulness / yoga / pilates classes are community wellness, not arts —
   // anchor on title so a stray "Art of Living" sponsor name (a meditation org) can't
@@ -3949,7 +3980,7 @@ async function fetchScclEvents() {
           ...(registration !== REGISTRATION_NONE ? { registration } : {}),
           category: inferCategory(title, stripHtml(desc), ev.type || "", branchVenue),
           cost: "free",
-          description: truncate(stripHtml(desc)),
+          description: fixProperNouns(truncate(stripHtml(desc))),
           url: ev.registrationUrl || `https://${libraryId}.bibliocommons.com/events/${ev.id}`,
           source: libraryName,
           kidFriendly: (() => {
