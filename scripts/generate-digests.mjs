@@ -253,10 +253,14 @@ ${transcriptNote}
 
 Return JSON with:
 - "summary": 2-3 sentence plain-English overview of what was discussed (no jargon)
-- "keyTopics": array of 3-5 short bullet strings (specific topics, not generic)
+- "keyTopics": array of up to 5 short bullet strings (specific topics, not generic). Return only as many as the source actually supports — one distinct agenda item per bullet. A thin agenda gets 1-2 bullets; never restate the same item in different words to reach a count.
 
 Be concrete. Write for someone who wants to know what's happening in their city.
-Do not include meta-commentary about incomplete or truncated source data (e.g. "vendor name incomplete in agenda", "details not publicly shared", "agenda item unclear"). If a detail isn't in the source, just omit that bullet — pick a different concrete topic instead.
+Do not include meta-commentary about incomplete or truncated source data (e.g. "vendor name incomplete in agenda", "details not publicly shared", "agenda item unclear"). If a detail isn't in the source, just omit that bullet — do not substitute an invented one.
+
+Agenda excerpts are often cut off mid-sentence ("...for FY 2026-", "provide direction on the"). Summarize only the part you can actually read; never guess how a truncated sentence ends or invent the missing object. Saratoga's June 3 2026 digest turned the fragment "provide direction on the" into a bullet about "implementing the chosen service level" — nothing in the source said that.
+
+The source is an agenda, not minutes: it lists what is before the body, not the order things happened. Never narrate a sequence of events ("once the Council settled on X, it moved to Y") — the agenda cannot support it.
 
 Match the source's wording on sensitive framing. If the agenda says "federal civil enforcement," do not narrow it to "immigration enforcement," "tax enforcement," or any specific subtype unless the source explicitly uses that word.
 
@@ -464,9 +468,12 @@ async function main() {
       // digest doesn't source an ARB/commission item to the Council's page.
       let bodySourceUrl = null;
       if (!config.councilBody && (config.legistarApi || config.primegov) && /^city council\b/i.test(bodyLabel)) {
+        // Pass the record's own text: when several bodies met that day, the
+        // verifier needs it to tell which one this agenda came from.
+        const recordText = `${meeting.title || ""} ${meeting.excerpt || ""}`;
         const actual = config.legistarApi
-          ? await verifyLegistarBodyOnDate(config.legistarApi, meeting.date)
-          : await verifyPrimeGovBodyOnDate(config.primegov, meeting.date);
+          ? await verifyLegistarBodyOnDate(config.legistarApi, meeting.date, recordText)
+          : await verifyPrimeGovBodyOnDate(config.primegov, meeting.date, recordText);
         if (actual) {
           console.warn(`  ⚠️  ${config.cityName}: no City Council meeting on ${meeting.date} — relabeling as "${actual.body}" (city=${config.city})`);
           bodyLabel = actual.body;

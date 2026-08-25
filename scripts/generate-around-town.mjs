@@ -162,16 +162,32 @@ async function fetchStoaMeetings(meetingType) {
 async function resolveMeetingBodies(config, meetings) {
   const resolved = new Map();
   if (!config.legistarApi && !config.primegov) return resolved;
-  for (const date of new Set(meetings.map((m) => m.date))) {
+  // Resolve per record, not per date: several bodies can sit on the same day,
+  // and the verifier needs each record's own agenda text to tell them apart.
+  // Items are matched back to source records only by date, so a date whose
+  // records resolve to different bodies gets no entry at all — the generic
+  // label and the council calendar link are honest, a coin-flip body is not.
+  const byDate = new Map();
+  for (const m of meetings) {
     try {
+      const recordText = `${m.title || ""} ${m.excerpt || ""}`;
       const actual = config.legistarApi
-        ? await verifyLegistarBodyOnDate(config.legistarApi, date)
-        : await verifyPrimeGovBodyOnDate(config.primegov, date);
+        ? await verifyLegistarBodyOnDate(config.legistarApi, m.date, recordText)
+        : await verifyPrimeGovBodyOnDate(config.primegov, m.date, recordText);
       if (actual?.body) {
-        console.warn(`  ⚠️  ${config.cityName}: no City Council meeting on ${date} — using "${actual.body}"`);
-        resolved.set(date, actual);
+        if (!byDate.has(m.date)) byDate.set(m.date, []);
+        byDate.get(m.date).push(actual);
       }
     } catch {}
+  }
+  for (const [date, hits] of byDate) {
+    const distinct = new Set(hits.map((h) => h.body));
+    if (distinct.size > 1) {
+      console.warn(`  ⚠️  ${config.cityName}: ${date} has records from multiple bodies (${[...distinct].join(", ")}) — leaving the label unresolved`);
+      continue;
+    }
+    console.warn(`  ⚠️  ${config.cityName}: no City Council meeting on ${date} — using "${hits[0].body}"`);
+    resolved.set(date, hits[0]);
   }
   return resolved;
 }

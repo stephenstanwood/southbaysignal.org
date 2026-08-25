@@ -209,6 +209,52 @@ export function pickCivicClerkMeeting(events, today, { maxDays = 60 } = {}) {
 // generators must ask the city's own portal what actually convened.
 // ---------------------------------------------------------------------------
 const LEGISTAR_UA = "SouthBaySignal/1.0 (stanwood.dev; civic data aggregator)";
+// Words that appear in nearly every body name and so carry no signal for
+// telling two same-day bodies apart.
+const BODY_NAME_STOPWORDS = new Set([
+  "board", "committee", "commission", "council", "city", "town", "the", "of",
+  "and", "for", "regular", "special", "joint", "meeting", "session", "adjourned",
+  "study", "closed", "annual",
+]);
+
+function distinctiveTokens(bodyName) {
+  return [...new Set(
+    String(bodyName).toLowerCase().match(/[a-z]{3,}/g) ?? [],
+  )].filter((w) => !BODY_NAME_STOPWORDS.has(w));
+}
+
+// Choose which same-day body actually produced the record we summarized.
+//
+// Both verifiers used to take the first plausible board/committee/commission on
+// the date. That is only safe when exactly one convened. On 2026-08-20 Palo Alto
+// held the Architectural Review Board at 8:30am and the Public Art Commission at
+// 7pm; the digest summarized the Public Art Commission agenda (3150 El Camino
+// Real public art, Code:ART 2027 funding) but shipped it under the ARB's name
+// and the ARB's agenda link — an agenda that contains none of it.
+//
+// So when more than one candidate exists, score each body's distinctive words
+// against the record's own text and require a single clear winner. If nothing
+// matches, or two bodies tie, return null: leaving the label unresolved is a
+// smaller error than attributing an item to a body that never heard it.
+//
+// `candidates` is [{ body, sourceUrl }]; recordText is the record's title +
+// excerpt (empty string is fine — a single candidate is still returned).
+export function pickBodyForRecord(candidates, recordText = "") {
+  if (candidates.length === 0) return null;
+  if (candidates.length === 1) return candidates[0];
+
+  const haystack = String(recordText).toLowerCase();
+  const scored = candidates.map((c) => {
+    const tokens = distinctiveTokens(c.body);
+    const hits = tokens.filter((t) => new RegExp(`\\b${t}\\b`).test(haystack)).length;
+    return { ...c, score: hits };
+  });
+  scored.sort((a, b) => b.score - a.score);
+  if (scored[0].score === 0) return null;
+  if (scored[0].score === scored[1].score) return null;
+  return scored[0];
+}
+
 // Upstream records carry a `meetingType` we display verbatim, and it defaults to
 // "City Council" when absent. On 2026-08-05 San José's record was labeled City
 // Council but the only meeting that day was the Joint Rules and Open Government
@@ -217,7 +263,7 @@ const LEGISTAR_UA = "SouthBaySignal/1.0 (stanwood.dev; civic data aggregator)";
 // City Council event exists, return the real body name so the digest is honest.
 // Returns null on any error or when the label already checks out, leaving the
 // existing behavior untouched.
-export async function verifyLegistarBodyOnDate(client, dateIso) {
+export async function verifyLegistarBodyOnDate(client, dateIso, recordText = "") {
   try {
     const url =
       `https://webapi.legistar.com/v1/${client}/Events` +
@@ -234,18 +280,19 @@ export async function verifyLegistarBodyOnDate(client, dateIso) {
     const bodies = events.map((e) => String(e.EventBodyName || "").trim()).filter(Boolean);
     if (bodies.some((b) => /^city council\b/i.test(b))) return null; // label is correct
 
-    // Prefer the body whose name reads like the deliberative one (committee /
+    // Prefer bodies whose names read like deliberative ones (committee /
     // commission / council-of-the-whole) over incidental same-day staff hearings.
-    const preferred =
-      bodies.find((b) => /\b(committee|commission)\b/i.test(b)) ?? bodies[0];
-    if (!preferred) return null;
-    // Strip meeting-type boilerplate Legistar prepends to some body names
-    // ("Joint Meeting for the Rules and Open Government Committee…"). It's not
-    // part of the body's name and it makes the card heading unreadable.
-    const body = preferred.replace(/^(?:joint|special|regular)\s+meeting\s+(?:for|of)\s+the\s+/i, "").trim();
-    // Legistar's calendar link is already filtered to the meeting date, so the
-    // existing legistarMeetingUrl fallback stays correct for this body.
-    return body ? { body, sourceUrl: null } : null;
+    const deliberative = bodies.filter((b) => /\b(committee|commission)\b/i.test(b));
+    const candidates = (deliberative.length > 0 ? deliberative : bodies)
+      // Strip meeting-type boilerplate Legistar prepends to some body names
+      // ("Joint Meeting for the Rules and Open Government Committee…"). It's not
+      // part of the body's name and it makes the card heading unreadable.
+      .map((b) => b.replace(/^(?:joint|special|regular)\s+meeting\s+(?:for|of)\s+the\s+/i, "").trim())
+      .filter(Boolean)
+      // Legistar's calendar link is already filtered to the meeting date, so the
+      // existing legistarMeetingUrl fallback stays correct for this body.
+      .map((body) => ({ body, sourceUrl: null }));
+    return pickBodyForRecord(candidates, recordText);
   } catch {
     return null;
   }
@@ -258,7 +305,7 @@ export async function verifyLegistarBodyOnDate(client, dateIso) {
 // Aug 6 digest was published as "Palo Alto City Council" when PrimeGov shows
 // the only Aug 6 meeting was the Architectural Review Board — the Council's
 // Aug 3 sitting was canceled and its next one was Aug 10.
-export async function verifyPrimeGovBodyOnDate(domain, dateIso) {
+export async function verifyPrimeGovBodyOnDate(domain, dateIso, recordText = "") {
   try {
     const year = dateIso.slice(0, 4);
     const url = `https://${domain}/api/v2/PublicPortal/ListArchivedMeetings?year=${year}`;
@@ -285,16 +332,16 @@ export async function verifyPrimeGovBodyOnDate(domain, dateIso) {
     const named = live.filter((m) => String(m.title || "").trim());
     if (named.some((m) => /^city council\b/i.test(String(m.title).trim()))) return null; // label is correct
 
-    const preferred =
-      named.find((m) => /\b(board|committee|commission)\b/i.test(String(m.title))) ?? named[0];
-    if (!preferred) return null;
-    // Drop the "Regular Meeting" / "Special Meeting" suffix PrimeGov appends —
-    // it is meeting type, not the body's name.
-    const body = String(preferred.title)
-      .replace(/\s+(?:regular|special|joint)\s+meeting\b.*$/i, "")
-      .trim();
-    if (!body) return null;
-    return { body, sourceUrl: primeGovAgendaUrl(domain, preferred) };
+    const deliberative = named.filter((m) => /\b(board|committee|commission)\b/i.test(String(m.title)));
+    const candidates = (deliberative.length > 0 ? deliberative : named)
+      .map((m) => ({
+        // Drop the "Regular Meeting" / "Special Meeting" suffix PrimeGov appends —
+        // it is meeting type, not the body's name.
+        body: String(m.title).replace(/\s+(?:regular|special|joint)\s+meeting\b.*$/i, "").trim(),
+        sourceUrl: primeGovAgendaUrl(domain, m),
+      }))
+      .filter((c) => c.body);
+    return pickBodyForRecord(candidates, recordText);
   } catch {
     return null;
   }
