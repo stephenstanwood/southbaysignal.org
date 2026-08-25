@@ -68,7 +68,7 @@ const FOOD_BUSINESS_WORD =
   /\b(RESTAURANT|CAFE|CAFF?[EÉ]|COFFEE|BAKERY|PIZZ(?:A|ERIA)|KITCHEN|GRILL|TAQUER[IÍ]A|TACO|SUSHI|RAMEN|PHO|BOBA|TEA\s+HOUSE|JUICE|DELI|BBQ|BAR\s*&\s*GRILL|BISTRO|DINER|EATERY|CREAMERY|DONUTS?|SANDWICH|NOODLE|BUFFET\s+RESTAURANT)\b/i;
 
 // Patterns that indicate non-restaurant entries to skip
-const SKIP_PATTERNS = /BARISTA\s+BAR|BUFFET\s+TABLE|\bPOOLS?\b|ELEM\b|SCHOOL\b|\bAPTS?\b|\bAPARTMENTS?\b|\bHOA\b|HOMEOWNER|COMMUNITY\s+ASSOC|MICRO KITCHEN|MODERNIZATION|MFF\b|MOBILE FOOD\b|CART\b|COMMISSARY\b|VENDING|\bCAFETERIA\b|PANTRY\b.*LEVEL|\bPANTRY\s+ROOM\b|\bSTORAGE\s+PANTRY\b|\bLVL\s+\d|\bRELOCATION\b|CORPORATE|EXTERIOR STORAGE|BARISTA AREA|COFFEE AREA|KITCHEN UNIT|BEVERAGE UNIT|AIRPORT BLVD|SJC AIRPORT|PLTR#|\bPRO SHOP\b|\bSPA\b|\bHOT TUB\b|\bAPT\s+SPA\b|APARTMENT\s+SPA|PARK\s+SPA\b|BREAKROOM|BREAK\s+ROOM|NSVC\s+B\d|EMPLOYEE\s+LOUNGE|\bREPLASTER\b|\bENCLOSURE\b|\bBLDG\b|\bYMCA\b|\bMEETING\s+ROOM\b|\bHQ\d+\s+KITCHEN\b|\bFENCE\b|\bGATES?\b|\bSECURITY\b|\bALARM\b|\bSPRINKLER\b|\bRE-?ROOF\b|\bSIGNAGE\b|\bMONUMENT\s+SIGN\b|\bPARKING\s+(LOT|GARAGE|STRUCTURE)\b|\bELEVATOR\b|\bRETAINING\s+WALL\b|\bINNOVATION\s+CAMPUS\b|\b(?:1ST|2ND|3RD|\d+TH)\s+FLOOR\b/i;
+const SKIP_PATTERNS = /BARISTA\s+BAR|BUFFET\s+TABLE|\bPOOLS?\b|ELEM\b|SCHOOL\b|\bAPTS?\b|\bAPARTMENTS?\b|\bCONDOS?\b|\bCONDOMINIUMS?\b|\bTOWNHOMES?\b|\bHOA\b|HOMEOWNER|COMMUNITY\s+ASSOC|MICRO KITCHEN|MODERNIZATION|MFF\b|MOBILE FOOD\b|CART\b|COMMISSARY\b|\bCATERING\b|VENDING|\bCAFETERIA\b|PANTRY\b.*LEVEL|\bPANTRY\s+ROOM\b|\bSTORAGE\s+PANTRY\b|\bLVL\s+\d|\bRELOCATION\b|CORPORATE|EXTERIOR STORAGE|BARISTA AREA|COFFEE AREA|KITCHEN UNIT|BEVERAGE UNIT|AIRPORT BLVD|SJC AIRPORT|PLTR#|\bPRO SHOP\b|\bSPA\b|\bHOT TUB\b|\bAPT\s+SPA\b|APARTMENT\s+SPA|PARK\s+SPA\b|BREAKROOM|BREAK\s+ROOM|NSVC\s+B\d|EMPLOYEE\s+LOUNGE|\bREPLASTER\b|\bENCLOSURE\b|\bBLDG\b|\bYMCA\b|\bMEETING\s+ROOM\b|\bHQ\d+\s+KITCHEN\b|\bFENCE\b|\bGATES?\b|\bSECURITY\b|\bALARM\b|\bSPRINKLER\b|\bRE-?ROOF\b|\bSIGNAGE\b|\bMONUMENT\s+SIGN\b|\bPARKING\s+(LOT|GARAGE|STRUCTURE)\b|\bELEVATOR\b|\bRETAINING\s+WALL\b|\bINNOVATION\s+CAMPUS\b|\b(?:1ST|2ND|3RD|\d+TH)\s+FLOOR\b/i;
 
 // Equipment/maintenance-only permits — not openings, just upgrades to existing places.
 // Anything matching here is a re-inspection of an existing facility, not a new business.
@@ -77,12 +77,16 @@ const SKIP_PATTERNS = /BARISTA\s+BAR|BUFFET\s+TABLE|\bPOOLS?\b|ELEM\b|SCHOOL\b|\
 // shipped as coming-soon restaurants ("Thermo Fisher - Adding Counter Top Oven",
 // "Red Berry New Hood", "Wfm - Stc Refrigeration/Rack Replacement"). Note the
 // slash separator — the "<equipment> REPLACEMENT" rule below requires a space.
-const EQUIPMENT_ONLY_PATTERNS = /\bADD(?:ING|ITION\s+OF)\s+[\w\s]*\b(OVEN|GRIDDLE|FRYER|RANGE|STOVE|HOOD|WARMER|SINK|COOLER|FREEZER|DISHWASHER|ICE\s+MACHINE)S?\b|\bNEW\s+HOOD\b|\b(REFRIGERATION|HOOD|EXHAUST|PLUMBING|ELECTRICAL)\s*\/\s*\w+\s+(REPLACEMENT|REPAIR|UPGRADE)\b|\bRACK\s+REPLACEMENT\b|\bMOP\s+SINK\b|\bEQUIPMENT\s+(CHANGE|REPLACEMENT|INSTALL|UPGRADE|ADDITION)\b|\bUPDATED\s+KITCHEN\s+EQUIPMENT\b|\bKITCHEN\s+EQUIPMENT\b|\bMACHINE\s+(REPLACEMENT|INSTALL(?:ATION)?|CHANGE)\b|\b(SMOOTHIE|JUICE|ESPRESSO|COFFEE|DISH)\s+MACHINE\b|\bFREEZER[-\s]COOLER\b|\bWALK[-\s]IN\s+(COOLER|FREEZER)\b|\bOIL\s+TANK\b|\bGREASE\s+(TRAP|TANK|INTERCEPTOR)\b|\bUNDERGROUND\s+TANK\b|\bTANK\s+(INSTALL|REMOVAL|REPLACE)\b|\bHOOD\s+INSTALL\b|\bANSUL\s+SYSTEM\b|\bFIRE\s+SUPPRESSION\b|\bLIGHT(ING)?\s+(EQUIPMENT|REPLACEMENT|UPGRADE)\b|\bMINOR\s+EQUIPMENT\b|\bUNDERCOUNTER\b|\b(DISHWASHER|DISH\s*MACHINE|ICE\s+MACHINE|PREP\s+SINK)\s*$|\bEXPANSION\s*$|\bEXPANSION\b.*(EXISTING|OWNER)|\b(GRIDDLE|FRYER|RANGE|OVEN|WARMER|STOVE|REFRIGERATION|FREEZER|COOLER|DISHWASHER|HOOD|SINK|COUNTER|EXHAUST|PLUMBING|ELECTRICAL)S?\s+(UPDATE|MODIFICATION|REPAIR|REPLACEMENT|REMODEL)\b|\b(OVEN|GRIDDLE|FRYER|RANGE|STOVE|HOOD|WARMER|EQUIPMENT|KITCHEN)\s+ADDITION\b|\bWATER\s+HEATER\b/i;
+const EQUIPMENT_ONLY_PATTERNS = /\bADD(?:ING|ITION\s+OF)\s+[\w\s]*\b(OVEN|GRIDDLE|FRYER|RANGE|STOVE|HOOD|WARMER|SINK|COOLER|FREEZER|DISHWASHER|ICE\s+MACHINE)S?\b|\bNEW\s+HOOD\b|\b(REFRIGERATION|HOOD|EXHAUST|PLUMBING|ELECTRICAL)\s*\/\s*\w+\s+(REPLACEMENT|REPAIR|UPGRADE)\b|\bRACK\s+REPLACEMENT\b|\bMOP\s+SINK\b|\bEQUIPMENT\s+(CHANGE|REPLACEMENT|INSTALL|UPGRADE|ADDITION)\b|\bUPDATED\s+KITCHEN\s+EQUIPMENT\b|\bKITCHEN\s+EQUIPMENT\b|\bMACHINE\s+(REPLACEMENT|INSTALL(?:ATION)?|CHANGE)\b|\b(SMOOTHIE|JUICE|ESPRESSO|COFFEE|DISH)\s+MACHINE\b|\bFREEZER[-\s/]COOLER\b|\bCOOLER\s*[-/]\s*FREEZER\b|\bKITCHEN\s+HOOD\b|\bEXHAUST\s+FAN\b|\bWALK[-\s]IN\s+(COOLER|FREEZER)\b|\bOIL\s+TANK\b|\bGREASE\s+(TRAP|TANK|INTERCEPTOR)\b|\bUNDERGROUND\s+TANK\b|\bTANK\s+(INSTALL|REMOVAL|REPLACE)\b|\bHOOD\s+INSTALL\b|\bANSUL\s+SYSTEM\b|\bFIRE\s+SUPPRESSION\b|\bLIGHT(ING)?\s+(EQUIPMENT|REPLACEMENT|UPGRADE)\b|\bMINOR\s+EQUIPMENT\b|\bUNDERCOUNTER\b|\b(DISHWASHER|DISH\s*MACHINE|ICE\s+MACHINE|PREP\s+SINK)\s*$|\bEXPANSION\s*$|\bEXPANSION\b.*(EXISTING|OWNER)|\b(GRIDDLE|FRYER|RANGE|OVEN|WARMER|STOVE|REFRIGERATION|FREEZER|COOLER|DISHWASHER|HOOD|SINK|COUNTER|EXHAUST|PLUMBING|ELECTRICAL)S?\s+(UPDATE|MODIFICATION|REPAIR|REPLACEMENT|REMODEL)\b|\b(OVEN|GRIDDLE|FRYER|RANGE|STOVE|HOOD|WARMER|EQUIPMENT|KITCHEN)\s+ADDITION\b|\bWATER\s+HEATER\b/i;
 
 // Corporate campus patterns — office cafeterias aren't public restaurants.
 // "JOHNSON & JOHNSON (AURIS HEALTH) 1ST FLOOR" shipped as a coming-soon
 // restaurant; the floor-descriptor rule above now catches that shape too.
-const CORPORATE_PATTERNS = /\b(GOOGLE(PLEX)?|APPLE|FACEBOOK|META|INTEL|CISCO|NVIDIA|WAYMO|MICROSOFT|AMAZON|LINKEDIN|TWITTER|SERVICENOW|PALO ALTO NETWORKS|VMW|BROADCOM|ADOBE|WALMART|YAHOO|SAMSUNG|DATABRICKS|JOHNSON\s*&\s*JOHNSON|AURIS\s+HEALTH)\b/i;
+// Contract corporate-dining operators are listed alongside the campuses: they
+// run the cafeteria inside someone else's building, so the campus name may be
+// absent or unfamiliar and the operator's name is the reliable tell.
+// "Guckenheimer@Supermicro" shipped as a coming-soon restaurant on 2026-08-25.
+const CORPORATE_PATTERNS = /\b(GOOGLE(PLEX)?|APPLE|FACEBOOK|META|INTEL|CISCO|NVIDIA|WAYMO|MICROSOFT|AMAZON|LINKEDIN|TWITTER|SERVICENOW|PALO ALTO NETWORKS|VMW|BROADCOM|ADOBE|WALMART|YAHOO|SAMSUNG|DATABRICKS|JOHNSON\s*&\s*JOHNSON|AURIS\s+HEALTH|SUPERMICRO|APPLIED\s+MATERIALS|LOCKHEED|WESTERN\s+DIGITAL|JUNIPER\s+NETWORKS)\b|\b(GUCKENHEIMER|BON\s+APP[EÉ]TIT\s+MANAGEMENT|COMPASS\s+GROUP|SODEXO|ARAMARK|EUREST|FLIK|CAFEBONAPPETIT)\b/i;
 
 // Databricks Cityline office campus (200/250 W Washington Ave, Sunnyvale) —
 // internal food facilities filed under building-code placeholder names
@@ -336,6 +340,17 @@ function cleanAddress(raw) {
   const commaIdx = s.search(/,\s*[A-Z ]+,?\s*CA/i);
   if (commaIdx > 0) s = s.slice(0, commaIdx);
 
+  // Some rows append the city with no comma before it, or with no "CA" after
+  // it, so the rule above doesn't fire and the city ships inside the street
+  // address: "99 E MIDDLEFIELD RD. MOUNTAIN VIEW CA 94043" and "82-96 E SANTA
+  // CLARA ST., K101 SAN JOSE" both reached the food radar that way. Anchored to
+  // the end of the string so a street named for a city ("1 San Jose Ave") is
+  // untouched.
+  s = s.replace(
+    /[\s,]+(SAN\s+JOSE|SANTA\s+CLARA|SUNNYVALE|MOUNTAIN\s+VIEW|PALO\s+ALTO|LOS\s+ALTOS(?:\s+HILLS)?|LOS\s+GATOS|CUPERTINO|CAMPBELL|SARATOGA|MILPITAS|MORGAN\s+HILL|GILROY)(?:\s*,?\s*CA\b)?(?:\s*\d{5}(?:-\d{4})?)?\s*$/i,
+    "",
+  ).trim();
+
   s = s.trim().replace(/\s+/g, " ");
 
   // SCC entry sometimes splits BLVD as "B L" (typo) — normalize before title-casing
@@ -470,6 +485,11 @@ function shouldSkip(item) {
   // the name — misses it and the truck ships with "Mff" printed as its street
   // address. Match the address side too.
   if (/^\s*MFF\b|\bMFF\s*$/i.test(item.site_location ?? "")) return true;
+
+  // Ghost/commissary kitchens rent numbered stalls inside a shared facility
+  // ("949 Ruff Dr., Kitchen 19"). They're delivery-only production space, not a
+  // storefront a reader can walk into.
+  if (/\bKITCHEN\s+\d+\b/i.test(item.site_location ?? "")) return true;
 
   // Skip entries whose site location is a PO Box — a storefront food venue is
   // never located at a PO Box. These are almost always HOA/apartment amenity
