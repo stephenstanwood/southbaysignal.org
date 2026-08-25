@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-25T03:19:19.650Z"
+    "auditedAt": "2026-08-25T08:14:07.767Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1760,
+    "total": 1769,
     "totals": {
       "hard": 1,
       "soft": 1,
@@ -49,7 +49,7 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 373,
+    "total": 369,
     "totals": {
       "hard": 3,
       "soft": 8,
@@ -220,20 +220,6 @@
         ]
       },
       {
-        "id": "inbound_mt5v22bl_v01bj6",
-        "title": "Below Market Rate (BMR) Rental Informational Call",
-        "city": "mountain-view",
-        "date": "2026-08-27T18:00:00-07:00",
-        "location": "",
-        "findings": [
-          {
-            "severity": "soft",
-            "reason": "virtual-not-flagged",
-            "detail": "matched /description mention/ in description"
-          }
-        ]
-      },
-      {
         "id": "inbound_ms6pyqyx_denzxu",
         "title": "Giants vs. Dodgers Day Trip",
         "city": null,
@@ -244,6 +230,20 @@
             "severity": "info",
             "reason": "local-departure-trip",
             "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
+          }
+        ]
+      },
+      {
+        "id": "inbound_mt5v22bl_v01bj6",
+        "title": "Below Market Rate (BMR) Rental Informational Call",
+        "city": "mountain-view",
+        "date": "2026-08-27T18:00:00-07:00",
+        "location": "",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "virtual-not-flagged",
+            "detail": "matched /description mention/ in description"
           }
         ]
       }

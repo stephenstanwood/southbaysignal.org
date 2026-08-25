@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-24T20:54:28.772Z",
+    "generatedAt": "2026-08-25T08:10:55.783Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 626,
-    "sourceCount": 22,
+    "eventCount": 628,
+    "sourceCount": 23,
     "sources": [
-      "Mountain View Public Library (150)",
-      "Los Gatos Library (149)",
+      "Mountain View Public Library (149)",
+      "Los Gatos Library (150)",
       "San Jose Jazz (19)",
       "Linden Tree Books (11)",
       "Hicklebee's (1)",
@@ -27,6 +27,7 @@
       "Levi's Stadium (13)",
       "SAP Center (15)",
       "The Tech Interactive (5)",
+      "Peninsula Open Space Trust (2)",
       "San Jose Museum of Art (13)"
     ],
     "sourceHealth": [
@@ -66,7 +67,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 152,
+        "count": 151,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -76,7 +77,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 149,
+        "count": 150,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -351,31 +352,16 @@
       {
         "id": "post-peninsula-open-space-trust",
         "label": "POST (Peninsula Open Space Trust)",
-        "status": "empty",
-        "count": 0,
+        "status": "ok",
+        "count": 2,
         "error": null,
-        "sources": []
+        "sources": [
+          "Peninsula Open Space Trust"
+        ]
       }
     ]
   },
   "events": [
-    {
-      "id": "1161a87c2e50",
-      "title": "Canceled--Sleepy Stories",
-      "date": "2026-08-24",
-      "displayDate": "Mon, Aug 24",
-      "time": "6:30 PM",
-      "endTime": "7:00 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/16677137",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
     {
       "id": "556fbc088e08",
       "title": "Juliette's Children's Concert",
@@ -2910,23 +2896,6 @@
       "kidFriendly": false
     },
     {
-      "id": "b09be692bd75",
-      "title": "Social Stitching",
-      "date": "2026-08-24",
-      "displayDate": "Mon, Aug 24",
-      "time": "4:30 PM",
-      "endTime": "6:00 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/16025970",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
-    },
-    {
       "id": "616e465dd5d7",
       "title": "Storytime (Ages 0-5)",
       "date": "2026-08-25",
@@ -5443,6 +5412,40 @@
       "kidFriendly": true
     },
     {
+      "id": "d513d6e819c0",
+      "title": "ESL Conversation Club",
+      "date": "2026-11-23",
+      "displayDate": "Mon, Nov 23",
+      "time": "11:00 AM",
+      "endTime": "12:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/16831251",
+      "source": "Los Gatos Library",
+      "kidFriendly": false
+    },
+    {
+      "id": "21ebd9054a58",
+      "title": "Social Stitching",
+      "date": "2026-11-23",
+      "displayDate": "Mon, Nov 23",
+      "time": "4:30 PM",
+      "endTime": "6:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/16025983",
+      "source": "Los Gatos Library",
+      "kidFriendly": false
+    },
+    {
       "id": "32e3d2884f2a",
       "title": "SJZ Break Room Jazz Jam",
       "date": "2026-09-04",
@@ -7283,10 +7286,10 @@
       "kidFriendly": false
     },
     {
-      "id": "f65b35044204",
+      "id": "fae817610c88",
       "title": "All Ages Storytime",
-      "date": "2026-08-24",
-      "displayDate": "Mon, Aug 24",
+      "date": "2026-08-25",
+      "displayDate": "Tue, Aug 25",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
@@ -7300,10 +7303,10 @@
       "kidFriendly": true
     },
     {
-      "id": "d88f3e353e44",
+      "id": "f77d664fe723",
       "title": "Toddler Storytime",
-      "date": "2026-08-24",
-      "displayDate": "Mon, Aug 24",
+      "date": "2026-08-25",
+      "displayDate": "Tue, Aug 25",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
@@ -10839,6 +10842,40 @@
       "url": "https://www.thetech.org/explore/upcoming-events/",
       "source": "The Tech Interactive",
       "kidFriendly": true
+    },
+    {
+      "id": "b8dcae100526",
+      "title": "Hellyer County Park BioBlitz",
+      "date": "2026-08-30",
+      "displayDate": "Sun, Aug 30",
+      "time": "9:00 AM",
+      "endTime": "11:30 AM",
+      "venue": "Hellyer County Park",
+      "address": "",
+      "city": "san-jose",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://www.eventbrite.com/e/hellyer-county-park-bioblitz-tickets-1992774014722?aff=post",
+      "source": "Peninsula Open Space Trust",
+      "kidFriendly": false
+    },
+    {
+      "id": "22942963d2d2",
+      "title": "Representation Matters Film Festival (In-Person & Virtual Viewing)",
+      "date": "2026-09-26",
+      "displayDate": "Sat, Sep 26",
+      "time": "6 PM",
+      "endTime": "9 PM",
+      "venue": "Online (POST Webinar)",
+      "address": "",
+      "city": "santa-clara-county",
+      "category": "outdoor",
+      "cost": "free",
+      "description": "",
+      "url": "https://openspacetrust.org/event/representation-matters-film-festival/",
+      "source": "Peninsula Open Space Trust",
+      "kidFriendly": false
     },
     {
       "id": "0b45a7f2c955",
