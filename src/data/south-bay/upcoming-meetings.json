@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T03:35:42.178Z",
+  "generatedAt": "2026-08-25T03:08:52.045Z",
   "meetings": {
     "san-jose": {
       "date": "2026-08-25",
@@ -13,46 +13,106 @@
       "agendaItems": [
         {
           "title": "Association of Indo Americans",
-          "sequence": 23
+          "sequence": 26
         },
         {
           "title": "Mayor and Council Excused Absence Requests.",
-          "sequence": 40
-        },
-        {
-          "title": "City Council Travel Reports.",
-          "sequence": 41
-        },
-        {
-          "title": "Report from the Council Liaison to the Retirement Boards.",
           "sequence": 42
         },
         {
+          "title": "City Council Travel Reports.",
+          "sequence": 43
+        },
+        {
+          "title": "Report from the Council Liaison to the Retirement Boards.",
+          "sequence": 44
+        },
+        {
           "title": "Report of the City Manager, Jennifer Maguire (Verbal Report).",
-          "sequence": 53
+          "sequence": 55
         }
       ],
       "confirmation": {
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-08-25",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-19T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-24T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+      }
+    },
+    "mountain-view": {
+      "date": "2026-08-25",
+      "displayDate": "Tue, Aug 25",
+      "startTime": "17:00",
+      "bodyName": "City Council",
+      "location": "Council Chambers and Video Conference",
+      "closedSession": false,
+      "url": "https://mountainview.legistar.com/MeetingDetail.aspx?LEGID=3363&GID=344&G=37932D0B-039B-4529-B6D8-73445A1D4799",
+      "legistarEventId": 3363,
+      "agendaItems": [
+        {
+          "title": "Public Employee Performance Evaluation (California Government Code §54957(b)(1))",
+          "sequence": 5
+        }
+      ],
+      "confirmation": {
+        "status": "confirmed",
+        "provider": "legistar",
+        "observedDate": "2026-08-25",
+        "sourceUrl": "https://webapi.legistar.com/v1/mountainview/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-24T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+      }
+    },
+    "sunnyvale": {
+      "date": "2026-08-25",
+      "displayDate": "Tue, Aug 25",
+      "startTime": "16:30",
+      "bodyName": "City Council",
+      "location": "Online and Council Chambers, City Hall",
+      "closedSession": false,
+      "url": "https://sunnyvaleca.legistar.com/MeetingDetail.aspx?LEGID=4522&GID=270&G=FA76FAAA-7A74-41EA-9143-F2DB1947F9A5",
+      "legistarEventId": 4522,
+      "agendaItems": [
+        {
+          "title": "Public Participation and Access",
+          "sequence": 1
+        },
+        {
+          "title": "4:30 P.M. SPECIAL COUNCIL MEETING (Closed Session)",
+          "sequence": 2
+        },
+        {
+          "title": "Convene to Closed Session",
+          "sequence": 6
+        },
+        {
+          "title": "Closed Session Held Pursuant to California Government Code Section 54957:",
+          "sequence": 7
+        },
+        {
+          "title": "Adjourn Special Meeting",
+          "sequence": 8
+        }
+      ],
+      "confirmation": {
+        "status": "confirmed",
+        "provider": "legistar",
+        "observedDate": "2026-08-25",
+        "sourceUrl": "https://webapi.legistar.com/v1/sunnyvaleca/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-24T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
-      "date": "2026-08-19",
-      "displayDate": "Wed, Aug 19",
-      "startTime": "18:00",
-      "bodyName": "Mayor's State of the City",
-      "location": "Paly PAC · doors 5:30 PM",
+      "date": "2026-08-24",
+      "displayDate": "Mon, Aug 24",
+      "startTime": "17:30",
+      "bodyName": "City Council Special Meeting",
+      "location": null,
       "closedSession": false,
-      "url": "https://www.paloalto.gov/stateofthecity",
+      "url": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=2847",
       "agendaItems": [],
       "confirmation": {
         "status": "confirmed",
-        "provider": "city-of-palo-alto",
-        "observedDate": "2026-08-19",
-        "sourceUrl": "https://www.paloalto.gov/stateofthecity"
+        "provider": "primegov",
+        "observedDate": "2026-08-24",
+        "sourceUrl": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=2847"
       }
     },
     "milpitas": {
@@ -69,7 +129,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-09-01",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-19T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-24T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     },
     "los-altos": {
@@ -86,7 +146,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-08-25",
-        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-19T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-24T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },
@@ -97,11 +157,11 @@
     },
     "mountain-view": {
       "provider": "Legistar",
-      "status": "no-meeting"
+      "status": "ok"
     },
     "sunnyvale": {
       "provider": "Legistar",
-      "status": "no-meeting"
+      "status": "ok"
     },
     "cupertino": {
       "provider": "Legistar",
