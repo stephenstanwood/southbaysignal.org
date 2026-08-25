@@ -16,10 +16,15 @@ import PageHero from "../PageHero";
 
 // Drop summer weeks that have already ended so the week picker and planner
 // never offer a week you can't attend. SignalApp is client:only, so this
-// `new Date()` is the viewer's real local date — no SSR/hydration mismatch.
+// `new Date()` is the viewer's real clock — no SSR/hydration mismatch. Pin the
+// date to Pacific anyway: the camps run here, and cityCamps.ts reads the same
+// boundary off a PT-pinned TODAY_ISO, so an unpinned viewer clock could put
+// the two out of step by a day.
 // Once every week is past (summer's over) we fall back to the full set so the
 // planner never renders an empty week list.
-const TODAY_ISO = new Date().toLocaleDateString("en-CA");
+const TODAY_ISO = new Date().toLocaleDateString("en-CA", {
+  timeZone: "America/Los_Angeles",
+});
 const UPCOMING_WEEKS = SUMMER_WEEKS.filter((w) => w.endDate >= TODAY_ISO);
 const ACTIVE_WEEKS = UPCOMING_WEEKS.length > 0 ? UPCOMING_WEEKS : SUMMER_WEEKS;
 // True while at least one summer week is still ahead. Once summer's fully over

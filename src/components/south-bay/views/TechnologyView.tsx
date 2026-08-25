@@ -478,11 +478,18 @@ function isTechEvent(e: UpcomingEvent): boolean {
   return isChm || isTechTitle;
 }
 
+// Event `date` values are Pacific calendar dates, so the window bounds have to
+// be Pacific too. `toISOString()` is UTC: from 5 PM PT onward it already reads
+// tomorrow, which silently dropped tonight's talks off the list every evening.
+function todayInPt(offsetMs = 0): string {
+  return new Date(Date.now() + offsetMs).toLocaleDateString("en-CA", {
+    timeZone: "America/Los_Angeles",
+  });
+}
+
 function filterTechEvents(allEvents: UpcomingEvent[]): UpcomingEvent[] {
-  const today = new Date().toISOString().slice(0, 10);
-  const cutoff = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .slice(0, 10);
+  const today = todayInPt();
+  const cutoff = todayInPt(30 * 24 * 60 * 60 * 1000);
 
   const chmExhibits = allEvents
     .filter(
