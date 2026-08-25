@@ -309,9 +309,15 @@ function PermitPulse() {
 // ── Farmers Markets ─────────────────────────────────────────────────────────
 
 function FarmersMarkets() {
-  const today = new Date();
-  const todayIdx = today.getDay();
-  const month = today.getMonth() + 1;
+  // Pin to Pacific — the markets are here, and an unpinned viewer clock rolls
+  // both the "today" ordering and the in-season month over a day early for
+  // anyone browsing from east of PT.
+  const [ptYear, ptMonth, ptDay] = new Date()
+    .toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" })
+    .split("-")
+    .map(Number);
+  const todayIdx = new Date(ptYear!, ptMonth! - 1, ptDay!).getDay();
+  const month = ptMonth!;
 
   const markets = SOUTH_BAY_EVENTS.filter((e) => e.category === "market");
   const inSeason = (e: SBEvent) => !e.months || e.months.includes(month);
@@ -337,13 +343,17 @@ function FarmersMarkets() {
       <header className="food-section-head">
         <h2 className="food-h2">Farmers Markets</h2>
         <p className="food-sub">
-          Weekly schedule across the South Bay — starting today
+          Weekly schedule across the South Bay, ordered from today onward
         </p>
       </header>
 
       <div className="market-week">
-        {visibleDays.map((dayIdx, i) => {
-          const isToday = i === 0;
+        {visibleDays.map((dayIdx) => {
+          // Match on the actual weekday, not list position: market-free days
+          // are dropped from visibleDays, so the first card is only "Today"
+          // when today genuinely has a market. South Bay Mondays and Tuesdays
+          // never do.
+          const isToday = dayIdx === todayIdx;
           const label = isToday ? "Today" : DAY_LABEL[dayIdx];
           return (
             <div key={dayIdx} className={`market-day ${isToday ? "market-day-active" : ""}`}>
