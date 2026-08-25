@@ -7432,13 +7432,19 @@ async function main() {
   let prevRun = null;
   try { prevRun = JSON.parse(readFileSync(OUT_PATH, "utf8")); } catch { /* first run */ }
 
-  let inputHealth = null;
+  // Measure the inputs on EVERY run; strict mode only decides whether bad
+  // inputs abort before the overwrite. Gating the measurement itself on
+  // SBT_STRICT_EVENT_REFRESH meant any ad-hoc `npm run generate-events` wrote
+  // an output with no `inputSnapshots` key at all — which the refresh watchdog
+  // (correctly) pages on. That is exactly what a93dbdba did on 2026-08-24:
+  // a non-strict refresh landed, two agent commits carried the field-less file
+  // forward, and the 05:08 UTC watchdog pass woke Stephen up.
+  const inputHealth = strictRefreshInputHealth({
+    playwright: readJsonFile(PLAYWRIGHT_EVENTS_PATH),
+    inbound: readJsonFile(INBOUND_EVENTS_PATH),
+    maxAgeHours: strictSnapshotMaxAgeHours(),
+  });
   if (STRICT_EVENT_REFRESH) {
-    inputHealth = strictRefreshInputHealth({
-      playwright: readJsonFile(PLAYWRIGHT_EVENTS_PATH),
-      inbound: readJsonFile(INBOUND_EVENTS_PATH),
-      maxAgeHours: strictSnapshotMaxAgeHours(),
-    });
     if (!inputHealth.ok) {
       const detail = inputHealth.problems.join("; ");
       await catSignal({
@@ -7451,6 +7457,14 @@ async function main() {
     console.log(
       `🔒 Strict inputs: ${inputHealth.snapshots.map((item) => `${item.name}=${item.count} (${item.ageHours}h old)`).join(", ")}\n`,
     );
+  } else {
+    // Non-strict runs record the same snapshots and keep going. A stale or
+    // missing input now shows up in the output as a `stale`/`missing` snapshot
+    // the watchdog can name, instead of an absent array it can only call absent.
+    const summary = inputHealth.snapshots
+      .map((item) => `${item.name}=${item.count} (${item.status})`)
+      .join(", ");
+    console.log(`📎 Inputs: ${summary}\n`);
   }
 
   const source = (fn, { id = fn.name, label = fn.name, critical = false } = {}) => ({
@@ -8259,7 +8273,9 @@ async function main() {
     eventCount: collapsedEvents.length,
     sources: sourceNames,
     sourceHealth,
-    ...(inputHealth ? { inputSnapshots: inputHealth.snapshots } : {}),
+    // Unconditional: the watchdog treats a missing array as a page-worthy
+    // defect, so this key must never depend on how the run was invoked.
+    inputSnapshots: inputHealth.snapshots,
     events: collapsedEvents,
   };
 

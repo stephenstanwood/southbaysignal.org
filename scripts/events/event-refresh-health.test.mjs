@@ -112,3 +112,33 @@ test("still flags a critical Ticketmaster failure in the generated output", () =
   assert.equal(health.ok, false);
   assert.ok(health.problems.some((problem) => /fetchTicketmasterEvents is error: 429/.test(problem)));
 });
+
+test("pages when the output has no inputSnapshots array at all", () => {
+  // 2026-08-24/25: an ad-hoc non-strict `npm run generate-events` (a93dbdba)
+  // omitted the key entirely, two agent commits carried the field-less file
+  // forward, and the watchdog fired. The checker was right and the producer
+  // was wrong — generate-events now records snapshots on every run. Keep this
+  // strict so the next producer that drops the field still pages instead of
+  // going quiet.
+  const data = healthyOutput();
+  delete data.inputSnapshots;
+  const health = inspectEventRefreshOutput({ data, now: NOW });
+  assert.equal(health.ok, false);
+  assert.ok(health.problems.includes("upcoming-events output has no inputSnapshots array"));
+});
+
+test("names the individual stale input rather than the whole array", () => {
+  // The payoff of recording snapshots unconditionally: a non-strict run with a
+  // stale input now reports which input went stale, instead of collapsing into
+  // the far less actionable "no inputSnapshots array".
+  const data = healthyOutput();
+  data.inputSnapshots = data.inputSnapshots.map((snapshot) => (
+    snapshot.name === "inbound-events"
+      ? { ...snapshot, status: "stale", timestamp: "2026-07-18T00:00:00.000Z" }
+      : snapshot
+  ));
+  const health = inspectEventRefreshOutput({ data, now: NOW });
+  assert.equal(health.ok, false);
+  assert.ok(health.problems.includes("inbound-events snapshot is stale"));
+  assert.ok(!health.problems.some((problem) => problem.includes("no inputSnapshots array")));
+});

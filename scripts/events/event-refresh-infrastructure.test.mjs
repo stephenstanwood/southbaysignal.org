@@ -74,3 +74,24 @@ test("partial inbound shard loss degrades, systemic loss still blocks", () => {
   assert.match(puller, /page\.hasMore/);
   assert.match(puller, /pageCursor/);
 });
+
+test("generate-events records input snapshots on every run, strict or not", () => {
+  // 2026-08-24: `inputSnapshots` was written as `...(inputHealth ? {...} : {})`
+  // and `inputHealth` was only computed under SBT_STRICT_EVENT_REFRESH, so any
+  // ad-hoc `npm run generate-events` silently stripped the key the watchdog
+  // pages on. Strict mode may decide whether bad inputs ABORT the run; it must
+  // never decide whether they get recorded.
+  const generator = read("../generate-events.mjs");
+
+  assert.match(generator, /^\s*inputSnapshots: inputHealth\.snapshots,$/m);
+  assert.doesNotMatch(generator, /\.\.\.\(inputHealth \?/);
+  assert.doesNotMatch(generator, /let inputHealth = null/);
+
+  // The measurement has to sit outside — and ahead of — the strict-mode branch
+  // that consumes it, or `inputHealth` is out of scope at the write site.
+  const measured = generator.indexOf("const inputHealth = strictRefreshInputHealth({");
+  const strictBranch = generator.indexOf("if (STRICT_EVENT_REFRESH) {\n    if (!inputHealth.ok) {");
+  assert.ok(measured !== -1, "inputHealth must be computed unconditionally");
+  assert.ok(strictBranch !== -1, "strict mode must still gate the abort-before-overwrite");
+  assert.ok(measured < strictBranch, "inputHealth must be measured before the strict gate");
+});
