@@ -97,7 +97,29 @@ const dayLabelNoYear = new Date(`${event.date}T12:00:00Z`).toLocaleDateString("e
   month: "long",
   day: "numeric",
 });
-const titleCore = `${event.title} — ${dayLabelNoYear}`;
+// Separate sessions often share a title and date (two comedy showtimes, two
+// library appointments, or same-named events in different cities). Their
+// stable slugs already differ; give their search-result titles the same
+// distinction. Prefer time because it is reader-useful and unique for the
+// current collision set, then fall back to venue or city when needed.
+const titlePool = [
+  ...((upcomingData as { events?: RawEvent[] }).events ?? []),
+  ...((archiveData as { events?: RawEvent[] }).events ?? []),
+];
+const sameDayTitleEvents = titlePool.filter(
+  (candidate) => candidate.date === event.date && candidate.title === event.title,
+);
+const uniqueTime = event.time && sameDayTitleEvents.filter((candidate) => candidate.time === event.time).length === 1
+  ? event.time
+  : null;
+const uniqueVenue = event.venue && sameDayTitleEvents.filter((candidate) => candidate.venue === event.venue).length === 1
+  ? event.venue
+  : null;
+const uniqueCity = cityName && sameDayTitleEvents.filter((candidate) => candidate.city === event.city).length === 1
+  ? cityName
+  : null;
+const titleDisambiguator = sameDayTitleEvents.length > 1 ? uniqueTime || uniqueVenue || uniqueCity : null;
+const titleCore = [event.title, titleDisambiguator, dayLabelNoYear].filter(Boolean).join(" — ");
 const title = titleCore.length > 68 ? titleCore : `${titleCore} — South Bay Today`;
 
 function capDescription(text: string, max = 155): string {

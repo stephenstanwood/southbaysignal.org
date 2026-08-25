@@ -40,7 +40,14 @@ export default defineConfig({
   output: 'static',
   adapter: vercel(),
   integrations: [react(), sitemap({
-    filter: (page) => !page.includes('/logo-preview') && !page.includes('/admin') && !isPastDatedUrl(page),
+    // Newsletter issues live in Blob and are listed at request time by their
+    // own sitemap. Keep that sitemap out of the page URL set while including
+    // it as a child of the canonical sitemap index.
+    customSitemaps: ['https://southbaytoday.org/sitemap-newsletters.xml'],
+    filter: (page) => !page.includes('/logo-preview')
+      && !page.includes('/admin')
+      && !page.endsWith('/sitemap-newsletters.xml')
+      && !isPastDatedUrl(page),
     serialize(item) {
       const govMatch = item.url.match(/\/gov\/([a-z-]+)\/?$/);
       const cityLastmod = govMatch ? govLastmodByCity[govMatch[1]] : undefined;
