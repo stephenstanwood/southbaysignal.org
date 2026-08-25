@@ -85,6 +85,28 @@ const SKIP_REGEX = [
   // Mountain View posts these as bare titles, e.g.
   // "Conference with Real Property Negotiator (California Government Code §54956.8)".
   /^conference with (?:legal counsel|real property|labor)/i,
+  // Closed-session procedure. The council convening, or citing the Brown Act
+  // section it is convening under, is not public business — Sunnyvale's Aug 25
+  // agenda is nothing but these, and "Convene to Closed Session" shipped as the
+  // city's lead civic highlight for the week.
+  /^convene to closed session\b/i,
+  /^closed session held pursuant to\b/i,
+  /^adjourn(?:ment)? (?:from|to) closed session\b/i,
+  // Personnel matters heard in closed session. Mountain View posts the bare
+  // Brown Act title with no "Conference with" prefix, so the rule above misses
+  // it: "Public Employee Performance Evaluation (California Government Code
+  // §54957(b)(1))" was the city's only listed item and became its highlight.
+  /^public (?:employee|employment)\b/i,
+  /government code\s*§?\s*(?:section\s*)?5495[6-9]/i,
+  // Standing procedural report slots that appear on every agenda: excused
+  // absences, councilmember travel reports, liaison reports, and the manager's
+  // verbal report. Recurring housekeeping, never news.
+  /^(?:mayor and )?council(?:member)?s? (?:excused absence|travel report)/i,
+  /^report (?:from|of) the (?:council liaison|city manager|city attorney|mayor)\b/i,
+  /^(?:city )?council travel reports?\b/i,
+  // "Public Participation and Access" — the how-to-attend block, sibling of the
+  // "public comment" prefix already listed above.
+  /^public participation\b/i,
   // Section banners like "CONSENT CALENDAR (Items 5-18)" that escape the
   // all-caps filter because of the parenthetical.
   /^consent calendar\s*\(/i,
@@ -245,9 +267,18 @@ async function fetchAgendaItems(client, eventId) {
     }
     const items = await res.json();
 
+    // When the feed numbers its agenda items, an item with no number is not
+    // business — it is a boilerplate text block or a ceremonial name-only entry.
+    // San José's "Association of Indo Americans" (a commendation, unnumbered)
+    // otherwise became the city's lead civic highlight while every numbered item
+    // on the agenda was procedural. Self-calibrating: cities that never populate
+    // EventItemAgendaNumber are unaffected.
+    const hasNumbering = items.some((i) => String(i.EventItemAgendaNumber ?? "").trim());
+    const numbered = (item) => !hasNumbering || String(item.EventItemAgendaNumber ?? "").trim();
+
     // Filter to substantive items and take up to 5
     return items
-      .filter((item) => isSubstantiveItem(item.EventItemTitle))
+      .filter((item) => isSubstantiveItem(item.EventItemTitle) && numbered(item))
       .slice(0, 5)
       .map((item) => ({
         title: cleanAgendaTitle(item.EventItemTitle),

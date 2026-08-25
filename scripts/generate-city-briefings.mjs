@@ -101,6 +101,19 @@ const AGENDA_BOILERPLATE = [
   /^approve .*minutes/i,
   /^(consent calendar|oral communications|public comment)/i,
   /^(presentations?|proclamations?|ceremonial)/i,
+  // These leading `^` anchors miss closed-session procedure that doesn't start
+  // with the words: "Convene to Closed Session" led Sunnyvale's week, and
+  // Mountain View's only item — "Public Employee Performance Evaluation
+  // (California Government Code §54957(b)(1))" — led its own. Neither is
+  // something a resident can attend or act on.
+  /closed session/i,
+  /^public (employee|employment)\b/i,
+  /government code\s*§?\s*(?:section\s*)?5495[6-9]/i,
+  /^conference with (legal counsel|real property|labor)/i,
+  // Standing procedural report slots present on every agenda.
+  /^(mayor and )?council(member)?s? (excused absence|travel report)/i,
+  /^report (from|of) the (council liaison|city manager|city attorney|mayor)\b/i,
+  /^(city )?council travel reports?\b/i,
 ];
 
 function firstSubstantiveAgendaItem(agendaItems) {
@@ -241,7 +254,11 @@ async function main() {
           url: e.url || null,
         });
       }
-      const leadAgendaItem = firstSubstantiveAgendaItem(cityMeeting?.agendaItems);
+      // A meeting flagged closed-session has no public business to preview, no
+      // matter what its item titles look like.
+      const leadAgendaItem = cityMeeting?.closedSession
+        ? null
+        : firstSubstantiveAgendaItem(cityMeeting?.agendaItems);
       if (leadAgendaItem) {
         highlights.push({
           type: "council",
