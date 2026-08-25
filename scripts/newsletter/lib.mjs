@@ -1043,7 +1043,9 @@ async function applyEditorialPass(data, candidates) {
   return revised;
 }
 
-function buildEditorialPacket(data, candidates) {
+// Exported for the same reason civicMeetingsHeading is: the editor's intro is
+// written off this packet, so its claims need a test that doesn't call the API.
+export function buildEditorialPacket(data, candidates) {
   return {
     date: data.longDate,
     editorialMemory: newsletterMemoryForPrompt(loadNewsletterEditorialMemory()),
@@ -1083,7 +1085,15 @@ function buildEditorialPacket(data, candidates) {
       body: m.bodyName || "Meeting",
       time: formatMeetingTime(m.startTime) || "",
       location: m.location || "",
-      ...(m.closedSession ? { closedSession: true, note: CLOSED_SESSION_LABEL } : {}),
+      // `time` is the hour the public may attend, which is not always the hour
+      // the city's calendar posts. The 2026-08-25 issue wrote "Sunnyvale at
+      // 4:30 … the afternoon to scratch a civic itch" off a posted start that
+      // was the closed session; say so plainly so the intro can't repeat it.
+      ...(m.closedSession
+        ? { closedSession: true, note: CLOSED_SESSION_LABEL }
+        : m.closedSessionStart
+          ? { note: `${closedSessionPrefaceLabel(m)} (not open to the public); the public session starts at ${formatMeetingTime(m.startTime)}` }
+          : {}),
     })),
     history: data.todayHistory.map((h, idx) => ({
       idx,
@@ -2129,6 +2139,15 @@ function openingAge(openedDate, todayDate) {
 const EVENING_START_MINUTES = 17 * 60; // 5:00 PM
 const CLOSED_SESSION_LABEL = "Closed session, not open to the public";
 
+// A sitting whose posted hour was a closed session, moved forward by
+// resolvePublicStart to the first block a reader can attend. Naming the closed
+// hour keeps the email honest about why the time it prints isn't the one on the
+// city's calendar page.
+function closedSessionPrefaceLabel(meeting) {
+  const closed = formatMeetingTime(meeting?.closedSessionStart);
+  return closed ? `Closed session from ${closed}` : null;
+}
+
 export function meetingStartsInEvening(meeting) {
   const minutes = meetingClockMinutes(meeting?.startTime);
   return minutes !== null && minutes >= EVENING_START_MINUTES;
@@ -2150,7 +2169,7 @@ function civicMeetingDetail(meeting) {
   return [
     formatMeetingTime(meeting?.startTime),
     meeting?.location,
-    meeting?.closedSession ? CLOSED_SESSION_LABEL : null,
+    meeting?.closedSession ? CLOSED_SESSION_LABEL : closedSessionPrefaceLabel(meeting),
   ].filter(Boolean).join(" · ");
 }
 

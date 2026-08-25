@@ -87,6 +87,94 @@ function stripUrls(value) {
   return value.replace(/https?:\/\/\S+/gi, " ").replace(/\s+/g, " ").trim();
 }
 
+// ---------------------------------------------------------------------------
+// Posted start times that belong to a closed session
+//
+// isClosedSessionMeeting above answers "is this whole sitting closed?". A
+// second, narrower failure has its own shape: a public meeting whose *first
+// block* is closed, posted as one calendar entry under a plain name.
+//
+// Sunnyvale is the standing case. Legistar carries one row named "City
+// Council" whose EventTime is 4:30 PM and whose EventComment holds the real
+// running order:
+//
+//   "Special Meeting: Closed Session - 4:30 PM |
+//    Special Meeting: Presentation - 6 PM | Regular Meeting - 7 PM"
+//
+// So 4:30 PM is the hour the doors are shut. The 2026-08-25 issue printed
+// "Sunnyvale at 4:30" and called it the afternoon to scratch a civic itch —
+// sending readers to a locked room. Nine 2026 entries carry this shape, so the
+// closed-session vocabulary in generate-upcoming-meetings.mjs can never catch
+// it: that vocabulary is keyed on the meeting *name*, and the name here says
+// nothing.
+// ---------------------------------------------------------------------------
+
+// One "Label - 7 PM" block. The separator must be preceded by a non-digit so a
+// bare clock can never be read as one: San José posts "Closed Session at 9:30
+// a.m." as a note about a *separate* earlier meeting, and splitting it at the
+// colon inside "9:30" would invent a block that isn't there.
+const SESSION_BLOCK = /^(.*?)(?<=\D)\s*[-–—:]\s*(\d{1,2}(?::[0-5]\d)?\s*[ap]\.?\s*m\.?)\b/i;
+
+/**
+ * Read a posted running order out of a provider's free-text comment.
+ *
+ * @param {string} text EventComment / eventDescription / Description
+ * @returns {{label: string, startTime: string, closed: boolean}[]} in posted order
+ */
+export function parseSessionSchedule(text) {
+  return stripUrls(String(text ?? "").replace(/\r?\n/g, " | "))
+    .split("|")
+    .map((chunk) => {
+      const match = chunk.trim().match(SESSION_BLOCK);
+      if (!match) return null;
+      const label = match[1].trim();
+      const startTime = normalizeMeetingTime(match[2]);
+      if (!label || !startTime) return null;
+      // Reuse the one closed-session vocabulary. Providers punctuate these
+      // labels with a colon ("Special Meeting: Closed Session"); the
+      // designation pattern reads them as ordinary meeting-type qualifiers.
+      return { label, startTime, closed: isClosedSessionMeeting({ bodyName: label.replace(/:/g, " ") }) };
+    })
+    .filter(Boolean);
+}
+
+/**
+ * Move a posted start off a closed session and onto the first block a reader
+ * can actually attend.
+ *
+ * Returns the posted start untouched unless the schedule says, in the city's
+ * own words, that (a) every block convening at the posted hour is closed and
+ * (b) a public block follows. Anything less certain — no schedule, one lone
+ * block, a closed session noted at some other hour — is left alone, because
+ * quietly restating a start time we can't source is the worse error.
+ *
+ * @returns {{startTime: string|null, closedSessionStart: string|null}}
+ */
+export function resolvePublicStart({ startTime = null, comment, description } = {}) {
+  const posted = CLOCK.test(String(startTime ?? "")) ? String(startTime) : null;
+  const unchanged = { startTime: startTime ?? null, closedSessionStart: null };
+  if (!posted) return unchanged;
+  const postedMinutes = meetingClockMinutes(posted);
+
+  for (const text of [comment, description]) {
+    const blocks = parseSessionSchedule(text);
+    // A single block is just a restatement of the posted time; it says nothing
+    // about a public alternative.
+    if (blocks.length < 2) continue;
+
+    const atPosted = blocks.filter((block) => block.startTime === posted);
+    if (atPosted.length === 0 || !atPosted.every((block) => block.closed)) continue;
+
+    const [open] = blocks
+      .filter((block) => !block.closed && meetingClockMinutes(block.startTime) > postedMinutes)
+      .sort((a, b) => meetingClockMinutes(a.startTime) - meetingClockMinutes(b.startTime));
+    if (!open) continue;
+
+    return { startTime: open.startTime, closedSessionStart: posted };
+  }
+  return unchanged;
+}
+
 function safeHttpUrl(value) {
   try {
     const url = new URL(value);
