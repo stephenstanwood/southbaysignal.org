@@ -310,7 +310,11 @@ function BrowseMode() {
               <div className="camps-kicker">Start Here</div>
               <h2>Strong first picks</h2>
             </div>
-            <p>Broad programs with clear dates, reliable registration links, and enough weeks to anchor a summer plan.</p>
+            <p>
+              {SEASON_ACTIVE
+                ? "Broad programs with clear dates, reliable registration links, and enough weeks to anchor a summer plan."
+                : "Broad programs with clear dates and reliable registration links — the names to shortlist first when next summer's schedules go up."}
+            </p>
           </div>
           <div className="camps-feature-grid">
             {featured.map((camp) => (
@@ -350,20 +354,22 @@ function BrowseMode() {
             </select>
           </label>
 
-          <label>
-            <span>Week</span>
-            <select
-              value={weekFilter === "all" ? "all" : String(weekFilter)}
-              onChange={(e) => setWeekFilter(e.target.value === "all" ? "all" : parseInt(e.target.value))}
-            >
-              <option value="all">All weeks</option>
-              {ACTIVE_WEEKS.map((sw) => (
-                <option key={sw.weekNum} value={sw.weekNum}>
-                  Week {sw.weekNum} · {sw.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          {SEASON_ACTIVE && (
+            <label>
+              <span>Week</span>
+              <select
+                value={weekFilter === "all" ? "all" : String(weekFilter)}
+                onChange={(e) => setWeekFilter(e.target.value === "all" ? "all" : parseInt(e.target.value))}
+              >
+                <option value="all">All weeks</option>
+                {ACTIVE_WEEKS.map((sw) => (
+                  <option key={sw.weekNum} value={sw.weekNum}>
+                    Week {sw.weekNum} · {sw.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <label>
             <span>Age</span>
@@ -408,7 +414,7 @@ function BrowseMode() {
           </label>
         </div>
 
-        {ACTIVE_WEEKS.some((w) => w.weekNum === SHORT_WEEK_NUM) && (
+        {SEASON_ACTIVE && ACTIVE_WEEKS.some((w) => w.weekNum === SHORT_WEEK_NUM) && (
           <p style={{ fontSize: 12, color: "var(--sb-muted)", margin: "10px 0 0" }}>
             * Week {SHORT_WEEK_NUM} is a short week — no camp Fri Jul 3 (July 4th observed).
           </p>
@@ -684,7 +690,7 @@ function SummerBuilderMode() {
           </h2>
           <p style={{ fontSize: 13, color: "var(--sb-muted)", marginBottom: 16 }}>
             Select the weeks you need a camp for.
-            {ACTIVE_WEEKS.some((w) => w.weekNum === SHORT_WEEK_NUM) &&
+            {SEASON_ACTIVE && ACTIVE_WEEKS.some((w) => w.weekNum === SHORT_WEEK_NUM) &&
               ` Week ${SHORT_WEEK_NUM} is a short week (Fri Jul 3 is the observed July 4th holiday).`}
           </p>
           <button
@@ -994,6 +1000,9 @@ function SummerBuilderMode() {
 // ---------------------------------------------------------------------------
 
 export default function CampsView() {
+  // The week-by-week planner only means anything while there are weeks left to
+  // cover. Once the last 2026 session ends it would walk a parent through
+  // picking expired weeks, so off-season the tab is the directory alone.
   const [mode, setMode] = useState<"browse" | "builder">("browse");
   const cityProgramCount = CAMPS.filter((camp) => camp.orgType === "city").length;
   const nonprofitCount = CAMPS.filter((camp) => camp.orgType === "nonprofit").length;
@@ -1007,44 +1016,57 @@ export default function CampsView() {
   return (
     <div className="camps-view">
       <PageHero
-        eyebrow="South Bay / Summer 2026"
+        eyebrow={SEASON_ACTIVE ? "South Bay / Summer 2026" : "South Bay / Planning Ahead"}
         title="Summer Camps"
-        description="A calmer guide to city rec programs, specialty camps, sports academies, arts programs, and STEM weeks across the South Bay. Every listing links back to the operator's registration page."
+        description={
+          SEASON_ACTIVE
+            ? "A calmer guide to city rec programs, specialty camps, sports academies, arts programs, and STEM weeks across the South Bay. Every listing links back to the operator's registration page."
+            : "The 2026 season has wrapped, so this is the shortlist for next year: city rec programs, specialty camps, sports academies, arts programs, and STEM weeks across the South Bay. Every listing still links to the operator's own page, which is where new dates and registration go up first."
+        }
         note={`Links verified ${verifiedDisplay}`}
         accent="#B45309"
         stats={[
           { value: CAMPS.length, label: "Programs" },
-          { value: SUMMER_WEEKS.length, label: "Summer weeks" },
+          { value: SUMMER_WEEKS.length, label: SEASON_ACTIVE ? "Summer weeks" : "Weeks in 2026" },
           { value: cityProgramCount, label: "City-run options" },
           { value: nonprofitCount, label: "Nonprofit options" },
         ]}
       />
 
-      <div className="camps-mode-switch" role="tablist" aria-label="Camp view">
-        <button
-          id="camps-tab-browse"
-          role="tab"
-          onClick={() => setMode("browse")}
-          className={mode === "browse" ? "is-active" : ""}
-          aria-selected={mode === "browse"}
-          aria-controls="camps-panel-browse"
-        >
-          Directory
-        </button>
-        <button
-          id="camps-tab-builder"
-          role="tab"
-          onClick={() => setMode("builder")}
-          className={mode === "builder" ? "is-active" : ""}
-          aria-selected={mode === "builder"}
-          aria-controls="camps-panel-builder"
-        >
-          Plan Weeks
-        </button>
-      </div>
+      {SEASON_ACTIVE && (
+        <div className="camps-mode-switch" role="tablist" aria-label="Camp view">
+          <button
+            id="camps-tab-browse"
+            role="tab"
+            onClick={() => setMode("browse")}
+            className={mode === "browse" ? "is-active" : ""}
+            aria-selected={mode === "browse"}
+            aria-controls="camps-panel-browse"
+          >
+            Directory
+          </button>
+          <button
+            id="camps-tab-builder"
+            role="tab"
+            onClick={() => setMode("builder")}
+            className={mode === "builder" ? "is-active" : ""}
+            aria-selected={mode === "builder"}
+            aria-controls="camps-panel-builder"
+          >
+            Plan Weeks
+          </button>
+        </div>
+      )}
 
-      {mode === "browse" ? (
-        <div id="camps-panel-browse" role="tabpanel" aria-labelledby="camps-tab-browse">
+      {!SEASON_ACTIVE || mode === "browse" ? (
+        // Off-season there is no tablist above, so the panel is a plain region —
+        // pointing aria-labelledby at a button that isn't rendered would leave
+        // the directory unlabeled for screen readers.
+        <div
+          id="camps-panel-browse"
+          role={SEASON_ACTIVE ? "tabpanel" : undefined}
+          aria-labelledby={SEASON_ACTIVE ? "camps-tab-browse" : undefined}
+        >
           <BrowseMode />
         </div>
       ) : (
