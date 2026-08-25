@@ -23,6 +23,7 @@ import {
   onlyConfirmedMeetings,
   pickCivicClerkMeeting,
   ptDateISO,
+  resolvePublicStart,
 } from "./lib/civic-meetings.mjs";
 import { overlayPaloAltoStateOfTheCity } from "./lib/palo-alto-state-of-the-city-2026.mjs";
 
@@ -310,8 +311,14 @@ async function fetchNextMeeting(client, site, body) {
     event.EventAgendaStatusName,
   ].filter(Boolean).join(" ")));
   if (!ev) return null;
-  const date = new Date(ev.EventDate);
   const dateIso = String(ev.EventDate).slice(0, 10);
+  // Noon anchor, same as every other provider here. EventDate is a naive
+  // midnight ("2026-08-25T00:00:00"), and `new Date(ev.EventDate)` reads that
+  // in the *host's* zone — from any machine east of Pacific it lands on the
+  // previous PT day and displayDate labels the meeting with a date it isn't on
+  // ("Mon, Aug 24" for Sunnyvale's Aug 25 sitting, regenerated from an Eastern
+  // laptop). The `date` field, sliced from the string, was always correct.
+  const date = new Date(`${dateIso}T12:00:00`);
 
   // Skip placeholder dates more than 60 days out (common Legistar calendar blocker)
   const daysOut = (date.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
@@ -319,17 +326,29 @@ async function fetchNextMeeting(client, site, body) {
 
   const agendaItems = await fetchAgendaItems(client, ev.EventId);
 
+  // EventDate is midnight for every Legistar row; the wall clock lives in
+  // EventTime. Without it nothing downstream could tell San José's 1:30 PM
+  // council meeting from Sunnyvale's 5:30 PM one, and the 2026-08-11 email
+  // filed both under "Civic meetings tonight". EventTime is the hour the row
+  // *begins*, which for Sunnyvale is its closed session — resolvePublicStart
+  // reads the running order in EventComment and moves the start to the first
+  // block a reader can attend.
+  const { startTime, closedSessionStart } = resolvePublicStart({
+    startTime: normalizeMeetingTime(ev.EventTime),
+    comment: ev.EventComment,
+    description: ev.EventDescription,
+  });
+
   const meeting = {
     date: dateIso,
     displayDate: date.toLocaleDateString("en-US", {
       weekday: "short", month: "short", day: "numeric",
       timeZone: "America/Los_Angeles",
     }),
-    // EventDate is midnight for every Legistar row; the wall clock lives in
-    // EventTime. Without it nothing downstream could tell San José's 1:30 PM
-    // council meeting from Sunnyvale's 5:30 PM one, and the 2026-08-11 email
-    // filed both under "Civic meetings tonight".
-    startTime: normalizeMeetingTime(ev.EventTime),
+    startTime,
+    // The non-public hour the entry opens with, when the start above had to be
+    // moved past it. Absent on the ordinary case.
+    ...(closedSessionStart ? { closedSessionStart } : {}),
     bodyName: ev.EventBodyName,
     location: cleanLocation(ev.EventLocation),
     closedSession: isClosedSessionMeeting({
@@ -577,14 +596,23 @@ async function fetchEscribeMeeting(host) {
     const d = new Date(`${date}T12:00:00`);
     if ((d.getTime() - Date.now()) / 86_400_000 > 60) return null;
 
+    // eScribe StartDate is "YYYY/MM/DD HH:mm:ss" in the city's local time.
+    // Campbell posts its executive session as a separate row (filtered above),
+    // but run the same public-start resolution every provider gets so a city
+    // that switches to a single blocked entry is covered the day it does.
+    const { startTime, closedSessionStart } = resolvePublicStart({
+      startTime: normalizeMeetingTime(row.StartDate),
+      description: row.Description,
+    });
+
     const meeting = {
       date,
       displayDate: d.toLocaleDateString("en-US", {
         weekday: "short", month: "short", day: "numeric",
         timeZone: "America/Los_Angeles",
       }),
-      // eScribe StartDate is "YYYY/MM/DD HH:mm:ss" in the city's local time.
-      startTime: normalizeMeetingTime(row.StartDate),
+      startTime,
+      ...(closedSessionStart ? { closedSessionStart } : {}),
       bodyName: row.MeetingName || "City Council",
       location: cleanLocation(row.Location),
       // Closed/executive sittings are already filtered out above; recorded so
@@ -631,15 +659,23 @@ async function fetchCivicClerkMeeting({ apiHost, location = null, meetingUrl }) 
 
   const date = String(event.eventDate).slice(0, 10);
   const dateObject = new Date(`${date}T12:00:00Z`);
+  // CivicClerk stamps the city's own wall clock with a trailing Z that is not
+  // UTC (see normalizeMeetingTime). Milpitas's 2026-08-11 special meeting
+  // reads "…T16:00:00Z" and starts at 4:00 PM, not 9:00 AM. Milpitas and Los
+  // Altos post each session as its own event, so the resolution below is a
+  // no-op today — it runs anyway so every provider follows the same rule.
+  const { startTime, closedSessionStart } = resolvePublicStart({
+    startTime: normalizeMeetingTime(event.startDateTime || event.eventDate),
+    description: event.eventDescription,
+  });
+
   const meeting = {
     date,
     displayDate: dateObject.toLocaleDateString("en-US", {
       weekday: "short", month: "short", day: "numeric", timeZone: "UTC",
     }),
-    // CivicClerk stamps the city's own wall clock with a trailing Z that is not
-    // UTC (see normalizeMeetingTime). Milpitas's 2026-08-11 special meeting
-    // reads "…T16:00:00Z" and starts at 4:00 PM, not 9:00 AM.
-    startTime: normalizeMeetingTime(event.startDateTime || event.eventDate),
+    startTime,
+    ...(closedSessionStart ? { closedSessionStart } : {}),
     bodyName: event.eventName || "City Council",
     location,
     closedSession: isClosedSessionMeeting({

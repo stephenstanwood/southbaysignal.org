@@ -9,7 +9,9 @@ import {
   primeGovAgendaUrl,
   normalizeMeetingTime,
   onlyConfirmedMeetings,
+  parseSessionSchedule,
   pickCivicClerkMeeting,
+  resolvePublicStart,
 } from "./civic-meetings.mjs";
 
 test("Legistar links use the provider-owned public URL instead of rebuilding API ids", () => {
@@ -103,6 +105,139 @@ test("a public meeting that merely mentions an earlier closed session stays publ
   }), false);
   assert.equal(isClosedSessionMeeting({}), false);
   assert.equal(isClosedSessionMeeting(), false);
+});
+
+// ---------------------------------------------------------------------------
+// resolvePublicStart — a posted start that is really the closed session
+// ---------------------------------------------------------------------------
+
+// Sunnyvale's own EventComment for 2026-08-25, verbatim from Legistar. The row
+// is named plainly "City Council" and EventTime is 4:30 PM, so nothing in the
+// name-based closed-session vocabulary can see that 4:30 is the shut hour.
+const SUNNYVALE_AUG_25_COMMENT =
+  "Special Meeting: Closed Session - 4:30 PM | Special Meeting: Presentation - 6 PM"
+  + " | Regular Meeting - 7 PM\r\n\r\nMeeting online link:  https://sunnyvale-ca-gov.zoom.us/j/96111580540";
+
+test("Sunnyvale's posted start is its closed session; the public start is the block after", () => {
+  // The 2026-08-25 issue opened "Sunnyvale at 4:30 … this is the afternoon to
+  // scratch [a civic itch]" — a locked room. 6 PM is the first block a reader
+  // can walk into; the regular meeting follows at 7.
+  assert.deepEqual(
+    resolvePublicStart({ startTime: "16:30", comment: SUNNYVALE_AUG_25_COMMENT }),
+    { startTime: "18:00", closedSessionStart: "16:30" },
+  );
+  assert.deepEqual(
+    parseSessionSchedule(SUNNYVALE_AUG_25_COMMENT).map((b) => [b.startTime, b.closed]),
+    [["16:30", true], ["18:00", false], ["19:00", false]],
+  );
+});
+
+test("the rule holds across Sunnyvale's other 2026 postings, including the unspaced dash", () => {
+  // Nine 2026 entries carry this shape; these cover both punctuations and the
+  // two-block form where the regular meeting is the only public block.
+  assert.deepEqual(
+    resolvePublicStart({
+      startTime: "16:30",
+      comment: "Special Meeting: Closed Session - 4:30 PM | Special Meeting: Study Session - 5 PM | Regular Meeting - 7 PM",
+    }),
+    { startTime: "17:00", closedSessionStart: "16:30" },
+  );
+  assert.deepEqual(
+    resolvePublicStart({
+      startTime: "17:30",
+      comment: "Special Meeting: Closed Session-5:30 PM | Special Meeting: Special Order of the Day-6:30 PM"
+        + " | Regular Meeting-7 PM |  Joint Meeting City Council & Sunnyvale Financing Authority-7 PM",
+    }),
+    { startTime: "18:30", closedSessionStart: "17:30" },
+  );
+  assert.deepEqual(
+    resolvePublicStart({
+      startTime: "17:30",
+      comment: "Special Meeting: Closed Session - 5:30 PM | Regular Meeting - 7 PM",
+    }),
+    { startTime: "19:00", closedSessionStart: "17:30" },
+  );
+});
+
+test("a closed session at some other hour never moves the posted start", () => {
+  // San José 2026-08-25: a public 1:30 PM sitting whose comment notes a
+  // separate 9:30 a.m. closed session, posted as its own Legistar row. Reading
+  // the colon inside "9:30" as a label separator would invent a block and hand
+  // readers the wrong hour for the meeting they can actually attend.
+  assert.deepEqual(parseSessionSchedule("Closed Session at 9:30 a.m."), []);
+  assert.deepEqual(
+    resolvePublicStart({ startTime: "13:30", comment: "Closed Session at 9:30 a.m." }),
+    { startTime: "13:30", closedSessionStart: null },
+  );
+  assert.deepEqual(
+    resolvePublicStart({
+      startTime: "13:30",
+      comment: "https://sanjoseca.zoom.us/j/98221474336   Closed Session at 9:30 a.m.",
+    }),
+    { startTime: "13:30", closedSessionStart: null },
+  );
+  // Mountain View 2026-08-25, and every provider that posts no schedule at all.
+  assert.deepEqual(
+    resolvePublicStart({ startTime: "17:00", comment: "REGULAR MEETING" }),
+    { startTime: "17:00", closedSessionStart: null },
+  );
+  assert.deepEqual(
+    resolvePublicStart({ startTime: "19:00" }),
+    { startTime: "19:00", closedSessionStart: null },
+  );
+  assert.deepEqual(resolvePublicStart({}), { startTime: null, closedSessionStart: null });
+  assert.deepEqual(
+    resolvePublicStart({ startTime: null, comment: SUNNYVALE_AUG_25_COMMENT }),
+    { startTime: null, closedSessionStart: null },
+    "no posted start means nothing to correct",
+  );
+});
+
+test("the start only moves when the posted hour is closed and something public follows", () => {
+  // Posted start already public — the closed block runs earlier and is not the
+  // hour on the row, so leave the row alone.
+  assert.deepEqual(
+    resolvePublicStart({
+      startTime: "19:00",
+      comment: "Special Meeting: Closed Session - 5:30 PM | Regular Meeting - 7 PM",
+    }),
+    { startTime: "19:00", closedSessionStart: null },
+  );
+  // Public business convenes at the same hour as the closed session (Milpitas's
+  // shape). The posted time is attendable; don't push readers later.
+  assert.deepEqual(
+    resolvePublicStart({
+      startTime: "16:00",
+      comment: "Closed Session - 4 PM | Regular Meeting - 4 PM | Study Session - 6 PM",
+    }),
+    { startTime: "16:00", closedSessionStart: null },
+  );
+  // Nothing public follows: an entirely closed sitting stays as posted rather
+  // than being handed an invented public hour.
+  assert.deepEqual(
+    resolvePublicStart({
+      startTime: "16:30",
+      comment: "Special Meeting: Closed Session - 4:30 PM | Closed Session - 6 PM",
+    }),
+    { startTime: "16:30", closedSessionStart: null },
+  );
+  // A lone block is a restatement of the posted time, not a running order.
+  assert.deepEqual(
+    resolvePublicStart({ startTime: "16:30", comment: "Special Meeting: Closed Session - 4:30 PM" }),
+    { startTime: "16:30", closedSessionStart: null },
+  );
+});
+
+test("the schedule is read from a description when the provider has no comment field", () => {
+  // eScribe and CivicClerk carry their free text in Description /
+  // eventDescription; the same rule has to reach those providers.
+  assert.deepEqual(
+    resolvePublicStart({
+      startTime: "17:00",
+      description: "City Council Closed Session - 5 PM | City Council Regular Session - 7 PM",
+    }),
+    { startTime: "19:00", closedSessionStart: "17:00" },
+  );
 });
 
 // ---------------------------------------------------------------------------

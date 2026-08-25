@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  buildEditorialPacket,
   civicMeetingsHeading,
   planCardPriceBand,
   renderEmail,
@@ -971,6 +972,81 @@ test("a meeting with no posted start time cannot vouch for tonight", () => {
   assert.match(html, /Civic meetings today/);
   // No clock invented to fill the gap.
   assert.ok(!/· \d{1,2}:\d{2} [AP]M/.test(html), "must not print a start time it never received");
+});
+
+// ── Civic meetings: a posted start that is really the closed session ───────
+//
+// The 2026-08-25 issue opened "Council chambers are busy today: San Jose meets
+// at 1:30 PM, Sunnyvale at 4:30, and Mountain View at 5, so if you have a civic
+// itch this is the afternoon to scratch it." Sunnyvale's 4:30 was true against
+// the calendar and useless to a reader: it is the closed session. Its public
+// blocks are 6 PM (presentation) and 7 PM (regular). generate-upcoming-meetings
+// now resolves the start to 18:00 and records closedSessionStart 16:30 — these
+// hold the email to naming both.
+
+const AUG_25_SUNNYVALE = {
+  city: "sunnyvale",
+  date: "2026-08-25",
+  startTime: "18:00",
+  closedSessionStart: "16:30",
+  bodyName: "City Council",
+  location: "Online and Council Chambers, City Hall",
+  closedSession: false,
+  url: "https://sunnyvaleca.legistar.com/MeetingDetail.aspx?LEGID=4522",
+};
+
+test("a meeting whose posted hour was closed prints the public start and names the closed one", () => {
+  const html = renderEmail({
+    date: "2026-08-25",
+    longDate: "Tuesday, August 25, 2026",
+    weather: null, dayPlan: null, dayPlanBlurb: "", tonightPick: null, tonightPickBlurb: "",
+    todayEvents: [], featuredEvents: [], recentOpenings: [],
+    civicMeetings: [AUG_25_SUNNYVALE],
+    todayHistory: [], redditPosts: [], visuals: {}, editorial: null,
+  }).html;
+
+  assert.match(
+    html,
+    /Sunnyvale<\/strong> — <a[^>]*>City Council<\/a> <span[^>]*>· 6:00 PM · Online and Council Chambers, City Hall · Closed session from 4:30 PM/,
+  );
+  assert.ok(!/· 4:30 PM ·/.test(html), "4:30 may be named as the closed hour, never printed as the start");
+  // Not the same claim as a wholly closed sitting — there is public business here.
+  assert.ok(!/not open to the public/.test(html));
+});
+
+test("the editor packet tells the intro which hour readers can actually show up", () => {
+  const packet = buildEditorialPacket({
+    longDate: "Tuesday, August 25, 2026",
+    weather: null, dayPlan: null, todayHistory: [],
+    civicMeetings: [AUG_25_SUNNYVALE],
+  }, { eventCandidates: [], openingCandidates: [], redditCandidates: [] });
+
+  assert.deepEqual(packet.meetings, [{
+    idx: 0,
+    city: "Sunnyvale",
+    body: "City Council",
+    time: "6:00 PM",
+    location: "Online and Council Chambers, City Hall",
+    note: "Closed session from 4:30 PM (not open to the public); the public session starts at 6:00 PM",
+  }]);
+});
+
+test("an ordinary meeting gains no closed-session note", () => {
+  const packet = buildEditorialPacket({
+    longDate: "Tuesday, August 25, 2026",
+    weather: null, dayPlan: null, todayHistory: [],
+    // San José 2026-08-25: a genuinely public 1:30 PM sitting whose Legistar
+    // comment mentions a separate 9:30 a.m. closed session.
+    civicMeetings: [{ city: "san-jose", date: "2026-08-25", startTime: "13:30", bodyName: "City Council", location: "Hybrid Meeting - Council Chambers", closedSession: false, url: "https://sanjose.legistar.com/MeetingDetail.aspx?LEGID=8101" }],
+  }, { eventCandidates: [], openingCandidates: [], redditCandidates: [] });
+
+  assert.deepEqual(packet.meetings, [{
+    idx: 0,
+    city: "San Jose",
+    body: "City Council",
+    time: "1:30 PM",
+    location: "Hybrid Meeting - Council Chambers",
+  }]);
 });
 
 // ── Day plan: a paired meal's price band ───────────────────────────────────

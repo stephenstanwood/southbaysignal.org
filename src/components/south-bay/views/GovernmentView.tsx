@@ -20,8 +20,12 @@ interface AgendaItem {
 interface UpcomingMeeting {
   date: string;
   displayDate: string;
-  /** 24-hour local "HH:MM", or null when the portal posts no start time. */
+  /** 24-hour local "HH:MM" of the first block readers may attend, or null when
+   * the portal posts no start time. */
   startTime?: string | null;
+  /** Set when the entry's posted hour was a closed session and `startTime` had
+   * to be moved past it (Sunnyvale opens most sittings this way). */
+  closedSessionStart?: string | null;
   bodyName: string;
   location: string | null;
   /** Closed/non-televised sitting — nothing a resident can attend or watch. */
