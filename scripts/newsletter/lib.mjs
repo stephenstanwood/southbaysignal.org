@@ -1250,6 +1250,7 @@ Voice:
 
 Fact rules:
 - Use only facts in the packet. Do not infer addresses, prices, ages, quality, or popularity.
+- Never say an event opens, closes, wraps up, or finishes a series, season, run, or homestand unless the packet says so in words. You are not shown a schedule. The 2026-08-26 issue wrote "the Giants close things out under the lights" on game 2 of a 6-game series.
 - Spell proper names exactly as the packet spells them, punctuation and all. Initials keep their packet form: "Mistah F.A.B.", never "Mistah F. A. B." or "Mistah FAB".
 - Do not claim "every event." This is a selected briefing.
 - Selected indexes must come from the arrays provided.

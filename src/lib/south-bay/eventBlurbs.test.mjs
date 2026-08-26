@@ -16,6 +16,12 @@ import {
   sweepTimeOfDayConflicts,
   isTruncatedDescription,
   blurbInventsTruncatedDetail,
+  blurbSequencePositionConflict,
+  runLabelForOccurrences,
+  sweepSequencePositionClaims,
+  blurbDayOfWeekConflict,
+  dayLabelForOccurrences,
+  sweepDayOfWeekConflicts,
 } from "./eventBlurbs.mjs";
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
@@ -469,4 +475,348 @@ test("no shipped blurb invents detail past a truncated description", () => {
   }
 
   assert.deepEqual(offenders, [], `blurbs invent detail past a truncated description:\n${offenders.join("\n")}`);
+});
+
+// ── Series-position claims (2026-08-26 "wrap up their series") ──────────────
+//
+// The 2026-08-26 issue told readers to "Cheer for the San Jose Giants as they
+// wrap up their series against the Visalia Rawhide at Excite Ballpark." Aug 26
+// was game 2 of a six-game series (Aug 25–30, verified against milb.com); the
+// finale was Aug 30. All six games share a byte-identical title, venue and
+// description, so one cache entry served all six — the copy was wrong on five
+// of them, and it drove the issue's field-guide intro line too.
+//
+// Nothing in the model's input stated series position. Note that the cache key
+// is NOT the defect: splitting these six onto six keys would fragment every
+// legitimately-identical recurring listing into separate model calls for
+// identical text.
+
+const GIANTS_RUN = ["2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-29", "2026-08-30"]
+  .map((date) => ({
+    title: "San Jose Giants vs. Visalia Rawhide",
+    venue: "Excite Ballpark",
+    date,
+    description: "San Jose Giants home game vs. Visalia Rawhide at Excite Ballpark.",
+  }));
+
+test("the shipped series-position defect is caught", () => {
+  assert.equal(
+    blurbSequencePositionConflict(
+      "Cheer for the San Jose Giants as they wrap up their series against the Visalia Rawhide at Excite Ballpark.",
+      GIANTS_RUN,
+    ),
+    "wrap up their series",
+  );
+});
+
+test("the corrected Giants copy passes", () => {
+  assert.equal(
+    blurbSequencePositionConflict(
+      "Cheer on the San Jose Giants against the Visalia Rawhide at Excite Ballpark.",
+      GIANTS_RUN,
+    ),
+    null,
+  );
+});
+
+test("the shapes the same invention takes are all caught", () => {
+  const claims = {
+    "Watch the Giants play their final game of the series at Excite Ballpark.": "final game",
+    "Catch the last game of the Giants' homestand downtown.": "last game",
+    "See the Giants in the series finale against Visalia.": "series finale",
+    "Watch the opening game of the Giants series at Excite Ballpark.": "opening game",
+    "Cheer the Giants in their first game against the Rawhide.": "first game",
+    "Watch the Giants close out the series under the lights.": "close out the series",
+    "See the Giants in their final home game of the season.": "final home game",
+    "Catch game 2 of 6 as the Giants host Visalia.": "game 2 of 6",
+  };
+  for (const [blurb, expected] of Object.entries(claims)) {
+    assert.equal(blurbSequencePositionConflict(blurb, GIANTS_RUN), expected, blurb);
+  }
+});
+
+test("a single-date event can legitimately be a finale", () => {
+  // Only the prompt rules keep the model from inventing one here — with one
+  // date there is nothing to disprove, and flagging it would burn good copy.
+  assert.equal(
+    blurbSequencePositionConflict(
+      "Cheer for the San Jose Giants as they wrap up their series against the Visalia Rawhide.",
+      [GIANTS_RUN[0]],
+    ),
+    null,
+  );
+});
+
+test("a position the source itself states is quoted, not guessed", () => {
+  const twice = (extra) => [{ date: "2026-06-06", ...extra }, { date: "2026-06-07", ...extra }];
+
+  assert.equal(
+    blurbSequencePositionConflict(
+      "Enjoy the San Jose Youth Symphony's final concert of the season with student performers.",
+      twice({ title: "SJYS Philharmonic Orchestra Season Finale Concert", venue: "California Theatre" }),
+    ),
+    null,
+    "'Season Finale' in the title supports 'final concert of the season'",
+  );
+
+  assert.equal(
+    blurbSequencePositionConflict(
+      "Watch Stanford field hockey open its season against UMass Lowell with free admission at Varsity Turf.",
+      twice({
+        title: "Stanford Field Hockey vs. UMass Lowell (Season Opener)",
+        venue: "Varsity Turf",
+        description: "Stanford field hockey opens its 2026 season against UMass Lowell.",
+      }),
+    ),
+    null,
+    "the description says it opens the season",
+  );
+});
+
+test("positional-sounding copy that isn't a position claim survives", () => {
+  const twice = (extra) => [{ date: "2026-09-30", ...extra }, { date: "2026-10-05", ...extra }];
+
+  // A support act opens the show; it does not make this date the run's opener.
+  assert.equal(
+    blurbSequencePositionConflict(
+      "Hear The Who's Roger Daltrey perform live with Amy Helm opening the show.",
+      twice({ title: "Roger Daltrey with Amy Helm", venue: "The Mountain Winery" }),
+    ),
+    null,
+  );
+  // "one final show" is the musical's plot, and no run is named.
+  assert.equal(
+    blurbSequencePositionConflict(
+      "Experience Sondheim's epic musical about aging Broadway performers reuniting for one final show.",
+      twice({ title: "Follies 2026", venue: "Los Altos Stage Company" }),
+    ),
+    null,
+  );
+  // "the season" as a period to stock up for, not a run this date closes.
+  assert.equal(
+    blurbSequencePositionConflict(
+      "Browse tables of discounted books and stock up on reads for the season.",
+      twice({ title: "Friends of the Library Book Sale", venue: "Mountain View Public Library" }),
+    ),
+    null,
+  );
+  // "the last ten" minutes of a meditation session.
+  assert.equal(
+    blurbSequencePositionConflict(
+      "Sit for a guided 20-minute meditation with instructor Manisha, then ask questions for the last ten.",
+      twice({ title: "Monday Meditation & Mindfulness", venue: "Woodland Library" }),
+    ),
+    null,
+  );
+});
+
+test("a run tells the model how many dates the copy has to hold for", () => {
+  const label = runLabelForOccurrences(GIANTS_RUN);
+  assert.match(label, /all 6 dates/);
+  assert.match(label, /Aug 25–Aug 30/);
+  assert.equal(runLabelForOccurrences([GIANTS_RUN[0]]), null, "one date needs no run context");
+  assert.equal(runLabelForOccurrences([]), null);
+});
+
+test("the series-position sweep drops contradicted entries and keeps the rest", () => {
+  const key = eventBlurbCacheKey(GIANTS_RUN[0]);
+  const cache = {
+    byKey: {
+      [key]: { blurb: "Cheer for the San Jose Giants as they wrap up their series against the Visalia Rawhide." },
+      "fp:not in this run|somewhere|d:": { blurb: "Watch the final game of the series." },
+    },
+  };
+
+  assert.equal(sweepSequencePositionClaims(cache, GIANTS_RUN), 1);
+  assert.equal(cache.byKey[key], undefined);
+  assert.equal(
+    cache.byKey["fp:not in this run|somewhere|d:"].blurb,
+    "Watch the final game of the series.",
+    "an entry with no live event is not an entry we've shown to be wrong",
+  );
+});
+
+// ── Guard on the committed data ────────────────────────────────────────────
+//
+// The unit tests prove the detector works. These are what would have caught
+// the 2026-08-26 issue: they read the blurbs the newsletter and Events tab
+// actually render.
+
+test("no committed event blurb claims a position its own run disproves", () => {
+  const events = JSON.parse(
+    readFileSync(join(REPO_ROOT, "src", "data", "south-bay", "upcoming-events.json"), "utf8"),
+  ).events || [];
+
+  const byKey = new Map();
+  for (const e of events) {
+    const k = eventBlurbCacheKey(e);
+    if (!byKey.has(k)) byKey.set(k, []);
+    byKey.get(k).push(e);
+  }
+
+  const offenders = [];
+  for (const group of byKey.values()) {
+    for (const e of group) {
+      if (!e.blurb) continue;
+      const claim = blurbSequencePositionConflict(e.blurb, group);
+      if (claim) offenders.push(`${e.title} (${e.venue}) says "${claim}": ${e.blurb}`);
+    }
+  }
+
+  assert.deepEqual(offenders, [], `blurbs claim a series position:\n${offenders.join("\n")}`);
+});
+
+test("no cached blurb claims a position the events it is keyed to disprove", () => {
+  const cache = JSON.parse(
+    readFileSync(join(REPO_ROOT, "src", "data", "south-bay", "event-blurb-cache.json"), "utf8"),
+  );
+  const events = JSON.parse(
+    readFileSync(join(REPO_ROOT, "src", "data", "south-bay", "upcoming-events.json"), "utf8"),
+  ).events || [];
+
+  const probe = { byKey: { ...cache.byKey } };
+  assert.equal(
+    sweepSequencePositionClaims(probe, events),
+    0,
+    "event-blurb-cache.json holds blurbs claiming a position across several dates",
+  );
+});
+
+// ── Day-of-week agreement (2026-08-26) ─────────────────────────────────────
+//
+// Found alongside the series-position bug and the same shape: buildUserPrompt
+// stated `day:` from the one event it was iterating, but the blurb it produced
+// is served on every date sharing that key. A Wed/Thu pair at Tully Library
+// shipped "every Thursday" and a Sat/Sun Barracuda pair shipped "Sunday
+// afternoon" — each wrong on one of its two dates.
+
+const TULLY = ["2026-08-26", "2026-08-27"].map((date) => ({
+  title: "Peer Support for MyConnectSV",
+  venue: "Tully Library",
+  date,
+  time: "10:00 AM",
+  description: "Meet with peer support workers who can help you log in and use My Connect SV.",
+}));
+
+test("the shipped day-of-week defects are caught", () => {
+  assert.equal(
+    blurbDayOfWeekConflict(
+      "Get hands-on help logging into MyConnectSV from peer support workers at Tully Library every Thursday.",
+      TULLY,
+    ),
+    "thursday",
+  );
+  assert.equal(
+    blurbDayOfWeekConflict(
+      "Watch the San Jose Barracuda face the San Diego Gulls again at Tech CU Arena Sunday afternoon.",
+      ["2026-10-03", "2026-10-04"].map((date) => ({
+        title: "San Jose Barracuda vs. San Diego Gulls", venue: "Tech CU Arena", date, time: "3:00 PM",
+      })),
+    ),
+    "sunday",
+  );
+});
+
+test("the corrected copy passes", () => {
+  assert.equal(
+    blurbDayOfWeekConflict(
+      "Get hands-on help logging into MyConnectSV from peer support workers at Tully Library.",
+      TULLY,
+    ),
+    null,
+  );
+});
+
+test("a weekly series still gets to name its day", () => {
+  const everyTuesday = ["2026-09-01", "2026-09-08", "2026-09-15"].map((date) => ({
+    title: "Toddler Storytime", venue: "Rinconada Library", date,
+  }));
+  assert.equal(
+    blurbDayOfWeekConflict("Sing and clap through rhymes with toddlers on Tuesday mornings.", everyTuesday),
+    null,
+  );
+  assert.equal(dayLabelForOccurrences(everyTuesday), "Tuesday");
+  assert.match(dayLabelForOccurrences(TULLY), /do not name a day of the week/);
+  assert.equal(dayLabelForOccurrences([]), null);
+});
+
+test("weekday and weekend read as the sets they are", () => {
+  // Wednesday and Thursday are both weekdays, so "weekday afternoons" holds.
+  assert.equal(
+    blurbDayOfWeekConflict(
+      "Reserve Group Study Room C on weekday afternoons for quiet adult work sessions at Berryessa Library.",
+      [{ title: "Adult Work Space", venue: "Berryessa Library", date: "2026-08-26" },
+       { title: "Adult Work Space", venue: "Berryessa Library", date: "2026-08-27" }],
+    ),
+    null,
+  );
+  const satSun = [{ title: "Market", venue: "Plaza", date: "2026-10-03" },
+                  { title: "Market", venue: "Plaza", date: "2026-10-04" }];
+  assert.equal(blurbDayOfWeekConflict("Shop produce over the weekend.", satSun), null);
+  assert.equal(blurbDayOfWeekConflict("Shop produce on a weekday.", satSun), "weekday");
+});
+
+test("a day in the event's own name is quoted, not claimed", () => {
+  // The 7:00 PM Woodland series is named for its day; both its dates are
+  // Mondays anyway, but the suppression is what keeps title-derived copy safe.
+  const mondayMeditation = ["2026-08-26", "2026-08-27"].map((date) => ({
+    title: "Monday Meditation & Mindfulness", venue: "Woodland Library", date,
+  }));
+  assert.equal(
+    blurbDayOfWeekConflict("Sit for a guided meditation with instructor Manisha on Monday evenings.", mondayMeditation),
+    null,
+  );
+});
+
+test("the day-of-week sweep drops contradicted entries and keeps the rest", () => {
+  const key = eventBlurbCacheKey(TULLY[0]);
+  const cache = {
+    byKey: {
+      [key]: { blurb: "Get hands-on help logging into MyConnectSV at Tully Library every Thursday." },
+      "fp:not in this run|somewhere|d:": { blurb: "Drop in every Thursday." },
+    },
+  };
+  assert.equal(sweepDayOfWeekConflicts(cache, TULLY), 1);
+  assert.equal(cache.byKey[key], undefined);
+  assert.equal(cache.byKey["fp:not in this run|somewhere|d:"].blurb, "Drop in every Thursday.");
+});
+
+test("no committed event blurb names a day its own run contradicts", () => {
+  const events = JSON.parse(
+    readFileSync(join(REPO_ROOT, "src", "data", "south-bay", "upcoming-events.json"), "utf8"),
+  ).events || [];
+
+  const byKey = new Map();
+  for (const e of events) {
+    const k = eventBlurbCacheKey(e);
+    if (!byKey.has(k)) byKey.set(k, []);
+    byKey.get(k).push(e);
+  }
+
+  const offenders = [];
+  for (const group of byKey.values()) {
+    for (const e of group) {
+      if (!e.blurb) continue;
+      const conflict = blurbDayOfWeekConflict(e.blurb, group);
+      if (conflict) offenders.push(`${e.title} (${e.venue}) says "${conflict}": ${e.blurb}`);
+    }
+  }
+
+  assert.deepEqual(offenders, [], `blurbs name a contradicted weekday:\n${offenders.join("\n")}`);
+});
+
+test("no cached blurb names a day the events it is keyed to contradict", () => {
+  const cache = JSON.parse(
+    readFileSync(join(REPO_ROOT, "src", "data", "south-bay", "event-blurb-cache.json"), "utf8"),
+  );
+  const events = JSON.parse(
+    readFileSync(join(REPO_ROOT, "src", "data", "south-bay", "upcoming-events.json"), "utf8"),
+  ).events || [];
+
+  const probe = { byKey: { ...cache.byKey } };
+  assert.equal(
+    sweepDayOfWeekConflicts(probe, events),
+    0,
+    "event-blurb-cache.json holds blurbs naming a weekday their events contradict",
+  );
 });
