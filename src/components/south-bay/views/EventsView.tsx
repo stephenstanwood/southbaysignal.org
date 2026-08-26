@@ -215,10 +215,18 @@ function parseTimeToMinutes(t: string): number | null {
 
 // ── Cost badge ─────────────────────────────────────────────────────────────
 
-function costBadge(cost: string): { label: string; bg: string; fg: string; border: string } {
+// Returns null when the source never told us the price. This used to fall
+// through to "$$" for anything that wasn't "free" or "low", which meant ~300
+// events — volunteer workdays, city-newsletter listings, most Meetup rows —
+// wore a paid badge built out of a null. An unknown price is not a price;
+// show nothing and let the reader open the listing.
+function costBadge(
+  cost: string | null | undefined,
+): { label: string; bg: string; fg: string; border: string } | null {
   if (cost === "free") return { label: "FREE", bg: "#F0FDF4", fg: "#166534", border: "#BBF7D0" };
   if (cost === "low") return { label: "$", bg: "#FFF7ED", fg: "#92400E", border: "#FDE68A" };
-  return { label: "$$", bg: "#F5F3FF", fg: "#5B21B6", border: "#DDD6FE" };
+  if (cost === "paid") return { label: "$$", bg: "#F5F3FF", fg: "#5B21B6", border: "#DDD6FE" };
+  return null;
 }
 
 function cityLabel(city: string) {
@@ -391,7 +399,8 @@ function UpcomingEventCard({
   nowMins: number;
 }) {
   const badge = costBadge(event.cost);
-  const showBadge = !(event.cost === "free" && event.category === "community");
+  // Community/government events are always free, so the FREE badge adds nothing.
+  const showBadge = badge !== null && !(event.cost === "free" && event.category === "community");
   const accent = CATEGORY_ACCENT[event.category] ?? CATEGORY_ACCENT.community;
   const photo = eventPhotoUrl(event, 200, 200);
   const [photoFailed, setPhotoFailed] = useState(false);
