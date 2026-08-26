@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-25T15:08:44.338Z",
+    "generatedAt": "2026-08-26T02:17:06.733Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 628,
+    "eventCount": 624,
     "sourceCount": 23,
     "sources": [
-      "Mountain View Public Library (149)",
-      "Los Gatos Library (150)",
+      "Mountain View Public Library (148)",
+      "Los Gatos Library (146)",
       "San Jose Jazz (19)",
       "Linden Tree Books (11)",
       "Hicklebee's (1)",
@@ -17,7 +17,7 @@
       "ICA San José (3)",
       "Mountain Winery (29)",
       "San Jose Theaters (20)",
-      "Children's Discovery Museum (2)",
+      "Children's Discovery Museum (1)",
       "Midpen Open Space (4)",
       "Guadalupe River Park Conservancy (1)",
       "Santana Row (7)",
@@ -26,7 +26,7 @@
       "TheatreWorks Silicon Valley (90)",
       "Levi's Stadium (13)",
       "SAP Center (15)",
-      "The Tech Interactive (5)",
+      "The Tech Interactive (7)",
       "Peninsula Open Space Trust (2)",
       "San Jose Museum of Art (13)"
     ],
@@ -67,7 +67,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 151,
+        "count": 150,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -77,7 +77,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 150,
+        "count": 146,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -205,7 +205,7 @@
         "id": "children-s-discovery-museum",
         "label": "Children's Discovery Museum",
         "status": "ok",
-        "count": 2,
+        "count": 1,
         "error": null,
         "sources": [
           "Children's Discovery Museum"
@@ -319,7 +319,7 @@
         "id": "the-tech-upcoming",
         "label": "The Tech Upcoming",
         "status": "ok",
-        "count": 5,
+        "count": 7,
         "error": null,
         "sources": [
           "The Tech Interactive"
@@ -362,40 +362,6 @@
     ]
   },
   "events": [
-    {
-      "id": "556fbc088e08",
-      "title": "Juliette's Children's Concert",
-      "date": "2026-08-25",
-      "displayDate": "Tue, Aug 25",
-      "time": "10:30 AM",
-      "endTime": "11:30 AM",
-      "venue": "Pioneer Park",
-      "address": "1146 Church St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17194393",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "6cf4e6955b41",
-      "title": "Community Preservation Lab Scanning Service",
-      "date": "2026-08-25",
-      "displayDate": "Tue, Aug 25",
-      "time": "1:00 PM",
-      "endTime": "5:00 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17150003",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
     {
       "id": "d561ce44c2e4",
       "title": "Intro to 3D Printing",
@@ -2301,6 +2267,23 @@
       "kidFriendly": false
     },
     {
+      "id": "80537e34a4b7",
+      "title": "Am I Being Tracked?: A Guide to Digital Privacy",
+      "date": "2026-10-17",
+      "displayDate": "Sat, Oct 17",
+      "time": "2:00 PM",
+      "endTime": "3:00 PM",
+      "venue": "Online",
+      "address": "",
+      "city": "mountain-view",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17443377",
+      "source": "Mountain View Public Library",
+      "kidFriendly": false
+    },
+    {
       "id": "66b6c87ec741",
       "title": "Board of Library Trustees Meeting",
       "date": "2026-10-19",
@@ -2894,74 +2877,6 @@
       "url": "https://mountainview.libcal.com/event/15668065",
       "source": "Mountain View Public Library",
       "kidFriendly": false
-    },
-    {
-      "id": "616e465dd5d7",
-      "title": "Storytime (Ages 0-5)",
-      "date": "2026-08-25",
-      "displayDate": "Tue, Aug 25",
-      "time": "11:00 AM",
-      "endTime": "11:30 AM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/17249559",
-      "source": "Los Gatos Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "fd1d6fee928e",
-      "title": "Online Author Talk : Beronda Montgomery",
-      "date": "2026-08-25",
-      "displayDate": "Tue, Aug 25",
-      "time": "11:00 AM",
-      "endTime": "12:00 PM",
-      "venue": "Online",
-      "address": "",
-      "city": "los-gatos",
-      "category": "arts",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/16987357",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "78c8ab9cb668",
-      "title": "Drop-In Tech Help",
-      "date": "2026-08-25",
-      "displayDate": "Tue, Aug 25",
-      "time": "3:00 PM",
-      "endTime": "4:30 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "education",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/16035525",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "96ad79cedebc",
-      "title": "Crafty Corner (Ages 3-10)",
-      "date": "2026-08-25",
-      "displayDate": "Tue, Aug 25",
-      "time": "4:00 PM",
-      "endTime": "5:00 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/16842134",
-      "source": "Los Gatos Library",
-      "kidFriendly": true
     },
     {
       "id": "08d7f66af4c4",
@@ -6453,8 +6368,8 @@
       "kidFriendly": false
     },
     {
-      "id": "201fea65b641",
-      "title": "Ledisi",
+      "id": "c58c81c80f07",
+      "title": "Ledisi with B Deveaux",
       "date": "2026-08-27",
       "displayDate": "Thu, Aug 27",
       "time": "7:30 PM",
@@ -7082,8 +6997,8 @@
       "kidFriendly": false
     },
     {
-      "id": "daf4ff5075cd",
-      "title": "Disney’s Frozen Movie Sing-Along",
+      "id": "421ee557378d",
+      "title": "Disney’s Frozen Movie Sing-Along - CANCELED",
       "date": "2026-09-12",
       "displayDate": "Sat, Sep 12",
       "time": null,
@@ -7284,23 +7199,6 @@
       "url": "https://sanjosetheaters.org/calendar-condensed/",
       "source": "San Jose Theaters",
       "kidFriendly": false
-    },
-    {
-      "id": "fae817610c88",
-      "title": "All Ages Storytime",
-      "date": "2026-08-25",
-      "displayDate": "Tue, Aug 25",
-      "time": "11:30 am",
-      "endTime": null,
-      "venue": "Children's Discovery Museum",
-      "address": "180 Woz Way, San Jose, CA 95110",
-      "city": "san-jose",
-      "category": "family",
-      "cost": "paid",
-      "description": "",
-      "url": "https://www.cdm.org/calendar/",
-      "source": "Children's Discovery Museum",
-      "kidFriendly": true
     },
     {
       "id": "f77d664fe723",
@@ -10759,6 +10657,23 @@
       "kidFriendly": false
     },
     {
+      "id": "3b4659487b29",
+      "title": "Homeschool Days at The Tech Interactive",
+      "date": "2026-09-09",
+      "displayDate": "Wed, Sep 9",
+      "time": "10:00AM",
+      "endTime": null,
+      "venue": "The Tech Interactive",
+      "address": "201 S Market St, San Jose, CA 95113",
+      "city": "san-jose",
+      "category": "education",
+      "cost": "paid",
+      "description": "",
+      "url": "https://www.thetech.org/explore/upcoming-events/",
+      "source": "The Tech Interactive",
+      "kidFriendly": true
+    },
+    {
       "id": "ae6e434de9d4",
       "title": "Girl Scout Program: Home Scientist (Brownies)",
       "date": "2026-11-01",
@@ -10832,6 +10747,23 @@
       "date": "2026-12-13",
       "displayDate": "Sun, Dec 13",
       "time": "10:00AM",
+      "endTime": null,
+      "venue": "The Tech Interactive",
+      "address": "201 S Market St, San Jose, CA 95113",
+      "city": "san-jose",
+      "category": "community",
+      "cost": "paid",
+      "description": "",
+      "url": "https://www.thetech.org/explore/upcoming-events/",
+      "source": "The Tech Interactive",
+      "kidFriendly": true
+    },
+    {
+      "id": "6ad54490f2ca",
+      "title": "Dune: Part Three",
+      "date": "2026-12-17",
+      "displayDate": "Thu, Dec 17",
+      "time": "4:30PM",
       "endTime": null,
       "venue": "The Tech Interactive",
       "address": "201 S Market St, San Jose, CA 95113",

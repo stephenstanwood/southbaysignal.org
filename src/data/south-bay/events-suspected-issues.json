@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-25T08:14:07.767Z"
+    "auditedAt": "2026-08-26T02:19:26.221Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1769,
+    "total": 1762,
     "totals": {
       "hard": 1,
       "soft": 1,
@@ -49,14 +49,14 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 369,
+    "total": 378,
     "totals": {
       "hard": 3,
-      "soft": 8,
+      "soft": 9,
       "info": 2
     },
     "byReason": {
-      "virtual-not-flagged": 7,
+      "virtual-not-flagged": 8,
       "unknown-slug": 1,
       "out-of-area": 1,
       "slug-mismatch": 2,
@@ -132,6 +132,20 @@
             "severity": "soft",
             "reason": "unknown-slug",
             "detail": "city=\"monte-sereno\" is not in the 11-city coverage map"
+          }
+        ]
+      },
+      {
+        "id": "inbound_mt8wwzr9_l6cxlt",
+        "title": "Affordable and Below Market Rate Housing Workshop",
+        "city": "mountain-view",
+        "date": "2026-09-01T18:00:00-07:00",
+        "location": "",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "virtual-not-flagged",
+            "detail": "matched /description mention/ in description"
           }
         ]
       },
@@ -220,20 +234,6 @@
         ]
       },
       {
-        "id": "inbound_ms6pyqyx_denzxu",
-        "title": "Giants vs. Dodgers Day Trip",
-        "city": null,
-        "date": "2026-09-27T10:15:00-07:00",
-        "location": "Oracle Park, San Francisco, CA",
-        "findings": [
-          {
-            "severity": "info",
-            "reason": "local-departure-trip",
-            "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
-          }
-        ]
-      },
-      {
         "id": "inbound_mt5v22bl_v01bj6",
         "title": "Below Market Rate (BMR) Rental Informational Call",
         "city": "mountain-view",
@@ -244,6 +244,20 @@
             "severity": "soft",
             "reason": "virtual-not-flagged",
             "detail": "matched /description mention/ in description"
+          }
+        ]
+      },
+      {
+        "id": "inbound_ms6pyqyx_denzxu",
+        "title": "Giants vs. Dodgers Day Trip",
+        "city": null,
+        "date": "2026-09-27T10:15:00-07:00",
+        "location": "Oracle Park, San Francisco, CA",
+        "findings": [
+          {
+            "severity": "info",
+            "reason": "local-departure-trip",
+            "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
           }
         ]
       }
