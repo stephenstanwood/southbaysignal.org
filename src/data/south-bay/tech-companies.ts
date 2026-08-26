@@ -1144,6 +1144,106 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // entries stay (same call as the ChipAgents A1/A2 pair above, not the Upscale
   // AI restatement case). Round is recorded as "Venture Round": Etched's own
   // release assigned no letter, and only secondary coverage calls it a Series D.
+  // ── Week of Aug 17–24 2026 ──────────────────────────────────────────────
+  // Note: Rillet ($100M Series C at a $1B valuation led by ICONIQ, announced
+  // Aug 19 2026) is NOT here despite AlleyWatch's weekly roundup filing it
+  // under "Palo Alto, CA." Every other source puts the HQ in New York, with
+  // offices in San Francisco and Barcelona — techstartups' own roundup the
+  // same week lists it as San Francisco, and TechCrunch's write-up carries no
+  // South Bay claim. Same aggregator-label problem as the Katalyze AI and
+  // Array Labs notes above. Out of coverage; do not add from the "Palo Alto"
+  // tag alone.
+  // Note: Rundoo ($30M Series B, Aug 19) and Twin1 AI ($20M seed, Aug 20) both
+  // appear in roundups near the South Bay entries but are Redwood City and San
+  // Mateo respectively — San Mateo County, the same line that excludes
+  // Fireworks AI and Cognichip above.
+  // Note on Palona's city: the funding coverage (SiliconANGLE, FinSMEs) and the
+  // 2025 seed coverage all say "Palo Alto," but the company's own Aug 17 2026
+  // release datelines "LOS ALTOS, Calif." and its boilerplate names no city.
+  // Both are Santa Clara County, so this is a precision fix rather than an
+  // include/exclude call — same handling as the Groq city note above.
+  // Note on Also: the Aug 19 Series D is NEW money, not a restatement of the
+  // March 31 Series C — different letter, different amount, and TechCrunch's
+  // headline reads "raises another $150 million" against a $455M cumulative
+  // total. Both entries stay (the ChipAgents A1/A2 and Etched calls above).
+  {
+    id: "light-links",
+    name: "Light Links",
+    city: "Campbell",
+    category: "network",
+    round: "Pre-Seed",
+    amount: "$6M",
+    date: "2026-08-24",
+    tagline:
+      "A two-year-old Campbell company is betting that the wireless problem in a factory isn't bandwidth, it's certainty. Radio has to share crowded spectrum, so a robot arm that needs a guaranteed answer in microseconds gets a probabilistic one instead. Light Links' Wi-OW sends data as diffused infrared laser light that bounces off walls and ceilings — so it still works when the direct path is blocked, emits no radio signal for anyone to jam or listen to, and clocks up to 25 Gbps symmetrical with microsecond-scale round trips. It plugs in as an Ethernet dongle built from mass-produced fiber components rather than exotic optics, and has already been validated inside a Fortune 50 enterprise. Founder and CEO Firouz Vafadari raised the $6M pre-seed from Outlander, with Anorak, Output Capital, Mana, and Crosscourt joining; the money goes to production and to deployments in industrial automation and defense.",
+    color: "#0891b2",
+    url: "https://www.lightlinks.co/",
+  },
+  {
+    id: "muon-space-series-c",
+    name: "Muon Space",
+    city: "Mountain View",
+    category: "hardware",
+    round: "Series C",
+    amount: "$250M",
+    date: "2026-08-20",
+    tagline:
+      "Building a satellite constellation has historically been a bespoke, years-long project per customer. Muon Space calls its answer the Mission Foundry: it designs and builds the spacecraft, instruments, software, and operations as one integrated stack out of production facilities in Silicon Valley, and delivers in months. Eleven satellites are on orbit across six launches, seven of them in the first half of 2026 alone. The best-known is FireSat, the global wildfire-monitoring constellation built with Earth Fire Alliance and Google.org that TIME named one of its Best Inventions of 2025; the company is also flying Vindlér 2.0 for SNC. Eclipse led the heavily oversubscribed $250M Series C, with Google, Salesforce Ventures, Galvanize, Wellington Management, I Squared Capital, and Woven Capital joining and most existing backers returning — a raise that pushes total equity past $386M under CEO Jonny Dyer.",
+    color: "#1e40af",
+    url: "https://www.muonspace.com",
+  },
+  {
+    id: "maxq-medical",
+    name: "MaxQ Medical",
+    city: "Sunnyvale",
+    category: "medtech",
+    round: "Series A",
+    amount: "$31.5M",
+    date: "2026-08-20",
+    tagline:
+      "Prostate treatments tend to force a tradeoff: the gentle ones don't do enough, and the effective ones cost the patient in swelling, bleeding, or sexual function. MaxQ is building a single transurethral procedure that both sees and treats — automated ultrasound imaging plus tissue-selective therapy, outpatient, with the urethra left intact. The science is local and long-running: co-founder and Chief Scientific Officer Pierre Khuri-Yakub is a Stanford professor emeritus of electrical engineering and the inventor of the capacitive micromachined ultrasonic transducer, and MaxQ is the first spinout from Sunnyvale's Orchard Ultrasound Innovation, founded to commercialize that semiconductor-ultrasound work. Atlantic Blue Ventures, S3 Ventures, and Olympus Innovation Ventures co-led the $31.5M Series A with Hillside Capital returning. CEO Amir Tehrani will spend it on the team and the clinical program, starting with BPH and extending toward prostate cancer focal therapy.",
+    color: "#0d9488",
+    url: "https://www.maxqmedical.com",
+  },
+  {
+    id: "also-series-d",
+    name: "Also",
+    city: "Palo Alto",
+    category: "hardware",
+    round: "Series D",
+    amount: "$150M",
+    date: "2026-08-19",
+    tagline:
+      "Five months after a $200M Series C, the Rivian spinout raised another $150M — and the pitch has shifted from small electric vehicles to autonomy. The e-bike and the delivery quad were the wedge; what Prysm Capital led this round for is the driving software underneath, developed across several autonomous form factors at once rather than one flagship vehicle. Eclipse, Greenoaks, and MVP Ventures followed on, bringing Also to $455M raised in under two years. It began as a skunkworks project inside Rivian driven by CEO RJ Scaringe's interest in micromobility, and now counts Amazon and DoorDash as commercial partners — which is the part South Bay residents may notice first, on their own streets.",
+    color: "#15803d",
+    url: "https://ridealso.com",
+  },
+  {
+    id: "network-bio",
+    name: "Network Bio",
+    city: "Palo Alto",
+    category: "medtech",
+    round: "Launch Financing",
+    amount: "$50M",
+    date: "2026-08-19",
+    tagline:
+      "Most biomedical AI trains on published literature or public genomic databases. Network Bio launched out of Palo Alto arguing the useful signal is in actual patient tissue, and built a research network with academic biobanks at Mass General Brigham, the University of Pennsylvania, and the University of Colorado Anschutz to get at it — patient-derived tissue, paired blood samples, and longitudinal clinical outcomes across more than 500,000 patients in oncology, immunology, and metabolic and cardiovascular disease. From that it trains disease-specific models rather than one general-purpose one, aimed at diagnostics, biomarker discovery, and drug development. It arrives with revenue already attached — a $30M-plus co-development and licensing deal with an unnamed Fortune 100 healthcare company — and a separate NVIDIA collaboration to build a foundation model trained on cell-free RNA. Section 32 led the $50M and managing partner Mike Pellini chairs the board, with Thiel Bio, Founders Fund, Breyer Capital, Blue Venture Fund, and JSL Health Capital joining. CEO Asad Ali Ahmad came from oncology-data company Tempus AI.",
+    color: "#7e22ce",
+    url: "https://www.network.bio",
+  },
+  {
+    id: "palona-ai",
+    name: "Palona AI",
+    city: "Los Altos",
+    category: "ai",
+    round: "Series A",
+    amount: "$20M",
+    date: "2026-08-17",
+    tagline:
+      "A missed phone call at a busy restaurant is a lost order, and nobody on the line has time to answer it. Palona sells the layer that does: an ordering agent that takes the call and drops the order straight into the point-of-sale, a catering agent for the large-order inquiries that arrive as email and get lost, and an Operations Intelligence product that reads the existing security cameras for food-safety problems. The underlying claim is a multimodal Interaction Model for Physical AI — vision and object detection tracking how people, places, and processes interact over time — rather than a chatbot bolted onto a menu. Din Tai Fung, Mountain Mike's Pizza, Giordano's, Rooted Hospitality, and Cali BBQ are deployed; Cali BBQ credits it with a 20%-plus year-over-year jump in Father's Day revenue. Founder and CEO Maria Zhang was a Google VP of engineering, Tinder's CTO, and ran Meta's AI-for-products group, and co-founders include Tim Howes, co-inventor of LDAP. Ardenwood Ventures led the $20M Series A.",
+    color: "#c026d3",
+    url: "https://palona.ai",
+  },
   {
     id: "etched-aug-2026",
     name: "Etched",
