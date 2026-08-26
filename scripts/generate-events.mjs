@@ -58,6 +58,7 @@ import { writeFileAtomic } from "./lib/io.mjs";
 import { catSignal } from "./lib/notify.mjs";
 import { extractVenueFromTitle, stripRedundantVenueSuffix } from "./lib/venue-suffix.mjs";
 import { dropUnmatchedClosers } from "./lib/bracket-balance.mjs";
+import { isClockTime, normalizeClockTime } from "./lib/clock-time.mjs";
 import { canonicalHistorySjUrl, historySjEndTime, inferHistorySjCost } from "./lib/history-sj.mjs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -7769,22 +7770,8 @@ async function main() {
   // Sanitize time field: clear values that aren't a clock time (e.g. "SATURDAY, APRIL 25, 2026"
   // ended up in the time field on a few SJMA / inbound listings). For comma-separated session
   // lists ("12pm, 1pm, 2pm") only the last token needs to parse.
-  const TIME_PATTERN = /^\d{1,2}(:\d{2})?\s*(am|pm)$/i;
-  function isClockTime(t) {
-    if (!t) return false;
-    const last = String(t).split(",").pop().trim();
-    return TIME_PATTERN.test(last);
-  }
-  // Canonical "8:00 PM" form — different scrapers spit out "8PM", "10:30AM",
-  // etc. Standardize so display + sort + comparisons are uniform.
-  function normalizeClockTime(t) {
-    if (!t) return t;
-    const m = String(t).trim().match(/^(\d{1,2})(?::(\d{2}))?\s*([ap]m)$/i);
-    if (!m) return t;
-    const h = parseInt(m[1], 10);
-    const min = m[2] ?? "00";
-    return `${h}:${min} ${m[3].toUpperCase()}`;
-  }
+  // isClockTime / normalizeClockTime live in ./lib/clock-time.mjs so the
+  // hour/minute range checks are unit-tested — see clock-time.test.mjs.
   allEvents.forEach((e) => {
     if (e.time && !isClockTime(e.time)) e.time = null;
     if (e.endTime && !isClockTime(e.endTime)) e.endTime = null;

@@ -619,7 +619,12 @@ async function scrapeSJJazz(page) {
           const hour = card.querySelector(".sjz-event-hour")?.textContent?.trim()?.replace(/\s+/g, " "); // "8pm Pacific / ..."
           const venue = card.querySelector(".sjz-event-venue")?.textContent?.trim();
           const link = card.querySelector("a")?.href;
-          if (name && name.length > 3) events.push({ title: name, date, venue, link, time: hour?.match(/\d+\s*[ap]m/i)?.[0] });
+          // Minutes are optional but MUST be part of the match: the old
+          // /\d+\s*[ap]m/ had no ":\d{2}" branch, so "7:30pm" failed at the
+          // "7" (followed by a colon, not am/pm) and matched the "30pm"
+          // fragment instead — the hour was silently dropped and readers saw
+          // "30:00 PM" on the card. Anchor on the hour, take minutes with it.
+          if (name && name.length > 3) events.push({ title: name, date, venue, link, time: hour?.match(/\d{1,2}(?::\d{2})?\s*[ap]m/i)?.[0] });
         }
         return events;
       });
