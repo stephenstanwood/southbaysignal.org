@@ -7,6 +7,7 @@
 //   - slug/address mismatches (e.g. city=milpitas, address in Santa Clara)
 //   - out-of-area events (Santa Cruz, SF, etc.) leaking into in-area feed
 //   - "Education" category but title is a commission/meeting pattern
+//   - blurbs claiming a series position or weekday that their own run disproves
 //
 // Produces src/data/south-bay/events-suspected-issues.json as a tiered report.
 // Does NOT mutate the source files — surgeon step is separate.
@@ -28,6 +29,11 @@ import {
   BORDER_VENUE_ALLOWLIST,
 } from "./social/lib/content-rules.mjs";
 import { LOCAL_DEPARTURE_TRIP } from "../src/lib/south-bay/eventFilters.mjs";
+import {
+  eventBlurbCacheKey,
+  blurbSequencePositionConflict,
+  blurbDayOfWeekConflict,
+} from "../src/lib/south-bay/eventBlurbs.mjs";
 
 const ROOT = resolve(new URL("..", import.meta.url).pathname);
 const UPCOMING = resolve(ROOT, "src/data/south-bay/upcoming-events.json");
@@ -217,6 +223,63 @@ function classify(event) {
   return findings;
 }
 
+// ---------------------------------------------------------------------------
+// Blurb claims a multi-date run disproves (2026-08-26)
+//
+// One blurb-cache entry serves every occurrence sharing a title+venue+
+// description, so a blurb saying this date opens or closes a run — or naming
+// the weekday it falls on — is false on all but one of the dates it gets
+// stamped on. The 2026-08-26 issue shipped "the San Jose Giants … wrap up
+// their series against the Visalia Rawhide" on game 2 of 6; the finale was
+// five days later. The same sweep found "every Thursday" on a Wed/Thu pair and
+// "Sunday afternoon" on a Sat/Sun pair.
+//
+// Unlike everything in classify() these are cross-event checks — a single
+// record carries no evidence either way, and only its date group makes the
+// claim provably wrong. They run off the same detectors the generator rejects
+// with (src/lib/south-bay/eventBlurbs.mjs), so the gate and the pipeline can't
+// drift apart.
+// ---------------------------------------------------------------------------
+const BLURB_RUN_CHECKS = [
+  {
+    reason: "blurb-series-position",
+    detect: blurbSequencePositionConflict,
+    describe: (claim) => `claims "${claim}"`,
+  },
+  {
+    reason: "blurb-day-of-week",
+    detect: blurbDayOfWeekConflict,
+    describe: (claim) => `names the day "${claim}"`,
+  },
+];
+
+function blurbRunFindings(events) {
+  const byKey = new Map();
+  for (const e of events) {
+    const k = eventBlurbCacheKey(e);
+    if (!byKey.has(k)) byKey.set(k, []);
+    byKey.get(k).push(e);
+  }
+
+  const byEvent = new Map();
+  for (const group of byKey.values()) {
+    const blurb = group.find((e) => e.blurb)?.blurb;
+    if (!blurb) continue;
+    const dates = [...new Set(group.map((e) => e.date).filter(Boolean))].sort();
+    for (const { reason, detect, describe } of BLURB_RUN_CHECKS) {
+      const claim = detect(blurb, group);
+      if (!claim) continue;
+      const finding = {
+        severity: "hard",
+        reason,
+        detail: `blurb ${describe(claim)} but the same blurb is served on ${dates.length} dates (${dates[0]}..${dates[dates.length - 1]}): "${blurb}"`,
+      };
+      for (const e of group) byEvent.set(e, [...(byEvent.get(e) || []), finding]);
+    }
+  }
+  return byEvent;
+}
+
 function loadEvents(path) {
   try {
     const raw = JSON.parse(readFileSync(path, "utf8"));
@@ -237,8 +300,9 @@ function auditSource(label, path) {
   const byReason = {};
   const hardEntries = [];
   const softEntries = [];
+  const runFindings = blurbRunFindings(events);
   for (const e of events) {
-    const findings = classify(e);
+    const findings = [...classify(e), ...(runFindings.get(e) || [])];
     if (!findings.length) continue;
     const worst = findings.reduce((a, b) => {
       const rank = { hard: 3, soft: 2, info: 1 };
@@ -270,12 +334,12 @@ function auditSource(label, path) {
 // venue really out of area?), while this one is always a pipeline bug —
 // generate-events and pull-inbound-events both run the flag pass, so a hit
 // here means the flag pass regressed or a new feed skipped it.
-function virtualNotFlaggedBlockers(sources) {
+function blockersForReason(sources, reason) {
   const blockers = [];
   for (const src of sources) {
     for (const entry of src.hard) {
       for (const finding of entry.findings) {
-        if (finding.severity === "hard" && finding.reason === "virtual-not-flagged") {
+        if (finding.severity === "hard" && finding.reason === reason) {
           blockers.push(`${src.label}: "${entry.title}" (${entry.id}) — ${finding.detail}`);
         }
       }
@@ -312,7 +376,7 @@ async function main() {
   }
   console.log(`\nReport: ${REPORT}`);
 
-  const blockers = virtualNotFlaggedBlockers([upcoming, inbound]);
+  const blockers = blockersForReason([upcoming, inbound], "virtual-not-flagged");
   if (blockers.length) {
     console.error(
       `\n❌ BLOCKED: ${blockers.length} event(s) read as virtual but are not flagged \`virtual\`.\n` +
@@ -323,6 +387,30 @@ async function main() {
       key: "events-virtual-not-flagged",
       title: `${blockers.length} virtual event(s) not flagged`,
       body: blockers.join("\n"),
+    });
+    process.exitCode = 1;
+  }
+
+  // These need no judgment call: the same sentence is published on every date
+  // in the run, so it is wrong on all but one of them. Blocks for the same
+  // reason virtual-not-flagged does. Reported per blurb, not per event — six
+  // Giants games sharing one bad blurb are one thing to fix, not six.
+  for (const { reason, label } of [
+    { reason: "blurb-series-position", label: "claim a position in a series that spans several dates" },
+    { reason: "blurb-day-of-week", label: "name a weekday their own run contradicts" },
+  ]) {
+    const found = blockersForReason([upcoming, inbound], reason);
+    if (!found.length) continue;
+    const unique = [...new Set(found.map((b) => b.replace(/^(.*?): ".*?" \(.*?\) — /, "$1: ")))];
+    console.error(
+      `\n❌ BLOCKED: ${unique.length} blurb(s) ${label}.\n` +
+      `   The same sentence publishes on every date in the run, so it is wrong on all but one.\n` +
+      unique.map((b) => `   - ${b}`).join("\n"),
+    );
+    await catSignal({
+      key: `events-${reason}`,
+      title: `${unique.length} blurb(s) ${label}`,
+      body: unique.join("\n"),
     });
     process.exitCode = 1;
   }
