@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-25T03:08:39.246Z",
+      "generatedAt": "2026-08-26T03:09:10.012Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 17 – Aug 24",
+      "dateRange": "Aug 18 – Aug 25",
       "stats": {
-        "total": 448,
-        "notable": 34,
-        "newUnits": 15,
-        "totalValuation": 20753890
+        "total": 356,
+        "notable": 28,
+        "newUnits": 14,
+        "totalValuation": 13994970
       },
       "permits": [
         {
@@ -137,14 +137,14 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-25T03:08:41.414Z",
+      "generatedAt": "2026-08-26T03:09:12.445Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 17 – Aug 24",
+      "dateRange": "Aug 18 – Aug 25",
       "stats": {
-        "total": 90,
+        "total": 101,
         "notable": 2,
         "newUnits": 0,
         "totalValuation": 0
@@ -163,16 +163,16 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-02328",
-          "address": "370 Shasta Dr",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "id": "26PLN-00239",
+          "address": "263 University Av",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "Request for Architectural Review for changes to the exterior facade including enclosing approximately 24 square feet of exterior entryway area to floor area.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-08-18",
-          "subtype": "Permit Issued"
+          "issueDate": "2026-08-24",
+          "subtype": "Over the Counter Approved"
         }
       ]
     }

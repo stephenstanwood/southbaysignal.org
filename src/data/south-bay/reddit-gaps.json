@@ -1,118 +1,106 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-25T03:18:28.544Z",
+    "generatedAt": "2026-08-26T03:18:20.182Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 10
+    "sourceCount": 13
   },
   "summary": {
-    "threadsMined": 10,
-    "placesExtracted": 6,
-    "placesMatched": 3,
+    "threadsMined": 13,
+    "placesExtracted": 3,
+    "placesMatched": 0,
     "placeGaps": 3,
-    "eventsExtracted": 1,
+    "eventsExtracted": 4,
     "eventsMatched": 0,
-    "eventGaps": 1,
-    "autoAppendedOpenings": 1
+    "eventGaps": 4,
+    "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "Hotel De Anza",
+      "name": "Action Day",
       "city": "San Jose",
-      "kind": "venue",
-      "context": "historic hotel undergoing major restoration",
+      "kind": "other",
+      "context": "daycare on Moorpark, different experience at Allen location",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vxh2le/team_behind_some_of_the_bay_areas_most_acclaimed/",
-        "https://www.reddit.com/r/SanJose/comments/1vxj2xt/free_workinprogress_craft_night_illusive/",
-        "https://www.reddit.com/r/SanJose/comments/1vxgjjr/would_any_guys_in_the_lgbt_community_want_to_meet/",
-        "https://www.reddit.com/r/SanJose/comments/1vwy4hw/new_to_san_jose_and_trying_to_become_more_active/",
-        "https://www.reddit.com/r/SanJose/comments/1vxmte5/is_there_anywhere_where_i_could_play_with_cats_or/"
+        "https://www.reddit.com/r/SanJose/comments/1vyixei/daycare_recommendations_in_evergreen/",
+        "https://www.reddit.com/r/SanJose/comments/1vycm7z/car_clubs/",
+        "https://www.reddit.com/r/SanJose/comments/1vybntb/day_care_recommendations_south_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vy9uhw/volunteer_opportunities_in_the_area/",
+        "https://www.reddit.com/r/SanJose/comments/1vy729q/renting_apartment_hunting_which_buildings_do_you/"
       ]
     },
     {
-      "name": "Hedley Club",
+      "name": "Hicklebee's",
       "city": "San Jose",
-      "kind": "bar",
-      "context": "art-deco bar reopening with NorCal bistro menu",
+      "kind": "retail",
+      "context": "hosting first ever Drag Storytime event",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vxh2le/team_behind_some_of_the_bay_areas_most_acclaimed/",
-        "https://www.reddit.com/r/SanJose/comments/1vxj2xt/free_workinprogress_craft_night_illusive/",
-        "https://www.reddit.com/r/SanJose/comments/1vxgjjr/would_any_guys_in_the_lgbt_community_want_to_meet/",
-        "https://www.reddit.com/r/SanJose/comments/1vwy4hw/new_to_san_jose_and_trying_to_become_more_active/",
-        "https://www.reddit.com/r/SanJose/comments/1vxmte5/is_there_anywhere_where_i_could_play_with_cats_or/"
+        "https://www.reddit.com/r/SanJose/comments/1vy4guf/cute_sjc_stickers/",
+        "https://www.reddit.com/r/SanJose/comments/1vxrd0o/thank_you_to_the_good_samaritan_who_came_all_the/",
+        "https://www.reddit.com/r/SanJose/comments/1vxoewe/support_hicklebees_first_ever_drag_storytime/"
       ]
     },
     {
-      "name": "Tejer",
+      "name": "San Jose Mineta International Airport",
       "city": "San Jose",
-      "kind": "restaurant",
-      "context": "new Mexican restaurant opening winter at Hotel De Anza",
+      "kind": "other",
+      "context": "SJC sticker collecting event at terminal A",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vxh2le/team_behind_some_of_the_bay_areas_most_acclaimed/",
-        "https://www.reddit.com/r/SanJose/comments/1vxj2xt/free_workinprogress_craft_night_illusive/",
-        "https://www.reddit.com/r/SanJose/comments/1vxgjjr/would_any_guys_in_the_lgbt_community_want_to_meet/",
-        "https://www.reddit.com/r/SanJose/comments/1vwy4hw/new_to_san_jose_and_trying_to_become_more_active/",
-        "https://www.reddit.com/r/SanJose/comments/1vxmte5/is_there_anywhere_where_i_could_play_with_cats_or/"
+        "https://www.reddit.com/r/SanJose/comments/1vy4guf/cute_sjc_stickers/",
+        "https://www.reddit.com/r/SanJose/comments/1vxrd0o/thank_you_to_the_good_samaritan_who_came_all_the/",
+        "https://www.reddit.com/r/SanJose/comments/1vxoewe/support_hicklebees_first_ever_drag_storytime/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "Free Work-In-Progress Craft Night",
-      "when": "",
+      "name": "San Jose Giants game",
+      "when": "last week of regular season",
       "city": "San Jose",
-      "context": "craft night event at Illusive Comics & Games",
+      "context": "minor league baseball, free tickets via The Pass Bay Area",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vxh2le/team_behind_some_of_the_bay_areas_most_acclaimed/",
-        "https://www.reddit.com/r/SanJose/comments/1vxj2xt/free_workinprogress_craft_night_illusive/",
-        "https://www.reddit.com/r/SanJose/comments/1vxgjjr/would_any_guys_in_the_lgbt_community_want_to_meet/",
-        "https://www.reddit.com/r/SanJose/comments/1vwy4hw/new_to_san_jose_and_trying_to_become_more_active/",
-        "https://www.reddit.com/r/SanJose/comments/1vxmte5/is_there_anywhere_where_i_could_play_with_cats_or/"
+        "https://www.reddit.com/r/SanJose/comments/1vydoka/have_you_been_to_a_san_jose_giants_game/",
+        "https://www.reddit.com/r/SanJose/comments/1vyeo8y/san_jose_releases_new_rankings_for_a_new_plaza_de/",
+        "https://www.reddit.com/r/SanJose/comments/1vyc23l/bay_area_tech_events/",
+        "https://www.reddit.com/r/SanJose/comments/1vy94jm/the_palm_trees_have_been_cut_down_what_should/",
+        "https://www.reddit.com/r/SanJose/comments/1vyjz0z/foster_needed_for_pregnant_stray_cat_in_san_jose/"
+      ]
+    },
+    {
+      "name": "Tech Week",
+      "when": "October",
+      "city": "San Jose",
+      "context": "tech networking events mentioned by intern",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vydoka/have_you_been_to_a_san_jose_giants_game/",
+        "https://www.reddit.com/r/SanJose/comments/1vyeo8y/san_jose_releases_new_rankings_for_a_new_plaza_de/",
+        "https://www.reddit.com/r/SanJose/comments/1vyc23l/bay_area_tech_events/",
+        "https://www.reddit.com/r/SanJose/comments/1vy94jm/the_palm_trees_have_been_cut_down_what_should/",
+        "https://www.reddit.com/r/SanJose/comments/1vyjz0z/foster_needed_for_pregnant_stray_cat_in_san_jose/"
+      ]
+    },
+    {
+      "name": "SJC Sticker Search",
+      "when": "ongoing, limited supplies",
+      "city": "San Jose",
+      "context": "collect airport-themed stickers at terminals",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vy4guf/cute_sjc_stickers/",
+        "https://www.reddit.com/r/SanJose/comments/1vxrd0o/thank_you_to_the_good_samaritan_who_came_all_the/",
+        "https://www.reddit.com/r/SanJose/comments/1vxoewe/support_hicklebees_first_ever_drag_storytime/"
+      ]
+    },
+    {
+      "name": "Hicklebee's Drag Storytime",
+      "when": "August 25, 5:00pm",
+      "city": "San Jose",
+      "context": "first ever drag storytime for Silicon Valley Pride",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vy4guf/cute_sjc_stickers/",
+        "https://www.reddit.com/r/SanJose/comments/1vxrd0o/thank_you_to_the_good_samaritan_who_came_all_the/",
+        "https://www.reddit.com/r/SanJose/comments/1vxoewe/support_hicklebees_first_ever_drag_storytime/"
       ]
     }
   ],
-  "placeMatches": [
-    {
-      "name": "Palm Court",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "vine-covered patio serving Hedley Club menu",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vxh2le/team_behind_some_of_the_bay_areas_most_acclaimed/",
-        "https://www.reddit.com/r/SanJose/comments/1vxj2xt/free_workinprogress_craft_night_illusive/",
-        "https://www.reddit.com/r/SanJose/comments/1vxgjjr/would_any_guys_in_the_lgbt_community_want_to_meet/",
-        "https://www.reddit.com/r/SanJose/comments/1vwy4hw/new_to_san_jose_and_trying_to_become_more_active/",
-        "https://www.reddit.com/r/SanJose/comments/1vxmte5/is_there_anywhere_where_i_could_play_with_cats_or/"
-      ],
-      "matchedName": "Orchestria Palm Court Restaurant"
-    },
-    {
-      "name": "Illusive Comics & Games",
-      "city": "San Jose",
-      "kind": "retail",
-      "context": "hosting free Work-In-Progress Craft Night",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vxh2le/team_behind_some_of_the_bay_areas_most_acclaimed/",
-        "https://www.reddit.com/r/SanJose/comments/1vxj2xt/free_workinprogress_craft_night_illusive/",
-        "https://www.reddit.com/r/SanJose/comments/1vxgjjr/would_any_guys_in_the_lgbt_community_want_to_meet/",
-        "https://www.reddit.com/r/SanJose/comments/1vwy4hw/new_to_san_jose_and_trying_to_become_more_active/",
-        "https://www.reddit.com/r/SanJose/comments/1vxmte5/is_there_anywhere_where_i_could_play_with_cats_or/"
-      ],
-      "matchedName": "Illusive Comics & Games, LLC"
-    },
-    {
-      "name": "Backesto Park",
-      "city": "San Jose",
-      "kind": "park",
-      "context": "dog followed poster home from here",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vxiwyy/any_nice_parks_near_downtown_sj_that_doesnt_look/",
-        "https://www.reddit.com/r/SanJose/comments/1vxcnea/first_pregnancy_4_weeks_in_milpitasneed_obgyn/",
-        "https://www.reddit.com/r/SanJose/comments/1vxb00o/thinking_about_opening_a_small_daycare_in_the/",
-        "https://www.reddit.com/r/SanJose/comments/1vxatd3/baby_story_time/",
-        "https://www.reddit.com/r/SanJose/comments/1vx8oys/does_anyone_know_this_dog/"
-      ],
-      "matchedName": "Backesto Park"
-    }
-  ],
+  "placeMatches": [],
   "eventMatches": []
 }
