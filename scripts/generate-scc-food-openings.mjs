@@ -228,6 +228,13 @@ const CITY_ID_MAP = {
  * - Title case
  * - Trim trailing generic suffixes like "TENANT IMPROVEMENT"
  */
+// Misspellings and brand casings that arrive from the county feed. Keep each
+// entry anchored to a word boundary so a substring never rewrites a real name.
+const NAME_TYPO_FIXES = [
+  [/\bBlossim\s+Hill\b/gi, "Blossom Hill"],
+  [/\bChick[-\s]?Fil[-\s]?A\b/gi, "Chick-fil-A"],
+];
+
 function cleanName(raw) {
   if (!raw) return null;
   let s = raw.trim();
@@ -324,6 +331,14 @@ function cleanName(raw) {
     // Fix apostrophe title-case: "Ralph'S" → "Ralph's"
     .replace(/'(\w)/g, (_, c) => `'${c.toLowerCase()}`)
     .replace(/^(\w)/, (c) => c.toUpperCase());
+
+  // Source-typo and brand-casing fixes. SCC clerks type the location descriptor
+  // by hand, so real South Bay street names arrive misspelled — "Chick-Fil-A,
+  // Blossim Hill & Almaden #3924" published with the street name wrong while the
+  // address field carried the correct "1162 Blossom Hill Rd". Title-casing above
+  // can't catch these, and a misspelled proper noun is the most visible kind of
+  // error on a card.
+  for (const [pattern, fix] of NAME_TYPO_FIXES) s = s.replace(pattern, fix);
 
   return s || null;
 }
@@ -490,6 +505,31 @@ function shouldSkip(item) {
   // ("949 Ruff Dr., Kitchen 19"). They're delivery-only production space, not a
   // storefront a reader can walk into.
   if (/\bKITCHEN\s+\d+\b/i.test(item.site_location ?? "")) return true;
+
+  // Same facility, different unit notation. 949 Ruff Dr (San Jose) is a shared
+  // ghost-kitchen building whose stalls file as "Kitchen 19", "#8.1", "K12" —
+  // the "KITCHEN <n>" rule above only catches the spelled-out form, so
+  // "K8.1 Spiceroot" at "949 Ruff Dr. #8.1" shipped as a coming-soon
+  // restaurant on 2026-08-25. Match the building the way CITYLINE_OFFICE_PATTERN
+  // matches its campus: SCC rotates record IDs, but the address is stable.
+  if (/\b949\s+RUFF\s+DR\b/i.test(item.site_location ?? "")) return true;
+
+  // NB: a leading "K<n>" stall code is NOT a skip signal on its own — food-hall
+  // tenants at 1026 W Evelyn Ave file as "K107 Baybaja Kitchen" and are real
+  // walk-in counters, which is why cleanName() strips the code for display
+  // rather than dropping the row. The ghost-kitchen tell is the address above.
+
+  // Grocery/retail sub-area permits: a supermarket's self-checkout lanes hold a
+  // food permit of their own ("Nob Hill #604 Self Service Checkstands"), but
+  // they're a fixture inside an existing store, not a food business opening.
+  // Sibling of the BARISTA AREA / COFFEE AREA / BEVERAGE UNIT entries in
+  // SKIP_PATTERNS. Guarded by FOOD_BUSINESS_WORD the same way
+  // NON_RESTAURANT_FACILITY is, so a real venue that happens to be named
+  // "Checkstand Cafe" survives.
+  if (
+    /\bCHECK\s*STANDS?\b|\bSELF[-\s]SERVICE\s+CHECK/i.test(rawName)
+    && !FOOD_BUSINESS_WORD.test(rawName)
+  ) return true;
 
   // Skip entries whose site location is a PO Box — a storefront food venue is
   // never located at a PO Box. These are almost always HOA/apartment amenity

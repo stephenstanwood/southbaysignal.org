@@ -891,6 +891,16 @@ function cleanTitle(title) {
     // "*Virtual*", "*Online*" (San Jose Public Library prefixes some titles
     // with these — format is shown elsewhere via venue/url).
     .replace(/^\*[^*]{1,20}\*\s*/, "")
+    // Strip a lone leading asterisk left over from a source's own footnote or
+    // highlight marker ("*KCAT's - Oktoberfest" on the Los Gatos civic
+    // calendar). The paired-marker rule above needs a closing star, so a single
+    // one survives it and renders as stray punctuation at the front of the card.
+    .replace(/^\*+\s*(?=[A-Za-z0-9])/, "")
+    // Strip a trailing "(Old)" / "(Copy)" / "(Duplicate)" record marker. These
+    // are the source CMS's own bookkeeping on a superseded listing — Montalvo's
+    // ticketing system shipped "Member Reception (Old)" — and never belong in a
+    // public event name.
+    .replace(/\s*\((?:old|copy|duplicate|do\s+not\s+use)\)\s*$/i, "")
     // Strip calendar-artifact date prefixes
     .replace(
       /^(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s*\d{4})?\s*:\s*/i,
@@ -1771,6 +1781,11 @@ function polishDescription(text) {
   return cleanDisplayCopy(t);
 }
 
+// Localist ("Sign in to download the location") and similar calendars put an
+// access prompt in the location field when an event is gated. It is a paywall
+// notice, not a place, and must never reach a venue label.
+const LOGIN_WALLED_LOCATION = /^(?:sign|log)\s*-?\s*in\s+to\b|^register\s+to\s+(?:see|view|download)\b/i;
+
 /**
  * Clean a raw iCal LOCATION field into a display-friendly venue name.
  * iCal LOCATION blobs often contain "- Venue Name  City CA 95000" or similar.
@@ -1802,6 +1817,12 @@ function cleanVenue(raw) {
   v = v.replace(/^[A-Z][A-Za-z.'\- ]+,\s*(?:Calif\.?|California|CA)\.?,\s*(?=\S)/, "");
   // If the string is meeting directions ("Meet at...", "Check in at..."), not a venue name
   if (/^(meet|check\s+in)\s+(at|in)\s+/i.test(v)) return "";
+  // Localist (SJSU Events) gates the location behind a campus login and puts the
+  // prompt itself in the location field: "Sign in to download the location". It
+  // is a paywall notice, not a place — twelve SJSU events shipped with it as
+  // their venue on 2026-08-25, two of them into the San José city briefing.
+  // Return empty so the caller falls back to the source/civic-venue guess.
+  if (LOGIN_WALLED_LOCATION.test(v)) return "";
   // Locational sentences slip into the venue field on some CivicPlus calendars,
   // e.g. Los Altos "Downtown Park Outreach" booths whose location reads
   // "Booth is located near State St & Third St." or "Booth located near the
@@ -1919,6 +1940,11 @@ function cleanVenue(raw) {
   // "Martin Luther King Junior Library" (no "Dr.", "Junior" spelled out).
   // Normalize to the canonical "Dr. Martin Luther King, Jr. Library".
   v = v.replace(/^(?:Dr\.?\s+)?Martin\s+Luther\s+King\s+(?:Jr\.?|Junior)\s+Library$/i, "Dr. Martin Luther King, Jr. Library");
+  // Meetup group names use literal asterisks as emphasis ("South Bay *Brazilian*
+  // Portuguese Conversation and Culture"). Markdown doesn't render in a venue
+  // label, so the stars ship as visible punctuation. Drop them and re-collapse
+  // whitespace; no real venue name contains an asterisk.
+  if (v.includes("*")) v = v.replace(/\*/g, "").replace(/\s+/g, " ").trim();
   // Strip trademark/copyright/service-mark glyphs from venue names. Parity
   // with cleanTitle — Ticketmaster's feed often emits "Levi's® Stadium",
   // which then sits next to clean "Levi's Stadium" entries from other feeds
@@ -2672,7 +2698,12 @@ async function fetchSjsuEvents() {
       if (!start) return null;
       item.title = restoreSjsuAcronyms(item.title);
       item.description = restoreSjsuAcronyms(item.description);
-      const venue = item.location || extractVenueFromTitle(item.title) || "San Jose State University";
+      // Localist hides the location of campus-only events behind a login and
+      // ships the prompt itself in the location field ("Sign in to download the
+      // location"). Treat that as no location at all so the fallback chain runs;
+      // twelve events published the prompt as their venue on 2026-08-25.
+      const rawSjsuLocation = LOGIN_WALLED_LOCATION.test(item.location || "") ? "" : item.location;
+      const venue = rawSjsuLocation || extractVenueFromTitle(item.title) || "San Jose State University";
       const city = inferSjsuCity(venue);
       if (city !== "san-jose") {
         venueCityFixes++;

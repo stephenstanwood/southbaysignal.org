@@ -222,6 +222,8 @@ MATCH THE SOURCE'S FRAMING — DO NOT NARROW: if a council resolution restricts 
 
 DO NOT ASSERT THE BODY UNLESS THE AGENDA SUPPORTS IT: the "Body" label above is how the upstream feed classified the record, and it is sometimes wrong — advisory bodies (Architectural Review Board, Historic Resources Board, Teen/Youth Commission) get ingested under "City Council". If the agenda title reads as a recommendation TO the council ("Recommendation on …") or otherwise indicates a board or commission, do not write "Council approved/will weigh". Either name the body the agenda itself names, or write it body-neutrally ("Palo Alto is weighing …", "city staff recommended …"). Never upgrade an advisory recommendation into a council action.
 
+NEVER REPORT THE BROWN ACT ATTENDANCE NOTICE: agendas for scoping meetings, study sessions, and joint hearings carry a boilerplate legal notice that members of other bodies "may be in attendance" — it exists to avoid an unnoticed serial meeting, and it says nothing about who actually showed up. Never write "with City Council / Planning Commission / Commission members possibly (or may be) in attendance". It is a disclaimer, not an event detail. Omit it.
+
 DO NOT ASSERT APPROVAL FOR FUTURE OR SAME-DAY MEETINGS: if a meeting's date matches today's date and the agenda is forward-looking (e.g. "proposed", "to consider", "study session"), do not write that it was approved or adopted. Use forward-looking language ("to hear", "to consider", "scheduled to review") or skip the item.
 
 KEEP: notable development projects (housing, commercial, controversial permits), policy changes affecting residents, contested votes, new programs/ordinances, zoning/land use decisions, physical changes to the city.
@@ -285,6 +287,22 @@ const FILLER_TAIL_PATTERNS = [
 // not the whole sentence, so the concrete info before "and" survives.
 const FILLER_CONJUNCTIVE_TAIL =
   /,?\s+and\s+(?:suggests|indicates|signals|points\s+to|reflects)\s+(?:a|an|ongoing|continued|growing|broader|wider)\s+[^.!?]*[.!?]?\s*$/i;
+
+// Brown Act serial-meeting disclaimer, restated as if it were reporting:
+// "..., with City Council, Heritage Preservation Commission, and Planning
+// Commission members possibly in attendance." The agenda boilerplate exists so
+// an incidental quorum isn't an unnoticed meeting; it carries no information
+// about the item and no claim about who attended. Strip the clause and keep the
+// sentence. Shipped on the Sunnyvale Oakmead Parkway item 2026-08-25.
+const ATTENDANCE_DISCLAIMER_TAIL =
+  /,?\s+(?:with|and)\s+[^.!?]*\b(?:council|commission|committee|board)\s+members?\s+(?:possibly|potentially|may\s+be|might\s+be)\s+(?:in\s+)?attend(?:ance|ing)\b[^.!?]*/gi;
+
+function stripAttendanceDisclaimer(summary) {
+  const s = String(summary || "");
+  if (!ATTENDANCE_DISCLAIMER_TAIL.test(s)) return s;
+  ATTENDANCE_DISCLAIMER_TAIL.lastIndex = 0;
+  return s.replace(ATTENDANCE_DISCLAIMER_TAIL, "").replace(/\s+([.!?])/g, "$1").replace(/\s{2,}/g, " ").trim();
+}
 
 function stripFillerTail(summary) {
   const s = String(summary || "").trim();
@@ -622,7 +640,7 @@ async function main() {
   let trimmed = 0;
   for (const item of hedgeFiltered) {
     const before = item.summary;
-    const after = stripFillerTail(before);
+    const after = stripFillerTail(stripAttendanceDisclaimer(before));
     if (after !== before) {
       item.summary = after;
       trimmed += 1;
