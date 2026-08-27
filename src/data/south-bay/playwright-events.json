@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-26T15:08:31.885Z",
+    "generatedAt": "2026-08-27T02:17:03.919Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 624,
+    "eventCount": 619,
     "sourceCount": 22,
     "sources": [
-      "Mountain View Public Library (147)",
-      "Los Gatos Library (148)",
+      "Mountain View Public Library (144)",
+      "Los Gatos Library (145)",
       "San Jose Jazz (19)",
       "Linden Tree Books (11)",
       "History San Jose (10)",
@@ -17,9 +17,9 @@
       "Mountain Winery (29)",
       "San Jose Theaters (20)",
       "Children's Discovery Museum (1)",
-      "Midpen Open Space (4)",
+      "Midpen Open Space (5)",
       "Guadalupe River Park Conservancy (1)",
-      "Santana Row (7)",
+      "Santana Row (8)",
       "City of Cupertino (67)",
       "Opera San José (5)",
       "TheatreWorks Silicon Valley (90)",
@@ -27,7 +27,7 @@
       "SAP Center (15)",
       "The Tech Interactive (7)",
       "Peninsula Open Space Trust (2)",
-      "San Jose Museum of Art (13)"
+      "San Jose Museum of Art (12)"
     ],
     "sourceHealth": [
       {
@@ -66,7 +66,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 149,
+        "count": 146,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -76,7 +76,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 148,
+        "count": 145,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -96,7 +96,7 @@
         "id": "sj-museum-of-art",
         "label": "SJ Museum of Art",
         "status": "error",
-        "count": 13,
+        "count": 12,
         "error": "page.goto: Timeout 25000ms exceeded.\nCall log:\n  - navigating to \"https://sjmusart.org/calendar\", waiting until \"networkidle\"\n",
         "sources": [
           "San Jose Museum of Art"
@@ -220,7 +220,7 @@
         "id": "midpen-open-space",
         "label": "Midpen Open Space",
         "status": "ok",
-        "count": 4,
+        "count": 5,
         "error": null,
         "sources": [
           "Midpen Open Space"
@@ -240,7 +240,7 @@
         "id": "santana-row",
         "label": "Santana Row",
         "status": "ok",
-        "count": 7,
+        "count": 8,
         "error": null,
         "sources": [
           "Santana Row"
@@ -359,57 +359,6 @@
     ]
   },
   "events": [
-    {
-      "id": "c62455c7703f",
-      "title": "Baby Storytime",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
-      "time": "10:30 AM",
-      "endTime": "11:15 AM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17170808",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "4a87767720ce",
-      "title": "ESL Conversation Club - IN PERSON",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
-      "time": "4:00 PM",
-      "endTime": "5:00 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/15895387",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "f262da386433",
-      "title": "ESL Conversation Club - ONLINE",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
-      "time": "4:00 PM",
-      "endTime": "5:00 PM",
-      "venue": "Online",
-      "address": "",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17249774",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
     {
       "id": "41c952289eed",
       "title": "LEGO® Time",
@@ -2859,74 +2808,6 @@
       "kidFriendly": false
     },
     {
-      "id": "08d7f66af4c4",
-      "title": "Storytime (Ages 0-5)",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
-      "time": "11:00 AM",
-      "endTime": "11:30 AM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/17249560",
-      "source": "Los Gatos Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "3e35d135b227",
-      "title": "Kids Knitting (Ages 7+)",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
-      "time": "3:00 PM",
-      "endTime": "4:00 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/16887017",
-      "source": "Los Gatos Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "5dcc1f2b570e",
-      "title": "STEAM Wednesdays in the Teen Room",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
-      "time": "3:00 PM",
-      "endTime": "4:00 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/17261929",
-      "source": "Los Gatos Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "92fb8ec96f11",
-      "title": "Cookbook Club",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
-      "time": "5:00 PM",
-      "endTime": "6:00 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/17376576",
-      "source": "Los Gatos Library",
-      "kidFriendly": true
-    },
-    {
       "id": "1ec3bd2165ca",
       "title": "Park-It Market",
       "date": "2026-08-27",
@@ -3824,6 +3705,23 @@
       "cost": "free",
       "description": "",
       "url": "https://losgatosca.libcal.com/event/16025975",
+      "source": "Los Gatos Library",
+      "kidFriendly": false
+    },
+    {
+      "id": "f550d1d85452",
+      "title": "Town's Poet Laureate interviews Past Poet Laureate about Book",
+      "date": "2026-09-28",
+      "displayDate": "Mon, Sep 28",
+      "time": "5:00 PM",
+      "endTime": "6:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "arts",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/16696011",
       "source": "Los Gatos Library",
       "kidFriendly": false
     },
@@ -6110,27 +6008,10 @@
       "kidFriendly": false
     },
     {
-      "id": "1b8bb08fd396",
-      "title": "FALL Creekside Ceramics Series – Adult Arts Education",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
-      "time": null,
-      "endTime": null,
-      "venue": "Montalvo Arts Center",
-      "address": "15400 Montalvo Rd, Saratoga, CA 95071",
-      "city": "saratoga",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://my.montalvoarts.org/2917/3234",
-      "source": "Montalvo Arts Center",
-      "kidFriendly": false
-    },
-    {
-      "id": "2182ee315131",
+      "id": "7edefb717de6",
       "title": "Play on the Grounds – Ms. Holmes and Ms. Watson – Apt 2B",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
+      "date": "2026-08-27",
+      "displayDate": "Thu, Aug 27",
       "time": null,
       "endTime": null,
       "venue": "Montalvo Arts Center",
@@ -6193,6 +6074,23 @@
       "url": "https://my.montalvoarts.org/overview/3063",
       "source": "Montalvo Arts Center",
       "kidFriendly": true
+    },
+    {
+      "id": "b402a0e00c51",
+      "title": "Around the Americas with 123 Andrés? (Grades pre K-3)",
+      "date": "2026-10-15",
+      "displayDate": "Thu, Oct 15",
+      "time": null,
+      "endTime": null,
+      "venue": "Montalvo Arts Center",
+      "address": "15400 Montalvo Rd, Saratoga, CA 95071",
+      "city": "saratoga",
+      "category": "arts",
+      "cost": "paid",
+      "description": "",
+      "url": "https://my.montalvoarts.org/overview/3064",
+      "source": "Montalvo Arts Center",
+      "kidFriendly": false
     },
     {
       "id": "1caaeb76c45c",
@@ -6365,8 +6263,8 @@
       "kidFriendly": false
     },
     {
-      "id": "c58c81c80f07",
-      "title": "Ledisi with B Deveaux",
+      "id": "9606ba19e205",
+      "title": "Ledisi with musicmeetsher",
       "date": "2026-08-27",
       "displayDate": "Thu, Aug 27",
       "time": "7:30 PM",
@@ -7283,6 +7181,23 @@
       "kidFriendly": false
     },
     {
+      "id": "385d1f9f5c0a",
+      "title": "Redwoods: Heroes of the Forest",
+      "date": "2026-09-06",
+      "displayDate": "Sun, Sep 6",
+      "time": "1:00 pm",
+      "endTime": null,
+      "venue": "Bear Creek Redwoods Preserve",
+      "address": "Bear Creek Redwoods Preserve, Los Gatos",
+      "city": "los-gatos",
+      "category": "outdoor",
+      "cost": "free",
+      "description": "",
+      "url": "https://www.openspace.org/events/guided-activities/redwoods-heroes-forest-4",
+      "source": "Midpen Open Space",
+      "kidFriendly": false
+    },
+    {
       "id": "a51febab4594",
       "title": "Yoga and Zumba in the River Park",
       "date": "2026-08-29",
@@ -7303,23 +7218,6 @@
         "sourceUrl": "https://grpg.org/calendar/events/",
         "date": "2026-08-29"
       }
-    },
-    {
-      "id": "c7e7d8bf6e6e",
-      "title": "Farmers' Market",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
-      "time": "4:00pm",
-      "endTime": null,
-      "venue": "Santana Row",
-      "address": "377 Santana Row, San Jose, CA 95128",
-      "city": "san-jose",
-      "category": "community",
-      "cost": null,
-      "description": "",
-      "url": "https://santanarow.com/event/farmers-market/",
-      "source": "Santana Row",
-      "kidFriendly": false
     },
     {
       "id": "c913f9c1934e",
@@ -7352,6 +7250,23 @@
       "cost": null,
       "description": "",
       "url": "https://santanarow.com/event/lets-do-lunch-taste-the-row/",
+      "source": "Santana Row",
+      "kidFriendly": false
+    },
+    {
+      "id": "4295477cb44a",
+      "title": "Farmers' Market",
+      "date": "2026-09-02",
+      "displayDate": "Wed, Sep 2",
+      "time": "4:00pm",
+      "endTime": null,
+      "venue": "Santana Row",
+      "address": "377 Santana Row, San Jose, CA 95128",
+      "city": "san-jose",
+      "category": "community",
+      "cost": null,
+      "description": "",
+      "url": "https://santanarow.com/event/farmers-market/",
       "source": "Santana Row",
       "kidFriendly": false
     },
@@ -7403,6 +7318,23 @@
       "cost": null,
       "description": "",
       "url": "https://santanarow.com/event/glass-pumpkin-festival/",
+      "source": "Santana Row",
+      "kidFriendly": false
+    },
+    {
+      "id": "2beca39d5fee",
+      "title": "Farmer Mike Pumpkin Carving",
+      "date": "2026-10-24",
+      "displayDate": "Sat, Oct 24",
+      "time": "10:00 AM",
+      "endTime": null,
+      "venue": "Santana Row",
+      "address": "377 Santana Row, San Jose, CA 95128",
+      "city": "san-jose",
+      "category": "community",
+      "cost": null,
+      "description": "",
+      "url": "https://santanarow.com/event/farmer-mike-pumpkin-carving/",
       "source": "Santana Row",
       "kidFriendly": false
     },
@@ -8268,7 +8200,7 @@
       "city": "cupertino",
       "category": "family",
       "cost": "free",
-      "description": "Anyone can fall victim to cybercrimes. Join the City’s panel presentation where cybersecurity experts will inform and educate you to avoid becoming a victim. After the presentation, attendees can ask questions during the Q&A. Cybersecurity Panel Don Hester - Cybersecurity Advisor, CISA, Dept. of Homeland Security Dr. May Wang - CTO, IoT Security, Palo Alto Networks Ilaiy Elangovan - Head of Cyber Security Development at Visa Ramesh Gupta - CEO, Indentra.AI Sandip Patel - SCC Deputy District Attorney Balaram Donthi - Panel Moderator, TICC Commissioner Sudeep Kumar - Co-Host, TICC Vice Chair View Past Events Cybersecurity Public Education 2025 Cybersecurity Public Education 2023 Protect Yourself from Being Hacked on the Wild, Wild Internet",
+      "description": "Anyone can become a victim of cybercrime. Join the City’s panel discussion to hear cybersecurity experts share practical tips and guidance to help you recognize threats and protect yourself. A Q&A session will follow the presentation, giving attendees an opportunity to ask questions. Cybersecurity Panel Don Hester - Cybersecurity Advisor, CISA, Dept. of Homeland Security Dr. May Wang - CTO, IoT Security, Palo Alto Networks Ilaiy Elangovan - Head of Cyber Security Development at Visa Ramesh Gupta - CEO, Indentra.AI Sandip Patel - Santa Clara Co. Deputy District Attorney Balaram Donthi - Panel Moderator, TICC Commissioner Sudeep Kumar - Co-Host, TICC Vice Chair View Past Events Cybersecurity Public Education 2025 Cybersecurity Public Education 2023 Protect Yourself from Being Hacked on the Wild, Wild Internet",
       "url": "https://www.cupertino.gov/Events-directory/Cupertino-Cybersecurity-Public-Awareness-Events",
       "source": "City of Cupertino",
       "kidFriendly": true
@@ -10804,23 +10736,6 @@
       "description": "",
       "url": "https://openspacetrust.org/event/representation-matters-film-festival/",
       "source": "Peninsula Open Space Trust",
-      "kidFriendly": false
-    },
-    {
-      "id": "0b45a7f2c955",
-      "title": "Walk with a Naturalist: August 2026",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
-      "time": "Wednesday, August 26, 2026",
-      "endTime": null,
-      "venue": "San Jose Museum of Art",
-      "address": "110 S Market St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sjmusart.org/walk-naturalist-august-2026",
-      "source": "San Jose Museum of Art",
       "kidFriendly": false
     },
     {
