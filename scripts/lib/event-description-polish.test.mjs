@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { cleanTitle, cleanVenue, inferCategory, polishDescription } from "../generate-events.mjs";
+import {
+  cleanTitle,
+  cleanVenue,
+  inferCategory,
+  looksLikeEmbedCode,
+  polishDescription,
+} from "../generate-events.mjs";
 import { canonicalHistorySjUrl, inferHistorySjCost } from "./history-sj.mjs";
 
 test("preserves the official BentPeter performer spelling", () => {
@@ -90,4 +96,31 @@ test("restores the official RuPaul's Drag Race spelling", () => {
   assert.equal(polished, "Jane Don't, breakout star of RuPaul's Drag Race.");
   // Idempotent: re-polishing generated output must not drift.
   assert.equal(polishDescription(polished), polished);
+});
+
+test("flags a ticketing widget snippet scraped in place of a description", () => {
+  assert.equal(
+    looksLikeEmbedCode(
+      "Var example Callback = function { console. Log('Order complete!'); }; " +
+        "window. EB Widgets. Create Widget({ // Required widget Type: 'checkout', " +
+        "event Id: '1993870955702', iframe Container Id:…",
+    ),
+    true,
+  );
+});
+
+test("leaves ordinary event prose alone", () => {
+  assert.equal(
+    looksLikeEmbedCode(
+      "Taste chile, mole, and pozole dishes while celebrating regional Mexican " +
+        "cuisine at the School of Arts and Culture. Tickets at the door.",
+    ),
+    false,
+  );
+  assert.equal(
+    looksLikeEmbedCode(
+      "A talk on how a public library actually functions as a civic institution.",
+    ),
+    false,
+  );
 });

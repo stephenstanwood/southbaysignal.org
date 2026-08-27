@@ -634,6 +634,31 @@ function looksLikeVenuePolicy(text) {
   return VENUE_POLICY_PATTERNS.some((p) => p.test(stripped));
 }
 
+// Some venue pages inline the ticketing vendor's JavaScript snippet inside the
+// same block the scraper reads as the description. Mexican Heritage Plaza's
+// "Chile, Mole, Pozole" listing shipped with Eventbrite's checkout-widget code
+// as its entire description — and because an earlier camel-split pass spaces
+// out the identifiers ("window. EB Widgets. Create Widget({"), none of the
+// prose-oriented filters above see anything wrong with it. Code is never
+// partially useful as event copy, so any hit clears the whole field and the
+// ingest-time blurb takes over on the card.
+const EMBED_CODE_PATTERNS = [
+  // Identifiers survive camel-splitting as "window. EB Widgets", "console. Log",
+  // "document. Get Element By Id" — allow an optional space after each dot.
+  /\b(?:window|document|console)\.\s*[A-Za-z]/,
+  /\bfunction\s*(?:\([^)]*\))?\s*\{/i,
+  /\b(?:var|let|const)\s+[A-Za-z_$][\w$]*\s*=/,
+  /\bEB\s?Widgets\b/i,
+  /\b(?:widget|iframe\s?Container|event)\s?Id\s*:\s*['"]/i,
+  /<\/?(?:script|iframe|div|span|style)\b/i,
+  /\bhttps?:\/\/\S+\.js\b/i,
+];
+
+function looksLikeEmbedCode(text) {
+  if (!text) return false;
+  return EMBED_CODE_PATTERNS.some((p) => p.test(text));
+}
+
 const VIRTUAL_PATTERNS = [
   /\bvirtual\b/i,
   /\bvia zoom\b/i,
@@ -7757,6 +7782,14 @@ async function main() {
     if (e.description) e.description = polishDescription(e.description);
   });
 
+  // Drop descriptions that are actually a ticketing widget's embed snippet
+  // rather than event copy. Runs after polishDescription so it also catches
+  // code that only becomes recognizable once the earlier passes have finished
+  // reflowing it.
+  allEvents.forEach((e) => {
+    if (e.description && looksLikeEmbedCode(e.description)) e.description = "";
+  });
+
   // Drop descriptions that just repeat the title — SJSU's Localist RSS feeds
   // sports events with description == title, which adds noise to plan-day blurbs
   // and event cards. Compare on a normalized form so casing/whitespace doesn't
@@ -8380,6 +8413,7 @@ export {
   inferCategory,
   isBiblioEventCancelled,
   looksCancelled,
+  looksLikeEmbedCode,
   mapTicketmasterEvent,
   resolveBiblioDisplayVenue,
   fetchFarmersMarketEvents,
