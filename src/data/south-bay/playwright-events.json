@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-27T02:17:03.919Z",
+    "generatedAt": "2026-08-27T15:08:06.223Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 619,
+    "eventCount": 623,
     "sourceCount": 22,
     "sources": [
-      "Mountain View Public Library (144)",
-      "Los Gatos Library (145)",
+      "Mountain View Public Library (146)",
+      "Los Gatos Library (147)",
       "San Jose Jazz (19)",
       "Linden Tree Books (11)",
       "History San Jose (10)",
@@ -66,7 +66,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 146,
+        "count": 148,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -76,7 +76,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 145,
+        "count": 147,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -359,23 +359,6 @@
     ]
   },
   "events": [
-    {
-      "id": "41c952289eed",
-      "title": "LEGO® Time",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
-      "time": "6:30 PM",
-      "endTime": "7:30 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17238198",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
     {
       "id": "beaa42d75868",
       "title": "Magical Bridge Storytime",
@@ -2366,6 +2349,23 @@
       "kidFriendly": false
     },
     {
+      "id": "a892789fa455",
+      "title": "Choose Your Own Adventure Book Club",
+      "date": "2026-10-26",
+      "displayDate": "Mon, Oct 26",
+      "time": "4:00 PM",
+      "endTime": "5:00 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "arts",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17463873",
+      "source": "Mountain View Public Library",
+      "kidFriendly": true
+    },
+    {
       "id": "56e8c020cef2",
       "title": "Smart Start Babytime",
       "date": "2026-10-26",
@@ -2806,6 +2806,40 @@
       "url": "https://mountainview.libcal.com/event/15668065",
       "source": "Mountain View Public Library",
       "kidFriendly": false
+    },
+    {
+      "id": "ccdf3587ac08",
+      "title": "Smart Start Babytime",
+      "date": "2026-11-23",
+      "displayDate": "Mon, Nov 23",
+      "time": "6:00 PM",
+      "endTime": "7:00 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/16916950",
+      "source": "Mountain View Public Library",
+      "kidFriendly": true
+    },
+    {
+      "id": "7c507e4180a0",
+      "title": "Outdoor Storytime",
+      "date": "2026-11-24",
+      "displayDate": "Tue, Nov 24",
+      "time": "10:30 AM",
+      "endTime": "11:00 AM",
+      "venue": "Pioneer Park",
+      "address": "1146 Church St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "family",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17142493",
+      "source": "Mountain View Public Library",
+      "kidFriendly": true
     },
     {
       "id": "1ec3bd2165ca",
@@ -5273,6 +5307,40 @@
       "kidFriendly": false
     },
     {
+      "id": "0789fa9751a9",
+      "title": "Storytime (Ages 0-5)",
+      "date": "2026-11-25",
+      "displayDate": "Wed, Nov 25",
+      "time": "11:00 AM",
+      "endTime": "11:30 AM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "family",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17249586",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
+      "id": "83d836808e63",
+      "title": "Kids Knitting (Ages 7+)",
+      "date": "2026-11-25",
+      "displayDate": "Wed, Nov 25",
+      "time": "3:00 PM",
+      "endTime": "4:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "family",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/16887030",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
       "id": "32e3d2884f2a",
       "title": "SJZ Break Room Jazz Jam",
       "date": "2026-09-04",
@@ -7096,10 +7164,10 @@
       "kidFriendly": false
     },
     {
-      "id": "5970faa68511",
+      "id": "797cefbe83bb",
       "title": "Toddler Storytime",
-      "date": "2026-08-26",
-      "displayDate": "Wed, Aug 26",
+      "date": "2026-08-27",
+      "displayDate": "Thu, Aug 27",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
