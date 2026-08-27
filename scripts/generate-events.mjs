@@ -952,6 +952,21 @@ function cleanTitle(title) {
     // the figure is the subject ("How to Save Your First $10,000", "The $5
     // Dinner Challenge") keep it.
     .replace(/\s+\$\d+(?:\.\d{2})?$/, "")
+    // Repair a support-act connector that swallowed a billing line. Mountain
+    // Winery's listing page joins the headliner to a second line with " with ",
+    // which is right for an opener ("X with Y") and wrong when the second line
+    // is the tour's own description — "Peter Hook & The Light with Performing
+    // 'Get Ready' live and in full…". A gerund/participle after "with" is never
+    // an act name, so promote it to a dash the way the venue's own billing
+    // reads.
+    .replace(/\s+with\s+(?=(?:Performing|Featuring|Presenting|Celebrating|Playing)\b)/gi, " — ")
+    // Strip a dangling separator left where a scraper concatenated the title
+    // with a field that turned out to be empty — Meetup ("Bolly EDM Dance
+    // Night |") and East West Bookshop ("… Sound Experience |") both ship
+    // these. Repeats collapse in one pass. Dashes need leading whitespace so
+    // hyphenated words are untouched, and "+" is excluded outright because an
+    // age or grade range legitimately ends on it ("… for Grades 6+", "21+").
+    .replace(/(?:\s*[|\/&,;:]|\s+[-–—])+\s*$/, "")
     .trim();
   // Downcase ALL-CAPS words that aren't known acronyms. Titles that are
   // mostly mixed-case (lowerRatio ≥ 0.5) get the aggressive 2+ letter rule:

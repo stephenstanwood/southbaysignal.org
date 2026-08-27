@@ -124,3 +124,34 @@ test("leaves ordinary event prose alone", () => {
     false,
   );
 });
+
+test("drops a dangling separator left by an empty concatenated field", () => {
+  assert.equal(cleanTitle("Bolly EDM Dance Night |"), "Bolly EDM Dance Night");
+  assert.equal(
+    cleanTitle("Into the Body: A Drum, Voice & Gong Sound Experience |"),
+    "Into the Body: A Drum, Voice & Gong Sound Experience",
+  );
+  // Separators inside a title, and hyphenated words, stay put.
+  assert.equal(
+    cleanTitle("Tech Mentor / Computer & iPad Assistance"),
+    "Tech Mentor / Computer & iPad Assistance",
+  );
+  assert.equal(cleanTitle("Movie Night: Spider-Man"), "Movie Night: Spider-Man");
+  // A trailing "+" is an age/grade range, not a dangling separator.
+  assert.equal(
+    cleanTitle("Lego Spike Robotics & Engineering for Grades 6+"),
+    "Lego Spike Robotics & Engineering for Grades 6+",
+  );
+});
+
+test("promotes a billing line mis-joined as a support act", () => {
+  assert.equal(
+    cleanTitle("Peter Hook & The Light with Performing 'Get Ready' live and in full"),
+    "Peter Hook & The Light — Performing 'Get Ready' live and in full",
+  );
+  // A real opener keeps "with".
+  assert.equal(
+    cleanTitle("Pat Benatar & Neil Giraldo with Lee DeWyze"),
+    "Pat Benatar & Neil Giraldo with Lee DeWyze",
+  );
+});
