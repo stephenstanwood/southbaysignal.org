@@ -434,3 +434,236 @@ export async function verifyPrimeGovBodyOnDate(domain, dateIso, recordText = "")
     return null;
   }
 }
+
+// ── eScribe archive (Campbell) ──────────────────────────────────────────────
+//
+// eScribe exposes two calendar endpoints and they are NOT interchangeable:
+//
+//   MeetingsCalendarView.aspx/GetCalendarMeetings
+//     Forward-looking, one *rendered month* per call. Asking it for a month
+//     that has already passed returns [] — which reads exactly like "the
+//     council did not meet". generate-upcoming-meetings uses this one, and
+//     correctly, because it only ever wants the next sitting.
+//
+//   MeetingsCalendarView.aspx/PastMeetings?Year=YYYY
+//     The archive, paged per meeting type. This is the only endpoint that can
+//     answer "what did the council last take up", so it is the one a digest
+//     fallback needs.
+//
+// Confusing the two is how Campbell looked dormant while it was meeting: on
+// 2026-08-27 GetCalendarMeetings returned nothing for July through December
+// while PastMeetings listed regular sessions on August 3 and August 18.
+
+const ESCRIBE_UA = "SouthBaySignal/1.0 (stanwood.dev; civic data aggregator)";
+
+/**
+ * One eScribe request, returned as text.
+ *
+ * Some Node builds reject escribemeetings.com's chain with
+ * UNABLE_TO_GET_ISSUER_CERT_LOCALLY (the root resolves from Node's bundled CA
+ * store, not the OS keychain). System curl trusts it, so fall back to curl on a
+ * TLS failure instead of dropping the city. Don't collapse this to a plain
+ * fetch without testing on the Mini.
+ */
+async function escribeRequest(url, { body = null, ua = ESCRIBE_UA, timeout = 20_000 } = {}) {
+  const isPost = body !== null;
+  try {
+    const res = await fetch(url, {
+      method: isPost ? "POST" : "GET",
+      headers: {
+        "User-Agent": ua,
+        ...(isPost ? { "Content-Type": "application/json", Accept: "application/json" } : {}),
+      },
+      ...(isPost ? { body: JSON.stringify(body) } : {}),
+      signal: AbortSignal.timeout(timeout),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.text();
+  } catch (err) {
+    const cause = err?.cause?.code || "";
+    if (!/CERT|TLS|SSL/i.test(`${cause} ${err.message}`)) throw err;
+    const { execFile } = await import("node:child_process");
+    const { promisify } = await import("node:util");
+    const args = ["-sL", "--max-time", String(Math.ceil(timeout / 1000) + 5), "-A", ua];
+    if (isPost) args.push("-X", "POST", "-H", "Content-Type: application/json", "-d", JSON.stringify(body));
+    args.push(url);
+    const { stdout } = await promisify(execFile)("curl", args, { maxBuffer: 20 * 1024 * 1024 });
+    return stdout;
+  }
+}
+
+/** POST an eScribe ASP.NET AJAX endpoint and parse its JSON envelope. */
+export async function escribePost(url, body, opts = {}) {
+  return JSON.parse(await escribeRequest(url, { ...opts, body: body ?? {} }));
+}
+
+/** Reader-facing agenda page for one eScribe meeting id. */
+export function escribeAgendaUrl(host, meetingId) {
+  return `https://${host}/Meeting.aspx?Id=${encodeURIComponent(meetingId)}&Agenda=Agenda&lang=English`;
+}
+
+/**
+ * eScribe serializes archive rows' `Start` as ASP.NET `/Date(<epoch ms>)/`.
+ * The epoch is real UTC (unlike the naive local `StartDate` on calendar rows),
+ * so the city's calendar date is the Pacific rendering of it.
+ */
+export function escribeRowDateISO(row) {
+  const match = String(row?.Start ?? "").match(/\/Date\((-?\d+)/);
+  if (!match) return null;
+  const ms = Number(match[1]);
+  if (!Number.isFinite(ms)) return null;
+  return new Date(ms).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+}
+
+const ESCRIBE_AGENDA_TITLE = /<div class="AgendaItemTitle"[^>]*>\s*<a[^>]*>([\s\S]*?)<\/a>/g;
+const ESCRIBE_AGENDA_MOTION = /<div class="MotionText[\s\S]*?<\/li>/;
+
+/** Longest recommended action worth carrying into a summarization prompt. */
+const MOTION_CHARS = 240;
+
+function decodeAgendaText(fragment) {
+  return String(fragment ?? "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&(?:nbsp|#160|#xa0);/gi, " ")
+    .replace(/&(?:rsquo|lsquo|#8216|#8217|#39|#x27);/gi, "'")
+    .replace(/&(?:ldquo|rdquo|quot|#34);/gi, '"')
+    .replace(/&(?:ndash|#8211);/gi, "–")
+    .replace(/&(?:mdash|#8212);/gi, "—")
+    .replace(/&amp;/gi, "&")
+    // eScribe titles carry stray zero-width characters from staff paste-ins
+    // (Campbell's "Measure O" item ends in U+200B), which otherwise survive
+    // into headings and key topics.
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Agenda items, in order, from a rendered eScribe agenda page — each title
+ * paired with its "Recommended Action" where the page publishes one.
+ *
+ * The action is what disambiguates the title. Campbell's August 18 2026 item
+ * reads "Acceptance of Campbell Police Foundation Donations", which a summarizer
+ * given titles alone rendered as donations *to* the foundation; the recommended
+ * action says the city is accepting $41,911.62 *from* it. Same words, opposite
+ * direction of money.
+ */
+export function extractEscribeAgendaItems(html) {
+  const source = String(html ?? "");
+  const titles = [...source.matchAll(ESCRIBE_AGENDA_TITLE)];
+  return titles.map((match, i) => {
+    // An item's motion sits between its own title and the next one.
+    const from = match.index + match[0].length;
+    const to = titles[i + 1]?.index ?? source.length;
+    const motion = source.slice(from, to).match(ESCRIBE_AGENDA_MOTION);
+    const action = motion
+      ? decodeAgendaText(motion[0]).replace(/^Recommended Action\s*/i, "")
+      : "";
+    return { title: decodeAgendaText(match[1]), action: truncateAtWord(action, MOTION_CHARS) };
+  });
+}
+
+function truncateAtWord(text, limit) {
+  if (text.length <= limit) return text;
+  const cut = text.slice(0, limit);
+  return `${cut.slice(0, cut.lastIndexOf(" ")).trimEnd()}…`;
+}
+
+/** Agenda item titles alone, in order. */
+export function extractEscribeAgendaTitles(html) {
+  return extractEscribeAgendaItems(html).map((item) => item.title);
+}
+
+/**
+ * Keep only the agenda lines a resident would recognize as city business.
+ *
+ * Drops procedural scaffolding (all-caps section banners, roll call, recess),
+ * lines too short to carry a topic, and anything long enough to be a legal
+ * notice rather than an item. Shared by the Legistar and eScribe past-meeting
+ * fallbacks so the two can't drift into summarizing different things.
+ */
+export function isSubstantiveAgendaTitle(value) {
+  const title = String(value ?? "").split(/\r?\n/)[0].trim();
+  if (title.length <= 25 || title.length >= 300) return false;
+  if (/^(roll call|call to order|pledge of allegiance|adjournment|closed session|public comment|consent calendar|recess)/i.test(title)) return false;
+  return title !== title.toUpperCase();
+}
+
+export function substantiveAgendaTitles(titles) {
+  return (titles ?? [])
+    .map((t) => String(t ?? "").split(/\r?\n/)[0].trim())
+    .filter(isSubstantiveAgendaTitle);
+}
+
+/**
+ * Most recent *past* council meeting published on a city's eScribe portal,
+ * shaped like the upstream records the digest pipeline already handles.
+ *
+ * Returns null when the portal has no past meeting with a usable agenda, so a
+ * caller can fall through to whatever it was going to do anyway.
+ */
+export async function fetchEscribePastMeeting({
+  host,
+  meetingTypes = [],
+  today = ptDateISO(),
+  maxCandidates = 3,
+  ua = ESCRIBE_UA,
+} = {}) {
+  const year = Number(today.slice(0, 4));
+  // Current year first, then the one before — a January run has no past meeting
+  // in the new year yet.
+  for (const archiveYear of [year, year - 1]) {
+    const rows = [];
+    for (const type of meetingTypes) {
+      let payload;
+      try {
+        payload = await escribePost(
+          `https://${host}/MeetingsCalendarView.aspx/PastMeetings?Year=${archiveYear}`,
+          { type, pageNumber: 1 },
+          { ua },
+        );
+      } catch {
+        continue; // one dead meeting type must not sink the others
+      }
+      const meetings = payload?.d?.Meetings;
+      if (Array.isArray(meetings)) rows.push(...meetings);
+    }
+
+    const candidates = rows
+      .filter((row) => row?.Id && row?.HasAgenda && !row?.Cancelled)
+      .map((row) => ({ row, date: escribeRowDateISO(row) }))
+      .filter(({ date }) => date && date <= today)
+      .sort((a, b) => b.date.localeCompare(a.date));
+
+    for (const { row, date } of candidates.slice(0, maxCandidates)) {
+      const agendaUrl = escribeAgendaUrl(host, row.Id);
+      let html;
+      try {
+        html = await escribeRequest(agendaUrl, { ua, timeout: 30_000 });
+      } catch {
+        continue;
+      }
+      const items = extractEscribeAgendaItems(html)
+        .filter((item) => isSubstantiveAgendaTitle(item.title));
+      // One line is a procedural stub, not an agenda worth summarizing — same
+      // floor the Legistar past-meeting fallback uses.
+      if (items.length < 2) continue;
+
+      return {
+        id: `escribe-${host}-${row.Id}`,
+        city: null,
+        date,
+        meetingType: "City Council",
+        title: `City Council — ${date}`,
+        excerpt: items
+          .slice(0, 12)
+          .map((item) => (item.action ? `${item.title} — ${item.action}` : item.title))
+          .join("\n"),
+        keywords: items.slice(0, 5).map((item) => item.title),
+        source: "escribe-direct",
+        sourceUrl: agendaUrl,
+      };
+    }
+  }
+  return null;
+}

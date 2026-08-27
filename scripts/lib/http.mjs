@@ -60,8 +60,11 @@ export async function fetchWithRetry(
         return response;
       }
 
+      // Retry-After may only *lengthen* the wait, never shorten it below our
+      // own backoff — a server answering `retry-after: 0` under load would
+      // otherwise get every remaining attempt fired at it inside a millisecond.
       const delayMs = Math.min(
-        retryAfterMs(response) ?? baseDelayMs * 2 ** (attempt - 1),
+        Math.max(retryAfterMs(response) ?? 0, baseDelayMs * 2 ** (attempt - 1)),
         maxRetryDelayMs,
       );
       await response.body?.cancel().catch(() => {});

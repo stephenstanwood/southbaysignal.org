@@ -103,6 +103,29 @@ test("fetchJson retries a 429 before succeeding", async () => {
   assert.deepEqual(delays, [1_000]);
 });
 
+// A server answering `retry-after: 0` under load used to get every remaining
+// attempt fired at it inside a millisecond — the retries were free and useless.
+test("fetchText will not retry faster than its own backoff", async () => {
+  const delays = [];
+  let calls = 0;
+
+  const result = await fetchText("https://example.com/overloaded", {
+    baseDelayMs: 500,
+    fetchImpl: async () => {
+      calls += 1;
+      if (calls < 3) {
+        return new Response("overloaded", { status: 529, headers: { "Retry-After": "0" } });
+      }
+      return new Response("ready");
+    },
+    sleep: async (delayMs) => delays.push(delayMs),
+    onRetry: quiet,
+  });
+
+  assert.equal(result, "ready");
+  assert.deepEqual(delays, [500, 1_000], "Retry-After can raise the wait, never lower it");
+});
+
 test("fetchText honors and caps Retry-After", async () => {
   const delays = [];
   let calls = 0;

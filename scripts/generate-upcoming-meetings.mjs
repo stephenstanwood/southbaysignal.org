@@ -17,6 +17,7 @@ import { fileURLToPath } from "url";
 import { writeFileAtomic } from "./lib/io.mjs";
 import {
   confirmMeeting,
+  escribePost,
   isClosedSessionMeeting,
   legistarMeetingUrl,
   normalizeMeetingTime,
@@ -525,37 +526,6 @@ const CIVICENGAGE_CITIES = [
 
 const ESCRIBE_MONTHS_AHEAD = 2; // current month + 2 covers the 60-day horizon
 
-// Some Node builds reject escribemeetings.com's chain with
-// UNABLE_TO_GET_ISSUER_CERT_LOCALLY (the root resolves from Node's bundled CA
-// store, not the OS keychain). System curl trusts it, so fall back to curl on
-// a TLS failure instead of dropping the city. Don't collapse this to a plain
-// fetch without testing on the Mini.
-async function escribePost(url, body) {
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "User-Agent": UA, Accept: "application/json" },
-      body: JSON.stringify(body),
-      signal: AbortSignal.timeout(20_000),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch (err) {
-    const cause = err?.cause?.code || "";
-    const tlsProblem = /CERT|TLS|SSL/i.test(`${cause} ${err.message}`);
-    if (!tlsProblem) throw err;
-    const { execFile } = await import("node:child_process");
-    const { promisify } = await import("node:util");
-    const { stdout } = await promisify(execFile)("curl", [
-      "-s", "--max-time", "25", "-X", "POST", url,
-      "-H", "Content-Type: application/json",
-      "-H", `User-Agent: ${UA}`,
-      "-d", JSON.stringify(body),
-    ], { maxBuffer: 20 * 1024 * 1024 });
-    return JSON.parse(stdout);
-  }
-}
-
 function monthWindows(startIso, monthsAhead) {
   const [y, m] = startIso.split("-").map(Number);
   const windows = [];
@@ -573,7 +543,7 @@ async function fetchEscribeMeeting(host) {
   let sawAnyMeeting = false;
 
   for (const [calendarStartDate, calendarEndDate] of monthWindows(today, ESCRIBE_MONTHS_AHEAD)) {
-    const payload = await escribePost(url, { calendarStartDate, calendarEndDate });
+    const payload = await escribePost(url, { calendarStartDate, calendarEndDate }, { ua: UA });
     const rows = Array.isArray(payload?.d) ? payload.d : [];
     if (rows.length) sawAnyMeeting = true;
 

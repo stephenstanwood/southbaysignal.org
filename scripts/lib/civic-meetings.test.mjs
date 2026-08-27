@@ -3,6 +3,12 @@ import test from "node:test";
 
 import {
   confirmMeeting,
+  escribeAgendaUrl,
+  escribeRowDateISO,
+  extractEscribeAgendaItems,
+  extractEscribeAgendaTitles,
+  isSubstantiveAgendaTitle,
+  substantiveAgendaTitles,
   formatMeetingTime,
   isClosedSessionMeeting,
   legistarMeetingUrl,
@@ -279,5 +285,128 @@ test("primeGovAgendaUrl returns null when no HTML agenda is published", () => {
     }),
     null,
     "unpublished agendas are not linkable",
+  );
+});
+
+// ── eScribe archive parsing ─────────────────────────────────────────────────
+// Fixtures are trimmed from the real Campbell August 18 2026 agenda page and
+// the PastMeetings?Year=2026 envelope behind it.
+
+test("escribeRowDateISO reads ASP.NET /Date()/ as a Pacific calendar date", () => {
+  // Campbell's August 18 2026 regular session: 7:00:26 PM PDT.
+  assert.equal(escribeRowDateISO({ Start: "/Date(1787079626413)/" }), "2026-08-18");
+});
+
+test("escribeRowDateISO puts a late-evening sitting on the day the city held it", () => {
+  // 2026-08-19T02:00:00Z is still the 18th in Pacific time. Reading the epoch
+  // as UTC would file the meeting a day late and make the digest look newer
+  // than the agenda it summarizes.
+  assert.equal(escribeRowDateISO({ Start: "/Date(1787104800000)/" }), "2026-08-18");
+});
+
+test("escribeRowDateISO returns null for rows with no usable start", () => {
+  assert.equal(escribeRowDateISO({}), null);
+  assert.equal(escribeRowDateISO({ Start: "2026-08-18" }), null);
+  assert.equal(escribeRowDateISO({ Start: "/Date(nope)/" }), null);
+  assert.equal(escribeRowDateISO(null), null);
+});
+
+// The U+200B in the Measure O title is verbatim from the city's own page.
+const CAMPBELL_AGENDA_HTML = `
+<div class="AgendaItem"><div class="AgendaItemTitleRow"><h3><div class="AgendaItemCounter">7.</div>
+<div class="AgendaItemNavigate indent"><div class="AgendaItemTitle" style="width:auto;display:inline-block">
+<a href="javascript:SelectItem(1519);" style="display: flex;">CONSENT CALENDAR
+</a></div></div></h3></div></div>
+<div class="AgendaItem"><div class="AgendaItemTitleRow"><h3><div class="AgendaItemCounter">7.3</div>
+<div class="AgendaItemNavigate indent"><div class="AgendaItemTitle" style="width:auto;display:inline-block">
+<a href="javascript:SelectItem(1522);" style="display: flex;">Acceptance of Campbell Police Foundation Donations
+</a></div></div></h3>
+<div class="AgendaItemContentRow indent"><ul class="AgendaItemMotions"><li class="AgendaItemMotion"><div class="MotionLabel">Recommended Action</div><div class="Number"></div><div class="MotionText RichText"><div style="display: block;"><span>It is recommended that the City Council adopt a resolution to accept donations in the aggregate amount of $41,911.62 from the Campbell Police Foundation for K9 veterinarian services.</span></div></div></li></ul></div></div></div>
+<div class="AgendaItem"><div class="AgendaItemTitleRow"><h3><div class="AgendaItemCounter">9.1</div>
+<div class="AgendaItemNavigate indent"><div class="AgendaItemTitle" style="width:auto;display:inline-block">
+<a href="javascript:SelectItem(1530);" style="display: flex;">FY 2025 Annual Report of the Citizen&rsquo;s Bond Oversight Committee for Measure O${"\u200B"}
+</a></div></div></h3></div></div>
+<div class="AgendaItem"><div class="AgendaItemTitleRow"><h3><div class="AgendaItemCounter">11.1</div>
+<div class="AgendaItemNavigate indent"><div class="AgendaItemTitle" style="width:auto;display:inline-block">
+<a href="javascript:SelectItem(1536);" style="display: flex;">Approval of Memorandum of Understanding between City of Campbell &amp; the Campbell Peace Officers Association (CPOA)
+</a></div></div></h3></div></div>
+<div class="AgendaItem"><div class="AgendaItemTitleRow"><h3><div class="AgendaItemCounter">12.</div>
+<div class="AgendaItemNavigate indent"><div class="AgendaItemTitle" style="width:auto;display:inline-block">
+<a href="javascript:SelectItem(1540);" style="display: flex;">ADJOURN
+</a></div></div></h3></div></div>
+`;
+
+test("extractEscribeAgendaTitles pulls item titles in agenda order", () => {
+  assert.deepEqual(extractEscribeAgendaTitles(CAMPBELL_AGENDA_HTML), [
+    "CONSENT CALENDAR",
+    "Acceptance of Campbell Police Foundation Donations",
+    "FY 2025 Annual Report of the Citizen's Bond Oversight Committee for Measure O",
+    "Approval of Memorandum of Understanding between City of Campbell & the Campbell Peace Officers Association (CPOA)",
+    "ADJOURN",
+  ]);
+});
+
+test("extractEscribeAgendaTitles strips the zero-width characters eScribe titles carry", () => {
+  const [, , measureO] = extractEscribeAgendaTitles(CAMPBELL_AGENDA_HTML);
+  assert.ok(!/[\u200B-\u200D\uFEFF]/.test(measureO), `zero-width survived: ${JSON.stringify(measureO)}`);
+});
+
+test("extractEscribeAgendaTitles returns nothing for a page with no agenda", () => {
+  assert.deepEqual(extractEscribeAgendaTitles("<html><body>Meeting video only</body></html>"), []);
+  assert.deepEqual(extractEscribeAgendaTitles(null), []);
+});
+
+test("substantiveAgendaTitles drops the procedural scaffolding around real items", () => {
+  assert.deepEqual(substantiveAgendaTitles(extractEscribeAgendaTitles(CAMPBELL_AGENDA_HTML)), [
+    "Acceptance of Campbell Police Foundation Donations",
+    "FY 2025 Annual Report of the Citizen's Bond Oversight Committee for Measure O",
+    "Approval of Memorandum of Understanding between City of Campbell & the Campbell Peace Officers Association (CPOA)",
+  ]);
+});
+
+// A title alone can invert the fact it describes: read cold, "Acceptance of
+// Campbell Police Foundation Donations" sounds like the city donating to the
+// foundation. The recommended action says the money runs the other way, and
+// the first generated digest off title-only excerpts got it backwards.
+test("extractEscribeAgendaItems pairs each title with its recommended action", () => {
+  const items = extractEscribeAgendaItems(CAMPBELL_AGENDA_HTML);
+  const donations = items.find((i) => i.title.startsWith("Acceptance"));
+  assert.match(donations.action, /^It is recommended that the City Council adopt a resolution/);
+  assert.match(donations.action, /\$41,911\.62 from the Campbell Police Foundation/);
+  assert.ok(!/Recommended Action/.test(donations.action), "the label is not part of the action");
+});
+
+test("extractEscribeAgendaItems leaves the action empty when the page publishes none", () => {
+  const items = extractEscribeAgendaItems(CAMPBELL_AGENDA_HTML);
+  assert.equal(items.find((i) => i.title === "ADJOURN").action, "");
+});
+
+test("extractEscribeAgendaItems does not attach an action to the item above it", () => {
+  // The motion sits between its own title and the next one, so the item
+  // *before* the donations item must not inherit that text.
+  const items = extractEscribeAgendaItems(CAMPBELL_AGENDA_HTML);
+  assert.equal(items.find((i) => i.title === "CONSENT CALENDAR").action, "");
+});
+
+test("isSubstantiveAgendaTitle separates city business from procedural scaffolding", () => {
+  assert.equal(isSubstantiveAgendaTitle("Acceptance of Campbell Police Foundation Donations"), true);
+  assert.equal(isSubstantiveAgendaTitle("CONSENT CALENDAR"), false, "all-caps banners are structure");
+  assert.equal(isSubstantiveAgendaTitle("Roll call of the members present"), false);
+  assert.equal(isSubstantiveAgendaTitle("Short item"), false, "too short to carry a topic");
+  assert.equal(isSubstantiveAgendaTitle("x".repeat(400)), false, "that length is a legal notice");
+});
+
+test("substantiveAgendaTitles keeps only the first line and survives junk input", () => {
+  assert.deepEqual(
+    substantiveAgendaTitles(["Approval of the Capital Improvement Program budget\nSecond line", null, "", 42]),
+    ["Approval of the Capital Improvement Program budget"],
+  );
+  assert.deepEqual(substantiveAgendaTitles(undefined), []);
+});
+
+test("escribeAgendaUrl points at the meeting's own agenda page", () => {
+  assert.equal(
+    escribeAgendaUrl("pub-campbell.escribemeetings.com", "6561dfc6-9aed-4336-b160-074b064d588b"),
+    "https://pub-campbell.escribemeetings.com/Meeting.aspx?Id=6561dfc6-9aed-4336-b160-074b064d588b&Agenda=Agenda&lang=English",
   );
 });
