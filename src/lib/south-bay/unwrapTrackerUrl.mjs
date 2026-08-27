@@ -52,6 +52,14 @@ const TRACKER_PATTERNS = [
   /\bbit\.ly\b/i,                               // Bit.ly shorteners
   /\btinyurl\.com\b/i,                          // TinyURL
   /\blinks?-?\d*\.govdelivery\.com\/CL0\//i,    // GovDelivery / Granicus (city newsletters)
+  // Levi's Stadium / 49ers marketing sends (Salesforce Marketing Cloud). The
+  // whole path is one opaque per-send token — nothing real is hosted on this
+  // host, so match the domain the way we do list-manage.com.
+  /\bls\.49ers\.com\b/i,                        // Levi's Stadium / 49ers email
+  // PatronPoint (library marketing platform) click redirects. The /r/ token
+  // base64-decodes to the recipient's own `email` field and a 64-hex
+  // `contactHash` — a per-subscriber identifier that must never be published.
+  /\bpatronpoint\.com\/r\//i,                   // PatronPoint library newsletters
 ];
 
 // GovDelivery (Granicus) wraps the destination URL-encoded directly in the

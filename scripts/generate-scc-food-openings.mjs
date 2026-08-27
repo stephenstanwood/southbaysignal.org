@@ -470,7 +470,12 @@ function dedupeByAddress(items) {
 const BARE_ENTITY_PATTERN = /^[A-Za-z0-9&'\s]{1,30}\s+(LLC|Inc\.|Inc|Corp\.|Corp|Ltd\.|Ltd|L\.L\.C\.|L\.L\.P\.|LLP|Co\.)$/i;
 
 // Non-food establishments that sometimes appear in health permit data (law firms, spas, etc.)
-const NON_FOOD_PATTERNS = /\b(LLP|L\.L\.P\.)\b|\bATTORNEY|BARRISTERS|SOLICITORS|\bLAW\s+(OFFICES?|GROUP|FIRM)\b/i;
+// Care facilities pull a food permit for their in-house kitchen, so they land in
+// the same county feed as restaurants — "Horizon Recuperative Care Facility"
+// (1275 N 4th St, San Jose, SR0881482) shipped as a coming-soon "restaurant" on
+// 2026-08-24. A residential medical facility is not a place to go eat.
+const NON_FOOD_PATTERNS =
+  /\b(LLP|L\.L\.P\.)\b|\bATTORNEY|BARRISTERS|SOLICITORS|\bLAW\s+(OFFICES?|GROUP|FIRM)\b|\bRECUPERATIVE\s+CARE\b|\bCARE\s+(FACILITY|CENTER|HOME)\b|\bSKILLED\s+NURSING\b|\bNURSING\s+(HOME|FACILITY)\b|\bASSISTED\s+LIVING\b|\bSENIOR\s+LIVING\b|\bMEMORY\s+CARE\b|\bHOSPICE\b|\bREHABILITATION\s+(CENTER|FACILITY|HOSPITAL)\b|\bCONVALESCENT\b|\bDIALYSIS\b|\bURGENT\s+CARE\b/i;
 
 // Dollar/variety stores carry packaged food (so they get a health permit) but are
 // not food destinations readers care about in a restaurant-openings feed. Grocery

@@ -9,6 +9,17 @@ export const PAPAHUGS_OCCURRENCE_URL = "https://www.cdm.org/event/papahugs/";
 // JAMsj publishes tinyurl.com/jamsj-sjgiants for this sales group; unwrap resolves here.
 export const SJ_GIANTS_JAPANESE_HERITAGE_2026_07_26_URL =
   "https://mlb.tickets.com/schedule/?agency=MILB_MPV&orgid=56749#/sales_group_code;salesGroupId=13349";
+// Levi's Stadium sends every link through ls.49ers.com, whose whole path is one
+// opaque per-send token. The stadium's own event index is the durable stand-in.
+export const LEVIS_STADIUM_EVENTS_URL = "https://levisstadium.com/events/";
+// The R&B Tour — Levi's Stadium, Aug 28 / Aug 29 / Sep 1 2026. Three separate
+// newsletters described these shows and all three start times were wrong:
+// the 49ers' April "ON SALE NOW" blast carried no showtime at all (the
+// extractor invented 12:00/2:00/4:00 PM across the three dates), and Santa
+// Clara's traffic advisory says "gates opening at 6:00 PM" — a gates time,
+// not a curtain. Ticketmaster and Live Nation list all three at 7:00 PM.
+export const RANDB_TOUR_2026_URL = "https://levisstadium.com/event/chris-brown-usher-the-randb-tour/";
+const RANDB_TOUR_2026_DATES = new Set(["2026-08-28", "2026-08-29", "2026-09-01"]);
 
 // Some newsletter trackers can't be unwrapped — Books Inc.'s Adestra links
 // (l.e.booksinc.com/rts/go2.aspx) serve a 200 instead of redirecting once the
@@ -19,6 +30,7 @@ export const SJ_GIANTS_JAPANESE_HERITAGE_2026_07_26_URL =
 // are the same canonical URLs our first-party scrapers already use.
 const TRACKER_FALLBACKS = [
   { match: /\bbooksinc\.com\b/i, url: "https://www.booksinc.com/pages/events" },
+  { match: /\bls\.49ers\.com\b/i, url: LEVIS_STADIUM_EVENTS_URL },
 ];
 
 function detrack(url) {
@@ -66,6 +78,18 @@ function officialOverride(event) {
       url: PAPAHUGS_OCCURRENCE_URL,
       time: "11:00 AM",
       endTime: "11:45 AM",
+    };
+  }
+  if (
+    RANDB_TOUR_2026_DATES.has(date)
+    && /levi'?s\s+stadium/i.test(identity)
+    && /usher/i.test(identity)
+    && /chris\s+brown/i.test(identity)
+  ) {
+    return {
+      url: RANDB_TOUR_2026_URL,
+      time: "7:00 PM",
+      endTime: null,
     };
   }
   if (

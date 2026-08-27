@@ -199,6 +199,23 @@ if (trackerUrls.length) {
       }
     }
   }
+  // A tracker that failed to resolve is cached as identity by unwrapMany, so
+  // without this the raw wrapper survives all the way to the public page.
+  // That is worse than having no link: these tokens expire with the email
+  // blast, and several encode the recipient (Mailchimp's `e=`, PatronPoint's
+  // `contactHash`, ls.49ers.com's per-send path). Drop the link instead —
+  // missing beats leaking, and detrack() downstream applies the same rule.
+  let unresolvedTrackers = 0;
+  for (const e of fresh) {
+    if (e.sourceUrl && isTrackerUrl(e.sourceUrl)) {
+      e.sourceUrlOriginal ??= e.sourceUrl;
+      e.sourceUrl = null;
+      unresolvedTrackers++;
+    }
+  }
+  if (unresolvedTrackers) {
+    console.log(`  🔗 dropped ${unresolvedTrackers} unresolved tracker URL(s) rather than publish them`);
+  }
 }
 
 const out = {
