@@ -11,6 +11,9 @@ import { readFileSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { ptDateISO } from "./lib/civic-meetings.mjs";
+import { auditDigestFreshness } from "./lib/digest-staleness.mjs";
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, "..", "src", "data", "south-bay");
 const jsonMode = process.argv.includes("--json");
@@ -248,10 +251,21 @@ for (const artifact of ARTIFACTS) {
 
     // City coverage check for applicable artifacts
     if (artifact.file === "digests.json") {
-      const coveredCities = Object.keys(data);
-      const missing = EXPECTED_CITIES.filter((c) => !coveredCities.includes(c));
+      // `generatedAt` above is the newest stamp across all cities, so one city
+      // frozen behind nine fresh ones leaves no trace in it — that is how the
+      // Campbell digest republished a July 7 meeting for seven weeks. Check the
+      // meeting date each city is actually publishing, per city.
+      const { alerts } = auditDigestFreshness({
+        cities: EXPECTED_CITIES.map((city) => ({ city, cityName: city })),
+        digests: data,
+        today: ptDateISO(),
+      });
+      const missing = alerts.filter((a) => a.kind === "missing").map((a) => a.city);
       if (missing.length) {
         entry.warnings.push(`missing cities: ${missing.join(", ")}`);
+      }
+      for (const alert of alerts.filter((a) => a.kind !== "missing")) {
+        entry.warnings.push(`${alert.city}: ${alert.detail}`);
       }
     }
     if (artifact.file === "upcoming-meetings.json" && data.meetings) {

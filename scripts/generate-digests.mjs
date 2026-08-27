@@ -15,11 +15,20 @@
 import { readFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+import { callClaude } from "./lib/claude.mjs";
+import {
+  auditDigestFreshness,
+  formatFreshnessAlert,
+  MAX_DIGEST_AGE_DAYS,
+} from "./lib/digest-staleness.mjs";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { writeFileAtomic } from "./lib/io.mjs";
+import { catSignal } from "./lib/notify.mjs";
 import {
+  fetchEscribePastMeeting,
   legistarMeetingUrl,
   ptDateISO,
+  substantiveAgendaTitles,
   verifyLegistarBodyOnDate,
   verifyPrimeGovBodyOnDate,
 } from "./lib/civic-meetings.mjs";
@@ -35,8 +44,6 @@ if (!ANTHROPIC_API_KEY) {
   process.exit(1);
 }
 
-const CLAUDE_SONNET = "claude-sonnet-5";
-
 // ── City config (SBS city IDs → Stoa city names + schedule) ──
 
 // `legistar` is the public *.legistar.com subdomain (used to build agenda links).
@@ -44,7 +51,21 @@ const CLAUDE_SONNET = "claude-sonnet-5";
 // Palo Alto differ). Both are needed because the public site and the Web API
 // don't always agree.
 const CITIES = [
-  { city: "campbell",      stoaCity: "Campbell",      cityName: "Campbell",      schedule: "1st and 3rd Tuesday",   agendaUrl: "https://pub-campbell.escribemeetings.com/" },
+  // Campbell has no Legistar client, so when Stoa's ingestion stalls there is
+  // nothing behind it. It stalled from 2026-07-09 to at least 2026-08-27 while
+  // the council kept meeting (Aug 3, Aug 18), and the digest quietly reran the
+  // July 7 record the whole time. `escribe` is the first-party archive.
+  { city: "campbell",      stoaCity: "Campbell",      cityName: "Campbell",      schedule: "1st and 3rd Tuesday",   agendaUrl: "https://pub-campbell.escribemeetings.com/",
+    escribe: {
+      host: "pub-campbell.escribemeetings.com",
+      // Executive sessions are closed to the public; they are not city business
+      // a resident can read about, and eScribe files them as their own type.
+      meetingTypes: [
+        "City Council Regular Session Meeting",
+        "City Council Special Meeting",
+        "City Council Study Session",
+      ],
+    } },
   { city: "saratoga",      stoaCity: "Saratoga",      cityName: "Saratoga",      schedule: "1st and 3rd Wednesday", agendaUrl: "https://www.saratoga.ca.us/AgendaCenter/City-Council-13" },
   { city: "los-altos",     stoaCity: "Los Altos",     cityName: "Los Altos",     schedule: "2nd and 4th Tuesday",   agendaUrl: "https://losaltosca.portal.civicclerk.com/" },
   { city: "los-gatos",     stoaCity: "Los Gatos",     cityName: "Los Gatos",     schedule: "1st and 3rd Tuesday",   agendaUrl: "https://losgatos-ca.municodemeetings.com/", councilBody: "Town Council" },
@@ -143,11 +164,7 @@ async function fetchLegistarPastMeeting(client) {
     );
     if (!itemsRes.ok) continue;
     const items = await itemsRes.json();
-    const substantive = items
-      .map((i) => (i.EventItemTitle || "").split(/\r?\n/)[0].trim())
-      .filter((t) => t.length > 25 && t.length < 300)
-      .filter((t) => !/^(roll call|call to order|pledge of allegiance|adjournment|closed session|public comment|consent calendar|recess)/i.test(t))
-      .filter((t) => t !== t.toUpperCase());
+    const substantive = substantiveAgendaTitles(items.map((i) => i.EventItemTitle));
     if (substantive.length < 2) continue;
 
     const excerpt = substantive.slice(0, 12).join(". ");
@@ -266,24 +283,22 @@ Match the source's wording on sensitive framing. If the agenda says "federal civ
 
 Match the agenda's exact CEQA determination. "Not a Project" and "Exempt" are different findings — an item the agenda marks "Not a Project" is outside CEQA entirely, so never describe it as exempt or as having an exemption.`;
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model: CLAUDE_SONNET,
-      max_tokens: 512,
-      messages: [{ role: "user", content: prompt }],
-    }),
+  // Go through the shared client: it disables extended thinking and raises a
+  // named error on truncation. This call used to be an inline fetch asking for
+  // 512 tokens with thinking left on, which on claude-sonnet-5 means the
+  // response is [thinking, text] and the thinking block eats most of the
+  // budget. Campbell's source excerpt is a garbled meeting transcript rather
+  // than a clean agenda, so it drew the longest reasoning of any city and blew
+  // the ceiling on roughly three runs in four (measured 2026-08-27: 9/12
+  // truncated at 512, 0/12 at the current settings). The truncated JSON had no
+  // closing brace, the regex below found nothing, and the throw was swallowed
+  // by carryForward("summarize-failed") — seven weeks of a stale digest.
+  const text = await callClaude(prompt, {
+    apiKey: ANTHROPIC_API_KEY,
+    maxTokens: 1500,
+    label: `digest:${config.city}`,
   });
 
-  if (!res.ok) throw new Error(`Claude API error: ${res.status} ${await res.text()}`);
-
-  const msg = await res.json();
-  const text = msg.content?.find((c) => c.type === "text")?.text ?? "";
   // Extract the first JSON object from the response (handles trailing text/preamble)
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error(`No JSON in Claude response: ${text.substring(0, 100)}`);
@@ -400,8 +415,17 @@ async function main() {
       console.warn(`  ⚠️  ${config.cityName}: previous digest (${prev.meetingDateIso}) is also >9 months old — not carrying forward (city=${config.city}, reason=${reason})`);
       return;
     }
-    digests[config.city] = { ...prev, carriedForward: true, carryForwardReason: reason };
-    console.warn(`  ↻ ${config.cityName}: carrying forward previous digest (${prev.meetingDateIso}) (city=${config.city}, reason=${reason})`);
+    // Count consecutive carried-forward runs so a persistent gap is separable
+    // from one bad night. A successful run writes a fresh object without the
+    // field, which resets the streak.
+    const runs = (Number(prev.carriedForwardRuns) || 0) + 1;
+    digests[config.city] = {
+      ...prev,
+      carriedForward: true,
+      carryForwardReason: reason,
+      carriedForwardRuns: runs,
+    };
+    console.warn(`  ↻ ${config.cityName}: carrying forward previous digest (${prev.meetingDateIso}), run ${runs} in a row (city=${config.city}, reason=${reason})`);
   }
 
   // Cutoff: if Stoa's record is older than this, try Legistar fallback
@@ -412,11 +436,14 @@ async function main() {
     let meeting = byCity[config.stoaCity];
 
     const stoaStale = !meeting || meeting.date < stoaStaleCutoff;
-    if (stoaStale && config.legistarApi) {
+    if (stoaStale && (config.legistarApi || config.escribe)) {
       const stoaDateLabel = meeting ? meeting.date : "none";
-      process.stdout.write(`  ↻ ${config.cityName}: Stoa stale (${stoaDateLabel}), trying Legistar...`);
+      const provider = config.legistarApi ? "Legistar" : "eScribe";
+      process.stdout.write(`  ↻ ${config.cityName}: Stoa stale (${stoaDateLabel}), trying ${provider}...`);
       try {
-        const fallback = await fetchLegistarPastMeeting(config.legistarApi);
+        const fallback = config.legistarApi
+          ? await fetchLegistarPastMeeting(config.legistarApi)
+          : await fetchEscribePastMeeting(config.escribe);
         if (fallback && (!meeting || fallback.date > meeting.date)) {
           meeting = fallback;
           console.log(` ✅ got ${fallback.date}`);
@@ -501,13 +528,16 @@ async function main() {
         // relabeled to a committee or commission above, that cadence doesn't
         // apply — omit it rather than pair the wrong body with the wrong meets-on.
         schedule: /council\b/i.test(bodyLabel) ? config.schedule : null,
-        // config.agendaUrl is the *City Council* agenda page. When the digest
-        // was relabeled to another body above, citing it misattributes the item
-        // to a body that never heard it — Palo Alto's Aug 6 2026 ARB wireless
-        // item shipped pointing at the Council page. Prefer the relabeled
-        // body's own per-meeting agenda whenever the verifier found one.
+        // config.agendaUrl is the *City Council* agenda page, and it is the last
+        // resort. When the digest was relabeled to another body above, citing it
+        // misattributes the item to a body that never heard it — Palo Alto's
+        // Aug 6 2026 ARB wireless item shipped pointing at the Council page — so
+        // the relabeled body's own agenda wins. A first-party fallback likewise
+        // already knows the exact page it read, and citing the portal's landing
+        // page instead makes the reader hunt for the meeting being summarized.
         sourceUrl:
           bodySourceUrl
+          ?? meeting.sourceUrl
           ?? (config.legistar ? legistarMeetingUrl(config.legistar, meeting.date) : config.agendaUrl),
         generatedAt: new Date().toISOString(),
       };
@@ -525,11 +555,42 @@ async function main() {
   // Preserve existing file if no digests were generated (e.g. API credits exhausted)
   if (Object.keys(digests).length === 0) {
     console.warn("\n⚠️  No digests generated — preserving existing digests.json");
+    await reportFreshness(previousDigests, today, "no digests generated this run");
     return;
   }
 
   writeFileAtomic(OUT_PATH, JSON.stringify(digests, null, 2) + "\n");
   console.log(`\nDone — ${Object.keys(digests).length} digests written to ${OUT_PATH}`);
+
+  await reportFreshness(digests, today);
+}
+
+// The carry-forward above is deliberately soft, which is why nobody noticed it
+// running for seven weeks. Close that loop: say out loud, every run, which
+// cities are publishing something a resident would call current — and DM #tasks
+// when one isn't. See lib/digest-staleness.mjs for why the published meeting
+// date, not the carry-forward streak, is the signal that actually tracks this.
+async function reportFreshness(digests, today, context = "") {
+  const { alerts, ok } = auditDigestFreshness({ cities: CITIES, digests, today });
+  if (ok) {
+    console.log(`✅ freshness: all ${CITIES.length} cities within ${MAX_DIGEST_AGE_DAYS} days`);
+    return;
+  }
+
+  console.warn(`\n⚠️  freshness: ${alerts.length} of ${CITIES.length} cities need attention`);
+  for (const alert of alerts) console.warn(`   ${alert.cityName}: ${alert.detail}`);
+
+  await catSignal({
+    key: "digest-staleness",
+    title: "Council digests are going stale",
+    body:
+      (context ? `${context}\n\n` : "") +
+      `${alerts.length} of ${CITIES.length} city digests are past the ` +
+      `${MAX_DIGEST_AGE_DAYS}-day floor or stuck on a carried-forward card:\n\n` +
+      `${formatFreshnessAlert(alerts)}\n\n` +
+      "Fix the upstream source (Stoa ingestion or the city's own portal), then " +
+      "re-run `npm run generate-digests`.",
+  });
 }
 
 main().catch((err) => {
