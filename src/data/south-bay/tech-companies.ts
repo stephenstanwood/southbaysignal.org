@@ -2557,6 +2557,32 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     color: "#1d4ed8",
     url: "https://deepinfra.com",
   },
+  {
+    id: "gatik-series-d",
+    name: "Gatik",
+    city: "Santa Clara",
+    category: "robotics",
+    round: "Series D",
+    amount: "$200M",
+    date: "2026-08-25",
+    tagline:
+      "Most self-driving companies chase the hardest version of the problem. Gatik picked the boring one on purpose: the short, repeated hauls between a retailer's distribution center and its stores, run over and over on the same roads until the route is effectively memorized. That focus has made it one of the few autonomous companies with a real book of business — more than $600M in contracted revenue, 85,000 fully driverless orders delivered at 99% on-time, and trucks running with nobody in the cab for Walmart, Kroger, Tyson Foods, Loblaw, and a PepsiCo deployment of 41 driverless trucks across Dallas, Phoenix, and Northwest Arkansas. The Qatar Investment Authority and Koch Disruptive Technologies co-led the $200M Series D, with Millennium Management, ARK Invest, and Intact Private Capital joining, taking the company to roughly $500M raised since it left stealth in 2019. Co-founder and CEO Gautam Narang plans to hire past the current 350-person team and grow the fleet from dozens of driverless trucks to thousands.",
+    color: "#1d4ed8",
+    url: "https://www.gatik.ai",
+  },
+  {
+    id: "celera-semiconductor-series-b",
+    name: "Celera Semiconductor",
+    city: "Santa Clara",
+    category: "eda",
+    round: "Series B",
+    amount: "$30M",
+    date: "2026-08-25",
+    tagline:
+      "Digital chip design got automated decades ago; analog never did, and it is still largely drawn by hand by a shrinking population of specialists. Celera's answer is Nesto, a patented library of digital twins of analog functions that lets software do the work — the company says it can deliver full-custom or standard analog parts in a fraction of the time a traditional semiconductor company takes. Maverick Silicon, already Celera's largest investor, funded the entire $30M Series B on its own. The money accelerates the AI design-automation roadmap and customer projects, and expands the SiliconGate product-development and design-automation team in Portugal that Celera acquired, alongside new analog and AI design hires in California under CEO Patrick Brockett.",
+    color: "#7c3aed",
+    url: "https://www.celerasemi.com",
+  },
 ];
 
 // Pulse stats for the header strip. The third slot ("Raised in Q1–Q2 …") is
