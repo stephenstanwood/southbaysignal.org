@@ -1,3 +1,5 @@
+import { looksLikeReadableAgenda, parseAgendaOutline } from "./agenda-outline.mjs";
+
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const CLOCK = /^([01]\d|2[0-3]):[0-5]\d$/;
 
@@ -454,6 +456,15 @@ export async function verifyPrimeGovBodyOnDate(domain, dateIso, recordText = "")
 // 2026-08-27 GetCalendarMeetings returned nothing for July through December
 // while PastMeetings listed regular sessions on August 3 and August 18.
 
+// How many agenda items reach the summarizer.
+//
+// Consent-calendar items come first and there can be fifteen of them, so a low
+// cap spends the whole excerpt on check registers and final map approvals and
+// truncates away the item a resident actually needs — Saratoga's Aug 19 agenda
+// lost a 25-lot subdivision appeal and a five-year Sheriff's contract at 12.
+// Every South Bay council agenda seen so far fits inside 20.
+const MAX_AGENDA_ITEMS = 20;
+
 const ESCRIBE_UA = "SouthBaySignal/1.0 (stanwood.dev; civic data aggregator)";
 
 /**
@@ -656,7 +667,7 @@ export async function fetchEscribePastMeeting({
         meetingType: "City Council",
         title: `City Council — ${date}`,
         excerpt: items
-          .slice(0, 12)
+          .slice(0, MAX_AGENDA_ITEMS)
           .map((item) => (item.action ? `${item.title} — ${item.action}` : item.title))
           .join("\n"),
         keywords: items.slice(0, 5).map((item) => item.title),
@@ -664,6 +675,216 @@ export async function fetchEscribePastMeeting({
         sourceUrl: agendaUrl,
       };
     }
+  }
+  return null;
+}
+
+// ── Plain-text agenda portals (Los Altos, Saratoga) ─────────────────────────
+//
+// Neither city exposes agenda items as records. Los Altos (CivicClerk) will
+// hand back the agenda PDF already converted to text; Saratoga (CivicEngage)
+// serves a PDF and nothing else. Both come out the far side as a numbered
+// outline, which lib/agenda-outline.mjs knows how to read.
+
+const AGENDA_UA = "SouthBaySignal/1.0 (stanwood.dev; civic data aggregator)";
+// CivicEngage answers a bare bot UA with an interstitial rather than the file.
+const BROWSER_UA =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
+
+/**
+ * Rebuild a PDF's visual lines from glyph positions.
+ *
+ * pdf.js emits positioned runs, not lines, so `extractText` loses the outline
+ * structure the parser keys on. Group runs by baseline, order by x, and insert
+ * a space wherever the horizontal gap says the city's typesetting had one —
+ * concatenating blind produced Saratoga's
+ * "ApproveacontractwithSpecifiedPlayEquipmentCo.".
+ */
+export async function pdfTextLines(buffer) {
+  const { getDocumentProxy } = await import("unpdf");
+  const pdf = await getDocumentProxy(new Uint8Array(buffer));
+  const lines = [];
+  for (let n = 1; n <= pdf.numPages; n += 1) {
+    const content = await (await pdf.getPage(n)).getTextContent();
+    const rows = new Map();
+    for (const item of content.items) {
+      if (typeof item.str !== "string" || !item.str.trim()) continue;
+      const y = Math.round(item.transform[5]);
+      if (!rows.has(y)) rows.set(y, []);
+      rows.get(y).push({ x: item.transform[4], width: item.width ?? 0, str: item.str });
+    }
+    for (const y of [...rows.keys()].sort((a, b) => b - a)) {
+      const runs = rows.get(y).sort((a, b) => a.x - b.x);
+      let line = "";
+      let cursor = null;
+      for (const run of runs) {
+        const gap = cursor === null ? 0 : run.x - cursor;
+        if (line && gap > 1 && !/\s$/.test(line) && !/^\s/.test(run.str)) line += " ";
+        line += run.str;
+        cursor = run.x + run.width;
+      }
+      lines.push(line);
+    }
+  }
+  return lines.join("\n");
+}
+
+/** Shape an agenda outline into the upstream record the digest pipeline reads. */
+function agendaRecord({ id, date, items, sourceUrl, source }) {
+  const usable = items.filter((item) => isSubstantiveAgendaTitle(item.title));
+  // One line is a procedural stub, not an agenda worth summarizing — the same
+  // floor every other past-meeting fallback uses.
+  if (usable.length < 2) return null;
+  return {
+    id,
+    city: null,
+    date,
+    meetingType: "City Council",
+    title: `City Council — ${date}`,
+    excerpt: usable
+      .slice(0, MAX_AGENDA_ITEMS)
+      .map((item) => (item.detail ? `${item.title} — ${item.detail}` : item.title))
+      .join("\n"),
+    keywords: usable.slice(0, 5).map((item) => item.title),
+    source,
+    sourceUrl,
+  };
+}
+
+/**
+ * Most recent past council meeting published on a CivicClerk portal.
+ *
+ * CivicClerk stores the agenda as a PDF but will convert it on request:
+ * `GetMeetingFileStream(fileId=N,plainText=true)` returns the text directly, so
+ * this path never has to parse a PDF.
+ */
+export async function fetchCivicClerkPastMeeting({
+  apiHost,
+  category = "City Council",
+  today = ptDateISO(),
+  maxCandidates = 3,
+} = {}) {
+  const url = new URL(`https://${apiHost}/v1/Events`);
+  url.searchParams.set("$filter", `categoryName eq '${category}' and eventDate lt ${today}T23:59:59Z`);
+  url.searchParams.set("$orderby", "eventDate desc");
+  url.searchParams.set("$top", "20");
+
+  const res = await fetch(url, {
+    headers: { "User-Agent": AGENDA_UA, Accept: "application/json" },
+    signal: AbortSignal.timeout(20_000),
+  });
+  if (!res.ok) throw new Error(`CivicClerk HTTP ${res.status}`);
+  const events = (await res.json())?.value ?? [];
+
+  const candidates = events
+    .filter((event) => event?.hasAgenda && !event?.isDeleted)
+    // A closed session is not public business a resident can read about.
+    .filter((event) => !isClosedSessionMeeting({ bodyName: event.eventName, description: event.eventDescription }))
+    .map((event) => ({ event, date: String(event.eventDate ?? "").slice(0, 10) }))
+    .filter(({ date }) => /^\d{4}-\d{2}-\d{2}$/.test(date) && date <= today);
+
+  for (const { event, date } of candidates.slice(0, maxCandidates)) {
+    const agenda = (event.publishedFiles ?? []).find((f) => f?.type === "Agenda" && f?.fileId);
+    if (!agenda) continue;
+    const fileUrl = `https://${apiHost}/v1/Meetings/GetMeetingFileStream(fileId=${agenda.fileId},plainText=true)`;
+    let text;
+    try {
+      const fileRes = await fetch(fileUrl, {
+        headers: { "User-Agent": AGENDA_UA },
+        signal: AbortSignal.timeout(30_000),
+      });
+      if (!fileRes.ok) continue;
+      text = await fileRes.text();
+    } catch {
+      continue;
+    }
+    if (!looksLikeReadableAgenda(text)) continue;
+
+    const record = agendaRecord({
+      id: `civicclerk-${apiHost}-${event.id}`,
+      date,
+      items: parseAgendaOutline(text),
+      source: "civicclerk-direct",
+      sourceUrl: `https://${apiHost.replace(/\.api\./, ".portal.")}/event/${event.id}/files`,
+    });
+    if (record) return record;
+  }
+  return null;
+}
+
+// A CivicEngage agenda link: /AgendaCenter/ViewFile/Agenda/_MMDDYYYY-1465
+const CIVICENGAGE_AGENDA_LINK =
+  /<a[^>]+href="([^"]*\/AgendaCenter\/ViewFile\/Agenda\/_(\d{2})(\d{2})(\d{4})-\d+)"[^>]*>([\s\S]*?)<\/a>/gi;
+
+// Cities post machine-translated agendas beside the English one. Their text
+// layer is a font subset that decodes to mojibake, so they are unreadable to a
+// summarizer even when they parse — Saratoga's Chinese agenda comes out as
+// `!"#$%&%'(')*+,-./`. looksLikeReadableAgenda is the backstop; this is the
+// cheaper first pass, since it avoids downloading them at all.
+const TRANSLATED_AGENDA =
+  /\b(chinese|spanish|vietnamese|korean|tagalog|japanese|russian|arabic|farsi|hindi|punjabi|espa[nñ]ol)\b/i;
+
+/**
+ * Past agenda documents linked from a CivicEngage agenda center, newest first.
+ *
+ * Exported for its own sake: the translation filter is the only thing standing
+ * between the digest and an unreadable PDF, and it is worth testing without a
+ * network round trip.
+ */
+export function parseCivicEngageAgendaLinks(html, { baseUrl, today = ptDateISO() } = {}) {
+  const seen = new Set();
+  const candidates = [];
+  for (const match of String(html ?? "").matchAll(CIVICENGAGE_AGENDA_LINK)) {
+    const [, href, month, day, year, rawLabel] = match;
+    const date = `${year}-${month}-${day}`;
+    if (date > today) continue;
+    const label = rawLabel.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    if (TRANSLATED_AGENDA.test(label)) continue;
+    const url = href.startsWith("http") ? href : `${baseUrl}${href}`;
+    if (seen.has(url)) continue;
+    seen.add(url);
+    candidates.push({ url, date, label });
+  }
+  return candidates.sort((a, b) => b.date.localeCompare(a.date));
+}
+
+/** Most recent past council meeting published on a CivicEngage agenda center. */
+export async function fetchCivicEngagePastMeeting({
+  baseUrl,
+  calendarId,
+  today = ptDateISO(),
+  maxCandidates = 3,
+} = {}) {
+  const indexUrl = `${baseUrl}/AgendaCenter/${calendarId}`;
+  const res = await fetch(indexUrl, {
+    headers: { "User-Agent": BROWSER_UA },
+    signal: AbortSignal.timeout(20_000),
+  });
+  if (!res.ok) throw new Error(`CivicEngage HTTP ${res.status}`);
+  const candidates = parseCivicEngageAgendaLinks(await res.text(), { baseUrl, today });
+
+  for (const { url, date } of candidates.slice(0, maxCandidates)) {
+    let text;
+    try {
+      const fileRes = await fetch(url, {
+        headers: { "User-Agent": BROWSER_UA },
+        signal: AbortSignal.timeout(45_000),
+      });
+      if (!fileRes.ok) continue;
+      text = await pdfTextLines(await fileRes.arrayBuffer());
+    } catch {
+      continue;
+    }
+    if (!looksLikeReadableAgenda(text)) continue;
+
+    const record = agendaRecord({
+      id: `civicengage-${calendarId}-${date}`,
+      date,
+      items: parseAgendaOutline(text),
+      source: "civicengage-direct",
+      sourceUrl: url,
+    });
+    if (record) return record;
   }
   return null;
 }
