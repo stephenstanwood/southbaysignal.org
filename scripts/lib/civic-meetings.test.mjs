@@ -8,6 +8,7 @@ import {
   extractEscribeAgendaItems,
   extractEscribeAgendaTitles,
   isSubstantiveAgendaTitle,
+  parseCivicEngageAgendaLinks,
   substantiveAgendaTitles,
   formatMeetingTime,
   isClosedSessionMeeting,
@@ -409,4 +410,59 @@ test("escribeAgendaUrl points at the meeting's own agenda page", () => {
     escribeAgendaUrl("pub-campbell.escribemeetings.com", "6561dfc6-9aed-4336-b160-074b064d588b"),
     "https://pub-campbell.escribemeetings.com/Meeting.aspx?Id=6561dfc6-9aed-4336-b160-074b064d588b&Agenda=Agenda&lang=English",
   );
+});
+
+// ── CivicEngage agenda index ────────────────────────────────────────────────
+// Trimmed from the real saratoga.ca.us/AgendaCenter/City-Council-13 markup.
+
+const SARATOGA_INDEX = `
+<h2><a href="/AgendaCenter/ViewFile/Agenda/_08192026-1465">City Council Regular Meeting Agenda</a></h2>
+<a href="/AgendaCenter/ViewFile/Agenda/_08192026-1465"><span>Agenda</span></a>
+<a href="/AgendaCenter/PreviousVersions/_08192026-1465">Previous Versions</a>
+<h2><a href="/AgendaCenter/ViewFile/Agenda/_08192026-1466">City Council Meeting Chinese Agenda</a></h2>
+<h2><a href="/AgendaCenter/ViewFile/Agenda/_08112026-1461">Special City Council Meeting Agenda</a></h2>
+<h2><a href="/AgendaCenter/ViewFile/Agenda/_09022026-1470">City Council Regular Meeting Agenda</a></h2>
+<h2><a href="/AgendaCenter/ViewFile/Minutes/_07012026-1455">City Council Regular Meeting Minutes</a></h2>
+`;
+
+test("parseCivicEngageAgendaLinks returns past agendas newest first, absolutized", () => {
+  const links = parseCivicEngageAgendaLinks(SARATOGA_INDEX, {
+    baseUrl: "https://www.saratoga.ca.us",
+    today: "2026-08-27",
+  });
+  assert.deepEqual(links.map((l) => l.date), ["2026-08-19", "2026-08-11"]);
+  assert.equal(links[0].url, "https://www.saratoga.ca.us/AgendaCenter/ViewFile/Agenda/_08192026-1465");
+});
+
+// The city posts a machine-translated agenda beside the English one. Its PDF
+// text layer is a font subset that decodes to mojibake, so a summarizer handed
+// it produces confident nonsense.
+test("parseCivicEngageAgendaLinks skips translated agendas", () => {
+  const links = parseCivicEngageAgendaLinks(SARATOGA_INDEX, {
+    baseUrl: "https://www.saratoga.ca.us",
+    today: "2026-08-27",
+  });
+  assert.ok(!links.some((l) => /1466/.test(l.url)), "the Chinese agenda must not be a candidate");
+});
+
+test("parseCivicEngageAgendaLinks ignores future meetings and minutes", () => {
+  const links = parseCivicEngageAgendaLinks(SARATOGA_INDEX, {
+    baseUrl: "https://www.saratoga.ca.us",
+    today: "2026-08-27",
+  });
+  assert.ok(!links.some((l) => l.date === "2026-09-02"), "an agenda for a meeting that has not happened is not a digest");
+  assert.ok(!links.some((l) => /Minutes/.test(l.url)), "minutes are a different document");
+});
+
+test("parseCivicEngageAgendaLinks dedupes the title and download links to one entry", () => {
+  const links = parseCivicEngageAgendaLinks(SARATOGA_INDEX, {
+    baseUrl: "https://www.saratoga.ca.us",
+    today: "2026-08-27",
+  });
+  assert.equal(links.filter((l) => l.date === "2026-08-19").length, 1);
+});
+
+test("parseCivicEngageAgendaLinks survives an empty or unrecognized page", () => {
+  assert.deepEqual(parseCivicEngageAgendaLinks("", { baseUrl: "https://example.gov" }), []);
+  assert.deepEqual(parseCivicEngageAgendaLinks(null, { baseUrl: "https://example.gov" }), []);
 });

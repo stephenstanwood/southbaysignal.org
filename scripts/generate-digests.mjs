@@ -25,6 +25,8 @@ import { loadEnvLocal } from "./lib/env.mjs";
 import { writeFileAtomic } from "./lib/io.mjs";
 import { catSignal } from "./lib/notify.mjs";
 import {
+  fetchCivicClerkPastMeeting,
+  fetchCivicEngagePastMeeting,
   fetchEscribePastMeeting,
   legistarMeetingUrl,
   ptDateISO,
@@ -66,8 +68,16 @@ const CITIES = [
         "City Council Study Session",
       ],
     } },
-  { city: "saratoga",      stoaCity: "Saratoga",      cityName: "Saratoga",      schedule: "1st and 3rd Wednesday", agendaUrl: "https://www.saratoga.ca.us/AgendaCenter/City-Council-13" },
-  { city: "los-altos",     stoaCity: "Los Altos",     cityName: "Los Altos",     schedule: "2nd and 4th Tuesday",   agendaUrl: "https://losaltosca.portal.civicclerk.com/" },
+  // Stoa's newest Saratoga record with real content sat at 2026-06-03 for
+  // eleven weeks — the June 17 one is a 17-char stub ("RESOLUTION 26-034")
+  // that fails hasRealContent — while the council met on Aug 11 and Aug 19.
+  { city: "saratoga",      stoaCity: "Saratoga",      cityName: "Saratoga",      schedule: "1st and 3rd Wednesday", agendaUrl: "https://www.saratoga.ca.us/AgendaCenter/City-Council-13",
+    civicengage: { baseUrl: "https://www.saratoga.ca.us", calendarId: "City-Council-13" } },
+  // Los Altos had no digest at all between 2026-04-13 and 2026-08-27: Stoa
+  // returns only far-future CivicClerk stubs for it, so there was never a past
+  // meeting to summarize and carryForward had nothing left to hold onto.
+  { city: "los-altos",     stoaCity: "Los Altos",     cityName: "Los Altos",     schedule: "2nd and 4th Tuesday",   agendaUrl: "https://losaltosca.portal.civicclerk.com/",
+    civicclerk: { apiHost: "losaltosca.api.civicclerk.com" } },
   { city: "los-gatos",     stoaCity: "Los Gatos",     cityName: "Los Gatos",     schedule: "1st and 3rd Tuesday",   agendaUrl: "https://losgatos-ca.municodemeetings.com/", councilBody: "Town Council" },
   { city: "san-jose",      stoaCity: "San Jose",      cityName: "San José",      schedule: "1st and 3rd Tuesday",   agendaUrl: "https://sanjose.legistar.com/Calendar.aspx",      legistar: "sanjose",      legistarApi: "sanjose" },
   { city: "mountain-view", stoaCity: "Mountain View", cityName: "Mountain View", schedule: "2nd and 4th Tuesday",   agendaUrl: "https://mountainview.legistar.com/Calendar.aspx", legistar: "mountainview", legistarApi: "mountainview" },
@@ -77,11 +87,14 @@ const CITIES = [
   // Milpitas + Palo Alto digests stall when Stoa lacks full agenda text: recent
   // Milpitas records are CivicClerk stubs ("Meeting record available on...") that
   // fail hasRealContent, and recent Palo Alto records are commission/item-level
-  // rather than City Council. The fix belongs upstream in Stoa ingestion.
+  // rather than City Council. The real fix is upstream in Stoa ingestion;
+  // Milpitas now has a first-party fallback for when it stalls, Palo Alto does
+  // not (PrimeGov is read only to verify which body met, not for agenda text).
   // Palo Alto has no legistarApi: webapi.legistar.com/v1/paloalto is not a
   // provisioned client (500 "connection string not set up") even though the
   // public paloalto.legistar.com calendar exists for source links.
-  { city: "milpitas",      stoaCity: "Milpitas",      cityName: "Milpitas",      schedule: "1st and 3rd Tuesday",   agendaUrl: "https://www.milpitas.gov/129/Agendas-Minutes" },
+  { city: "milpitas",      stoaCity: "Milpitas",      cityName: "Milpitas",      schedule: "1st and 3rd Tuesday",   agendaUrl: "https://www.milpitas.gov/129/Agendas-Minutes",
+    civicclerk: { apiHost: "milpitasca.api.civicclerk.com" } },
   // Palo Alto left Legistar — paloalto.legistar.com answers "Invalid parameters!"
   // for every request, so `legistar:` here only produced dead source links and a
   // body check that silently no-opped. PrimeGov is the live system of record.
@@ -182,6 +195,26 @@ async function fetchLegistarPastMeeting(client) {
   return null;
 }
 
+
+// Every city whose Stoa records have gone quiet reads from its own portal
+// instead. Ordered by preference: Legistar returns structured event items, the
+// rest return an agenda document this has to parse. A city with no entry here
+// has no fallback — it carries forward and the freshness audit says so.
+function pastMeetingFallback(config) {
+  if (config.legistarApi) {
+    return { provider: "Legistar", fetch: () => fetchLegistarPastMeeting(config.legistarApi) };
+  }
+  if (config.escribe) {
+    return { provider: "eScribe", fetch: () => fetchEscribePastMeeting(config.escribe) };
+  }
+  if (config.civicclerk) {
+    return { provider: "CivicClerk", fetch: () => fetchCivicClerkPastMeeting(config.civicclerk) };
+  }
+  if (config.civicengage) {
+    return { provider: "CivicEngage", fetch: () => fetchCivicEngagePastMeeting(config.civicengage) };
+  }
+  return null;
+}
 
 // ── Claude summarization ──
 
@@ -436,14 +469,12 @@ async function main() {
     let meeting = byCity[config.stoaCity];
 
     const stoaStale = !meeting || meeting.date < stoaStaleCutoff;
-    if (stoaStale && (config.legistarApi || config.escribe)) {
+    const fallbackSource = pastMeetingFallback(config);
+    if (stoaStale && fallbackSource) {
       const stoaDateLabel = meeting ? meeting.date : "none";
-      const provider = config.legistarApi ? "Legistar" : "eScribe";
-      process.stdout.write(`  ↻ ${config.cityName}: Stoa stale (${stoaDateLabel}), trying ${provider}...`);
+      process.stdout.write(`  ↻ ${config.cityName}: Stoa stale (${stoaDateLabel}), trying ${fallbackSource.provider}...`);
       try {
-        const fallback = config.legistarApi
-          ? await fetchLegistarPastMeeting(config.legistarApi)
-          : await fetchEscribePastMeeting(config.escribe);
+        const fallback = await fallbackSource.fetch();
         if (fallback && (!meeting || fallback.date > meeting.date)) {
           meeting = fallback;
           console.log(` ✅ got ${fallback.date}`);
