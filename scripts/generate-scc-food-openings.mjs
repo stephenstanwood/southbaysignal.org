@@ -100,6 +100,13 @@ const CITYLINE_OFFICE_PATTERN = /\bB\d{2,3}\s+CITYLINE\b/i;
 // Gas station brands — convenience stores at gas stations aren't restaurant openings
 const GAS_STATION_PATTERNS = /\b(SHELL|CHEVRON|ARCO|MOBIL|EXXON|VALERO|BP|CIRCLE K|76 GAS|TEXACO|SINCLAIR|SUNOCO|MARATHON|PHILLIPS 66|LOVE'S|PILOT)\b/i;
 
+// Independent fuel-station markets that carry no national brand in the permit
+// name. "Sunnyvale Fast Fill Market #2" (1689 S Wolfe Rd) is the second store
+// from the operator of Sunnyvale Fast Fill #1 & Gulf at 1697 S Wolfe — a pumps
+// -and-snacks counter, the exact thing GAS_STATION_PATTERNS exists to drop,
+// just without a brand word for it to match on.
+const FUEL_MART_PATTERNS = /\bFAST\s*FILL\b|\bGAS\s*(?:&|AND)\s*WASH\b|\bFUEL\s+(?:MART|STOP|CENTER)\b|\bTRUCK\s+STOP\b/i;
+
 // Large-venue concessions — stands inside a stadium, arena, convention center,
 // or amphitheatre file health permits but aren't neighborhood restaurants: you
 // can only reach them with an event ticket. Same reasoning as the corporate
@@ -248,6 +255,15 @@ function cleanName(raw) {
   // Requires a following word so a real name is never swallowed whole.
   s = s.replace(/^RTI\b[\s-]*(?=\S)/i, "").trim();
 
+  // Same code spelled out in front of the name: "E-RESTAURANT TI - ALPHA X"
+  // (1019 N San Antonio Rd, Los Altos) published with "Restaurant Ti - " still
+  // attached. Only stripped when a real name follows, so the bare-placeholder
+  // check below still nulls out a name that is nothing but the permit type.
+  s = s.replace(
+    /^(?:RESTAURANT|KITCHEN|FOOD)\s+T\.?\s?I\.?\s*[-–]\s*(?=\S)/i,
+    "",
+  ).trim();
+
   // Strip leading food-hall stall codes ("K107 BAYBAJA KITCHEN",
   // "K115-MUMBAI EXPRESS" at 1026 W Evelyn Ave in Sunnyvale). The unit is
   // already carried in the address, so in the name it just reads as noise.
@@ -256,6 +272,8 @@ function cleanName(raw) {
 
   // If the whole thing is a generic tenant improvement placeholder, return null
   if (/^(RESTAURANT\s+)?TENANT\s+IMPR(OVEMENT)?(\s+\d+)?$/i.test(s)) return null;
+  // Abbreviated spelling of the same placeholder ("RESTAURANT TI", "FOOD T.I.").
+  if (/^(?:RESTAURANT|KITCHEN|FOOD)\s+T\.?\s?I\.?(\s+\d+)?$/i.test(s)) return null;
 
   // Strip trailing permit artifact suffixes like "- 3 Comp Sink Install", "- TI", "- Remodel", "- Hood Install"
   s = s.replace(/\s+-\s+\d+\s+Comp\s+Sink.*$/i, "").trim();
@@ -269,6 +287,15 @@ function cleanName(raw) {
   // bare — "Remodel"/"Renovation" can be part of a real venue name, so those
   // stay behind the dash-anchored rule above.
   s = s.replace(/\s+(T\.I\.?|Tenant\s+Impr(?:ovement)?)\s*$/i, "").trim();
+
+  // The undotted spelling too ("E-TINY CROISSANTERIE TI"). The dotted rule
+  // above requires the period, and the dash-anchored rule requires a separator,
+  // so a bare trailing "TI" survived both and shipped on the card. Guarded on
+  // two or more words remaining so a short real name whose last word happens to
+  // be "Ti" ("Pho Ti") is never truncated to a single word.
+  s = s.replace(/\s+TI\s*$/i, (match, offset) => (
+    s.slice(0, offset).trim().split(/\s+/).length >= 2 ? "" : match
+  )).trim();
 
   // Strip trailing equipment-only descriptors without dash separator (e.g. "Chick Fil A Oil Tank")
   s = s.replace(/\s+(Oil\s+Tank|Grease\s+Tank|Underground\s+Tank|Tank\s+Install|Tank\s+Removal|Grease\s+Trap\s+Install|Kitchen\s+Hood|Hood\s+Install|Ansul\s+System|Fire\s+Suppression\s+System|Minor\s+Equipment\s+Change|Machine\s+Replacement|Equipment\s+Change|Equipment\s+Replacement|Equipment\s+Install|Equipment\s+Upgrade|New\s+Equipment|Gas\s+Stove|Lgt|Light\s+Equipment|New\s+Build|New\s+Food\s+Facility)\s*$/i, "").trim();
@@ -497,6 +524,7 @@ function shouldSkip(item) {
   if (NON_RESTAURANT_FACILITY.test(rawName) && !FOOD_BUSINESS_WORD.test(rawName)) return true;
   if (VARIETY_STORE_PATTERNS.test(rawName)) return true;
   if (GAS_STATION_PATTERNS.test(rawName)) return true;
+  if (FUEL_MART_PATTERNS.test(rawName)) return true;
   if (VENUE_CONCESSION_PATTERNS.test(rawName)) return true;
   if (VENUE_ADDRESS_PATTERNS.test(item.site_location ?? "")) return true;
 

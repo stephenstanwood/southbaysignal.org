@@ -116,3 +116,27 @@ test("canonical food data keeps inspections out of the verified openings feed", 
   )), true);
   assert.equal((data.opened || []).some((record) => record.sourceId === "SR0884792"), false);
 });
+
+test("canonical food data ships business names, not permit jargon", () => {
+  const data = JSON.parse(readFileSync(
+    new URL("../../src/data/south-bay/scc-food-openings.json", import.meta.url),
+    "utf8",
+  ));
+  const names = [...(data.opened || []), ...(data.comingSoon || []), ...(data.inspections || [])]
+    .map((record) => record.name || "");
+
+  // Tenant-improvement codes, in front of or behind the name. "Restaurant Ti -
+  // Alpha X" and "Tiny Croissanterie Ti" both reached the Food tab on
+  // 2026-08-27 because the existing rules required a period or a dash.
+  const permitJargon = names.filter((name) => (
+    /^(?:restaurant|kitchen|food)\s+t\.?\s?i\.?\b/i.test(name)
+    || /\bt\.?\s?i\.?\s*$/i.test(name)
+  ));
+  assert.deepEqual(permitJargon, []);
+
+  // A pumps-and-snacks counter is not a restaurant opening, brand word or not.
+  const fuelMarts = names.filter((name) => (
+    /\bfast\s*fill\b|\bgas\s*(?:&|and)\s*wash\b|\bfuel\s+(?:mart|stop|center)\b/i.test(name)
+  ));
+  assert.deepEqual(fuelMarts, []);
+});
