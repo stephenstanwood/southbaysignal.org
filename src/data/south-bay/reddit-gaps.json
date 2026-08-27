@@ -1,106 +1,90 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-26T03:18:20.182Z",
+    "generatedAt": "2026-08-27T03:17:00.283Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 13
+    "sourceCount": 10
   },
   "summary": {
-    "threadsMined": 13,
+    "threadsMined": 10,
     "placesExtracted": 3,
-    "placesMatched": 0,
-    "placeGaps": 3,
-    "eventsExtracted": 4,
+    "placesMatched": 1,
+    "placeGaps": 2,
+    "eventsExtracted": 2,
     "eventsMatched": 0,
-    "eventGaps": 4,
+    "eventGaps": 2,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "Action Day",
+      "name": "work2future Career Center",
       "city": "San Jose",
-      "kind": "other",
-      "context": "daycare on Moorpark, different experience at Allen location",
+      "kind": "service",
+      "context": "job fair location at 1608 Las Plumas Avenue",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vyixei/daycare_recommendations_in_evergreen/",
-        "https://www.reddit.com/r/SanJose/comments/1vycm7z/car_clubs/",
-        "https://www.reddit.com/r/SanJose/comments/1vybntb/day_care_recommendations_south_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1vy9uhw/volunteer_opportunities_in_the_area/",
-        "https://www.reddit.com/r/SanJose/comments/1vy729q/renting_apartment_hunting_which_buildings_do_you/"
+        "https://www.reddit.com/r/SanJose/comments/1vzefrb/dessert_places/",
+        "https://www.reddit.com/r/SanJose/comments/1vzgs9h/berryessa_is_this_your_cat/",
+        "https://www.reddit.com/r/SanJose/comments/1vzamvt/cat_groomers/",
+        "https://www.reddit.com/r/SanJose/comments/1vza2em/job_fair_tue_92926_1608_las_plumas_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vz9dts/phở_hà_nội_in_san_jose_any_good/"
       ]
     },
     {
-      "name": "Hicklebee's",
+      "name": "Barely Legal",
       "city": "San Jose",
-      "kind": "retail",
-      "context": "hosting first ever Drag Storytime event",
+      "kind": "venue",
+      "context": "used to do Rocky Horror performances downtown",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vy4guf/cute_sjc_stickers/",
-        "https://www.reddit.com/r/SanJose/comments/1vxrd0o/thank_you_to_the_good_samaritan_who_came_all_the/",
-        "https://www.reddit.com/r/SanJose/comments/1vxoewe/support_hicklebees_first_ever_drag_storytime/"
-      ]
-    },
-    {
-      "name": "San Jose Mineta International Airport",
-      "city": "San Jose",
-      "kind": "other",
-      "context": "SJC sticker collecting event at terminal A",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vy4guf/cute_sjc_stickers/",
-        "https://www.reddit.com/r/SanJose/comments/1vxrd0o/thank_you_to_the_good_samaritan_who_came_all_the/",
-        "https://www.reddit.com/r/SanJose/comments/1vxoewe/support_hicklebees_first_ever_drag_storytime/"
+        "https://www.reddit.com/r/SanJose/comments/1vz8kbf/rhps_midnight_shows/",
+        "https://www.reddit.com/r/SanJose/comments/1vz4pvv/daycare_recommendations_for_extremely_shy_toddler/",
+        "https://www.reddit.com/r/SanJose/comments/1vz112v/any_trivia_teams_looking_for_members/",
+        "https://www.reddit.com/r/SanJose/comments/1vyt81h/tplo_surgery_for_dog/",
+        "https://www.reddit.com/r/SanJose/comments/1vyp5wt/kitten_looking_for_his_forever_home/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "San Jose Giants game",
-      "when": "last week of regular season",
+      "name": "Work2future Job Fair",
+      "when": "Tuesday, September 29, 2026, 10:00am - 2:00pm",
       "city": "San Jose",
-      "context": "minor league baseball, free tickets via The Pass Bay Area",
+      "context": "in-person job fair at Las Plumas Avenue career center",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vydoka/have_you_been_to_a_san_jose_giants_game/",
-        "https://www.reddit.com/r/SanJose/comments/1vyeo8y/san_jose_releases_new_rankings_for_a_new_plaza_de/",
-        "https://www.reddit.com/r/SanJose/comments/1vyc23l/bay_area_tech_events/",
-        "https://www.reddit.com/r/SanJose/comments/1vy94jm/the_palm_trees_have_been_cut_down_what_should/",
-        "https://www.reddit.com/r/SanJose/comments/1vyjz0z/foster_needed_for_pregnant_stray_cat_in_san_jose/"
+        "https://www.reddit.com/r/SanJose/comments/1vzefrb/dessert_places/",
+        "https://www.reddit.com/r/SanJose/comments/1vzgs9h/berryessa_is_this_your_cat/",
+        "https://www.reddit.com/r/SanJose/comments/1vzamvt/cat_groomers/",
+        "https://www.reddit.com/r/SanJose/comments/1vza2em/job_fair_tue_92926_1608_las_plumas_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vz9dts/phở_hà_nội_in_san_jose_any_good/"
       ]
     },
     {
-      "name": "Tech Week",
-      "when": "October",
+      "name": "Rocky Horror Picture Show midnight performances",
+      "when": "",
       "city": "San Jose",
-      "context": "tech networking events mentioned by intern",
+      "context": "live performance shows people looking for",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vydoka/have_you_been_to_a_san_jose_giants_game/",
-        "https://www.reddit.com/r/SanJose/comments/1vyeo8y/san_jose_releases_new_rankings_for_a_new_plaza_de/",
-        "https://www.reddit.com/r/SanJose/comments/1vyc23l/bay_area_tech_events/",
-        "https://www.reddit.com/r/SanJose/comments/1vy94jm/the_palm_trees_have_been_cut_down_what_should/",
-        "https://www.reddit.com/r/SanJose/comments/1vyjz0z/foster_needed_for_pregnant_stray_cat_in_san_jose/"
-      ]
-    },
-    {
-      "name": "SJC Sticker Search",
-      "when": "ongoing, limited supplies",
-      "city": "San Jose",
-      "context": "collect airport-themed stickers at terminals",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vy4guf/cute_sjc_stickers/",
-        "https://www.reddit.com/r/SanJose/comments/1vxrd0o/thank_you_to_the_good_samaritan_who_came_all_the/",
-        "https://www.reddit.com/r/SanJose/comments/1vxoewe/support_hicklebees_first_ever_drag_storytime/"
-      ]
-    },
-    {
-      "name": "Hicklebee's Drag Storytime",
-      "when": "August 25, 5:00pm",
-      "city": "San Jose",
-      "context": "first ever drag storytime for Silicon Valley Pride",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vy4guf/cute_sjc_stickers/",
-        "https://www.reddit.com/r/SanJose/comments/1vxrd0o/thank_you_to_the_good_samaritan_who_came_all_the/",
-        "https://www.reddit.com/r/SanJose/comments/1vxoewe/support_hicklebees_first_ever_drag_storytime/"
+        "https://www.reddit.com/r/SanJose/comments/1vz8kbf/rhps_midnight_shows/",
+        "https://www.reddit.com/r/SanJose/comments/1vz4pvv/daycare_recommendations_for_extremely_shy_toddler/",
+        "https://www.reddit.com/r/SanJose/comments/1vz112v/any_trivia_teams_looking_for_members/",
+        "https://www.reddit.com/r/SanJose/comments/1vyt81h/tplo_surgery_for_dog/",
+        "https://www.reddit.com/r/SanJose/comments/1vyp5wt/kitten_looking_for_his_forever_home/"
       ]
     }
   ],
-  "placeMatches": [],
+  "placeMatches": [
+    {
+      "name": "Phở Hà Nội",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "asking if San Jose location is good, lunch wait times",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1vzefrb/dessert_places/",
+        "https://www.reddit.com/r/SanJose/comments/1vzgs9h/berryessa_is_this_your_cat/",
+        "https://www.reddit.com/r/SanJose/comments/1vzamvt/cat_groomers/",
+        "https://www.reddit.com/r/SanJose/comments/1vza2em/job_fair_tue_92926_1608_las_plumas_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1vz9dts/phở_hà_nội_in_san_jose_any_good/"
+      ],
+      "matchedName": "Phở Hà Nội"
+    }
+  ],
   "eventMatches": []
 }

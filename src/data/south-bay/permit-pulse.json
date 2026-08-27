@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-26T03:09:10.012Z",
+      "generatedAt": "2026-08-27T03:08:51.147Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 18 – Aug 25",
+      "dateRange": "Aug 19 – Aug 26",
       "stats": {
-        "total": 356,
-        "notable": 28,
-        "newUnits": 14,
-        "totalValuation": 13994970
+        "total": 357,
+        "notable": 22,
+        "newUnits": 11,
+        "totalValuation": 15060515
       },
       "permits": [
         {
@@ -111,40 +111,40 @@
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2025-143915-RS",
-          "address": "1754 Conrad Av #2",
+          "id": "2026-106336-RS",
+          "address": "3190 Vesuvius Ln #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Attached ADU",
-          "valuation": 131588,
+          "description": "Garage Conersion to ADU",
+          "valuation": 77053,
           "units": 1,
-          "issueDate": "2026-08-19",
+          "issueDate": "2026-08-20",
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2026-111985-RS",
-          "address": "1407 Kiner Av #2",
+          "id": "2026-108177-RS",
+          "address": "135 N 9th St #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Detached ADU",
-          "valuation": 104145,
+          "description": "Epr Code Amnesty Legalize Detach Garage Conversion to ADU",
+          "valuation": 75294,
           "units": 1,
-          "issueDate": "2026-08-19",
+          "issueDate": "2026-08-20",
           "subtype": "ADU   Accessory Dwelling Unit"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-26T03:09:12.445Z",
+      "generatedAt": "2026-08-27T03:08:53.443Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 18 – Aug 25",
+      "dateRange": "Aug 19 – Aug 26",
       "stats": {
-        "total": 101,
+        "total": 113,
         "notable": 2,
         "newUnits": 0,
         "totalValuation": 0
