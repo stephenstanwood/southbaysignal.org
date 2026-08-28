@@ -5,6 +5,7 @@
 //
 // Resolution cascade per company (the winning step is recorded as that row's
 // provenance in TECH_LOGO_SOURCES):
+//   0. NO_AUTO_LOGO — ids whose cascade lands on a wrong mark; skipped outright
 //   1. PINNED_WIKI_LOGOS — a hand-picked Commons file for this id
 //   2. Wikipedia/Commons search — public companies and milestones only
 //   3. icon.horse with high-res check (must be >= 64x64 and not 16x16 placeholder)
@@ -106,6 +107,19 @@ const PINNED_WIKI_LOGOS = {
   "yahoo-ipo": "Yahoo!_(2019).svg",
   "hp35-calculator": "HP_logo_2012.svg",
 };
+
+// Ids the cascade resolves to a confidently WRONG mark. The prebuild gate can
+// only catch a bad logo when two ids collide on the same bytes; a unique-but-
+// wrong image sails through it, which is how ridealso.com's Shopify storefront
+// put The Verge's wordmark on Also's funding card and how maxqmedical.com —
+// which never set a favicon — put Webflow's default webclip on MaxQ's. Skipping
+// them here leaves the card on its favicon fallback, which is honest, instead of
+// re-fetching the same wrong asset on the next plain (non---refresh) run.
+// Remove an id from this set once the company ships a real mark of its own.
+const NO_AUTO_LOGO = new Set([
+  "also-series-d", // ridealso.com is a Shopify store; resolver grabs press art
+  "maxq-medical", // no favicon set; site serves Webflow's generic webclip.png
+]);
 
 // SHARED_LOGO_GROUPS (ids that legitimately share one mark), the
 // tech-companies.ts parser, the Wikipedia-eligibility rule and both audits all
@@ -618,6 +632,10 @@ async function main() {
   let resolved = 0;
   let failed = [];
   for (const c of filtered) {
+    if (NO_AUTO_LOGO.has(c.id)) {
+      console.log(`  ${c.id.padEnd(28)} — skipped (NO_AUTO_LOGO: resolves to a wrong mark)`);
+      continue;
+    }
     if (!REFRESH && manifest[c.id]) {
       resolved++;
       continue;

@@ -48,6 +48,10 @@ export const SHARED_LOGO_GROUPS = [
   // resolving off sambanova.ai instead of Wikipedia — same brand, so this is the
   // pair agreeing, not a resolver falling through to shared site chrome.
   ["sambanova", "sambanova-series-f"],
+  // Same pattern as sambanova/etched above: Groq holds both an SCC_SPOTLIGHT
+  // card and an Aug 2026 Recently Funded round card, and both ids resolve off
+  // groq.com. One brand, two surfaces.
+  ["groq", "groq-series-a"],
 ];
 
 /** Pull one `export const <name> ... = { "k": "v", ... }` block out of generated
