@@ -1250,6 +1250,7 @@ Voice:
 
 Fact rules:
 - Use only facts in the packet. Do not infer addresses, prices, ages, quality, or popularity.
+- Do not claim a paired meal works before, after, or on either side of an event unless the packet explicitly supplies business hours and an event end time that make the claim true.
 - Never say an event opens, closes, wraps up, or finishes a series, season, run, or homestand unless the packet says so in words. You are not shown a schedule. The 2026-08-26 issue wrote "the Giants close things out under the lights" on game 2 of a 6-game series.
 - Spell proper names exactly as the packet spells them, punctuation and all. Initials keep their packet form: "Mistah F.A.B.", never "Mistah F. A. B." or "Mistah FAB".
 - Do not claim "every event." This is a selected briefing.
@@ -1455,6 +1456,16 @@ export function sanitizeGeographicBriefing(value, dayPlan) {
     .trim();
 }
 
+export function sanitizeDayPlanBlurb(value, dayPlan) {
+  return sanitizeGeographicBriefing(value, dayPlan)
+    .replace(
+      /\s+(?:(?:on )?either side of|(?:either )?before or after)\s+(?:the|that)\s+(?:show|event|concert|game)\b/gi,
+      "",
+    )
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 function applyEditorialJson(data, candidates, edit) {
   // Editor decisions are honored: explicit null / empty arrays are deliberate
   // cuts, not parse failures. Fallbacks fire only when a key is missing or
@@ -1505,7 +1516,7 @@ function applyEditorialJson(data, candidates, edit) {
   // The plan is an atomic set of three pillar/meal pairs. Editorial can
   // rewrite its framing, but cannot silently sever a pair by dropping a card.
   const dayPlan = data.dayPlan;
-  const editedDayPlanBlurb = sanitizeGeographicBriefing(
+  const editedDayPlanBlurb = sanitizeDayPlanBlurb(
     newsletterCopyString(edit.dayPlanBlurb, 650),
     dayPlan,
   );
@@ -1797,7 +1808,7 @@ function eventLocality(event) {
 
 export function renderEmail(data) {
   const safeBriefing = sanitizeGeographicBriefing(data.editorial?.briefing, data.dayPlan);
-  const safeDayPlanBlurb = sanitizeGeographicBriefing(data.dayPlanBlurb, data.dayPlan);
+  const safeDayPlanBlurb = sanitizeDayPlanBlurb(data.dayPlanBlurb, data.dayPlan);
   const safeTonightPickBlurb = data.tonightPick
     ? sanitizeTonightPickBlurb(data.tonightPickBlurb, data.tonightPick) || buildTonightBlurb(data.tonightPick)
     : "";
@@ -1830,7 +1841,12 @@ export function renderEmail(data) {
 }
 
 function wrapShell(subject, body, data = null) {
-  const description = compactText(data?.editorial?.briefing || data?.dayPlanBlurb || "A morning South Bay briefing with the field guide, events, openings, civic notes, and local conversation.", 220);
+  const description = truncateNewsletterCopy(
+    String(data?.editorial?.briefing || data?.dayPlanBlurb || "A morning South Bay briefing with the field guide, events, openings, civic notes, and local conversation.")
+      .replace(/\s+/g, " ")
+      .trim(),
+    220,
+  );
   const image = data?.visuals?.archiveImage || "";
   const imageMeta = image
     ? `<meta property="og:image" content="${esc(image)}">

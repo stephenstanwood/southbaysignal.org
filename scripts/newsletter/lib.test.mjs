@@ -11,6 +11,7 @@ import {
   isEventFeedFreshForNewsletter,
   isTonightPickCandidate,
   makeNewsletterPlan,
+  sanitizeDayPlanBlurb,
   sanitizeGeographicBriefing,
   sanitizeTonightPickBlurb,
   selectDefaultPlan,
@@ -29,6 +30,32 @@ test("newsletter copy truncation never cuts a word in half", () => {
 
   assert.equal(truncated, "Civic stakes lead the week, plus practical threads on car-free VTA life and getting…");
   assert.ok(truncated.length <= 90);
+});
+
+test("newsletter preheader ends at a sentence instead of cutting the briefing mid-thought", () => {
+  const briefing = "Tonight is a pick-your-show night: two stadium-scale concerts both start at 7, with a late stand-up set downtown if you want a second act. The daytime side leans free and hands-on, mostly at the libraries. Forecast is a high of 80 with a 26% chance of rain, so know your indoor fallback before committing to the outdoor picks.";
+  const { html } = renderEmail({
+    date: "2026-08-28",
+    longDate: "Friday, August 28, 2026",
+    weather: null,
+    dayPlan: null,
+    dayPlanBlurb: "",
+    tonightPick: null,
+    tonightPickBlurb: "",
+    todayEvents: [], featuredEvents: [], recentOpenings: [], civicMeetings: [], todayHistory: [], redditPosts: [],
+    visuals: {}, editorial: { briefing },
+  });
+
+  assert.match(html, /<meta name="description" content="Tonight is a pick-your-show night:[^"]*mostly at the libraries\.">/);
+  assert.doesNotMatch(html, /content="[^"]*Forecast is a">/);
+});
+
+test("newsletter removes unsupported before-or-after meal timing claims", () => {
+  const risky = "Close it out at The Mountain Winery, with fondue at La Fondue on either side of the show.";
+  assert.equal(
+    sanitizeDayPlanBlurb(risky, null),
+    "Close it out at The Mountain Winery, with fondue at La Fondue.",
+  );
 });
 
 function pairedPlanCards() {
