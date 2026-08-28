@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T03:09:03.139Z",
+  "generatedAt": "2026-08-28T03:08:43.178Z",
   "meetings": {
     "san-jose": {
       "date": "2026-09-01",
@@ -36,7 +36,77 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-09-01",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-26T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-27T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+      }
+    },
+    "cupertino": {
+      "date": "2026-09-01",
+      "displayDate": "Tue, Sep 1",
+      "startTime": "18:45",
+      "bodyName": "City Council",
+      "location": "Council Chamber",
+      "closedSession": false,
+      "url": "https://cupertino.legistar.com/MeetingDetail.aspx?LEGID=5298&GID=341&G=74359C04-A5F0-4CB2-A97A-0032996BB90E",
+      "legistarEventId": 5298,
+      "agendaItems": [
+        {
+          "title": "Recognition of Innovation & Technology Department (Applications, GIS, Infrastructure, Multimedia, and Administration Divisions).",
+          "sequence": 10
+        },
+        {
+          "title": "Recognize September as National Preparedness Month.",
+          "sequence": 8
+        },
+        {
+          "title": "Recognition of September 15-October 15 as National Hispanic Heritage Month.",
+          "sequence": 9
+        },
+        {
+          "title": "Recognition of Bertha Smith on the occasion of her 100th birthday.",
+          "sequence": 7
+        },
+        {
+          "title": "Acceptance of Annual Evaluation Report on the Federal Emergency Management Agency (FEMA) Community Rating System’s (CRS) Program for Public Information.",
+          "sequence": 20
+        }
+      ],
+      "confirmation": {
+        "status": "confirmed",
+        "provider": "legistar",
+        "observedDate": "2026-09-01",
+        "sourceUrl": "https://webapi.legistar.com/v1/cupertino/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-27T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+      }
+    },
+    "palo-alto": {
+      "date": "2026-09-09",
+      "displayDate": "Wed, Sep 9",
+      "startTime": "17:00",
+      "bodyName": "City Council Special Meeting ",
+      "location": null,
+      "closedSession": false,
+      "url": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=2901",
+      "agendaItems": [],
+      "confirmation": {
+        "status": "confirmed",
+        "provider": "primegov",
+        "observedDate": "2026-09-09",
+        "sourceUrl": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=2901"
+      }
+    },
+    "campbell": {
+      "date": "2026-09-01",
+      "displayDate": "Tue, Sep 1",
+      "startTime": "19:00",
+      "bodyName": "City Council Regular Session Meeting",
+      "location": "Campbell Police Department EOC",
+      "closedSession": false,
+      "url": "https://pub-campbell.escribemeetings.com/MeetingsCalendarView.aspx/Meeting?Id=8b2b131c-9e19-43fc-8feb-217ae01ffc22",
+      "agendaItems": [],
+      "confirmation": {
+        "status": "confirmed",
+        "provider": "escribe",
+        "observedDate": "2026-09-01",
+        "sourceUrl": "https://pub-campbell.escribemeetings.com/MeetingsCalendarView.aspx/GetCalendarMeetings"
       }
     },
     "milpitas": {
@@ -53,7 +123,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-09-01",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-26T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-27T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     },
     "los-altos": {
@@ -70,7 +140,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-09-08",
-        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-26T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-27T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },
@@ -89,7 +159,7 @@
     },
     "cupertino": {
       "provider": "Legistar",
-      "status": "no-meeting"
+      "status": "ok"
     },
     "santa-clara": {
       "provider": "Legistar",
@@ -97,7 +167,7 @@
     },
     "palo-alto": {
       "provider": "PrimeGov",
-      "status": "no-meeting"
+      "status": "ok"
     },
     "saratoga": {
       "provider": "CivicEngage",
@@ -105,7 +175,7 @@
     },
     "campbell": {
       "provider": "eScribe",
-      "status": "no-meeting"
+      "status": "ok"
     },
     "milpitas": {
       "provider": "CivicClerk",

@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-27T03:08:51.147Z",
+      "generatedAt": "2026-08-28T03:08:32.049Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 19 – Aug 26",
+      "dateRange": "Aug 20 – Aug 27",
       "stats": {
-        "total": 357,
+        "total": 370,
         "notable": 22,
-        "newUnits": 11,
-        "totalValuation": 15060515
+        "newUnits": 12,
+        "totalValuation": 14640442
       },
       "permits": [
         {
@@ -87,6 +87,30 @@
           "subtype": "Single-Family"
         },
         {
+          "id": "2020-136941-RS",
+          "address": "2398 Ruby Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached ADU With Carport",
+          "valuation": 200007,
+          "units": 1,
+          "issueDate": "2026-08-25",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
+          "id": "2025-098049-RS",
+          "address": "2839 Dayo Ct #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Detached ADU",
+          "valuation": 139856,
+          "units": 1,
+          "issueDate": "2026-08-25",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
           "id": "2024-114317-RS",
           "address": "1666 University Wy #2",
           "category": "residential-new",
@@ -109,42 +133,18 @@
           "units": 1,
           "issueDate": "2026-08-21",
           "subtype": "ADU   Accessory Dwelling Unit"
-        },
-        {
-          "id": "2026-106336-RS",
-          "address": "3190 Vesuvius Ln #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Garage Conersion to ADU",
-          "valuation": 77053,
-          "units": 1,
-          "issueDate": "2026-08-20",
-          "subtype": "ADU   Accessory Dwelling Unit"
-        },
-        {
-          "id": "2026-108177-RS",
-          "address": "135 N 9th St #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Epr Code Amnesty Legalize Detach Garage Conversion to ADU",
-          "valuation": 75294,
-          "units": 1,
-          "issueDate": "2026-08-20",
-          "subtype": "ADU   Accessory Dwelling Unit"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-27T03:08:53.443Z",
+      "generatedAt": "2026-08-28T03:08:34.228Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 19 – Aug 26",
+      "dateRange": "Aug 20 – Aug 27",
       "stats": {
-        "total": 113,
+        "total": 92,
         "notable": 2,
         "newUnits": 0,
         "totalValuation": 0
