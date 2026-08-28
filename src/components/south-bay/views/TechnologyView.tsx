@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import { CompanyLogo } from "../CompanyLogo";
 import PageHero from "../PageHero";
 import { urlToDomain, LOGO_DOMAIN_BY_ID, LOGO_URL_BY_ID } from "../../../lib/south-bay/tech-logos";
+import {
+  fundingDateLabel,
+  isFreshRound,
+  pacificDaysAgo,
+} from "../../../lib/south-bay/fundingAge";
 import upcomingMeetingsJson from "../../../data/south-bay/upcoming-meetings.json";
 import {
   TECH_COMPANIES,
@@ -773,23 +778,13 @@ function RoundBadge({ round }: { round: string }) {
 }
 
 function RecentlyFundedCard({ company }: { company: RecentlyFunded }) {
-  const d = new Date(company.date + "T12:00:00");
-  const daysAgo = Math.floor((Date.now() - d.getTime()) / 86_400_000);
-  const isFresh = daysAgo >= 0 && daysAgo <= 14;
-  const dateLabel =
-    daysAgo >= 0 && daysAgo <= 30
-      ? daysAgo === 0
-        ? "today"
-        : daysAgo === 1
-          ? "yesterday"
-          : daysAgo < 7
-            ? `${daysAgo}d ago`
-            : `${Math.round(daysAgo / 7)}w ago`
-      : d.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        });
+  // Pacific calendar-day arithmetic lives in fundingAge.ts so it is testable
+  // without a DOM (same split as postAge.ts). See that file for the noon-anchor
+  // bug this replaced: every card read a day younger all morning.
+  const now = Date.now();
+  const daysAgo = pacificDaysAgo(company.date, now);
+  const isFresh = isFreshRound(daysAgo);
+  const dateLabel = fundingDateLabel(company.date, now);
 
   return (
     <a
