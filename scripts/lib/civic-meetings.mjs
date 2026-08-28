@@ -382,7 +382,16 @@ export async function verifyLegistarBodyOnDate(client, dateIso, recordText = "")
       // Legistar's calendar link is already filtered to the meeting date, so the
       // existing legistarMeetingUrl fallback stays correct for this body.
       .map((body) => ({ body, sourceUrl: null }));
-    return pickBodyForRecord(candidates, recordText);
+    // No council meeting exists on this date, so the "City Council" label is
+    // disproven even when pickBodyForRecord can't say which body it was. A bare
+    // null can't express that — the caller reads it as "nothing to change" and
+    // publishes the label anyway. San José's 2026-08-26 digest shipped as a
+    // City Council meeting when Legistar shows only the Joint Rules and Open
+    // Government Committee / Committee of the Whole and the Planning
+    // Commission sat that day. Hand back councilMet:false so the caller can
+    // tell "the label checks out" from "the label is wrong and I can't fix it".
+    return pickBodyForRecord(candidates, recordText)
+      ?? { body: null, sourceUrl: null, councilMet: false };
   } catch {
     return null;
   }
@@ -431,7 +440,11 @@ export async function verifyPrimeGovBodyOnDate(domain, dateIso, recordText = "")
         sourceUrl: primeGovAgendaUrl(domain, m),
       }))
       .filter((c) => c.body);
-    return pickBodyForRecord(candidates, recordText);
+    // Same contract as the Legistar verifier above: an ambiguous body still
+    // disproves the "City Council" label, and the caller has to be able to see
+    // that rather than reading a bare null as "nothing to change".
+    return pickBodyForRecord(candidates, recordText)
+      ?? { body: null, sourceUrl: null, councilMet: false };
   } catch {
     return null;
   }

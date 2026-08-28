@@ -532,10 +532,19 @@ async function main() {
         const actual = config.legistarApi
           ? await verifyLegistarBodyOnDate(config.legistarApi, meeting.date, recordText)
           : await verifyPrimeGovBodyOnDate(config.primegov, meeting.date, recordText);
-        if (actual) {
+        if (actual?.body) {
           console.warn(`  ⚠️  ${config.cityName}: no City Council meeting on ${meeting.date} — relabeling as "${actual.body}" (city=${config.city})`);
           bodyLabel = actual.body;
           bodySourceUrl = actual.sourceUrl;
+        } else if (actual && actual.councilMet === false) {
+          // The council provably did not sit, but several bodies did and the
+          // record's text doesn't say which one this agenda came from. Naming
+          // any of them would be a coin flip; keeping "City Council" is a claim
+          // the calendar contradicts. Hold the previous digest instead — the
+          // one option that asserts nothing false.
+          console.warn(`  ⚠️  ${config.cityName}: no City Council meeting on ${meeting.date} and the record's body is ambiguous — holding previous digest (city=${config.city})`);
+          carryForward(config, "body-unresolved");
+          continue;
         }
       }
 

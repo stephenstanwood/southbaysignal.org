@@ -1910,7 +1910,19 @@ function cleanVenue(raw) {
   // after the street-address pass. Running this first turned
   // "History Park, 635 Phelan Ave, San Jose, CA 95112" into
   // "History Park, 635", leaving a raw house number in the display venue.
-  v = v.replace(/[,\s]+[A-Za-z][a-zA-Z\s,]+CA[,\s]+9\d{4}.*$/, "");
+  //
+  // The city token must not span a comma. The old character class
+  // (`[a-zA-Z\s,]+`) did, so it ate real venue words on its way back to the
+  // nearest period or digit: "Peter T. Gill Park, Milpitas, CA 95035" shipped
+  // as the venue "Peter T." — a person's name — in upcoming-events.json on
+  // 2026-08-27. Comma-delimited form first, then the comma-less variant
+  // restricted to the South Bay city names so a plain venue word
+  // ("Community Center Milpitas CA 95035") is never mistaken for the city.
+  v = v.replace(/,\s*[A-Za-z][A-Za-z.\s]*,?\s*CA\b[,\s]+9\d{4}\b.*$/, "");
+  v = v.replace(
+    /[,\s]+(?:Campbell|Cupertino|Los Altos|Los Gatos|Milpitas|Mountain View|Palo Alto|San Jose|San José|Santa Clara|Saratoga|Sunnyvale),?\s*CA\b[,\s]+9\d{4}\b.*$/i,
+    "",
+  );
   // Some sources omit the street suffix after a numbered street:
   // "UC Student and Policy Center, 1115 11th" → "UC Student and Policy Center".
   v = v.replace(/,\s*\d+\s+\d+(?:st|nd|rd|th)?\s*$/i, "");
@@ -5483,6 +5495,17 @@ function isBareStreetVenue(value) {
   return /^[A-Z][A-Za-z'’.-]*(?:\s+[A-Za-z'’.-]+){0,2}\s+(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ct|Court|Ln|Lane|Way|Pkwy|Parkway|Cir|Circle|Pl|Place|Ter|Terrace|Hwy|Highway|Expy|Expressway)\.?$/.test(v);
 }
 
+// Does this Meetup group name describe an organization rather than a place?
+// Only ever asked about the group-name fallback, never about a venue the
+// organizer actually filled in, so a real venue name is never routed here —
+// "Alberto's Night Club" and "Roosters Comedy Club" arrive as venue names and
+// are untouched. "Club" is deliberately absent from the pattern anyway, since
+// it names as many rooms as it does groups.
+function isOrganizationName(value) {
+  return /\b(?:meetup|group|professionals?|networking|enthusiasts?|society|organization|collective|toastmasters|conversation\s+and\s+culture)\b/i
+    .test(String(value || ""));
+}
+
 function meetupVenueFromTitle(title) {
   const match = String(title || "").match(
     /\b(?:at|in)\s+(?:the\s+)?([A-Z][A-Za-z0-9'&.-]*(?:\s+[A-Z][A-Za-z0-9'&.-]*){0,5}\s+(?:Park|Garden|Preserve|Trail|Library|Center|Museum|Theater|Theatre|Winery))\b/,
@@ -5652,7 +5675,18 @@ async function fetchMeetupEvents() {
     if (isIntersectionVenue(venue) || isBareStreetVenue(venue)) {
       venue = meetupVenueFromTitle(title) || "";
     }
-    venue ||= node.group?.name || "TBD";
+    // Last resort is the Meetup group's own name, but a group name that
+    // announces itself as an organization ("South Bay Indoor / Outdoor
+    // Activities Group (SBIO)", "Santa Clara Bombay Jam Dance Fitness Meetup
+    // Group") is not a place, and the venue slot renders as one. Nine events
+    // shipped on 2026-08-27 naming a club where the venue should be. The group
+    // is already credited in `description`, and EventsView/CityPage only render
+    // `venue` when it's non-empty, so dropping it degrades to the city line
+    // instead of asserting a venue that doesn't exist.
+    if (!venue) {
+      const groupName = node.group?.name?.trim() || "";
+      venue = isOrganizationName(groupName) ? "" : groupName || "TBD";
+    }
     const locationText = [venue, address].filter(Boolean).join(" ");
     if (/\b(?:somewhere|secret(?:\s+\w+){0,3}\s+location|released\s+on\s+day|private\s+home|home\s+near)\b/i.test(locationText)) continue;
 
@@ -8427,6 +8461,7 @@ export {
   extractTimeFromHtml,
   inferCategory,
   isBiblioEventCancelled,
+  isOrganizationName,
   looksCancelled,
   looksLikeEmbedCode,
   mapTicketmasterEvent,
