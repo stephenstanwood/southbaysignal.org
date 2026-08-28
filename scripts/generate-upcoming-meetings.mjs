@@ -684,9 +684,18 @@ const CIVICCLERK_CITIES = [
 async function fetchLosGatosMeeting() {
   // Los Gatos uses MuniCode Meetings, and losgatosca.gov links to it as the
   // town's only agenda source — there is no Legistar/CivicClerk/PrimeGov/
-  // Granicus tenant to switch to. The host currently refuses our requests
-  // outright (empty reply on HTTP/2 and HTTP/1.1). Treat that as the site
-  // declining automated access: report it, don't work around it.
+  // Granicus tenant to switch to. (losgatos.legistar.com resolves but serves no
+  // Los Gatos content — don't mistake it for a migration target.)
+  //
+  // The block is narrower than "the host is down", which the old wording here
+  // implied and cost a later session a full re-diagnosis: the site is up and
+  // serving, and its robots.txt allows `User-agent: *` with Crawl-delay: 15.
+  // What fails is this UA specifically — measured 2026-08-28, the WAF kills the
+  // HTTP/2 stream (ERR_HTTP2_STREAM_ERROR) for "SouthBaySignal/1.0" while the
+  // same request with a browser UA, or none at all, returns 200 with the real
+  // agenda list. So the only workaround available is to stop identifying
+  // ourselves honestly, which is bot-detection evasion and stays off the table
+  // without Stephen's explicit call. Report it; don't spoof.
   const url = "https://losgatos-ca.municodemeetings.com/";
   let res;
   try {
@@ -696,8 +705,9 @@ async function fetchLosGatosMeeting() {
     });
   } catch (err) {
     throw new Error(
-      `municodemeetings.com refused the connection (${err?.cause?.code || err.message}) — `
-      + "town's only published agenda source; not worked around",
+      `municodemeetings.com rejected our User-Agent (${err?.cause?.code || err.message}) — `
+      + "site is up and robots.txt allows us; town's only published agenda source. "
+      + "Only workaround is UA spoofing; not done deliberately",
     );
   }
   if (!res.ok) throw new Error(`HTTP ${res.status}`);

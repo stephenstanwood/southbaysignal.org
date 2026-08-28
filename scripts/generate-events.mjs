@@ -4840,6 +4840,14 @@ async function fetchMvplEvents() {
 async function fetchSunnyvaleLibraryEvents() {
   // Sunnyvale library site ID is correct ("sunnyvale") but their BiblioCommons
   // instance has the Events feature disabled (returns 403). Will return [].
+  //
+  // Sunnyvale is the county's second-largest city and our thinnest coverage, so
+  // the other doors get retried often. Checked again 2026-08-28, all still shut:
+  // sunnyvale.libcal.com is a real Sunnyvale LibCal but licenses only
+  // /appointments and /spaces — no events module, so /calendar 404s and the list
+  // endpoint reports 0 results. sunnyvale.bibliocommons.com/events 404s, and
+  // library.sunnyvale.ca.gov answers 403 to curl and to a real headless browser
+  // alike. There is no automatable Sunnyvale library feed today.
   return fetchBiblioEvents("sunnyvale", "Sunnyvale Public Library", () => "sunnyvale");
 }
 

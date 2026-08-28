@@ -451,6 +451,15 @@ export const LIBCAL_LIBRARIES = [
     onsiteLocations: [],
   },
   // Milpitas: SCCL LibCal returns 404; covered by SCCL BiblioCommons in generate-events.mjs
+  //
+  // Santa Clara City Library is NOT here on purpose. sclibrary.libcal.com
+  // resolves and looks like the obvious match, but it belongs to Strathcona
+  // County Library in Alberta, Canada — adding it would file a Canadian
+  // library's storytimes as Santa Clara events, the same trap the "librarypoint"
+  // mapping fell into for Mountain View. The city's own www.sclibrary.org
+  // answers 403 to curl and to a real headless browser (checked 2026-08-28), so
+  // there is nothing to ingest yet. Verify the tenant actually names the right
+  // city before adding any *.libcal.com host here.
 ];
 
 // LibCal renders its calendar client-side and the default view is a single day,

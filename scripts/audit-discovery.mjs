@@ -42,9 +42,15 @@ function count(html, pattern) {
   return [...html.matchAll(pattern)].length;
 }
 
+// `<` and `>` are legal inside a quoted HTML attribute value, and event titles
+// really do contain them (the Taemin "<LiMiNaL>" tour). Skipping over quoted
+// runs keeps a naive `[^>]*` from ending the tag at the first bracket inside
+// content=, which read as a missing description on a page that was fine.
+const META_TAG = /<meta\s+(?:"[^"]*"|'[^']*'|[^>"'])*>/gi;
+
 function metaContent(html, name) {
   const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  for (const tag of html.match(/<meta\s+[^>]*>/gi) ?? []) {
+  for (const tag of html.match(META_TAG) ?? []) {
     const key = /(?:name|property)=(["'])(.*?)\1/i.exec(tag)?.[2];
     if (!key || !new RegExp(`^${escaped}$`, "i").test(key)) continue;
     return /content=(["'])(.*?)\1/i.exec(tag)?.[2] ?? null;
@@ -123,8 +129,17 @@ if (!outputDir) {
     const sitemapFiles = extractLocs(read(sitemapIndexPath));
     const urls = [];
     for (const sitemapUrl of sitemapFiles) {
-      const childPath = join(outputDir, basename(new URL(sitemapUrl).pathname));
+      const childPathname = new URL(sitemapUrl).pathname;
+      const childPath = join(outputDir, basename(childPathname));
       if (!existsSync(childPath)) {
+        // A sitemap child can opt out of prerendering just like a page:
+        // sitemap-newsletters.xml enumerates issues held in Vercel Blob, so it
+        // has no build-time output to read. Resolve the route source rather
+        // than hardcoding the name, and let the live checks cover it.
+        if (ssrPageSourceFor(childPathname)) {
+          metrics.ssrPagesSkipped += 1;
+          continue;
+        }
         fail(`Sitemap child is missing: ${basename(childPath)}`);
         continue;
       }
