@@ -1166,6 +1166,61 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // March 31 Series C — different letter, different amount, and TechCrunch's
   // headline reads "raises another $150 million" against a $455M cumulative
   // total. Both entries stay (the ChipAgents A1/A2 and Etched calls above).
+  // Note on the Aug 25–28 2026 sweep: the window produced exactly one new
+  // in-coverage round (Agentrys, below). Recorded so the next cycle doesn’t
+  // re-verify the same three near-misses:
+  //   • Instinct ($250M Series B at $2.5B, announced Aug 26 2026; consumer AI
+  //     assistant) is San Francisco. Founder Noah Shinn’s operating entity is
+  //     Spear Street Technology, an SF company, and SiliconANGLE, Qz, and the
+  //     TechCrunch write-up all say SF. No source places it in coverage.
+  //   • Lambda’s $926M senior secured term loan B (closed Aug 28 2026) is a
+  //     San Jose company and in coverage geographically, but it is debt, not an
+  //     equity round — every one of the ~100 entries here is venture equity or a
+  //     convertible, and a $926M GPU-purchase facility would swamp the derived
+  //     "Raised in …" total that TechnologyView computes off this list. Left out
+  //     on kind, not on geography. (FinSMEs headlined it "$962M"; the company’s
+  //     own release and Bloomberg both say $926M. The aggregator has a typo.)
+  //   • PATH (undisclosed round, Aug 26 2026) is Fremont — Alameda County, the
+  //     same out-of-coverage call as the San Mateo County exclusions above.
+  {
+    id: "agentrys",
+    name: "Agentrys",
+    city: "San Jose",
+    category: "eda",
+    round: "Seed + Pre-Seed",
+    amount: "$24.5M",
+    date: "2026-08-26",
+    tagline:
+      "Designing a chip is still mostly people running tools by hand, and the people who know how are the bottleneck. Agentrys sells the argument that the fix isn’t another vendor’s fixed agent but an agentic workforce each chipmaker builds and keeps: its Studio platform trains self-improving agents on a customer’s own designs, on the tools they already license, inside infrastructure they control, so the learning compounds in-house instead of in a vendor’s model. It has the demos to argue the ceiling is high — a multi-agent workflow that carried a 32-bit CPU from written spec to sign-off-clean GDS layout with no human in the loop, and better than 90% accuracy on NVIDIA’s public CVDP verification benchmark. Founder and CEO Mark Ren spent nearly three decades on EDA and AI research at IBM and NVIDIA, where he led ChipNeMo, the first industrial large language model for chip design; the founding team pulls from NVIDIA, Meta, AMD, Samsung, Google, and Siemens EDA. Etna Labs led an oversubscribed $19.1M seed on top of a $5.4M pre-seed led by MediaTek, the company’s first strategic backer, and the money goes to hiring, agent-native tooling, and customer work in verification and physical design. Several top fabless chipmakers, a global foundry, and a set of chip startups are already engaged; the company hires in San Jose, Austin, and Taiwan.",
+    color: "#4f46e5",
+    url: "https://agentrys.ai",
+  },
+  {
+    id: "gatik-series-d",
+    name: "Gatik",
+    city: "Santa Clara",
+    category: "robotics",
+    round: "Series D",
+    amount: "$200M",
+    date: "2026-08-25",
+    tagline:
+      "Most self-driving companies chase the hardest version of the problem. Gatik picked the boring one on purpose: the short, repeated hauls between a retailer's distribution center and its stores, run over and over on the same roads until the route is effectively memorized. That focus has made it one of the few autonomous companies with a real book of business — more than $600M in contracted revenue, 85,000 fully driverless orders delivered at 99% on-time, and trucks running with nobody in the cab for Walmart, Kroger, Tyson Foods, Loblaw, and a PepsiCo deployment of 41 driverless trucks across Dallas, Phoenix, and Northwest Arkansas. The Qatar Investment Authority and Koch Disruptive Technologies co-led the $200M Series D, with Millennium Management, ARK Invest, and Intact Private Capital joining, taking the company to roughly $500M raised since it left stealth in 2019. Co-founder and CEO Gautam Narang plans to hire past the current 350-person team and grow the fleet from dozens of driverless trucks to thousands.",
+    color: "#1d4ed8",
+    url: "https://www.gatik.ai",
+  },
+  {
+    id: "celera-semiconductor-series-b",
+    name: "Celera Semiconductor",
+    city: "Santa Clara",
+    category: "eda",
+    round: "Series B",
+    amount: "$30M",
+    date: "2026-08-25",
+    tagline:
+      "Digital chip design got automated decades ago; analog never did, and it is still largely drawn by hand by a shrinking population of specialists. Celera's answer is Nesto, a patented library of digital twins of analog functions that lets software do the work — the company says it can deliver full-custom or standard analog parts in a fraction of the time a traditional semiconductor company takes. Maverick Silicon, already Celera's largest investor, funded the entire $30M Series B on its own. The money accelerates the AI design-automation roadmap and customer projects, and expands the SiliconGate product-development and design-automation team in Portugal that Celera acquired, alongside new analog and AI design hires in California under CEO Patrick Brockett.",
+    color: "#7c3aed",
+    url: "https://www.celerasemi.com",
+  },
   {
     id: "light-links",
     name: "Light Links",
@@ -2556,32 +2611,6 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
     tagline: "Runs the GPU infrastructure that lets developers serve open-source and agentic AI models at production scale — now handling close to five trillion tokens a week. The $107M Series B (co-led by 500 Global and Georges Harik, with Nvidia, Samsung Next, and Supermicro) follows a 25× jump in volume since its Series A.",
     color: "#1d4ed8",
     url: "https://deepinfra.com",
-  },
-  {
-    id: "gatik-series-d",
-    name: "Gatik",
-    city: "Santa Clara",
-    category: "robotics",
-    round: "Series D",
-    amount: "$200M",
-    date: "2026-08-25",
-    tagline:
-      "Most self-driving companies chase the hardest version of the problem. Gatik picked the boring one on purpose: the short, repeated hauls between a retailer's distribution center and its stores, run over and over on the same roads until the route is effectively memorized. That focus has made it one of the few autonomous companies with a real book of business — more than $600M in contracted revenue, 85,000 fully driverless orders delivered at 99% on-time, and trucks running with nobody in the cab for Walmart, Kroger, Tyson Foods, Loblaw, and a PepsiCo deployment of 41 driverless trucks across Dallas, Phoenix, and Northwest Arkansas. The Qatar Investment Authority and Koch Disruptive Technologies co-led the $200M Series D, with Millennium Management, ARK Invest, and Intact Private Capital joining, taking the company to roughly $500M raised since it left stealth in 2019. Co-founder and CEO Gautam Narang plans to hire past the current 350-person team and grow the fleet from dozens of driverless trucks to thousands.",
-    color: "#1d4ed8",
-    url: "https://www.gatik.ai",
-  },
-  {
-    id: "celera-semiconductor-series-b",
-    name: "Celera Semiconductor",
-    city: "Santa Clara",
-    category: "eda",
-    round: "Series B",
-    amount: "$30M",
-    date: "2026-08-25",
-    tagline:
-      "Digital chip design got automated decades ago; analog never did, and it is still largely drawn by hand by a shrinking population of specialists. Celera's answer is Nesto, a patented library of digital twins of analog functions that lets software do the work — the company says it can deliver full-custom or standard analog parts in a fraction of the time a traditional semiconductor company takes. Maverick Silicon, already Celera's largest investor, funded the entire $30M Series B on its own. The money accelerates the AI design-automation roadmap and customer projects, and expands the SiliconGate product-development and design-automation team in Portugal that Celera acquired, alongside new analog and AI design hires in California under CEO Patrick Brockett.",
-    color: "#7c3aed",
-    url: "https://www.celerasemi.com",
   },
 ];
 
