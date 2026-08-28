@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-27T15:08:06.223Z",
+    "generatedAt": "2026-08-28T02:17:01.543Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 623,
+    "eventCount": 616,
     "sourceCount": 22,
     "sources": [
-      "Mountain View Public Library (146)",
-      "Los Gatos Library (147)",
+      "Mountain View Public Library (143)",
+      "Los Gatos Library (145)",
       "San Jose Jazz (19)",
       "Linden Tree Books (11)",
       "History San Jose (10)",
@@ -20,14 +20,14 @@
       "Midpen Open Space (5)",
       "Guadalupe River Park Conservancy (1)",
       "Santana Row (8)",
-      "City of Cupertino (67)",
+      "City of Cupertino (66)",
       "Opera San José (5)",
       "TheatreWorks Silicon Valley (90)",
       "Levi's Stadium (13)",
       "SAP Center (15)",
-      "The Tech Interactive (7)",
+      "The Tech Interactive (8)",
       "Peninsula Open Space Trust (2)",
-      "San Jose Museum of Art (12)"
+      "San Jose Museum of Art (10)"
     ],
     "sourceHealth": [
       {
@@ -66,7 +66,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 148,
+        "count": 145,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -76,7 +76,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 147,
+        "count": 145,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -96,7 +96,7 @@
         "id": "sj-museum-of-art",
         "label": "SJ Museum of Art",
         "status": "error",
-        "count": 12,
+        "count": 10,
         "error": "page.goto: Timeout 25000ms exceeded.\nCall log:\n  - navigating to \"https://sjmusart.org/calendar\", waiting until \"networkidle\"\n",
         "sources": [
           "San Jose Museum of Art"
@@ -258,7 +258,7 @@
         "id": "city-of-cupertino",
         "label": "City of Cupertino",
         "status": "ok",
-        "count": 67,
+        "count": 66,
         "error": null,
         "sources": [
           "City of Cupertino"
@@ -316,7 +316,7 @@
         "id": "the-tech-upcoming",
         "label": "The Tech Upcoming",
         "status": "ok",
-        "count": 7,
+        "count": 8,
         "error": null,
         "sources": [
           "The Tech Interactive"
@@ -359,57 +359,6 @@
     ]
   },
   "events": [
-    {
-      "id": "beaa42d75868",
-      "title": "Magical Bridge Storytime",
-      "date": "2026-08-27",
-      "displayDate": "Thu, Aug 27",
-      "time": "10:00 AM",
-      "endTime": "10:30 AM",
-      "venue": "Mountain View Public Library",
-      "address": "",
-      "city": "mountain-view",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17084765",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "861432fa1cb1",
-      "title": "High Altitudes and High Stakes: A Miss Marple Mystery with Lucy Foley",
-      "date": "2026-08-27",
-      "displayDate": "Thu, Aug 27",
-      "time": "11:00 AM",
-      "endTime": "12:00 PM",
-      "venue": "Online",
-      "address": "",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/16953208",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "1ba417a51a77",
-      "title": "Bug Power with Dr. Beetle Lady",
-      "date": "2026-08-27",
-      "displayDate": "Thu, Aug 27",
-      "time": "3:30 PM",
-      "endTime": "4:30 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/16994467",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
     {
       "id": "c2f7bcb047de",
       "title": "Community Preservation Lab Scanning Service",
@@ -2840,40 +2789,6 @@
       "url": "https://mountainview.libcal.com/event/17142493",
       "source": "Mountain View Public Library",
       "kidFriendly": true
-    },
-    {
-      "id": "1ec3bd2165ca",
-      "title": "Park-It Market",
-      "date": "2026-08-27",
-      "displayDate": "Thu, Aug 27",
-      "time": "10:00 AM",
-      "endTime": "11:15 AM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/15783367",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "3270264ed832",
-      "title": "Online Author Talk : Lucy Foley",
-      "date": "2026-08-27",
-      "displayDate": "Thu, Aug 27",
-      "time": "11:00 AM",
-      "endTime": "12:00 PM",
-      "venue": "Online",
-      "address": "",
-      "city": "los-gatos",
-      "category": "arts",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/16987360",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
     },
     {
       "id": "1181c615dbbf",
@@ -6076,10 +5991,10 @@
       "kidFriendly": false
     },
     {
-      "id": "7edefb717de6",
+      "id": "7a3dfb1b5920",
       "title": "Play on the Grounds – Ms. Holmes and Ms. Watson – Apt 2B",
-      "date": "2026-08-27",
-      "displayDate": "Thu, Aug 27",
+      "date": "2026-08-28",
+      "displayDate": "Fri, Aug 28",
       "time": null,
       "endTime": null,
       "venue": "Montalvo Arts Center",
@@ -6088,7 +6003,7 @@
       "category": "arts",
       "cost": "paid",
       "description": "",
-      "url": "https://my.montalvoarts.org/overview/3027",
+      "url": "https://my.montalvoarts.org/3027/3036",
       "source": "Montalvo Arts Center",
       "kidFriendly": false
     },
@@ -7422,23 +7337,6 @@
       "url": "https://santanarow.com/event/trick-or-treat-the-row-halloween-family-festival/",
       "source": "Santana Row",
       "kidFriendly": true
-    },
-    {
-      "id": "11efe5bb0abc",
-      "title": "Women in Business Symposium Luncheon",
-      "date": "2026-08-27",
-      "displayDate": "Thu, Aug 27",
-      "time": "11:30 AM",
-      "endTime": "01:00 PM",
-      "venue": "Cupertino Community Hall",
-      "address": "Cupertino Community Hall, 10350 Torre Avenue, 95014, View Map",
-      "city": "cupertino",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.cupertino.gov/Meetings/August-27-2026-Womens-Networking-Luncheon",
-      "source": "City of Cupertino",
-      "kidFriendly": false
     },
     {
       "id": "3ad4a9dddee1",
@@ -10654,6 +10552,23 @@
       "kidFriendly": false
     },
     {
+      "id": "adb2ce39905d",
+      "title": "The Odyssey",
+      "date": "2026-09-07",
+      "displayDate": "Mon, Sep 7",
+      "time": "3:30PM",
+      "endTime": null,
+      "venue": "The Tech Interactive",
+      "address": "201 S Market St, San Jose, CA 95113",
+      "city": "san-jose",
+      "category": "community",
+      "cost": "paid",
+      "description": "",
+      "url": "https://www.thetech.org/explore/upcoming-events/",
+      "source": "The Tech Interactive",
+      "kidFriendly": true
+    },
+    {
       "id": "3b4659487b29",
       "title": "Homeschool Days at The Tech Interactive",
       "date": "2026-09-09",
@@ -10804,40 +10719,6 @@
       "description": "",
       "url": "https://openspacetrust.org/event/representation-matters-film-festival/",
       "source": "Peninsula Open Space Trust",
-      "kidFriendly": false
-    },
-    {
-      "id": "f3108e4c9591",
-      "title": "Content Pick-Up Party: 18.4 Profiles",
-      "date": "2026-08-27",
-      "displayDate": "Thu, Aug 27",
-      "time": "Thursday, August 27, 2026",
-      "endTime": null,
-      "venue": "San Jose Museum of Art",
-      "address": "110 S Market St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sjmusart.org/event/content-pick-party-184-profiles",
-      "source": "San Jose Museum of Art",
-      "kidFriendly": false
-    },
-    {
-      "id": "d7060023909f",
-      "title": "CityDance San José: Country Line Dancing",
-      "date": "2026-08-27",
-      "displayDate": "Thu, Aug 27",
-      "time": "Thursday, August 27, 2026",
-      "endTime": null,
-      "venue": "San Jose Museum of Art",
-      "address": "110 S Market St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sjmusart.org/citydance-san-jose-country-line-dancing",
-      "source": "San Jose Museum of Art",
       "kidFriendly": false
     },
     {

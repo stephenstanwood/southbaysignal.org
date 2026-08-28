@@ -1,17 +1,16 @@
 {
   "_meta": {
-    "auditedAt": "2026-08-27T03:17:22.316Z"
+    "auditedAt": "2026-08-28T02:19:44.145Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1771,
+    "total": 1781,
     "totals": {
       "hard": 1,
-      "soft": 1,
+      "soft": 0,
       "info": 0
     },
     "byReason": {
-      "virtual-not-flagged": 1,
       "out-of-area": 1
     },
     "hard": [
@@ -30,28 +29,13 @@
         ]
       }
     ],
-    "soft": [
-      {
-        "id": "sjpl-6920dd8fb864f029002592fe",
-        "title": "Full Bloom Book Club (Hybrid)",
-        "city": "san-jose",
-        "date": "2026-08-27",
-        "location": "1580 Naglee Ave. San Jose",
-        "findings": [
-          {
-            "severity": "soft",
-            "reason": "virtual-not-flagged",
-            "detail": "matched /description mention/ in description"
-          }
-        ]
-      }
-    ]
+    "soft": []
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 395,
+    "total": 375,
     "totals": {
-      "hard": 3,
+      "hard": 1,
       "soft": 7,
       "info": 2
     },
@@ -59,7 +43,6 @@
       "virtual-not-flagged": 6,
       "unknown-slug": 1,
       "out-of-area": 1,
-      "slug-mismatch": 2,
       "local-departure-trip": 2
     },
     "hard": [
@@ -74,34 +57,6 @@
             "severity": "hard",
             "reason": "out-of-area",
             "detail": "location mentions \"oakland\" with no in-area city token"
-          }
-        ]
-      },
-      {
-        "id": "inbound_mqpmli70_7no75i",
-        "title": "61st Annual Golf Tournament",
-        "city": "campbell",
-        "date": "2026-08-26T12:00:00-07:00",
-        "location": "Cinnabar Hills Golf Club, 23600 McKean Rd, San Jose, CA",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "slug-mismatch",
-            "detail": "city=\"campbell\" but location references \"san-jose\""
-          }
-        ]
-      },
-      {
-        "id": "inbound_mq9qux9o_uhkzfb",
-        "title": "61st Annual Campbell Chamber Foundation Golf Tournament",
-        "city": "campbell",
-        "date": "2026-08-26T12:00:00-07:00",
-        "location": "Cinnabar Hills Golf Club, 23600 McKean Rd, San Jose, CA",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "slug-mismatch",
-            "detail": "city=\"campbell\" but location references \"san-jose\""
           }
         ]
       }
@@ -206,20 +161,6 @@
         ]
       },
       {
-        "id": "inbound_ms6pyqyx_denzxu",
-        "title": "Giants vs. Dodgers Day Trip",
-        "city": null,
-        "date": "2026-09-27T10:15:00-07:00",
-        "location": "Oracle Park, San Francisco, CA",
-        "findings": [
-          {
-            "severity": "info",
-            "reason": "local-departure-trip",
-            "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
-          }
-        ]
-      },
-      {
         "id": "inbound_mt5v22bl_v01bj6",
         "title": "Below Market Rate (BMR) Rental Informational Call",
         "city": "mountain-view",
@@ -230,6 +171,20 @@
             "severity": "soft",
             "reason": "virtual-not-flagged",
             "detail": "matched /description mention/ in description"
+          }
+        ]
+      },
+      {
+        "id": "inbound_ms6pyqyx_denzxu",
+        "title": "Giants vs. Dodgers Day Trip",
+        "city": null,
+        "date": "2026-09-27T10:15:00-07:00",
+        "location": "Oracle Park, San Francisco, CA",
+        "findings": [
+          {
+            "severity": "info",
+            "reason": "local-departure-trip",
+            "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
           }
         ]
       }
