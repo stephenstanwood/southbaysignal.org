@@ -1,91 +1,19 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-28T03:08:32.049Z",
+      "generatedAt": "2026-08-29T03:09:10.132Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 20 – Aug 27",
+      "dateRange": "Aug 21 – Aug 28",
       "stats": {
-        "total": 370,
-        "notable": 22,
-        "newUnits": 12,
-        "totalValuation": 14640442
+        "total": 367,
+        "notable": 16,
+        "newUnits": 5,
+        "totalValuation": 12158676
       },
       "permits": [
-        {
-          "id": "2026-133095-RS",
-          "address": "802 Adeline Av",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Phase 3.1 Comm Hill (Bepm) Type 4b-R-Enh",
-          "valuation": 512234,
-          "units": 1,
-          "issueDate": "2026-08-21",
-          "subtype": "Single-Family"
-        },
-        {
-          "id": "2026-133122-RS",
-          "address": "814 Adeline Av",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Phase 3.1 Comm Hill Type 4a",
-          "valuation": 512234,
-          "units": 1,
-          "issueDate": "2026-08-21",
-          "subtype": "Single-Family"
-        },
-        {
-          "id": "2026-133109-RS",
-          "address": "810 Adeline Av",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Phase 3.1 Comm Hill Type 3b",
-          "valuation": 493338,
-          "units": 1,
-          "issueDate": "2026-08-21",
-          "subtype": "Single-Family"
-        },
-        {
-          "id": "2026-133141-RS",
-          "address": "822 Adeline Av",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Phase 3.1 Comm Hill Type 3b-Enh",
-          "valuation": 493338,
-          "units": 1,
-          "issueDate": "2026-08-21",
-          "subtype": "Single-Family"
-        },
-        {
-          "id": "2026-133100-RS",
-          "address": "806 Adeline Av",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Phase 3.1 Comm Hill Type 2a",
-          "valuation": 474096,
-          "units": 1,
-          "issueDate": "2026-08-21",
-          "subtype": "Single-Family"
-        },
-        {
-          "id": "2026-133139-RS",
-          "address": "818 Adeline Av",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Phase 3.1 Comm Hill Type 2b",
-          "valuation": 474096,
-          "units": 1,
-          "issueDate": "2026-08-21",
-          "subtype": "Single-Family"
-        },
         {
           "id": "2020-136941-RS",
           "address": "2398 Ruby Av #2",
@@ -111,57 +39,117 @@
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2024-114317-RS",
-          "address": "1666 University Wy #2",
+          "id": "2024-075230-RS",
+          "address": "1612 Dixie Dr #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "New Attached ADU @ 2nd Floor",
-          "valuation": 131764,
+          "description": "Attached ADU",
+          "valuation": 87080,
           "units": 1,
-          "issueDate": "2026-08-21",
+          "issueDate": "2026-08-26",
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2025-138060-RS",
-          "address": "2507 Sherlock Dr #2",
+          "id": "2026-098821-RS",
+          "address": "2969 Tobin Dr #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Detached ADU",
-          "valuation": 131764,
+          "description": "Attached ADU",
+          "valuation": 52776,
           "units": 1,
-          "issueDate": "2026-08-21",
+          "issueDate": "2026-08-25",
           "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
+          "id": "2026-127239-RS",
+          "address": "1412 N San Pedro St #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Epr Ab 2533 Legalize Detach Rec Room Conversion to ADU",
+          "valuation": 51896,
+          "units": 1,
+          "issueDate": "2026-08-26",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
+          "id": "2026-132933-CI",
+          "address": "2315 N 1st St",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Astera Labs Tenant Improvement",
+          "valuation": 2900000,
+          "units": 0,
+          "issueDate": "2026-08-24",
+          "subtype": "Office"
+        },
+        {
+          "id": "2026-133430-CI",
+          "address": "2880 Stevens Creek Bl",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Qamaria Yemeni Coffee TI",
+          "valuation": 775600,
+          "units": 0,
+          "issueDate": "2026-08-24",
+          "subtype": "Restaurant"
+        },
+        {
+          "id": "2026-123222-CI",
+          "address": "913 Willow St",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Additions/Alterations",
+          "description": "Congregate Living Center Residential Care Facility",
+          "valuation": 600000,
+          "units": 0,
+          "issueDate": "2026-08-25",
+          "subtype": "Nursing/Assisted Living"
+        },
+        {
+          "id": "2026-133932-CI",
+          "address": "160 W Santa Clara St",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Pg&E Tenant Improvement",
+          "valuation": 523216,
+          "units": 0,
+          "issueDate": "2026-08-26",
+          "subtype": "Office"
+        },
+        {
+          "id": "2026-134282-CI",
+          "address": "2855 Stevens Creek Bl",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "(Bem100%) Lukfook TI #2550",
+          "valuation": 400000,
+          "units": 0,
+          "issueDate": "2026-08-26",
+          "subtype": "Retail"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-28T03:08:34.228Z",
+      "generatedAt": "2026-08-29T03:09:12.716Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 20 – Aug 27",
+      "dateRange": "Aug 21 – Aug 28",
       "stats": {
-        "total": 92,
-        "notable": 2,
+        "total": 116,
+        "notable": 1,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
-        {
-          "id": "26BLD-02369",
-          "address": "3355 Waverley St",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-21",
-          "subtype": "Permit Issued"
-        },
         {
           "id": "26PLN-00239",
           "address": "263 University Av",

@@ -1,126 +1,165 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-28T03:16:40.042Z",
+    "generatedAt": "2026-08-29T03:18:38.290Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 7
+    "sourceCount": 13
   },
   "summary": {
-    "threadsMined": 7,
-    "placesExtracted": 6,
-    "placesMatched": 2,
-    "placeGaps": 4,
-    "eventsExtracted": 2,
+    "threadsMined": 13,
+    "placesExtracted": 8,
+    "placesMatched": 3,
+    "placeGaps": 5,
+    "eventsExtracted": 3,
     "eventsMatched": 0,
-    "eventGaps": 2,
+    "eventGaps": 3,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "Left Bank",
+      "name": "Chiramontes Market",
       "city": "San Jose",
       "kind": "restaurant",
-      "context": "sudden closure discussed",
+      "context": "historic sandwich shop since 1908 in Northside/Japantown",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w08mxt/the_inside_story_behind_the_sudden_closure_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vzzlef/free_repair_café_in_willow_glen_this_saturday/",
-        "https://www.reddit.com/r/SanJose/comments/1w0axy0/best_pie_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w08k72/best_chicken_mole_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w05gun/calling_magic_the_gathering_girlies/"
+        "https://www.reddit.com/r/SanJose/comments/1w135ta/chiramontes_market_since_1908/",
+        "https://www.reddit.com/r/SanJose/comments/1w0lv9x/a_slice_of_new_york_asony_update_7_final/",
+        "https://www.reddit.com/r/SanJose/comments/1w1asco/where_can_i_buy_local_art/",
+        "https://www.reddit.com/r/SanJose/comments/1w1al6p/best_idly_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1w12tmi/kittens_at_galaxycon_this_weekend/"
       ]
     },
     {
-      "name": "LB Steak",
+      "name": "San Jose Convention Center",
       "city": "San Jose",
-      "kind": "restaurant",
-      "context": "sudden closure discussed",
+      "kind": "venue",
+      "context": "hosting GalaxyCon this weekend",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w08mxt/the_inside_story_behind_the_sudden_closure_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vzzlef/free_repair_café_in_willow_glen_this_saturday/",
-        "https://www.reddit.com/r/SanJose/comments/1w0axy0/best_pie_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w08k72/best_chicken_mole_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w05gun/calling_magic_the_gathering_girlies/"
+        "https://www.reddit.com/r/SanJose/comments/1w135ta/chiramontes_market_since_1908/",
+        "https://www.reddit.com/r/SanJose/comments/1w0lv9x/a_slice_of_new_york_asony_update_7_final/",
+        "https://www.reddit.com/r/SanJose/comments/1w1asco/where_can_i_buy_local_art/",
+        "https://www.reddit.com/r/SanJose/comments/1w1al6p/best_idly_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1w12tmi/kittens_at_galaxycon_this_weekend/"
       ]
     },
     {
-      "name": "Meso",
+      "name": "The Dancing Cat",
       "city": "San Jose",
-      "kind": "restaurant",
-      "context": "sudden closure discussed",
+      "kind": "other",
+      "context": "cat rescue with adoption booth at GalaxyCon",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w08mxt/the_inside_story_behind_the_sudden_closure_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vzzlef/free_repair_café_in_willow_glen_this_saturday/",
-        "https://www.reddit.com/r/SanJose/comments/1w0axy0/best_pie_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w08k72/best_chicken_mole_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w05gun/calling_magic_the_gathering_girlies/"
+        "https://www.reddit.com/r/SanJose/comments/1w135ta/chiramontes_market_since_1908/",
+        "https://www.reddit.com/r/SanJose/comments/1w0lv9x/a_slice_of_new_york_asony_update_7_final/",
+        "https://www.reddit.com/r/SanJose/comments/1w1asco/where_can_i_buy_local_art/",
+        "https://www.reddit.com/r/SanJose/comments/1w1al6p/best_idly_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1w12tmi/kittens_at_galaxycon_this_weekend/"
       ]
     },
     {
-      "name": "Petaluma Pie Company",
+      "name": "Costco",
       "city": "",
-      "kind": "restaurant",
-      "context": "praised for coconut cream pie",
+      "kind": "retail",
+      "context": "source of panda bao buns child loved",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w08mxt/the_inside_story_behind_the_sudden_closure_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vzzlef/free_repair_café_in_willow_glen_this_saturday/",
-        "https://www.reddit.com/r/SanJose/comments/1w0axy0/best_pie_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w08k72/best_chicken_mole_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w05gun/calling_magic_the_gathering_girlies/"
+        "https://www.reddit.com/r/SanJose/comments/1w0vdtt/vietnamese_coffe/",
+        "https://www.reddit.com/r/SanJose/comments/1w190yo/mumford_and_sons_at_shoreline/",
+        "https://www.reddit.com/r/SanJose/comments/1w13ata/help_finding_panda_bao_buns/",
+        "https://www.reddit.com/r/SanJose/comments/1w0j01v/good_modern_barber_in_or_near_santa_clara/",
+        "https://www.reddit.com/r/SanJose/comments/1w14uji/mountain_winery/"
+      ]
+    },
+    {
+      "name": "Stanford Dish",
+      "city": "",
+      "kind": "park",
+      "context": "meeting spot for weekday hiking group",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w145kp/laidoff_weekday_hiking_group_monday_stanford_dish/",
+        "https://www.reddit.com/r/SanJose/comments/1w0vwrz/the_pink_glow_before_sunset/",
+        "https://www.reddit.com/r/SanJose/comments/1w0f9qk/awesome_sunset_tonight/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "Repair Café Silicon Valley",
-      "when": "Saturday, August 29, 2:00–5:00 PM",
+      "name": "GalaxyCon San Jose",
+      "when": "this weekend",
       "city": "San Jose",
-      "context": "free repair help for appliances, electronics, clothing, bikes",
+      "context": "convention hosting cat rescue booth 725",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w08mxt/the_inside_story_behind_the_sudden_closure_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vzzlef/free_repair_café_in_willow_glen_this_saturday/",
-        "https://www.reddit.com/r/SanJose/comments/1w0axy0/best_pie_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w08k72/best_chicken_mole_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w05gun/calling_magic_the_gathering_girlies/"
+        "https://www.reddit.com/r/SanJose/comments/1w135ta/chiramontes_market_since_1908/",
+        "https://www.reddit.com/r/SanJose/comments/1w0lv9x/a_slice_of_new_york_asony_update_7_final/",
+        "https://www.reddit.com/r/SanJose/comments/1w1asco/where_can_i_buy_local_art/",
+        "https://www.reddit.com/r/SanJose/comments/1w1al6p/best_idly_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1w12tmi/kittens_at_galaxycon_this_weekend/"
       ]
     },
     {
-      "name": "The Chainsmokers at Discovery Meadow",
-      "when": "Friday, September 4",
-      "city": "San Jose",
-      "context": "concert, poster has extra ticket",
+      "name": "Mumford and Sons at Shoreline",
+      "when": "",
+      "city": "Mountain View",
+      "context": "concert event mentioned",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1vzlble/looking_for_a_concert_buddy_have_an_extra/",
-        "https://www.reddit.com/r/SanJose/comments/1w028pm/a_311home_development_is_moving_forward_on/"
+        "https://www.reddit.com/r/SanJose/comments/1w0vdtt/vietnamese_coffe/",
+        "https://www.reddit.com/r/SanJose/comments/1w190yo/mumford_and_sons_at_shoreline/",
+        "https://www.reddit.com/r/SanJose/comments/1w13ata/help_finding_panda_bao_buns/",
+        "https://www.reddit.com/r/SanJose/comments/1w0j01v/good_modern_barber_in_or_near_santa_clara/",
+        "https://www.reddit.com/r/SanJose/comments/1w14uji/mountain_winery/"
+      ]
+    },
+    {
+      "name": "Laid-off weekday hiking group",
+      "when": "Monday",
+      "city": "",
+      "context": "hiking meetup at Stanford Dish",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w145kp/laidoff_weekday_hiking_group_monday_stanford_dish/",
+        "https://www.reddit.com/r/SanJose/comments/1w0vwrz/the_pink_glow_before_sunset/",
+        "https://www.reddit.com/r/SanJose/comments/1w0f9qk/awesome_sunset_tonight/"
       ]
     }
   ],
   "placeMatches": [
     {
-      "name": "Willow Glen Community Center",
-      "city": "San Jose",
-      "kind": "venue",
-      "context": "hosting free Repair Café event",
+      "name": "A Slice of New York (ASONY)",
+      "city": "Sunnyvale",
+      "kind": "restaurant",
+      "context": "new location fully approved, opening soon, has existing Sunnyvale spot",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w08mxt/the_inside_story_behind_the_sudden_closure_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vzzlef/free_repair_café_in_willow_glen_this_saturday/",
-        "https://www.reddit.com/r/SanJose/comments/1w0axy0/best_pie_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w08k72/best_chicken_mole_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w05gun/calling_magic_the_gathering_girlies/"
+        "https://www.reddit.com/r/SanJose/comments/1w135ta/chiramontes_market_since_1908/",
+        "https://www.reddit.com/r/SanJose/comments/1w0lv9x/a_slice_of_new_york_asony_update_7_final/",
+        "https://www.reddit.com/r/SanJose/comments/1w1asco/where_can_i_buy_local_art/",
+        "https://www.reddit.com/r/SanJose/comments/1w1al6p/best_idly_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1w12tmi/kittens_at_galaxycon_this_weekend/"
       ],
-      "matchedName": "Willow Glen"
+      "matchedName": "A Slice of New York"
     },
     {
-      "name": "Guildhouse",
+      "name": "Santana Row",
       "city": "San Jose",
-      "kind": "venue",
-      "context": "proposed meetup spot for Magic the Gathering group",
+      "kind": "retail",
+      "context": "reference point near poster's home",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w08mxt/the_inside_story_behind_the_sudden_closure_of/",
-        "https://www.reddit.com/r/SanJose/comments/1vzzlef/free_repair_café_in_willow_glen_this_saturday/",
-        "https://www.reddit.com/r/SanJose/comments/1w0axy0/best_pie_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w08k72/best_chicken_mole_in_san_jose_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w05gun/calling_magic_the_gathering_girlies/"
+        "https://www.reddit.com/r/SanJose/comments/1w135ta/chiramontes_market_since_1908/",
+        "https://www.reddit.com/r/SanJose/comments/1w0lv9x/a_slice_of_new_york_asony_update_7_final/",
+        "https://www.reddit.com/r/SanJose/comments/1w1asco/where_can_i_buy_local_art/",
+        "https://www.reddit.com/r/SanJose/comments/1w1al6p/best_idly_in_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1w12tmi/kittens_at_galaxycon_this_weekend/"
       ],
-      "matchedName": "Guildhouse"
+      "matchedName": "Santana Row"
+    },
+    {
+      "name": "Mountain Winery",
+      "city": "Saratoga",
+      "kind": "venue",
+      "context": "asking about BL32 amphitheater seating",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w0vdtt/vietnamese_coffe/",
+        "https://www.reddit.com/r/SanJose/comments/1w190yo/mumford_and_sons_at_shoreline/",
+        "https://www.reddit.com/r/SanJose/comments/1w13ata/help_finding_panda_bao_buns/",
+        "https://www.reddit.com/r/SanJose/comments/1w0j01v/good_modern_barber_in_or_near_santa_clara/",
+        "https://www.reddit.com/r/SanJose/comments/1w14uji/mountain_winery/"
+      ],
+      "matchedName": "The Mountain Winery"
     }
   ],
   "eventMatches": []

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-28T03:08:43.178Z",
+  "generatedAt": "2026-08-29T03:09:21.573Z",
   "meetings": {
     "san-jose": {
       "date": "2026-09-01",
@@ -36,7 +36,7 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-09-01",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-27T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-28T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "cupertino": {
@@ -74,7 +74,7 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-09-01",
-        "sourceUrl": "https://webapi.legistar.com/v1/cupertino/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-27T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/cupertino/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-08-28T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
@@ -112,8 +112,8 @@
     "milpitas": {
       "date": "2026-09-01",
       "displayDate": "Tue, Sep 1",
-      "startTime": "19:00",
-      "bodyName": "City Council Meeting",
+      "startTime": "17:00",
+      "bodyName": "City Council Special and Regular Meeting",
       "location": "Milpitas City Hall",
       "closedSession": false,
       "url": "https://www.milpitas.gov/129/Agendas-Minutes",
@@ -123,7 +123,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-09-01",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-27T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-28T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     },
     "los-altos": {
@@ -140,7 +140,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-09-08",
-        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-27T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-08-28T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },
@@ -188,7 +188,7 @@
     "los-gatos": {
       "provider": "MuniCode",
       "status": "error",
-      "detail": "municodemeetings.com refused the connection (ERR_HTTP2_STREAM_ERROR) — town's only published agenda source; not worked around"
+      "detail": "municodemeetings.com rejected our User-Agent (ERR_HTTP2_STREAM_ERROR) — site is up and robots.txt allows us; town's only published agenda source. Only workaround is UA spoofing; not done deliberately"
     }
   }
 }
