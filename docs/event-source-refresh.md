@@ -40,6 +40,11 @@ bash scripts/events/install-mini-refresh.sh
   limit cannot keep Discord red.
 - Missing credentials, stale/empty snapshots, critical empty sources, and
   aggregate event/source regressions block the output write.
+- A Playwright task that returns an empty array after previously contributing
+  still-future rows is retried once, sequentially. If that retry is also empty,
+  it is recorded as an error and only those still-future rows carry forward.
+  Sources with no future rows still age out normally; the aggregate regression
+  gate and its thresholds remain unchanged.
 - Every adapter records per-date raw counts in `sourceHealth`. The next run
   blocks a source that suddenly loses most or all records that were still
   scheduled for the future. Past date buckets age out automatically, so a
