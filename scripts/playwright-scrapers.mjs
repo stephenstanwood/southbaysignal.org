@@ -35,6 +35,11 @@ import {
   normalizeMidpenOccurrenceUrl,
   normalizeMountainWineryCard,
 } from "./lib/official-event-sources.mjs";
+import {
+  finalizeUnexpectedEmptyRetry,
+  findUnexpectedEmptyRetries,
+  sourceTaskId,
+} from "./lib/playwright-source-resilience.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "playwright-events.json");
@@ -2672,12 +2677,46 @@ async function main() {
   tasks.push({ name: "Half Price Books", fn: (b) => runScraper(b, "Half Price Books", scrapeHPB) });
   tasks.push({ name: "POST (Peninsula Open Space Trust)", fn: (b) => runScraper(b, "POST (Peninsula Open Space Trust)", scrapePOST) });
 
+  let previous = null;
+  try { previous = JSON.parse(readFileSync(OUT_PATH, "utf8")); } catch { /* first run */ }
+
   // Run all with bounded concurrency (4 pages at a time)
   console.log(`Running ${tasks.length} scrapers (4 concurrent)...\n`);
   const results = await pool(
     tasks.map((t) => () => t.fn(browser)),
     4
   );
+
+  // Several older scraper functions catch navigation/parser failures internally
+  // and return [] instead. A true quiet calendar is valid, but an empty result
+  // must not erase rows whose dates are still in the future. Retry only that
+  // evidenced case, one source at a time so the recovery does not repeat the
+  // four-page resource pressure from the primary pass. If the retry is still
+  // empty, classify it as an error so the bounded per-source carry-forward
+  // below preserves those future rows and records the degraded source health.
+  const unexpectedEmptyRetries = findUnexpectedEmptyRetries({
+    tasks,
+    results,
+    previous,
+    today: TODAY,
+  });
+  if (unexpectedEmptyRetries.length > 0) {
+    console.warn(
+      `\nRetrying ${unexpectedEmptyRetries.length} unexpectedly empty source(s) sequentially: ${unexpectedEmptyRetries.map((retry) => retry.name).join(", ")}`,
+    );
+    const retryResults = await pool(
+      unexpectedEmptyRetries.map((retry) => () => tasks[retry.index].fn(browser)),
+      1,
+    );
+    for (let i = 0; i < unexpectedEmptyRetries.length; i++) {
+      const candidate = unexpectedEmptyRetries[i];
+      const retried = finalizeUnexpectedEmptyRetry(retryResults[i], candidate);
+      results[candidate.index] = retried;
+      if (retried.error && !retryResults[i].error) {
+        console.warn(`  ⚠ ${candidate.name}: ${retried.error}`);
+      }
+    }
+  }
 
   await browser.close();
 
@@ -2710,11 +2749,8 @@ async function main() {
     };
   });
 
-  let previous = null;
-  try { previous = JSON.parse(readFileSync(OUT_PATH, "utf8")); } catch { /* first run */ }
-
   const sourceHealth = tasks.map((task, index) => ({
-    id: task.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+    id: sourceTaskId(task.name),
     label: task.name,
     status: results[index].error ? "error" : (results[index].events.length > 0 ? "ok" : "empty"),
     count: results[index].events.length,
@@ -2734,16 +2770,17 @@ async function main() {
   // regression guard below never fired: one source out of 23 is far under its
   // thresholds. So carry the previous run's events forward per-source instead.
   //
-  // Only `error` carries forward. `empty` is a legitimate result — plenty of
-  // these calendars really do go quiet — and pinning those would freeze stale
-  // listings in place forever.
+  // Only `error` carries forward. A first-pass empty remains legitimate unless
+  // the previous snapshot proves that source still has future rows; that one
+  // narrow case is retried above and classified as an error only after the
+  // retry also fails to prove a real empty calendar.
   const prevHealth = new Map((previous?._meta?.sourceHealth ?? []).map((h) => [h.id, h]));
   const prevBySource = new Map();
   for (const e of previous?.events ?? []) {
     if (!prevBySource.has(e.source)) prevBySource.set(e.source, []);
     prevBySource.get(e.source).push(e);
   }
-  const today = new Date().toISOString().slice(0, 10);
+  const today = TODAY;
   const carriedForward = [];
   for (const health of sourceHealth) {
     if (health.status !== "error") continue;
