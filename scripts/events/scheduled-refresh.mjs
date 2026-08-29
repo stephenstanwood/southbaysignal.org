@@ -62,12 +62,32 @@ function recentlySucceeded(path) {
   return Number.isFinite(last) && Date.now() - last < MIN_SUCCESS_AGE_HOURS * 3_600_000;
 }
 
+// Set when this run took the lock away from a crashed prior holder. That job
+// may have left its half-written generated data behind, which is what the
+// preflight then refuses. The 2026-08-17 alert listed 20 modified files and
+// never named the crash that made them, so the dirty tree read as an events
+// bug for an hour. Remember the holder and say so instead.
+let stolenLockHolder = null;
+
 function runRepoLock(script, action, { allowBusy = false } = {}) {
-  const result = spawnSync(script, [action, LOCK_TASK], { stdio: "inherit" });
+  const result = spawnSync(script, [action, LOCK_TASK], { encoding: "utf8" });
+  const output = `${result.stdout || ""}${result.stderr || ""}`;
+  if (output) process.stdout.write(output);
+  const stolen = output.match(/stealing stale lock from '([^']+)'/);
+  if (stolen) stolenLockHolder = stolen[1];
   if (result.error) throw new Error(`repo lock ${action} failed: ${result.error.message}`);
   if (allowBusy && result.status === 1) return false;
   if (result.status !== 0) throw new Error(`repo lock ${action} failed with exit ${result.status}`);
   return true;
+}
+
+/** Name the crashed prior lock holder on the guard it actually tripped. */
+function annotateDirtyCheckout(message) {
+  if (!stolenLockHolder || !/tracked changes/.test(message)) return message;
+  return `${message}\n\n(prior lock holder '${stolenLockHolder}' crashed and its stale`
+    + " lock was stolen by this run; the changes above are most likely its"
+    + " abandoned output. Confirm they are generated data, then restore them"
+    + " in the scheduled checkout.)";
 }
 
 function refreshLock(script) {
@@ -186,7 +206,8 @@ try {
   }
 } catch (error) {
   primaryError = error;
-  console.error(`${PREFIX} ${new Date().toISOString()} BLOCKED: ${error.message}`);
+  const blockedMessage = annotateDirtyCheckout(error.message);
+  console.error(`${PREFIX} ${new Date().toISOString()} BLOCKED: ${blockedMessage}`);
   if (generated) {
     // The checkout was proven clean while the lock was held. Roll back only
     // uncommitted generated JSON so a failed run cannot wedge every later job.
@@ -200,7 +221,7 @@ try {
   await catSignal({
     key: "events-scheduled-refresh",
     title: "Scheduled event refresh failed",
-    body: error.message,
+    body: blockedMessage,
   });
   process.exitCode = 1;
 } finally {
