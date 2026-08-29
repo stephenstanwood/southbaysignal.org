@@ -28,6 +28,11 @@ import {
 import { collectCanonicalNames, repairCanonicalNames } from "../../src/lib/south-bay/canonicalNames.mjs";
 import { isVerifiedOpeningRecord } from "../lib/scc-food-openings.mjs";
 import { formatMeetingTime, meetingClockMinutes } from "../lib/civic-meetings.mjs";
+import {
+  DAY_CONTEXT,
+  DOWNBEAT_DAY_LANGUAGE,
+  hasDownbeatDayLanguage,
+} from "../social/lib/content-rules.mjs";
 
 loadEnvLocal();
 
@@ -1673,12 +1678,9 @@ function limitedString(value, max) {
   return truncateNewsletterCopy(value, max);
 }
 
-const DAY_CONTEXT_WORDS = [
-  "today", "tonight", "day", "calendar", "lineup", "morning", "daytime", "afternoon", "evening",
-  "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
-];
-const DAY_CONTEXT = `(?:this\\s+)?(?:the\\s+)?(?:${DAY_CONTEXT_WORDS.join("|")})`;
-const DOWNBEAT_DAY_LANGUAGE = "(?:quiet|quieter|quietest|slow|slower|slowest|thin|thinner|thinnest|light|lighter|lightest|sparse|sparser|sparsest|sleepy|soft|weak)";
+// DAY_CONTEXT / DOWNBEAT_DAY_LANGUAGE / hasDownbeatDayLanguage now come from
+// social/lib/content-rules.mjs so the city-briefing generator checks the same
+// rule against the same day words (that shared list also covers week/weekend).
 
 function newsletterCopyString(value, max) {
   const cleaned = rewriteAwkwardNewsletterLanguage(rewriteDownbeatDayLanguage(limitedString(value, max)));
@@ -1695,13 +1697,6 @@ function rewriteDownbeatDayLanguage(value) {
       new RegExp(`\\b(${DAY_CONTEXT})\\s+has\\s+(?:a\\s+)?${DOWNBEAT_DAY_LANGUAGE}\\s+(?:feel|shape|stretch|window)\\b`, "gi"),
       (_match, period) => `${period} has useful options`
     );
-}
-
-function hasDownbeatDayLanguage(value) {
-  const text = String(value || "");
-  const dayThenTerm = new RegExp(`\\b${DAY_CONTEXT}\\b[^.!?]{0,80}\\b${DOWNBEAT_DAY_LANGUAGE}\\b`, "i");
-  const termThenDay = new RegExp(`\\b${DOWNBEAT_DAY_LANGUAGE}\\s+${DAY_CONTEXT}\\b`, "i");
-  return dayThenTerm.test(text) || termThenDay.test(text);
 }
 
 function rewriteAwkwardNewsletterLanguage(value) {

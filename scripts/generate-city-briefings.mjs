@@ -17,6 +17,10 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { callClaude as callClaudeApi } from "./lib/claude.mjs";
+import {
+  hasDownbeatDayLanguage,
+  hasRelativeDayReference,
+} from "./social/lib/content-rules.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -169,6 +173,8 @@ Important rules:
 - Match the verb to the source summary. If a city hall summary says the council "held a public hearing," your verb is "heard" or "reviewed" — not "approved." If the summary says "approved," "adopted," or "filed," use that exact verb. Never upgrade a hearing to an approval.
 - Match tense to the date. City hall items show their date in parentheses; today is ${new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}. Items dated in the past must use past tense. Reserve present or future tense for items whose date is today or later.
 - The text after "at" in an event line is a VENUE, never an organizer, host, sponsor, or performer. Meetup venue names routinely carry a landmark or trailhead label ("PG&E @ Rancho San Antonio Park", "Our Hub - A Bay Area Art & Wellness Community"). Never write that a venue "leads," "hosts," "sponsors," "presents," or "runs" the event unless the data says so in words — describe the event itself ("a 4.3-mile group hike at Rancho San Antonio") and leave the organizer out when you don't have one.
+- Never write "today", "tonight", "tomorrow", or "this evening". This briefing is cached and read for days after it is written, so a relative day silently points at the wrong date. Name the day ("Friday", "Saturday") using the day labels in the data.
+- Never describe the week, the weekend, or a day as quiet, slow, thin, light, sparse, sleepy, soft, or weak. There is always something useful to do — lead with the strongest options instead of apologizing for the calendar.
 - Do not attribute a city hall item to a specific body ("the council," "the planning commission") unless the data names that body. Advisory boards and commissions are frequently the actual body. When the body isn't stated, write it body-neutrally ("Palo Alto is weighing…", "city staff recommended…").
 - A person named in an event title is NOT necessarily physically present. Many author talks, "One Book" programs, and library events are livestreams, screenings, or watch parties hosted locally. Do not write that someone "visits," "appears at," "comes to," or "performs at" a venue unless the data explicitly says so. When unsure, describe what the venue is doing — "the library hosts a discussion of," "screens," "streams" — rather than asserting the person is there in person.
 
@@ -176,7 +182,37 @@ ${parts.join("\n\n")}
 
 Reply with ONLY the sentence, no quotes or preamble.`;
 
-  return callClaude(prompt);
+  // Two rules the model breaks often enough to be worth checking rather than
+  // just asking for: downbeat day language (the site's loudest editorial
+  // standard) and relative day words (which go stale in a cached artifact).
+  // Both shipped on 2026-08-29. Retry once naming the offense, then drop the
+  // summary rather than publish it — a city without a briefing line reads
+  // better than one that is downbeat or points at the wrong day.
+  const violations = (text) => {
+    const found = [];
+    if (hasDownbeatDayLanguage(text)) {
+      found.push(
+        "it described the week, weekend, or a day as quiet/slow/thin/light/sparse/sleepy/soft/weak",
+      );
+    }
+    if (hasRelativeDayReference(text)) {
+      found.push('it used a relative day word ("today"/"tonight"/"tomorrow") instead of naming the day');
+    }
+    return found;
+  };
+
+  const first = await callClaude(prompt);
+  if (!first) return first;
+  const firstIssues = violations(first);
+  if (!firstIssues.length) return first;
+
+  console.log(`  ${city.name}: ${firstIssues.join("; ")} — retrying`);
+  const retry = await callClaude(
+    `${prompt}\n\nYour previous attempt broke the rules — ${firstIssues.join("; ")}:\n"${first}"\nRewrite it, keeping every fact, without those problems.`,
+  );
+  if (retry && !violations(retry).length) return retry;
+  console.log(`  ${city.name}: still violating after retry — dropping the summary`);
+  return "";
 }
 
 async function main() {

@@ -148,3 +148,56 @@ export const ACRONYM_FIXES = [
   ["CCC", /\b(Ccc|ccc)\b/g],
   ["KCAT", /\b(Kcat|kcat)\b/g],
 ];
+
+// ---------------------------------------------------------------------------
+// Editorial voice — downbeat day language
+// ---------------------------------------------------------------------------
+// CLAUDE.md: "never describe a day or part of a day as quiet, slow, thin,
+// light, sparse, sleepy, soft, or weak. South Bay Today should skew optimistic
+// about its data: there is always something useful to do."
+//
+// The newsletter had the only implementation of this rule, private to
+// scripts/newsletter/lib.mjs, and its day vocabulary omitted "weekend" and
+// "week" — so a weekend claim sailed past it. That hole is why the Palo Alto
+// city briefing shipped "Palo Alto's weekend leans quiet and communal."
+// Shared here so every generator checks the same rule against the same words.
+export const DAY_CONTEXT_WORDS = [
+  "today", "tonight", "day", "calendar", "lineup", "morning", "daytime", "afternoon", "evening",
+  "weekend", "week",
+  "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
+];
+export const DAY_CONTEXT = `(?:this\\s+)?(?:the\\s+)?(?:${DAY_CONTEXT_WORDS.join("|")})`;
+export const DOWNBEAT_DAY_LANGUAGE =
+  "(?:quiet|quieter|quietest|slow|slower|slowest|thin|thinner|thinnest|light|lighter|lightest|sparse|sparser|sparsest|sleepy|soft|weak)";
+
+/**
+ * True when text describes a day (or week/weekend) as downbeat — either
+ * "<day> ... <term>" within a clause, or "<term> <day>" directly.
+ */
+export function hasDownbeatDayLanguage(value) {
+  const text = String(value || "");
+  const dayThenTerm = new RegExp(`\\b${DAY_CONTEXT}\\b[^.!?]{0,80}\\b${DOWNBEAT_DAY_LANGUAGE}\\b`, "i");
+  const termThenDay = new RegExp(`\\b${DOWNBEAT_DAY_LANGUAGE}\\s+${DAY_CONTEXT}\\b`, "i");
+  return dayThenTerm.test(text) || termThenDay.test(text);
+}
+
+/**
+ * Relative day references ("today", "tonight", "tomorrow") in copy that is
+ * cached and re-read for days after it was written.
+ *
+ * The city briefings are generated on one clock and served until the next run,
+ * so a baked-in "today" silently retargets when the date rolls: the 2026-08-29
+ * file described Friday's Herbal Tea Party at Gamble Garden as happening
+ * "today" and Friday's Montalvo play as "tonight", both written the previous
+ * evening. The Saratoga sentence even said "tonight" and "on Friday" about the
+ * same night. The day names are already in the source data, so naming the day
+ * costs nothing and survives the rollover.
+ *
+ * Deliberately NOT applied to the newsletter: that is sent once, read the
+ * morning it lands, and "Tonight's Pick" is one of its named sections.
+ */
+export function hasRelativeDayReference(value) {
+  return /\b(today|tonight|tomorrow|yesterday|this\s+(?:morning|afternoon|evening))\b/i.test(
+    String(value || ""),
+  );
+}
