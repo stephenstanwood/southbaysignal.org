@@ -91,10 +91,32 @@ bash scripts/events/install-mini-refresh.sh
   every pass, so the link self-heals.
 - A failed Mini run rolls back only its uncommitted generated data, leaves the
   last known-good database deployed, alerts, and retries.
+- Host saturation is reported as host saturation, not as a source outage. A
+  pinned Mini makes every `page.goto` burn its full timeout and return zero
+  rows, which trips the coverage gate with counts that look like a mass
+  adapter failure. The gate still fails closed; its message now carries the
+  host's load-per-core and the share of source errors that were timeouts, so
+  a saturated machine names itself. On 2026-08-29 the refresh reported
+  "22→17 sources, 615→575 events" while load average sat at 84 on 10 cores and
+  every "down" venue answered curl with a 200 in under half a second — 23
+  leaked Discord plugin `bun` processes (orphaned to PID 1 by exited Claude
+  sessions) held ~9 of the 10 cores. Reaping them restored the run to 613
+  events from 22 sources in 2 minutes. Check `uptime` on the Mini before
+  investigating any adapter that reports a navigation timeout.
+- A dirty scheduled checkout names the job that dirtied it. The preflight
+  refuses to publish from a tree with tracked changes and that guard is
+  deliberate — do not weaken it. What the alert adds is attribution: when this
+  run stole a stale lock from a crashed prior holder, the block message says
+  whose abandoned output the modified files most likely are. The 2026-08-17
+  alert listed 20 modified data files with no hint that
+  `southbaysignal-data-refresh` had crashed 124 minutes earlier holding the
+  lock; that crash also left `upcoming-events.json` without its
+  `inputSnapshots` array, which is what turned the heartbeat red alongside it.
 
 ## Verification and recovery
 
 ```bash
+uptime  # load-per-core first: a saturated Mini fakes a mass source outage
 node scripts/events/verify-refresh-output.mjs --max-age-hours 30 --snapshot-max-age-hours 30
 node scripts/events/refresh-watchdog.mjs --check-only
 node scripts/events/scheduled-refresh.mjs --force

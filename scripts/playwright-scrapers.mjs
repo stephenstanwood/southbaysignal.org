@@ -40,6 +40,7 @@ import {
   findUnexpectedEmptyRetries,
   sourceTaskId,
 } from "./lib/playwright-source-resilience.mjs";
+import { describeRefreshFailureContext } from "./lib/host-load.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dirname, "..", "src", "data", "south-bay", "playwright-events.json");
@@ -2833,8 +2834,12 @@ async function main() {
       previousSources >= 10
       && (lostSources >= 4 || events.length < previousEvents * 0.6)
     ) {
+      // Append the host's own state. A saturated machine produces exactly
+      // this regression while every source is actually healthy, and the bare
+      // counts sent the 2026-08-29 reader into the adapters for an hour.
       throw new Error(
-        `Playwright coverage regression: ${previousSources}→${nextSources} sources, ${previousEvents}→${events.length} events`,
+        `Playwright coverage regression: ${previousSources}→${nextSources} sources, ${previousEvents}→${events.length} events`
+        + describeRefreshFailureContext({ sourceHealth }),
       );
     }
   }
