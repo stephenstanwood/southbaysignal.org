@@ -69,6 +69,7 @@ import {
   OUT_OF_AREA_LOCATION,
   REGISTRATION_NONE,
   VIRTUAL_EVENT_PATTERNS,
+  hasOutOfAreaDestination,
   registrationFromBiblioCommons,
   virtualFromSourceSignal,
 } from "../src/lib/south-bay/eventFilters.mjs";
@@ -8221,6 +8222,41 @@ async function main() {
     const { kept, droppedCount } = fuzzyDedupEvents(collapsedEvents);
     if (droppedCount > 0) {
       console.log(`   🔀 fuzzy-dedup: dropped ${droppedCount} additional near-duplicate(s) (${before} → ${kept.length})`);
+      collapsedEvents.length = 0;
+      collapsedEvents.push(...kept);
+    }
+  }
+
+  // Out-of-area venue filter — the same rule the inbound branch already
+  // applies, extended to scraped sources, which never had it. A scraper
+  // inherits its city slug from the feed it came from, so an event whose own
+  // venue names a city we don't cover still shipped under an in-area slug:
+  // SCU's calendar publishes its Jesuit School of Theology programming, and
+  // that campus is in Berkeley, so "JST-SCU, Berkeley Campus, Loyola Room"
+  // was reaching the Santa Clara events list. audit-events.mjs has been
+  // flagging these as hard findings all along; nothing was acting on them.
+  //
+  // LOCAL_DEPARTURE_TRIP stays exempt here for the reason documented on the
+  // constant: a city senior center's chartered day trip is real local
+  // programming and belongs on the Events tab under its departure city.
+  {
+    const kept = [];
+    const dropped = [];
+    for (const e of collapsedEvents) {
+      if (
+        hasOutOfAreaDestination(e) &&
+        !LOCAL_DEPARTURE_TRIP.test(e.title || "")
+      ) {
+        dropped.push(e);
+        continue;
+      }
+      kept.push(e);
+    }
+    if (dropped.length > 0) {
+      console.log(`   🗺️  out-of-area: dropped ${dropped.length} event(s) whose venue sits outside coverage`);
+      for (const e of dropped) {
+        console.log(`      - ${e.date} "${e.title}" @ ${e.venue || e.address || "?"} (${e.source})`);
+      }
       collapsedEvents.length = 0;
       collapsedEvents.push(...kept);
     }

@@ -139,6 +139,22 @@ test("in-area events are not flagged", () => {
   assert.ok(!hasOutOfAreaDestination({ address: "Stanford Memorial Church" }));
 });
 
+test("a remote satellite campus of an in-area school is flagged", () => {
+  // Santa Clara University's calendar publishes its Jesuit School of Theology
+  // programming, and that campus is in Berkeley. The event inherits SCU's
+  // in-area city slug from the scraper, so the venue string is the only thing
+  // that gives the real geography away. "JST-SCU" carries no covered token,
+  // so the venue reads as out-of-area and the event is correctly dropped.
+  assert.ok(
+    hasOutOfAreaDestination({
+      title: "Magnifica Humanitas: What is a Christian Approach to AI?",
+      city: "santa-clara",
+      venue: "JST-SCU, Berkeley Campus, Loyola Room",
+      address: "",
+    }),
+  );
+});
+
 test("an address naming both cities resolves to in-area", () => {
   // Departure-and-destination strings ("leaves from Sunnyvale Community
   // Center") must not strand a genuinely local event.
