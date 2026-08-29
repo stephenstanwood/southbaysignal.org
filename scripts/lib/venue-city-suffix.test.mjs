@@ -83,3 +83,17 @@ test("isOrganizationName tolerates empty input", () => {
   assert.equal(isOrganizationName(null), false);
   assert.equal(isOrganizationName(undefined), false);
 });
+
+// The street suffix arrives spelled out, not just abbreviated. "St" is
+// word-boundary-anchored so it never matched "Street", and the Los Gatos town
+// calendar writes it in full — "Civic Center Lawn 110 E. Main Street" shipped as
+// the display venue for Oktoberfest and the Art and Wine Festival on 2026-08-28.
+test("cleanVenue strips a spelled-out street suffix, not just the abbreviation", () => {
+  assert.equal(cleanVenue("Civic Center Lawn 110 E. Main Street"), "Civic Center Lawn");
+  assert.equal(cleanVenue("Town Park Plaza 4 Tait Avenue"), "Town Park Plaza");
+});
+
+test("cleanVenue keeps a venue whose own name contains a street word", () => {
+  assert.equal(cleanVenue("Main Street Cafe"), "Main Street Cafe");
+  assert.equal(cleanVenue("Castro Street Plaza"), "Castro Street Plaza");
+});

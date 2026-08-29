@@ -139,4 +139,12 @@ test("canonical food data ships business names, not permit jargon", () => {
     /\bfast\s*fill\b|\bgas\s*(?:&|and)\s*wash\b|\bfuel\s+(?:mart|stop|center)\b/i.test(name)
   ));
   assert.deepEqual(fuelMarts, []);
+
+  // The permit's purpose also arrives as a bare trailing noun with no dash and
+  // no qualifier. "Relish Cafe Equipment" and "Be Hai Que Nha Restaurant
+  // Improvement" both shipped as coming-soon business names on 2026-08-28.
+  const purposeSuffix = names.filter((name) => (
+    /\s(?:equipment|improvements?)\s*$/i.test(name) && name.trim().split(/\s+/).length >= 3
+  ));
+  assert.deepEqual(purposeSuffix, []);
 });

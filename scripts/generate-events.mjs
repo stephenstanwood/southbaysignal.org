@@ -849,6 +849,12 @@ const PROPER_NOUN_FIXES = {
   // SCCL's Milpitas book-group listings spell the Newbery medalist's name two
   // different ways across the same book's two sessions; "Barba" is correct.
   "Donna Barbra Higuera": "Donna Barba Higuera",
+  // SJSU's Localist listing misspells the scholarship in its event heading
+  // (the body text of the same listing gets it right, and so does the program).
+  // The typo is baked into the source record, so every refresh re-imports it —
+  // four "Fullbright Program" dates shipped, one into the San Jose briefing,
+  // on 2026-08-28.
+  Fullbright: "Fulbright",
 };
 
 function fixProperNouns(text) {
@@ -1902,8 +1908,13 @@ function cleanVenue(raw) {
   // Remove single-space inline address blob: "Vasona Park 233 Blossom Hill Rd." → "Vasona Park"
   // Trigger only when the trailing chunk starts with a number and ends with a street suffix
   // so we don't chop legitimate venue names that contain numbers (e.g. "Building 5").
+  // The suffix list carries BOTH the abbreviation and the spelled-out word: "St"
+  // alone is word-boundary-anchored, so it never matched "Street", and the Los
+  // Gatos town calendar writes it out in full. "Civic Center Lawn 110 E. Main
+  // Street" shipped as the display venue for Oktoberfest and the Art and Wine
+  // Festival on 2026-08-28.
   v = v.replace(
-    /[,\s]+\d+\s+[A-Z][a-zA-Z\.\s]*?\b(St|Ave|Avenue|Blvd|Boulevard|Rd|Road|Way|Ln|Lane|Dr|Drive|Ct|Court|Pl|Place|Hwy|Highway|Pkwy|Parkway|Cir|Circle|Ter|Terrace)\b\.?\s*(?:,?\s+(Campbell|Cupertino|Los Altos|Los Gatos|Milpitas|Mountain View|Palo Alto|San Jose|San José|Santa Clara|Saratoga|Sunnyvale))?(?:,?\s+CA(?:\s+\d{5})?)?\s*$/i,
+    /[,\s]+\d+\s+[A-Z][a-zA-Z\.\s]*?\b(St|Street|Ave|Avenue|Blvd|Boulevard|Rd|Road|Way|Ln|Lane|Dr|Drive|Ct|Court|Pl|Place|Hwy|Highway|Pkwy|Parkway|Cir|Circle|Ter|Terrace)\b\.?\s*(?:,?\s+(Campbell|Cupertino|Los Altos|Los Gatos|Milpitas|Mountain View|Palo Alto|San Jose|San José|Santa Clara|Saratoga|Sunnyvale))?(?:,?\s+CA(?:\s+\d{5})?)?\s*$/i,
     "",
   );
   // Remove trailing ", City, CA 9xxxx" or " City CA 9xxxx" pattern only
@@ -1931,7 +1942,7 @@ function cleanVenue(raw) {
   // Meetup organizers append a full street address (number + street + unit) into
   // the venue-name field; the address field already carries it, so strip from the
   // house number onward when a street-suffix token is followed by a unit keyword.
-  v = v.replace(/[,\s]+\d+\s+[A-Z][a-zA-Z\.\s]*?\b(St|Ave|Avenue|Blvd|Boulevard|Rd|Road|Way|Ln|Lane|Dr|Drive|Ct|Court|Pl|Place|Hwy|Highway|Pkwy|Parkway|Cir|Circle|Ter|Terrace)\b\.?\s+(Building|Bldg|Suite|Ste|Unit|Floor|Fl|Room|Rm|Apt|#)\b.*$/i, "");
+  v = v.replace(/[,\s]+\d+\s+[A-Z][a-zA-Z\.\s]*?\b(St|Street|Ave|Avenue|Blvd|Boulevard|Rd|Road|Way|Ln|Lane|Dr|Drive|Ct|Court|Pl|Place|Hwy|Highway|Pkwy|Parkway|Cir|Circle|Ter|Terrace)\b\.?\s+(Building|Bldg|Suite|Ste|Unit|Floor|Fl|Room|Rm|Apt|#)\b.*$/i, "");
   // Strip trailing "<truncated dir>" e.g. "Los Altos History Museum, 51 So." or
   // "Civic Center Lawn 110 E." (truncated address) — comma OR space separated.
   v = v.replace(/[,\s]+\d+\s+(N|S|E|W|N\.|S\.|E\.|W\.|No|So|Ea|We)\.?\s*$/i, "");

@@ -300,6 +300,19 @@ function cleanName(raw) {
   // Strip trailing equipment-only descriptors without dash separator (e.g. "Chick Fil A Oil Tank")
   s = s.replace(/\s+(Oil\s+Tank|Grease\s+Tank|Underground\s+Tank|Tank\s+Install|Tank\s+Removal|Grease\s+Trap\s+Install|Kitchen\s+Hood|Hood\s+Install|Ansul\s+System|Fire\s+Suppression\s+System|Minor\s+Equipment\s+Change|Machine\s+Replacement|Equipment\s+Change|Equipment\s+Replacement|Equipment\s+Install|Equipment\s+Upgrade|New\s+Equipment|Gas\s+Stove|Lgt|Light\s+Equipment|New\s+Build|New\s+Food\s+Facility)\s*$/i, "").trim();
 
+  // The county also files the permit's *purpose* as a bare trailing word with no
+  // dash and no qualifier: "Relish Cafe Equipment" (350 Ellis St, Mountain View)
+  // and "Be Hai Que Nha Restaurant Improvement" (4126 Monterey Rd, San Jose) both
+  // shipped as coming-soon business names on 2026-08-28. The dash-anchored rule
+  // needs a separator and the equipment rule above only matches two-word forms
+  // ("Equipment Change", "New Equipment"), so the bare nouns survived both.
+  // Guarded on two or more words remaining so a real name whose last word is
+  // "Equipment" is never reduced to a single token.
+  s = s.replace(
+    /\s+(?:Restaurant\s+|Kitchen\s+|Food\s+|Facility\s+)?(?:Equipment|Improvements?)\s*$/i,
+    (match, offset) => (s.slice(0, offset).trim().split(/\s+/).length >= 2 ? "" : match),
+  ).trim();
+
   // Strip "Phase [noun]" permit phase descriptors (e.g. "Phase Concession", "Phase 1 Construction")
   s = s.replace(/\s+Phase\s+(Concession|Construction|Renovation|Buildout|Build\s*Out|Install|Equipment|Remodel|Plumbing)\s*$/i, "").trim();
 
