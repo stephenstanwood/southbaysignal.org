@@ -1,29 +1,29 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-28T15:08:44.981Z",
+    "generatedAt": "2026-08-29T10:34:54.146Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 615,
+    "eventCount": 613,
     "sourceCount": 22,
     "sources": [
       "Mountain View Public Library (143)",
-      "Los Gatos Library (146)",
+      "Los Gatos Library (147)",
       "San Jose Jazz (19)",
       "Linden Tree Books (12)",
       "History San Jose (10)",
       "Montalvo Arts Center (5)",
       "City Lights Theater (7)",
       "ICA San José (3)",
-      "Mountain Winery (28)",
+      "Mountain Winery (27)",
       "San Jose Theaters (20)",
       "Children's Discovery Museum (1)",
       "Midpen Open Space (3)",
       "Guadalupe River Park Conservancy (1)",
       "Santana Row (8)",
-      "City of Cupertino (66)",
+      "City of Cupertino (65)",
       "Opera San José (5)",
       "TheatreWorks Silicon Valley (90)",
-      "Levi's Stadium (13)",
+      "Levi's Stadium (12)",
       "SAP Center (15)",
       "The Tech Interactive (8)",
       "Peninsula Open Space Trust (2)",
@@ -66,7 +66,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 146,
+        "count": 147,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -76,7 +76,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 146,
+        "count": 147,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -174,7 +174,7 @@
         "id": "mountain-winery",
         "label": "Mountain Winery",
         "status": "ok",
-        "count": 28,
+        "count": 27,
         "error": null,
         "sources": [
           "Mountain Winery"
@@ -258,7 +258,7 @@
         "id": "city-of-cupertino",
         "label": "City of Cupertino",
         "status": "ok",
-        "count": 66,
+        "count": 65,
         "error": null,
         "sources": [
           "City of Cupertino"
@@ -296,7 +296,7 @@
         "id": "levi-s-stadium",
         "label": "Levi's Stadium",
         "status": "ok",
-        "count": 13,
+        "count": 12,
         "error": null,
         "sources": [
           "Levi's Stadium"
@@ -359,23 +359,6 @@
     ]
   },
   "events": [
-    {
-      "id": "c4c17ff9f713",
-      "title": "Baby Storytime: Rerun",
-      "date": "2026-08-28",
-      "displayDate": "Fri, Aug 28",
-      "time": "10:30 AM",
-      "endTime": "11:15 AM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17170824",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
     {
       "id": "424c4456c5ac",
       "title": "How to Start Solo Traveling the World",
@@ -2787,6 +2770,23 @@
       "cost": "free",
       "description": "",
       "url": "https://mountainview.libcal.com/event/15668881",
+      "source": "Mountain View Public Library",
+      "kidFriendly": false
+    },
+    {
+      "id": "435b1b224fa9",
+      "title": "Thanksgiving Day Holiday",
+      "date": "2026-11-27",
+      "displayDate": "Fri, Nov 27",
+      "time": null,
+      "endTime": null,
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/15668882",
       "source": "Mountain View Public Library",
       "kidFriendly": false
     },
@@ -5273,6 +5273,23 @@
       "kidFriendly": true
     },
     {
+      "id": "38947e21f15f",
+      "title": "Library Closed",
+      "date": "2026-11-27",
+      "displayDate": "Fri, Nov 27",
+      "time": null,
+      "endTime": null,
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/16374648",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
       "id": "32e3d2884f2a",
       "title": "SJZ Break Room Jazz Jam",
       "date": "2026-09-04",
@@ -6030,23 +6047,6 @@
       "kidFriendly": false
     },
     {
-      "id": "7a3dfb1b5920",
-      "title": "Play on the Grounds – Ms. Holmes and Ms. Watson – Apt 2B",
-      "date": "2026-08-28",
-      "displayDate": "Fri, Aug 28",
-      "time": null,
-      "endTime": null,
-      "venue": "Montalvo Arts Center",
-      "address": "15400 Montalvo Rd, Saratoga, CA 95071",
-      "city": "saratoga",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://my.montalvoarts.org/3027/3036",
-      "source": "Montalvo Arts Center",
-      "kidFriendly": false
-    },
-    {
       "id": "17e24a04ed9e",
       "title": "50th Annual SF Stand-up Comedy Competition Semi-finals",
       "date": "2026-09-16",
@@ -6111,6 +6111,23 @@
       "cost": "paid",
       "description": "",
       "url": "https://my.montalvoarts.org/overview/3064",
+      "source": "Montalvo Arts Center",
+      "kidFriendly": false
+    },
+    {
+      "id": "d5bb5d8971ad",
+      "title": "St. Paul & The Minneapolis Funk All Stars",
+      "date": "2026-10-16",
+      "displayDate": "Fri, Oct 16",
+      "time": null,
+      "endTime": null,
+      "venue": "Montalvo Arts Center",
+      "address": "15400 Montalvo Rd, Saratoga, CA 95071",
+      "city": "saratoga",
+      "category": "arts",
+      "cost": "paid",
+      "description": "",
+      "url": "https://montalvoarts.org/experience/carriage-house-concerts/st-paul/",
       "source": "Montalvo Arts Center",
       "kidFriendly": false
     },
@@ -6282,23 +6299,6 @@
       "description": "",
       "url": "https://www.icasanjose.org/upcoming-exhibitions/queeramericanmemorials/",
       "source": "ICA San José",
-      "kidFriendly": false
-    },
-    {
-      "id": "682ae0deb041",
-      "title": "FIA with Johnny Suite & Special Guests WESTERN CONFERENCE",
-      "date": "2026-08-28",
-      "displayDate": "Fri, Aug 28",
-      "time": "7:30 PM",
-      "endTime": null,
-      "venue": "The Mountain Winery",
-      "address": "14831 Pierce Rd, Saratoga, CA 95070",
-      "city": "saratoga",
-      "category": "music",
-      "cost": "paid",
-      "description": "",
-      "url": "https://www.mountainwinery.com/events/detail?event_id=1405873",
-      "source": "Mountain Winery",
       "kidFriendly": false
     },
     {
@@ -7101,10 +7101,10 @@
       "kidFriendly": false
     },
     {
-      "id": "34b03b0e8bb4",
+      "id": "6bfe1e7a1d51",
       "title": "Toddler Storytime",
-      "date": "2026-08-28",
-      "displayDate": "Fri, Aug 28",
+      "date": "2026-08-29",
+      "displayDate": "Sat, Aug 29",
       "time": "11:30 am",
       "endTime": null,
       "venue": "Children's Discovery Museum",
@@ -7324,23 +7324,6 @@
       "description": "",
       "url": "https://santanarow.com/event/trick-or-treat-the-row-halloween-family-festival/",
       "source": "Santana Row",
-      "kidFriendly": true
-    },
-    {
-      "id": "3ad4a9dddee1",
-      "title": "Movies in the Park",
-      "date": "2026-08-28",
-      "displayDate": "Fri, Aug 28",
-      "time": "08:00 PM",
-      "endTime": "10:15 PM",
-      "venue": "Creekside Park",
-      "address": "Creekside Park, 10455 Miller Avenue, Cupertino, CA, 95014, View Map",
-      "city": "cupertino",
-      "category": "family",
-      "cost": "free",
-      "description": "Enjoy popular releases of new, modern, and classic films to enjoy on a projector-screen at Creekside Park. Watch from genres of fantasy, comedy, drama, and action under the stars. For more information, visit the Movies in the Park webpage.",
-      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Movies-in-the-Park/Movies-in-the-Park-Event",
-      "source": "City of Cupertino",
       "kidFriendly": true
     },
     {
@@ -8460,7 +8443,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
       "url": "https://www.operasj.org/event/don-giovanni",
       "source": "Opera San José",
       "kidFriendly": false
@@ -8477,7 +8460,7 @@
       "city": "san-jose",
       "category": "arts",
       "cost": "paid",
-      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a […]",
+      "description": "DON GIOVANNI Back after 12 years, Opera San Jose builds a new production of Mozart's dark psychological thriller. Seduction, rebellion, and supernatural justice collide in a thrilling look at a notorious libertine's downfall. The production follows a charismatic anti-hero who pursues pleasure without remorse, leaving a trail of broken hearts and vengeful spirits in a […]",
       "url": "https://www.operasj.org/event/don-giovanni-2",
       "source": "Opera San José",
       "kidFriendly": false
@@ -10061,23 +10044,6 @@
       "description": "Feel the earth move under your feet! Soulful and irresistible, this feel-good musical tells the true story of the woman behind the soundtrack of our lives. From teenage songwriter to chart-topping legend, Carole King finds her voice in a world that wasn’t always ready to hear it. Set against the vibrant music scene of the 1950s and 1960s, the journey follows love, resilience, the sort of friendships that shape a life—and a career that changed music forever. Featuring a thrilling lineup of iconic hits including “You’ve Got a Friend,” “It’s Too Late,” and “You Make Me Feel Like a Natural Woman,” Beautiful makes you laugh, tear up, and leave the theatre humming all the way home.",
       "url": "https://my.theatreworks.org/7464/7619",
       "source": "TheatreWorks Silicon Valley",
-      "kidFriendly": false
-    },
-    {
-      "id": "119eb8dc6440",
-      "title": "CHRIS BROWN & USHER: THE R&B TOUR",
-      "date": "2026-08-28",
-      "displayDate": "Fri, Aug 28",
-      "time": null,
-      "endTime": null,
-      "venue": "Levi's Stadium",
-      "address": "4900 Marie P DeBartolo Way, Santa Clara, CA 95054",
-      "city": "santa-clara",
-      "category": "community",
-      "cost": "paid",
-      "description": "",
-      "url": "https://levisstadium.com/events/",
-      "source": "Levi's Stadium",
       "kidFriendly": false
     },
     {
