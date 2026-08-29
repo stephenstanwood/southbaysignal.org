@@ -119,6 +119,10 @@ import {
   sourceRegressionProblems,
   strictRefreshInputHealth,
 } from "./lib/event-source-health.mjs";
+import {
+  hicklebeesMonthPaths,
+  parseHicklebeesListPage,
+} from "./lib/hicklebees-events.mjs";
 
 /** Ticketmaster Discovery is bursty; honor Retry-After longer than the default. */
 const TICKETMASTER_FETCH = Object.freeze({
@@ -5846,95 +5850,77 @@ async function fetchMuseumOfAmericanHeritageEvents() {
 }
 
 // Hicklebee's (IndieCommerce / Drupal) — HTML parse
-// List page has no times; each event detail page has JSON-LD with startDate.
-// We fetch detail pages in parallel with a small concurrency cap.
+//
+// DO NOT send a spoofed browser User-Agent here. Counterintuitively, that is
+// exactly what breaks this adapter. hicklebees.com sits behind Cloudflare bot
+// management, which compares a claimed UA against the client's TLS/HTTP2
+// fingerprint. Node's fetch claiming to be Safari is a contradiction, so
+// Cloudflare answers 403 with a "Just a moment..." interstitial; with Node's
+// own default headers the request is served 200. Measured 2026-08-29:
+//   default headers        → 200 (60KB of real event HTML)
+//   spoofed Safari UA      → 403 Cloudflare challenge
+//   spoofed UA + Accept/Sec-Fetch headers → 403 Cloudflare challenge
+// The spoofed-UA version paged #tasks daily from 2026-08-07 until this fix.
+//
+// robots.txt (stock Drupal, fetched fine on the honest path) allows /events
+// with no bot rules at all, so this is a fingerprint mismatch, not a host
+// refusing automated access — unlike the SJDA case below, which was retired
+// on purpose because its robots.txt named and blocked crawlers.
+//
+// Parsing lives in ./lib/hicklebees-events.mjs so it can be tested offline.
+const HICKLEBEES_MONTHS_AHEAD = 4;
+
 async function fetchHicklebeesEvents() {
   console.log("  ⏳ Hicklebee's...");
   try {
-    const BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15";
-    const res = await fetch("https://hicklebees.com/events", {
-      headers: { "User-Agent": BROWSER_UA },
-      signal: AbortSignal.timeout(15_000),
-    });
-    if (!res.ok) throw new Error(`${res.status}`);
-    const html = await res.text();
+    const today = todayPT();
+    const seen = new Set();
+    const rows = [];
+    let articleCount = 0;
 
-    const stubs = [];
-    const now = new Date();
-    const currentYear = now.getFullYear();
-
-    const blocks = html.split(/class="event-block__first/).slice(1);
-    for (const block of blocks) {
-      const titleMatch = block.match(/event-block__title[^>]*>(.*?)<\//s);
-      const monthMatch = block.match(/event__month event__month--start[^>]*>(.*?)<\//s);
-      const dayMatch = block.match(/event__day event__day--start[^>]*>(.*?)<\//s);
-      const linkMatch = block.match(/href="(\/event[s]?\/[^"]+)"/);
-
-      const title = titleMatch?.[1]?.replace(/<[^>]+>/g, "").trim();
-      const month = monthMatch?.[1]?.trim();
-      const day = dayMatch?.[1]?.trim();
-      if (!title || !month || !day) continue;
-
-      const monthNames = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
-      const monthNum = monthNames[month];
-      if (monthNum === undefined) continue;
-
-      let year = currentYear;
-      const candidate = new Date(year, monthNum, parseInt(day));
-      if (candidate < new Date(now.getTime() - 30 * 86400000)) year++;
-      const start = new Date(year, monthNum, parseInt(day), 12, 0);
-
-      const eventUrl = linkMatch
-        ? `https://hicklebees.com${linkMatch[1]}`
-        : "https://hicklebees.com/events";
-
-      stubs.push({ title, start, eventUrl });
+    for (const path of hicklebeesMonthPaths(today, HICKLEBEES_MONTHS_AHEAD)) {
+      // No custom headers on purpose — see the note above this function.
+      const res = await fetch(`https://hicklebees.com${path}`, {
+        signal: AbortSignal.timeout(15_000),
+      });
+      if (!res.ok) throw new Error(`${res.status} on ${path}`);
+      const parsed = parseHicklebeesListPage(await res.text());
+      articleCount += parsed.articleCount;
+      for (const row of parsed.rows) {
+        const key = `${row.date}|${row.title}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        rows.push(row);
+      }
     }
 
-    // Fetch detail pages in parallel (5 at a time) to extract clock time from JSON-LD
-    const concurrency = 5;
-    const results = [];
-    for (let i = 0; i < stubs.length; i += concurrency) {
-      const batch = stubs.slice(i, i + concurrency);
-      const detailed = await Promise.all(batch.map(async (s) => {
-        if (s.eventUrl.endsWith("/events")) return s; // no detail link, leave as-is
-        try {
-          const r = await fetch(s.eventUrl, {
-            headers: { "User-Agent": BROWSER_UA },
-            signal: AbortSignal.timeout(10_000),
-          });
-          if (!r.ok) return s;
-          const detailHtml = await r.text();
-          const startMatch = detailHtml.match(/"startDate":\s*"([^"]+)"/);
-          const endMatch = detailHtml.match(/"endDate":\s*"([^"]+)"/);
-          if (startMatch) {
-            const time = isoTimeToClockLocal(startMatch[1]);
-            const endTime = endMatch ? isoTimeToClockLocal(endMatch[1]) : null;
-            return { ...s, time, endTime };
-          }
-        } catch { /* ignore network errors per-event */ }
-        return s;
+    // Guard against silent parser drift. The venue is genuinely quiet some
+    // months, so returning 0 events is legitimate — but parsing 0 rows out of
+    // pages that DID contain event-list articles means the markup moved under
+    // us. Fail loudly rather than publish an empty source that looks healthy.
+    if (articleCount > 0 && rows.length === 0) {
+      throw new Error(`parser drift: ${articleCount} event-list article(s) but 0 parsed`);
+    }
+
+    const events = rows
+      .filter((row) => row.date >= today)
+      .map((row) => ({
+        id: h("hicklebees", row.title, row.date),
+        title: row.title,
+        date: row.date,
+        displayDate: displayDate(new Date(`${row.date}T12:00:00`)),
+        time: row.time,
+        endTime: row.endTime,
+        venue: "Hicklebee's",
+        address: "1378 Lincoln Ave, San Jose, CA 95125",
+        city: "san-jose",
+        category: inferCategory(row.title, "", ""),
+        cost: "free",
+        description: "",
+        url: row.url,
+        source: "Hicklebee's",
+        kidFriendly: true,
       }));
-      results.push(...detailed);
-    }
-
-    const events = results.map((s) => ({
-      id: h("hicklebees", s.title, isoDate(s.start)),
-      title: s.title,
-      date: isoDate(s.start),
-      displayDate: displayDate(s.start),
-      time: s.time || null,
-      endTime: s.endTime || null,
-      venue: "Hicklebee's",
-      address: "1378 Lincoln Ave, San Jose, CA 95125",
-      city: "san-jose",
-      category: inferCategory(s.title, "", ""),
-      cost: "free",
-      description: "",
-      url: s.eventUrl,
-      source: "Hicklebee's",
-      kidFriendly: true,
-    }));
 
     const withTime = events.filter((e) => e.time).length;
     console.log(`  ✅ Hicklebee's: ${events.length} events (${withTime} with time)`);

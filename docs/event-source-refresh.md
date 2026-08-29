@@ -72,6 +72,20 @@ bash scripts/events/install-mini-refresh.sh
   reach us through the sanctioned channel: sjda@sjdowntown.com mails events to
   the inbound intake address, at a couple of events rather than hundreds. If
   downtown coverage needs restoring, ask SJDA for a feed — do not re-scrape.
+- Hicklebee's is the opposite of the SJMA/SJDA cases and must not be "fixed"
+  the way they were. It answered 403 from 2026-08-07 to 2026-08-29 **because**
+  the adapter sent a spoofed Safari User-Agent: hicklebees.com uses Cloudflare
+  bot management, which compares the claimed UA against the client's TLS/HTTP2
+  fingerprint, so a Node client claiming to be Safari is a contradiction and
+  gets the "Just a moment..." interstitial. Node's default headers are served
+  200, and robots.txt (stock Drupal) allows `/events` with no bot rules, so
+  nothing here is a host refusing automated access. Do not add a browser
+  User-Agent, Accept, or Sec-Fetch headers to that adapter — adding them is what
+  breaks it, and `scripts/lib/hicklebees-events.test.mjs` fails the suite if a
+  User-Agent reappears in its fetch calls. Note also that `/events` renders the
+  current month only, so the adapter walks `/events/YYYY/MM` forward; the page
+  footer's "Upcoming Event" widget uses `event-block__*` classes and is not the
+  event list, which uses `event-list__*`.
 - Inbound events arrive as one Vercel Blob shard per intake email (866 as of
   2026-08). Shard reads are bounded to 24 at a time and retry transient
   failures. What still fails is weighed, not simply counted: a subset (up to 5%,
