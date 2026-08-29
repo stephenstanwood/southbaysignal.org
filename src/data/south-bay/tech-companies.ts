@@ -1183,6 +1183,19 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   //   • PATH (undisclosed round, Aug 26 2026) is Fremont — Alameda County, the
   //     same out-of-coverage call as the San Mateo County exclusions above.
   {
+    id: "sifly-series-a",
+    name: "SiFly",
+    city: "Santa Clara",
+    category: "robotics",
+    round: "Series A",
+    amount: "$20M",
+    date: "2026-08-26",
+    tagline:
+      "Brian Hinman has done this three times already — he co-founded PictureTel at 22, then Polycom, then 2Wire, each of which grew past $500M in annual revenue. His fourth company argues that the ceiling on enterprise drones isn’t intelligence, it’s stamina: most multirotors were designed for short flights close to the operator, so the useful work stops when the battery does. SiFly’s Q12 holds a Guinness World Record for the longest flight by an electric multirotor in its weight class — 3 hours, 11 minutes, 54 seconds on a single charge — and the aircraft is rated for 180 minutes aloft, 120 miles of range, and a 10-pound payload at up to 60 mph. Shield Capital led the $20M Series A with Qudit, BBK Capital, and Alumni Ventures joining; the money scales Q12 manufacturing and pushes DronePort, the company’s multi-drone ground infrastructure, toward field validation. The local piece worth watching: SiFly is negotiating a lease on a 15,000-square-foot Sunnyvale plant to build roughly 1,000 aircraft in 2027, with the first revenue-generating deliveries targeted for the first quarter. Hinman is unusually candid about the limits of building American — the Q12’s motors come from China because assembling them domestically would cost about three times as much, and NDAA compliance turns on cameras and radios rather than motors.",
+    color: "#0369a1",
+    url: "https://sifly.co",
+  },
+  {
     id: "agentrys",
     name: "Agentrys",
     city: "San Jose",

@@ -119,6 +119,7 @@ const PINNED_WIKI_LOGOS = {
 const NO_AUTO_LOGO = new Set([
   "also-series-d", // ridealso.com is a Shopify store; resolver grabs press art
   "maxq-medical", // no favicon set; site serves Webflow's generic webclip.png
+  "dreamforce", // salesforce.com/dreamforce; resolver grabs a sponsor wordmark
 ]);
 
 // SHARED_LOGO_GROUPS (ids that legitimately share one mark), the
@@ -248,10 +249,15 @@ function decodeImageDims(buf, contentType = "") {
 
 async function imageIsRealLogo(buf, contentType, minSide = 48, minBytes = 1500) {
   if (!buf) return false;
-  if (buf.length < minBytes) return false;
   const dims = decodeImageDims(buf, contentType);
   if (!dims) return false;
+  // Vector marks are legitimately tiny — a clean logo is often a few hundred
+  // bytes of path data — so the byte floor below (a raster-placeholder test)
+  // must not apply to them. SiFly's 655-byte webclip.svg was failing the
+  // 2000-byte apple-touch-icon floor, which dropped the cascade through to
+  // og:image and self-hosted a press photo as the "logo".
   if (dims.format === "svg") return true;
+  if (buf.length < minBytes) return false;
   if (dims.w < minSide || dims.h < minSide) return false;
   // Reject icon.horse "letter on grey" placeholders — distinctive low byte count
   // for full 256x256 PNG (single background + a centered letter compresses tiny).
