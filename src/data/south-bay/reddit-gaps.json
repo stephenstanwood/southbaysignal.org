@@ -1,14 +1,14 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-29T03:18:38.290Z",
+    "generatedAt": "2026-08-30T03:17:31.942Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 13
+    "sourceCount": 12
   },
   "summary": {
-    "threadsMined": 13,
-    "placesExtracted": 8,
-    "placesMatched": 3,
-    "placeGaps": 5,
+    "threadsMined": 12,
+    "placesExtracted": 12,
+    "placesMatched": 5,
+    "placeGaps": 7,
     "eventsExtracted": 3,
     "eventsMatched": 0,
     "eventGaps": 3,
@@ -16,150 +16,199 @@
   },
   "placeGaps": [
     {
-      "name": "Chiramontes Market",
+      "name": "Santa Teresa Park",
       "city": "San Jose",
-      "kind": "restaurant",
-      "context": "historic sandwich shop since 1908 in Northside/Japantown",
+      "kind": "park",
+      "context": "proposed location for a gondola attraction",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w135ta/chiramontes_market_since_1908/",
-        "https://www.reddit.com/r/SanJose/comments/1w0lv9x/a_slice_of_new_york_asony_update_7_final/",
-        "https://www.reddit.com/r/SanJose/comments/1w1asco/where_can_i_buy_local_art/",
-        "https://www.reddit.com/r/SanJose/comments/1w1al6p/best_idly_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1w12tmi/kittens_at_galaxycon_this_weekend/"
+        "https://www.reddit.com/r/SanJose/comments/1w1zgwx/controversial_idea_san_jose_needs_more_fun_things/",
+        "https://www.reddit.com/r/SanJose/comments/1w1r39l/psa_for_san_jose_deafhard_of_hearing_open_caption/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d5bx/fruit_tart_durian_cake_suggestions/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d4dw/come_to_our_cat_adoption_fair_this_sunday_0830_at/",
+        "https://www.reddit.com/r/SanJose/comments/1w1bmte/best_idly_in_san_jose/"
       ]
     },
     {
-      "name": "San Jose Convention Center",
-      "city": "San Jose",
+      "name": "Saratoga AMC 14",
+      "city": "Saratoga",
       "kind": "venue",
-      "context": "hosting GalaxyCon this weekend",
+      "context": "hosting open caption movie screening for deaf/hard of hearing",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w135ta/chiramontes_market_since_1908/",
-        "https://www.reddit.com/r/SanJose/comments/1w0lv9x/a_slice_of_new_york_asony_update_7_final/",
-        "https://www.reddit.com/r/SanJose/comments/1w1asco/where_can_i_buy_local_art/",
-        "https://www.reddit.com/r/SanJose/comments/1w1al6p/best_idly_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1w12tmi/kittens_at_galaxycon_this_weekend/"
+        "https://www.reddit.com/r/SanJose/comments/1w1zgwx/controversial_idea_san_jose_needs_more_fun_things/",
+        "https://www.reddit.com/r/SanJose/comments/1w1r39l/psa_for_san_jose_deafhard_of_hearing_open_caption/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d5bx/fruit_tart_durian_cake_suggestions/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d4dw/come_to_our_cat_adoption_fair_this_sunday_0830_at/",
+        "https://www.reddit.com/r/SanJose/comments/1w1bmte/best_idly_in_san_jose/"
       ]
     },
     {
-      "name": "The Dancing Cat",
+      "name": "Petfood Express",
+      "city": "San Jose",
+      "kind": "retail",
+      "context": "on Bascom Ave, hosting cat adoption fair",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w1zgwx/controversial_idea_san_jose_needs_more_fun_things/",
+        "https://www.reddit.com/r/SanJose/comments/1w1r39l/psa_for_san_jose_deafhard_of_hearing_open_caption/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d5bx/fruit_tart_durian_cake_suggestions/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d4dw/come_to_our_cat_adoption_fair_this_sunday_0830_at/",
+        "https://www.reddit.com/r/SanJose/comments/1w1bmte/best_idly_in_san_jose/"
+      ]
+    },
+    {
+      "name": "Ionna",
+      "city": "San Jose",
+      "kind": "service",
+      "context": "EV fast charging station on Story & Roberts, half price today",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w23vso/where_to_find_crt_tvs_or_any_oldvintage_used/",
+        "https://www.reddit.com/r/SanJose/comments/1w21oxv/familyowned_dentist_recommendations/",
+        "https://www.reddit.com/r/SanJose/comments/1w1zom6/ps5_clearance_games/",
+        "https://www.reddit.com/r/SanJose/comments/1w1tk0g/half_price_fast_dc_charging_at_the_ionna_on_story/",
+        "https://www.reddit.com/r/SanJose/comments/1w1skaa/fight_gym_recommendations/"
+      ]
+    },
+    {
+      "name": "Walmart",
+      "city": "San Jose",
+      "kind": "retail",
+      "context": "landmark near Ionna charging station on Story & Roberts",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w23vso/where_to_find_crt_tvs_or_any_oldvintage_used/",
+        "https://www.reddit.com/r/SanJose/comments/1w21oxv/familyowned_dentist_recommendations/",
+        "https://www.reddit.com/r/SanJose/comments/1w1zom6/ps5_clearance_games/",
+        "https://www.reddit.com/r/SanJose/comments/1w1tk0g/half_price_fast_dc_charging_at_the_ionna_on_story/",
+        "https://www.reddit.com/r/SanJose/comments/1w1skaa/fight_gym_recommendations/"
+      ]
+    },
+    {
+      "name": "American Kickboxing Academy",
       "city": "San Jose",
       "kind": "other",
-      "context": "cat rescue with adoption booth at GalaxyCon",
+      "context": "fight gym mentioned as pricier option",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w135ta/chiramontes_market_since_1908/",
-        "https://www.reddit.com/r/SanJose/comments/1w0lv9x/a_slice_of_new_york_asony_update_7_final/",
-        "https://www.reddit.com/r/SanJose/comments/1w1asco/where_can_i_buy_local_art/",
-        "https://www.reddit.com/r/SanJose/comments/1w1al6p/best_idly_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1w12tmi/kittens_at_galaxycon_this_weekend/"
+        "https://www.reddit.com/r/SanJose/comments/1w23vso/where_to_find_crt_tvs_or_any_oldvintage_used/",
+        "https://www.reddit.com/r/SanJose/comments/1w21oxv/familyowned_dentist_recommendations/",
+        "https://www.reddit.com/r/SanJose/comments/1w1zom6/ps5_clearance_games/",
+        "https://www.reddit.com/r/SanJose/comments/1w1tk0g/half_price_fast_dc_charging_at_the_ionna_on_story/",
+        "https://www.reddit.com/r/SanJose/comments/1w1skaa/fight_gym_recommendations/"
       ]
     },
     {
-      "name": "Costco",
-      "city": "",
-      "kind": "retail",
-      "context": "source of panda bao buns child loved",
+      "name": "Day Worker Center of Mountain View",
+      "city": "Mountain View",
+      "kind": "service",
+      "context": "nonprofit connecting day workers with employers, hiring volunteers",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w0vdtt/vietnamese_coffe/",
-        "https://www.reddit.com/r/SanJose/comments/1w190yo/mumford_and_sons_at_shoreline/",
-        "https://www.reddit.com/r/SanJose/comments/1w13ata/help_finding_panda_bao_buns/",
-        "https://www.reddit.com/r/SanJose/comments/1w0j01v/good_modern_barber_in_or_near_santa_clara/",
-        "https://www.reddit.com/r/SanJose/comments/1w14uji/mountain_winery/"
-      ]
-    },
-    {
-      "name": "Stanford Dish",
-      "city": "",
-      "kind": "park",
-      "context": "meeting spot for weekday hiking group",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w145kp/laidoff_weekday_hiking_group_monday_stanford_dish/",
-        "https://www.reddit.com/r/SanJose/comments/1w0vwrz/the_pink_glow_before_sunset/",
-        "https://www.reddit.com/r/SanJose/comments/1w0f9qk/awesome_sunset_tonight/"
+        "https://www.reddit.com/r/mountainview/comments/1w1q5zx/mountain_view_ca_nonprofit_connects_day_workers/",
+        "https://www.reddit.com/r/mountainview/comments/1w1c05m/anyone_looking_for_concert_buddies/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "GalaxyCon San Jose",
-      "when": "this weekend",
-      "city": "San Jose",
-      "context": "convention hosting cat rescue booth 725",
+      "name": "Open Caption Movie Screening",
+      "when": "tomorrow (from post date)",
+      "city": "Saratoga",
+      "context": "screening for deaf/hard of hearing community at AMC 14",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w135ta/chiramontes_market_since_1908/",
-        "https://www.reddit.com/r/SanJose/comments/1w0lv9x/a_slice_of_new_york_asony_update_7_final/",
-        "https://www.reddit.com/r/SanJose/comments/1w1asco/where_can_i_buy_local_art/",
-        "https://www.reddit.com/r/SanJose/comments/1w1al6p/best_idly_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1w12tmi/kittens_at_galaxycon_this_weekend/"
+        "https://www.reddit.com/r/SanJose/comments/1w1zgwx/controversial_idea_san_jose_needs_more_fun_things/",
+        "https://www.reddit.com/r/SanJose/comments/1w1r39l/psa_for_san_jose_deafhard_of_hearing_open_caption/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d5bx/fruit_tart_durian_cake_suggestions/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d4dw/come_to_our_cat_adoption_fair_this_sunday_0830_at/",
+        "https://www.reddit.com/r/SanJose/comments/1w1bmte/best_idly_in_san_jose/"
       ]
     },
     {
-      "name": "Mumford and Sons at Shoreline",
+      "name": "Cat Adoption Fair",
+      "when": "Sunday 08/30",
+      "city": "San Jose",
+      "context": "at Petfood Express on Bascom Ave",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w1zgwx/controversial_idea_san_jose_needs_more_fun_things/",
+        "https://www.reddit.com/r/SanJose/comments/1w1r39l/psa_for_san_jose_deafhard_of_hearing_open_caption/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d5bx/fruit_tart_durian_cake_suggestions/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d4dw/come_to_our_cat_adoption_fair_this_sunday_0830_at/",
+        "https://www.reddit.com/r/SanJose/comments/1w1bmte/best_idly_in_san_jose/"
+      ]
+    },
+    {
+      "name": "Deep Purple concert",
       "when": "",
       "city": "Mountain View",
-      "context": "concert event mentioned",
+      "context": "concert at Shoreline Amphitheatre",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w0vdtt/vietnamese_coffe/",
-        "https://www.reddit.com/r/SanJose/comments/1w190yo/mumford_and_sons_at_shoreline/",
-        "https://www.reddit.com/r/SanJose/comments/1w13ata/help_finding_panda_bao_buns/",
-        "https://www.reddit.com/r/SanJose/comments/1w0j01v/good_modern_barber_in_or_near_santa_clara/",
-        "https://www.reddit.com/r/SanJose/comments/1w14uji/mountain_winery/"
-      ]
-    },
-    {
-      "name": "Laid-off weekday hiking group",
-      "when": "Monday",
-      "city": "",
-      "context": "hiking meetup at Stanford Dish",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w145kp/laidoff_weekday_hiking_group_monday_stanford_dish/",
-        "https://www.reddit.com/r/SanJose/comments/1w0vwrz/the_pink_glow_before_sunset/",
-        "https://www.reddit.com/r/SanJose/comments/1w0f9qk/awesome_sunset_tonight/"
+        "https://www.reddit.com/r/mountainview/comments/1w1q5zx/mountain_view_ca_nonprofit_connects_day_workers/",
+        "https://www.reddit.com/r/mountainview/comments/1w1c05m/anyone_looking_for_concert_buddies/"
       ]
     }
   ],
   "placeMatches": [
     {
-      "name": "A Slice of New York (ASONY)",
-      "city": "Sunnyvale",
-      "kind": "restaurant",
-      "context": "new location fully approved, opening soon, has existing Sunnyvale spot",
+      "name": "Euro Delights",
+      "city": "",
+      "kind": "bakery",
+      "context": "suggested for fruit tarts or durian cake",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w135ta/chiramontes_market_since_1908/",
-        "https://www.reddit.com/r/SanJose/comments/1w0lv9x/a_slice_of_new_york_asony_update_7_final/",
-        "https://www.reddit.com/r/SanJose/comments/1w1asco/where_can_i_buy_local_art/",
-        "https://www.reddit.com/r/SanJose/comments/1w1al6p/best_idly_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1w12tmi/kittens_at_galaxycon_this_weekend/"
+        "https://www.reddit.com/r/SanJose/comments/1w1zgwx/controversial_idea_san_jose_needs_more_fun_things/",
+        "https://www.reddit.com/r/SanJose/comments/1w1r39l/psa_for_san_jose_deafhard_of_hearing_open_caption/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d5bx/fruit_tart_durian_cake_suggestions/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d4dw/come_to_our_cat_adoption_fair_this_sunday_0830_at/",
+        "https://www.reddit.com/r/SanJose/comments/1w1bmte/best_idly_in_san_jose/"
       ],
-      "matchedName": "A Slice of New York"
+      "matchedName": "Euro Delights Bakery"
     },
     {
-      "name": "Santana Row",
+      "name": "Van's Bakery",
+      "city": "",
+      "kind": "bakery",
+      "context": "suggested for fruit tarts or durian cake",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w1zgwx/controversial_idea_san_jose_needs_more_fun_things/",
+        "https://www.reddit.com/r/SanJose/comments/1w1r39l/psa_for_san_jose_deafhard_of_hearing_open_caption/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d5bx/fruit_tart_durian_cake_suggestions/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d4dw/come_to_our_cat_adoption_fair_this_sunday_0830_at/",
+        "https://www.reddit.com/r/SanJose/comments/1w1bmte/best_idly_in_san_jose/"
+      ],
+      "matchedName": "Van’s Bakery"
+    },
+    {
+      "name": "What's More",
+      "city": "",
+      "kind": "bakery",
+      "context": "suggested for fruit tarts or durian cake",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w1zgwx/controversial_idea_san_jose_needs_more_fun_things/",
+        "https://www.reddit.com/r/SanJose/comments/1w1r39l/psa_for_san_jose_deafhard_of_hearing_open_caption/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d5bx/fruit_tart_durian_cake_suggestions/",
+        "https://www.reddit.com/r/SanJose/comments/1w1d4dw/come_to_our_cat_adoption_fair_this_sunday_0830_at/",
+        "https://www.reddit.com/r/SanJose/comments/1w1bmte/best_idly_in_san_jose/"
+      ],
+      "matchedName": "whaT's More cake"
+    },
+    {
+      "name": "Target",
       "city": "San Jose",
       "kind": "retail",
-      "context": "reference point near poster's home",
+      "context": "Hillsdale location has PS5 clearance games",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w135ta/chiramontes_market_since_1908/",
-        "https://www.reddit.com/r/SanJose/comments/1w0lv9x/a_slice_of_new_york_asony_update_7_final/",
-        "https://www.reddit.com/r/SanJose/comments/1w1asco/where_can_i_buy_local_art/",
-        "https://www.reddit.com/r/SanJose/comments/1w1al6p/best_idly_in_san_jose/",
-        "https://www.reddit.com/r/SanJose/comments/1w12tmi/kittens_at_galaxycon_this_weekend/"
+        "https://www.reddit.com/r/SanJose/comments/1w23vso/where_to_find_crt_tvs_or_any_oldvintage_used/",
+        "https://www.reddit.com/r/SanJose/comments/1w21oxv/familyowned_dentist_recommendations/",
+        "https://www.reddit.com/r/SanJose/comments/1w1zom6/ps5_clearance_games/",
+        "https://www.reddit.com/r/SanJose/comments/1w1tk0g/half_price_fast_dc_charging_at_the_ionna_on_story/",
+        "https://www.reddit.com/r/SanJose/comments/1w1skaa/fight_gym_recommendations/"
       ],
-      "matchedName": "Santana Row"
+      "matchedName": "Target"
     },
     {
-      "name": "Mountain Winery",
-      "city": "Saratoga",
+      "name": "Shoreline Amphitheatre",
+      "city": "Mountain View",
       "kind": "venue",
-      "context": "asking about BL32 amphitheater seating",
+      "context": "venue hosting Deep Purple concert",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w0vdtt/vietnamese_coffe/",
-        "https://www.reddit.com/r/SanJose/comments/1w190yo/mumford_and_sons_at_shoreline/",
-        "https://www.reddit.com/r/SanJose/comments/1w13ata/help_finding_panda_bao_buns/",
-        "https://www.reddit.com/r/SanJose/comments/1w0j01v/good_modern_barber_in_or_near_santa_clara/",
-        "https://www.reddit.com/r/SanJose/comments/1w14uji/mountain_winery/"
+        "https://www.reddit.com/r/mountainview/comments/1w1q5zx/mountain_view_ca_nonprofit_connects_day_workers/",
+        "https://www.reddit.com/r/mountainview/comments/1w1c05m/anyone_looking_for_concert_buddies/"
       ],
-      "matchedName": "The Mountain Winery"
+      "matchedName": "Shoreline Amphitheatre"
     }
   ],
   "eventMatches": []

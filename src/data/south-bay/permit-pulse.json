@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-29T03:09:10.132Z",
+      "generatedAt": "2026-08-30T03:09:02.112Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 21 – Aug 28",
+      "dateRange": "Aug 22 – Aug 29",
       "stats": {
-        "total": 367,
-        "notable": 16,
-        "newUnits": 5,
-        "totalValuation": 12158676
+        "total": 467,
+        "notable": 32,
+        "newUnits": 10,
+        "totalValuation": 145290837
       },
       "permits": [
         {
@@ -39,6 +39,42 @@
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
+          "id": "2026-109638-RS",
+          "address": "540 Northlake Dr #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Hud Detached ADU",
+          "valuation": 121913,
+          "units": 1,
+          "issueDate": "2026-08-27",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
+          "id": "2025-134206-RS",
+          "address": "2967 Rossmore Ln #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Garage Conversion",
+          "valuation": 107135,
+          "units": 1,
+          "issueDate": "2026-08-27",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
+          "id": "2026-102075-RS",
+          "address": "4848 Anna Dr #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Attached ADU",
+          "valuation": 99043,
+          "units": 1,
+          "issueDate": "2026-08-27",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
           "id": "2024-075230-RS",
           "address": "1612 Dixie Dr #2",
           "category": "residential-new",
@@ -51,6 +87,18 @@
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
+          "id": "2026-107703-RS",
+          "address": "734 Stardust Ln #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Attached Garage Conversion to ADU",
+          "valuation": 81803,
+          "units": 1,
+          "issueDate": "2026-08-27",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
           "id": "2026-098821-RS",
           "address": "2969 Tobin Dr #2",
           "category": "residential-new",
@@ -59,7 +107,7 @@
           "description": "Attached ADU",
           "valuation": 52776,
           "units": 1,
-          "issueDate": "2026-08-25",
+          "issueDate": "2026-08-27",
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
@@ -75,81 +123,45 @@
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2026-132933-CI",
-          "address": "2315 N 1st St",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Astera Labs Tenant Improvement",
-          "valuation": 2900000,
-          "units": 0,
-          "issueDate": "2026-08-24",
-          "subtype": "Office"
-        },
-        {
-          "id": "2026-133430-CI",
-          "address": "2880 Stevens Creek Bl",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Qamaria Yemeni Coffee TI",
-          "valuation": 775600,
-          "units": 0,
-          "issueDate": "2026-08-24",
-          "subtype": "Restaurant"
-        },
-        {
-          "id": "2026-123222-CI",
-          "address": "913 Willow St",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Additions/Alterations",
-          "description": "Congregate Living Center Residential Care Facility",
-          "valuation": 600000,
-          "units": 0,
-          "issueDate": "2026-08-25",
-          "subtype": "Nursing/Assisted Living"
-        },
-        {
-          "id": "2026-133932-CI",
-          "address": "160 W Santa Clara St",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Pg&E Tenant Improvement",
-          "valuation": 523216,
-          "units": 0,
-          "issueDate": "2026-08-26",
-          "subtype": "Office"
-        },
-        {
-          "id": "2026-134282-CI",
-          "address": "2855 Stevens Creek Bl",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "(Bem100%) Lukfook TI #2550",
-          "valuation": 400000,
-          "units": 0,
-          "issueDate": "2026-08-26",
-          "subtype": "Retail"
+          "id": "2026-129510-RS",
+          "address": "1778 Hamilton Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Epr Ab 2533 Legalize Detached ADU",
+          "valuation": 47322,
+          "units": 1,
+          "issueDate": "2026-08-27",
+          "subtype": "ADU   Accessory Dwelling Unit"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-29T03:09:12.716Z",
+      "generatedAt": "2026-08-30T03:09:04.404Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 21 – Aug 28",
+      "dateRange": "Aug 22 – Aug 29",
       "stats": {
-        "total": 116,
-        "notable": 1,
+        "total": 141,
+        "notable": 2,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
+        {
+          "id": "26BLD-02440",
+          "address": "514 Rhodes Dr",
+          "category": "residential-remodel",
+          "categoryLabel": "Home Remodel",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-28",
+          "subtype": "Permit Issued"
+        },
         {
           "id": "26PLN-00239",
           "address": "263 University Av",
