@@ -1166,8 +1166,8 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // March 31 Series C — different letter, different amount, and TechCrunch's
   // headline reads "raises another $150 million" against a $455M cumulative
   // total. Both entries stay (the ChipAgents A1/A2 and Etched calls above).
-  // Note on the Aug 25–28 2026 sweep: the window produced exactly one new
-  // in-coverage round (Agentrys, below). Recorded so the next cycle doesn’t
+  // Note on the Aug 25–30 2026 sweep: SiFly, Agentrys, and Corvus Robotics are
+  // the in-coverage rounds added below. Recorded so the next cycle doesn’t
   // re-verify the same three near-misses:
   //   • Instinct ($250M Series B at $2.5B, announced Aug 26 2026; consumer AI
   //     assistant) is San Francisco. Founder Noah Shinn’s operating entity is
@@ -1233,6 +1233,23 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
       "Digital chip design got automated decades ago; analog never did, and it is still largely drawn by hand by a shrinking population of specialists. Celera's answer is Nesto, a patented library of digital twins of analog functions that lets software do the work — the company says it can deliver full-custom or standard analog parts in a fraction of the time a traditional semiconductor company takes. Maverick Silicon, already Celera's largest investor, funded the entire $30M Series B on its own. The money accelerates the AI design-automation roadmap and customer projects, and expands the SiliconGate product-development and design-automation team in Portugal that Celera acquired, alongside new analog and AI design hires in California under CEO Patrick Brockett.",
     color: "#7c3aed",
     url: "https://www.celerasemi.com",
+  },
+  // Corvus calls this only "$20 million in new funding," not a new Series A
+  // or an extension of its October 2024 $18M Series A. Keep the round label
+  // generic rather than inventing a stage. Its own current company page says
+  // it is based in Mountain View, and the announcement carries the same city.
+  {
+    id: "corvus-robotics-venture-2026",
+    name: "Corvus Robotics",
+    city: "Mountain View",
+    category: "robotics",
+    round: "Venture Round",
+    amount: "$20M",
+    date: "2026-08-25",
+    tagline:
+      "Most warehouses still reconcile inventory by hand. Corvus sends autonomous drones through active aisles instead, capturing inventory without markers, beacons, or human operators. The Mountain View company says more than 300 devices are deployed across 26 states, Canada, and Mexico, scanning over one million locations each month. Catalyst Investors led the $20M round, with S2G Investments, Spero Ventures, and F7 Ventures returning and Cibus Capital joining; it brings total funding to $38M. The announcement also moves co-founder and longtime technology chief Mohammed Kabir into the CEO role as Corvus expands its physical-AI platform across warehouse drones, cold-chain inventory, and a forklift-mounted copilot.",
+    color: "#0f766e",
+    url: "https://corvus.ai/pr-kabir-ceo",
   },
   {
     id: "light-links",
