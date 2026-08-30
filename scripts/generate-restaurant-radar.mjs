@@ -462,6 +462,20 @@ async function main() {
         return null;
       }
 
+      // The WORKDESCRIPTION for equipment swaps is the generic "Tenant
+      // Improvement", so the minor-work list above never sees them and they
+      // land as "opening / New Buildout" — telling readers a restaurant is
+      // coming when the permit replaces a rooftop unit at a business that has
+      // been open for years. "Martha's Kitchen Hvac Replacement" (749 Story Rd,
+      // an established nonprofit soup kitchen, subtype Commercial/Industrial)
+      // shipped that way on 2026-08-29. The equipment detail only ever appears
+      // in FOLDERNAME, so test that instead of the work type.
+      const folderLower = String(r.FOLDERNAME ?? "").toLowerCase();
+      const isEquipmentReplacement =
+        /\b(hvac|rooftop unit|rtu|water heater|grease (?:interceptor|trap)|hood|ansul|fire sprinkler|fire alarm|boiler|condenser|compressor|walk-?in (?:cooler|freezer))\b/.test(folderLower) &&
+        /\b(replacement|replace|repair|upgrade|retrofit|maintenance)\b/.test(folderLower);
+      if (signal !== "closing" && isEquipmentReplacement) return null;
+
       const rawName = r.FOLDERNAME ?? null;
       const name = extractName(rawName);
 

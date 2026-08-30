@@ -2162,7 +2162,18 @@ function inferCategory(title, desc, type, venue = "") {
   // words like "department" (dep-ART-ment), "participants" (p-ART-icipants), "party", "earth", etc.
   // Farmers markets must be categorized as "market" before music/arts checks —
   // descriptions often mention "live music" incidentally, which would otherwise win.
-  if (/\bfarmers?\s+market\b/.test(titleLower)) return "market";
+  // The possessive spellings need matching too: `farmers?\s+market` requires
+  // whitespace right after "farmer(s)", so "Farmers' Market" (straight OR curly
+  // apostrophe) slipped past this rule entirely. "Downtown Palo Alto Farmers'
+  // Market" then fell through to the music check on its live-music blurb and
+  // shipped as a concert in the Palo Alto city briefing; Santana Row's plain
+  // "Farmers' Market" landed in community. The unpossessed titles (Campbell,
+  // Saratoga, Sunnyvale, Los Gatos) matched fine, which is why the gap held.
+  // Civic events hosted AT a market — mayor office hours, council meet-and-greets
+  // — stay community; without this guard, catching the possessive form would
+  // pre-empt the government/civic rule further down that currently claims them.
+  const isCivicAtMarket = /\b(office hours|mayor|city council|council member|supervisor)\b/.test(t);
+  if (/\bfarmers?['’]?\s+market\b/.test(titleLower) && !isCivicAtMarket) return "market";
   // Adult-education classes (ESL, literacy) and meditation/movement classes (Qi Gong,
   // Falun Dafa, Tai Chi) are routinely miscategorized as "arts" because their
   // descriptions mention boilerplate like a "Classical Arts Foundation" sponsor or
@@ -2359,7 +2370,10 @@ function inferCategory(title, desc, type, venue = "") {
   // Title-only market match: a venue or restaurant brand containing "Market" (e.g.
   // "San Pedro Square Market", "SoFA Market", "Hobee's Pancake Market") shouldn't
   // override the actual event type. Match real market activities only.
-  const titleMarketActivity = /\b(farmers? market|swap meet|night market|street market|food market|art market|craft market|holiday market|flea market|antique market|maker market|vendor market|artisan market|public market|outdoor market|pop-?up market|christmas market|harvest market)\b/.test(titleLower);
+  // "farmers?['’]?\s+market" for the same possessive reason as the early
+  // farmers-market rule above — this list is the fallback when that one is
+  // skipped (civic-at-market titles), so it must not reintroduce the blind spot.
+  const titleMarketActivity = /\b(farmers?['’]?\s+market|swap meet|night market|street market|food market|art market|craft market|holiday market|flea market|antique market|maker market|vendor market|artisan market|public market|outdoor market|pop-?up market|christmas market|harvest market)\b/.test(titleLower);
   const titleEndsInMarketWord = /(?:^|\s)markets?\s*$/.test(titleLower); // "Muse Markets"
   const titleHasAtMarketVenue = /\bat\s+[\w'’ ]*\bmarkets?\b/i.test(titleLower); // "...at San Pedro Square Market"
   const titleHasBrandPossessiveMarket = /\b\w+(?:'|’)s\s+[\w ]*\bmarkets?\b/i.test(titleLower); // "Hobee's Pancake Market"
@@ -2725,9 +2739,38 @@ function restoreSjsuAcronyms(text) {
   if (!text) return text;
   // SJSU's Localist feed title-cases acronyms, so "ISSS Campus Tours" arrives as
   // "Isss Campus Tours". Restore the ones that actually appear in the feed.
+  // NB: only add acronyms that are not also ordinary words. "Mosaic" (the SJSU
+  // MOSAIC Cross Cultural Center) is deliberately absent — uppercasing it would
+  // wreck every mosaic art workshop in the feed.
   return text
     .replace(/\bShrm\b/g, "SHRM")
-    .replace(/\bIsss\b/g, "ISSS");
+    .replace(/\bIsss\b/g, "ISSS")
+    .replace(/\bUsrc\b/g, "USRC")
+    .replace(/\bIfc\b/g, "IFC")
+    .replace(/\bUsc\b/g, "USC")
+    .replace(/\bSrea\b/g, "SREA")
+    .replace(/\bCre\b/g, "CRE");
+}
+
+// Localist lets campus offices publish front-desk kiosk rows as all-day
+// "events" — SJSU's "Event Center Check in" and "Mosaic & USRC Check in Kiosk"
+// are visitor sign-in systems, not things anyone can attend. They recur every
+// weekday, so they made up 8 of the feed's 30 entries, and on 2026-08-29 the
+// city-briefing picker chose "Event Center Check in" as one of San José's two
+// event highlights over Chicano Soul Fest. Drop them at ingest.
+// "Check-in kiosk" / "check-in desk" in a title is never an attendable event.
+const ADMIN_KIOSK_TITLE = /\bcheck[\s-]?in\s+(kiosk|desk|station|table)\b|\bfront\s+desk\s+check[\s-]?in\b/i;
+// A title that is only "<place> Check in" is ambiguous — "5K Race Packet Check
+// In" is a real thing attendees do. Require kiosk/front-desk/visitor-sign-in
+// framing in the blurb before dropping these.
+const ADMIN_BARE_CHECKIN_TITLE = /^\s*[\w&'’.\s-]*\bcheck[\s-]?in\s*$/i;
+const ADMIN_CHECKIN_BLURB = /\bkiosk\b|\bfront\s+desk\b|\b(?:sign|check)[\s-]?in\s+system\b|\bfor\s+visitors?\b|\bduring\s+your\s+visit\b|\bwhen\s+you\s+(?:arrive|visit)\b/i;
+
+function isAdminNonEvent(title, description = "") {
+  const t = String(title || "");
+  if (ADMIN_KIOSK_TITLE.test(t)) return true;
+  if (ADMIN_BARE_CHECKIN_TITLE.test(t)) return ADMIN_CHECKIN_BLURB.test(`${t} ${description}`);
+  return false;
 }
 
 // SJSU's Localist feed defaults every event to the San Jose campus, but
@@ -2759,6 +2802,7 @@ async function fetchSjsuEvents() {
     // of the SJSU feed is online-only and looks in-person.
     const experienceByUrl = await fetchLocalistExperienceMap("https://events.sjsu.edu");
     let skipped = 0;
+    let adminSkipped = 0;
     let venueCityFixes = 0;
     let virtualFromSource = 0;
     const parsed = items.map((item) => {
@@ -2767,6 +2811,10 @@ async function fetchSjsuEvents() {
       if (!start) return null;
       item.title = restoreSjsuAcronyms(item.title);
       item.description = restoreSjsuAcronyms(item.description);
+      if (isAdminNonEvent(item.title, stripHtml(item.description || ""))) {
+        adminSkipped++;
+        return null;
+      }
       // Localist hides the location of campus-only events behind a login and
       // ships the prompt itself in the location field ("Sign in to download the
       // location"). Treat that as no location at all so the fallback chain runs;
@@ -2850,7 +2898,7 @@ async function fetchSjsuEvents() {
       .filter((e) => !dropIds.has(e.id))
       .map(({ _startMs, ...e }) => e);
 
-    console.log(`  ✅ SJSU: ${events.length} events (${skipped} student-only filtered${collapsed ? `, ${collapsed} occurrences collapsed into exhibits` : ""}${venueCityFixes ? `, ${venueCityFixes} venue-vs-city corrections` : ""}${virtualFromSource ? `, ${virtualFromSource} flagged virtual by source` : ""})`);
+    console.log(`  ✅ SJSU: ${events.length} events (${skipped} student-only filtered${adminSkipped ? `, ${adminSkipped} front-desk kiosk rows filtered` : ""}${collapsed ? `, ${collapsed} occurrences collapsed into exhibits` : ""}${venueCityFixes ? `, ${venueCityFixes} venue-vs-city corrections` : ""}${virtualFromSource ? `, ${virtualFromSource} flagged virtual by source` : ""})`);
     return events;
   } catch (err) {
     console.log(`  ⚠️  SJSU: ${err.message}`);
@@ -8501,6 +8549,7 @@ export {
   cleanVenue,
   extractTimeFromHtml,
   inferCategory,
+  isAdminNonEvent,
   isBiblioEventCancelled,
   isOrganizationName,
   looksCancelled,
