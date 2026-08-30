@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-30T16:38:29.343Z",
+    "generatedAt": "2026-08-30T19:41:26.346Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
     "eventCount": 607,
@@ -16,7 +16,6 @@
       "ICA San José (3)",
       "Mountain Winery (26)",
       "San Jose Theaters (20)",
-      "Children's Discovery Museum (1)",
       "Midpen Open Space (3)",
       "Santana Row (8)",
       "City of Cupertino (62)",
@@ -26,7 +25,8 @@
       "SAP Center (15)",
       "The Tech Interactive (8)",
       "Peninsula Open Space Trust (2)",
-      "San Jose Museum of Art (10)"
+      "San Jose Museum of Art (10)",
+      "Children's Discovery Museum (1)"
     ],
     "sourceHealth": [
       {
@@ -96,7 +96,7 @@
         "label": "SJ Museum of Art",
         "status": "error",
         "count": 10,
-        "error": "page.goto: Timeout 25000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://sjmusart.org/calendar\", waiting until \"networkidle\"\u001b[22m\n",
+        "error": "page.goto: Timeout 25000ms exceeded.\nCall log:\n  - navigating to \"https://sjmusart.org/calendar\", waiting until \"networkidle\"\n",
         "sources": [
           "San Jose Museum of Art"
         ],
@@ -118,7 +118,7 @@
         "label": "Hicklebee's",
         "status": "error",
         "count": 0,
-        "error": "page.goto: Timeout 25000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://hicklebees.com/events\", waiting until \"networkidle\"\u001b[22m\n",
+        "error": "page.goto: Timeout 25000ms exceeded.\nCall log:\n  - navigating to \"https://hicklebees.com/events\", waiting until \"networkidle\"\n",
         "sources": []
       },
       {
@@ -200,12 +200,14 @@
       {
         "id": "children-s-discovery-museum",
         "label": "Children's Discovery Museum",
-        "status": "ok",
+        "status": "error",
         "count": 1,
-        "error": null,
+        "error": "unexpected empty result after retry; previous snapshot still has 1 future event(s) from Children's Discovery Museum",
         "sources": [
           "Children's Discovery Museum"
-        ]
+        ],
+        "carriedForward": true,
+        "carryForwardReason": "scraper errored; retained previous run's events"
       },
       {
         "id": "palo-alto-art-center",
@@ -7081,23 +7083,6 @@
       "kidFriendly": false
     },
     {
-      "id": "6eb6b30090f5",
-      "title": "Toddler Storytime",
-      "date": "2026-08-30",
-      "displayDate": "Sun, Aug 30",
-      "time": "11:30 am",
-      "endTime": null,
-      "venue": "Children's Discovery Museum",
-      "address": "180 Woz Way, San Jose, CA 95110",
-      "city": "san-jose",
-      "category": "family",
-      "cost": "paid",
-      "description": "",
-      "url": "https://www.cdm.org/calendar/",
-      "source": "Children's Discovery Museum",
-      "kidFriendly": true
-    },
-    {
       "id": "153f4f4898bf",
       "title": "Habitat Restoration: Thistle Removal",
       "date": "2026-09-05",
@@ -10734,6 +10719,23 @@
       "url": "https://sjmusart.org/event/first-fridays-december-2026",
       "source": "San Jose Museum of Art",
       "kidFriendly": false
+    },
+    {
+      "id": "6eb6b30090f5",
+      "title": "Toddler Storytime",
+      "date": "2026-08-30",
+      "displayDate": "Sun, Aug 30",
+      "time": "11:30 am",
+      "endTime": null,
+      "venue": "Children's Discovery Museum",
+      "address": "180 Woz Way, San Jose, CA 95110",
+      "city": "san-jose",
+      "category": "family",
+      "cost": "paid",
+      "description": "",
+      "url": "https://www.cdm.org/calendar/",
+      "source": "Children's Discovery Museum",
+      "kidFriendly": true
     }
   ]
 }
