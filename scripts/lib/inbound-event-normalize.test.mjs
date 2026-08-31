@@ -6,6 +6,7 @@ import {
   JEREMY_FREY_EXHIBITION_URL,
   PAPAHUGS_OCCURRENCE_URL,
   SJ_GIANTS_JAPANESE_HERITAGE_2026_07_26_URL,
+  SILICON_VALLEY_PRIDE_2026_URL,
   normalizeInboundEventPresentation,
   resolveInboundCity,
 } from "./inbound-event-normalize.mjs";
@@ -156,6 +157,21 @@ test("SJ Giants Japanese Heritage Night uses the official MiLB ticket sales grou
   });
 });
 
+test("Silicon Valley Pride uses the official parade time, route, and URL", () => {
+  assert.deepEqual(normalizeInboundEventPresentation({
+    title: "Silicon Valley Pride Parade",
+    startsAt: "2026-08-30T10:30:00-07:00",
+    endsAt: null,
+    location: "Downtown San Jose",
+    sourceUrl: "https://cmt.com/participant-check-in",
+  }), {
+    time: "11:00 AM",
+    endTime: "12:30 PM",
+    url: SILICON_VALLEY_PRIDE_2026_URL,
+    venue: "Downtown San Jose — Julian Street & Market Street to Plaza Park",
+  });
+});
+
 test("inbound events prefer an explicit canonical URL", () => {
   assert.equal(normalizeInboundEventPresentation({
     title: "Example",
@@ -196,4 +212,3 @@ test("a same-evening end time survives, including one that crosses midnight", ()
     sourceUrl: "https://example.com/show",
   }).endTime, "1:00 AM");
 });
-

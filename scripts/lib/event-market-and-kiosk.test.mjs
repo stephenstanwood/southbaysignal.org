@@ -1,6 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { inferCategory, isAdminNonEvent } from "../generate-events.mjs";
+import {
+  inferCategory,
+  isAdminNonEvent,
+  isOffRegionUniversityEvent,
+} from "../generate-events.mjs";
 
 // Both fixtures below are real strings that reached upcoming-events.json on
 // 2026-08-29 and were surfaced on southbaytoday.org city briefings.
@@ -46,6 +50,10 @@ test("front-desk kiosk rows are not events", () => {
     isAdminNonEvent("Event Center Check in", "Let us know what your up to during your visit"),
     true,
   );
+  assert.equal(
+    isAdminNonEvent("Aug 31, 2026: Event Center Check in", "Let us know what your up to during your visit"),
+    true,
+  );
 });
 
 test("real events that mention check-in survive", () => {
@@ -55,4 +63,30 @@ test("real events that mention check-in survive", () => {
   assert.equal(isAdminNonEvent("5K Race Packet Check In", "Pick up your bib the morning of the run."), false);
   assert.equal(isAdminNonEvent("Check in with your Advisor", "Drop by to discuss fall classes."), false);
   assert.equal(isAdminNonEvent("Welcome Back Social Mixer", "Meet fellow students."), false);
+});
+
+test("regional university alumni events stay in their own region", () => {
+  assert.equal(
+    isOffRegionUniversityEvent(
+      "D.C. Broncos Night at the Nationals + Summer Send-Off Reception",
+      "Pregame reception before heading to Nationals Park",
+      "Royal Sands Social Club",
+    ),
+    true,
+  );
+});
+
+test("parades and guidance are not arts substring matches", () => {
+  assert.equal(
+    inferCategory("Silicon Valley Pride Parade", "Dance, walk, roll, or cheer along the route.", "", "Downtown San Jose"),
+    "community",
+  );
+  assert.equal(
+    inferCategory("Citizenship Day: Naturalization Application Guidance", "Free application help and legal guidance.", "", "Central Park Library"),
+    "community",
+  );
+  assert.equal(
+    inferCategory("Leadership Fair", "Free treats, fun games, and leadership opportunities.", "", "SJSU"),
+    "community",
+  );
 });

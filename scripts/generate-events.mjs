@@ -700,7 +700,7 @@ const OFF_REGION_PATTERNS = [
   // SCU regional alumni chapters host travel-day events at home stadiums in
   // their own city (e.g. Chicagoland Broncos → Wrigley Field). The SCU events
   // feed surfaces them with venue="Santa Clara University" — drop by chapter.
-  /\b(chicagoland|nyc|seattle|portland|denver|boston|austin|dallas|houston|phoenix|atlanta|miami)\s+broncos\b/i,
+  /\b(chicagoland|nyc|d\.?c\.?|seattle|portland|denver|boston|austin|dallas|houston|phoenix|atlanta|miami)\s+broncos\b/i,
   // Iconic out-of-region venues — safe to drop on any university feed since
   // there's no local namesake (Wrigley Field is uniquely Chicago, Chase Center
   // is uniquely SF — SJSU's "Night at the Valkyries" event showed up here even
@@ -2099,6 +2099,12 @@ function inferCategory(title, desc, type, venue = "") {
   // arts). Trivia and live music are unambiguous when present in the title.
   if (/\btrivia\b/.test(titleLower)) return "community";
   if (/\blive\s+music\b/.test(titleLower)) return "music";
+  // Parades are civic/community gatherings even when their descriptions say
+  // attendees can dance or mention performers along the route.
+  if (/\bparade\b/.test(titleLower)) return "community";
+  // Leadership fairs are campus opportunity expos. Descriptions commonly
+  // promise "fun games," which otherwise trips the broad sports detector.
+  if (/\bleadership\s+fair\b/.test(titleLower)) return "community";
   // One-on-one computer/technology help is an educational service. SJPL's
   // description mentions ebooks, which otherwise lets the broad literary/art
   // heuristic below misclassify the series as arts.
@@ -2208,7 +2214,8 @@ function inferCategory(title, desc, type, venue = "") {
   // classification said Music. Exclude the amphi- prefix; a genuine theatre
   // booking there still carries "Arts & Theatre" in its classification text.
   const isTheaterWord = /(?<!amphi)theat(?:er|re)/.test(t);
-  if ((t.includes("exhibit") && !isExhibitionGame) || t.includes("gallery") || isTheaterWord || t.includes("film") || t.includes("cinema") || t.includes("dance") || t.includes("museum") || (isArtWordStrong && !`${titleLower} ${venueLower}`.includes("martial art"))) return "arts";
+  const hasDanceWord = /\bdanc(?:e|es|ed|ing|er|ers)\b/.test(t);
+  if ((t.includes("exhibit") && !isExhibitionGame) || t.includes("gallery") || isTheaterWord || t.includes("film") || t.includes("cinema") || hasDanceWord || t.includes("museum") || (isArtWordStrong && !`${titleLower} ${venueLower}`.includes("martial art"))) return "arts";
   // Theater play descriptions — university/community theaters often title shows by the
   // play name alone ("Exit... Pursued by a Bear") with no overt arts keyword. Detect
   // the production-credit pattern in the description: "Directed by X", "Written and
@@ -2767,7 +2774,10 @@ const ADMIN_BARE_CHECKIN_TITLE = /^\s*[\w&'’.\s-]*\bcheck[\s-]?in\s*$/i;
 const ADMIN_CHECKIN_BLURB = /\bkiosk\b|\bfront\s+desk\b|\b(?:sign|check)[\s-]?in\s+system\b|\bfor\s+visitors?\b|\bduring\s+your\s+visit\b|\bwhen\s+you\s+(?:arrive|visit)\b/i;
 
 function isAdminNonEvent(title, description = "") {
-  const t = String(title || "");
+  // Localist sometimes prefixes the raw RSS title with a date. Normalize it
+  // before applying anchored kiosk rules; cleanTitle later removes the same
+  // prefix from visitor-facing output, which previously hid the escape.
+  const t = cleanTitle(String(title || ""));
   if (ADMIN_KIOSK_TITLE.test(t)) return true;
   if (ADMIN_BARE_CHECKIN_TITLE.test(t)) return ADMIN_CHECKIN_BLURB.test(`${t} ${description}`);
   return false;
@@ -7446,7 +7456,7 @@ function fetchInboundEvents() {
         venueName = "";
       }
       // Drop bare city/state stubs like "Campbell" or "San Jose, CA" — those aren't venues.
-      venueName = cleanVenue(venueName) || null;
+      venueName = presentation.venue || cleanVenue(venueName) || null;
       const image = inboundImageForEvent(e);
 
       out.push({
@@ -8550,6 +8560,7 @@ export {
   extractTimeFromHtml,
   inferCategory,
   isAdminNonEvent,
+  isOffRegionUniversityEvent,
   isBiblioEventCancelled,
   isOrganizationName,
   looksCancelled,

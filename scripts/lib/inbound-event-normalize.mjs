@@ -20,6 +20,7 @@ export const LEVIS_STADIUM_EVENTS_URL = "https://levisstadium.com/events/";
 // not a curtain. Ticketmaster and Live Nation list all three at 7:00 PM.
 export const RANDB_TOUR_2026_URL = "https://levisstadium.com/event/chris-brown-usher-the-randb-tour/";
 const RANDB_TOUR_2026_DATES = new Set(["2026-08-28", "2026-08-29", "2026-09-01"]);
+export const SILICON_VALLEY_PRIDE_2026_URL = "https://www.svpride.com/parade";
 
 // Some newsletter trackers can't be unwrapped — Books Inc.'s Adestra links
 // (l.e.booksinc.com/rts/go2.aspx) serve a 200 instead of redirecting once the
@@ -101,6 +102,14 @@ function officialOverride(event) {
       url: SJ_GIANTS_JAPANESE_HERITAGE_2026_07_26_URL,
       time: "5:00 PM",
       endTime: null,
+    };
+  }
+  if (date === "2026-08-30" && /silicon\s+valley\s+pride\s+parade/i.test(identity)) {
+    return {
+      url: SILICON_VALLEY_PRIDE_2026_URL,
+      time: "11:00 AM",
+      endTime: "12:30 PM",
+      venue: "Downtown San Jose — Julian Street & Market Street to Plaza Park",
     };
   }
   return null;
@@ -249,5 +258,6 @@ export function normalizeInboundEventPresentation(event) {
     time,
     endTime,
     url: override?.url || detrack(event?.canonicalUrl) || detrack(event?.sourceUrl) || "",
+    ...(override?.venue ? { venue: override.venue } : {}),
   };
 }

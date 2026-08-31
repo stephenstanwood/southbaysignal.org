@@ -250,7 +250,10 @@ async function main() {
 
   for (const city of CITIES) {
     const cityEvents = allEvents.filter(
-      (e) => e.city === city.id && !e.ongoing && e.date >= start && e.date <= end
+      // Virtual listings belong in the Events calendar, but they are not a
+      // physical city highlight. Without this guard, an online author talk or
+      // campus webinar can displace a real local event from the weekly brief.
+      (e) => e.city === city.id && !e.ongoing && e.virtual !== true && e.date >= start && e.date <= end
     ).sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? "").localeCompare(b.time ?? ""));
 
     // Filter out non-public events (practices, rehearsals, etc.)
