@@ -2426,6 +2426,26 @@ function isOngoingExhibitLike(title, desc = "", venue = "") {
   return /\b(exhibit|exhibition|showcase|installation|on view|gallery|art\s+show|book display|map exhibit|sculpture walk|works by|mfa thesis|archive room|collection|artist|artwork|sculpture|painting|photography|printmaker|contemporary art|art and architecture)\b/.test(haystack);
 }
 
+// A listing whose start date has passed but whose run is still open is a show
+// you can still walk into today, not a past event. Sources that carry both a
+// start and an end were dropping these on the start date alone, which hides a
+// multi-week exhibition for its entire run — MACLA's fall exhibition opens
+// Sep 4 and closes Nov 15, so it would have vanished on Sep 5 and stayed gone
+// for ten weeks. Stanford has resolved this correctly since the ongoing rule
+// landed; this is the same rule, shared, so the arts venues match it.
+//
+// Returns null when the item really is over (or when a stale start is not an
+// exhibit — a talk that started an hour ago is past, not ongoing), otherwise
+// `{ date, ongoing }`. Ongoing runs anchor to today and drop their clock
+// times: "7:00 PM" is meaningless on an exhibition that is simply open.
+function resolveRunWindow(start, end, now, { title, description, venue } = {}) {
+  if (!start) return null;
+  if (start >= now) return { date: start, ongoing: false };
+  if (!end || end < now) return null;
+  if (!isOngoingExhibitLike(title, description, venue)) return null;
+  return { date: now, ongoing: true };
+}
+
 function inferUniversityCategory(title, desc, type, venue = "") {
   const titleLower = String(title || "").toLowerCase();
   const cleanDesc = stripHtml(desc || "");
@@ -2640,37 +2660,65 @@ async function fetchStanfordEvents() {
   try {
     const data = await fetchJson("https://events.stanford.edu/api/2/events?days=60&pp=200");
     const now = new Date();
+    const todayIso = todayPT();
     const events = (data.events || []).map((e) => {
       const ev = e.event;
-      const start = parseDate(ev.first_date);
-      const end = parseDate(ev.last_date);
-      if (!start) return null;
-      // Stanford Localist returns series events: first_date = series start, last_date = series end.
-      // Many recurring events started weeks ago but are still ongoing.
-      // Use today as the event date for ongoing events (started in past, ends in future).
+      // Stanford Localist returns ONE ROW PER OCCURRENCE. `first_date` and
+      // `last_date` bound the whole series; `event_instances[0].event_instance`
+      // is the occurrence this row stands for, and it is the only field
+      // carrying a real Pacific offset and a real clock time.
+      //
+      // Reading the occurrence off `first_date` was wrong twice over: it is a
+      // bare calendar date, so `new Date()` resolved it to midnight UTC — the
+      // prior Pacific afternoon — which published every timed Stanford event a
+      // day early and stamped it with a fabricated "5:00 PM" start (4:00 PM in
+      // winter) that no Stanford listing had ever claimed.
+      const instance = (ev.event_instances || [])[0]?.event_instance || {};
+      const occurrence = parseDate(instance.start);
+      const occurrenceEnd = instance.end ? parseDate(instance.end) : null;
+      // Series bounds stay calendar dates and are only used to decide whether a
+      // run is still open, so compare them as ISO days — parsing `last_date` to
+      // an instant would close a show at midnight on its own final day.
+      const isoDay = (v) => (/^\d{4}-\d{2}-\d{2}$/.test(v || "") ? v : null);
+      const seriesStartIso = isoDay(ev.first_date);
+      const seriesEndIso = isoDay(ev.last_date);
       const venue = cleanVenue(ev.location_name || "") || "Stanford University";
       const description = stripHtml(ev.description_text || ev.description || "");
       // Localist publishes the attendance mode outright — no need to guess it
       // from the copy. "hybrid" stays a physical destination.
       const isVirtual = virtualFromSourceSignal(ev.experience) === true;
-      let eventDate = start;
+      // A multi-day exhibit that is open today is a run, not an appointment:
+      // anchor it to today with no clock so it files under Exhibits. This has
+      // to be decided from the series bounds rather than from the occurrence —
+      // an exhibit's occurrences are all-day, so a future one carries no time
+      // and would be dropped by the "real start time" gate downstream.
+      const isOpenRun =
+        seriesStartIso && seriesEndIso &&
+        seriesStartIso < seriesEndIso &&
+        seriesStartIso <= todayIso && seriesEndIso >= todayIso &&
+        isOngoingExhibitLike(ev.title, description, venue);
+      let eventDate;
       let isOngoing = false;
-      if (start < now) {
-        if (end && end >= now) {
-          if (!isOngoingExhibitLike(ev.title, description, venue)) return null;
-          eventDate = now; // currently running exhibit → anchor to today
-          isOngoing = true; // show in Exhibits section, not Today
-        } else {
-          return null; // fully in the past
-        }
+      if (isOpenRun) {
+        eventDate = now;
+        isOngoing = true;
+      } else if (occurrence && occurrence >= now) {
+        eventDate = occurrence;
+      } else {
+        return null; // this occurrence is over and nothing is still running
       }
       return {
-        id: `stanford-${ev.id}`,
+        // A series shares one Localist id across every occurrence, so scope the
+        // id to the day — otherwise Tuesday's session and Wednesday's collapse
+        // into one card. Ongoing runs keep the bare id: they re-anchor to today
+        // on every refresh, and a date-scoped id would read as a new event each
+        // morning to anything tracking first-seen.
+        id: isOngoing ? `stanford-${ev.id}` : `stanford-${ev.id}-${isoDate(eventDate)}`,
         title: ev.title,
         date: isoDate(eventDate),
         displayDate: displayDate(eventDate),
-        time: isOngoing ? null : displayTime(start),   // no time for ongoing exhibits
-        endTime: isOngoing ? null : (end ? displayTime(end) : null),
+        time: isOngoing ? null : displayTime(occurrence),   // no time for ongoing exhibits
+        endTime: isOngoing ? null : (occurrenceEnd ? displayTime(occurrenceEnd) : null),
         ongoing: isOngoing,
         venue,
         address: ev.address || "",
@@ -2684,8 +2732,20 @@ async function fetchStanfordEvents() {
         kidFriendly: false,
       };
     }).filter(Boolean);
-    console.log(`  ✅ Stanford: ${events.length} events`);
-    return events;
+    // Localist gives an open exhibit one row per day it is open, and every one
+    // of those rows collapses to the same anchored-to-today card. Fold them
+    // here rather than downstream: Stanford is capped at 30 events, the cap
+    // counts a date-sorted list, and forty-odd identical exhibit rows all dated
+    // today would spend the entire budget before a single dated event is read.
+    const seen = new Set();
+    const deduped = events.filter((e) => {
+      if (!e.ongoing) return true;
+      if (seen.has(e.id)) return false;
+      seen.add(e.id);
+      return true;
+    });
+    console.log(`  ✅ Stanford: ${deduped.length} events`);
+    return deduped;
   } catch (err) {
     console.log(`  ⚠️  Stanford: ${err.message}`);
     if (STRICT_EVENT_REFRESH) throw err;
@@ -3297,14 +3357,24 @@ async function fetchMontalvoEvents() {
         if (!name || !startDate || !url) continue;
         const start = parseDatePT(stripBogusUtcOffset(startDate));
         const end = endDate ? parseDatePT(stripBogusUtcOffset(endDate)) : null;
-        if (!start || start < now) continue;
+        // Montalvo's Project Space shows run for weeks; the performances don't.
+        // resolveRunWindow keeps the former and still drops the latter.
+        const run = resolveRunWindow(start, end, now, {
+          title: name,
+          description: item.description || "",
+          venue: "Montalvo Arts Center",
+        });
+        if (!run) continue;
         events.push({
           id: h("montalvo", url, startDate),
           title: name,
-          date: isoDate(start),
-          displayDate: displayDate(start),
-          time: displayTime(start),
-          endTime: end && isoDate(end) === isoDate(start) ? displayTime(end) : null,
+          date: isoDate(run.date),
+          displayDate: displayDate(run.date),
+          time: run.ongoing ? null : displayTime(start),
+          endTime: run.ongoing
+            ? null
+            : (end && isoDate(end) === isoDate(start) ? displayTime(end) : null),
+          ...(run.ongoing ? { ongoing: true } : {}),
           venue: "Montalvo Arts Center",
           address: "15400 Montalvo Rd, Saratoga",
           city: "saratoga",
@@ -3331,6 +3401,10 @@ async function fetchMontalvoEvents() {
         const detailHtml = await fetchText(event.url);
         const detail = parseMontalvoOccurrencePage(detailHtml);
         if (!detail || (detail.date && detail.date !== event.date)) return event;
+        // An ongoing run is anchored to today and deliberately clock-free; the
+        // occurrence page still carries the opening night's curtain time, and
+        // stamping that back on would say the exhibition starts at 7:30 PM.
+        if (event.ongoing) return { ...event, title: detail.title || event.title };
         return {
           ...event,
           title: detail.title || event.title,
@@ -4997,23 +5071,37 @@ async function fetchMaclaEvents() {
     const now = new Date();
     const events = items
       .map((item) => {
-        const start = parseDate(item.mecStartDate || item.startDate || item.pubDate);
-        if (!start || start < now) return null;
-        const end = item.mecEndDate ? parseDate(item.mecEndDate) : null;
+        // mec:startDate / mec:endDate are date-only calendar dates ("2026-09-04").
+        // parseDate hands those to `new Date()`, which reads them as midnight
+        // UTC — the prior Pacific afternoon — so every MACLA listing rendered a
+        // day early: the Diana Gameros concert MACLA dates Friday Oct 23 was
+        // published here as Oct 22. parseDatePT anchors calendar dates at
+        // Pacific midnight, which is exactly what it exists for.
+        const start = parseDatePT(item.mecStartDate) || parseDate(item.startDate || item.pubDate);
+        const end = item.mecEndDate ? parseDatePT(item.mecEndDate) : null;
+        const description = stripHtml(item.description || item.content || "");
+        // MACLA's gallery shows run for months. Keep them while they're open.
+        const run = resolveRunWindow(start, end, now, {
+          title: item.title,
+          description,
+          venue: "MACLA",
+        });
+        if (!run) return null;
         // Prefer mec:startHour ("7:30 pm" — already in clock format) over mec:startTime ("19:30:00")
         const startTime = item.mecStartHour
           ? formatHourClock(item.mecStartHour)
-          : (item.mecStartTime ? displayTime(new Date(`${item.mecStartDate}T${item.mecStartTime}`)) : null);
+          : (item.mecStartTime ? displayTime(parseDatePT(`${item.mecStartDate}T${item.mecStartTime}`)) : null);
         const endTime = item.mecEndHour
           ? formatHourClock(item.mecEndHour)
-          : ((item.mecEndTime && item.mecEndDate) ? displayTime(new Date(`${item.mecEndDate}T${item.mecEndTime}`)) : null);
+          : ((item.mecEndTime && item.mecEndDate) ? displayTime(parseDatePT(`${item.mecEndDate}T${item.mecEndTime}`)) : null);
         return {
           id: h("macla", item.link || item.title, item.mecStartDate || item.pubDate),
           title: item.title,
-          date: isoDate(start),
-          displayDate: displayDate(start),
-          time: startTime,
-          endTime,
+          date: isoDate(run.date),
+          displayDate: displayDate(run.date),
+          time: run.ongoing ? null : startTime,
+          endTime: run.ongoing ? null : endTime,
+          ...(run.ongoing ? { ongoing: true } : {}),
           venue: "MACLA",
           address: "510 S 1st St, San Jose, CA 95113",
           city: "san-jose",
@@ -5815,7 +5903,6 @@ async function fetchSquarespaceEvents(pageUrl, source, defaultCity, defaultVenue
       .map((item) => {
         if (!item.startDate || !item.title) return null;
         const start = new Date(item.startDate);
-        if (start < now) return null;
         const end = item.endDate ? new Date(item.endDate) : null;
         const loc = item.location || {};
         const venue = loc.addressTitle || defaultVenue;
@@ -5827,6 +5914,15 @@ async function fetchSquarespaceEvents(pageUrl, source, defaultCity, defaultVenue
         const desc = item.excerpt
           ? stripHtml(item.excerpt)
           : (item.body ? truncate(stripHtml(item.body)) : "");
+        // Museums on Squarespace file a months-long show as one item whose
+        // start date is opening day. JAMsj's "Now on View" redress exhibit runs
+        // Feb–Sep and was being dropped the day after it opened.
+        const run = resolveRunWindow(start, end, now, {
+          title: item.title,
+          description: desc,
+          venue,
+        });
+        if (!run) return null;
         const fullUrl = item.fullUrl
           ? (item.fullUrl.startsWith("http") ? item.fullUrl : pageUrl.replace(/\/[^/]*$/, "") + item.fullUrl)
           : pageUrl;
@@ -5834,10 +5930,13 @@ async function fetchSquarespaceEvents(pageUrl, source, defaultCity, defaultVenue
         return {
           id: h(source.toLowerCase().replace(/[^a-z]/g, ""), fullUrl, isoDate(start)),
           title: item.title.trim(),
-          date: isoDate(start),
-          displayDate: displayDate(start),
-          time: displayTime(start),
-          endTime: end && end.getTime() !== start.getTime() ? displayTime(end) : null,
+          date: isoDate(run.date),
+          displayDate: displayDate(run.date),
+          time: run.ongoing ? null : displayTime(start),
+          endTime: run.ongoing
+            ? null
+            : (end && end.getTime() !== start.getTime() ? displayTime(end) : null),
+          ...(run.ongoing ? { ongoing: true } : {}),
           venue,
           address: addr,
           city,
@@ -8571,11 +8670,15 @@ export {
   fetchHappyHollowEvents,
   fetchJazzOnThePlazzEvents,
   fetchLosAltosEvents,
+  fetchMaclaEvents,
+  fetchStanfordEvents,
+  fetchMontalvoEvents,
   fetchMusicInParkEvents,
   fetchPaloAltoPlayersEvents,
   fetchPearTheatreEvents,
   fetchSjJazzEvents,
   polishDescription,
   parseIcalDate,
+  resolveRunWindow,
   stripRedundantVenueSuffix,
 };
