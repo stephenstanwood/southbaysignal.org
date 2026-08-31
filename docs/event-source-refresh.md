@@ -7,7 +7,8 @@ failure must never be represented as a successful empty season.
 ## Production path
 
 1. `org.southbaytoday.events-refresh` runs on the Mini at 7:15 PM PT, with an
-   8:45 PM retry.
+   8:45 PM retry. A success under three hours old coalesces the retry; older
+   daytime recoveries never suppress the whole nightly cycle.
 2. `scripts/events/scheduled-refresh.mjs` acquires the shared repo lock, refreshes
    Playwright and inbound snapshots, runs every adapter in strict mode, commits
    generated data, preflights again, pushes, and writes the success heartbeat.

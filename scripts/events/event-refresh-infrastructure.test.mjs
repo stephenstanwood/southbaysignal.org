@@ -2,6 +2,11 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
+import {
+  hasRecentSuccessfulRefresh,
+  RETRY_SLOT_SUPPRESSION_HOURS,
+} from "./refresh-schedule.mjs";
+
 function read(relativeUrl) {
   return readFileSync(new URL(relativeUrl, import.meta.url), "utf8");
 }
@@ -11,6 +16,34 @@ test("primary launch agent keeps the normal run and retry slots", () => {
   assert.match(plist, /org\.southbaytoday\.events-refresh/);
   assert.match(plist, /<integer>19<\/integer>\s*<key>Minute<\/key>\s*<integer>15<\/integer>/);
   assert.match(plist, /<integer>20<\/integer>\s*<key>Minute<\/key>\s*<integer>45<\/integer>/);
+});
+
+test("the retry window cannot suppress a whole nightly cycle", () => {
+  const retryTime = new Date("2026-08-30T03:45:00.000Z");
+  const scheduled = read("./scheduled-refresh.mjs");
+
+  assert.equal(RETRY_SLOT_SUPPRESSION_HOURS, 3);
+  assert.match(
+    scheduled,
+    /hasRecentSuccessfulRefresh\(\{ lastSuccessAt: readState\(path\)\.lastSuccessAt \}\)/,
+  );
+  assert.doesNotMatch(scheduled, /MIN_SUCCESS_AGE_HOURS/);
+  assert.equal(hasRecentSuccessfulRefresh({
+    lastSuccessAt: "2026-08-30T02:15:00.000Z",
+    now: retryTime,
+  }), true, "the 90-minute retry should coalesce after a healthy normal run");
+  assert.equal(hasRecentSuccessfulRefresh({
+    lastSuccessAt: "2026-08-29T14:38:00.000Z",
+    now: retryTime,
+  }), false, "a daytime recovery must not suppress both nightly slots");
+  assert.equal(hasRecentSuccessfulRefresh({
+    lastSuccessAt: "2026-08-30T00:45:00.000Z",
+    now: retryTime,
+  }), false, "the three-hour boundary must run rather than skip");
+  assert.equal(hasRecentSuccessfulRefresh({
+    lastSuccessAt: "2026-08-30T04:45:00.000Z",
+    now: retryTime,
+  }), false, "a future stamp must not suppress recovery");
 });
 
 test("independent watchdog runs repeatedly and can restore the primary agent", () => {
