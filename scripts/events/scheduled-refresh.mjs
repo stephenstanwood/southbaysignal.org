@@ -12,6 +12,10 @@ import {
   DEFAULT_REPO_ROOT,
   preflightNewsletterCheckout,
 } from "../newsletter/scheduled-preflight.mjs";
+import {
+  hasRecentSuccessfulRefresh,
+  RETRY_SLOT_SUPPRESSION_HOURS,
+} from "./refresh-schedule.mjs";
 
 const PREFIX = "[events-scheduled]";
 const LOCK_TASK = "events-refresh";
@@ -29,7 +33,6 @@ const DEFAULT_STATE_PATH = join(
   "SouthBayToday",
   "events-refresh-state.json",
 );
-const MIN_SUCCESS_AGE_HOURS = 18;
 
 function log(message) {
   console.log(`${PREFIX} ${new Date().toISOString()} ${message}`);
@@ -58,8 +61,7 @@ function readState(path) {
 }
 
 function recentlySucceeded(path) {
-  const last = Date.parse(readState(path).lastSuccessAt || "");
-  return Number.isFinite(last) && Date.now() - last < MIN_SUCCESS_AGE_HOURS * 3_600_000;
+  return hasRecentSuccessfulRefresh({ lastSuccessAt: readState(path).lastSuccessAt });
 }
 
 // Set when this run took the lock away from a crashed prior holder. That job
@@ -162,7 +164,10 @@ try {
 }
 
 if (!force && !preflightOnly && recentlySucceeded(statePath)) {
-  log(`last successful Mini refresh is under ${MIN_SUCCESS_AGE_HOURS}h old; retry slot is a no-op`);
+  log(
+    `last successful Mini refresh is under ${RETRY_SLOT_SUPPRESSION_HOURS}h old;`
+    + " retry slot is a no-op",
+  );
   process.exit(0);
 }
 
