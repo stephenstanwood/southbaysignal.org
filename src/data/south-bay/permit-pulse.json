@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-30T03:09:02.112Z",
+      "generatedAt": "2026-08-31T04:36:26.071Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 22 – Aug 29",
+      "dateRange": "Aug 23 – Aug 30",
       "stats": {
-        "total": 467,
+        "total": 456,
         "notable": 32,
         "newUnits": 10,
-        "totalValuation": 145290837
+        "totalValuation": 145266155
       },
       "permits": [
         {
@@ -137,14 +137,14 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-30T03:09:04.404Z",
+      "generatedAt": "2026-08-31T04:36:28.411Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 22 – Aug 29",
+      "dateRange": "Aug 23 – Aug 30",
       "stats": {
-        "total": 141,
+        "total": 145,
         "notable": 2,
         "newUnits": 0,
         "totalValuation": 0
