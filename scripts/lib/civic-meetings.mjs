@@ -345,6 +345,104 @@ export function pickBodyForRecord(candidates, recordText = "") {
   return scored[0];
 }
 
+// Body names tell you nothing when the agenda never says them. San José's
+// Rules and Open Government Committee agendas read "Review September 1, 2026
+// Final Agenda… The Public Record… VEBA Advisory Committee Appointment" — not
+// one of the words in the committee's own name — so pickBodyForRecord scored
+// every candidate 0 and the digest carried forward three nights running
+// (2026-08-29 → 08-31) even though the record demonstrably WAS one of the
+// day's agendas. The decisive signal is content-to-content: the record's text
+// is a concatenation of one event's agenda item titles, so match each
+// candidate event's own EventItems against the record instead.
+//
+// Only *numbered* agenda items count as evidence. Every San José agenda opens
+// with the same unnumbered how-to-participate boilerplate (Zoom, cable
+// channel, speaker cards); numbered items are the meeting's actual business
+// and are unique to it. Requiring two distinct numbered-title hits — and a
+// strict win over every rival — keeps this on the hold-don't-guess side: a
+// record that matches nothing (or two bodies equally) stays unresolved.
+const MIN_ITEM_NEEDLE_CHARS = 25;
+const MIN_ITEM_NEEDLE_TOKENS = 4;
+const MIN_ITEM_MATCHES = 2;
+
+// Collapse case, punctuation, dashes, and \r\n line breaks so a Stoa excerpt
+// and a Legistar EventItemTitle compare equal when they differ only in
+// rendering ("August 13, 2026 - August 20" vs "August 13, 2026 – August 20").
+function normalizeAgendaText(value) {
+  return String(value ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+/**
+ * Choose the candidate whose own agenda items appear in the record's text.
+ *
+ * @param {Array} candidates [{ body, sourceUrl, items: [{ agendaNumber, title }] }]
+ * @param {string} recordText the record's title + excerpt
+ * @returns the winning candidate, or null when the evidence is thin or tied
+ */
+export function pickBodyByItemTitles(candidates, recordText = "") {
+  const hay = ` ${normalizeAgendaText(recordText)} `;
+  if (hay.trim().length === 0) return null;
+
+  const needleSets = candidates.map((c) => {
+    const needles = new Set();
+    for (const item of c.items ?? []) {
+      if (!String(item?.agendaNumber ?? "").trim()) continue;
+      const needle = normalizeAgendaText(item?.title);
+      if (needle.length < MIN_ITEM_NEEDLE_CHARS) continue;
+      if (needle.split(" ").length < MIN_ITEM_NEEDLE_TOKENS) continue;
+      needles.add(needle);
+    }
+    return needles;
+  });
+
+  // An item cross-listed on two of the day's agendas identifies neither.
+  const seenBy = new Map();
+  for (const set of needleSets) {
+    for (const needle of set) seenBy.set(needle, (seenBy.get(needle) ?? 0) + 1);
+  }
+
+  const scored = candidates
+    .map((c, i) => ({
+      candidate: c,
+      score: [...needleSets[i]]
+        .filter((n) => seenBy.get(n) === 1 && hay.includes(` ${n} `))
+        .length,
+    }))
+    .sort((a, b) => b.score - a.score);
+
+  if (scored.length === 0 || scored[0].score < MIN_ITEM_MATCHES) return null;
+  if (scored.length > 1 && scored[0].score === scored[1].score) return null;
+  const { items, ...winner } = scored[0].candidate;
+  return { ...winner, score: scored[0].score };
+}
+
+// Fetch each ambiguous candidate's agenda items and let pickBodyByItemTitles
+// decide. A candidate whose items can't be fetched (or that has none — San
+// José's Planning Commission events publish zero EventItems) simply can't win;
+// it never blocks a rival with real matches.
+async function pickBodyByLegistarItems(client, candidates, recordText) {
+  const withItems = [];
+  for (const c of candidates.slice(0, 4)) {
+    let items = [];
+    if (Number.isInteger(c.eventId)) {
+      try {
+        const res = await fetch(
+          `https://webapi.legistar.com/v1/${client}/Events/${c.eventId}/EventItems`,
+          { headers: { "User-Agent": LEGISTAR_UA, Accept: "application/json" }, signal: AbortSignal.timeout(15_000) },
+        );
+        if (res.ok) {
+          const raw = await res.json();
+          if (Array.isArray(raw)) {
+            items = raw.map((i) => ({ agendaNumber: i.EventItemAgendaNumber, title: i.EventItemTitle }));
+          }
+        }
+      } catch {}
+    }
+    withItems.push({ ...c, items });
+  }
+  return pickBodyByItemTitles(withItems, recordText);
+}
+
 // Upstream records carry a `meetingType` we display verbatim, and it defaults to
 // "City Council" when absent. On 2026-08-05 San José's record was labeled City
 // Council but the only meeting that day was the Joint Rules and Open Government
@@ -367,31 +465,40 @@ export async function verifyLegistarBodyOnDate(client, dateIso, recordText = "")
     const events = await res.json();
     if (!Array.isArray(events) || events.length === 0) return null;
 
-    const bodies = events.map((e) => String(e.EventBodyName || "").trim()).filter(Boolean);
-    if (bodies.some((b) => /^city council\b/i.test(b))) return null; // label is correct
+    const named = events
+      .map((e) => ({ body: String(e.EventBodyName || "").trim(), eventId: e.EventId }))
+      .filter((e) => e.body);
+    if (named.some((e) => /^city council\b/i.test(e.body))) return null; // label is correct
 
     // Prefer bodies whose names read like deliberative ones (committee /
     // commission / council-of-the-whole) over incidental same-day staff hearings.
-    const deliberative = bodies.filter((b) => /\b(committee|commission)\b/i.test(b));
-    const candidates = (deliberative.length > 0 ? deliberative : bodies)
-      // Strip meeting-type boilerplate Legistar prepends to some body names
-      // ("Joint Meeting for the Rules and Open Government Committee…"). It's not
-      // part of the body's name and it makes the card heading unreadable.
-      .map((b) => b.replace(/^(?:joint|special|regular)\s+meeting\s+(?:for|of)\s+the\s+/i, "").trim())
-      .filter(Boolean)
-      // Legistar's calendar link is already filtered to the meeting date, so the
-      // existing legistarMeetingUrl fallback stays correct for this body.
-      .map((body) => ({ body, sourceUrl: null }));
+    const deliberative = named.filter((e) => /\b(committee|commission)\b/i.test(e.body));
+    const candidates = (deliberative.length > 0 ? deliberative : named)
+      .map(({ body, eventId }) => ({
+        // Strip meeting-type boilerplate Legistar prepends to some body names
+        // ("Joint Meeting for the Rules and Open Government Committee…"). It's not
+        // part of the body's name and it makes the card heading unreadable.
+        body: body.replace(/^(?:joint|special|regular)\s+meeting\s+(?:for|of)\s+the\s+/i, "").trim(),
+        // Legistar's calendar link is already filtered to the meeting date, so the
+        // existing legistarMeetingUrl fallback stays correct for this body.
+        sourceUrl: null,
+        eventId,
+      }))
+      .filter((c) => c.body);
+
+    // Name-token match first (cheap, no extra requests), then the agenda-item
+    // match above for records whose text never names the body.
+    const resolved = pickBodyForRecord(candidates, recordText)
+      ?? await pickBodyByLegistarItems(client, candidates, recordText);
     // No council meeting exists on this date, so the "City Council" label is
-    // disproven even when pickBodyForRecord can't say which body it was. A bare
+    // disproven even when neither matcher can say which body it was. A bare
     // null can't express that — the caller reads it as "nothing to change" and
     // publishes the label anyway. San José's 2026-08-26 digest shipped as a
     // City Council meeting when Legistar shows only the Joint Rules and Open
     // Government Committee / Committee of the Whole and the Planning
     // Commission sat that day. Hand back councilMet:false so the caller can
     // tell "the label checks out" from "the label is wrong and I can't fix it".
-    return pickBodyForRecord(candidates, recordText)
-      ?? { body: null, sourceUrl: null, councilMet: false };
+    return resolved ?? { body: null, sourceUrl: null, councilMet: false };
   } catch {
     return null;
   }

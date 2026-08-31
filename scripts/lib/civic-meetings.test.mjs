@@ -17,6 +17,7 @@ import {
   normalizeMeetingTime,
   onlyConfirmedMeetings,
   parseSessionSchedule,
+  pickBodyByItemTitles,
   pickCivicClerkMeeting,
   resolvePublicStart,
 } from "./civic-meetings.mjs";
@@ -465,4 +466,103 @@ test("parseCivicEngageAgendaLinks dedupes the title and download links to one en
 test("parseCivicEngageAgendaLinks survives an empty or unrecognized page", () => {
   assert.deepEqual(parseCivicEngageAgendaLinks("", { baseUrl: "https://example.gov" }), []);
   assert.deepEqual(parseCivicEngageAgendaLinks(null, { baseUrl: "https://example.gov" }), []);
+});
+
+// ── pickBodyByItemTitles ────────────────────────────────────────────────────
+// Fixtures mirror San José 2026-08-26: the Rules and Open Government Committee
+// agenda whose text never names the committee, alongside a Planning Commission
+// event that publishes zero EventItems. Name-token matching scored both 0 and
+// the digest carried forward three nights; the numbered agenda items are the
+// signal that resolves it.
+
+const SJ_RULES_ITEMS = [
+  { agendaNumber: null, title: "For live translations in over 50 languages, please go to https://attend.wordly.ai/join/FAYU-7105" },
+  { agendaNumber: null, title: "How to submit written Public Comment for items on the agenda:" },
+  { agendaNumber: "A.", title: "City Council (City Clerk)" },
+  { agendaNumber: "1.", title: "Review Final Agenda" },
+  { agendaNumber: "2.", title: "Review Draft Agenda" },
+  { agendaNumber: "B.", title: "Consent Calendar" },
+  { agendaNumber: "C.", title: "Rules Committee Reviews, Recommendations and Approvals" },
+  { agendaNumber: null, title: "Review September 1, 2026 Final Agenda.  a. Add New Items to Final Agenda  b. Assign \"Time Certain\" to Agenda Items (if needed)" },
+  { agendaNumber: "1.", title: "The Public Record for August 13, 2026 - August 20, 2026. (City Clerk)" },
+  { agendaNumber: "2.", title: "VEBA Advisory Committee Appointment. (City Manager)" },
+  { agendaNumber: "3.", title: "Joint Special Meeting of the City Council of San José and San José/Santa Clara Treatment Plant Advisory Committee. (Environmental Services)" },
+];
+
+const SJ_RULES_RECORD_TEXT =
+  "Review September 1, 2026 Final Agenda.\r\na. Add New Items to Final Agenda\r\nb. Assign \"Time Certain\" to Agenda Items (if needed) " +
+  "Review September 8, 2026 Draft Agenda. - Cancelled. " +
+  "The Public Record for August 13, 2026 - August 20, 2026. (City Clerk). " +
+  "VEBA Advisory Committee Appointment. (City Manager). " +
+  "Joint Special Meeting of the City Council of San José and San José/Santa Clara Treatment Plant Advisory Commit";
+
+test("agenda-item matching resolves a record whose text never names the body", () => {
+  const picked = pickBodyByItemTitles(
+    [
+      { body: "Rules and Open Government Committee and Committee of the Whole", sourceUrl: null, items: SJ_RULES_ITEMS },
+      { body: "Planning Commission", sourceUrl: null, items: [] },
+    ],
+    SJ_RULES_RECORD_TEXT,
+  );
+  assert.equal(picked?.body, "Rules and Open Government Committee and Committee of the Whole");
+});
+
+test("unnumbered boilerplate items are not evidence of a body", () => {
+  // The record contains only the shared how-to-participate text; every San
+  // José agenda opens with it, so it must not hand the win to whichever
+  // candidate happened to publish its items.
+  const picked = pickBodyByItemTitles(
+    [
+      {
+        body: "Rules and Open Government Committee and Committee of the Whole",
+        sourceUrl: null,
+        items: [
+          { agendaNumber: null, title: "How to submit written Public Comment for items on the agenda: by email to city.clerk@sanjoseca.gov" },
+          { agendaNumber: null, title: "For live translations in over 50 languages, please go to the meeting portal" },
+        ],
+      },
+      { body: "Planning Commission", sourceUrl: null, items: [] },
+    ],
+    "How to submit written Public Comment for items on the agenda: by email to city.clerk@sanjoseca.gov. For live translations in over 50 languages, please go to the meeting portal.",
+  );
+  assert.equal(picked, null);
+});
+
+test("one matched item is too thin to overturn hold-don't-guess", () => {
+  const picked = pickBodyByItemTitles(
+    [
+      { body: "Rules and Open Government Committee and Committee of the Whole", sourceUrl: null, items: [
+        { agendaNumber: "1.", title: "VEBA Advisory Committee Appointment. (City Manager)" },
+      ] },
+      { body: "Planning Commission", sourceUrl: null, items: [] },
+    ],
+    "VEBA Advisory Committee Appointment. (City Manager).",
+  );
+  assert.equal(picked, null);
+});
+
+test("an item cross-listed on two agendas identifies neither", () => {
+  const shared = [
+    { agendaNumber: "1.", title: "The Public Record for August 13, 2026 - August 20, 2026. (City Clerk)" },
+    { agendaNumber: "2.", title: "VEBA Advisory Committee Appointment. (City Manager)" },
+  ];
+  const picked = pickBodyByItemTitles(
+    [
+      { body: "Rules and Open Government Committee and Committee of the Whole", sourceUrl: null, items: shared },
+      { body: "Neighborhood Services and Education Committee", sourceUrl: null, items: [...shared] },
+    ],
+    SJ_RULES_RECORD_TEXT,
+  );
+  assert.equal(picked, null);
+});
+
+test("agenda-item matching returns null on empty text or no candidates", () => {
+  assert.equal(pickBodyByItemTitles([], SJ_RULES_RECORD_TEXT), null);
+  assert.equal(
+    pickBodyByItemTitles(
+      [{ body: "Planning Commission", sourceUrl: null, items: SJ_RULES_ITEMS }],
+      "",
+    ),
+    null,
+  );
 });
