@@ -84,20 +84,6 @@ function lowerType(displayType) {
   return displayType.charAt(0).toLowerCase() + displayType.slice(1);
 }
 
-// Google Places returns priceLevel as enum strings (PRICE_LEVEL_INEXPENSIVE,
-// _MODERATE, _EXPENSIVE, _VERY_EXPENSIVE). Normalize to $/$$/$$$/$$$$.
-function priceTier(priceLevel) {
-  if (!priceLevel) return null;
-  const map = {
-    "PRICE_LEVEL_INEXPENSIVE": "$",
-    "PRICE_LEVEL_MODERATE": "$$",
-    "PRICE_LEVEL_EXPENSIVE": "$$$",
-    "PRICE_LEVEL_VERY_EXPENSIVE": "$$$$",
-    "$": "$", "$$": "$$", "$$$": "$$$", "$$$$": "$$$$",
-  };
-  return map[priceLevel] || null;
-}
-
 const FOOD_TYPE_LABELS = {
   afghani_restaurant: "Afghan restaurant",
   african_restaurant: "African restaurant",
@@ -371,11 +357,12 @@ export function inferFoodProfile(p, displayType) {
 
 function buildFoodProfileBlurb(p, ctx, profile) {
   const { cityName, street } = ctx;
-  const priceLevel = priceTier(ctx.priceLevel);
   const where = street ? " in " + cityName + " on " + street : " in " + cityName;
-  const priced = priceLevel ? ", " + priceLevel : "";
+  // Price never rides inside the sentence: every surface that shows a blurb
+  // already carries its own price line, so ", $$" in prose reads as a
+  // dangling scraped label (fixed 2026-08-31).
   const templates = [
-    capFirst(profile.food) + where + priced + ".",
+    capFirst(profile.food) + where + ".",
     cityName + " " + profile.label + " for " + profile.food + (street ? " on " + street : "") + ".",
   ];
   return pickTemplate(templates, p.id);
