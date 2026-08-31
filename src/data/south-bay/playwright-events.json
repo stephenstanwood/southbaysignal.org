@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-31T03:47:18.109Z",
+    "generatedAt": "2026-08-31T15:08:16.159Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 605,
-    "sourceCount": 21,
+    "eventCount": 602,
+    "sourceCount": 20,
     "sources": [
       "Mountain View Public Library (143)",
       "Los Gatos Library (148)",
@@ -12,9 +12,9 @@
       "Linden Tree Books (11)",
       "History San Jose (9)",
       "Montalvo Arts Center (5)",
-      "City Lights Theater (7)",
+      "City Lights Theater (6)",
       "ICA San José (3)",
-      "Mountain Winery (26)",
+      "Mountain Winery (25)",
       "San Jose Theaters (20)",
       "Midpen Open Space (3)",
       "Santana Row (8)",
@@ -25,8 +25,7 @@
       "SAP Center (15)",
       "The Tech Interactive (8)",
       "Peninsula Open Space Trust (1)",
-      "San Jose Museum of Art (10)",
-      "Children's Discovery Museum (1)"
+      "San Jose Museum of Art (10)"
     ],
     "sourceHealth": [
       {
@@ -145,7 +144,7 @@
         "id": "city-lights-theater",
         "label": "City Lights Theater",
         "status": "ok",
-        "count": 7,
+        "count": 6,
         "error": null,
         "sources": [
           "City Lights Theater"
@@ -173,7 +172,7 @@
         "id": "mountain-winery",
         "label": "Mountain Winery",
         "status": "ok",
-        "count": 26,
+        "count": 25,
         "error": null,
         "sources": [
           "Mountain Winery"
@@ -200,14 +199,10 @@
       {
         "id": "children-s-discovery-museum",
         "label": "Children's Discovery Museum",
-        "status": "error",
-        "count": 1,
-        "error": "unexpected empty result after retry; previous snapshot still has 1 future event(s) from Children's Discovery Museum",
-        "sources": [
-          "Children's Discovery Museum"
-        ],
-        "carriedForward": true,
-        "carryForwardReason": "scraper errored; retained previous run's events"
+        "status": "empty",
+        "count": 0,
+        "error": null,
+        "sources": []
       },
       {
         "id": "palo-alto-art-center",
@@ -6109,23 +6104,6 @@
       "kidFriendly": false
     },
     {
-      "id": "1caaeb76c45c",
-      "title": "Ride the Cyclone",
-      "date": "2026-08-30",
-      "displayDate": "Sun, Aug 30",
-      "time": null,
-      "endTime": null,
-      "venue": "City Lights Theater Company",
-      "address": "529 S Second St, San Jose, CA 95112",
-      "city": "san-jose",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://cltc.org/event/cyclone/",
-      "source": "City Lights Theater",
-      "kidFriendly": false
-    },
-    {
       "id": "b780636bb7e8",
       "title": "Eureka Day",
       "date": "2026-10-18",
@@ -6276,23 +6254,6 @@
       "description": "",
       "url": "https://www.icasanjose.org/upcoming-exhibitions/queeramericanmemorials/",
       "source": "ICA San José",
-      "kidFriendly": false
-    },
-    {
-      "id": "17ac3551147c",
-      "title": "Diana Ross",
-      "date": "2026-08-30",
-      "displayDate": "Sun, Aug 30",
-      "time": "7:30 PM",
-      "endTime": null,
-      "venue": "The Mountain Winery",
-      "address": "14831 Pierce Rd, Saratoga, CA 95070",
-      "city": "saratoga",
-      "category": "music",
-      "cost": "paid",
-      "description": "",
-      "url": "https://www.mountainwinery.com/events/detail?event_id=1389143",
-      "source": "Mountain Winery",
       "kidFriendly": false
     },
     {
@@ -6721,23 +6682,6 @@
       "kidFriendly": false
     },
     {
-      "id": "ed92afe38215",
-      "title": "El Tri – Adicto al Rocanrol",
-      "date": "2026-08-30",
-      "displayDate": "Sun, Aug 30",
-      "time": "8:00pm",
-      "endTime": null,
-      "venue": "San Jose Civic",
-      "address": "135 W San Carlos St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "community",
-      "cost": "paid",
-      "description": "",
-      "url": "https://sanjosetheaters.org/calendar-condensed/",
-      "source": "San Jose Theaters",
-      "kidFriendly": false
-    },
-    {
       "id": "3d894792bd1b",
       "title": "You Should Be Dancing – A Tribute to the Bee Gees",
       "date": "2026-09-04",
@@ -7054,6 +6998,23 @@
       "address": "345 S 1st St, San Jose, CA 95113",
       "city": "san-jose",
       "category": "music",
+      "cost": "paid",
+      "description": "",
+      "url": "https://sanjosetheaters.org/calendar-condensed/",
+      "source": "San Jose Theaters",
+      "kidFriendly": false
+    },
+    {
+      "id": "33f3ee9e014f",
+      "title": "Sing Along",
+      "date": "2026-10-03",
+      "displayDate": "Sat, Oct 3",
+      "time": "7:30pm",
+      "endTime": null,
+      "venue": "Montgomery Theater",
+      "address": "271 S Market St, San Jose, CA 95113",
+      "city": "san-jose",
+      "category": "community",
       "cost": "paid",
       "description": "",
       "url": "https://sanjosetheaters.org/calendar-condensed/",
@@ -10680,23 +10641,6 @@
       "url": "https://sjmusart.org/event/first-fridays-december-2026",
       "source": "San Jose Museum of Art",
       "kidFriendly": false
-    },
-    {
-      "id": "6eb6b30090f5",
-      "title": "Toddler Storytime",
-      "date": "2026-08-30",
-      "displayDate": "Sun, Aug 30",
-      "time": "11:30 am",
-      "endTime": null,
-      "venue": "Children's Discovery Museum",
-      "address": "180 Woz Way, San Jose, CA 95110",
-      "city": "san-jose",
-      "category": "family",
-      "cost": "paid",
-      "description": "",
-      "url": "https://www.cdm.org/calendar/",
-      "source": "Children's Discovery Museum",
-      "kidFriendly": true
     }
   ]
 }
