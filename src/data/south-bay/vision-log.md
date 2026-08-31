@@ -2,6 +2,109 @@
 
 ---
 
+## 2026-08-31 — Cycle 215: The Fireside Chat Was on Tuesday at Five. It Was on Wednesday at Noon.
+
+### Context
+Monday August 31, 2026. Clean tree on pull, roadmap still closed (6/6). The
+Tech tab's "Next 3" item — keep scanning primary releases — came up empty:
+FinSMEs, techstartups' Aug 28 and Aug 31 roundups, and a Crunchbase sweep
+produced nothing new inside Santa Clara County for Aug 27–31. The Aug 24–26
+cluster (SiFly, Agentrys, Gatik, Celera, Corvus, Light Links, Muon) was already
+in. Lambda's $926M is San Jose but a term loan B, already excluded on kind.
+`astro check` was clean and `RECENTLY_FUNDED` validated clean — 115 rows, no
+dup ids, no future dates, no bad colors, one deliberate "Undisclosed" amount.
+
+So the cycle went to the events pipeline instead, starting from a `sourceHealth`
+read. Most "empty" sources turned out to be honest: San Jose Jazz's Summer Fest
+is over, Milpitas' feed carries only council meetings, East West Bookshop simply
+hasn't posted September yet, and CHM's RSS holds seven genuinely past events.
+Two that were not honest are below.
+
+### What Was Built
+
+**Stanford: dates and times now come from the occurrence, not the series bound.**
+Localist returns ONE ROW PER OCCURRENCE — `first_date`/`last_date` bound the
+whole series, and `event_instances[].event_instance.start` is the occurrence,
+the only field carrying a real Pacific offset and a real clock time. The adapter
+read the occurrence off `first_date`, a bare calendar date, so `new Date()`
+resolved it to midnight UTC — the prior Pacific afternoon. Two defects fell out
+of that one line: every timed Stanford event published **a day early**, and every
+one of them carried a **fabricated "5:00 PM" start** (4:00 PM in winter), which
+is what midnight UTC renders as in PT. It cleared the `displayTime` midnight
+guard because it isn't midnight, and it cleared the "must have a real start
+time" publish gate because it is a clock time. Nothing downstream could catch it.
+
+Verified against the live API and Stanford's own page: the Anne Wojcicki fireside
+chat is listed "Wednesday, September 2, 2026 / 12pm to 1pm PT" and was being
+published as Sep 1, 5:00 PM.
+
+Three parts to the fix: read date/time off the occurrence; scope ids per day
+(`stanford-<id>-<date>`) so a series stops collapsing every session into one
+card; and fold an open exhibit's per-day rows in the adapter. That last one is
+load-bearing — Stanford is capped at 30 events off a date-sorted list, and
+Localist lists an open run once per day it is open, so forty-odd identical
+exhibit rows all dated today were spending the entire cap before a single dated
+event was read. That is why the tab had 7 Stanford rows, all exhibits, and no
+dated Stanford event at all. Live run now: 9 unique exhibits + 54 real dated
+occurrences with a genuine time histogram instead of a wall of 5:00 PM.
+
+**MACLA: all three listings were a day early, same root cause.** `mec:startDate`
+and `mec:endDate` are calendar dates going through the same `parseDate` hazard.
+The Diana Gameros concert MACLA's own page dates Friday Oct 23 was published
+here as Oct 22; the Viviana Paredes opening and the González Avila
+work-in-progress were both off by one too. `parseDatePT` anchors calendar dates
+at Pacific midnight and exists for exactly this. The two `new Date(date + "T" +
+time)` constructions in the same function had the same hazard and moved over too.
+
+**Open runs stop vanishing the day after they open.** MACLA, Montalvo and the
+Squarespace museums (JAMsj, East West Bookshop) all dropped a listing on its
+start date alone, even with an end date in hand. JAMsj's "Now on View: House
+Meeting(s): Opening the Door to Redress in San Jose" — the museum's only
+upcoming item, open through Sep 21 — was already gone. MACLA's fall exhibition
+opens Sep 4 and closes Nov 15, so it would have disappeared on Sep 5 and stayed
+gone for ten weeks. New shared `resolveRunWindow` anchors an open run to today
+and drops its clock times, gated on the existing `isOngoingExhibitLike` so a
+talk that started an hour ago is still past, a run with no end date is still
+past, and a twelve-week ceramics class never becomes an exhibit. Montalvo's
+occurrence-page enrichment learned to leave an ongoing run's null time alone
+rather than stamping opening night's curtain back onto it.
+
+**Verified:** 15 new tests across `scripts/lib/ongoing-run-window.test.mjs` and
+`scripts/lib/stanford-occurrence.test.mjs` (both wired into `npm test`), full
+suite green at 68 files / 0 failures, `astro check` 0 errors, `check-home-locked`
+OK. Live smoke runs against Stanford, MACLA and Montalvo confirmed correct dates,
+real times, and no duplicate ids.
+
+### Why This Was the Strongest Move
+Publishing the wrong day and an invented start time is the worst failure a local
+events site has: a reader who trusts it shows up on Tuesday for a Wednesday
+event. Both defects were live, both were invisible to every existing guard, and
+both traced to the same one-line habit of handing a bare calendar date to
+`new Date()`. The exhibit fix is the same class — a show that is open right now
+reading as a past event. No protected Home, Events, or Food surface was touched;
+no component was added.
+
+Data lands on the Mini's next scheduled refresh rather than being regenerated
+here, per the standing "don't churn the JSON mid-cycle" rule.
+
+### Next 3 Strongest Ideas
+1. **Audit the remaining `parseDate` calendar-date sites.** Stanford and MACLA
+   are fixed, but `parseDate(item.startDate)` / `parseDate(item.pubDate)`
+   fallbacks survive in the CivicPlus city adapters, The Tech, and the Campbell
+   feed. Any of those that can carry a date-only string has the same off-by-one
+   waiting. A shared "calendar date or instant" parser would end the class.
+2. **`tech-briefing.json` is still an orphan** — last generated 2026-08-04, its
+   `weekLabel` now four weeks stale, and it has no consumer. Noted, not wired in
+   (Rule #1). It either needs a surface from Stephen or the generator should stop
+   running.
+3. **The SJPL coverage cliff is unchanged** — the 200-event default cap
+   truncates a date-sorted list, so San Jose Public Library still runs out at
+   ~5 days while sparser library feeds reach weeks further. Capping
+   per-source-per-day would thin instead of truncate, but it changes the Events
+   tab's editorial mix, which is Stephen's call.
+
+---
+
 ## 2026-08-24 — Cycle 214: Apple's Card Said No Layoffs. It Meant No Layoffs Since Mid-2025.
 
 ### Context
