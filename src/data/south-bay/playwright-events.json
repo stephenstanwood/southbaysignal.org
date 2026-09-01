@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-31T15:08:16.159Z",
+    "generatedAt": "2026-09-01T02:17:13.520Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 602,
+    "eventCount": 600,
     "sourceCount": 20,
     "sources": [
-      "Mountain View Public Library (143)",
-      "Los Gatos Library (148)",
+      "Mountain View Public Library (141)",
+      "Los Gatos Library (147)",
       "San Jose Jazz (19)",
       "Linden Tree Books (11)",
       "History San Jose (9)",
@@ -16,7 +16,7 @@
       "ICA San José (3)",
       "Mountain Winery (25)",
       "San Jose Theaters (20)",
-      "Midpen Open Space (3)",
+      "Midpen Open Space (4)",
       "Santana Row (8)",
       "City of Cupertino (62)",
       "Opera San José (5)",
@@ -64,7 +64,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 147,
+        "count": 145,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -74,7 +74,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 148,
+        "count": 147,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -216,7 +216,7 @@
         "id": "midpen-open-space",
         "label": "Midpen Open Space",
         "status": "ok",
-        "count": 3,
+        "count": 4,
         "error": null,
         "sources": [
           "Midpen Open Space"
@@ -353,40 +353,6 @@
     ]
   },
   "events": [
-    {
-      "id": "655dcc47c4ea",
-      "title": "Bob Baker Marionette Theater Variety Show",
-      "date": "2026-08-31",
-      "displayDate": "Mon, Aug 31",
-      "time": "4:00 PM",
-      "endTime": "4:45 PM",
-      "venue": "Pioneer Park",
-      "address": "1146 Church St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "arts",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17225192",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "9faa726b5498",
-      "title": "Smart Start Babytime",
-      "date": "2026-08-31",
-      "displayDate": "Mon, Aug 31",
-      "time": "6:00 PM",
-      "endTime": "7:00 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/16916947",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
     {
       "id": "40fb828d011d",
       "title": "Outdoor Storytime",
@@ -2785,40 +2751,6 @@
       "kidFriendly": false
     },
     {
-      "id": "1181c615dbbf",
-      "title": "ESL Conversation Club",
-      "date": "2026-08-31",
-      "displayDate": "Mon, Aug 31",
-      "time": "11:00 AM",
-      "endTime": "12:00 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/16831239",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "a3088275bca2",
-      "title": "Social Stitching",
-      "date": "2026-08-31",
-      "displayDate": "Mon, Aug 31",
-      "time": "4:30 PM",
-      "endTime": "6:00 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/16025971",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
-    },
-    {
       "id": "c33558118a36",
       "title": "Storytime (Ages 0-5)",
       "date": "2026-09-01",
@@ -3378,6 +3310,23 @@
       "url": "https://losgatosca.libcal.com/event/17444935",
       "source": "Los Gatos Library",
       "kidFriendly": true
+    },
+    {
+      "id": "a9d74586b673",
+      "title": "Planning a Simple Native Garden for Beginners",
+      "date": "2026-09-20",
+      "displayDate": "Sun, Sep 20",
+      "time": "10:00 AM",
+      "endTime": "12:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17537043",
+      "source": "Los Gatos Library",
+      "kidFriendly": false
     },
     {
       "id": "1207c13a95be",
@@ -7069,6 +7018,23 @@
       "cost": "free",
       "description": "",
       "url": "https://www.openspace.org/events/guided-activities/redwoods-heroes-forest-4",
+      "source": "Midpen Open Space",
+      "kidFriendly": false
+    },
+    {
+      "id": "fed034ffaa81",
+      "title": "Happy Hour Qigong Hike",
+      "date": "2026-09-11",
+      "displayDate": "Fri, Sep 11",
+      "time": "4:00 pm",
+      "endTime": null,
+      "venue": "Monte Bello Preserve",
+      "address": "Monte Bello Preserve, Cupertino",
+      "city": "cupertino",
+      "category": "outdoor",
+      "cost": "free",
+      "description": "",
+      "url": "https://www.openspace.org/events/guided-activities/happy-hour-qigong-hike-0",
       "source": "Midpen Open Space",
       "kidFriendly": false
     },
