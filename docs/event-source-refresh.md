@@ -104,8 +104,10 @@ bash scripts/events/install-mini-refresh.sh
   under `src/data/south-bay/` is staged, and never blocks a commit. It is
   installed by `install-mini-refresh.sh`, which the scheduled refresh runs on
   every pass, so the link self-heals.
-- An "empty" source is not automatically an honest off-season, and the two that
-  were checked on 2026-09-01 both turned out to be silently narrow adapters:
+- An "empty" source is not automatically an honest off-season. Three of the ten
+  reporting `status: "empty"` on 2026-09-01 turned out to be adapters looking in
+  the wrong place, and a hand-curated list nobody had a reason to revisit is the
+  same failure as a broken selector — it just fails quietly and on a delay:
   - **Heritage Theatre (Campbell)** read Ticketmaster's Discovery feed for venue
     `KovZpZAAnItA`. That id is right — it is the only "Heritage Theatre"
     Ticketmaster lists in California — but the feed returns `totalElements: 0`
@@ -135,6 +137,21 @@ bash scripts/events/install-mini-refresh.sh
     Copa de la Diversión promo identities out; and a slot the league has not
     timed yet carries a filler stamp flagged by `status.startTimeTBD` (the
     Sep 8 game reads 3:33 a.m. PT) that must not be published as a clock time.
+  - **Santa Clara County Fire Department** was a hardcoded array carrying the
+    note "Update annually or when the organizer posts new events," and nobody
+    did — every date in it ran Apr–Aug 2026. Eventbrite's
+    `/v3/events/search/` API really is gone, which is why the list existed, but
+    the organizer page needs no API: it embeds `upcomingEvents` as JSON in
+    `__NEXT_DATA__` with dates, times, timezone, venue address, online flag,
+    cancellation flag, and minimum ticket price, and `robots.txt` allows `/o/`
+    for `User-agent: *`. Two shapes to know: "ON DEMAND" listings are evergreen
+    recordings dated whenever they went up (one reads 2025-05-07) and are not
+    calendar events, and the organizer packs metadata into its own titles
+    ("… | $15 | Campbell | 1.5 hrs - 2026") where the price contradicts the
+    card — $15 is the class fee, checkout starts at $17.85 with the Eventbrite
+    fee. Monte Sereno has no `City` slug; the canonical `SLUG_TO_CITY_TOKENS`
+    map already folds it into Los Gatos, and the venue and street stay as
+    published.
 - A failed Mini run rolls back only its uncommitted generated data, leaves the
   last known-good database deployed, alerts, and retries.
 - Host saturation is reported as host saturation, not as a source outage. A

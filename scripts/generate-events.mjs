@@ -5358,100 +5358,188 @@ async function fetchHeritageTheatreEvents() {
   }
 }
 
-// ── Santa Clara County Fire Department (hardcoded Eventbrite events) ──
-// Source: https://www.eventbrite.com/o/santa-clara-county-fire-department
-// Eventbrite's /v3/events/search/ API is removed; events are hardcoded here.
-// Update annually or when the organizer posts new events.
+// ── Santa Clara County Fire Department (Eventbrite organizer page) ──
+//
+// This was a hardcoded list carrying the note "Update annually or when the
+// organizer posts new events," and nobody did: every date in it ran Apr–Aug
+// 2026, so by 2026-09-01 the source had aged out to zero while the department
+// had four live dated classes on the books, the nearest a $15 hands-only
+// CPR/AED session in Campbell.
+//
+// Eventbrite's `/v3/events/search/` API is gone — that part of the old comment
+// still holds — but the organizer page itself needs no API. It ships its event
+// list as JSON inside `__NEXT_DATA__`, with `start_date`, `start_time`,
+// `timezone`, `is_online_event`, `is_cancelled`, the venue address, and the
+// minimum ticket price all present. eventbrite.com/robots.txt allows `/o/` for
+// `User-agent: *`; one page read per refresh replaces the annual hand-edit.
 
-function fetchScccfdEvents() {
-  console.log("  ⏳ SC County Fire Dept events...");
-  const raw = [
-    {
-      title: "Be Ready: Be Prepared for Disasters",
-      date: "2026-04-09", time: "2:00 PM",
-      venue: "Online", address: "", city: "san-jose",
-      cost: "free", costNote: null,
-      url: "https://www.eventbrite.com/e/online-be-ready-be-prepared-for-disasters-tickets-1983654287372",
-    },
-    {
-      title: "Wildfire Preparedness Workshop",
-      date: "2026-04-23", time: "6:00 PM",
-      venue: "The Pavilion at Redwood Estates", address: "Redwood Estates, Los Gatos", city: "los-gatos",
-      cost: "free", costNote: null,
-      url: "https://www.eventbrite.com/e/wildfire-preparedness-workshop-redwood-estates-los-gatos-2026-tickets-1979749409778",
-    },
-    // San Martín is south of Morgan Hill and outside our 11-city coverage area.
-    // The Eventbrite organizer publishes it, but we drop it at ingest so it
-    // doesn't surface in San Jose's event feed.
-    {
-      title: "Hands-Only CPR and AED Class",
-      date: "2026-05-28", time: "10:00 AM",
-      venue: "SC County Fire Dept HQ", address: "Campbell", city: "campbell",
-      cost: "low", costNote: "From $18",
-      url: "https://www.eventbrite.com/e/hands-only-cpr-and-aed-class-campbell-15-hrs-2026-tickets-1983653961397",
-    },
-    {
-      title: "Wildfire Preparedness Workshop",
-      date: "2026-06-02", time: "6:00 PM",
-      venue: "Joan Pisani Community Center", address: "19655 Allendale Ave, Saratoga", city: "saratoga",
-      cost: "free", costNote: null,
-      url: "https://www.eventbrite.com/e/wildfire-preparedness-workshop-saratoga-2026-tickets-1979749695633",
-    },
-    {
-      title: "Wildfire Preparedness Workshop",
-      date: "2026-07-15", time: "6:00 PM",
-      venue: "Cupertino Community Hall", address: "Cupertino", city: "cupertino",
-      cost: "free", costNote: null,
-      url: "https://www.eventbrite.com/e/wildfire-preparedness-workshop-cupertino-2026-tickets-1979749785903",
-    },
-    {
-      title: "Crime Prevention & Home Fire Safety",
-      date: "2026-07-23", time: "11:00 AM",
-      venue: "Saratoga Friendship Hall", address: "Saratoga", city: "saratoga",
-      cost: "free", costNote: null,
-      url: "https://www.eventbrite.com/e/crime-prevention-home-fire-safety-saratoga-2026-tickets-1982205688574",
-    },
-    {
-      title: "CERT Academy",
-      date: "2026-08-04", time: "6:00 PM",
-      venue: "Joan Pisani Community Center", address: "19655 Allendale Ave, Saratoga", city: "saratoga",
-      cost: "low", costNote: "From $40",
-      url: "https://www.eventbrite.com/e/community-emergency-response-team-cert-academy-summer-2026-tickets-1975869945195",
-    },
-    {
-      title: "Wildfire Preparedness Workshop",
-      date: "2026-08-27", time: "6:00 PM",
-      venue: "Los Altos Community Center", address: "Los Altos", city: "los-altos",
-      cost: "free", costNote: null,
-      url: "https://www.eventbrite.com/e/wildfire-preparedness-workshop-los-altos-community-center-2026-tickets-1979749851098",
-    },
+const SCCFD_ORGANIZER_URL =
+  "https://www.eventbrite.com/o/santa-clara-county-fire-department-11074830922";
+
+/** The `upcomingEvents` array an Eventbrite organizer page embeds, or null. */
+function parseEventbriteOrganizerEvents(html) {
+  const match = String(html || "").match(
+    /<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/,
+  );
+  if (!match) return null;
+  let data;
+  try {
+    data = JSON.parse(match[1]);
+  } catch {
+    return null;
+  }
+  const list = data?.props?.pageProps?.upcomingEvents;
+  return Array.isArray(list) ? list : null;
+}
+
+/**
+ * Covered-city slug for a venue's city name, or null when we don't cover it.
+ *
+ * Reuses the canonical token map rather than a private list, which is also what
+ * folds Monte Sereno into Los Gatos — the department runs classes at Monte
+ * Sereno City Hall, and `City` has no slug of its own for a town that sits
+ * between Los Gatos and Saratoga. The venue and address still name Monte
+ * Sereno on the card, so nothing about the location is misstated.
+ */
+function coveredCitySlug(cityName) {
+  const token = String(cityName || "").trim().toLowerCase();
+  if (!token) return null;
+  for (const [slug, tokens] of Object.entries(SLUG_TO_CITY_TOKENS)) {
+    if (tokens.includes(token)) return slug;
+  }
+  return null;
+}
+
+/**
+ * Trim the listing metadata this organizer packs into its own titles.
+ *
+ * The raw names read "Hands Only CPR and AED Class | $15 | Campbell | 1.5 hrs
+ * - 2026" and "ONLINE: Fall Prevention & Wellness Resources | Sept 2026". Every
+ * one of those trailing segments is already a field on the card — price badge,
+ * city tab, date — and the price in particular *contradicts* it: $15 is the
+ * class fee, while checkout starts at $17.85 once Eventbrite's fee is added.
+ * Only segments that are recognizably metadata are dropped, so a title with a
+ * genuine pipe in it keeps its words.
+ */
+function tidyScccfdTitle(name) {
+  const METADATA_SEGMENT = [
+    /^\$?\d+(?:\.\d+)?$/, // "$15"
+    /^\d+(?:\.\d+)?\s*(?:hr|hrs|hour|hours|min|mins|minutes)$/i, // "1.5 hrs"
+    /^(?:19|20)\d{2}$/, // a bare year
+    /^[a-z]{3,9}\.?\s+(?:19|20)\d{2}$/i, // "Sept 2026"
   ];
-  const today = todayPT();
-  const events = raw
-    .filter((e) => e.date >= today)
-    .map((e) => {
-      const d = new Date(`${e.date}T12:00:00-07:00`);
-      return {
-        id: h("scccfd", e.date, e.title, e.venue),
-        title: e.title,
-        date: e.date,
-        displayDate: displayDate(d),
-        time: e.time,
+  // Peel the trailing season stamp off first ("… 1.5 hrs  - 2026"): it rides on
+  // the last segment rather than getting a pipe of its own, and leaving it
+  // attached is what stops that segment from reading as a duration.
+  const withoutSeason = String(name || "").replace(
+    /\s*[-–—]\s*(?:[a-z]{3,9}\.?\s+)?(?:19|20)\d{2}\s*$/i,
+    "",
+  );
+  return withoutSeason
+    .split("|")
+    .map((segment) => segment.trim())
+    .filter((segment, index) => {
+      if (index === 0) return true;
+      if (!segment) return false;
+      if (METADATA_SEGMENT.some((p) => p.test(segment))) return false;
+      // The city is the tab the card already sits on.
+      return !coveredCitySlug(segment);
+    })
+    .join(" | ")
+    .trim();
+}
+
+/** Ticket price from the organizer feed's `ticket_availability` block. */
+function eventbriteTicketCost(availability) {
+  if (availability?.is_free === true) return { cost: "free" };
+  const min = Number(availability?.minimum_ticket_price?.value);
+  // `value` is in minor units (1785 = $17.85).
+  if (!Number.isFinite(min) || min <= 0) return { cost: null };
+  const dollars = min / 100;
+  const rounded = Number.isInteger(dollars) ? String(dollars) : dollars.toFixed(2);
+  return { cost: dollars < 25 ? "low" : "paid", costNote: `From $${rounded}` };
+}
+
+async function fetchScccfdEvents() {
+  console.log("  ⏳ SC County Fire Dept events...");
+  try {
+    const listed = parseEventbriteOrganizerEvents(
+      await fetchText(SCCFD_ORGANIZER_URL, { timeout: 20_000 }),
+    );
+    if (!listed) throw new Error("organizer page carried no __NEXT_DATA__ event list");
+
+    const today = todayPT();
+    const events = [];
+    let skippedOffMap = 0;
+
+    for (const raw of listed) {
+      if (raw?.is_cancelled) continue;
+      // Strip the organizer's own "ONLINE:" / "ONLINE " prefix — the venue
+      // field says Online, so the marker is the same visual noise cleanTitle
+      // already strips for BiblioCommons's "*Virtual*".
+      const title = cleanTitle(
+        tidyScccfdTitle(String(raw?.name || "").replace(/^\s*online\b:?\s*/i, "")),
+      );
+      if (!title) continue;
+      // "ON DEMAND" listings are evergreen recordings — a fire-safety video for
+      // kids, a wildfire webinar — published with whatever date they went up
+      // (one reads 2025-05-07). They are not things happening on a day, so they
+      // don't belong on a calendar. The date filter below would drop today's
+      // three anyway; this keeps that true if the organizer re-dates one.
+      if (/^on[\s-]?demand\b/i.test(title)) continue;
+
+      const date = String(raw?.start_date || "");
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || date < today) continue;
+
+      const online = raw?.is_online_event === true;
+      const address = raw?.primary_venue?.address ?? {};
+      // An online class serves the whole county and has no venue to drive to.
+      // The department is headquartered in the South Bay's largest city and
+      // that is where these listings have always been filed; `virtual: true`
+      // is what keeps them out of place-based recommendations, and the venue
+      // reads "Online" so no reader is sent anywhere.
+      const city = online ? "san-jose" : coveredCitySlug(address.city);
+      if (!city) {
+        skippedOffMap += 1;
+        continue;
+      }
+
+      // start_time is local to the event's own timezone, which the feed names.
+      // Everything this department runs is Pacific; anything that isn't would
+      // be shifted by parseDatePT into a clock time the listing never claimed.
+      const tz = String(raw?.timezone || "America/Los_Angeles");
+      if (tz !== "America/Los_Angeles") continue;
+      const start = parseDatePT(`${date}T${raw?.start_time || "12:00:00"}`);
+      events.push({
+        id: h("scccfd", String(raw?.eventbrite_event_id || raw?.id || raw?.url || title)),
+        title,
+        date,
+        displayDate: displayDate(start),
+        time: raw?.start_time ? displayTime(start) : null,
         endTime: null,
-        venue: e.venue,
-        address: e.address,
-        city: e.city,
+        venue: online ? "Online" : raw?.primary_venue?.name || "",
+        address: online ? "" : address.localized_address_display || "",
+        city,
         category: "community",
-        cost: e.cost,
-        ...(e.costNote ? { costNote: e.costNote } : {}),
-        description: "Santa Clara County Fire Department community safety program. Registration required.",
-        url: e.url,
+        ...eventbriteTicketCost(raw?.ticket_availability),
+        description:
+          "Santa Clara County Fire Department community safety program. Registration required.",
+        url: String(raw?.url || SCCFD_ORGANIZER_URL),
         source: "SC County Fire Dept",
+        ...(online ? { virtual: true } : {}),
         kidFriendly: false,
-      };
-    });
-  console.log(`  ✅ SC County Fire Dept: ${events.length} events`);
-  return events;
+      });
+    }
+
+    events.sort((a, b) => a.date.localeCompare(b.date));
+    const note = skippedOffMap ? ` (${skippedOffMap} outside coverage)` : "";
+    console.log(`  ✅ SC County Fire Dept: ${events.length} events${note}`);
+    return events;
+  } catch (err) {
+    console.log(`  ⚠️  SC County Fire Dept: ${err.message}`);
+    if (STRICT_EVENT_REFRESH) throw err;
+    return [];
+  }
 }
 
 async function fetchFarmersMarketEvents() {
@@ -7964,7 +8052,7 @@ async function main() {
     source(fetchMaclaEvents),
     source(fetchHeritageTheatreEvents, { label: "Heritage Theatre" }),
     source(fetchShorelineEvents),
-    source(fetchScccfdEvents),
+    source(fetchScccfdEvents, { label: "SC County Fire Dept" }),
     source(fetchLgChamberEvents),
     source(fetchFarmersMarketEvents),
     source(fetchMiscHardcodedEvents),
@@ -8847,6 +8935,8 @@ export {
   fetchHeritageTheatreEvents,
   heritageTheatreEventUrls,
   parseHeritageTheatreEvent,
+  fetchScccfdEvents,
+  parseEventbriteOrganizerEvents,
   fetchJazzOnThePlazzEvents,
   fetchLosAltosEvents,
   fetchMaclaEvents,
