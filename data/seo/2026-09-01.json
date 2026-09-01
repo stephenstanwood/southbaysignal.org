@@ -1,0 +1,1036 @@
+{
+  "site": "https://southbaytoday.org",
+  "generatedAt": "2026-09-01T08:18:24.956Z",
+  "crawl": {
+    "sitemapUrlCount": 2047,
+    "crawled": 250,
+    "surfaces": {
+      "/robots.txt": {
+        "status": 200,
+        "bytes": 353,
+        "body": "User-agent: *\nAllow: /\n\n# Search and user-requested retrieval. These explicit groups document the\n# site's intent; the wildcard above already permits them.\nUser-agent: OAI-SearchBot\nAllow: /\n\nUser-agent: ChatGPT-User\nAllow: /\n\nUser-agent: Claude-SearchBot\nAllow: /\n\nUser-agent: Claude-User\nAllow: /\n\nSitemap: https://southbaytoday.org/sitemap-index.xml\n"
+      },
+      "/llms.txt": {
+        "status": 200,
+        "bytes": 2451
+      },
+      "/rss.xml": {
+        "status": 200,
+        "bytes": 9918
+      }
+    },
+    "findings": [
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 83 chars",
+        "url": "https://southbaytoday.org/event/2026-09-23-in-conversation-with-boris-cherny-creator-of-claude-code",
+        "title": "In Conversation with Boris Cherny, Creator of Claude Code — Wednesday, September 23"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 84 chars",
+        "url": "https://southbaytoday.org/event/2026-09-23-jose-gonzalez-with-phosphorescent-solo",
+        "title": "José González with Phosphorescent (Solo) — Wednesday, September 23 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 75 chars",
+        "url": "https://southbaytoday.org/event/2026-09-23-ke-huy-quan-with-gene-luen-yang",
+        "title": "Ke Huy Quan with Gene Luen Yang — Wednesday, September 23 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 92 chars",
+        "url": "https://southbaytoday.org/event/2026-09-23-le-sserafim-2026-le-sserafim-pureflow-tour-in-san-jose",
+        "title": "Le Sserafim - 2026 Le Sserafim &#39;Pureflow&#39; Tour in San Jose — Wednesday, September 23"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 84 chars",
+        "url": "https://southbaytoday.org/event/2026-09-23-learn-english-online-conversation-group",
+        "title": "Learn English: Online Conversation Group — Wednesday, September 23 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 71 chars",
+        "url": "https://southbaytoday.org/event/2026-09-23-my-hero-academia-in-concert",
+        "title": "My Hero Academia in Concert — Wednesday, September 23 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~139 words",
+        "url": "https://southbaytoday.org/event/2026-09-23-ruby-setnik"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 77 chars",
+        "url": "https://southbaytoday.org/event/2026-09-23-tech-workshop-digital-well-being",
+        "title": "Tech Workshop: Digital Well-Being — Wednesday, September 23 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 75 chars",
+        "url": "https://southbaytoday.org/event/2026-09-23-the-importance-of-being-earnest-student-auditions",
+        "title": "The Importance of Being Earnest student auditions — Wednesday, September 23"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~144 words",
+        "url": "https://southbaytoday.org/event/2026-09-23-the-importance-of-being-earnest-student-auditions"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 71 chars",
+        "url": "https://southbaytoday.org/event/2026-09-23-vintage-media-lab",
+        "title": "Vintage Media Lab — 1:00 PM — Wednesday, September 23 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 71 chars",
+        "url": "https://southbaytoday.org/event/2026-09-23-vintage-media-lab-2",
+        "title": "Vintage Media Lab — 3:00 PM — Wednesday, September 23 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 72 chars",
+        "url": "https://southbaytoday.org/event/2026-09-23-when-the-tiger-smoked-a-pipe-the-art-of-korea",
+        "title": "When the Tiger Smoked a Pipe: The Art of Korea — Wednesday, September 23"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~129 words",
+        "url": "https://southbaytoday.org/event/2026-09-23-when-the-tiger-smoked-a-pipe-the-art-of-korea"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~142 words",
+        "url": "https://southbaytoday.org/event/2026-09-24-abby-govindan"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 71 chars",
+        "url": "https://southbaytoday.org/event/2026-09-24-ai-for-startups-silicon-valley-entrepreneurs",
+        "title": "AI for Startups - Silicon Valley Entrepreneurs — Thursday, September 24"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~131 words",
+        "url": "https://southbaytoday.org/event/2026-09-24-ai-for-startups-silicon-valley-entrepreneurs"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~123 words",
+        "url": "https://southbaytoday.org/event/2026-09-24-author-talk-with-ryka-aoki"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~146 words",
+        "url": "https://southbaytoday.org/event/2026-09-24-citydance-afrobeats-night"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 86 chars",
+        "url": "https://southbaytoday.org/event/2026-09-24-community-preservation-lab-scanning-service",
+        "title": "Community Preservation Lab Scanning Service — Thursday, September 24 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~114 words",
+        "url": "https://southbaytoday.org/event/2026-09-24-educator-night-2026"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 73 chars",
+        "url": "https://southbaytoday.org/event/2026-09-24-family-craft-leaf-rubbing-watercolor-resist-art",
+        "title": "Family Craft: Leaf Rubbing Watercolor Resist Art — Thursday, September 24"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 97 chars",
+        "url": "https://southbaytoday.org/event/2026-09-24-paletero-man-un-viaje-por-el-barrio-la-musica-y-el-arte-con-lucky-diaz",
+        "title": "Paletero Man: un viaje por el barrio, la música y el arte con Lucky Diaz — Thursday, September 24"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~138 words",
+        "url": "https://southbaytoday.org/event/2026-09-24-paletero-man-un-viaje-por-el-barrio-la-musica-y-el-arte-con-lucky-diaz"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 77 chars",
+        "url": "https://southbaytoday.org/event/2026-09-24-public-art-walk-civic-center-tour",
+        "title": "Public Art Walk: Civic Center Tour — Thursday, September 24 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~134 words",
+        "url": "https://southbaytoday.org/event/2026-09-24-public-art-walk-civic-center-tour"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 111 chars",
+        "url": "https://southbaytoday.org/event/2026-09-24-santa-clara-broncos-women-s-volleyball-vs-pepperdine-waves-women-s-volleyball",
+        "title": "Santa Clara Broncos Women&#39;s Volleyball vs. Pepperdine Waves Women&#39;s Volleyball — Thursday, September 24"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~147 words",
+        "url": "https://southbaytoday.org/event/2026-09-24-sharks-vs-ducks"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 84 chars",
+        "url": "https://southbaytoday.org/event/2026-09-24-short-story-social-dominion-by-lauren-acampora",
+        "title": "Short Story Social: &quot;Dominion&quot; by Lauren Acampora — Thursday, September 24"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 88 chars",
+        "url": "https://southbaytoday.org/event/2026-09-24-starship-starring-mickey-thomas-and-asia-featuring-john-payne",
+        "title": "Starship starring Mickey Thomas &amp; Asia featuring John Payne — Thursday, September 24"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~126 words",
+        "url": "https://southbaytoday.org/event/2026-09-24-starship-starring-mickey-thomas-and-asia-featuring-john-payne"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 72 chars",
+        "url": "https://southbaytoday.org/event/2026-09-24-the-return-of-the-carnival-of-sins-motley-crue",
+        "title": "The Return of the Carnival of Sins: Mötley Crüe — Thursday, September 24"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 71 chars",
+        "url": "https://southbaytoday.org/event/2026-09-24-vintage-media-lab",
+        "title": "Vintage Media Lab — 12:00 PM — Thursday, September 24 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 111 chars",
+        "url": "https://southbaytoday.org/event/2026-09-24-where-the-paletero-man-goes-a-journey-of-neighborhood-music-and-art-with-lucky-d",
+        "title": "Where the Paletero Man Goes: A Journey of Neighborhood, Music, and Art with Lucky Diaz — Thursday, September 24"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~136 words",
+        "url": "https://southbaytoday.org/event/2026-09-24-where-the-paletero-man-goes-a-journey-of-neighborhood-music-and-art-with-lucky-d"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 73 chars",
+        "url": "https://southbaytoday.org/event/2026-09-25-amplify-totals-youth-life-skills-public-speaking",
+        "title": "Amplify: Totals Youth Life Skills: Public Speaking — Friday, September 25"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~148 words",
+        "url": "https://southbaytoday.org/event/2026-09-25-bokani-dyer-trio"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~138 words",
+        "url": "https://southbaytoday.org/event/2026-09-25-frankie-quinones"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~138 words",
+        "url": "https://southbaytoday.org/event/2026-09-25-frankie-quinones-2"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 73 chars",
+        "url": "https://southbaytoday.org/event/2026-09-25-learn-english-beyond-the-basics",
+        "title": "Learn English: Beyond the Basics — Friday, September 25 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 73 chars",
+        "url": "https://southbaytoday.org/event/2026-09-25-revocation-defeated-sanity-fuming-mouth-weeping",
+        "title": "Revocation, Defeated Sanity, Fuming Mouth, Weeping — Friday, September 25"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 73 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-amplify-coco-intro-to-coding",
+        "title": "Amplify: Coco: Intro to Coding — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 76 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-book-launch-with-lisa-moore-ramee",
+        "title": "Book Launch with Lisa Moore Ramée — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~117 words",
+        "url": "https://southbaytoday.org/event/2026-09-26-community-drum-circle"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~121 words",
+        "url": "https://southbaytoday.org/event/2026-09-26-east-channel-trail-study-community-meeting"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 75 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-enrichment-trip-rengstorff-pool",
+        "title": "Enrichment Trip: Rengstorff Pool — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 84 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-environmental-education-center-open-house",
+        "title": "Environmental Education Center Open House — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 85 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-feedback-loop-scc-artist-census-mini-fest",
+        "title": "Feedback Loop: SCC Artist Census Mini-Fest — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~138 words",
+        "url": "https://southbaytoday.org/event/2026-09-26-frankie-quinones"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~138 words",
+        "url": "https://southbaytoday.org/event/2026-09-26-frankie-quinones-2"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 82 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-free-home-composting-education-workshop",
+        "title": "Free Home Composting Education Workshop — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 87 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-informed-community-book-club-all-american-nativism-discussion",
+        "title": "Informed Community Book Club: All-American Nativism discussion — Saturday, September 26"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 81 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-join-a-ranger-bird-id-and-guided-hike",
+        "title": "Join-A-Ranger: Bird Id and Guided Hike — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 84 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-los-gatos-art-and-wine-festival-kiwanis-club-of-los-gatos",
+        "title": "Los Gatos Art and Wine Festival - Kiwanis Club of Los Gatos — Saturday, September 26"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~143 words",
+        "url": "https://southbaytoday.org/event/2026-09-26-los-gatos-art-and-wine-festival-kiwanis-club-of-los-gatos"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~140 words",
+        "url": "https://southbaytoday.org/event/2026-09-26-marco-antonio-solis"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 75 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-mental-health-first-aid-training",
+        "title": "Mental Health First Aid Training — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 74 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-mission-chamber-orchestra-presents-northern-light",
+        "title": "Mission Chamber Orchestra presents Northern Light — Saturday, September 26"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 83 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-personal-emergency-preparedness-workshop",
+        "title": "Personal Emergency Preparedness Workshop — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 83 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-riley-green-cowboy-as-it-gets-tour-2026",
+        "title": "Riley Green: Cowboy as It Gets Tour 2026 — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 85 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-san-jose-barracuda-vs-bakersfield-condors",
+        "title": "San Jose Barracuda vs. Bakersfield Condors — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 84 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-san-jose-earthquakes-vs-portland-timbers",
+        "title": "San Jose Earthquakes vs. Portland Timbers — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 117 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-santa-clara-broncos-women-s-volleyball-vs-loyola-marymount-lions-women-s-volleyb",
+        "title": "Santa Clara Broncos Women&#39;s Volleyball vs. Loyola Marymount Lions Women&#39;s Volleyball — Saturday, September 26"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 83 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-steam-lab-saturday-build-a-marble-maze",
+        "title": "STEAM Lab Saturday: Build a Marble Maze! — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 73 chars",
+        "url": "https://southbaytoday.org/event/2026-09-26-the-concert-a-tribute-to-abba",
+        "title": "The Concert: A Tribute to Abba — Saturday, September 26 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 76 chars",
+        "url": "https://southbaytoday.org/event/2026-09-27-a-j-croce-presents-croce-plays-croce-with-leo-kottke",
+        "title": "A.J. Croce Presents Croce Plays Croce with Leo Kottke — Sunday, September 27"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~139 words",
+        "url": "https://southbaytoday.org/event/2026-09-27-alaire-thomas"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 72 chars",
+        "url": "https://southbaytoday.org/event/2026-09-27-family-friendly-introduction-to-nature-journaling",
+        "title": "Family Friendly Introduction to Nature Journaling — Sunday, September 27"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 77 chars",
+        "url": "https://southbaytoday.org/event/2026-09-27-middle-grade-book-club-bunns-rabbit",
+        "title": "Middle Grade Book Club: Bunns Rabbit — Sunday, September 27 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 91 chars",
+        "url": "https://southbaytoday.org/event/2026-09-27-san-francisco-49ers-vs-arizona-cardinals-george-kittle-bobblehead",
+        "title": "San Francisco 49ers vs. Arizona Cardinals - George Kittle Bobblehead — Sunday, September 27"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 77 chars",
+        "url": "https://southbaytoday.org/event/2026-09-27-triton-tea-time-with-preston-metcalf",
+        "title": "Triton Tea Time with Preston Metcalf — Sunday, September 27 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~138 words",
+        "url": "https://southbaytoday.org/event/2026-09-27-yandel"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 78 chars",
+        "url": "https://southbaytoday.org/event/2026-09-28-an-intimate-evening-with-molly-tuttle",
+        "title": "An Intimate Evening with Molly Tuttle — Monday, September 28 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 76 chars",
+        "url": "https://southbaytoday.org/event/2026-09-28-choose-your-own-adventure-book-club",
+        "title": "Choose Your Own Adventure Book Club — Monday, September 28 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 75 chars",
+        "url": "https://southbaytoday.org/event/2026-09-28-michael-moritz-with-adam-lashinsky",
+        "title": "Michael Moritz with Adam Lashinsky — Monday, September 28 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 78 chars",
+        "url": "https://southbaytoday.org/event/2026-09-28-sascc-senior-fraud-prevention-seminar",
+        "title": "Sascc Senior Fraud Prevention Seminar — Monday, September 28 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~125 words",
+        "url": "https://southbaytoday.org/event/2026-09-28-sascc-senior-fraud-prevention-seminar"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 88 chars",
+        "url": "https://southbaytoday.org/event/2026-09-28-town-s-poet-laureate-interviews-past-poet-laureate-about-book",
+        "title": "Town&#39;s Poet Laureate interviews Past Poet Laureate about Book — Monday, September 28"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 85 chars",
+        "url": "https://southbaytoday.org/event/2026-09-29-community-preservation-lab-scanning-service",
+        "title": "Community Preservation Lab Scanning Service — Tuesday, September 29 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 71 chars",
+        "url": "https://southbaytoday.org/event/2026-09-29-matthew-west-jesus-is-king-tour-san-jose-ca",
+        "title": "Matthew West: Jesus Is King Tour - San Jose, CA — Tuesday, September 29"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 73 chars",
+        "url": "https://southbaytoday.org/event/2026-09-29-mindfulness-meditation-online",
+        "title": "Mindfulness Meditation (Online) — Tuesday, September 29 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~147 words",
+        "url": "https://southbaytoday.org/event/2026-09-29-outdoor-storytime"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 80 chars",
+        "url": "https://southbaytoday.org/event/2026-09-29-simple-steps-for-starting-your-business-funding-sources",
+        "title": "Simple Steps for Starting Your Business: Funding Sources — Tuesday, September 29"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~144 words",
+        "url": "https://southbaytoday.org/event/2026-09-30-brujeria"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 79 chars",
+        "url": "https://southbaytoday.org/event/2026-09-30-don-mcmillan-2-0-now-powered-by-ai",
+        "title": "Don McMillan 2.0 *Now Powered by AI — Wednesday, September 30 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~148 words",
+        "url": "https://southbaytoday.org/event/2026-09-30-don-mcmillan-2-0-now-powered-by-ai"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 77 chars",
+        "url": "https://southbaytoday.org/event/2026-09-30-esl-conversation-club-in-person",
+        "title": "ESL Conversation Club - In Person — Wednesday, September 30 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~149 words",
+        "url": "https://southbaytoday.org/event/2026-09-30-follies-2026"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 79 chars",
+        "url": "https://southbaytoday.org/event/2026-09-30-kamini-ramani-with-judy-estrin-and-srinija-srinivasan",
+        "title": "Kamini Ramani with Judy Estrin and Srinija Srinivasan — Wednesday, September 30"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 84 chars",
+        "url": "https://southbaytoday.org/event/2026-09-30-learn-english-online-conversation-group",
+        "title": "Learn English: Online Conversation Group — Wednesday, September 30 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 90 chars",
+        "url": "https://southbaytoday.org/event/2026-09-30-pat-benatar-and-neil-giraldo-with-lee-dewyze",
+        "title": "Pat Benatar &amp; Neil Giraldo with Lee DeWyze — Wednesday, September 30 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 76 chars",
+        "url": "https://southbaytoday.org/event/2026-09-30-public-input-town-hall-on-law-enforcement-services",
+        "title": "Public Input Town Hall on Law Enforcement Services — Wednesday, September 30"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 71 chars",
+        "url": "https://southbaytoday.org/event/2026-09-30-vintage-media-lab",
+        "title": "Vintage Media Lab — 1:00 PM — Wednesday, September 30 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 71 chars",
+        "url": "https://southbaytoday.org/event/2026-09-30-vintage-media-lab-2",
+        "title": "Vintage Media Lab — 3:00 PM — Wednesday, September 30 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 83 chars",
+        "url": "https://southbaytoday.org/event/2026-10-01-community-preservation-lab-scanning-service",
+        "title": "Community Preservation Lab Scanning Service — Thursday, October 1 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 74 chars",
+        "url": "https://southbaytoday.org/event/2026-10-01-conservation-ambassadors-ages-3",
+        "title": "Conservation Ambassadors (Ages 3+) — Thursday, October 1 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 92 chars",
+        "url": "https://southbaytoday.org/event/2026-10-01-courage-choice-and-what-comes-next-with-dystopian-icon-veronica-roth",
+        "title": "Courage, Choice, and What Comes Next with Dystopian Icon Veronica Roth — Thursday, October 1"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~132 words",
+        "url": "https://southbaytoday.org/event/2026-10-01-courage-choice-and-what-comes-next-with-dystopian-icon-veronica-roth"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~149 words",
+        "url": "https://southbaytoday.org/event/2026-10-01-creative-break"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~143 words",
+        "url": "https://southbaytoday.org/event/2026-10-01-damitas-histeria-en-espanol"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 83 chars",
+        "url": "https://southbaytoday.org/event/2026-10-01-documentary-unaff-presents-lessons-in-fear",
+        "title": "Documentary: Unaff presents Lessons in Fear — Thursday, October 1 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~134 words",
+        "url": "https://southbaytoday.org/event/2026-10-01-gold-thursdays"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~143 words",
+        "url": "https://southbaytoday.org/event/2026-10-01-home-opener"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 72 chars",
+        "url": "https://southbaytoday.org/event/2026-10-01-line-dancing-with-sandy-and-kent",
+        "title": "Line Dancing with Sandy and Kent — Thursday, October 1 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 76 chars",
+        "url": "https://southbaytoday.org/event/2026-10-01-san-jose-sharks-vs-florida-panthers",
+        "title": "San Jose Sharks vs. Florida Panthers — Thursday, October 1 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 82 chars",
+        "url": "https://southbaytoday.org/event/2026-10-01-saratoga-nights-1st-thursday-of-the-month",
+        "title": "Saratoga Nights: 1st Thursday of the Month — Thursday, October 1 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 90 chars",
+        "url": "https://southbaytoday.org/event/2026-10-01-uicideboy-present-grey-day-tour-2026-w-shoreline-mafia-and-more",
+        "title": "$uicideboy$ present Grey Day Tour 2026 w. Shoreline Mafia &amp; more — Thursday, October 1"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 85 chars",
+        "url": "https://southbaytoday.org/event/2026-10-01-weedeater-zeke-royal-thunder-yes-ma-am",
+        "title": "Weedeater, Zeke, Royal Thunder, Yes Ma&#39;am — Thursday, October 1 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 77 chars",
+        "url": "https://southbaytoday.org/event/2026-10-02-come-together-a-tribute-to-the-beatles",
+        "title": "Come Together: A Tribute to the Beatles — Friday, October 2 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 79 chars",
+        "url": "https://southbaytoday.org/event/2026-10-02-curator-led-tour-of-the-spirit-of-76",
+        "title": "Curator-led Tour of the Spirit of &#39;76 — Friday, October 2 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~137 words",
+        "url": "https://southbaytoday.org/event/2026-10-02-earthquake"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~137 words",
+        "url": "https://southbaytoday.org/event/2026-10-02-earthquake-2"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 77 chars",
+        "url": "https://southbaytoday.org/event/2026-10-02-first-friday-new-ballet-season-preview",
+        "title": "First Friday: New Ballet Season Preview — Friday, October 2 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 75 chars",
+        "url": "https://southbaytoday.org/event/2026-10-02-postcard-exhibition-opening-reception",
+        "title": "Postcard Exhibition Opening Reception — Friday, October 2 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 73 chars",
+        "url": "https://southbaytoday.org/event/2026-10-02-queer-american-memorials-at-the-ica",
+        "title": "Queer American Memorials at the Ica — Friday, October 2 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~138 words",
+        "url": "https://southbaytoday.org/event/2026-10-02-queer-american-memorials-at-the-ica"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 77 chars",
+        "url": "https://southbaytoday.org/event/2026-10-02-ryan-castro-sende-the-last-dance-tour",
+        "title": "Ryan Castro – Sende the Last Dance Tour — Friday, October 2 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~148 words",
+        "url": "https://southbaytoday.org/event/2026-10-02-sjz-break-room-jazz-jam"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~144 words",
+        "url": "https://southbaytoday.org/event/2026-10-02-st-mary-s-country-fair"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 108 chars",
+        "url": "https://southbaytoday.org/event/2026-10-02-stanford-cardinal-women-s-volleyball-vs-virginia-tech-hokies-women-s-volleyball",
+        "title": "Stanford Cardinal Women&#39;s Volleyball vs. Virginia Tech Hokies Women&#39;s Volleyball — Friday, October 2"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 85 chars",
+        "url": "https://southbaytoday.org/event/2026-10-03-all-shall-perish-carnifex-extermination-dismemberment-mauled",
+        "title": "All Shall Perish, Carnifex, Extermination Dismemberment, Mauled — Saturday, October 3"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~137 words",
+        "url": "https://southbaytoday.org/event/2026-10-03-earthquake"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~137 words",
+        "url": "https://southbaytoday.org/event/2026-10-03-earthquake-2"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 81 chars",
+        "url": "https://southbaytoday.org/event/2026-10-03-environmental-education-center-open-house",
+        "title": "Environmental Education Center Open House — Saturday, October 3 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 79 chars",
+        "url": "https://southbaytoday.org/event/2026-10-03-financial-health-and-wellness-fulfilling-long-term-goals",
+        "title": "Financial Health and Wellness: Fulfilling Long Term Goals — Saturday, October 3"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 72 chars",
+        "url": "https://southbaytoday.org/event/2026-10-03-medicinal-culinary-herb-workshop",
+        "title": "Medicinal Culinary Herb Workshop — Saturday, October 3 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 78 chars",
+        "url": "https://southbaytoday.org/event/2026-10-03-san-jose-barracuda-vs-san-diego-gulls",
+        "title": "San Jose Barracuda vs. San Diego Gulls — Saturday, October 3 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~142 words",
+        "url": "https://southbaytoday.org/event/2026-10-03-sharks-vs-kings"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~144 words",
+        "url": "https://southbaytoday.org/event/2026-10-03-st-mary-s-country-fair"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 108 chars",
+        "url": "https://southbaytoday.org/event/2026-10-03-stanford-cardinal-women-s-volleyball-vs-virginia-cavaliers-women-s-volleyball",
+        "title": "Stanford Cardinal Women&#39;s Volleyball vs. Virginia Cavaliers Women&#39;s Volleyball — Saturday, October 3"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 77 chars",
+        "url": "https://southbaytoday.org/event/2026-10-03-the-kehlani-world-tour-north-america",
+        "title": "The Kehlani World Tour: North America — Saturday, October 3 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 76 chars",
+        "url": "https://southbaytoday.org/event/2026-10-04-culinary-demo-and-lunch-a-tour-of-italy-through-pasta",
+        "title": "Culinary Demo &amp; Lunch: A Tour of Italy Through Pasta — Sunday, October 4"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~137 words",
+        "url": "https://southbaytoday.org/event/2026-10-04-earthquake"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 76 chars",
+        "url": "https://southbaytoday.org/event/2026-10-04-girl-scout-junior-art-and-design-badge",
+        "title": "Girl Scout Junior Art and Design Badge — Sunday, October 4 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 80 chars",
+        "url": "https://southbaytoday.org/event/2026-10-04-plein-air-at-sanborn-county-park-saratoga",
+        "title": "Plein Air at Sanborn County Park, Saratoga — Sunday, October 4 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~127 words",
+        "url": "https://southbaytoday.org/event/2026-10-04-plein-air-at-sanborn-county-park-saratoga"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 76 chars",
+        "url": "https://southbaytoday.org/event/2026-10-04-san-francisco-49ers-vs-denver-broncos",
+        "title": "San Francisco 49ers vs. Denver Broncos — Sunday, October 4 — South Bay Today"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 76 chars",
+        "url": "https://southbaytoday.org/event/2026-10-04-san-jose-barracuda-vs-san-diego-gulls",
+        "title": "San Jose Barracuda vs. San Diego Gulls — Sunday, October 4 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "thin-content",
+        "message": "page has ~142 words",
+        "url": "https://southbaytoday.org/event/2026-10-04-st-mary-s-country-fair"
+      },
+      {
+        "severity": "warn",
+        "code": "title-length",
+        "message": "title is 75 chars",
+        "url": "https://southbaytoday.org/event/2026-10-04-the-kehlani-world-tour-north-america",
+        "title": "The Kehlani World Tour: North America — Sunday, October 4 — South Bay Today"
+      },
+      {
+        "severity": "info",
+        "code": "description-duplicate",
+        "message": "2 pages share a meta description",
+        "urls": [
+          "https://southbaytoday.org/event/2026-09-23-vintage-media-lab",
+          "https://southbaytoday.org/event/2026-09-23-vintage-media-lab-2"
+        ]
+      },
+      {
+        "severity": "info",
+        "code": "description-duplicate",
+        "message": "2 pages share a meta description",
+        "urls": [
+          "https://southbaytoday.org/event/2026-09-24-vintage-media-lab",
+          "https://southbaytoday.org/event/2026-09-24-vintage-media-lab-2"
+        ]
+      },
+      {
+        "severity": "info",
+        "code": "description-duplicate",
+        "message": "2 pages share a meta description",
+        "urls": [
+          "https://southbaytoday.org/event/2026-09-25-frankie-quinones",
+          "https://southbaytoday.org/event/2026-09-25-frankie-quinones-2"
+        ]
+      },
+      {
+        "severity": "info",
+        "code": "description-duplicate",
+        "message": "2 pages share a meta description",
+        "urls": [
+          "https://southbaytoday.org/event/2026-09-26-frankie-quinones",
+          "https://southbaytoday.org/event/2026-09-26-frankie-quinones-2"
+        ]
+      },
+      {
+        "severity": "info",
+        "code": "description-duplicate",
+        "message": "2 pages share a meta description",
+        "urls": [
+          "https://southbaytoday.org/event/2026-09-30-vintage-media-lab",
+          "https://southbaytoday.org/event/2026-09-30-vintage-media-lab-2"
+        ]
+      },
+      {
+        "severity": "info",
+        "code": "description-duplicate",
+        "message": "2 pages share a meta description",
+        "urls": [
+          "https://southbaytoday.org/event/2026-10-01-vintage-media-lab",
+          "https://southbaytoday.org/event/2026-10-01-vintage-media-lab-2"
+        ]
+      },
+      {
+        "severity": "info",
+        "code": "description-duplicate",
+        "message": "2 pages share a meta description",
+        "urls": [
+          "https://southbaytoday.org/event/2026-10-02-earthquake",
+          "https://southbaytoday.org/event/2026-10-02-earthquake-2"
+        ]
+      },
+      {
+        "severity": "info",
+        "code": "description-duplicate",
+        "message": "2 pages share a meta description",
+        "urls": [
+          "https://southbaytoday.org/event/2026-10-03-earthquake",
+          "https://southbaytoday.org/event/2026-10-03-earthquake-2"
+        ]
+      }
+    ]
+  },
+  "searchConsole": {
+    "available": false,
+    "reason": "no Search Console credentials — set GSC_SERVICE_ACCOUNT_JSON (raw or base64) or GSC_SERVICE_ACCOUNT_FILE",
+    "findings": []
+  }
+}
