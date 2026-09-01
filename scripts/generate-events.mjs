@@ -1058,6 +1058,12 @@ function cleanTitle(title) {
     // Its JSON-LD titles arrive as "AOG Marcus Fest: …" and the 2+ rule downcased
     // the prefix to "Aog".
     "AOG",
+    // All India Movement for Seva, the charity that presents an annual concert
+    // at Campbell's Heritage Theatre. Its listing reads "AIM for Seva presents
+    // Raman Bhaje…", and the mostly-mixed-case title tripped the 2+ rule into
+    // "Aim for Seva". Preserving it never upcases anything: a title that says
+    // "aim" or "Aim" is left alone, only a source shouting "AIM" is kept.
+    "AIM",
     // Sports leagues / clubs the existing list missed. Sources name-drop these
     // in mixed-case titles where the 2+ rule downcases them — e.g. "San Jose
     // Earthquakes vs LAFC - Prime Time" from the City Newsletter became "vs
@@ -4868,8 +4874,16 @@ async function fetchSJGiantsSchedule() {
   try {
     const today = todayPT();
     const season = new Date().getFullYear();
+    // `gameType=R` hid the postseason, which is the best baseball of the year at
+    // Excite Ballpark. In 2026 the Giants clinched the California League North
+    // first half (37–29, standings API `clinched: true`) and were awarded two
+    // home Division Series dates — Sep 10 and Sep 11 — while this source
+    // reported "empty" for the whole month, because the only regular-season
+    // games left were six road games in Fresno. F/D/L/W are the StatsAPI
+    // postseason codes; the window runs to Oct 5 so a run through the
+    // championship round stays visible instead of falling off a Sep 30 cliff.
     const res = await fetch(
-      `https://statsapi.mlb.com/api/v1/schedule?sportId=14&teamId=476&startDate=${today}&endDate=${season}-09-30&gameType=R`,
+      `https://statsapi.mlb.com/api/v1/schedule?sportId=14&teamId=476&startDate=${today}&endDate=${season}-10-05&gameType=R,F,D,L,W`,
       { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(15_000) },
     );
     if (!res.ok) throw new Error(`${res.status}`);
@@ -4899,34 +4913,64 @@ async function fetchSJGiantsSchedule() {
         // market as a prefix, which still throws out a Copa promo identity
         // ("Ontario Tower Buzzers" starts with no California League market).
         const awayName = (game.teams?.away?.team?.name || "").trim();
-        const awayLoc =
-          game.teams?.away?.team?.locationName ||
-          [...CAL_LEAGUE_LOCATIONS].find((loc) =>
-            awayName.toLowerCase().startsWith(loc),
-          );
-        if (!awayLoc || !CAL_LEAGUE_LOCATIONS.has(awayLoc.toLowerCase())) {
-          continue;
+        const isPostseason = game.gameType !== "R";
+        // Until the bracket resolves, StatsAPI fills the other side with the
+        // placeholder franchise "To Be Determined" (id 41). That name matches no
+        // California League market, so the guard below would drop a real home
+        // playoff date the same way it drops a Copa promo identity. Postseason
+        // games keep their slot with no opponent named; regular-season games
+        // with a placeholder opponent are bad data and still go.
+        const opponentIsUndecided = /^to be determined$/i.test(awayName);
+        let awayTeam = null;
+        if (opponentIsUndecided) {
+          if (!isPostseason) continue;
+        } else {
+          const awayLoc =
+            game.teams?.away?.team?.locationName ||
+            [...CAL_LEAGUE_LOCATIONS].find((loc) =>
+              awayName.toLowerCase().startsWith(loc),
+            );
+          if (!awayLoc || !CAL_LEAGUE_LOCATIONS.has(awayLoc.toLowerCase())) {
+            continue;
+          }
+          const awayMascot = game.teams?.away?.team?.teamName;
+          awayTeam = awayMascot
+            ? `${awayLoc} ${awayMascot}`
+            : awayName || awayLoc;
         }
-        const awayMascot = game.teams?.away?.team?.teamName;
-        const awayTeam = awayMascot
-          ? `${awayLoc} ${awayMascot}`
-          : awayName || awayLoc;
+        // "CAL Division Series" is how the API writes it; spell the league out
+        // rather than making a reader decode the abbreviation.
+        const seriesLabel = (game.seriesDescription || "").replace(/^CAL\b/, "California League").trim();
         const gameDate = dateRec.date;
         const startUtc = game.gameDate ? new Date(game.gameDate) : null;
+        // A postseason slot the league hasn't scheduled yet carries a filler
+        // timestamp (the Sep 8 road game reads 3:33 a.m. PT) flagged by
+        // startTimeTBD. Publishing that is a fabricated clock time — leave the
+        // time off the card until the league sets one.
+        const timeIsUndecided = game.status?.startTimeTBD === true;
+        const opponentPhrase = awayTeam ? ` vs. ${awayTeam}` : "";
         events.push({
           id: h("sjgiants", String(game.gamePk)),
-          title: `San Jose Giants vs. ${awayTeam}`,
+          title: isPostseason && seriesLabel
+            ? `San Jose Giants${opponentPhrase} — ${seriesLabel}`
+            : `San Jose Giants vs. ${awayTeam}`,
           date: gameDate,
           displayDate: displayDate(startUtc || new Date(gameDate + "T19:00:00")),
-          time: startUtc ? displayTime(startUtc) : "7:00pm",
-          endTime: startUtc ? displayTime(new Date(startUtc.getTime() + 3 * 60 * 60 * 1000)) : null,
+          time: timeIsUndecided ? null : startUtc ? displayTime(startUtc) : "7:00pm",
+          endTime: timeIsUndecided || !startUtc
+            ? null
+            : displayTime(new Date(startUtc.getTime() + 3 * 60 * 60 * 1000)),
           venue: "Excite Ballpark",
           address: "588 E Alma Ave, San Jose",
           city: "san-jose",
           category: "sports",
           cost: "paid",
-          costNote: "From $14",
-          description: `San Jose Giants home game vs. ${awayTeam} at Excite Ballpark.`,
+          // The $14 floor is the regular-season gate price. Playoff pricing is
+          // set per series and isn't published here — don't quote a number.
+          costNote: isPostseason ? null : "From $14",
+          description: isPostseason
+            ? `San Jose Giants home playoff game at Excite Ballpark${seriesLabel ? ` — ${seriesLabel}` : ""}.${awayTeam ? ` Opponent: ${awayTeam}.` : " The opponent is set when the bracket fills in."}`
+            : `San Jose Giants home game vs. ${awayTeam} at Excite Ballpark.`,
           url: "https://www.milb.com/san-jose",
           source: "MiLB",
           kidFriendly: true,
@@ -5146,56 +5190,165 @@ async function fetchMaclaEvents() {
   }
 }
 
-// ── Heritage Theatre Campbell (Ticketmaster venue) ──
+// ── Heritage Theatre Campbell (the theatre's own calendar) ──
+//
+// This adapter used to read Ticketmaster's Discovery feed for venue
+// KovZpZAAnItA — the only "Heritage Theatre" venue Ticketmaster lists in
+// California, so the id was never the problem. Verified live 2026-09-01: that
+// feed returns `totalElements: 0` with no date filter at all, while the
+// theatre's own calendar carried eight shows inside the same 180-day window,
+// Neil Diamond Superstar among them, three days out. A Campbell venue's entire
+// season was invisible because a reseller had stopped carrying it.
+//
+// The theatre runs on Wix and publishes schema.org Event JSON-LD on every
+// event page, with a Pacific offset on `startDate` and the venue address
+// inline. Its robots.txt allows everything but `*?lightbox=` and advertises
+// `event-pages-sitemap.xml`, which is the route used here. That is a primary
+// first-party source rather than a sidestep: no browser User-Agent, no header
+// spoofing, one polite pass over pages the site asks crawlers to read.
+
+const HERITAGE_THEATRE_SITEMAP =
+  "https://www.heritagetheatre.org/event-pages-sitemap.xml";
+const HERITAGE_THEATRE_ADDRESS = "1 W Campbell Ave, Campbell, CA 95008";
+
+/**
+ * Event-page URLs from the theatre's sitemap, `/form` suffixes folded away.
+ *
+ * A "/form" entry is the registration form for an event page Wix sometimes
+ * leaves out of the sitemap on its own. The live Oct 3 2026 AIM for Seva
+ * concert is only reachable that way: the sitemap's bare slug for that show
+ * points at a cancelled duplicate, and the scheduled one appears only as
+ * `…-1/form`. Stripping the suffix recovers it, and the cancelled twin is
+ * dropped downstream by its own eventStatus.
+ */
+function heritageTheatreEventUrls(xml) {
+  const seen = new Set();
+  const urls = [];
+  for (const match of String(xml || "").matchAll(/<loc>([^<]+)<\/loc>/g)) {
+    const raw = match[1].trim();
+    if (!/\/events\//.test(raw)) continue;
+    const url = raw.replace(/\/form\/?$/, "");
+    if (seen.has(url)) continue;
+    seen.add(url);
+    urls.push(url);
+  }
+  return urls;
+}
+
+/** First schema.org Event node in a page's JSON-LD blocks, or null. */
+function parseHeritageTheatreEvent(html) {
+  for (const block of String(html || "").matchAll(
+    /<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi,
+  )) {
+    let data;
+    try {
+      data = JSON.parse(block[1]);
+    } catch {
+      continue;
+    }
+    for (const node of Array.isArray(data) ? data : [data]) {
+      if (node && node["@type"] === "Event") return node;
+    }
+  }
+  return null;
+}
+
+/**
+ * Ticket price from a schema.org offer, when the page publishes one.
+ *
+ * Most Heritage listings carry no `offers` at all — the theatre sells through
+ * the presenter — so the common case is no price claim rather than a guessed
+ * one. When an AggregateOffer is present its lowPrice is a real published
+ * floor and is worth showing.
+ */
+function heritageTheatreCost(offers) {
+  const low = Number(offers?.lowPrice ?? offers?.price);
+  if (!Number.isFinite(low)) return { cost: null };
+  if (low === 0) return { cost: "free" };
+  const rounded = Number.isInteger(low) ? String(low) : low.toFixed(2);
+  return { cost: low < 25 ? "low" : "paid", costNote: `From $${rounded}` };
+}
 
 async function fetchHeritageTheatreEvents() {
   console.log("  ⏳ Heritage Theatre Campbell...");
-  const apiKey = process.env.TICKETMASTER_API_KEY;
-  if (!apiKey) { console.log("  ⚠️  Heritage Theatre: no API key"); return []; }
   try {
-    const now = new Date();
-    const future = new Date(now.getTime() + 180 * 24 * 60 * 60 * 1000);
-    const startStr = now.toISOString().replace(/\.\d{3}Z$/, "Z");
-    const endStr = future.toISOString().replace(/\.\d{3}Z$/, "Z");
-    const url = new URL("https://app.ticketmaster.com/discovery/v2/events.json");
-    url.searchParams.set("apikey", apiKey);
-    url.searchParams.set("venueId", "KovZpZAAnItA"); // Heritage Theatre Campbell
-    url.searchParams.set("startDateTime", startStr);
-    url.searchParams.set("endDateTime", endStr);
-    url.searchParams.set("size", "50");
-    url.searchParams.set("sort", "date,asc");
-    const data = await fetchJson(url.toString(), {
-      timeout: 15_000,
-      ...TICKETMASTER_FETCH,
-    });
-    const rawEvents = data?._embedded?.events || [];
-    const events = rawEvents.map((e) => {
-      const dateInfo = e.dates?.start;
-      const dateStr = dateInfo?.localDate;
-      const timeStr = dateInfo?.localTime;
-      if (!dateStr) return null;
-      const start = new Date(`${dateStr}T${timeStr || "00:00:00"}-07:00`);
-      const priceRange = e.priceRanges?.[0];
-      const minPrice = priceRange?.min;
-      const cost = minPrice === 0 ? "free" : minPrice && minPrice < 25 ? "low" : "paid";
-      return {
-        id: `heritage-${e.id}`,
-        title: e.name,
-        date: dateStr,
+    const sitemap = await fetchText(HERITAGE_THEATRE_SITEMAP, { timeout: 20_000 });
+    const urls = heritageTheatreEventUrls(sitemap);
+    if (!urls.length) throw new Error("sitemap listed no event pages");
+
+    const today = todayPT();
+    const horizon = isoDate(new Date(Date.now() + 180 * 24 * 60 * 60 * 1000));
+    const events = [];
+    let failures = 0;
+
+    for (const url of urls) {
+      let node;
+      try {
+        node = parseHeritageTheatreEvent(await fetchText(url, { timeout: 20_000 }));
+      } catch (err) {
+        failures += 1;
+        console.log(`  ↳ Heritage Theatre page failed (${url}): ${err.message}`);
+        continue;
+      } finally {
+        await new Promise((r) => setTimeout(r, 200));
+      }
+      if (!node?.startDate) continue;
+
+      // Wix marks both cancelled shows and retired duplicates EventCancelled,
+      // and a postponed date is a date we can't stand behind. Only publish what
+      // the theatre still calls scheduled.
+      if (node.eventStatus && !/EventScheduled$/.test(node.eventStatus)) continue;
+
+      const start = new Date(node.startDate);
+      if (isNaN(start.getTime())) continue;
+      const date = isoDate(start);
+      if (date < today || date > horizon) continue;
+
+      const title = cleanTitle(decodeHtmlAttr(node.name || ""));
+      if (!title) continue;
+      const description = truncate(
+        cleanDisplayCopy(decodeHtmlAttr(node.description || "")).trim(),
+      );
+      const end = node.endDate ? new Date(node.endDate) : null;
+      const image = typeof node.image === "string" ? node.image : node.image?.url || "";
+      // Split title/description the way the inbound-email path does rather than
+      // running the prefix rule over both. The prefix rule is deliberately loose
+      // so "Storytime" and "Babies" match, which means a band bio matches too:
+      // Journey USA's blurb names "The Babys" and the concert came back
+      // kidFriendly, eligible for a kids day-plan at 8 PM. Titles keep the loose
+      // rule; descriptions get the narrow word-boundary one.
+      const kidFriendly =
+        /\b(kid|child|family|story|youth|teen|toddler|baby|preschool|infant|lap[-\s]?sit|ages?\s*\d|grades?\s+[K0-9])/i.test(
+          title,
+        ) || /\b(kid|family|children|story\s?time)\b/i.test(description);
+
+      events.push({
+        id: h("heritage", url),
+        title,
+        date,
         displayDate: displayDate(start),
-        time: timeStr ? displayTime(start) : null,
-        endTime: null,
+        time: displayTime(start),
+        endTime: displayEndTime(start, end && !isNaN(end.getTime()) ? end : null),
         venue: "Heritage Theatre",
-        address: "1 W Campbell Ave, Campbell, CA 95008",
+        address: HERITAGE_THEATRE_ADDRESS,
         city: "campbell",
-        category: inferCategory(e.name, "", e.classifications?.[0]?.genre?.name || ""),
-        cost,
-        description: "",
-        url: e.url || "",
+        category: inferCategory(title, description, "", "Heritage Theatre"),
+        ...heritageTheatreCost(node.offers),
+        description,
+        url,
         source: "Heritage Theatre",
-        kidFriendly: false,
-      };
-    }).filter(Boolean);
+        ...(image ? { image } : {}),
+        kidFriendly,
+      });
+    }
+
+    // One flaky page shouldn't fail a refresh, but a site-wide change that
+    // breaks most of them must not read as a quiet off-season.
+    if (failures > urls.length / 5) {
+      throw new Error(`${failures}/${urls.length} event pages failed`);
+    }
+
+    events.sort((a, b) => a.date.localeCompare(b.date));
     console.log(`  ✅ Heritage Theatre: ${events.length} events`);
     return events;
   } catch (err) {
@@ -7794,7 +7947,7 @@ async function main() {
     // fetchEarthquakesSchedule, — site.api.espn.com 403s every path since 2026-08;
     // Ticketmaster carries the PayPal Park home slate, so coverage is unchanged.
     // fetchBayFCSchedule,       — same ESPN block; Ticketmaster covers Bay FC too.
-    source(fetchSJGiantsSchedule),
+    source(fetchSJGiantsSchedule, { label: "San Jose Giants" }),
     source(fetchTicketmasterEvents, { label: "Ticketmaster", critical: true }),
     source(fetchSharksSchedule),
     source(fetchSantaCruzWarriorsSchedule),
@@ -7809,7 +7962,7 @@ async function main() {
     source(fetchPaloAltoLibraryEvents),
     source(fetchHappyHollowEvents, { label: "Happy Hollow Park & Zoo" }),
     source(fetchMaclaEvents),
-    source(fetchHeritageTheatreEvents),
+    source(fetchHeritageTheatreEvents, { label: "Heritage Theatre" }),
     source(fetchShorelineEvents),
     source(fetchScccfdEvents),
     source(fetchLgChamberEvents),
@@ -8691,6 +8844,9 @@ export {
   resolveBiblioDisplayVenue,
   fetchFarmersMarketEvents,
   fetchHappyHollowEvents,
+  fetchHeritageTheatreEvents,
+  heritageTheatreEventUrls,
+  parseHeritageTheatreEvent,
   fetchJazzOnThePlazzEvents,
   fetchLosAltosEvents,
   fetchMaclaEvents,
@@ -8700,6 +8856,7 @@ export {
   fetchPaloAltoPlayersEvents,
   fetchPearTheatreEvents,
   fetchSjJazzEvents,
+  fetchSJGiantsSchedule,
   polishDescription,
   parseIcalDate,
   resolveRunWindow,

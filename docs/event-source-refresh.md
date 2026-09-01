@@ -104,6 +104,37 @@ bash scripts/events/install-mini-refresh.sh
   under `src/data/south-bay/` is staged, and never blocks a commit. It is
   installed by `install-mini-refresh.sh`, which the scheduled refresh runs on
   every pass, so the link self-heals.
+- An "empty" source is not automatically an honest off-season, and the two that
+  were checked on 2026-09-01 both turned out to be silently narrow adapters:
+  - **Heritage Theatre (Campbell)** read Ticketmaster's Discovery feed for venue
+    `KovZpZAAnItA`. That id is right — it is the only "Heritage Theatre"
+    Ticketmaster lists in California — but the feed returns `totalElements: 0`
+    with no date filter at all, and had for long enough that a whole Campbell
+    season was invisible: eight shows inside the same 180-day window, Neil
+    Diamond Superstar three days out. The adapter now reads the theatre's own
+    Wix calendar, which is a primary source and an easier one: `robots.txt`
+    allows everything but `*?lightbox=` and advertises
+    `event-pages-sitemap.xml`, and every event page carries schema.org Event
+    JSON-LD with a Pacific offset on `startDate`. Two shapes to know: a
+    sitemap `…/form` entry is the registration form for an event page Wix
+    sometimes omits (the live Oct 3 2026 AIM for Seva concert is only reachable
+    that way, while the sitemap's bare slug for it points at a cancelled
+    duplicate), and `eventStatus` marks scrapped shows *and* retired drafts
+    `EventCancelled`, so it is the filter that keeps "Testing Event" out. This
+    is not the SJMA/SJDA situation — nothing here is a host refusing automated
+    access.
+  - **San Jose Giants** asked StatsAPI for `gameType=R`, so the postseason was
+    never in scope. On 2026-09-01 the Giants had clinched the California League
+    North first half (standings API, `standingsTypes=firstHalf`, 37–29,
+    `clinched: true`) and held two home Division Series dates at Excite
+    Ballpark, while every remaining regular-season game was in Fresno — the
+    source reported "empty" for all of September. The query now spans
+    `R,F,D,L,W` and runs to Oct 5. Postseason rows carry the placeholder
+    franchise "To Be Determined" (team id 41) on the undecided side, which
+    matches no California League market and so hits the same guard that keeps
+    Copa de la Diversión promo identities out; and a slot the league has not
+    timed yet carries a filler stamp flagged by `status.startTimeTBD` (the
+    Sep 8 game reads 3:33 a.m. PT) that must not be published as a clock time.
 - A failed Mini run rolls back only its uncommitted generated data, leaves the
   last known-good database deployed, alerts, and retries.
 - Host saturation is reported as host saturation, not as a source outage. A
