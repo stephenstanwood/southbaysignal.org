@@ -1,19 +1,31 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-08-31T04:36:26.071Z",
+      "generatedAt": "2026-09-01T03:08:37.017Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 23 – Aug 30",
+      "dateRange": "Aug 24 – Aug 31",
       "stats": {
-        "total": 456,
-        "notable": 32,
-        "newUnits": 10,
-        "totalValuation": 145266155
+        "total": 418,
+        "notable": 37,
+        "newUnits": 12,
+        "totalValuation": 144557754
       },
       "permits": [
+        {
+          "id": "2026-124884-RS",
+          "address": "1663 Mercado Wy",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Kb Home New Sfd (Plan 2272)(Lot 23)",
+          "valuation": 430819,
+          "units": 1,
+          "issueDate": "2026-08-28",
+          "subtype": "Single-Family"
+        },
         {
           "id": "2020-136941-RS",
           "address": "2398 Ruby Av #2",
@@ -48,6 +60,18 @@
           "valuation": 121913,
           "units": 1,
           "issueDate": "2026-08-27",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
+          "id": "2026-111487-RS",
+          "address": "15104 Bel Escou Dr #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Pdox Attached ADU",
+          "valuation": 120681,
+          "units": 1,
+          "issueDate": "2026-08-28",
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
@@ -109,43 +133,19 @@
           "units": 1,
           "issueDate": "2026-08-27",
           "subtype": "ADU   Accessory Dwelling Unit"
-        },
-        {
-          "id": "2026-127239-RS",
-          "address": "1412 N San Pedro St #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Epr Ab 2533 Legalize Detach Rec Room Conversion to ADU",
-          "valuation": 51896,
-          "units": 1,
-          "issueDate": "2026-08-26",
-          "subtype": "ADU   Accessory Dwelling Unit"
-        },
-        {
-          "id": "2026-129510-RS",
-          "address": "1778 Hamilton Av #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Epr Ab 2533 Legalize Detached ADU",
-          "valuation": 47322,
-          "units": 1,
-          "issueDate": "2026-08-27",
-          "subtype": "ADU   Accessory Dwelling Unit"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-08-31T04:36:28.411Z",
+      "generatedAt": "2026-09-01T03:08:39.423Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 23 – Aug 30",
+      "dateRange": "Aug 24 – Aug 31",
       "stats": {
-        "total": 145,
-        "notable": 2,
+        "total": 115,
+        "notable": 1,
         "newUnits": 0,
         "totalValuation": 0
       },
@@ -161,18 +161,6 @@
           "units": 0,
           "issueDate": "2026-08-28",
           "subtype": "Permit Issued"
-        },
-        {
-          "id": "26PLN-00239",
-          "address": "263 University Av",
-          "category": "entitlement",
-          "categoryLabel": "Entitlement / Zoning",
-          "workType": "Entitlement",
-          "description": "Request for Architectural Review for changes to the exterior facade including enclosing approximately 24 square feet of exterior entryway area to floor area.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-24",
-          "subtype": "Over the Counter Approved"
         }
       ]
     }

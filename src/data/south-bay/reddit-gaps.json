@@ -1,114 +1,21 @@
 {
   "_meta": {
-    "generatedAt": "2026-08-31T04:43:56.766Z",
+    "generatedAt": "2026-09-01T03:16:06.606Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 10
+    "sourceCount": 6
   },
   "summary": {
-    "threadsMined": 10,
-    "placesExtracted": 6,
+    "threadsMined": 6,
+    "placesExtracted": 0,
     "placesMatched": 0,
-    "placeGaps": 6,
-    "eventsExtracted": 1,
+    "placeGaps": 0,
+    "eventsExtracted": 0,
     "eventsMatched": 0,
-    "eventGaps": 1,
+    "eventGaps": 0,
     "autoAppendedOpenings": 0
   },
-  "placeGaps": [
-    {
-      "name": "MySelera Bistro",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "special Malaysian Independence Day menu at food hall",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w2rqt0/special_malaysian_dishes_at_sj_downtown_food_hall/",
-        "https://www.reddit.com/r/SanJose/comments/1w2wxau/good_hair_salon_for_highlights/",
-        "https://www.reddit.com/r/SanJose/comments/1w2wacb/hair_salon_recs/",
-        "https://www.reddit.com/r/SanJose/comments/1w2tup2/small_hobbygame_stores_in_essj/",
-        "https://www.reddit.com/r/SanJose/comments/1w27wqa/personal_trainer_recommendations_in_san_jose/"
-      ]
-    },
-    {
-      "name": "San Jose Downtown Food Hall",
-      "city": "San Jose",
-      "kind": "venue",
-      "context": "location hosting special Malaysian food items",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w2rqt0/special_malaysian_dishes_at_sj_downtown_food_hall/",
-        "https://www.reddit.com/r/SanJose/comments/1w2wxau/good_hair_salon_for_highlights/",
-        "https://www.reddit.com/r/SanJose/comments/1w2wacb/hair_salon_recs/",
-        "https://www.reddit.com/r/SanJose/comments/1w2tup2/small_hobbygame_stores_in_essj/",
-        "https://www.reddit.com/r/SanJose/comments/1w27wqa/personal_trainer_recommendations_in_san_jose/"
-      ]
-    },
-    {
-      "name": "SpaceCats",
-      "city": "San Jose",
-      "kind": "retail",
-      "context": "hobby/game store recommendation in East San Jose",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w2rqt0/special_malaysian_dishes_at_sj_downtown_food_hall/",
-        "https://www.reddit.com/r/SanJose/comments/1w2wxau/good_hair_salon_for_highlights/",
-        "https://www.reddit.com/r/SanJose/comments/1w2wacb/hair_salon_recs/",
-        "https://www.reddit.com/r/SanJose/comments/1w2tup2/small_hobbygame_stores_in_essj/",
-        "https://www.reddit.com/r/SanJose/comments/1w27wqa/personal_trainer_recommendations_in_san_jose/"
-      ]
-    },
-    {
-      "name": "American Barbell",
-      "city": "San Jose",
-      "kind": "other",
-      "context": "gym being considered for personal training",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w2rqt0/special_malaysian_dishes_at_sj_downtown_food_hall/",
-        "https://www.reddit.com/r/SanJose/comments/1w2wxau/good_hair_salon_for_highlights/",
-        "https://www.reddit.com/r/SanJose/comments/1w2wacb/hair_salon_recs/",
-        "https://www.reddit.com/r/SanJose/comments/1w2tup2/small_hobbygame_stores_in_essj/",
-        "https://www.reddit.com/r/SanJose/comments/1w27wqa/personal_trainer_recommendations_in_san_jose/"
-      ]
-    },
-    {
-      "name": "Mission College",
-      "city": "",
-      "kind": "other",
-      "context": "EMT classes and fire academy program mentioned",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Cupertino/comments/1w08hhu/free_ai_research_program_for_grades_812_sep_118/",
-        "https://www.reddit.com/r/SanJose/comments/1w2hnnr/advice_on_prepping_for_firefighter_career/",
-        "https://www.reddit.com/r/SanJose/comments/1w2bbza/any_good_private_gyms_in_sj/",
-        "https://www.reddit.com/r/Cupertino/comments/1w1qd5j/inside_a_professional_gardeners_edible_pollinator/",
-        "https://www.reddit.com/r/Cupertino/comments/1w003f4/nonprofit_connects_workers_with_employers_in/"
-      ]
-    },
-    {
-      "name": "Day Worker Center of Mountain View",
-      "city": "Mountain View",
-      "kind": "service",
-      "context": "nonprofit connecting workers with employers, hiring and volunteering",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Cupertino/comments/1w08hhu/free_ai_research_program_for_grades_812_sep_118/",
-        "https://www.reddit.com/r/SanJose/comments/1w2hnnr/advice_on_prepping_for_firefighter_career/",
-        "https://www.reddit.com/r/SanJose/comments/1w2bbza/any_good_private_gyms_in_sj/",
-        "https://www.reddit.com/r/Cupertino/comments/1w1qd5j/inside_a_professional_gardeners_edible_pollinator/",
-        "https://www.reddit.com/r/Cupertino/comments/1w003f4/nonprofit_connects_workers_with_employers_in/"
-      ]
-    }
-  ],
-  "eventGaps": [
-    {
-      "name": "AI Counselor Research Program",
-      "when": "September 1–18, application deadline September 4",
-      "city": "Cupertino",
-      "context": "free AI research program for grades 8-12",
-      "sourceUrls": [
-        "https://www.reddit.com/r/Cupertino/comments/1w08hhu/free_ai_research_program_for_grades_812_sep_118/",
-        "https://www.reddit.com/r/SanJose/comments/1w2hnnr/advice_on_prepping_for_firefighter_career/",
-        "https://www.reddit.com/r/SanJose/comments/1w2bbza/any_good_private_gyms_in_sj/",
-        "https://www.reddit.com/r/Cupertino/comments/1w1qd5j/inside_a_professional_gardeners_edible_pollinator/",
-        "https://www.reddit.com/r/Cupertino/comments/1w003f4/nonprofit_connects_workers_with_employers_in/"
-      ]
-    }
-  ],
+  "placeGaps": [],
+  "eventGaps": [],
   "placeMatches": [],
   "eventMatches": []
 }
