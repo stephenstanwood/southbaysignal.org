@@ -161,7 +161,12 @@ function extractName(raw) {
 
   // Strip trailing noise: "Ti", "#A16", "#1808 Restaurant Ti", "Interior", etc.
   s = s.replace(/\s+#\s*\d+.*$/, "").trim();
-  s = s.replace(/\s+(Interior|Restaurant|Tenant|Improvement|Ti|Demo|Sign|Tbd)\b.*$/i, "").trim();
+  // "Illuminated" and "Construction" are scope words, not name words: without them
+  // "Scott'S Ballroom (E 100%) Illuminated Sign" shipped as "Scott's Ballroom Illuminated"
+  // and "Chick-Fil-A (Bepm 100%) New Construction" shipped as "Chick-Fil-A New Construction".
+  // The alternation matches leftmost, so " Illuminated Sign" goes in one pass; "Construction"
+  // leaves a dangling "New" that the next replace clears.
+  s = s.replace(/\s+(Interior|Restaurant|Tenant|Improvement|Ti|Demo|Sign|Illuminated|Construction|Tbd)\b.*$/i, "").trim();
   // Strip dangling permit words left after previous stripping (e.g. "Pollo Loco New" ← from "New Sign")
   s = s.replace(/\s+(New|Old|Existing|Remodel)\s*$/i, "").trim();
 
@@ -170,7 +175,13 @@ function extractName(raw) {
 
   // Too short or too generic → no name
   if (!s || s.length < 3) return null;
-  const generic = /^(demo|demolition|n\/a|restaurant|kitchen|bar|cafe|bakery|food)$/i;
+  // Anchored ^…$ — only fires when the WHOLE extracted name is the generic word, so a
+  // real "Halal Guys" or "Pizza My Heart" is untouched. The cuisine adjectives matter
+  // because "Indian (Bepm100%) Restaurant Ti" strips down to a bare "Indian", which
+  // shipped to the Food tab as a restaurant name. Missing > wrong: returning null sends
+  // it to the Google Places lookup that resolves the real tenant from the address.
+  const generic =
+    /^(demo|demolition|n\/a|restaurant|kitchen|bar|cafe|bakery|food|deli|grill|market|coffee|boba|pizza|sushi|seafood|bbq|indian|chinese|mexican|thai|italian|japanese|korean|vietnamese|mediterranean|greek|american|asian|halal)$/i;
   if (generic.test(s)) return null;
 
   // Describes the permit paperwork rather than a business → no name
@@ -182,7 +193,10 @@ function extractName(raw) {
     .toLowerCase()
     .replace(/(?<!['’])\b\w/g, (c) => c.toUpperCase())
     .replace(/\bBbq\b/gi, "BBQ")
-    .replace(/\bJc\b/gi, "JC");
+    .replace(/\bJc\b/gi, "JC")
+    // The title-caser capitalizes after every hyphen, which misspells brands that
+    // don't. Match the chain's own registered casing.
+    .replace(/\bChick-Fil-A\b/gi, "Chick-fil-A");
 
   return stripBilingualSuffix(titled);
 }
