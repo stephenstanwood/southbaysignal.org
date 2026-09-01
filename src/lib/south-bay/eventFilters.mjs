@@ -382,10 +382,21 @@ function parsePtDateTime(isoDate, time) {
  *                (A stray `date` rides along on RELATIVE rules — e.g. the
  *                ukulele's said 2025-07-16 — and is ignored.)
  *
+ * BIBLIO_EVENTS ONLY. When registration runs off-platform (provider
+ * "EXTERNAL"), the rule fields are vestigial config BiblioCommons itself
+ * ignores: SJPL's recurring "(Virtual) Math Club" carries a STATIC end of
+ * 2023-09-12 on 2027 instances while the live registration_windows endpoint
+ * reports ACTIVE with no window at all (verified 2026-09-01). Deriving a
+ * deadline from those would have closed three open programs in the first
+ * 800 live events sampled. Same discipline as isFull/registrationClosed:
+ * EXTERNAL per-field state is noise.
+ *
  * Returns the LATEST plausible close. Callers treat `now > result` as closed.
  */
 export function resolveRegistrationClosesBy(ev, start, end) {
   const info = ev?.definition?.registrationInfo || {};
+  const provider = typeof info.provider === "string" ? info.provider.toUpperCase() : null;
+  if (provider !== "BIBLIO_EVENTS") return null;
   const rule = info.registrationEnd;
   if (!rule || typeof rule !== "object") return null;
   const windowType = typeof rule.windowType === "string" ? rule.windowType.toUpperCase() : null;

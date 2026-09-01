@@ -450,17 +450,22 @@ test("a RELATIVE deadline resolves against the instance as an upper bound", () =
   assert.equal(closes.toISOString(), new Date("2026-08-31T10:00:00-07:00").toISOString());
 });
 
+/** A raw record whose registration window Biblio itself manages. */
+function biblioWindowEvent(registrationEnd, provider = "BIBLIO_EVENTS") {
+  return { definition: { registrationInfo: { provider, registrationEnd } } };
+}
+
 test("EVENT_START windows close relative to the start, hours units included", () => {
   const start = new Date("2026-09-02T16:00:00-07:00");
   const atStart = resolveRegistrationClosesBy(
-    { definition: { registrationInfo: { registrationEnd: { ordinal: 0, unit: "days", windowType: "EVENT_START" } } } },
+    biblioWindowEvent({ ordinal: 0, unit: "days", windowType: "EVENT_START" }),
     start,
     null,
   );
   assert.equal(atStart.getTime(), start.getTime());
   // SJPL's Teens Reach meetings close 1 hour before start.
   const hourBefore = resolveRegistrationClosesBy(
-    { definition: { registrationInfo: { registrationEnd: { ordinal: 1, unit: "hours", windowType: "EVENT_START" } } } },
+    biblioWindowEvent({ ordinal: 1, unit: "hours", windowType: "EVENT_START" }),
     start,
     null,
   );
@@ -469,17 +474,34 @@ test("EVENT_START windows close relative to the start, hours units included", ()
 
 test("STATIC windows are absolute and a missing clock reads as end of day", () => {
   const withClock = resolveRegistrationClosesBy(
-    { definition: { registrationInfo: { registrationEnd: { date: "2026-09-18", time: "T10:00", windowType: "STATIC" } } } },
+    biblioWindowEvent({ date: "2026-09-18", time: "T10:00", windowType: "STATIC" }),
     new Date("2026-09-19T10:00:00-07:00"),
     null,
   );
   assert.equal(withClock.toISOString(), new Date("2026-09-18T10:00:00-07:00").toISOString());
   const noClock = resolveRegistrationClosesBy(
-    { definition: { registrationInfo: { registrationEnd: { date: "2026-09-18", windowType: "STATIC" } } } },
+    biblioWindowEvent({ date: "2026-09-18", windowType: "STATIC" }),
     new Date("2026-09-19T10:00:00-07:00"),
     null,
   );
   assert.equal(noClock.toISOString(), new Date("2026-09-18T23:59:00-07:00").toISOString());
+});
+
+test("an EXTERNAL provider's window rule is vestigial and derives nothing", () => {
+  // SJPL's recurring "(Virtual) Math Club" carries a STATIC registrationEnd
+  // of 2023-09-12 on its 2027 instances while the live registration_windows
+  // endpoint reports ACTIVE with no window — off-platform registration means
+  // the rule fields are stale config, exactly like EXTERNAL isFull. Honoring
+  // it would have marked three open programs closed in the first 800 live
+  // events sampled on 2026-09-01.
+  assert.equal(
+    resolveRegistrationClosesBy(
+      biblioWindowEvent({ date: "2023-09-12", time: "T17:00", windowType: "STATIC" }, "EXTERNAL"),
+      new Date("2027-01-20T17:00:00-08:00"),
+      null,
+    ),
+    null,
+  );
 });
 
 test("null-ish window rules resolve to nothing", () => {
@@ -487,7 +509,7 @@ test("null-ish window rules resolve to nothing", () => {
   // windowType: null} — no rule, no deadline.
   assert.equal(
     resolveRegistrationClosesBy(
-      { definition: { registrationInfo: { registrationEnd: { ordinal: 0, unit: "days", time: null, date: null, windowType: null } } } },
+      biblioWindowEvent({ ordinal: 0, unit: "days", time: null, date: null, windowType: null }),
       new Date(),
       null,
     ),
