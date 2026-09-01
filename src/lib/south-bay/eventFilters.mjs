@@ -130,6 +130,19 @@ export const REGISTRATION_REQUIRED = "required";
 export const REGISTRATION_APPOINTMENT = "appointment-only";
 /** Registration is tracked and the event is out of seats. */
 export const REGISTRATION_FULL = "full";
+/**
+ * Registration was required and the window has ended — there is nothing a
+ * reader can do anymore, not even join a waitlist. Distinct from `full`
+ * (waitlist may still be open) because it removes the event from every
+ * recommendation slot instead of merely demoting it.
+ *
+ * Shipped 2026-09-01 after that morning's issue listed SJPL's "Intro to
+ * Ukulele for Adults" with a "Reserve ahead" tag. The event was session 3 of
+ * a 3-part series whose registration closed the day before the FIRST session
+ * (Aug 17) — the newsletter pointed readers at a dead signup for a mid-series
+ * class.
+ */
+export const REGISTRATION_CLOSED = "closed";
 
 /** Instructions describing an individually booked slot rather than a seat. */
 const APPOINTMENT_PATTERNS = [
@@ -254,6 +267,19 @@ export function registrationFromBiblioCommons(ev) {
 
   if (ev.isFull === true && hasSeatAccounting) return REGISTRATION_FULL;
 
+  // The top-level per-instance `registrationClosed` needs the SAME seat-
+  // accounting discipline as isFull (trap 1): the Vintage Media Lab instances
+  // report registrationClosed:true alongside their spurious isFull:true while
+  // the library's page advertises appointments still available. With
+  // accounting, a true flag is real user-visible state (SJPL's ESL/EVC course
+  // instances render a full/waitlist banner from it). And in the other
+  // direction the flag proves NOTHING: the Sept 1 2026 ukulele instance
+  // reported false while its own page showed "Registration Closed", because
+  // the badge comes from the registration WINDOW, which the flag lags — that
+  // is what resolveRegistrationClosesBy below and the newsletter's live
+  // window re-check are for.
+  if (ev.registrationClosed === true && hasSeatAccounting) return REGISTRATION_CLOSED;
+
   if (provider === "EXTERNAL") {
     // Off-platform registration always needs advance action; the instructions
     // only decide whether it is an appointment or a seat.
@@ -277,7 +303,8 @@ export function requiresAdvanceRegistration(event) {
   return (
     state === REGISTRATION_REQUIRED ||
     state === REGISTRATION_APPOINTMENT ||
-    state === REGISTRATION_FULL
+    state === REGISTRATION_FULL ||
+    state === REGISTRATION_CLOSED
   );
 }
 
@@ -291,7 +318,160 @@ export function registrationLabel(event) {
   if (state === REGISTRATION_APPOINTMENT) return "Appointment required";
   if (state === REGISTRATION_REQUIRED) return "Reserve ahead";
   if (state === REGISTRATION_FULL) return "Registration full";
+  if (state === REGISTRATION_CLOSED) return "Registration closed";
   return "";
+}
+
+// ---------------------------------------------------------------------------
+// Registration windows
+// ---------------------------------------------------------------------------
+// BiblioCommons closes registration on a schedule the feed only publishes as a
+// RULE (definition.registrationInfo.registrationEnd), not as a state: the Sept
+// 1 2026 ukulele instance kept isFull:false / registrationClosed:false while
+// its page rendered "Registration Closed", because the badge comes from the
+// resolved window (the per-event registration_windows endpoint returned
+// status:"ENDED", window_end Aug 17 — the day before the series began).
+// resolveRegistrationClosesBy turns the rule into a comparable deadline so
+// ingest and the newsletter can reason about closedness offline; the
+// newsletter additionally re-checks the live endpoint for whatever it selects
+// (scripts/newsletter/registration-recheck.mjs).
+// ---------------------------------------------------------------------------
+
+/** PT offset by month — same heuristic as scripts/lib/dates.mjs parseDatePT
+ * (PDT Mar–Nov, PST Dec–Feb). Off by an hour for a few DST-transition hours a
+ * year, which is harmless at the day granularity these deadlines are used at. */
+function ptOffsetForMonth(month) {
+  return month >= 3 && month <= 11 ? "-07:00" : "-08:00";
+}
+
+/** The event's calendar date in Pacific Time, as YYYY-MM-DD. */
+function ptCalendarDate(d) {
+  return d.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+}
+
+/** Parse "YYYY-MM-DD" (+ optional "T10:00"/"10:00" clock) as a PT instant. */
+function parsePtDateTime(isoDate, time) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(isoDate || ""))) return null;
+  const hhmm = String(time || "").replace(/^T/, "");
+  const clock = /^\d{2}:\d{2}(:\d{2})?$/.test(hhmm) ? hhmm : null;
+  const month = parseInt(isoDate.slice(5, 7), 10);
+  const parsed = new Date(
+    `${isoDate}T${clock || "23:59:00"}${clock && clock.length === 5 ? ":00" : ""}${ptOffsetForMonth(month)}`,
+  );
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+/**
+ * Resolve a raw BiblioCommons event's registration deadline to an absolute
+ * Date, or null when the source publishes no usable window.
+ *
+ * Window shapes observed live (SJPL/SCCL, 2026-09-01):
+ *   STATIC       absolute { date, time } — used verbatim (no time → end of
+ *                that PT day, the latest reading).
+ *   EVENT_START  closes `ordinal` × `unit` before the instance starts
+ *                (ordinal 0 = at start; SJPL teen meetings use hours).
+ *   EVENT_END    same, anchored to the instance end.
+ *   RELATIVE     `ordinal` × `unit` before the start, at the `time` clock —
+ *                BiblioCommons resolves this against the SERIES' first
+ *                session, which the instance record doesn't carry, so this
+ *                computes against the INSTANCE start instead. That makes the
+ *                result an UPPER BOUND: a mid-series instance's true deadline
+ *                (first session − ordinal) is never later than this. "Past the
+ *                upper bound" therefore proves closed; "before it" proves
+ *                nothing, which is what the newsletter's live re-check is for.
+ *                (A stray `date` rides along on RELATIVE rules — e.g. the
+ *                ukulele's said 2025-07-16 — and is ignored.)
+ *
+ * Returns the LATEST plausible close. Callers treat `now > result` as closed.
+ */
+export function resolveRegistrationClosesBy(ev, start, end) {
+  const info = ev?.definition?.registrationInfo || {};
+  const rule = info.registrationEnd;
+  if (!rule || typeof rule !== "object") return null;
+  const windowType = typeof rule.windowType === "string" ? rule.windowType.toUpperCase() : null;
+
+  if (windowType === "STATIC") return parsePtDateTime(rule.date, rule.time);
+
+  const anchor = windowType === "EVENT_END" ? end || start : start;
+  if (!(anchor instanceof Date) || Number.isNaN(anchor.getTime())) return null;
+  if (windowType !== "EVENT_START" && windowType !== "EVENT_END" && windowType !== "RELATIVE") return null;
+
+  const ordinal = Number.isFinite(rule.ordinal) ? rule.ordinal : 0;
+  const unitMs = String(rule.unit || "days").toLowerCase().startsWith("hour")
+    ? 60 * 60 * 1000
+    : 24 * 60 * 60 * 1000;
+  const shifted = new Date(anchor.getTime() - ordinal * unitMs);
+  const clock = String(rule.time || "").replace(/^T/, "");
+  if (/^\d{2}:\d{2}(:\d{2})?$/.test(clock)) {
+    const atClock = parsePtDateTime(ptCalendarDate(shifted), clock);
+    if (atClock) return atClock;
+  }
+  return shifted;
+}
+
+/**
+ * True when a reader opening the newsletter on `isoDate` can no longer
+ * register: the state already says closed, or a required/appointment event's
+ * published deadline fell before that day even began. A deadline DURING the
+ * day (a 10 AM cutoff, a closes-at-start rule) keeps the event honest to
+ * recommend — "Reserve ahead" then means "reserve this morning".
+ *
+ * `full` is deliberately not closed-for-day: a full event stays listed with
+ * its "Registration full" label because the waitlist may still be open.
+ */
+export function isRegistrationClosedForDay(event, isoDate = null) {
+  if (!event) return false;
+  if (event.registration === REGISTRATION_CLOSED) return true;
+  if (
+    event.registration !== REGISTRATION_REQUIRED &&
+    event.registration !== REGISTRATION_APPOINTMENT
+  ) return false;
+  const closes = Date.parse(event.registrationClosesBy || "");
+  if (!Number.isFinite(closes)) return false;
+  const day = isoDate || event.date;
+  const dayStart = day ? parsePtDateTime(day, "00:00") : null;
+  if (!dayStart) return false;
+  return closes < dayStart.getTime();
+}
+
+/**
+ * True when the event's own copy says it belongs to a series that began
+ * before this date — the "[Rescheduled - Starting August 18]" marker on the
+ * Sept 1 ukulele session. Session N>1 of a register-ahead series is never a
+ * fresh recommendation: the reader could not join even when the registration
+ * data looks open (an EXTERNAL provider publishes no window to check).
+ *
+ * Text-only and deliberately narrow: it needs an explicit "Starting <Month>
+ * <Day>" phrase that resolves EARLIER than the event's own date. A future
+ * "Starting …" (announcing session 1) or bare series language ("3-part
+ * series") without a date never trips it. Callers should combine it with a
+ * registration gate — a drop-in series is fine to join midway.
+ */
+const SERIES_START_MARKER =
+  /\bstart(?:ing|s)\s+(january|february|march|april|may|june|july|august|september|october|november|december)\.?\s+(\d{1,2})(?:st|nd|rd|th)?\b/i;
+const MONTH_INDEX = {
+  january: 1, february: 2, march: 3, april: 4, may: 5, june: 6,
+  july: 7, august: 8, september: 9, october: 10, november: 11, december: 12,
+};
+
+export function seriesStartedBeforeEvent(event) {
+  if (!event || !/^\d{4}-\d{2}-\d{2}$/.test(String(event.date || ""))) return false;
+  const hay = [event.title, event.description].filter(Boolean).join(" ");
+  const m = SERIES_START_MARKER.exec(hay);
+  if (!m) return false;
+  const month = MONTH_INDEX[m[1].toLowerCase()];
+  const day = parseInt(m[2], 10);
+  if (!month || !day || day > 31) return false;
+  const eventYear = parseInt(event.date.slice(0, 4), 10);
+  const pad = (n) => String(n).padStart(2, "0");
+  let candidate = `${eventYear}-${pad(month)}-${pad(day)}`;
+  // Year is never printed in the marker. A "start" more than ~6 months after
+  // the event is a December/January wrap — it belongs to the previous year.
+  if (candidate > event.date) {
+    const monthsAhead = (month - parseInt(event.date.slice(5, 7), 10) + 12) % 12;
+    if (monthsAhead > 6) candidate = `${eventYear - 1}-${pad(month)}-${pad(day)}`;
+  }
+  return candidate < event.date;
 }
 
 // ---------------------------------------------------------------------------

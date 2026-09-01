@@ -14,7 +14,14 @@ import { fetchForecast, DEFAULT_WEATHER_LAT, DEFAULT_WEATHER_LON } from "../../s
 import { chainBrandKey, isNationalChain } from "../../src/lib/south-bay/chains.mjs";
 import { isPlaceTemporarilyUnavailable } from "../../src/lib/south-bay/placeAvailability.mjs";
 import { isEventPublishable } from "../../src/lib/south-bay/eventOccurrence.mjs";
-import { isVirtualEvent, registrationLabel, requiresAdvanceRegistration } from "../../src/lib/south-bay/eventFilters.mjs";
+import {
+  isRegistrationClosedForDay,
+  isVirtualEvent,
+  registrationLabel,
+  requiresAdvanceRegistration,
+  seriesStartedBeforeEvent,
+} from "../../src/lib/south-bay/eventFilters.mjs";
+import { recheckRegistrationGatedEvents } from "./registration-recheck.mjs";
 import { normalizeAbsoluteHttpUrl } from "../../src/lib/south-bay/httpUrl.mjs";
 import { dayKeyForIsoDate, mealServiceIssue } from "../../src/lib/south-bay/mealService.mjs";
 import { selectDatedDefaultPlan } from "../../src/lib/south-bay/defaultPlanSelection.mjs";
@@ -340,23 +347,68 @@ export async function assembleNewsletterData(date, opts = {}) {
     editorialMeta: { status: editorialEnabled ? "pending" : "disabled" },
   };
 
-  if (!editorialEnabled) return data;
+  if (!editorialEnabled) return finishNewsletterAssembly(data, opts);
 
   // Editorial failure must never kill the 6am send — degrade to the
   // deterministic build (same philosophy as the hero: a failed extra never
   // blocks the email).
   try {
-    return await applyEditorialPass(data, {
+    const revised = await applyEditorialPass(data, {
       eventCandidates: pickEditorialEventCandidates(todayEvents, { dayPlan, limit: 36, recent: recentSelections }),
       openingCandidates: recentOpenings,
       redditCandidates,
       recentSelections,
     });
+    return finishNewsletterAssembly(revised, opts);
   } catch (err) {
     console.warn(`⚠️  newsletter: editorial pass failed (${String(err?.message || err).slice(0, 300)}) — sending deterministic build`);
     data.editorialMeta = { status: "failed", error: String(err?.message || err).slice(0, 300) };
-    return data;
+    return finishNewsletterAssembly(data, opts);
   }
+}
+
+function registrationRecheckEnabled(opts) {
+  if (typeof opts?.recheckRegistration === "boolean") return opts.recheckRegistration;
+  const v = String(process.env.SBT_NEWSLETTER_REG_RECHECK || "1").toLowerCase();
+  return !["0", "false", "off", "no"].includes(v);
+}
+
+/**
+ * Final gate every assembled issue passes through, whichever path built it
+ * (deterministic, editorial, or editorial-failed fallback): re-verify each
+ * registration-gated listing against the live BiblioCommons state minutes
+ * before the send. The static filters above work from a feed generated the
+ * previous evening; this is the layer that catches a window that closed, a
+ * program that filled, or an event cancelled overnight — the gap that let the
+ * Sept 1 2026 issue print "Reserve ahead" on a signup that had been dead
+ * since Aug 17. Fails open: any error keeps the issue exactly as assembled.
+ */
+async function finishNewsletterAssembly(data, opts = {}) {
+  if (!registrationRecheckEnabled(opts) || !data.featuredEvents?.length) return data;
+  try {
+    const { events, dropped } = await recheckRegistrationGatedEvents(data.featuredEvents);
+    if (!dropped.length && events === data.featuredEvents) return data;
+    for (const { event, reason } of dropped) {
+      console.warn(`⚠️  newsletter: dropping "${event.title}" — ${reason}`);
+    }
+    data.featuredEvents = events;
+    if (dropped.length) {
+      // The visual manifest was computed from the pre-check list; rebuild it
+      // so a dropped event's photo can't linger in the issue.
+      data.visuals = newsletterVisuals({
+        date: data.date,
+        longDate: data.longDate,
+        dayPlan: data.dayPlan,
+        tonightPick: data.tonightPick,
+        featuredEvents: data.featuredEvents,
+        recentOpenings: data.recentOpenings,
+        redditPosts: data.redditPosts,
+      });
+    }
+  } catch (err) {
+    console.warn(`⚠️  newsletter: registration re-check failed (${String(err?.message || err).slice(0, 200)}) — keeping listings as assembled`);
+  }
+  return data;
 }
 
 export function makeNewsletterPlan(plan, date, { validEventIds = null, virtualEventIds = null, registrationGatedEventIds = null } = {}) {
@@ -875,6 +927,7 @@ function pickFeaturedEvents(events, { dayPlan, tonightPick, limit, recent = null
   const ranked = events
     .filter((e) => !used.has(normalizeComparable(e.title)) && !used.has(normalizeComparable(e.id)))
     .filter((e) => audienceBreadthPenalty(e) < UNPROMPTED_AUDIENCE_PENALTY_CUTOFF)
+    .filter((e) => !isDeadSignupListing(e))
     .map((e) => ({ event: e, score: scoreEvent(e, false) + recentRepeatPenalty(e, recent, false) }))
     .sort((a, b) => b.score - a.score || parseTimeMinutes(a.event.time) - parseTimeMinutes(b.event.time));
   // Per-source cap so one prolific feed (a library system, one meetup group)
@@ -940,6 +993,27 @@ function normalizeComparable(s) {
 
 export { isMarqueeEvent, isTonightPickCandidate };
 
+/**
+ * A listing whose signup is already dead when the reader opens the email:
+ * the feed says registration closed, the published deadline fell before the
+ * event's day began, or a register-ahead program's own copy says its series
+ * started on an earlier date — session N>1 is never a fresh recommendation.
+ * This is the static half of the Sept 1 2026 ukulele guard (a closed 3-part
+ * series ran with a "Reserve ahead" tag); the live half re-checks whatever
+ * still gets selected (registration-recheck.mjs).
+ *
+ * `full` alone is deliberately NOT dead — a full event stays listed with its
+ * "Registration full" label because the waitlist may be open — and a walk-up
+ * series is fine to join midway, so the series signal only fires on gated
+ * events.
+ */
+function isDeadSignupListing(e) {
+  return (
+    isRegistrationClosedForDay(e) ||
+    (requiresAdvanceRegistration(e) && seriesStartedBeforeEvent(e))
+  );
+}
+
 function scoreEvent(e, tonight) {
   let score = 0;
   const hour = parseTimeMinutes(e.time);
@@ -962,8 +1036,11 @@ function scoreEvent(e, tonight) {
   // labelled "Registration full" (a waitlist may open), but it should not lead
   // a list whose promise is "worth checking before you make plans". Events that
   // merely need booking are NOT demoted — they are attendable if the reader
-  // acts, and the label tells them to.
-  if (e?.registration === "full") score -= 15;
+  // acts, and the label tells them to. A closed registration is scored the
+  // same way as a backstop, though the pickers exclude it outright upstream
+  // (isDeadSignupListing) — nothing a reader can do makes a closed signup
+  // attendable.
+  if (e?.registration === "full" || e?.registration === "closed") score -= 15;
   score -= titleQualityPenalty(e.title);
   score -= routineEventPenalty(e);
   score -= audienceBreadthPenalty(e);
@@ -986,6 +1063,7 @@ function pickEditorialEventCandidates(events, { dayPlan, limit, recent = null })
     .filter((e) => e.url)
     .filter((e) => audienceBreadthPenalty(e) < UNPROMPTED_AUDIENCE_PENALTY_CUTOFF)
     .filter((e) => !used.has(normalizeComparable(e.title)) && !used.has(normalizeComparable(e.id)))
+    .filter((e) => !isDeadSignupListing(e))
     .map((event) => ({
       event,
       score: scoreEvent(event, false) + editorialEventBoost(event) + recentRepeatPenalty(event, recent, false),

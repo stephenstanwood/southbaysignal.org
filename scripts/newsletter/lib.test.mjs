@@ -760,6 +760,35 @@ test("finalizeNewsletterImages drops events whose photoRef is dead (no broken ti
   }
 });
 
+test("a closed-registration listing renders its honest label, never Reserve ahead", () => {
+  // The Sept 1 2026 issue printed "5:15 PM · Reserve ahead · Alviso Library"
+  // for a class whose registration had ended Aug 17. The pickers now exclude
+  // closed listings, but any path that still renders one (an editorial pick,
+  // a future section) must print the truth.
+  const { html } = renderEmail({
+    date: "2026-09-01",
+    longDate: "Tuesday, September 1, 2026",
+    weather: null, dayPlan: null, dayPlanBlurb: "",
+    tonightPick: null, tonightPickBlurb: "",
+    todayEvents: [{}],
+    featuredEvents: [
+      {
+        title: "Intro to Ukulele for Adults",
+        time: "5:15 PM",
+        venue: "Alviso Library",
+        city: "san-jose",
+        cost: "free",
+        registration: "closed",
+        url: "https://sjpl.bibliocommons.com/events/6a7a2993b44674e2601d024d",
+      },
+    ],
+    recentOpenings: [], civicMeetings: [], todayHistory: [], redditPosts: [],
+    visuals: {}, editorial: null,
+  });
+  assert.match(html, /Registration closed/);
+  assert.equal(html.includes("Reserve ahead"), false);
+});
+
 test("finalizeNewsletterImages keeps images when the probe errors (transient), never blanks everything", async () => {
   const realFetch = globalThis.fetch;
   globalThis.fetch = async () => { throw new Error("network down"); };

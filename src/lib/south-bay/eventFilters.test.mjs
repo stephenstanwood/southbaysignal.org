@@ -5,12 +5,15 @@ import {
   LOCAL_DEPARTURE_TRIP,
   OUT_OF_AREA_LOCATION,
   hasOutOfAreaDestination,
+  isRegistrationClosedForDay,
   isVirtualEvent,
   registrationFromBiblioCommons,
   registrationFromInstructions,
   registrationLabel,
   requiresAdvanceRegistration,
+  resolveRegistrationClosesBy,
   resolveVirtualFlag,
+  seriesStartedBeforeEvent,
   virtualFromSourceSignal,
 } from "./eventFilters.mjs";
 
@@ -359,8 +362,241 @@ test("events with no registration field read as walk-up", () => {
 });
 
 test("every gated state is excluded from walk-up slots and carries a label", () => {
-  for (const state of ["required", "appointment-only", "full"]) {
+  for (const state of ["required", "appointment-only", "full", "closed"]) {
     assert.equal(requiresAdvanceRegistration({ registration: state }), true, state);
     assert.notEqual(registrationLabel({ registration: state }), "", state);
   }
+});
+
+// ---------------------------------------------------------------------------
+// Closed registration + registration windows
+// ---------------------------------------------------------------------------
+// The Sept 1 2026 defect: the issue listed SJPL's "Intro to Ukulele for
+// Adults" (session 3 of a 3-part series) with a "Reserve ahead" tag while the
+// event page said "Registration Closed" — the window had ended Aug 17, the
+// day before the FIRST session. Fixtures below are the live shapes sampled
+// that morning.
+
+test("the registrationClosed flag maps to closed only with seat accounting", () => {
+  // Same trap-1 discipline as isFull: the Vintage Media Lab instances report
+  // registrationClosed:true with NO accounting while the library's page says
+  // appointments are still available, so an unaccounted flag is noise. With
+  // accounting the flag is real user-visible state.
+  assert.equal(
+    registrationFromBiblioCommons(biblioEvent({ provider: "BIBLIO_EVENTS", cap: 10, registrationClosed: true })),
+    "closed",
+  );
+  assert.equal(
+    registrationFromBiblioCommons(biblioEvent({ provider: "EXTERNAL", registrationClosed: true, instructions: "Please register." })),
+    "required",
+  );
+  assert.equal(registrationLabel({ registration: "closed" }), "Registration closed");
+});
+
+test("a counted-full event stays full even when the flag also says closed", () => {
+  // SCCL's "Beginning Guitar & Ukulele Class for Adults" (Sept 1) and SJPL's
+  // ESL/EVC courses both report isFull:true AND registrationClosed:true with
+  // accounting. `full` is the truer listing state — the waitlist path stays
+  // visible (both pages render waitlist buttons) — and the newsletter's live
+  // window check separately drops it if even the waitlist window has ENDED.
+  assert.equal(
+    registrationFromBiblioCommons(biblioEvent({ provider: "BIBLIO_EVENTS", cap: 10, isFull: true, registrationClosed: true })),
+    "full",
+  );
+  assert.equal(
+    registrationFromBiblioCommons(biblioEvent({ provider: "EXTERNAL", cap: 30, maxSeats: 2, isFull: true, registrationClosed: true })),
+    "full",
+  );
+});
+
+test("flag=false proves nothing — the ukulele instance said false while closed", () => {
+  // Documents WHY resolveRegistrationClosesBy and the live re-check exist. If
+  // this ever starts returning "closed", BiblioCommons fixed their flag — the
+  // window logic stays regardless, since the flag lagged for two weeks here.
+  assert.equal(
+    registrationFromBiblioCommons(ukuleleRawInstance()),
+    "required",
+  );
+});
+
+/** The live gateway record for sjpl-6a7a2993b44674e2601d024d (2026-09-01). */
+function ukuleleRawInstance() {
+  return {
+    id: "6a7a2993b44674e2601d024d",
+    isFull: false,
+    registrationClosed: false,
+    numberRegistered: 8,
+    definition: {
+      title: "Intro to Ukulele for Adults",
+      start: "2026-09-01T17:15",
+      end: "2026-09-01T18:15",
+      registrationInfo: {
+        provider: "BIBLIO_EVENTS",
+        cap: 10,
+        maxSeats: 1,
+        registrationEnd: { ordinal: 1, unit: "days", time: "T10:00", date: "2025-07-16", windowType: "RELATIVE" },
+        registrationStart: { ordinal: 0, unit: "days", time: "T00:00", date: "2026-07-28", windowType: "STATIC" },
+      },
+    },
+  };
+}
+
+test("a RELATIVE deadline resolves against the instance as an upper bound", () => {
+  // 1 day before the Sept 1 5:15 PM start, at the 10:00 clock → Aug 31 10:00
+  // PT. The TRUE deadline (anchored to the series' Aug 18 first session) was
+  // even earlier; the stray date field (2025-07-16) must be ignored.
+  const start = new Date("2026-09-01T17:15:00-07:00");
+  const closes = resolveRegistrationClosesBy(ukuleleRawInstance(), start, new Date("2026-09-01T18:15:00-07:00"));
+  assert.equal(closes.toISOString(), new Date("2026-08-31T10:00:00-07:00").toISOString());
+});
+
+test("EVENT_START windows close relative to the start, hours units included", () => {
+  const start = new Date("2026-09-02T16:00:00-07:00");
+  const atStart = resolveRegistrationClosesBy(
+    { definition: { registrationInfo: { registrationEnd: { ordinal: 0, unit: "days", windowType: "EVENT_START" } } } },
+    start,
+    null,
+  );
+  assert.equal(atStart.getTime(), start.getTime());
+  // SJPL's Teens Reach meetings close 1 hour before start.
+  const hourBefore = resolveRegistrationClosesBy(
+    { definition: { registrationInfo: { registrationEnd: { ordinal: 1, unit: "hours", windowType: "EVENT_START" } } } },
+    start,
+    null,
+  );
+  assert.equal(hourBefore.getTime(), start.getTime() - 60 * 60 * 1000);
+});
+
+test("STATIC windows are absolute and a missing clock reads as end of day", () => {
+  const withClock = resolveRegistrationClosesBy(
+    { definition: { registrationInfo: { registrationEnd: { date: "2026-09-18", time: "T10:00", windowType: "STATIC" } } } },
+    new Date("2026-09-19T10:00:00-07:00"),
+    null,
+  );
+  assert.equal(withClock.toISOString(), new Date("2026-09-18T10:00:00-07:00").toISOString());
+  const noClock = resolveRegistrationClosesBy(
+    { definition: { registrationInfo: { registrationEnd: { date: "2026-09-18", windowType: "STATIC" } } } },
+    new Date("2026-09-19T10:00:00-07:00"),
+    null,
+  );
+  assert.equal(noClock.toISOString(), new Date("2026-09-18T23:59:00-07:00").toISOString());
+});
+
+test("null-ish window rules resolve to nothing", () => {
+  // The shape provider-less records carry: {ordinal: 0, unit: "days",
+  // windowType: null} — no rule, no deadline.
+  assert.equal(
+    resolveRegistrationClosesBy(
+      { definition: { registrationInfo: { registrationEnd: { ordinal: 0, unit: "days", time: null, date: null, windowType: null } } } },
+      new Date(),
+      null,
+    ),
+    null,
+  );
+  assert.equal(resolveRegistrationClosesBy({}, new Date(), null), null);
+  assert.equal(resolveRegistrationClosesBy(null, new Date(), null), null);
+});
+
+test("the ukulele listing is closed for its own day — the shipped defect", () => {
+  // Exactly the canonical feed record from the sent Sept 1 issue, plus the
+  // registrationClosesBy the fixed ingest now derives (Aug 31 10:00 PT).
+  const ukulele = {
+    id: "sjpl-6a7a2993b44674e2601d024d",
+    title: "Intro to Ukulele for Adults",
+    date: "2026-09-01",
+    registration: "required",
+    registrationClosesBy: "2026-08-31T17:00:00.000Z",
+  };
+  assert.equal(isRegistrationClosedForDay(ukulele), true);
+});
+
+test("a deadline later in the day keeps the listing recommendable", () => {
+  // "Reserve ahead" is honest when the reader can still act that morning: a
+  // 10 AM cutoff or a closes-at-start rule is a reason to act, not to hide.
+  assert.equal(
+    isRegistrationClosedForDay({
+      date: "2026-09-01",
+      registration: "required",
+      registrationClosesBy: "2026-09-01T17:00:00.000Z", // 10 AM PT that day
+    }),
+    false,
+  );
+});
+
+test("closed state alone is closed for any day; full and walk-up never are", () => {
+  assert.equal(isRegistrationClosedForDay({ date: "2026-09-01", registration: "closed" }), true);
+  assert.equal(
+    isRegistrationClosedForDay({ date: "2026-09-01", registration: "full", registrationClosesBy: "2026-08-01T00:00:00.000Z" }),
+    false,
+  );
+  assert.equal(
+    isRegistrationClosedForDay({ date: "2026-09-01", registrationClosesBy: "2026-08-01T00:00:00.000Z" }),
+    false,
+  );
+  assert.equal(isRegistrationClosedForDay(null), false);
+});
+
+test("a deadline with no usable event date proves nothing", () => {
+  assert.equal(
+    isRegistrationClosedForDay({ registration: "required", registrationClosesBy: "2026-08-01T00:00:00.000Z" }),
+    false,
+  );
+});
+
+// ── Series-start markers ──
+
+test("the ukulele's series marker reads as started-before-event", () => {
+  assert.equal(
+    seriesStartedBeforeEvent({
+      title: "Intro to Ukulele for Adults",
+      date: "2026-09-01",
+      description:
+        "[Rescheduled - Starting August 18] In this 3-part series, participants will learn the basics of playing the ukulele…",
+    }),
+    true,
+  );
+});
+
+test("a future series start is an announcement, not a continuation", () => {
+  assert.equal(
+    seriesStartedBeforeEvent({
+      title: "Beginning Watercolor (Starting September 15)",
+      date: "2026-09-01",
+      description: "A four-week course.",
+    }),
+    false,
+  );
+});
+
+test("series language without a date never trips the marker", () => {
+  assert.equal(
+    seriesStartedBeforeEvent({
+      title: "Intro to Ukulele for Adults",
+      date: "2026-09-01",
+      description: "In this 3-part series, participants will learn the basics.",
+    }),
+    false,
+  );
+});
+
+test("a December start seen from January belongs to the previous year", () => {
+  assert.equal(
+    seriesStartedBeforeEvent({
+      title: "Winter Writing Circle",
+      date: "2026-01-12",
+      description: "[Starting December 8] Weekly sessions through February.",
+    }),
+    true,
+  );
+});
+
+test("a same-day start is session 1 and stays recommendable", () => {
+  assert.equal(
+    seriesStartedBeforeEvent({
+      title: "Chess Basics",
+      date: "2026-09-01",
+      description: "Starting September 1, meet weekly for six weeks.",
+    }),
+    false,
+  );
 });

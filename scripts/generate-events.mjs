@@ -67,10 +67,13 @@ import {
   COVERED_LOCATION,
   LOCAL_DEPARTURE_TRIP,
   OUT_OF_AREA_LOCATION,
+  REGISTRATION_CLOSED,
   REGISTRATION_NONE,
   VIRTUAL_EVENT_PATTERNS,
   hasOutOfAreaDestination,
   registrationFromBiblioCommons,
+  requiresAdvanceRegistration,
+  resolveRegistrationClosesBy,
   virtualFromSourceSignal,
 } from "../src/lib/south-bay/eventFilters.mjs";
 import { fuzzyDedupEvents } from "../src/lib/south-bay/eventFuzzyDedup.mjs";
@@ -3958,6 +3961,34 @@ function isBiblioEventCancelled(ev) {
   return ev?.definition?.isCancelled === true;
 }
 
+// Advance-registration state from BiblioCommons' own registrationInfo
+// (provider / cap / maxSeats / instructions / registrationClosed). Without
+// this, an appointment-only program like Palo Alto's Vintage Media Lab reaches
+// the planner looking exactly like a drop-in storytime — which is how the
+// Aug 12 2026 newsletter told readers to spend an afternoon at one.
+//
+// A gated event also gets its published deadline resolved to
+// `registrationClosesBy` (an upper bound for mid-series RELATIVE rules — see
+// resolveRegistrationClosesBy). A deadline already behind us flips the state
+// to `closed` right here, so the feed the 3:50 AM newsletter reads never
+// carries "required" for a window that ended before the evening refresh —
+// the Sept 1 2026 ukulele defect, where a closed 3-part series ran with a
+// "Reserve ahead" tag.
+function deriveBiblioRegistration(ev, start, end, now) {
+  let registration = registrationFromBiblioCommons(ev);
+  let closesBy = null;
+  if (requiresAdvanceRegistration(registration)) {
+    closesBy = resolveRegistrationClosesBy(ev, start, end);
+    if (registration !== REGISTRATION_CLOSED && closesBy && closesBy.getTime() < now.getTime()) {
+      registration = REGISTRATION_CLOSED;
+    }
+  }
+  return {
+    registration,
+    registrationClosesBy: closesBy ? closesBy.toISOString() : null,
+  };
+}
+
 function resolveBiblioDisplayVenue(libraryId, libraryName, title, branchName) {
   // Palo Alto publishes the external FOPAL sale through its library calendar,
   // but the sale itself is held at Cubberley. With no branch entity attached,
@@ -4029,12 +4060,7 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
           // (where "Online" isn't at the start). Trust the authoritative flag.
           const isVirtual = ev.definition?.isVirtual === true;
 
-          // Advance-registration state from BiblioCommons' own registrationInfo
-          // (provider / cap / maxSeats / instructions). Without this, an
-          // appointment-only program like Palo Alto's Vintage Media Lab reaches the
-          // planner looking exactly like a drop-in storytime — which is how the
-          // Aug 12 2026 newsletter told readers to spend an afternoon at one.
-          const registration = registrationFromBiblioCommons(ev);
+          const { registration, registrationClosesBy } = deriveBiblioRegistration(ev, start, end, now);
 
           const displayVenue = resolveBiblioDisplayVenue(
             libraryId,
@@ -4074,6 +4100,7 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
             city,
             ...(isVirtual ? { virtual: true } : {}),
             ...(registration !== REGISTRATION_NONE ? { registration } : {}),
+            ...(registrationClosesBy ? { registrationClosesBy } : {}),
             // Pass the rendered venue so isIndoorVenue can detect "library" — short
             // branch names like "Cambrian" (no "Library" suffix) used to slip past it.
             category: inferCategory(title, stripHtml(desc), ev.type || "", displayVenue),
@@ -4191,12 +4218,7 @@ async function fetchScclEvents() {
         // hits in current data), but mirror the handling so it stays in sync.
         const isVirtual = ev.definition?.isVirtual === true;
 
-        // Advance-registration state from BiblioCommons' own registrationInfo
-        // (provider / cap / maxSeats / instructions). Without this, an
-        // appointment-only program like Palo Alto's Vintage Media Lab reaches the
-        // planner looking exactly like a drop-in storytime — which is how the
-        // Aug 12 2026 newsletter told readers to spend an afternoon at one.
-        const registration = registrationFromBiblioCommons(ev);
+        const { registration, registrationClosesBy } = deriveBiblioRegistration(ev, start, end, now);
 
         allEvents.push({
           id: `${libraryId}-${ev.id}`,
@@ -4210,6 +4232,7 @@ async function fetchScclEvents() {
           city,
           ...(isVirtual ? { virtual: true } : {}),
           ...(registration !== REGISTRATION_NONE ? { registration } : {}),
+          ...(registrationClosesBy ? { registrationClosesBy } : {}),
           category: inferCategory(title, stripHtml(desc), ev.type || "", branchVenue),
           cost: "free",
           description: fixProperNouns(truncate(stripHtml(desc))),

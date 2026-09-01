@@ -81,6 +81,8 @@ interface UpcomingEvent {
   kidFriendly: boolean;
   ongoing?: boolean;
   virtual?: boolean;
+  registration?: "none" | "required" | "appointment-only" | "full" | "closed" | null;
+  registrationClosesBy?: string | null;
   blurb?: string;
   image?: string | null;
   photoRef?: string | null;
@@ -459,7 +461,13 @@ function UpcomingEventCard({
           {registrationLabel(event) && (
             <span
               className="sb-event-micro-badge"
-              title="You cannot just turn up — this event needs a booking or registration in advance"
+              title={
+                event.registration === "closed"
+                  ? "Registration has ended — sign-ups are no longer possible for this event"
+                  : event.registration === "full"
+                    ? "All seats are taken — check the event page for a waitlist"
+                    : "You cannot just turn up — this event needs a booking or registration in advance"
+              }
               style={{ background: "#FEF3C7", color: "#92400E", borderColor: "#FDE68A" }}
             >
               {registrationLabel(event)}

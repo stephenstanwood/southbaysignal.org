@@ -39,7 +39,11 @@ export interface SchemaEventRecord {
   virtual?: boolean | null; // set at ingest from the source's own location type
   // Advance-registration gate, set at ingest from the source's own
   // registration fields. Absent means walk-up. See eventFilters.mjs.
-  registration?: "none" | "required" | "appointment-only" | "full" | null;
+  registration?: "none" | "required" | "appointment-only" | "full" | "closed" | null;
+  // Latest instant registration could still be open (UTC ISO), resolved at
+  // ingest from the source's published deadline rule. Only present on gated
+  // events whose source publishes a window. See resolveRegistrationClosesBy.
+  registrationClosesBy?: string | null;
 }
 
 /** UTC offset suffix ("-07:00") for America/Los_Angeles on a given date. */
