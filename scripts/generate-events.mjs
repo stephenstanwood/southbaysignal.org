@@ -1014,6 +1014,10 @@ function cleanTitle(title) {
     "USPS", "USPTO", "USDA", "UCSF", "UCSC", "UCSD", "UCSB",
     // South Bay org/agency acronyms
     "SJMADE", "SCCFD", "SCVMC", "PACL", "SJDT", "LGPNS",
+    // Los Gatos-Monte Sereno Police Department. The Town of Los Gatos
+    // newsletter titles its programs "LGMSPD Community Police Academy";
+    // without coverage the 4+ pass rendered that as "Lgmspd" on the card.
+    "LGMSPD",
     // South Bay venue/program/sponsor acronyms that arrive ALL-CAPS but get
     // downcased by the 2+ pass once the surrounding title tips mixed-case
     // ("ASML Next Gen Stage…" → "Asml", "TSRP: Henna Designs" → "Tsrp",
@@ -1652,6 +1656,10 @@ function polishDescription(text) {
     // South Bay / arts venues
     "SJMA", "MACLA", "SJZ", "SVLG", "SJDA", "SCCC", "MOFAD", "SVCF", "VTAA", "VTAS",
     "SJMADE", "SCCFD", "SCVMC", "PACL", "SJDT", "LGPNS",
+    // Los Gatos-Monte Sereno Police Department. The Town of Los Gatos
+    // newsletter titles its programs "LGMSPD Community Police Academy";
+    // without coverage the 4+ pass rendered that as "Lgmspd" on the card.
+    "LGMSPD",
     // School districts (mostly title-only, but BiblioCommons body copy
     // occasionally name-drops them — keep parity with cleanTitle's list).
     "PAUSD", "SJUSD", "FUHSD", "MVWSD",
@@ -8400,7 +8408,30 @@ async function main() {
   const seen = new Set();
   const sportsByDateVenue = new Set();
   const sameSourceByDVT = new Set();
+  const sameUrlByDT = new Set();
   const deduped = capped.filter((e) => {
+    // Canonical-URL date+time dedup: two listings that point at the SAME event
+    // page and run at the same date and clock time are the same event, however
+    // differently they are titled. This rung exists because the venue-based one
+    // below cannot fire on venue-less rows and the title rung compares only the
+    // first 30 normalized characters: the Town of Los Gatos newsletter shipped
+    // its Sep 17 police academy twice off one losgatosca.gov URL — once as
+    // "LGMSPD Community Police Academy", once as "Los Gatos-Monte Sereno
+    // Community Police Academy" — and both cards published.
+    //
+    // A canonical event URL is a stronger identity signal than a venue name, so
+    // this runs first. Measured before adding it: across the 1,823 live upcoming
+    // events and the 920-row archive, this key collided exactly twice, and both
+    // collisions were true duplicates (the academy above, and a Sunnyvale
+    // libcal author talk listed under two titles) — no false positives. The
+    // clock-time term is what keeps it safe: a venue's generic program page
+    // reused across several events only collapses when those events also share
+    // a date AND a start time.
+    if (e.url && e.date && e.time) {
+      const udtKey = `${e.url}|${e.date}|${normTimeKey(e.time)}`;
+      if (sameUrlByDT.has(udtKey)) return false;
+      sameUrlByDT.add(udtKey);
+    }
     // Cross-source date+venue+time dedup: one listing per concrete event slot
     if (e.venue && e.date && e.time) {
       const dvtKey = `${e.date}|${normVenueKey(e.venue)}|${normTimeKey(e.time)}`;
