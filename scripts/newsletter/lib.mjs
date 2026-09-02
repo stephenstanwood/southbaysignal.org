@@ -1116,7 +1116,7 @@ async function applyEditorialPass(data, candidates) {
     status: "claude",
     via,
     model: via === "anthropic-api"
-      ? (process.env.SBT_NEWSLETTER_API_MODEL || "claude-fable-5")
+      ? (process.env.SBT_NEWSLETTER_API_MODEL || "claude-fable-5-1")
       : (process.env.SBT_NEWSLETTER_CLAUDE_MODEL || "fable"),
     eventCandidates: candidates.eventCandidates.length,
     openingCandidates: candidates.openingCandidates.length,
@@ -1457,7 +1457,7 @@ async function runClaudeCliEditor(instructions) {
 async function runAnthropicApiEditor(instructions) {
   const { default: Anthropic } = await import("@anthropic-ai/sdk");
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  const model = process.env.SBT_NEWSLETTER_API_MODEL || "claude-fable-5";
+  const model = process.env.SBT_NEWSLETTER_API_MODEL || "claude-fable-5-1";
 
   const stream = client.beta.messages.stream({
     model,
