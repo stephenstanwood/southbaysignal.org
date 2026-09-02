@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-02T02:17:08.714Z",
+    "generatedAt": "2026-09-02T15:08:33.981Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 619,
+    "eventCount": 620,
     "sourceCount": 22,
     "sources": [
-      "Mountain View Public Library (139)",
-      "Los Gatos Library (148)",
+      "Mountain View Public Library (140)",
+      "Los Gatos Library (150)",
       "San Jose Jazz (19)",
       "Linden Tree Books (11)",
       "History San Jose (9)",
@@ -19,11 +19,11 @@
       "Children's Discovery Museum (1)",
       "Midpen Open Space (4)",
       "Guadalupe River Park Conservancy (9)",
-      "Santana Row (8)",
+      "Santana Row (7)",
       "City of Cupertino (72)",
       "Opera San José (5)",
       "TheatreWorks Silicon Valley (90)",
-      "Levi's Stadium (11)",
+      "Levi's Stadium (10)",
       "SAP Center (15)",
       "The Tech Interactive (8)",
       "Peninsula Open Space Trust (1)",
@@ -66,7 +66,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 143,
+        "count": 144,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -76,7 +76,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 148,
+        "count": 150,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -240,7 +240,7 @@
         "id": "santana-row",
         "label": "Santana Row",
         "status": "ok",
-        "count": 8,
+        "count": 7,
         "error": null,
         "sources": [
           "Santana Row"
@@ -296,7 +296,7 @@
         "id": "levi-s-stadium",
         "label": "Levi's Stadium",
         "status": "ok",
-        "count": 11,
+        "count": 10,
         "error": null,
         "sources": [
           "Levi's Stadium"
@@ -2719,6 +2719,23 @@
       "cost": "free",
       "description": "",
       "url": "https://mountainview.libcal.com/event/17463939",
+      "source": "Mountain View Public Library",
+      "kidFriendly": true
+    },
+    {
+      "id": "7929ab2639b8",
+      "title": "Outdoor Storytime",
+      "date": "2026-12-01",
+      "displayDate": "Tue, Dec 1",
+      "time": "10:30 AM",
+      "endTime": "11:00 AM",
+      "venue": "Pioneer Park",
+      "address": "1146 Church St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "family",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17142494",
       "source": "Mountain View Public Library",
       "kidFriendly": true
     },
@@ -5239,6 +5256,40 @@
       "kidFriendly": false
     },
     {
+      "id": "65c739646d69",
+      "title": "Storytime (Ages 0-5)",
+      "date": "2026-12-01",
+      "displayDate": "Tue, Dec 1",
+      "time": "11:00 AM",
+      "endTime": "11:30 AM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "family",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17341946",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
+      "id": "3ebeee10c502",
+      "title": "Drop-In Tech Help",
+      "date": "2026-12-01",
+      "displayDate": "Tue, Dec 1",
+      "time": "3:00 PM",
+      "endTime": "4:30 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "education",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/16035539",
+      "source": "Los Gatos Library",
+      "kidFriendly": false
+    },
+    {
       "id": "32e3d2884f2a",
       "title": "SJZ Break Room Jazz Jam",
       "date": "2026-09-04",
@@ -7241,23 +7292,6 @@
         "sourceUrl": "https://grpg.org/calendar/events/",
         "date": "2026-09-26"
       }
-    },
-    {
-      "id": "a4edfd782416",
-      "title": "Let's Do Lunch - Taste The Row",
-      "date": "2026-09-01",
-      "displayDate": "Tue, Sep 1",
-      "time": null,
-      "endTime": null,
-      "venue": "Santana Row",
-      "address": "377 Santana Row, San Jose, CA 95128",
-      "city": "san-jose",
-      "category": "community",
-      "cost": null,
-      "description": "",
-      "url": "https://santanarow.com/event/lets-do-lunch-taste-the-row/",
-      "source": "Santana Row",
-      "kidFriendly": false
     },
     {
       "id": "4295477cb44a",
@@ -10215,23 +10249,6 @@
       "description": "Feel the earth move under your feet! Soulful and irresistible, this feel-good musical tells the true story of the woman behind the soundtrack of our lives. From teenage songwriter to chart-topping legend, Carole King finds her voice in a world that wasn’t always ready to hear it. Set against the vibrant music scene of the 1950s and 1960s, the journey follows love, resilience, the sort of friendships that shape a life—and a career that changed music forever. Featuring a thrilling lineup of iconic hits including “You’ve Got a Friend,” “It’s Too Late,” and “You Make Me Feel Like a Natural Woman,” Beautiful makes you laugh, tear up, and leave the theatre humming all the way home.",
       "url": "https://my.theatreworks.org/7464/7619",
       "source": "TheatreWorks Silicon Valley",
-      "kidFriendly": false
-    },
-    {
-      "id": "b6fdfb7627e6",
-      "title": "CHRIS BROWN & USHER: THE R&B TOUR",
-      "date": "2026-09-01",
-      "displayDate": "Tue, Sep 1",
-      "time": null,
-      "endTime": null,
-      "venue": "Levi's Stadium",
-      "address": "4900 Marie P DeBartolo Way, Santa Clara, CA 95054",
-      "city": "santa-clara",
-      "category": "community",
-      "cost": "paid",
-      "description": "",
-      "url": "https://levisstadium.com/events/",
-      "source": "Levi's Stadium",
       "kidFriendly": false
     },
     {
