@@ -1,21 +1,219 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-01T03:16:06.606Z",
+    "generatedAt": "2026-09-02T03:18:00.903Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 6
+    "sourceCount": 11
   },
   "summary": {
-    "threadsMined": 6,
-    "placesExtracted": 0,
-    "placesMatched": 0,
-    "placeGaps": 0,
-    "eventsExtracted": 0,
-    "eventsMatched": 0,
-    "eventGaps": 0,
+    "threadsMined": 11,
+    "placesExtracted": 9,
+    "placesMatched": 4,
+    "placeGaps": 5,
+    "eventsExtracted": 6,
+    "eventsMatched": 3,
+    "eventGaps": 3,
     "autoAppendedOpenings": 0
   },
-  "placeGaps": [],
-  "eventGaps": [],
-  "placeMatches": [],
-  "eventMatches": []
+  "placeGaps": [
+    {
+      "name": "Curry Life",
+      "city": "San Jose",
+      "kind": "restaurant",
+      "context": "Japanese curry place that recently closed",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4pcwy/does_anyone_know_why_curry_life_closed/",
+        "https://www.reddit.com/r/SanJose/comments/1w4lj7l/wed_92_3305pm_free_groceries_cambrian_park_sda/",
+        "https://www.reddit.com/r/losgatos/comments/1w4h0jd/september_mayors_newsletter/",
+        "https://www.reddit.com/r/SanJose/comments/1w4srxz/art_classes_for_adults_near_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1w4smf9/places_for_a_date_night_with_a_8_month_old/"
+      ]
+    },
+    {
+      "name": "Cambrian Park SDA Church",
+      "city": "San Jose",
+      "kind": "other",
+      "context": "hosting free groceries event",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4pcwy/does_anyone_know_why_curry_life_closed/",
+        "https://www.reddit.com/r/SanJose/comments/1w4lj7l/wed_92_3305pm_free_groceries_cambrian_park_sda/",
+        "https://www.reddit.com/r/losgatos/comments/1w4h0jd/september_mayors_newsletter/",
+        "https://www.reddit.com/r/SanJose/comments/1w4srxz/art_classes_for_adults_near_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1w4smf9/places_for_a_date_night_with_a_8_month_old/"
+      ]
+    },
+    {
+      "name": "Dick's Bakery",
+      "city": "San Jose",
+      "kind": "bakery",
+      "context": "beloved bakery from the 90s, now closed",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4gnl6/why_did_san_jose_lose_so_many_bakeries_in_such_a/",
+        "https://www.reddit.com/r/SanJose/comments/1w4fcx3/toddler_activities/",
+        "https://www.reddit.com/r/SanJose/comments/1w41z88/where_to_eat_dakbokkeumtang_or_dakdoritang/",
+        "https://www.reddit.com/r/SanJose/comments/1w4vgfe/low_cost_lean_beef/",
+        "https://www.reddit.com/r/SanJose/comments/1w4kejm/what_should_parents_look_for_when_choosing_a/"
+      ]
+    },
+    {
+      "name": "Aki's Bakery",
+      "city": "San Jose",
+      "kind": "bakery",
+      "context": "beloved bakery from the 90s, now closed",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4gnl6/why_did_san_jose_lose_so_many_bakeries_in_such_a/",
+        "https://www.reddit.com/r/SanJose/comments/1w4fcx3/toddler_activities/",
+        "https://www.reddit.com/r/SanJose/comments/1w41z88/where_to_eat_dakbokkeumtang_or_dakdoritang/",
+        "https://www.reddit.com/r/SanJose/comments/1w4vgfe/low_cost_lean_beef/",
+        "https://www.reddit.com/r/SanJose/comments/1w4kejm/what_should_parents_look_for_when_choosing_a/"
+      ]
+    },
+    {
+      "name": "Wilsons",
+      "city": "Santa Clara",
+      "kind": "bakery",
+      "context": "bakery from the 90s, now closed",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4gnl6/why_did_san_jose_lose_so_many_bakeries_in_such_a/",
+        "https://www.reddit.com/r/SanJose/comments/1w4fcx3/toddler_activities/",
+        "https://www.reddit.com/r/SanJose/comments/1w41z88/where_to_eat_dakbokkeumtang_or_dakdoritang/",
+        "https://www.reddit.com/r/SanJose/comments/1w4vgfe/low_cost_lean_beef/",
+        "https://www.reddit.com/r/SanJose/comments/1w4kejm/what_should_parents_look_for_when_choosing_a/"
+      ]
+    }
+  ],
+  "eventGaps": [
+    {
+      "name": "Friday Night Lights at LGHS",
+      "when": "September",
+      "city": "Los Gatos",
+      "context": "high school football event",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4pcwy/does_anyone_know_why_curry_life_closed/",
+        "https://www.reddit.com/r/SanJose/comments/1w4lj7l/wed_92_3305pm_free_groceries_cambrian_park_sda/",
+        "https://www.reddit.com/r/losgatos/comments/1w4h0jd/september_mayors_newsletter/",
+        "https://www.reddit.com/r/SanJose/comments/1w4srxz/art_classes_for_adults_near_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1w4smf9/places_for_a_date_night_with_a_8_month_old/"
+      ]
+    },
+    {
+      "name": "9/11 25th Anniversary Community Memorial and Flyover Tribute",
+      "when": "September 11",
+      "city": "Los Gatos",
+      "context": "memorial event at Helm Field",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4pcwy/does_anyone_know_why_curry_life_closed/",
+        "https://www.reddit.com/r/SanJose/comments/1w4lj7l/wed_92_3305pm_free_groceries_cambrian_park_sda/",
+        "https://www.reddit.com/r/losgatos/comments/1w4h0jd/september_mayors_newsletter/",
+        "https://www.reddit.com/r/SanJose/comments/1w4srxz/art_classes_for_adults_near_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1w4smf9/places_for_a_date_night_with_a_8_month_old/"
+      ]
+    },
+    {
+      "name": "Free Groceries Cambrian Park SDA Church",
+      "when": "Wed 9/2 3:30-5pm",
+      "city": "San Jose",
+      "context": "free groceries giveaway event",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4pcwy/does_anyone_know_why_curry_life_closed/",
+        "https://www.reddit.com/r/SanJose/comments/1w4lj7l/wed_92_3305pm_free_groceries_cambrian_park_sda/",
+        "https://www.reddit.com/r/losgatos/comments/1w4h0jd/september_mayors_newsletter/",
+        "https://www.reddit.com/r/SanJose/comments/1w4srxz/art_classes_for_adults_near_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1w4smf9/places_for_a_date_night_with_a_8_month_old/"
+      ]
+    }
+  ],
+  "placeMatches": [
+    {
+      "name": "Peters Bakery",
+      "city": "San Jose",
+      "kind": "bakery",
+      "context": "only remaining bakery similar to old favorites",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4gnl6/why_did_san_jose_lose_so_many_bakeries_in_such_a/",
+        "https://www.reddit.com/r/SanJose/comments/1w4fcx3/toddler_activities/",
+        "https://www.reddit.com/r/SanJose/comments/1w41z88/where_to_eat_dakbokkeumtang_or_dakdoritang/",
+        "https://www.reddit.com/r/SanJose/comments/1w4vgfe/low_cost_lean_beef/",
+        "https://www.reddit.com/r/SanJose/comments/1w4kejm/what_should_parents_look_for_when_choosing_a/"
+      ],
+      "matchedName": "Peters' Bakery"
+    },
+    {
+      "name": "Children's Discovery Museum",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "downtown museum asked about for toddler visit",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4gnl6/why_did_san_jose_lose_so_many_bakeries_in_such_a/",
+        "https://www.reddit.com/r/SanJose/comments/1w4fcx3/toddler_activities/",
+        "https://www.reddit.com/r/SanJose/comments/1w41z88/where_to_eat_dakbokkeumtang_or_dakdoritang/",
+        "https://www.reddit.com/r/SanJose/comments/1w4vgfe/low_cost_lean_beef/",
+        "https://www.reddit.com/r/SanJose/comments/1w4kejm/what_should_parents_look_for_when_choosing_a/"
+      ],
+      "matchedName": "Children's Discovery Museum"
+    },
+    {
+      "name": "Winchester Mystery House",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "hiring Haunt Actors for Halloween",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4632m/anyone_ever_worked_at_winchester_mystery_house_as/"
+      ],
+      "matchedName": "Winchester Mystery House"
+    },
+    {
+      "name": "Great America",
+      "city": "Santa Clara",
+      "kind": "venue",
+      "context": "former Halloween Haunt job",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4632m/anyone_ever_worked_at_winchester_mystery_house_as/"
+      ],
+      "matchedName": "Great America Amphitheater"
+    }
+  ],
+  "eventMatches": [
+    {
+      "name": "Taste of Los Gatos",
+      "when": "September",
+      "city": "Los Gatos",
+      "context": "mentioned in mayor's newsletter",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4pcwy/does_anyone_know_why_curry_life_closed/",
+        "https://www.reddit.com/r/SanJose/comments/1w4lj7l/wed_92_3305pm_free_groceries_cambrian_park_sda/",
+        "https://www.reddit.com/r/losgatos/comments/1w4h0jd/september_mayors_newsletter/",
+        "https://www.reddit.com/r/SanJose/comments/1w4srxz/art_classes_for_adults_near_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1w4smf9/places_for_a_date_night_with_a_8_month_old/"
+      ],
+      "matchedName": "Taste of Los Gatos"
+    },
+    {
+      "name": "Oktoberfest",
+      "when": "September",
+      "city": "Los Gatos",
+      "context": "mentioned in mayor's newsletter",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4pcwy/does_anyone_know_why_curry_life_closed/",
+        "https://www.reddit.com/r/SanJose/comments/1w4lj7l/wed_92_3305pm_free_groceries_cambrian_park_sda/",
+        "https://www.reddit.com/r/losgatos/comments/1w4h0jd/september_mayors_newsletter/",
+        "https://www.reddit.com/r/SanJose/comments/1w4srxz/art_classes_for_adults_near_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1w4smf9/places_for_a_date_night_with_a_8_month_old/"
+      ],
+      "matchedName": "Campbell Oktoberfest"
+    },
+    {
+      "name": "Art & Wine Festival",
+      "when": "September",
+      "city": "Los Gatos",
+      "context": "mentioned in mayor's newsletter",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w4pcwy/does_anyone_know_why_curry_life_closed/",
+        "https://www.reddit.com/r/SanJose/comments/1w4lj7l/wed_92_3305pm_free_groceries_cambrian_park_sda/",
+        "https://www.reddit.com/r/losgatos/comments/1w4h0jd/september_mayors_newsletter/",
+        "https://www.reddit.com/r/SanJose/comments/1w4srxz/art_classes_for_adults_near_sj/",
+        "https://www.reddit.com/r/SanJose/comments/1w4smf9/places_for_a_date_night_with_a_8_month_old/"
+      ],
+      "matchedName": "44th Annual Santa Clara Art & Wine Festival"
+    }
+  ]
 }
