@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-01T15:08:55.063Z",
+    "generatedAt": "2026-09-02T02:17:08.714Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 622,
+    "eventCount": 619,
     "sourceCount": 22,
     "sources": [
-      "Mountain View Public Library (142)",
-      "Los Gatos Library (149)",
+      "Mountain View Public Library (139)",
+      "Los Gatos Library (148)",
       "San Jose Jazz (19)",
       "Linden Tree Books (11)",
       "History San Jose (9)",
@@ -20,7 +20,7 @@
       "Midpen Open Space (4)",
       "Guadalupe River Park Conservancy (9)",
       "Santana Row (8)",
-      "City of Cupertino (71)",
+      "City of Cupertino (72)",
       "Opera San José (5)",
       "TheatreWorks Silicon Valley (90)",
       "Levi's Stadium (11)",
@@ -66,7 +66,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 146,
+        "count": 143,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -76,7 +76,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 149,
+        "count": 148,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -258,7 +258,7 @@
         "id": "city-of-cupertino",
         "label": "City of Cupertino",
         "status": "ok",
-        "count": 71,
+        "count": 72,
         "error": null,
         "sources": [
           "City of Cupertino"
@@ -359,57 +359,6 @@
     ]
   },
   "events": [
-    {
-      "id": "40fb828d011d",
-      "title": "Outdoor Storytime",
-      "date": "2026-09-01",
-      "displayDate": "Tue, Sep 1",
-      "time": "10:30 AM",
-      "endTime": "11:00 AM",
-      "venue": "Pioneer Park",
-      "address": "1146 Church St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17142481",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "26aa6602b38a",
-      "title": "The Democracy We Must Keep: Why the Ideas that Built America Still Matter with David O. Stewart",
-      "date": "2026-09-01",
-      "displayDate": "Tue, Sep 1",
-      "time": "11:00 AM",
-      "endTime": "12:00 PM",
-      "venue": "Online",
-      "address": "",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17186063",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "3b49f1503c79",
-      "title": "Community Preservation Lab Scanning Service",
-      "date": "2026-09-01",
-      "displayDate": "Tue, Sep 1",
-      "time": "1:00 PM",
-      "endTime": "5:00 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17150005",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
     {
       "id": "85e14fa43a32",
       "title": "Baby Storytime",
@@ -2774,57 +2723,6 @@
       "kidFriendly": true
     },
     {
-      "id": "c33558118a36",
-      "title": "Storytime (Ages 0-5)",
-      "date": "2026-09-01",
-      "displayDate": "Tue, Sep 1",
-      "time": "11:00 AM",
-      "endTime": "11:30 AM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/17249561",
-      "source": "Los Gatos Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "805c4be21a10",
-      "title": "Online Author Talk : David Stewart",
-      "date": "2026-09-01",
-      "displayDate": "Tue, Sep 1",
-      "time": "11:00 AM",
-      "endTime": "12:00 PM",
-      "venue": "Online",
-      "address": "",
-      "city": "los-gatos",
-      "category": "arts",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/17297320",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "b039c7a0809e",
-      "title": "Drop-In Tech Help",
-      "date": "2026-09-01",
-      "displayDate": "Tue, Sep 1",
-      "time": "3:00 PM",
-      "endTime": "4:30 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "education",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/16035526",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
-    },
-    {
       "id": "354c349b3f26",
       "title": "Storytime (Ages 0-5)",
       "date": "2026-09-02",
@@ -3556,6 +3454,23 @@
       "kidFriendly": true
     },
     {
+      "id": "2831d5285122",
+      "title": "Informed Community Book Club",
+      "date": "2026-09-26",
+      "displayDate": "Sat, Sep 26",
+      "time": "2:00 PM",
+      "endTime": "3:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "arts",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17566058",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
+    },
+    {
       "id": "7cdd1e9ee422",
       "title": "Girls Who Code",
       "date": "2026-09-26",
@@ -3624,8 +3539,8 @@
       "kidFriendly": false
     },
     {
-      "id": "f550d1d85452",
-      "title": "Town's Poet Laureate interviews Past Poet Laureate about Book",
+      "id": "ecc5ae8bcf06",
+      "title": "Author Talk IN PERSON - Interview with Past and Present Town Poet Laureates",
       "date": "2026-09-28",
       "displayDate": "Mon, Sep 28",
       "time": "5:00 PM",
@@ -4931,6 +4846,23 @@
       "url": "https://losgatosca.libcal.com/event/15783339",
       "source": "Los Gatos Library",
       "kidFriendly": false
+    },
+    {
+      "id": "a22f2dd029bc",
+      "title": "Informed Community Book Club",
+      "date": "2026-11-14",
+      "displayDate": "Sat, Nov 14",
+      "time": "2:00 PM",
+      "endTime": "3:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "arts",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17566130",
+      "source": "Los Gatos Library",
+      "kidFriendly": true
     },
     {
       "id": "799eab2b0cc4",
@@ -7887,6 +7819,23 @@
       "url": "https://www.cupertino.gov/Events-directory/Citywide-Garage-Sale",
       "source": "City of Cupertino",
       "kidFriendly": false
+    },
+    {
+      "id": "6cd293334bbe",
+      "title": "Teen Movie Night - Jurassic Park (1993)",
+      "date": "2026-09-25",
+      "displayDate": "Fri, Sep 25",
+      "time": "06:00 PM",
+      "endTime": "08:30 PM",
+      "venue": "Quinlan Community Center",
+      "address": "Quinlan Community Center, 10185 N Stelling Road, 95014, View Map",
+      "city": "cupertino",
+      "category": "music",
+      "cost": "free",
+      "description": "Cupertino teens, get ready for movie night! Join us at the Quinlan Community Center on Friday, September 25 for a free screening of Jurassic Park on the big screen. Bring your friends, grab some free food and snacks, and enjoy the movie together. Doors open at 6 p.m., movie starts at 6:30 p.m. Admission is free, but please RSVP so we can plan for enough food. RSVP at cupertino.gov/teenmovienight. RSVP",
+      "url": "https://www.cupertino.gov/Parks-Recreation/Events/Teen-Movie-Night-Jurassic-Park-1993",
+      "source": "City of Cupertino",
+      "kidFriendly": true
     },
     {
       "id": "e4abeae279b4",
