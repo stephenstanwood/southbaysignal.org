@@ -1110,6 +1110,21 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // Costa County are both out of coverage, so the entry fails either way and
   // the only source placing it inside Santa Clara County is the aggregator tag.
   // Same class as Katalyze AI and Array Labs. Do not add from the roundup alone.
+  // Note: Owner ($240M Series D at a $2.3B valuation, announced Aug 28 2026;
+  // AI-native software for independent restaurants) is NOT here despite the
+  // AlleyWatch 8/31 roundup filing it under "Palo Alto." By dollars it is the
+  // largest round of the week tagged to a covered city, and nothing else
+  // supports the tag: the company's own PR Newswire release datelines SAN
+  // FRANCISCO, SiliconANGLE's write-up says "headquartered in San Francisco,"
+  // and VC News Daily independently lists San Francisco. The release carries no
+  // "About Owner" boilerplate to appeal to. Same aggregator-mislabel class as
+  // CodeRabbit and Katalyze AI. Do not add from the roundup's tag alone.
+  // Note: the Aug 27 - Sep 2 2026 sweep of the daily small-round feeds (the
+  // seed / sub-$25M tier the weekly roundups skip) surfaced no Santa Clara
+  // County companies at all — the week's Bay Area rounds were San Francisco
+  // (AusperBio, CivilGrid, Hike Medical, SciFin, Tripo AI) and Redwood City
+  // (N-Power Medicine). Recorded so the next cycle doesn't re-walk the same
+  // five days expecting a gap in the list.
   // Note: the Aug 2026 small-round sweep — the seed / sub-$25M tier the big
   // weekly roundups skip, which is where this list's real differentiation sits —
   // surfaced three stealth exits and none of them are in coverage. Recorded so
@@ -1263,6 +1278,27 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
       "A two-year-old Campbell company is betting that the wireless problem in a factory isn't bandwidth, it's certainty. Radio has to share crowded spectrum, so a robot arm that needs a guaranteed answer in microseconds gets a probabilistic one instead. Light Links' Wi-OW sends data as diffused infrared laser light that bounces off walls and ceilings — so it still works when the direct path is blocked, emits no radio signal for anyone to jam or listen to, and clocks up to 25 Gbps symmetrical with microsecond-scale round trips. It plugs in as an Ethernet dongle built from mass-produced fiber components rather than exotic optics, and has already been validated inside a Fortune 50 enterprise. Founder and CEO Firouz Vafadari raised the $6M pre-seed from Outlander, with Anorak, Output Capital, Mana, and Crosscourt joining; the money goes to production and to deployments in industrial automation and defense.",
     color: "#0891b2",
     url: "https://www.lightlinks.co/",
+  },
+  // City note: AlleyWatch's 8/31 roundup files this under "Santa Clara," but the
+  // company's own release datelines "SAN JOSE, Calif." and its contact page puts
+  // HQ at 1321 Ridder Park Drive, San Jose. Primary sources win, as with the
+  // Naive and Groq city corrections above — San Jose either way is in coverage,
+  // so this is a precision fix rather than an include/exclude call.
+  // Round note: the release says only "convertible note financing" and names no
+  // series, so it is filed the way Imperative Care's March convertible was
+  // rather than inventing a letter.
+  {
+    id: "shape-memory-medical-convertible",
+    name: "Shape Memory Medical",
+    city: "San Jose",
+    category: "medtech",
+    round: "Convertible",
+    amount: "$10M",
+    date: "2026-08-23",
+    tagline:
+      "Sealing off a blood vessel usually means packing it with metal coils that stay there for life. Shape Memory Medical builds the opposite: a low-density porous polymer that travels through a catheter squeezed down small, then self-expands when it meets blood, fills the irregular shape of the vessel, scaffolds an organized clot, and is eventually resorbed by the body. Because the material is radiolucent it does not blind the CT scans a patient gets for years afterward — a practical advantage metal cannot offer. The IMPEDE and IMPEDE-FX plugs are already cleared in the US, CE-marked, and approved in Japan, with more than 3,500 patients treated across 40-plus countries. The money is aimed squarely at the harder aortic work: IMPEDE-FX RapidFill, still investigational in the US, is the subject of AAA-SHAPE, a randomized multicenter pivotal trial that recently finished enrolling and now runs five years of follow-up testing whether actively managing the aneurysm sac beats standard endovascular repair alone. A second study, FLAGSHIP, is a first-in-human trial of a False Lumen Embolization System for aortic dissection. August Global Partners led the $10M convertible note and Taiwania Capital joined as the other new investor, with existing backers HBM Healthcare Investments, Earlybird Venture Capital, and WexMed II following on; CEO Ted Ruppel calls the completed enrollment an inflection point for the company.",
+    color: "#0e7490",
+    url: "https://www.shapemem.com",
   },
   {
     id: "muon-space-series-c",
