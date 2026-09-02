@@ -545,6 +545,19 @@ async function main() {
           console.warn(`  ⚠️  ${config.cityName}: no City Council meeting on ${meeting.date} and the record's body is ambiguous — holding previous digest (city=${config.city})`);
           carryForward(config, "body-unresolved");
           continue;
+        } else if (!actual) {
+          // The verifier could not answer (fetch failed, or the date is absent
+          // from the calendar). It is configured for this city precisely because
+          // upstream mislabels reach here, so silence is not agreement — falling
+          // through would publish an unchecked "City Council" heading on whatever
+          // body actually met. Palo Alto's 2026-08-26 Economic Development
+          // Committee meeting shipped as "Palo Alto City Council" this way on
+          // 2026-09-01, complete with the Council's meets-on cadence and agenda
+          // link; the identical PrimeGov call resolved the committee correctly
+          // when replayed. Hold the previous digest and let the log say why.
+          console.warn(`  ⚠️  ${config.cityName}: could not verify which body met on ${meeting.date} — holding previous digest (city=${config.city})`);
+          carryForward(config, "body-unverified");
+          continue;
         }
       }
 

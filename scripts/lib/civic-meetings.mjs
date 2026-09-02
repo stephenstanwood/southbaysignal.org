@@ -451,6 +451,19 @@ async function pickBodyByLegistarItems(client, candidates, recordText) {
 // City Council event exists, return the real body name so the digest is honest.
 // Returns null on any error or when the label already checks out, leaving the
 // existing behavior untouched.
+// Return contract, shared with verifyPrimeGovBodyOnDate below:
+//
+//   { body, sourceUrl }              the council did not sit; this body did
+//   { body: null, councilMet: false} the council did not sit and we can't say who did
+//   { body: null, councilMet: true } the calendar lists a council sitting — label OK
+//   null                             the check could not run (fetch failed, client
+//                                    unprovisioned, date absent from the calendar)
+//
+// Null used to double as "label is correct", so any transient failure published
+// an unverified "City Council" heading. That is how Palo Alto's 2026-08-26
+// Economic Development Committee meeting shipped as a City Council meeting on
+// 2026-09-01 — the same PrimeGov call resolved the committee correctly minutes
+// later. A verifier that cannot answer must not be read as agreement.
 export async function verifyLegistarBodyOnDate(client, dateIso, recordText = "") {
   try {
     const url =
@@ -468,7 +481,14 @@ export async function verifyLegistarBodyOnDate(client, dateIso, recordText = "")
     const named = events
       .map((e) => ({ body: String(e.EventBodyName || "").trim(), eventId: e.EventId }))
       .filter((e) => e.body);
-    if (named.some((e) => /^city council\b/i.test(e.body))) return null; // label is correct
+    // councilMet:true is NOT the same as a bare null. Null now means "the check
+    // could not run" (see the contract note above verifyLegistarBodyOnDate), and
+    // the caller holds the previous digest for that. Only this branch — the
+    // calendar actually listing a council sitting — licenses publishing the
+    // "City Council" label.
+    if (named.some((e) => /^city council\b/i.test(e.body))) {
+      return { body: null, sourceUrl: null, councilMet: true };
+    }
 
     // Prefer bodies whose names read like deliberative ones (committee /
     // commission / council-of-the-whole) over incidental same-day staff hearings.
@@ -536,7 +556,9 @@ export async function verifyPrimeGovBodyOnDate(domain, dateIso, recordText = "")
     // Keep the meeting record, not just its title — the agenda link we cite as
     // the digest's source hangs off the same record.
     const named = live.filter((m) => String(m.title || "").trim());
-    if (named.some((m) => /^city council\b/i.test(String(m.title).trim()))) return null; // label is correct
+    if (named.some((m) => /^city council\b/i.test(String(m.title).trim()))) {
+      return { body: null, sourceUrl: null, councilMet: true }; // label is correct
+    }
 
     const deliberative = named.filter((m) => /\b(board|committee|commission)\b/i.test(String(m.title)));
     const candidates = (deliberative.length > 0 ? deliberative : named)

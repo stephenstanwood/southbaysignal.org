@@ -20,6 +20,8 @@ import {
   pickBodyByItemTitles,
   pickCivicClerkMeeting,
   resolvePublicStart,
+  verifyLegistarBodyOnDate,
+  verifyPrimeGovBodyOnDate,
 } from "./civic-meetings.mjs";
 
 test("Legistar links use the provider-owned public URL instead of rebuilding API ids", () => {
@@ -565,4 +567,84 @@ test("agenda-item matching returns null on empty text or no candidates", () => {
     ),
     null,
   );
+});
+
+
+// ── Body verifiers: null means "could not check", never "label is correct" ──
+//
+// These four pin the return contract that generate-digests reads. Before
+// 2026-09-02 both verifiers answered a bare null for BOTH "the calendar lists a
+// council sitting" and "the request failed", so one flaky fetch published an
+// unverified "City Council" heading over whichever body actually met. Palo
+// Alto's 2026-08-26 Economic Development Committee meeting shipped that way.
+
+function withStubbedFetch(impl, run) {
+  const original = globalThis.fetch;
+  globalThis.fetch = impl;
+  try {
+    return run();
+  } finally {
+    globalThis.fetch = original;
+  }
+}
+
+const jsonResponse = (body) => ({ ok: true, json: async () => body });
+
+test("PrimeGov verifier reports councilMet:true when the council actually sat", async () => {
+  const result = await withStubbedFetch(
+    async () =>
+      jsonResponse([
+        { dateTime: "2026-08-10T17:00:00", title: "City Council Regular Meeting", documentList: [] },
+      ]),
+    () => verifyPrimeGovBodyOnDate("cityofpaloalto.primegov.com", "2026-08-10", "anything"),
+  );
+  assert.deepEqual(result, { body: null, sourceUrl: null, councilMet: true });
+});
+
+test("PrimeGov verifier returns null (not agreement) when the request fails", async () => {
+  const result = await withStubbedFetch(
+    async () => {
+      throw new Error("ECONNRESET");
+    },
+    () => verifyPrimeGovBodyOnDate("cityofpaloalto.primegov.com", "2026-08-26", "anything"),
+  );
+  assert.equal(result, null);
+});
+
+test("PrimeGov verifier relabels a committee-only day", async () => {
+  const result = await withStubbedFetch(
+    async () =>
+      jsonResponse([
+        {
+          dateTime: "2026-08-26T16:30:00",
+          title: "Economic Development Committee Special Meeting",
+          documentList: [{ id: 21329, compileOutputType: 3, publishStatus: 1 }],
+        },
+      ]),
+    () =>
+      verifyPrimeGovBodyOnDate(
+        "cityofpaloalto.primegov.com",
+        "2026-08-26",
+        "Business Retention, Expansion, and Attraction (BRE/A) Strategy presentation",
+      ),
+  );
+  assert.equal(result.body, "Economic Development Committee");
+  assert.equal(
+    result.sourceUrl,
+    "https://cityofpaloalto.primegov.com/Portal/Meeting?compiledMeetingDocumentFileId=21329",
+  );
+});
+
+test("Legistar verifier separates councilMet:true from an unanswerable check", async () => {
+  const sat = await withStubbedFetch(
+    async () => jsonResponse([{ EventBodyName: "City Council", EventId: 1 }]),
+    () => verifyLegistarBodyOnDate("sanjose", "2026-09-01", "anything"),
+  );
+  assert.deepEqual(sat, { body: null, sourceUrl: null, councilMet: true });
+
+  const unreachable = await withStubbedFetch(
+    async () => ({ ok: false, json: async () => [] }),
+    () => verifyLegistarBodyOnDate("sanjose", "2026-09-01", "anything"),
+  );
+  assert.equal(unreachable, null);
 });
