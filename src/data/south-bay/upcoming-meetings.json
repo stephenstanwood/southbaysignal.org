@@ -1,82 +1,6 @@
 {
-  "generatedAt": "2026-09-02T03:09:42.474Z",
+  "generatedAt": "2026-09-03T03:09:21.257Z",
   "meetings": {
-    "san-jose": {
-      "date": "2026-09-01",
-      "displayDate": "Tue, Sep 1",
-      "startTime": "13:30",
-      "bodyName": "City Council",
-      "location": "Hybrid Meeting - Council Chambers",
-      "closedSession": false,
-      "url": "https://sanjose.legistar.com/MeetingDetail.aspx?LEGID=8102&GID=317&G=920296E4-80BE-4CA2-A78F-32C5EFCF78AF",
-      "legistarEventId": 8102,
-      "agendaItems": [
-        {
-          "title": "Amendment to the Contract with the California Public Employees' Retirement System (CalPERS) to Allow Employees in the Deputy Chief Investment Officer Classification in the Office of Retirement Services to Enroll in CalPERS Retirement Benefits.",
-          "sequence": 56
-        },
-        {
-          "title": "Alternative Financing Recommendations to Spur Affordable Housing Production.",
-          "sequence": 63
-        },
-        {
-          "title": "Actions Related to the Arena Hotel Redevelopment and Homekey Program Transition.",
-          "sequence": 64
-        },
-        {
-          "title": "Actions Related to the Purchase Orders for Concrete Removal, Replacement, and Repair Services.",
-          "sequence": 47
-        },
-        {
-          "title": "Approval of Free Use of the Janet Gray Hayes Rotunda, Wing Committee Rooms, and Council Chambers for the 2026 Graphic Novel Making Contest Awards Celebration.",
-          "sequence": 48
-        }
-      ],
-      "confirmation": {
-        "status": "confirmed",
-        "provider": "legistar",
-        "observedDate": "2026-09-01",
-        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-09-01T00:00:00%27&$orderby=EventDate%20asc&$top=10"
-      }
-    },
-    "cupertino": {
-      "date": "2026-09-01",
-      "displayDate": "Tue, Sep 1",
-      "startTime": "18:45",
-      "bodyName": "City Council",
-      "location": "Council Chamber",
-      "closedSession": false,
-      "url": "https://cupertino.legistar.com/MeetingDetail.aspx?LEGID=5298&GID=341&G=74359C04-A5F0-4CB2-A97A-0032996BB90E",
-      "legistarEventId": 5298,
-      "agendaItems": [
-        {
-          "title": "Recognition of Innovation & Technology Department (Applications, GIS, Infrastructure, Multimedia, and Administration Divisions).",
-          "sequence": 10
-        },
-        {
-          "title": "Recognize September as National Preparedness Month.",
-          "sequence": 8
-        },
-        {
-          "title": "Recognition of September 15-October 15 as National Hispanic Heritage Month.",
-          "sequence": 9
-        },
-        {
-          "title": "Recognition of Bertha Smith on the occasion of her 100th birthday.",
-          "sequence": 7
-        },
-        {
-          "title": "Acceptance of Annual Evaluation Report on the Federal Emergency Management Agency (FEMA) Community Rating System's (CRS) Program for Public Information.",
-          "sequence": 20
-        }
-      ],
-      "confirmation": {
-        "status": "confirmed",
-        "provider": "legistar",
-        "observedDate": "2026-09-01",
-        "sourceUrl": "https://webapi.legistar.com/v1/cupertino/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-09-01T00:00:00%27&$orderby=EventDate%20asc&$top=10"
-      }
-    },
     "palo-alto": {
       "date": "2026-09-09",
       "displayDate": "Wed, Sep 9",
@@ -93,37 +17,21 @@
         "sourceUrl": "https://cityofpaloalto.primegov.com/Portal/Meeting?meetingId=2901"
       }
     },
-    "campbell": {
-      "date": "2026-09-01",
-      "displayDate": "Tue, Sep 1",
-      "startTime": "19:00",
-      "bodyName": "City Council Regular Session Meeting",
-      "location": "Campbell Police Department EOC",
-      "closedSession": false,
-      "url": "https://pub-campbell.escribemeetings.com/MeetingsCalendarView.aspx/Meeting?Id=8b2b131c-9e19-43fc-8feb-217ae01ffc22",
-      "agendaItems": [],
-      "confirmation": {
-        "status": "confirmed",
-        "provider": "escribe",
-        "observedDate": "2026-09-01",
-        "sourceUrl": "https://pub-campbell.escribemeetings.com/MeetingsCalendarView.aspx/GetCalendarMeetings"
-      }
-    },
     "milpitas": {
-      "date": "2026-09-01",
-      "displayDate": "Tue, Sep 1",
-      "startTime": "17:00",
-      "bodyName": "City Council Special and Regular Meeting",
+      "date": "2026-09-15",
+      "displayDate": "Tue, Sep 15",
+      "startTime": "19:00",
+      "bodyName": "City Council Meeting",
       "location": "Milpitas City Hall",
       "closedSession": false,
       "url": "https://www.milpitas.gov/129/Agendas-Minutes",
-      "civicClerkEventId": 2954,
+      "civicClerkEventId": 2943,
       "agendaItems": [],
       "confirmation": {
         "status": "confirmed",
         "provider": "civicclerk",
-        "observedDate": "2026-09-01",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-09-01T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "observedDate": "2026-09-15",
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-09-02T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     },
     "los-altos": {
@@ -140,14 +48,14 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-09-08",
-        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-09-01T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-09-02T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },
   "sourceHealth": {
     "san-jose": {
       "provider": "Legistar",
-      "status": "ok"
+      "status": "no-meeting"
     },
     "mountain-view": {
       "provider": "Legistar",
@@ -159,7 +67,7 @@
     },
     "cupertino": {
       "provider": "Legistar",
-      "status": "ok"
+      "status": "no-meeting"
     },
     "santa-clara": {
       "provider": "Legistar",
@@ -175,7 +83,7 @@
     },
     "campbell": {
       "provider": "eScribe",
-      "status": "ok"
+      "status": "no-meeting"
     },
     "milpitas": {
       "provider": "CivicClerk",
