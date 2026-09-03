@@ -730,13 +730,13 @@ export const SCC_SPOTLIGHT: SccTechSpotlight[] = [
   {
     id: "lyte",
     name: "Lyte",
-    city: "Mountain View",
+    city: "Sunnyvale",
     category: "robotics",
     stage: "startup",
-    tagline: "The visual brain for robots. Ex-Apple Face ID engineers building integrated 4D perception systems that give humanoids and robot arms the ability to see and track. $107M raised, CES 2026 Best of Innovation.",
+    tagline: "Builds the perception stack robots use to see and move safely — custom silicon, multimodal sensors, and spatial software. Entered production in 2026 and raised a $165M Series C at a $1.6B valuation.",
     color: "#8B5CF6",
     url: "https://lyte.ai",
-    employeesNote: "~20 employees",
+    employeesNote: "Hiring across silicon, software, optics, manufacturing + operations",
   },
   {
     id: "axiado",
@@ -1197,6 +1197,23 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   //     own release and Bloomberg both say $926M. The aggregator has a typo.)
   //   • PATH (undisclosed round, Aug 26 2026) is Fremont — Alameda County, the
   //     same out-of-coverage call as the San Mateo County exclusions above.
+  // Lyte's own Sep 2 release supersedes older Mountain View labels: its current
+  // boilerplate says the company is headquartered in Sunnyvale. The January
+  // $107M financing below remains a separate round; together the two entries
+  // match the company's stated $272M total raised since 2021.
+  {
+    id: "lyte",
+    name: "Lyte",
+    city: "Sunnyvale",
+    category: "hardware",
+    round: "Series C",
+    amount: "$165M",
+    date: "2026-09-02",
+    tagline:
+      "Robots need cameras, depth, and motion sensors to agree about what is happening at the same instant. Lyte builds that perception stack from its own silicon up: LyteVision fuses coherent 4D vision, high-resolution imaging, and inertial sensing on one synchronized timeline, so robots can track position and motion without reconstructing it later in software. Since emerging from stealth in January, the Sunnyvale company says it has entered production and is shipping to inspection, logistics, and manufacturing customers. Maverick Silicon led the $165M Series C at a $1.6B post-money valuation, with Fidelity, Atreides, Key1, and Ora Global among the investors; total funding is now $272M. The money scales production and hiring across silicon, software, optics, manufacturing, operations, and go-to-market.",
+    color: "#8B5CF6",
+    url: "https://lyte.ai/news/series-c",
+  },
   {
     id: "sifly-series-a",
     name: "SiFly",
@@ -2094,7 +2111,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   {
     id: "lyte",
     name: "Lyte",
-    city: "Mountain View",
+    city: "Sunnyvale",
     category: "hardware",
     round: "Seed",
     amount: "$107M",
