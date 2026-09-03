@@ -20,6 +20,23 @@
 // guessing "the library" for a real off-site event sends a reader to the wrong
 // building, which is the bug above.
 //
+// A second shape of the same bug shipped on 2026-09-03. LibCal's own Location
+// field can be the literal string "Offsite" — event/17295774 "Cuesta Park
+// Storytime", an outreach storytime at a city park, published exactly that.
+// "Offsite" was matched by UNKNOWN_PATTERNS below, whose branch hands the
+// record the LIBRARY's name, so the record shipped as "Mountain View Public
+// Library" on the site, in the newsletter, and in the schema.org JSON-LD.
+//
+// That conflated two different statements a source can make:
+//   • "TBD" / "Various" / "See description" — we do not know where.
+//   • "Offsite"                             — we know it is NOT the library.
+// Only the first may fall back to the library's name. "Offsite" is now its own
+// kind and can never resolve to the host building. It is instead resolved from
+// first-party text on the event itself: the library's verified offsiteAddresses
+// map, then an address the event's own description publishes ("Find us at 615
+// Cuesta Drive, Mountain View, CA 94040"). If neither answers, the event is
+// suppressed rather than shipped under a building it is not held in.
+//
 // No address is invented for off-site venues. The Events tab builds its
 // Directions link as a Google Maps *search* over venue + city
 // (EventsView.buildEventMapsUrl), so "Pioneer Park" + "mountain-view" already
@@ -46,7 +63,6 @@ const ONLINE_PATTERNS = [
 /** Placeholders that say "not here" without saying where. Distinct from
  *  off-site: there is no venue name to show and no address to look up. */
 const UNKNOWN_PATTERNS = [
-  /^off[-\s]?site$/i,
   /^tb[adc]$/i,
   /^to\s+be\s+(determined|announced|confirmed)$/i,
   /^vari(?:ous|es)(\s+locations?)?$/i,
@@ -55,6 +71,38 @@ const UNKNOWN_PATTERNS = [
   /^none$/i,
   /^other$/i,
 ];
+
+/** "Offsite" and its spellings. Unlike the placeholders above, this asserts a
+ *  fact — the event is NOT in the library — so it must never fall back to the
+ *  library's name. See the header for the 2026-09-03 Cuesta Park defect. */
+const OFFSITE_UNNAMED_PATTERN = /^off[-\s]?site$/i;
+
+/** A full US street address published in the event's own description.
+ *  Deliberately strict: house number, a street with a real suffix, a city, and
+ *  a state (optionally a ZIP). Libraries write these as "Find us at 615 Cuesta
+ *  Drive, Mountain View, CA 94040" or "Meet us there: Deer Hollow Farm, 22500
+ *  Cristo Rey Dr., Cupertino". Anything looser would start matching prose. */
+const STREET_ADDRESS_PATTERN = new RegExp(
+  String.raw`\b(\d{2,6}\s+[A-Z][A-Za-z.'-]*(?:\s+[A-Z][A-Za-z.'-]*){0,4}\s+` +
+    String.raw`(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Boulevard|Blvd|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy|Highway|Hwy)\.?` +
+    String.raw`(?:\s*,\s*[A-Z][A-Za-z.'-]*(?:\s+[A-Z][A-Za-z.'-]*){0,3})` +
+    String.raw`\s*,\s*(?:CA|California)\b(?:\s*,?\s*\d{5})?)`,
+  "i",
+);
+
+/** Pull the library's own published address out of an event description.
+ *  Returns "" when the description publishes nothing address-shaped — this is
+ *  a reader of first-party text, never an inference. */
+export function extractPublishedAddress(text) {
+  const flat = String(text ?? "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/\s+/g, " ");
+  const m = flat.match(STREET_ADDRESS_PATTERN);
+  if (!m) return "";
+  return tidy(m[1]).replace(/\s*,\s*/g, ", ");
+}
 
 /** The bookmobile parks all over town; its stops are outreach, not public
  *  events, and their "titles" are just wherever it parked. Already dropped by
@@ -81,10 +129,14 @@ function tidy(raw) {
  *   city, onsiteLocations? }. `onsiteLocations` names in-building spaces that
  *   the generic suffix rule can't know about — Mountain View's "History
  *   Center" is on the library's 2nd floor, for instance.
- * @returns {{kind: "onsite"|"online"|"offsite"|"unknown"|"bookmobile",
- *   location: string, venue: string, address: string, virtual: boolean}}
+ * @param {object} [context]     the event's own first-party text
+ *   ({ title, description }). Only consulted for a bare "Offsite" location,
+ *   where the structured field says "not here" without saying where.
+ * @returns {{kind: "onsite"|"online"|"offsite"|"offsite-unnamed"|"unknown"|
+ *   "bookmobile", location: string, venue: string, address: string,
+ *   virtual: boolean, suppress?: boolean}}
  */
-export function classifyLibCalLocation(rawLocation, library = {}) {
+export function classifyLibCalLocation(rawLocation, library = {}, context = {}) {
   const location = tidy(rawLocation);
   const libraryName = library.name || "";
   const libraryAddress = library.address || "";
@@ -106,6 +158,12 @@ export function classifyLibCalLocation(rawLocation, library = {}) {
   // negative sends someone to a building for a Zoom call.
   if (ONLINE_PATTERNS.some((p) => p.test(location))) {
     return { kind: "online", location, venue: "Online", address: "", virtual: true };
+  }
+
+  // "Offsite" states a fact about where the event is NOT. Resolve it from the
+  // event's own text, or suppress it — never label it with the host building.
+  if (OFFSITE_UNNAMED_PATTERN.test(location)) {
+    return resolveUnnamedOffsite(location, library, context);
   }
 
   if (UNKNOWN_PATTERNS.some((p) => p.test(location))) {
@@ -130,5 +188,68 @@ export function classifyLibCalLocation(rawLocation, library = {}) {
     venue: location.length <= 80 ? location : libraryName,
     address: matched ? offsite[matched] : "",
     virtual: false,
+  };
+}
+
+/**
+ * Resolve a bare "Offsite" location from the event's own first-party text.
+ *
+ * Two tiers, both first-party, neither a guess:
+ *   1. The library's verified `offsiteAddresses` map. A hit means a human has
+ *      already confirmed the place and its street address. The longest key
+ *      wins so "Magical Bridge Playground" beats the "Rengstorff Park" it
+ *      sits inside, and the match is deterministic.
+ *   2. A street address the description itself publishes. The venue label is
+ *      then that street line — truthful and mappable, and above all not the
+ *      library.
+ *
+ * Neither → `suppress`. The caller drops the event. A reader missing one
+ * storytime is a smaller harm than a reader driving to the wrong building,
+ * and the refresh logs the suppression so the map can be extended.
+ */
+function resolveUnnamedOffsite(location, library, context) {
+  const haystack = `${context.title || ""} \n ${context.description || ""}`
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ");
+
+  const verified = library.offsiteAddresses || {};
+  const key = Object.keys(verified)
+    .filter((k) => {
+      const name = tidy(k);
+      if (!name) return false;
+      return new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(haystack);
+    })
+    .sort((a, b) => b.length - a.length)[0];
+
+  if (key) {
+    return {
+      kind: "offsite-unnamed",
+      location,
+      venue: tidy(key),
+      address: verified[key] || "",
+      virtual: false,
+    };
+  }
+
+  const published = extractPublishedAddress(haystack);
+  if (published) {
+    // "615 Cuesta Drive, Mountain View, CA 94040" → venue "615 Cuesta Drive".
+    const street = published.split(",")[0].trim();
+    return {
+      kind: "offsite-unnamed",
+      location,
+      venue: street || published,
+      address: published,
+      virtual: false,
+    };
+  }
+
+  return {
+    kind: "offsite-unnamed",
+    location,
+    venue: "",
+    address: "",
+    virtual: false,
+    suppress: true,
   };
 }

@@ -441,10 +441,26 @@ export const LIBCAL_LIBRARIES = [
     city: "mountain-view",
     address: "585 Franklin St, Mountain View, CA 94041",
     onsiteLocations: ["History Center"],
-    // Verified against the City of Mountain View facility directory. Anything
-    // not listed ships with an empty address, never a guess.
+    // Verified against the City of Mountain View facility directory, or against
+    // the address the library itself publishes in the event description (the
+    // bookmobile storytimes below each print theirs). Anything not listed ships
+    // with an empty address, never a guess.
+    //
+    // These also back the "Offsite" resolution in lib/libcal-location.mjs: MVPL
+    // files its outreach storytimes under the literal Location "Offsite", so
+    // the place name only exists in the event's title and description. Longest
+    // key wins, which is why the Magical Bridge Playground entry sits alongside
+    // the Rengstorff Park it is inside.
     offsiteAddresses: {
       "Pioneer Park": "1146 Church St, Mountain View, CA 94041",
+      // event/17295774 — "Find us at 615 Cuesta Drive, Mountain View, CA 94040"
+      "Cuesta Park": "615 Cuesta Dr, Mountain View, CA 94040",
+      // event/17290230 — "Find us at 201 S. Rengstorff Ave, Mountain View, CA 94040"
+      "Magical Bridge Playground": "201 S Rengstorff Ave, Mountain View, CA 94040",
+      "Rengstorff Park": "201 S Rengstorff Ave, Mountain View, CA 94040",
+      // event/16984474 — "Meet us there: Deer Hollow Farm, 22500 Cristo Rey Dr.,
+      // Cupertino". The library publishes no ZIP, so none is invented here.
+      "Deer Hollow Farm": "22500 Cristo Rey Dr, Cupertino, CA",
     },
   },
   {
@@ -572,7 +588,20 @@ export async function scrapeLibCal(_page, config) {
 
       // Where this event actually is — the library's own building is only one
       // of the answers. See lib/libcal-location.mjs.
-      const place = classifyLibCalLocation(ev.location || "", config);
+      const place = classifyLibCalLocation(ev.location || "", config, {
+        title,
+        description: ev.description || ev.shortdesc || "",
+      });
+      // A bare "Offsite" the event's own text never resolves. Shipping it would
+      // mean naming the library it is explicitly not held in — fail closed and
+      // say so, so the library's offsiteAddresses map can be extended.
+      if (place.suppress) {
+        console.warn(
+          `  ⚠️  ${config.name}: suppressed "${title}" — Location "${place.location}" `
+            + `resolves to no verified venue (${ev.url || "no url"})`,
+        );
+        return null;
+      }
       // Bookmobile stops live on the library's calendar but aren't public
       // events — Mountain View publishes a whole second calendar of them. The
       // list endpoint exposes LibCal's own labels as discrete fields, so the
@@ -2864,7 +2893,7 @@ async function main() {
 
 // Run the full scrape only when this file is the process entry point, so a
 // single scraper can be imported and exercised against its live source
-// (scripts/verify-libcal-locations.mjs) without firing all ~40 of them.
+// (scripts/verify-event-venues.mjs) without firing all ~40 of them.
 // realpath both sides: a symlinked checkout (or /tmp -> /private/tmp on macOS)
 // otherwise compares unequal and the nightly run would silently do nothing.
 const realPath = (p) => { try { return realpathSync(p); } catch { return resolve(p); } };

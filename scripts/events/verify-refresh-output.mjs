@@ -27,6 +27,19 @@ const health = inspectEventRefreshOutput({
   snapshotMaxAgeHours: numericArg("--snapshot-max-age-hours", 30),
 });
 
+// Non-blocking venue smells: records whose venue is just their source name and
+// that carry no address. Most are legitimate (a library program at the library)
+// but this is the population the 2026-09-03 wrong-venue defects sat in, so the
+// count stays visible in every nightly log rather than needing a hand-run.
+const locationWarnings = health.locationWarnings || [];
+if (locationWarnings.length > 0) {
+  console.warn(`[events-output-health] ${locationWarnings.length} venue warning(s) (not blocking):`);
+  for (const warning of locationWarnings.slice(0, 10)) console.warn(`  · ${warning}`);
+  if (locationWarnings.length > 10) {
+    console.warn(`  · …and ${locationWarnings.length - 10} more`);
+  }
+}
+
 if (!health.ok) {
   console.error(`[events-output-health] BLOCKED: ${health.problems.join("; ")}`);
   process.exitCode = 1;
