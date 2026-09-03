@@ -1201,6 +1201,7 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   // boilerplate says the company is headquartered in Sunnyvale. The January
   // $107M financing below remains a separate round; together the two entries
   // match the company's stated $272M total raised since 2021.
+  // Source: https://lyte.ai/news/series-c
   {
     id: "lyte",
     name: "Lyte",
