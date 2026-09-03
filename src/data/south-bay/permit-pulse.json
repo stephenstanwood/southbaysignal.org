@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-09-02T03:09:31.930Z",
+      "generatedAt": "2026-09-03T03:09:09.997Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 25 – Sep 1",
+      "dateRange": "Aug 26 – Sep 2",
       "stats": {
-        "total": 297,
-        "notable": 32,
+        "total": 302,
+        "notable": 29,
         "newUnits": 10,
-        "totalValuation": 142260688
+        "totalValuation": 139836896
       },
       "permits": [
         {
@@ -20,11 +20,23 @@
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "KB Home New SFD (Plan 2272) (Lot 23)",
+          "description": "Kb Home New Sfd (Plan 2272)(Lot 23)",
           "valuation": 430819,
           "units": 1,
           "issueDate": "2026-08-28",
           "subtype": "Single-Family"
+        },
+        {
+          "id": "2026-118327-RS",
+          "address": "801 Asbury St",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Attached ADU",
+          "valuation": 129477,
+          "units": 1,
+          "issueDate": "2026-08-31",
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
           "id": "2026-109638-RS",
@@ -32,11 +44,11 @@
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "HUD Detached ADU",
+          "description": "Hud Detached ADU",
           "valuation": 121913,
           "units": 1,
           "issueDate": "2026-08-27",
-          "subtype": "ADU - Accessory Dwelling Unit"
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
           "id": "2026-111487-RS",
@@ -44,11 +56,11 @@
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "PDOX Attached ADU",
+          "description": "Pdox Attached ADU",
           "valuation": 120681,
           "units": 1,
           "issueDate": "2026-08-28",
-          "subtype": "ADU - Accessory Dwelling Unit"
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
           "id": "2025-134206-RS",
@@ -60,7 +72,7 @@
           "valuation": 107135,
           "units": 1,
           "issueDate": "2026-08-27",
-          "subtype": "ADU - Accessory Dwelling Unit"
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
           "id": "2026-102075-RS",
@@ -72,19 +84,19 @@
           "valuation": 99043,
           "units": 1,
           "issueDate": "2026-08-27",
-          "subtype": "ADU - Accessory Dwelling Unit"
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2024-075230-RS",
-          "address": "1612 Dixie Dr #2",
+          "id": "2026-125355-RS",
+          "address": "3554 Chamberlain Dr",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Attached ADU",
-          "valuation": 87080,
+          "description": "Attached Jadu",
+          "valuation": 86130,
           "units": 1,
-          "issueDate": "2026-08-26",
-          "subtype": "ADU - Accessory Dwelling Unit"
+          "issueDate": "2026-08-31",
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
           "id": "2026-107703-RS",
@@ -96,7 +108,7 @@
           "valuation": 81803,
           "units": 1,
           "issueDate": "2026-08-27",
-          "subtype": "ADU - Accessory Dwelling Unit"
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
           "id": "2026-098821-RS",
@@ -108,19 +120,7 @@
           "valuation": 52776,
           "units": 1,
           "issueDate": "2026-08-27",
-          "subtype": "ADU - Accessory Dwelling Unit"
-        },
-        {
-          "id": "2026-127239-RS",
-          "address": "1412 N San Pedro St #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "EPR AB 2533 Legalize Detach Rec Room Conversion to ADU",
-          "valuation": 51896,
-          "units": 1,
-          "issueDate": "2026-08-26",
-          "subtype": "ADU - Accessory Dwelling Unit"
+          "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
           "id": "2026-129510-RS",
@@ -128,38 +128,38 @@
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "EPR AB 2533 Legalize Detached ADU",
+          "description": "Epr Ab 2533 Legalize Detached ADU",
           "valuation": 47322,
           "units": 1,
           "issueDate": "2026-08-27",
-          "subtype": "ADU - Accessory Dwelling Unit"
+          "subtype": "ADU   Accessory Dwelling Unit"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-09-02T03:09:34.148Z",
+      "generatedAt": "2026-09-03T03:09:12.276Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 25 – Sep 1",
+      "dateRange": "Aug 26 – Sep 2",
       "stats": {
-        "total": 102,
-        "notable": 2,
+        "total": 128,
+        "notable": 4,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
         {
-          "id": "26BLD-02440",
-          "address": "514 Rhodes Dr",
+          "id": "26BLD-02486",
+          "address": "1585 Edgewood Dr",
           "category": "residential-remodel",
           "categoryLabel": "Home Remodel",
           "workType": "Web - Kitchen or Bath Remodel",
           "description": "Instant permit for a residential single-family kitchen or bath remodel.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-08-28",
+          "issueDate": "2026-09-02",
           "subtype": "Permit Issued"
         },
         {
@@ -172,6 +172,30 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-08-31",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-02464",
+          "address": "1140 Parkinson Av",
+          "category": "residential-remodel",
+          "categoryLabel": "Home Remodel",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-09-01",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-02440",
+          "address": "514 Rhodes Dr",
+          "category": "residential-remodel",
+          "categoryLabel": "Home Remodel",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-28",
           "subtype": "Permit Issued"
         }
       ]
