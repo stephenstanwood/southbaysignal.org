@@ -5,7 +5,7 @@ import test from "node:test";
 import {
   isBiblioEventCancelled,
   looksCancelled,
-  resolveBiblioDisplayVenue,
+  resolveBiblioLocationFields,
 } from "../generate-events.mjs";
 
 const KNIT_ALONGS_CANCELLED_AUG_7 =
@@ -43,21 +43,41 @@ test("BiblioCommons isCancelled flag marks inactive occurrences", () => {
 
 test("Palo Alto FOPAL sales use their actual Cubberley venue", () => {
   assert.equal(
-    resolveBiblioDisplayVenue(
-      "paloalto",
-      "Palo Alto City Library",
-      "External Event: FOPAL Book Sale",
-      "",
-    ),
+    resolveBiblioLocationFields({
+      libraryId: "paloalto",
+      libraryName: "Palo Alto City Library",
+      title: "External Event: FOPAL Book Sale",
+      event: { definition: {} },
+      entities: {},
+    }).venue,
     "Cubberley Community Center",
   );
+  // …but when the feed DOES name the place, its address comes along too — the
+  // override must not pre-empt that.
+  const fromFeed = resolveBiblioLocationFields({
+    libraryId: "paloalto",
+    libraryName: "Palo Alto City Library",
+    title: "External Event: FOPAL Book Sale",
+    event: { definition: { nonBranchLocationId: "p1" } },
+    entities: {
+      places: {
+        p1: {
+          name: "Cubberley Community Center",
+          address: { number: "4000", street: "Middlefield Road", city: "Palo Alto" },
+        },
+      },
+    },
+  });
+  assert.equal(fromFeed.venue, "Cubberley Community Center");
+  assert.equal(fromFeed.address, "4000 Middlefield Road Palo Alto");
   assert.equal(
-    resolveBiblioDisplayVenue(
-      "paloalto",
-      "Palo Alto City Library",
-      "Family Storytime",
-      "Mitchell Park",
-    ),
+    resolveBiblioLocationFields({
+      libraryId: "paloalto",
+      libraryName: "Palo Alto City Library",
+      title: "Family Storytime",
+      event: { definition: { branchLocationId: "M" } },
+      entities: { locations: { M: { name: "Mitchell Park", address: {} } } },
+    }).venue,
     "Mitchell Park Library",
   );
 });

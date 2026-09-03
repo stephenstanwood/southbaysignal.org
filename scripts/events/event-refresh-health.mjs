@@ -1,4 +1,5 @@
 import { sourceProblems } from "../lib/event-source-health.mjs";
+import { auditEventLocations } from "../lib/venue-location-audit.mjs";
 
 export const DEFAULT_MINI_SUCCESS_MAX_AGE_HOURS = 26;
 export const DEFAULT_OUTPUT_MAX_AGE_HOURS = 30;
@@ -75,6 +76,12 @@ export function inspectEventRefreshOutput({
     problems.push(...blocking);
   }
 
+  // Venue integrity. Blocks only on records that contradict themselves — a
+  // listing that announces it moved and then names its own institution as the
+  // venue. See lib/venue-location-audit.mjs for the 2026-09-03 defects.
+  const locationAudit = auditEventLocations(events || []);
+  problems.push(...locationAudit.problems);
+
   const snapshots = Array.isArray(data.inputSnapshots) ? data.inputSnapshots : null;
   if (!snapshots) {
     problems.push("upcoming-events output has no inputSnapshots array");
@@ -101,6 +108,7 @@ export function inspectEventRefreshOutput({
   return {
     ok: problems.length === 0,
     problems,
+    locationWarnings: locationAudit.warnings,
     eventCount: events?.length || 0,
     sourceCount: sourceHealth?.length || 0,
   };

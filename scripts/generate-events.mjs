@@ -59,6 +59,7 @@ import { catSignal } from "./lib/notify.mjs";
 import { extractVenueFromTitle, stripRedundantVenueSuffix } from "./lib/venue-suffix.mjs";
 import { dropUnmatchedClosers } from "./lib/bracket-balance.mjs";
 import { isClockTime, normalizeClockTime } from "./lib/clock-time.mjs";
+import { resolveBiblioLocation, formatBiblioAddress } from "./lib/biblio-location.mjs";
 import { canonicalHistorySjUrl, historySjEndTime, inferHistorySjCost } from "./lib/history-sj.mjs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -4003,17 +4004,29 @@ function deriveBiblioRegistration(ev, start, end, now) {
   };
 }
 
-function resolveBiblioDisplayVenue(libraryId, libraryName, title, branchName) {
-  // Palo Alto publishes the external FOPAL sale through its library calendar,
-  // but the sale itself is held at Cubberley. With no branch entity attached,
-  // the generic fallback incorrectly labeled it "Palo Alto City Library."
-  if (libraryId === "paloalto" && /\bFOPAL Book Sale\b/i.test(title || "")) {
-    return "Cubberley Community Center";
+// Venue + address for one BiblioCommons event. The heavy lifting — branch vs.
+// non-branch vs. no-location-at-all — lives in lib/biblio-location.mjs, which
+// is unit-tested offline against the real feed shapes.
+//
+// The FOPAL override runs only AFTER the feed has been asked and had no
+// location of either kind to give. It was written when Palo Alto attached no
+// location entity to that listing at all; the feed now files it under the
+// place "Cubberley Community Center" WITH a street address, so consulting the
+// feed first is strictly better — pre-empting it would throw the address away.
+// It stays purely as a floor for the day that entity disappears again.
+//
+// No new title-pattern overrides belong here: an event that names a place now
+// resolves to it. Extend the feed reading in biblio-location.mjs instead.
+function resolveBiblioLocationFields({ libraryId, libraryName, title, event, entities }) {
+  const resolved = resolveBiblioLocation({ event, entities, libraryName });
+  if (
+    resolved.kind === "library-fallback"
+    && libraryId === "paloalto"
+    && /\bFOPAL Book Sale\b/i.test(title || "")
+  ) {
+    return { ...resolved, venue: "Cubberley Community Center", kind: "override" };
   }
-
-  return branchName
-    ? (branchName.toLowerCase().endsWith("library") ? branchName : `${branchName} Library`)
-    : libraryName;
+  return resolved;
 }
 
 async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
@@ -4058,10 +4071,7 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
           const branchStore = entities.locations || entities.branches;
           const branch = branchId && branchStore ? branchStore[branchId] : null;
           const branchName = branch?.name || "";
-          const branchAddrObj = branch?.address || {};
-          const branchAddr = branch
-            ? [branchAddrObj.number, branchAddrObj.street, branchAddrObj.city].filter(Boolean).join(" ")
-            : (branch?.address || "");
+          const branchAddr = formatBiblioAddress(branch?.address);
           const locationCode = ev.definition?.branchLocationId || "";
           const city = cityMapper(branchName, branchAddr, locationCode);
           if (!city) return null;
@@ -4076,12 +4086,14 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
 
           const { registration, registrationClosesBy } = deriveBiblioRegistration(ev, start, end, now);
 
-          const displayVenue = resolveBiblioDisplayVenue(
+          const place = resolveBiblioLocationFields({
             libraryId,
             libraryName,
             title,
-            branchName,
-          );
+            event: ev,
+            entities,
+          });
+          const displayVenue = place.venue;
 
           // Month-long exhibits arrive from BiblioCommons as start = open day @
           // arbitrary clock, end = close day @ same clock (e.g. Oil Painting
@@ -4110,7 +4122,7 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
               : (end && end.getTime() !== start.getTime() ? displayTime(end) : null),
             ...(isOngoingExhibit ? { ongoing: true } : {}),
             venue: displayVenue,
-            address: branchAddr,
+            address: place.address,
             city,
             ...(isVirtual ? { virtual: true } : {}),
             ...(registration !== REGISTRATION_NONE ? { registration } : {}),
@@ -8960,7 +8972,7 @@ export {
   looksCancelled,
   looksLikeEmbedCode,
   mapTicketmasterEvent,
-  resolveBiblioDisplayVenue,
+  resolveBiblioLocationFields,
   fetchFarmersMarketEvents,
   fetchHappyHollowEvents,
   fetchHeritageTheatreEvents,

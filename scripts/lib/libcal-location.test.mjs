@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { classifyLibCalLocation } from "./libcal-location.mjs";
+import { classifyLibCalLocation, extractPublishedAddress } from "./libcal-location.mjs";
 
 // Mirrors the real LIBCAL_LIBRARIES entries in playwright-scrapers.mjs.
 const MV = {
@@ -9,7 +9,13 @@ const MV = {
   city: "mountain-view",
   address: "585 Franklin St, Mountain View, CA 94041",
   onsiteLocations: ["History Center"],
-  offsiteAddresses: { "Pioneer Park": "1146 Church St, Mountain View, CA 94041" },
+  offsiteAddresses: {
+    "Pioneer Park": "1146 Church St, Mountain View, CA 94041",
+    "Cuesta Park": "615 Cuesta Dr, Mountain View, CA 94040",
+    "Magical Bridge Playground": "201 S Rengstorff Ave, Mountain View, CA 94040",
+    "Rengstorff Park": "201 S Rengstorff Ave, Mountain View, CA 94040",
+    "Deer Hollow Farm": "22500 Cristo Rey Dr, Cupertino, CA",
+  },
 };
 const LG = {
   name: "Los Gatos Library",
@@ -112,8 +118,11 @@ test("a hybrid listing on Zoom is treated as virtual, not as a library seat", ()
 
 // ── Unknown / placeholder ──────────────────────────────────────────────────
 
+// "Offsite" was in this list until 2026-09-03 and is deliberately no longer:
+// it asserts the event is NOT at the library, so it gets its own kind and its
+// own tests below. These remaining values genuinely say nothing about where.
 test("placeholder locations drop the address instead of claiming the library", () => {
-  for (const raw of ["Offsite", "Off-site", "TBD", "To Be Determined", "Various", "See description", "N/A"]) {
+  for (const raw of ["TBD", "To Be Determined", "Various", "See description", "N/A"]) {
     const got = classifyLibCalLocation(raw, MV);
     assert.equal(got.kind, "unknown", `${raw} should be unknown`);
     assert.equal(got.address, "", `${raw} must not inherit the library address`);
@@ -132,7 +141,7 @@ test("Mobile Library Stop is flagged so the scraper can drop it", () => {
 test("an unrecognised location is never given the library's address", () => {
   for (const raw of [
     "Pioneer Park",
-    "Rengstorff Park",
+    "Whisman Park",
     "Mountain View Community Center",
     "Castro Elementary School",
     "Some Place We Have Never Seen",
@@ -154,11 +163,115 @@ test("an absurdly long location falls back to the library name rather than a wal
 });
 
 test("only verified off-site addresses are filled in — the rest stay empty", () => {
-  // Pioneer Park is in the library's offsiteAddresses map; Rengstorff Park is
+  // Pioneer Park is in the library's offsiteAddresses map; Whisman Park is
   // not, and must not borrow an address from anywhere.
   assert.equal(classifyLibCalLocation("Pioneer Park", MV).address, MV.offsiteAddresses["Pioneer Park"]);
   assert.equal(classifyLibCalLocation("pioneer park", MV).address, MV.offsiteAddresses["Pioneer Park"]);
-  assert.equal(classifyLibCalLocation("Rengstorff Park", MV).address, "");
+  assert.equal(classifyLibCalLocation("Whisman Park", MV).address, "");
   // A library with no map at all still classifies, just without addresses.
   assert.equal(classifyLibCalLocation("Pioneer Park", LG).address, "");
+});
+
+// ── 2026-09-03: LibCal's own Location is the literal string "Offsite" ───────
+//
+// event/17295774 "Cuesta Park Storytime" shipped as "Mountain View Public
+// Library" — on the site, in the newsletter, and in the schema.org JSON-LD —
+// because "Offsite" matched the TBD/Various placeholder set, whose branch
+// falls back to the host library. "Offsite" is the one value that positively
+// asserts the event is NOT there.
+
+const CUESTA = {
+  title: "Cuesta Park Storytime",
+  description:
+    "<p>Stop by the Bookmobile for stories, songs, and rhymes in the heart of Cuesta Park! "
+    + "Enjoy a fun-filled storytime at the playground, and take advantage of full library "
+    + "services available from 10:00&ndash;11:00 a.m.</p><p>Events are weather permitting.<br />"
+    + "Find us at 615 Cuesta Drive, Mountain View, CA 94040</p>",
+};
+
+test("mountainview.libcal.com/event/17295774 — Location: Offsite never names the library", () => {
+  const got = classifyLibCalLocation("Offsite", MV, CUESTA);
+  assert.equal(got.kind, "offsite-unnamed");
+  assert.notEqual(got.venue, MV.name, "an off-site event must never carry the library's name");
+  assert.notEqual(got.address, MV.address, "…nor the library's street address");
+  assert.equal(got.venue, "Cuesta Park");
+  assert.equal(got.address, "615 Cuesta Dr, Mountain View, CA 94040");
+  assert.equal(got.virtual, false);
+  assert.ok(!got.suppress, "a resolved off-site event still ships");
+});
+
+test("Offsite spellings all route away from the library", () => {
+  for (const raw of ["Offsite", "offsite", "Off-site", "OFF SITE", "off site"]) {
+    const got = classifyLibCalLocation(raw, MV, CUESTA);
+    assert.equal(got.kind, "offsite-unnamed", `${raw} must not be treated as a placeholder`);
+    assert.notEqual(got.venue, MV.name, `${raw} must not name the library`);
+  }
+});
+
+test("the longest verified name wins, so a playground beats the park around it", () => {
+  const got = classifyLibCalLocation("Offsite", MV, {
+    title: "Magical Bridge Storytime",
+    description:
+      "Stop by the Bookmobile for stories in the heart of Rengstorff Park! Enjoy a storytime "
+      + "at the Magical Bridge Playground. Find us at 201 S. Rengstorff Ave, Mountain View, CA 94040.",
+  });
+  assert.equal(got.venue, "Magical Bridge Playground");
+  assert.equal(got.address, "201 S Rengstorff Ave, Mountain View, CA 94040");
+});
+
+test("an off-site venue in another city keeps its own address", () => {
+  const got = classifyLibCalLocation("Offsite", MV, {
+    title: "Deer Hollow Spooky Storytime",
+    description: "Meet us there: Deer Hollow Farm, 22500 Cristo Rey Dr., Cupertino",
+  });
+  assert.equal(got.venue, "Deer Hollow Farm");
+  assert.equal(got.address, "22500 Cristo Rey Dr, Cupertino, CA");
+  assert.notEqual(got.venue, MV.name);
+});
+
+test("an unlisted off-site venue that publishes an address ships that address, not the library", () => {
+  const got = classifyLibCalLocation("Offsite", MV, {
+    title: "Pop-Up Storytime",
+    description: "Join us at 1000 Elsewhere Boulevard, Sunnyvale, CA 94086 for songs and books.",
+  });
+  assert.equal(got.address, "1000 Elsewhere Boulevard, Sunnyvale, CA 94086");
+  assert.notEqual(got.venue, MV.name);
+  assert.ok(!got.suppress);
+});
+
+test("an off-site event with no resolvable venue is suppressed, never labelled with the library", () => {
+  const got = classifyLibCalLocation("Offsite", MV, {
+    title: "Community Outreach Visit",
+    description: "Our librarians will be out and about. Ask at the desk for details.",
+  });
+  assert.equal(got.suppress, true, "fail closed rather than assert a building");
+  assert.equal(got.venue, "");
+  assert.equal(got.address, "");
+});
+
+test("genuine placeholders still fall back to the library name but never its address", () => {
+  for (const raw of ["TBD", "TBA", "Various", "See description", "N/A", "None", "Other"]) {
+    const got = classifyLibCalLocation(raw, MV, {});
+    assert.equal(got.kind, "unknown", `${raw} stays a placeholder`);
+    assert.equal(got.venue, MV.name);
+    assert.equal(got.address, "", `${raw} must not claim ${MV.address}`);
+  }
+});
+
+// ── the address reader ─────────────────────────────────────────────────────
+
+test("extractPublishedAddress reads first-party addresses and nothing else", () => {
+  assert.equal(
+    extractPublishedAddress("Find us at 615 Cuesta Drive, Mountain View, CA 94040"),
+    "615 Cuesta Drive, Mountain View, CA 94040",
+  );
+  assert.equal(
+    extractPublishedAddress("Meet us there: Deer Hollow Farm, 22500 Cristo Rey Dr., Cupertino, CA"),
+    "22500 Cristo Rey Dr., Cupertino, CA",
+  );
+  // Prose that merely mentions a place is not an address.
+  assert.equal(extractPublishedAddress("Join us in the heart of Cuesta Park!"), "");
+  assert.equal(extractPublishedAddress("Room 3 opens at 10:00 a.m."), "");
+  assert.equal(extractPublishedAddress(""), "");
+  assert.equal(extractPublishedAddress(null), "");
 });

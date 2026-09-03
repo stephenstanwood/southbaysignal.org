@@ -171,6 +171,25 @@ function stripVenuePrefix(address: string | null | undefined, venue: string | nu
 }
 const displayAddress = stripVenuePrefix(event.address, event.venue);
 
+// Source addresses often already end in the city ("615 Cuesta Dr, Mountain
+// View, CA 94040"), so appending the city label again read as
+// "…CA 94040, Mountain View". Same intent as stripVenuePrefix above: the Where
+// line states each fact once. Composed here rather than from adjacent JSX
+// expressions, which inserted a stray space before the comma.
+function addressNamesCity(address: string, city: string | null): boolean {
+  if (!address || !city) return false;
+  // Compare without diacritics: the feed writes "San Jose" in addresses while
+  // the city label is "San José", and an accent is not a second location.
+  const fold = (value: string) => value.normalize("NFD").replace(/\p{Diacritic}/gu, "");
+  const escaped = fold(city).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`\\b${escaped}\\b`, "i").test(fold(address));
+}
+const whereLine = [
+  event.venue,
+  displayAddress ? ` — ${displayAddress}` : "",
+  cityName && !addressNamesCity(displayAddress, cityName) ? `, ${cityName}` : "",
+].join("");
+
 const calendarUrl = buildGoogleCalendarUrl({
   title: event.title ?? "",
   date: event.date ?? "",
@@ -317,13 +336,9 @@ const showDesc = longDesc && longDesc !== blurb && !blurb.startsWith(longDesc.sl
       <div>
         <dt>Where</dt>
         <dd>
-          {event.venue}
-          {displayAddress ? ` — ${displayAddress}` : ""}
-          {cityName ? `, ${cityName}` : ""}
+          {whereLine}
           {mapsUrl && (
-            <>
-              {" "}· <a href={mapsUrl} rel="noopener noreferrer">map</a>
-            </>
+            <>· <a href={mapsUrl} rel="noopener noreferrer">map</a></>
           )}
         </dd>
       </div>
