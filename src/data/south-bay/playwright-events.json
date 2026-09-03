@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-03T12:58:02.060Z",
+    "generatedAt": "2026-09-03T15:08:24.661Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
     "eventCount": 619,
@@ -26,8 +26,8 @@
       "Levi's Stadium (10)",
       "SAP Center (15)",
       "The Tech Interactive (8)",
-      "Peninsula Open Space Trust (1)",
-      "San Jose Museum of Art (10)"
+      "San Jose Museum of Art (10)",
+      "Peninsula Open Space Trust (1)"
     ],
     "sourceHealth": [
       {
@@ -349,12 +349,14 @@
       {
         "id": "post-peninsula-open-space-trust",
         "label": "POST (Peninsula Open Space Trust)",
-        "status": "ok",
+        "status": "error",
         "count": 1,
-        "error": null,
+        "error": "unexpected empty result after retry; previous snapshot still has 1 future event(s) from Peninsula Open Space Trust",
         "sources": [
           "Peninsula Open Space Trust"
-        ]
+        ],
+        "carriedForward": true,
+        "carryForwardReason": "scraper errored; retained previous run's events"
       }
     ]
   },
@@ -10796,23 +10798,6 @@
       "kidFriendly": true
     },
     {
-      "id": "22942963d2d2",
-      "title": "Representation Matters Film Festival (In-Person & Virtual Viewing)",
-      "date": "2026-09-26",
-      "displayDate": "Sat, Sep 26",
-      "time": "6 PM",
-      "endTime": "9 PM",
-      "venue": "Online (POST Webinar)",
-      "address": "",
-      "city": "santa-clara-county",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://openspacetrust.org/event/representation-matters-film-festival/",
-      "source": "Peninsula Open Space Trust",
-      "kidFriendly": false
-    },
-    {
       "id": "a11d9650f100",
       "title": "First Fridays: September 2026",
       "date": "2026-09-04",
@@ -10980,6 +10965,23 @@
       "description": "",
       "url": "https://sjmusart.org/event/first-fridays-december-2026",
       "source": "San Jose Museum of Art",
+      "kidFriendly": false
+    },
+    {
+      "id": "22942963d2d2",
+      "title": "Representation Matters Film Festival (In-Person & Virtual Viewing)",
+      "date": "2026-09-26",
+      "displayDate": "Sat, Sep 26",
+      "time": "6 PM",
+      "endTime": "9 PM",
+      "venue": "Online (POST Webinar)",
+      "address": "",
+      "city": "santa-clara-county",
+      "category": "outdoor",
+      "cost": "free",
+      "description": "",
+      "url": "https://openspacetrust.org/event/representation-matters-film-festival/",
+      "source": "Peninsula Open Space Trust",
       "kidFriendly": false
     }
   ]
