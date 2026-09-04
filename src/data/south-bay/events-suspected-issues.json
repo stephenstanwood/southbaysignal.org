@@ -1,63 +1,19 @@
 {
   "_meta": {
-    "auditedAt": "2026-09-04T11:47:36.234Z"
+    "auditedAt": "2026-09-04T14:13:34.040Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
     "total": 1883,
     "totals": {
-      "hard": 3,
+      "hard": 0,
       "soft": 1,
       "info": 0
     },
     "byReason": {
-      "slug-mismatch": 3,
       "unknown-slug": 1
     },
-    "hard": [
-      {
-        "id": "hammertheatre-d816b5dd888f71b0",
-        "title": "SJSU Music presents SJSU Choirs: Fall Debut Choral Concert",
-        "city": "san-jose",
-        "date": "2026-10-10",
-        "location": "1675 Winchester Blvd, Campbell, California 95008",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "slug-mismatch",
-            "detail": "city=\"san-jose\" but location references \"campbell\""
-          }
-        ]
-      },
-      {
-        "id": "hammertheatre-79a0073caea5e8b4",
-        "title": "SJSU Music presents SJSU Choirs: Home for the Holidays",
-        "city": "san-jose",
-        "date": "2026-12-12",
-        "location": "500 El Camino Real, Santa Clara, CA 95053",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "slug-mismatch",
-            "detail": "city=\"san-jose\" but location references \"santa-clara\""
-          }
-        ]
-      },
-      {
-        "id": "c1a8d645d21d",
-        "title": "Deer Hollow Spooky Storytime",
-        "city": "mountain-view",
-        "date": "2026-10-16",
-        "location": "22500 Cristo Rey Dr, Cupertino, CA",
-        "findings": [
-          {
-            "severity": "hard",
-            "reason": "slug-mismatch",
-            "detail": "city=\"mountain-view\" but location references \"cupertino\""
-          }
-        ]
-      }
-    ],
+    "hard": [],
     "soft": [
       {
         "id": "inbound-2992e99f9b696c5f",

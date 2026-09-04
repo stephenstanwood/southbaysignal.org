@@ -115,7 +115,8 @@ import {
 import { parseMontalvoOccurrencePage } from "../src/lib/south-bay/montalvoOccurrence.mjs";
 import { mergeLosGatosSummerConcerts } from "./lib/los-gatos-summer-concerts-2026.mjs";
 import { mergePaloAltoStateOfTheCity } from "./lib/palo-alto-state-of-the-city-2026.mjs";
-import { normalizeInboundEventPresentation, resolveInboundCity } from "./lib/inbound-event-normalize.mjs";
+import { normalizeInboundEventPresentation } from "./lib/inbound-event-normalize.mjs";
+import { rehomeScrapedEvent, resolveEventCity } from "./lib/event-city.mjs";
 import { BOARDWALK_2026_EVENTS } from "./lib/santa-cruz-picks-2026.mjs";
 import {
   extractAddressLocality,
@@ -7970,9 +7971,9 @@ function fetchInboundEvents() {
 
       // The extractor tags cityKey from the sending organization, not the
       // venue. When the address names exactly one covered city, that city
-      // wins — see resolveInboundCity for the ambiguity rules and the
+      // wins — see resolveEventCity for the ambiguity rules and the
       // Campbell Chamber golf tournament that motivated it.
-      const inboundCity = resolveInboundCity(e.cityKey, inboundLocation, e.title);
+      const inboundCity = resolveEventCity(e.cityKey, inboundLocation, e.title);
 
       const startDate = new Date(e.startsAt);
       if (isNaN(startDate.getTime())) continue;
@@ -8825,6 +8826,30 @@ async function main() {
       e.url = e.url.replace(/&#0*38;/g, "&").replace(/&amp;/g, "&");
     }
   }
+
+  // Re-home events whose own listing names a different covered city than the
+  // scraper's hardcoded one. Every adapter sets `city` to the publisher, which
+  // is right until the publisher books somewhere else: the Hammer Theatre's box
+  // office sells SJSU choir concerts staged at Campbell United Methodist and
+  // Mission Santa Clara, and Mountain View Public Library runs storytime at
+  // Deer Hollow Farm in Cupertino. All three shipped under the publisher's city
+  // and were missing from the city tab a reader would filter to.
+  //
+  // Runs here, after venue/address are decoded and cleanVenue()'d and before
+  // cross-source dedup, so the matcher sees the same strings a reader does and
+  // two sources for one event can't disagree about the city afterwards.
+  // resolveEventCity only moves an event when the location names exactly one
+  // covered city; see event-city.mjs for the ambiguity and landmark rules.
+  let rehomedCount = 0;
+  for (let i = 0; i < collapsedEvents.length; i++) {
+    const rehomed = rehomeScrapedEvent(collapsedEvents[i]);
+    if (rehomed !== collapsedEvents[i]) {
+      console.log(`  ↳ city: "${rehomed.title}" ${collapsedEvents[i].city} → ${rehomed.city} (${rehomed.venue || rehomed.address})`);
+      collapsedEvents[i] = rehomed;
+      rehomedCount++;
+    }
+  }
+  if (rehomedCount > 0) console.log(`  ✅ Re-homed ${rehomedCount} event(s) to the city their listing names`);
 
   // Cross-source dedup — two sources occasionally surface the same event
   // (library event + newsletter item; Stanford + SVLG co-listings). Key by
