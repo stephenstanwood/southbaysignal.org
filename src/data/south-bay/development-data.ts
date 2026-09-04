@@ -94,7 +94,7 @@ export const DEV_PROJECTS: DevProject[] = [
   {
     id: "google-downtown-west",
     name: "Google Downtown West",
-    city: "San Jose",
+    city: "San José",
     cityId: "san-jose",
     category: "mixed-use",
     status: "on-hold",
@@ -158,7 +158,7 @@ export const DEV_PROJECTS: DevProject[] = [
   {
     id: "mineta-airport-terminal",
     name: "SJC Terminal B South Concourse Improvements",
-    city: "San Jose",
+    city: "San José",
     cityId: "san-jose",
     category: "civic",
     status: "proposed",
@@ -174,7 +174,7 @@ export const DEV_PROJECTS: DevProject[] = [
   {
     id: "supermicro-brokaw",
     name: "Super Micro Computer Manufacturing Expansion",
-    city: "San Jose",
+    city: "San José",
     cityId: "san-jose",
     category: "tech-campus",
     status: "under-construction",
@@ -225,7 +225,7 @@ export const DEV_PROJECTS: DevProject[] = [
   {
     id: "algarve-apartments-san-jose",
     name: "Algarve Apartments",
-    city: "San Jose",
+    city: "San José",
     cityId: "san-jose",
     category: "housing",
     status: "approved",
@@ -256,7 +256,7 @@ export const DEV_PROJECTS: DevProject[] = [
   {
     id: "berryessa-bart-transit-village",
     name: "Berryessa BART Transit Village",
-    city: "San Jose",
+    city: "San José",
     cityId: "san-jose",
     category: "housing",
     status: "approved",
@@ -288,7 +288,7 @@ export const DEV_PROJECTS: DevProject[] = [
   {
     id: "santana-row-residential",
     name: "Santana Row Residential Expansion",
-    city: "San Jose",
+    city: "San José",
     cityId: "san-jose",
     category: "mixed-use",
     status: "approved",
