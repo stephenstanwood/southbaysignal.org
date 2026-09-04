@@ -1,6 +1,44 @@
 {
-  "generatedAt": "2026-09-03T03:09:21.257Z",
+  "generatedAt": "2026-09-04T03:08:59.604Z",
   "meetings": {
+    "mountain-view": {
+      "date": "2026-09-08",
+      "displayDate": "Tue, Sep 8",
+      "startTime": "17:00",
+      "bodyName": "City Council",
+      "location": "Council Chambers and Video Conference",
+      "closedSession": false,
+      "url": "https://mountainview.legistar.com/MeetingDetail.aspx?LEGID=3364&GID=344&G=37932D0B-039B-4529-B6D8-73445A1D4799",
+      "legistarEventId": 3364,
+      "agendaItems": [
+        {
+          "title": "National Hispanic Heritage Month Proclamation",
+          "sequence": 10
+        },
+        {
+          "title": "Certificate Recognizing Skye Thompson for Winning the EmPower Silicon Valley Annual Scholarship Competition",
+          "sequence": 11
+        },
+        {
+          "title": "2026 Cal Cities Annual Conference Voting Delegate and Alternate and Resolution",
+          "sequence": 23
+        },
+        {
+          "title": "Employer Health Contribution for Safety Employees and Annuitants Under the Public Employees’ Medical and Hospital Care Act",
+          "sequence": 14
+        },
+        {
+          "title": "Shoreline Lake Cove and Hill Landscaping, Project 24-37-Various Actions",
+          "sequence": 20
+        }
+      ],
+      "confirmation": {
+        "status": "confirmed",
+        "provider": "legistar",
+        "observedDate": "2026-09-08",
+        "sourceUrl": "https://webapi.legistar.com/v1/mountainview/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-09-03T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+      }
+    },
     "palo-alto": {
       "date": "2026-09-09",
       "displayDate": "Wed, Sep 9",
@@ -31,7 +69,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-09-15",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-09-02T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-09-03T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     },
     "los-altos": {
@@ -48,7 +86,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-09-08",
-        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-09-02T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-09-03T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },
@@ -59,7 +97,7 @@
     },
     "mountain-view": {
       "provider": "Legistar",
-      "status": "no-meeting"
+      "status": "ok"
     },
     "sunnyvale": {
       "provider": "Legistar",

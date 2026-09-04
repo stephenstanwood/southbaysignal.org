@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-09-03T03:09:09.997Z",
+      "generatedAt": "2026-09-04T03:08:37.222Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 26 – Sep 2",
+      "dateRange": "Aug 27 – Sep 3",
       "stats": {
-        "total": 302,
-        "notable": 29,
-        "newUnits": 10,
-        "totalValuation": 139836896
+        "total": 303,
+        "notable": 22,
+        "newUnits": 7,
+        "totalValuation": 52968786
       },
       "permits": [
         {
@@ -27,6 +27,30 @@
           "subtype": "Single-Family"
         },
         {
+          "id": "2025-146021-RS",
+          "address": "1438 Peaceful Glen Ct #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Detached ADU",
+          "valuation": 211104,
+          "units": 1,
+          "issueDate": "2026-09-01",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
+          "id": "2026-099345-RS",
+          "address": "1330 Britton Av #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Detached Garage Conversion to ADU",
+          "valuation": 175882,
+          "units": 1,
+          "issueDate": "2026-09-01",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
           "id": "2026-118327-RS",
           "address": "801 Asbury St",
           "category": "residential-new",
@@ -36,18 +60,6 @@
           "valuation": 129477,
           "units": 1,
           "issueDate": "2026-08-31",
-          "subtype": "ADU   Accessory Dwelling Unit"
-        },
-        {
-          "id": "2026-109638-RS",
-          "address": "540 Northlake Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Hud Detached ADU",
-          "valuation": 121913,
-          "units": 1,
-          "issueDate": "2026-08-27",
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
@@ -63,27 +75,15 @@
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2025-134206-RS",
-          "address": "2967 Rossmore Ln #2",
+          "id": "2025-114597-RS",
+          "address": "1748 Tampa Wy",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Garage Conversion",
-          "valuation": 107135,
+          "description": "New Detached ADU",
+          "valuation": 95876,
           "units": 1,
-          "issueDate": "2026-08-27",
-          "subtype": "ADU   Accessory Dwelling Unit"
-        },
-        {
-          "id": "2026-102075-RS",
-          "address": "4848 Anna Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Attached ADU",
-          "valuation": 99043,
-          "units": 1,
-          "issueDate": "2026-08-27",
+          "issueDate": "2026-09-01",
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
@@ -99,53 +99,53 @@
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2026-107703-RS",
-          "address": "734 Stardust Ln #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
+          "id": "2026-134988-CI",
+          "address": "4333 Rincon Av",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
           "workType": "New Construction",
-          "description": "Attached Garage Conversion to ADU",
-          "valuation": 81803,
-          "units": 1,
-          "issueDate": "2026-08-27",
-          "subtype": "ADU   Accessory Dwelling Unit"
+          "description": "Phase I New Construction",
+          "valuation": 28624281,
+          "units": 0,
+          "issueDate": "2026-09-01",
+          "subtype": "School/Daycare"
         },
         {
-          "id": "2026-098821-RS",
-          "address": "2969 Tobin Dr #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Attached ADU",
-          "valuation": 52776,
-          "units": 1,
-          "issueDate": "2026-08-27",
-          "subtype": "ADU   Accessory Dwelling Unit"
+          "id": "2026-135490-CI",
+          "address": "480 N 1st St",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "New Senior Day Care TI",
+          "valuation": 7500000,
+          "units": 0,
+          "issueDate": "2026-09-01",
+          "subtype": "Medical/Dental Clinic"
         },
         {
-          "id": "2026-129510-RS",
-          "address": "1778 Hamilton Av #2",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Epr Ab 2533 Legalize Detached ADU",
-          "valuation": 47322,
-          "units": 1,
-          "issueDate": "2026-08-27",
-          "subtype": "ADU   Accessory Dwelling Unit"
+          "id": "2026-128769-CI",
+          "address": "988 Rock Av",
+          "category": "commercial-large",
+          "categoryLabel": "Commercial Project",
+          "workType": "Tenant Improvement",
+          "description": "Supermicro (Bem100%) Server Rooms TI",
+          "valuation": 5500000,
+          "units": 0,
+          "issueDate": "2026-09-01",
+          "subtype": "Commercial/Industrial"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-09-03T03:09:12.276Z",
+      "generatedAt": "2026-09-04T03:08:39.895Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 26 – Sep 2",
+      "dateRange": "Aug 27 – Sep 3",
       "stats": {
-        "total": 128,
-        "notable": 4,
+        "total": 101,
+        "notable": 5,
         "newUnits": 0,
         "totalValuation": 0
       },
@@ -163,18 +163,6 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-02460",
-          "address": "2031 Park Bl",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-31",
-          "subtype": "Permit Issued"
-        },
-        {
           "id": "26BLD-02464",
           "address": "1140 Parkinson Av",
           "category": "residential-remodel",
@@ -184,6 +172,18 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-09-01",
+          "subtype": "Permit Issued"
+        },
+        {
+          "id": "26BLD-02460",
+          "address": "2031 Park Bl",
+          "category": "residential-remodel",
+          "categoryLabel": "Home Remodel",
+          "workType": "Web - Kitchen or Bath Remodel",
+          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-08-31",
           "subtype": "Permit Issued"
         },
         {
@@ -197,6 +197,18 @@
           "units": 0,
           "issueDate": "2026-08-28",
           "subtype": "Permit Issued"
+        },
+        {
+          "id": "26PLN-00248",
+          "address": "3000 Hanover St",
+          "category": "entitlement",
+          "categoryLabel": "Entitlement / Zoning",
+          "workType": "Entitlement",
+          "description": "New exterior security bollards",
+          "valuation": 0,
+          "units": 0,
+          "issueDate": "2026-09-02",
+          "subtype": "Over the Counter Approved"
         }
       ]
     }

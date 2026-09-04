@@ -1,90 +1,102 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-03T03:17:42.346Z",
+    "generatedAt": "2026-09-04T03:16:50.391Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 7
+    "sourceCount": 9
   },
   "summary": {
-    "threadsMined": 7,
-    "placesExtracted": 4,
-    "placesMatched": 2,
-    "placeGaps": 2,
-    "eventsExtracted": 1,
+    "threadsMined": 9,
+    "placesExtracted": 3,
+    "placesMatched": 3,
+    "placeGaps": 0,
+    "eventsExtracted": 3,
     "eventsMatched": 0,
-    "eventGaps": 1,
-    "autoAppendedOpenings": 1
+    "eventGaps": 3,
+    "autoAppendedOpenings": 0
   },
-  "placeGaps": [
+  "placeGaps": [],
+  "eventGaps": [
     {
-      "name": "IGNITE",
+      "name": "Falloween",
+      "when": "Sept. 27, 2-7 PM",
       "city": "San Jose",
-      "kind": "restaurant",
-      "context": "new restaurant opening at former Sushi Confidential location downtown",
+      "context": "free event with local makers, art, oddities at 866 Park Ave",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w55l3m/were_opening_ignite_at_the_former_sushi/",
-        "https://www.reddit.com/r/SanJose/comments/1w5kob4/san_jose_gives_final_approval_to_affordable_homes/",
-        "https://www.reddit.com/r/SanJose/comments/1w5cqjs/out_of_towner/",
-        "https://www.reddit.com/r/SanJose/comments/1w5isza/gyms_with_outdoor_pools/",
-        "https://www.reddit.com/r/SanJose/comments/1w5gq8z/hail_the_sun_99_show_travel_suggestions/"
+        "https://www.reddit.com/r/SanJose/comments/1w6olzk/falloween_event_927/",
+        "https://www.reddit.com/r/SanJose/comments/1w6rd8f/movie_group_to_watch_coyote_vs_acme_at_amc_0906/",
+        "https://www.reddit.com/r/SanJose/comments/1w6fcig/lawn_chairs_or_mats_chainsmokers_at_discovery/",
+        "https://www.reddit.com/r/SanJose/comments/1w6f18r/looking_for_12_additions_to_our_milpitas_game/",
+        "https://www.reddit.com/r/SanJose/comments/1w6djtw/looking_for_neurodivergent_young_adult_meet_up/"
       ]
     },
     {
-      "name": "The Ritz",
-      "city": "San Jose",
-      "kind": "venue",
-      "context": "venue hosting sold out Hail the Sun show 9/9",
+      "name": "Coyote vs. Acme movie meetup",
+      "when": "09/06",
+      "city": "Sunnyvale",
+      "context": "movie group meetup at AMC Sunnyvale 12",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w55l3m/were_opening_ignite_at_the_former_sushi/",
-        "https://www.reddit.com/r/SanJose/comments/1w5kob4/san_jose_gives_final_approval_to_affordable_homes/",
-        "https://www.reddit.com/r/SanJose/comments/1w5cqjs/out_of_towner/",
-        "https://www.reddit.com/r/SanJose/comments/1w5isza/gyms_with_outdoor_pools/",
-        "https://www.reddit.com/r/SanJose/comments/1w5gq8z/hail_the_sun_99_show_travel_suggestions/"
+        "https://www.reddit.com/r/SanJose/comments/1w6olzk/falloween_event_927/",
+        "https://www.reddit.com/r/SanJose/comments/1w6rd8f/movie_group_to_watch_coyote_vs_acme_at_amc_0906/",
+        "https://www.reddit.com/r/SanJose/comments/1w6fcig/lawn_chairs_or_mats_chainsmokers_at_discovery/",
+        "https://www.reddit.com/r/SanJose/comments/1w6f18r/looking_for_12_additions_to_our_milpitas_game/",
+        "https://www.reddit.com/r/SanJose/comments/1w6djtw/looking_for_neurodivergent_young_adult_meet_up/"
       ]
-    }
-  ],
-  "eventGaps": [
+    },
     {
-      "name": "Hail the Sun concert",
-      "when": "September 9",
+      "name": "Chainsmokers concert",
+      "when": "",
       "city": "San Jose",
-      "context": "sold out show at the Ritz",
+      "context": "concert at Discovery Meadow",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w55l3m/were_opening_ignite_at_the_former_sushi/",
-        "https://www.reddit.com/r/SanJose/comments/1w5kob4/san_jose_gives_final_approval_to_affordable_homes/",
-        "https://www.reddit.com/r/SanJose/comments/1w5cqjs/out_of_towner/",
-        "https://www.reddit.com/r/SanJose/comments/1w5isza/gyms_with_outdoor_pools/",
-        "https://www.reddit.com/r/SanJose/comments/1w5gq8z/hail_the_sun_99_show_travel_suggestions/"
+        "https://www.reddit.com/r/SanJose/comments/1w6olzk/falloween_event_927/",
+        "https://www.reddit.com/r/SanJose/comments/1w6rd8f/movie_group_to_watch_coyote_vs_acme_at_amc_0906/",
+        "https://www.reddit.com/r/SanJose/comments/1w6fcig/lawn_chairs_or_mats_chainsmokers_at_discovery/",
+        "https://www.reddit.com/r/SanJose/comments/1w6f18r/looking_for_12_additions_to_our_milpitas_game/",
+        "https://www.reddit.com/r/SanJose/comments/1w6djtw/looking_for_neurodivergent_young_adult_meet_up/"
       ]
     }
   ],
   "placeMatches": [
     {
-      "name": "Sushi Confidential",
-      "city": "San Jose",
-      "kind": "restaurant",
-      "context": "former location now becoming IGNITE",
+      "name": "AMC Sunnyvale 12",
+      "city": "Sunnyvale",
+      "kind": "venue",
+      "context": "movie theater hosting Coyote vs. Acme meetup",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w55l3m/were_opening_ignite_at_the_former_sushi/",
-        "https://www.reddit.com/r/SanJose/comments/1w5kob4/san_jose_gives_final_approval_to_affordable_homes/",
-        "https://www.reddit.com/r/SanJose/comments/1w5cqjs/out_of_towner/",
-        "https://www.reddit.com/r/SanJose/comments/1w5isza/gyms_with_outdoor_pools/",
-        "https://www.reddit.com/r/SanJose/comments/1w5gq8z/hail_the_sun_99_show_travel_suggestions/"
+        "https://www.reddit.com/r/SanJose/comments/1w6olzk/falloween_event_927/",
+        "https://www.reddit.com/r/SanJose/comments/1w6rd8f/movie_group_to_watch_coyote_vs_acme_at_amc_0906/",
+        "https://www.reddit.com/r/SanJose/comments/1w6fcig/lawn_chairs_or_mats_chainsmokers_at_discovery/",
+        "https://www.reddit.com/r/SanJose/comments/1w6f18r/looking_for_12_additions_to_our_milpitas_game/",
+        "https://www.reddit.com/r/SanJose/comments/1w6djtw/looking_for_neurodivergent_young_adult_meet_up/"
       ],
-      "matchedName": "Sushi Confidential Campbell"
+      "matchedName": "AMC Sunnyvale 12"
     },
     {
-      "name": "Hammer Theatre Center",
+      "name": "Discovery Meadow",
       "city": "San Jose",
-      "kind": "venue",
-      "context": "landmark near new affordable housing project",
+      "kind": "park",
+      "context": "concert venue hosting Chainsmokers show",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w55l3m/were_opening_ignite_at_the_former_sushi/",
-        "https://www.reddit.com/r/SanJose/comments/1w5kob4/san_jose_gives_final_approval_to_affordable_homes/",
-        "https://www.reddit.com/r/SanJose/comments/1w5cqjs/out_of_towner/",
-        "https://www.reddit.com/r/SanJose/comments/1w5isza/gyms_with_outdoor_pools/",
-        "https://www.reddit.com/r/SanJose/comments/1w5gq8z/hail_the_sun_99_show_travel_suggestions/"
+        "https://www.reddit.com/r/SanJose/comments/1w6olzk/falloween_event_927/",
+        "https://www.reddit.com/r/SanJose/comments/1w6rd8f/movie_group_to_watch_coyote_vs_acme_at_amc_0906/",
+        "https://www.reddit.com/r/SanJose/comments/1w6fcig/lawn_chairs_or_mats_chainsmokers_at_discovery/",
+        "https://www.reddit.com/r/SanJose/comments/1w6f18r/looking_for_12_additions_to_our_milpitas_game/",
+        "https://www.reddit.com/r/SanJose/comments/1w6djtw/looking_for_neurodivergent_young_adult_meet_up/"
       ],
-      "matchedName": "Hammer Theatre Center"
+      "matchedName": "Discovery Meadow"
+    },
+    {
+      "name": "Bob McGuire Park",
+      "city": "Milpitas",
+      "kind": "park",
+      "context": "preferred tennis courts for hitting practice",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1w5zbj5/looking_for_tennis_partners/",
+        "https://www.reddit.com/r/SanJose/comments/1w6pixx/looking_for_badminton_player_to_play_with_this/",
+        "https://www.reddit.com/r/SanJose/comments/1w6a2v9/spotted_in_the_wild_hidden_art/",
+        "https://www.reddit.com/r/SanJose/comments/1w63jfq/home_game_downtown_sj/"
+      ],
+      "matchedName": "Bob McGuire Park"
     }
   ],
   "eventMatches": []
