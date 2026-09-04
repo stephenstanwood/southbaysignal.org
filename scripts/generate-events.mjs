@@ -81,7 +81,10 @@ import {
   resolveRegistrationClosesBy,
   virtualFromSourceSignal,
 } from "../src/lib/south-bay/eventFilters.mjs";
-import { fuzzyDedupEvents } from "../src/lib/south-bay/eventFuzzyDedup.mjs";
+import {
+  compareDuplicateAuthority,
+  fuzzyDedupEvents,
+} from "../src/lib/south-bay/eventFuzzyDedup.mjs";
 import { SLUG_TO_CITY_TOKENS } from "./social/lib/content-rules.mjs";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { fetchJson, fetchText, UA } from "./lib/http.mjs";
@@ -119,8 +122,11 @@ import {
   extractSanJoseJazzDayUrls,
   extractVboSession,
   parseCivicPlusCalendarPage,
+  parseCivicPlusEventDetail,
+  parseCivicPlusEventTimes,
   parseHappyHollowSchedules,
   parseJazzOnThePlazzSchedule,
+  parseLosAltosHistoryEventFacts,
   parseMusicInParkSchedule,
   parseSanJoseJazzLineup,
 } from "./lib/official-event-sources.mjs";
@@ -3170,28 +3176,6 @@ function parseCivicPlusEventDates(eventDatesStr) {
   return null;
 }
 
-// Parses CivicPlus EventTimes like "07:00 PM - 09:00 PM" into displayable time string
-function parseCivicPlusEventTime(eventTimesStr) {
-  if (!eventTimesStr) return null;
-  // Take just the start time
-  const parts = eventTimesStr.split(/\s*[-–]\s*/);
-  const startTime = parts[0].trim();
-  const endTime = parts[1]?.trim();
-  // Skip all-day markers (midnight to midnight)
-  if (startTime === "12:00 AM" && (!endTime || endTime === "11:59 PM")) return null;
-  // Format as "7:00 PM" or "7:00 PM – 9:00 PM"
-  const fmt = (t) => {
-    const m = t.match(/^(\d+):(\d+)\s*(AM|PM)$/i);
-    if (!m) return t;
-    const h = parseInt(m[1]);
-    const min = m[2];
-    const ampm = m[3].toUpperCase();
-    return min === "00" ? `${h}${ampm}` : `${h}:${min}${ampm}`;
-  };
-  if (endTime && endTime !== "11:59 PM") return `${fmt(startTime)} – ${fmt(endTime)}`;
-  return fmt(startTime);
-}
-
 // CHM event pages use the canonical template "<h2>{Month} {Day}, {Year}<br />{H}:{MM} {am|pm}</h2>".
 // The RSS feed only carries pubDate (= announcement date) so we have to fetch each item.
 async function fetchChmEventDateTime(url) {
@@ -3515,6 +3499,7 @@ function cleanCampbellVenue(raw) {
   // while the linked first-party event page supplies the actual facility name.
   // Keep the reader-facing venue stable across future events at this location.
   if (/\bAbbott Ave\.?\s*&\s*Pollard Road\b/i.test(location)) return "Jack Fischer Park";
+  if (/^\s*the heritage theatre\s*$/i.test(location)) return "Heritage Theatre";
   return cleanVenue(location);
 }
 
@@ -3535,7 +3520,7 @@ async function fetchCampbellEvents() {
         || parseDate(item.startDate)
         || parseDate(item.pubDate);
       if (!start || start < now) return null;
-      const timeStr = parseCivicPlusEventTime(item.eventTimes);
+      const { time, endTime } = parseCivicPlusEventTimes(item.eventTimes);
       const venueLabel = cleanCampbellVenue(item.location) || inferCivicVenueFromTitle(item.title) || null;
       const description = truncate(stripCivicPlusMetadata(stripHtml(item.description)));
       // Same placeholder filter as fetchCivicPlusRssCity — Campbell's RSS also
@@ -3551,13 +3536,15 @@ async function fetchCampbellEvents() {
         title: item.title,
         date: isoDate(start),
         displayDate: displayDate(start),
-        time: timeStr,
-        endTime: null,
+        time,
+        endTime,
         venue: venueLabel,
         address: "",
         city: "campbell",
         category: inferCategory(item.title, item.description, ""),
-        cost: "free",
+        // The RSS omits CivicPlus's dedicated Cost field. Missing is unknown,
+        // never free; the first-party detail page below owns this claim.
+        cost: null,
         description,
         url: item.link,
         source: "City of Campbell",
@@ -3566,11 +3553,50 @@ async function fetchCampbellEvents() {
         kidFriendly: /\b(kid|child|family|story|youth|teen|toddler|baby|preschool|infant|lap[-\s]?sit|ages?\s*\d|grades?\s+[K0-9])/i.test(item.title),
       };
     }).filter(Boolean);
+
+    // RSS omits the named venue and dedicated Cost field even when the linked
+    // first-party page publishes both. Enrich only the public rows that
+    // survived filtering, sequentially, and degrade to no claim if a detail
+    // page is unavailable.
+    const enriched = [];
+    for (const event of events) {
+      let next = event;
+      if (/^https:\/\/(?:www\.)?campbellca\.gov\/Calendar\.aspx\?EID=\d+/i.test(String(event.url || ""))) {
+        try {
+          const detail = parseCivicPlusEventDetail(
+            await fetchText(event.url, { timeout: 20_000 }),
+          );
+          const detailDate = String(detail.startsAt || "").slice(0, 10);
+          if (detailDate === event.date) {
+            const detailVenue = cleanCampbellVenue(detail.venue);
+            next = {
+              ...event,
+              time: detail.time || event.time,
+              endTime: detail.endTime || event.endTime,
+              venue: detailVenue || event.venue,
+              address: detail.address || event.address,
+              cost: detail.cost,
+              ...(detail.costNote ? { costNote: detail.costNote } : {}),
+              occurrenceEvidence: {
+                kind: "first-party-occurrence-page",
+                sourceUrl: event.url,
+                date: event.date,
+                checkedAt: new Date().toISOString(),
+              },
+            };
+          }
+        } catch (err) {
+          console.log(`  ↳ Campbell detail failed (${event.url}): ${err.message}`);
+        }
+        await new Promise((resolve) => setTimeout(resolve, 150));
+      }
+      enriched.push(next);
+    }
     if (skippedPlaceholder > 0) {
       console.log(`     · skipped ${skippedPlaceholder} placeholder entry/ies (no desc + no venue)`);
     }
-    console.log(`  ✅ Campbell: ${events.length} events`);
-    return events;
+    console.log(`  ✅ Campbell: ${enriched.length} events`);
+    return enriched;
   } catch (err) {
     console.log(`  ⚠️  Campbell: ${err.message}`);
     if (STRICT_EVENT_REFRESH) throw err;
@@ -3580,7 +3606,13 @@ async function fetchCampbellEvents() {
 
 // ── CivicPlus iCal feeds ──
 
-async function fetchCivicPlusIcal(name, url, defaultCity, defaultCost = "free") {
+async function fetchCivicPlusIcal(
+  name,
+  url,
+  defaultCity,
+  defaultCost = "free",
+  { eventFacts = null } = {},
+) {
   console.log(`  ⏳ ${name}...`);
   try {
     const feedOrigin = new URL(url).origin;
@@ -3590,6 +3622,7 @@ async function fetchCivicPlusIcal(name, url, defaultCity, defaultCost = "free") 
     const thirtyDaysOut = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000);
 
     let skippedPlaceholder = 0;
+    let skippedUnavailable = 0;
     const events = rawEvents
       .map((ev) => {
         if (isBlockedEvent(ev.summary)) return null;
@@ -3621,6 +3654,11 @@ async function fetchCivicPlusIcal(name, url, defaultCity, defaultCost = "free") 
         const cleanedVenue = cleanVenue((ev.location || "").replace(/\\,/g, ","));
         const venueLabel = cleanedVenue || inferCivicVenueFromTitle(ev.summary) || null;
         const description = (descIsUrl || descIsProtocolRelative) ? "" : stripBareUrls(descText);
+        const facts = typeof eventFacts === "function" ? eventFacts(rawDesc) : {};
+        if (facts?.unavailable) {
+          skippedUnavailable++;
+          return null;
+        }
         // Same placeholder filter as fetchCivicPlusRssCity — the Los Gatos iCal
         // feed in particular emits bare-title recurring entries ("Muse Markets")
         // with no description, no venue, no address. Drop them so the blurb
@@ -3634,6 +3672,9 @@ async function fetchCivicPlusIcal(name, url, defaultCity, defaultCost = "free") 
         // when there's no description or URL to verify cost. Null it out so the
         // card omits the cost badge instead of asserting free.
         const isRace = /\b(5k|10k|half marathon|marathon|triathlon|fun run|road run|trail run|color run)\b/i.test(ev.summary || "");
+        const cost = Object.prototype.hasOwnProperty.call(facts || {}, "cost")
+          ? facts.cost
+          : (isRace ? null : defaultCost);
         return {
           id: h(defaultCity, ev.uid || ev.summary, ev.dtstart),
           title: cleanTitle(ev.summary.replace(/\\,/g, ",").replace(/\\n/g, " ")),
@@ -3648,7 +3689,8 @@ async function fetchCivicPlusIcal(name, url, defaultCity, defaultCost = "free") 
           address: "",
           city,
           category: inferCategory(ev.summary, ev.description || "", ""),
-          cost: isRace ? null : defaultCost,
+          cost,
+          ...(facts?.costNote ? { costNote: facts.costNote } : {}),
           description,
           url: eventUrl,
           source: name,
@@ -3661,6 +3703,9 @@ async function fetchCivicPlusIcal(name, url, defaultCity, defaultCost = "free") 
 
     if (skippedPlaceholder > 0) {
       console.log(`     · skipped ${skippedPlaceholder} placeholder entry/ies (no desc + no venue)`);
+    }
+    if (skippedUnavailable > 0) {
+      console.log(`     · skipped ${skippedUnavailable} explicitly unavailable event(s)`);
     }
     console.log(`  ✅ ${name}: ${events.length} events`);
     return events;
@@ -3857,7 +3902,7 @@ async function fetchCivicPlusRssCity(name, url, defaultCity) {
         || parseDate(item.startDate)
         || parseDate(item.pubDate);
       if (!start || start < now) return null;
-      const timeStr = parseCivicPlusEventTime(item.eventTimes);
+      const { time, endTime } = parseCivicPlusEventTimes(item.eventTimes);
       const venueLabel = cleanVenue(item.location || "") || inferCivicVenueFromTitle(item.title) || null;
       const description = truncate(stripCivicPlusMetadata(stripHtml(item.description)));
       // CivicPlus city calendars carry bare-title placeholders ("Memorial Day",
@@ -3876,8 +3921,8 @@ async function fetchCivicPlusRssCity(name, url, defaultCity) {
         title: item.title,
         date: isoDate(start),
         displayDate: displayDate(start),
-        time: timeStr,
-        endTime: null,
+        time,
+        endTime,
         venue: venueLabel,
         address: "",
         city: defaultCity,
@@ -3925,6 +3970,8 @@ async function fetchLosAltosHistoryEvents() {
     "Los Altos History Museum",
     "https://www.losaltoshistory.org/events/?ical=1",
     "los-altos",
+    null,
+    { eventFacts: parseLosAltosHistoryEventFacts },
   );
 }
 
@@ -5377,6 +5424,12 @@ async function fetchHeritageTheatreEvents() {
         description,
         url,
         source: "Heritage Theatre",
+        occurrenceEvidence: {
+          kind: "first-party-occurrence-page",
+          sourceUrl: url,
+          date,
+          checkedAt: new Date().toISOString(),
+        },
         ...(image ? { image } : {}),
         kidFriendly,
       });
@@ -8561,9 +8614,27 @@ async function main() {
     return richness(b) - richness(a);
   });
 
+  // Preserve the pre-sort's established source/venue behavior by default, but
+  // let dated first-party evidence replace that default inside an actual exact
+  // slot. Comparing every event globally would reorder the entire feed.
+  const exactSlotWinner = new Map();
+  for (const event of capped) {
+    if (!event.venue || !event.date || !event.time) continue;
+    const key = `${event.date}|${normVenueKey(event.venue)}|${normTimeKey(event.time)}`;
+    const current = exactSlotWinner.get(key);
+    if (!current) {
+      exactSlotWinner.set(key, event);
+      continue;
+    }
+    const authority = compareDuplicateAuthority(event, current, {
+      occurrenceOnly: true,
+      includeRichness: false,
+    });
+    if (authority < 0) exactSlotWinner.set(key, event);
+  }
+
   const seen = new Set();
   const sportsByDateVenue = new Set();
-  const sameSourceByDVT = new Set();
   const sameUrlByDT = new Set();
   const deduped = capped.filter((e) => {
     // Canonical-URL date+time dedup: two listings that point at the SAME event
@@ -8591,8 +8662,7 @@ async function main() {
     // Cross-source date+venue+time dedup: one listing per concrete event slot
     if (e.venue && e.date && e.time) {
       const dvtKey = `${e.date}|${normVenueKey(e.venue)}|${normTimeKey(e.time)}`;
-      if (sameSourceByDVT.has(dvtKey)) return false;
-      sameSourceByDVT.add(dvtKey);
+      if (exactSlotWinner.get(dvtKey) !== e) return false;
     }
     // Sports dedup: one listing per date+venue (catches "Sharks vs Blues" + "San Jose Sharks vs St Louis Blues")
     if (e.category === "sports" && e.venue && e.date) {
@@ -9117,6 +9187,7 @@ export {
   looksLikeEmbedCode,
   mapTicketmasterEvent,
   resolveBiblioLocationFields,
+  fetchCampbellEvents,
   fetchFarmersMarketEvents,
   fetchHappyHollowEvents,
   fetchHeritageTheatreEvents,
@@ -9126,6 +9197,7 @@ export {
   parseEventbriteOrganizerEvents,
   fetchJazzOnThePlazzEvents,
   fetchLosAltosEvents,
+  fetchLosAltosHistoryEvents,
   fetchMaclaEvents,
   fetchStanfordEvents,
   fetchMontalvoEvents,
