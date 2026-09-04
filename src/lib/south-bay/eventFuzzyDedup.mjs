@@ -210,12 +210,30 @@ function authorityTuple(event) {
   ];
 }
 
-function chooseDuplicateToDrop(e1, e2) {
+/**
+ * Sort duplicate candidates strongest-first using the same evidence ladder as
+ * fuzzy dedup. The generator's exact date+venue+time pass runs earlier and
+ * must not silently choose a different source for the same occurrence.
+ */
+export function compareDuplicateAuthority(
+  e1,
+  e2,
+  { occurrenceOnly = false, includeRichness = true } = {},
+) {
   const a = authorityTuple(e1);
   const b = authorityTuple(e2);
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) return a[i] > b[i] ? e2 : e1;
+  if (occurrenceOnly && a[0] === 0 && b[0] === 0) return 0;
+  const length = includeRichness ? a.length : a.length - 1;
+  for (let i = 0; i < length; i++) {
+    if (a[i] !== b[i]) return b[i] - a[i];
   }
+  return 0;
+}
+
+function chooseDuplicateToDrop(e1, e2) {
+  const comparison = compareDuplicateAuthority(e1, e2);
+  if (comparison < 0) return e2;
+  if (comparison > 0) return e1;
   return e2;
 }
 

@@ -6,7 +6,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { fuzzyDedupEvents } from "./eventFuzzyDedup.mjs";
+import {
+  compareDuplicateAuthority,
+  fuzzyDedupEvents,
+} from "./eventFuzzyDedup.mjs";
 
 let _id = 0;
 const ev = (over = {}) => ({
@@ -186,6 +189,89 @@ test("first-party occurrence time wins over a richer aggregator duplicate", () =
   assert.equal(kept[0].time, "6:00 PM");
   assert.equal(kept[0].endTime, "10:00 PM");
   assert.equal(kept[0].url, officialUrl);
+});
+
+test("a first-party theatre occurrence beats a sparse government calendar fallback", () => {
+  const date = "2026-09-04";
+  const theatreUrl = "https://www.heritagetheatre.org/events/neil-diamond-superstar";
+  const events = [
+    ev({
+      id: "city-sparse",
+      date,
+      city: "campbell",
+      title: "Jack Wright's National Touring Tribute Presents: Neil Diamond Superstar",
+      time: "7:30 PM",
+      source: "City of Campbell",
+      url: "https://www.campbellca.gov/Calendar.aspx?EID=3968",
+    }),
+    ev({
+      id: "theatre-complete",
+      date,
+      city: "campbell",
+      title: "Neil Diamond Superstar",
+      time: "7:30 PM",
+      endTime: "10:30 PM",
+      venue: "Heritage Theatre",
+      source: "Heritage Theatre",
+      url: theatreUrl,
+      occurrenceEvidence: {
+        kind: "first-party-occurrence-page",
+        sourceUrl: theatreUrl,
+        date,
+      },
+    }),
+  ];
+
+  const { kept, droppedCount } = fuzzyDedupEvents(events);
+  assert.equal(droppedCount, 1);
+  assert.equal(kept[0].id, "theatre-complete");
+});
+
+test("an enriched government occurrence wins when both duplicates have first-party evidence", () => {
+  const date = "2026-09-04";
+  const cityUrl = "https://www.campbellca.gov/Calendar.aspx?EID=3968";
+  const theatreUrl = "https://www.heritagetheatre.org/events/neil-diamond-superstar";
+  const occurrenceEvidence = (sourceUrl) => ({
+    kind: "first-party-occurrence-page",
+    sourceUrl,
+    date,
+  });
+  const events = [
+    ev({
+      id: "city-complete",
+      date,
+      city: "campbell",
+      title: "Jack Wright's National Touring Tribute Presents: Neil Diamond Superstar",
+      time: "7:30 PM",
+      endTime: "9:30 PM",
+      venue: "Heritage Theatre",
+      cost: "paid",
+      source: "City of Campbell",
+      url: cityUrl,
+      occurrenceEvidence: occurrenceEvidence(cityUrl),
+    }),
+    ev({
+      id: "theatre-complete",
+      date,
+      city: "campbell",
+      title: "Neil Diamond Superstar",
+      time: "7:30 PM",
+      endTime: "10:30 PM",
+      venue: "Heritage Theatre",
+      source: "Heritage Theatre",
+      url: theatreUrl,
+      occurrenceEvidence: occurrenceEvidence(theatreUrl),
+    }),
+  ];
+
+  const { kept, droppedCount } = fuzzyDedupEvents(events);
+  assert.equal(droppedCount, 1);
+  assert.equal(kept[0].id, "city-complete");
+  assert.equal(kept[0].endTime, "9:30 PM");
+  assert.ok(compareDuplicateAuthority(events[0], events[1], {
+    occurrenceOnly: true,
+    includeRichness: false,
+  }) < 0);
 });
 
 // --- D194: same venue + date, venue name stamped onto one title, typo -------

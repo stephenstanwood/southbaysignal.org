@@ -37,7 +37,8 @@ function decodeHtml(value = "") {
     .replace(/&mdash;/gi, "—")
     .replace(/&rsquo;/gi, "’")
     .replace(/&ldquo;/gi, "“")
-    .replace(/&rdquo;/gi, "”");
+    .replace(/&rdquo;/gi, "”")
+    .replace(/&thinsp;/gi, " ");
 }
 
 function plainText(value = "") {
@@ -285,6 +286,116 @@ export function parseCivicPlusCalendarPage(html) {
     });
   }
   return entries;
+}
+
+/**
+ * CivicPlus publishes start/end clocks in one field, for example
+ * `07:30 PM - 09:30 PM`. Keep them as separate canonical fields: putting the
+ * whole range in `time` makes the global clock validator reject it and forces
+ * a later URL backfill to recover only the start.
+ */
+export function parseCivicPlusEventTimes(value) {
+  const text = plainText(value);
+  if (!text) return { time: null, endTime: null };
+
+  const [startRaw = "", endRaw = ""] = text.split(/\s*[-–—]\s*/, 2);
+  const time = normalizeClock(startRaw);
+  const parsedEnd = normalizeClock(endRaw);
+  if (time === "12:00 AM" && (!parsedEnd || parsedEnd === "11:59 PM")) {
+    return { time: null, endTime: null };
+  }
+  return {
+    time,
+    endTime: parsedEnd === "11:59 PM" ? null : parsedEnd,
+  };
+}
+
+/** Dedicated CivicPlus Cost field -> conservative event price metadata. */
+export function parseCivicPlusEventCost(value) {
+  const text = plainText(value);
+  if (!text) return { cost: null, costNote: null };
+
+  // Only call an event free when the dedicated cost field does not also list
+  // a ticket price ("children free" on a paid event is not a free event).
+  if (!/\$\s*\d/.test(text) && /\b(?:free|no charge)\b/i.test(text)) {
+    return { cost: "free", costNote: null };
+  }
+
+  // The first published ticket amount is the base/floor. Later dollar values
+  // are often facility or online-processing fees and must not become a fake
+  // $4 ticket when the source says "$30.50/$43.50/$55.50 + $4 FF".
+  const price = text.match(/\$\s*(\d+(?:\.\d{1,2})?)/)?.[1];
+  const dollars = Number(price);
+  if (!Number.isFinite(dollars) || dollars <= 0) {
+    return { cost: null, costNote: null };
+  }
+  const formatted = Number.isInteger(dollars) ? String(dollars) : dollars.toFixed(2);
+  return {
+    cost: dollars < 25 ? "low" : "paid",
+    costNote: `From $${formatted}`,
+  };
+}
+
+/**
+ * Parse the microdata-backed facts from a CivicPlus event detail page.
+ * Listing RSS is intentionally sparse; the detail page owns venue and cost.
+ */
+export function parseCivicPlusEventDetail(html) {
+  const source = String(html || "");
+  const startsAt = plainText(
+    source.match(/itemprop="startDate"[^>]*>([\s\S]*?)<\/[^>]+>/i)?.[1] || "",
+  );
+  const timeBlock = source.match(
+    /class="specificDetailHeader">\s*Time:\s*<\/div>\s*<div[^>]*class="specificDetailItem"[^>]*>([\s\S]*?)<\/div>/i,
+  )?.[1] || "";
+  const venue = plainText(
+    source.match(/id="[^"]*_location_name"[\s\S]*?<div[^>]*itemprop="name"[^>]*>([\s\S]*?)<\/div>/i)?.[1] || "",
+  );
+  const street = plainText(source.match(/itemprop="streetAddress"[^>]*>([\s\S]*?)<\//i)?.[1] || "");
+  const locality = plainText(source.match(/itemprop="addressLocality"[^>]*>([\s\S]*?)<\//i)?.[1] || "");
+  const region = plainText(source.match(/itemprop="addressRegion"[^>]*>([\s\S]*?)<\//i)?.[1] || "");
+  const postal = plainText(source.match(/itemprop="postalCode"[^>]*>([\s\S]*?)<\//i)?.[1] || "");
+  const address = [street, locality, region && postal ? `${region} ${postal}` : region || postal]
+    .filter(Boolean)
+    .join(", ");
+  const costText = plainText(
+    source.match(/itemprop="price"[^>]*>([\s\S]*?)<\/div>/i)?.[1] || "",
+  );
+
+  return {
+    startsAt: startsAt || null,
+    ...parseCivicPlusEventTimes(timeBlock),
+    venue: venue || null,
+    address,
+    costText,
+    ...parseCivicPlusEventCost(costText),
+  };
+}
+
+/** Source-specific facts carried in Los Altos History Museum's iCal copy. */
+export function parseLosAltosHistoryEventFacts(value) {
+  const text = plainText(
+    String(value || "")
+      .replace(/\\n/g, " ")
+      .replace(/\\,/g, ",")
+      .replace(/\\;/g, ";"),
+  );
+  const unavailable = /\b(?:this (?:session|tour|event) is closed|registration (?:is |has )?closed|sold out)\b/i.test(text);
+  if (unavailable) return { unavailable: true, cost: null, costNote: null };
+
+  const memberPricing = text.match(
+    /\$\s*(\d+(?:\.\d{1,2})?)\s*per person\s*;\s*\$\s*(\d+(?:\.\d{1,2})?)\s*for (?:museum )?members?/i,
+  );
+  if (memberPricing) {
+    const publicPrice = Number(memberPricing[1]);
+    return {
+      unavailable: false,
+      cost: publicPrice < 25 ? "low" : "paid",
+      costNote: `$${memberPricing[1]}; $${memberPricing[2]} members`,
+    };
+  }
+
+  return { unavailable: false, ...parseCivicPlusEventCost(text) };
 }
 
 function nthWeekdayOfMonth(year, month, weekday, occurrence) {

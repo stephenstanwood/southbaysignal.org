@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  buildEditorialPrompt,
   buildEditorialPacket,
   civicMeetingsHeading,
   planCardPriceBand,
@@ -23,6 +24,13 @@ import {
 } from "./lib.mjs";
 
 const BLOCKED_UNSPLASH = "https://images.unsplash.com/photo-1585899873671-ade0aa28a821?crop=entropy&w=400";
+
+test("newsletter editor prompt forbids unsupported multi-day ordinal claims", () => {
+  const prompt = buildEditorialPrompt({ todayEvents: [] });
+  assert.match(prompt, /A prior preview still counts as a day of the event/);
+  assert.match(prompt, /say "first public day" only when the packet explicitly supports it/);
+  assert.match(prompt, /never turn that into "first day"/);
+});
 
 test("newsletter copy truncation never cuts a word in half", () => {
   const note = "Civic stakes lead the week, plus practical threads on car-free VTA life and getting through a heatwave without central AC.";

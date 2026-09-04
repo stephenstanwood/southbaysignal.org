@@ -131,6 +131,10 @@ test("scheduled upcoming shows publish with their real Pacific clock time", asyn
   assert.equal(show.title, "Neil Diamond Superstar");
   assert.equal(show.cost, null);
   assert.equal(show.costNote, undefined);
+  assert.equal(show.occurrenceEvidence.kind, "first-party-occurrence-page");
+  assert.equal(show.occurrenceEvidence.sourceUrl, show.url);
+  assert.equal(show.occurrenceEvidence.date, soon);
+  assert.match(show.occurrenceEvidence.checkedAt, /^\d{4}-\d{2}-\d{2}T/);
 });
 
 test("cancelled and past listings never publish", async () => {

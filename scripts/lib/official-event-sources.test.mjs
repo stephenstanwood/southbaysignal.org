@@ -9,9 +9,13 @@ import {
   extractVboSession,
   normalizeMidpenOccurrenceUrl,
   normalizeMountainWineryCard,
+  parseCivicPlusEventCost,
+  parseCivicPlusEventDetail,
+  parseCivicPlusEventTimes,
   parseHappyHollowSchedules,
   parseCivicPlusCalendarPage,
   parseJazzOnThePlazzSchedule,
+  parseLosAltosHistoryEventFacts,
   parseMusicInParkSchedule,
   parseSanJoseJazzLineup,
 } from "./official-event-sources.mjs";
@@ -178,6 +182,63 @@ test("parses CivicPlus schema events that its incomplete RSS feed omits", () => 
     address: "Los Altos, CA 94022",
     href: "/Calendar.aspx?EID=2023",
   }]);
+});
+
+test("splits CivicPlus start and end clocks without inventing all-day times", () => {
+  assert.deepEqual(parseCivicPlusEventTimes("07:30 PM - 09:30 PM"), {
+    time: "7:30 PM",
+    endTime: "9:30 PM",
+  });
+  assert.deepEqual(parseCivicPlusEventTimes("12:00 AM - 11:59 PM"), {
+    time: null,
+    endTime: null,
+  });
+});
+
+test("reads venue, address, time, and ticket floor from a CivicPlus detail page", () => {
+  const detail = parseCivicPlusEventDetail(`
+    <span itemprop="startDate">2026-09-04T19:30:00</span>
+    <div class="specificDetailHeader">Time:</div>
+    <div class="specificDetailItem">7:30 PM&thinsp;-&thinsp;9:30 PM</div>
+    <div id="ctl00_MainContent_ModuleContent_ctl00_ctl04_location_name">
+      <div itemprop="name">The Heritage Theatre</div>
+    </div>
+    <span itemprop="streetAddress">1 W Campbell Ave</span>
+    <span itemprop="addressLocality">Campbell</span>
+    <span itemprop="addressRegion">CA</span>
+    <span itemprop="postalCode">95008</span>
+    <div itemprop="price">$30.50/$43.50/$55.50 + $4 FF and $5 processing fee</div>
+  `);
+
+  assert.deepEqual(detail, {
+    startsAt: "2026-09-04T19:30:00",
+    time: "7:30 PM",
+    endTime: "9:30 PM",
+    venue: "The Heritage Theatre",
+    address: "1 W Campbell Ave, Campbell, CA 95008",
+    costText: "$30.50/$43.50/$55.50 + $4 FF and $5 processing fee",
+    cost: "paid",
+    costNote: "From $30.50",
+  });
+});
+
+test("does not let a limited free offer erase a paid CivicPlus ticket floor", () => {
+  assert.deepEqual(parseCivicPlusEventCost("Free"), { cost: "free", costNote: null });
+  assert.deepEqual(parseCivicPlusEventCost("$20; children free"), {
+    cost: "low",
+    costNote: "From $20",
+  });
+});
+
+test("reads Los Altos History Museum prices and blocks closed sessions", () => {
+  assert.deepEqual(
+    parseLosAltosHistoryEventFacts("Cost: $15 per person\\; $10 for Museum members."),
+    { unavailable: false, cost: "low", costNote: "$15; $10 members" },
+  );
+  assert.deepEqual(
+    parseLosAltosHistoryEventFacts("Cost: $15 per person\\; $10 for Museum members. This session is closed."),
+    { unavailable: true, cost: null, costNote: null },
+  );
 });
 
 test("derives Happy Hollow's published recurring and dated events", () => {
