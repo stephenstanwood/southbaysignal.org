@@ -5636,63 +5636,96 @@ async function fetchScccfdEvents() {
   }
 }
 
+// Recurring markets whose schedule is projected forward rather than scraped
+// per-occurrence. Module scope so the config invariants (relocation dates land
+// on the market's own weekday, every market carries the three evidence patterns
+// verifyMarketScheduleSource requires) can be unit-tested without a network.
+const FARMERS_MARKETS = [
+  // The CAFMA page states this market's weekday in its own "Time" field
+  // ("Sundays, 9:00am- 1:00 pm"), never as "Every Sunday" — the phrasing the
+  // Los Gatos and Saratoga pages use. Requiring that literal suppressed the
+  // largest market in the coverage area outright. The replacement pattern is
+  // tighter than the one it replaces, not looser: it pins the weekday and the
+  // hours together, off the page's own schedule line.
+  //
+  // `relocations` carries the market's published alternate-location Sundays.
+  // The same page lists six of them, and on those dates the market is not at
+  // the Caltrain lot at all — it moves to the Hope St. lots a few blocks away.
+  // No street number is published for the alternate site, so none is invented.
+  {
+    title: "Mountain View Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM",
+    venue: "Caltrain Station", address: "600 W Evelyn Ave, Mountain View", city: "mountain-view",
+    url: "https://www.cafarmersmkts.com/mountain-view-farmers-market/", season: [1, 12],
+    relocations: {
+      "2026-09-20": { venue: "Hope St. Lots (Lots 4 & 8)", address: "Hope St, Mountain View" },
+      "2026-09-27": { venue: "Hope St. Lots (Lots 4 & 8)", address: "Hope St, Mountain View" },
+      "2026-10-04": { venue: "Hope St. Lots (Lots 4 & 8)", address: "Hope St, Mountain View" },
+      "2026-11-08": { venue: "Hope St. Lots (Lots 4 & 8)", address: "Hope St, Mountain View" },
+      "2026-11-29": { venue: "Hope St. Lots (Lots 4 & 8)", address: "Hope St, Mountain View" },
+      "2026-12-13": { venue: "Hope St. Lots (Lots 4 & 8)", address: "Hope St, Mountain View" },
+    },
+    evidencePatterns: [/Mountain View Farmers[’']? Market/i, /Sundays?,\s*9:00\s*am\s*[-–]\s*1:00\s*pm/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
+  },
+  {
+    title: "Los Gatos Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM",
+    venue: "Town Park Plaza", address: "50 University Ave, Los Gatos", city: "los-gatos",
+    url: "https://www.cafarmersmkts.com/losgatos-farmers-market/", season: [1, 12],
+    evidencePatterns: [/Los Gatos Farmers[’']? Market/i, /Every Sunday/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
+  },
+  {
+    title: "Saratoga Farmers Market", day: 6, time: "9:00 AM", endTime: "1:00 PM",
+    venue: "West Valley College", address: "14000 Fruitvale Ave, Saratoga", city: "saratoga",
+    url: "https://www.cafarmersmkts.com/saratoga-farmers-market", season: [1, 12],
+    evidencePatterns: [/Saratoga Farmers[’']? Market/i, /Every Saturday/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
+  },
+  {
+    title: "Santana Row Farmers Market", day: 3, time: "4:00 PM", endTime: "8:00 PM",
+    venue: "Santana Row", address: "377 Santana Row, San Jose", city: "san-jose",
+    url: "https://santanarow.com/event/farmers-market/", season: [6, 9],
+    startDate: "2026-07-22", endDate: "2026-09-30",
+    // Santana Row's page used to print the literal run ("July 22, 2026 –
+    // September 30, 2026") and now writes the season as "through September".
+    // The market itself did not change — the fourth pattern had pinned a
+    // string the venue stopped publishing, so the whole market went dark.
+    // Match the season statement the page actually carries; the endDate above
+    // still bounds the run.
+    evidencePatterns: [/Santana Row Farmers[’']? Market/i, /every Wednesday/i, /4(?::00)?\s*(?:pm|p\.m\.)\s*(?:to|[-–])\s*8(?::00)?\s*(?:pm|p\.m\.)/i, /through September/i],
+  },
+  // Urban Village Farmers' Market publishes the current Campbell schedule and
+  // date-specific street-closure exceptions on its first-party market pages.
+  {
+    title: "Campbell Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM",
+    venue: "Downtown Campbell", address: "Campbell Ave, Campbell", city: "campbell",
+    url: "https://uvfm.org/campbell-sundays", season: [1, 12],
+    excludedDates: ["2026-05-17", "2026-10-18"],
+    evidencePatterns: [/Campbell Farmers[’']? Market/i, /every Sunday/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
+  },
+  {
+    title: "Sunnyvale Farmers Market", day: 6, time: "9:00 AM", endTime: "1:00 PM",
+    venue: "Murphy Avenue", address: "Murphy Ave, Sunnyvale", city: "sunnyvale",
+    url: "https://uvfm.org/sunnyvale-saturday", season: [1, 12],
+    excludedDates: ["2026-06-06", "2026-07-04"],
+    evidencePatterns: [/Sunnyvale Farmers[’']? Market/i, /Saturdays/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
+  },
+  {
+    title: "California Ave Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM",
+    venue: "California Avenue", address: "California Ave, Palo Alto", city: "palo-alto",
+    url: "https://uvfm.org/palo-alto-sundays", season: [1, 12],
+    evidencePatterns: [/California Ave(?:nue)? Farmers[’']? Market/i, /Sundays/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
+  },
+];
+
 async function fetchFarmersMarketEvents() {
   console.log("  ⏳ Farmers markets...");
-  const markets = [
-    {
-      title: "Mountain View Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM",
-      venue: "Caltrain Station", address: "600 W Evelyn Ave, Mountain View", city: "mountain-view",
-      url: "https://www.cafarmersmkts.com/mountain-view-farmers-market/", season: [1, 12],
-      evidencePatterns: [/Mountain View Farmers[’']? Market/i, /Every Sunday/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
-    },
-    {
-      title: "Los Gatos Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM",
-      venue: "Town Park Plaza", address: "50 University Ave, Los Gatos", city: "los-gatos",
-      url: "https://www.cafarmersmkts.com/losgatos-farmers-market/", season: [1, 12],
-      evidencePatterns: [/Los Gatos Farmers[’']? Market/i, /Every Sunday/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
-    },
-    {
-      title: "Saratoga Farmers Market", day: 6, time: "9:00 AM", endTime: "1:00 PM",
-      venue: "West Valley College", address: "14000 Fruitvale Ave, Saratoga", city: "saratoga",
-      url: "https://www.cafarmersmkts.com/saratoga-farmers-market", season: [1, 12],
-      evidencePatterns: [/Saratoga Farmers[’']? Market/i, /Every Saturday/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
-    },
-    {
-      title: "Santana Row Farmers Market", day: 3, time: "4:00 PM", endTime: "8:00 PM",
-      venue: "Santana Row", address: "377 Santana Row, San Jose", city: "san-jose",
-      url: "https://santanarow.com/event/farmers-market/", season: [6, 9],
-      startDate: "2026-07-22", endDate: "2026-09-30",
-      evidencePatterns: [/Santana Row Farmers[’']? Market/i, /every Wednesday/i, /4(?::00)?\s*(?:pm|p\.m\.)\s*(?:to|[-–])\s*8(?::00)?\s*(?:pm|p\.m\.)/i, /July 22, 2026\s*[-–]\s*September 30, 2026/i],
-    },
-    // Urban Village Farmers' Market publishes the current Campbell schedule and
-    // date-specific street-closure exceptions on its first-party market pages.
-    {
-      title: "Campbell Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM",
-      venue: "Downtown Campbell", address: "Campbell Ave, Campbell", city: "campbell",
-      url: "https://uvfm.org/campbell-sundays", season: [1, 12],
-      excludedDates: ["2026-05-17", "2026-10-18"],
-      evidencePatterns: [/Campbell Farmers[’']? Market/i, /every Sunday/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
-    },
-    {
-      title: "Sunnyvale Farmers Market", day: 6, time: "9:00 AM", endTime: "1:00 PM",
-      venue: "Murphy Avenue", address: "Murphy Ave, Sunnyvale", city: "sunnyvale",
-      url: "https://uvfm.org/sunnyvale-saturday", season: [1, 12],
-      excludedDates: ["2026-06-06", "2026-07-04"],
-      evidencePatterns: [/Sunnyvale Farmers[’']? Market/i, /Saturdays/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
-    },
-    {
-      title: "California Ave Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM",
-      venue: "California Avenue", address: "California Ave, Palo Alto", city: "palo-alto",
-      url: "https://uvfm.org/palo-alto-sundays", season: [1, 12],
-      evidencePatterns: [/California Ave(?:nue)? Farmers[’']? Market/i, /Sundays/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
-    },
-  ];
+  const markets = FARMERS_MARKETS;
 
   const verifiedMarkets = [];
+  const suppressed = [];
   for (const market of markets) {
     const verification = await verifyMarketScheduleSource(market, { userAgent: UA });
     if (!verification.confirmed) {
       console.log(`  ⚠️  Farmers markets: suppressed ${market.title} (${verification.reason})`);
+      suppressed.push(`${market.title} (${verification.reason})`);
       continue;
     }
     verifiedMarkets.push({ market, verification });
@@ -5712,6 +5745,10 @@ async function fetchFarmersMarketEvents() {
       if (m.excludedDates?.includes(dateStr)) continue;
 
       const dateObj = new Date(`${dateStr}T12:00:00-07:00`);
+      // A market that publishes an alternate location for a specific date is
+      // not at its usual address that day. Sending a reader to the regular lot
+      // is worse than not listing the market at all.
+      const relocation = m.relocations?.[dateStr];
       events.push({
         id: h("farmersmarket", m.title, dateStr),
         title: m.title,
@@ -5719,12 +5756,14 @@ async function fetchFarmersMarketEvents() {
         displayDate: displayDate(dateObj),
         time: m.time,
         endTime: m.endTime,
-        venue: m.venue,
-        address: m.address,
+        venue: relocation?.venue || m.venue,
+        address: relocation?.address || m.address,
         city: m.city,
         category: "food",
         cost: "free",
-        description: "Weekly open-air farmers market featuring local produce, artisan goods, and prepared foods.",
+        description: relocation
+          ? `Weekly open-air farmers market featuring local produce, artisan goods, and prepared foods. This date only, the market runs at ${relocation.venue} instead of its usual location.`
+          : "Weekly open-air farmers market featuring local produce, artisan goods, and prepared foods.",
         url: m.url,
         source: "South Bay Signal",
         kidFriendly: true,
@@ -5733,7 +5772,20 @@ async function fetchFarmersMarketEvents() {
       });
     }
   }
-  console.log(`  ✅ Farmers markets: ${events.length} events`);
+  // sourceHealth reports this whole fetcher as one row, so a market that fails
+  // verification leaves the source looking "ok" while a real weekly market is
+  // missing from the site. Mountain View's and Santana Row's went dark that way
+  // — both pages still published their schedules, but the evidence patterns had
+  // drifted off the wording, and the only signal was a console line in a cron
+  // log. Raise it where a stale pattern gets noticed.
+  if (suppressed.length > 0) {
+    await catSignal({
+      key: "farmers-market-suppressed",
+      title: `Farmers market schedule unverified (${suppressed.length})`,
+      body: `${suppressed.join("; ")}. The market is not being published. Check whether the organizer page changed its wording or the market actually stopped.`,
+    });
+  }
+  console.log(`  ✅ Farmers markets: ${events.length} events${suppressed.length ? ` (${suppressed.length} suppressed)` : ""}`);
   return events;
 }
 
@@ -9214,6 +9266,7 @@ export {
   resolveBiblioLocationFields,
   fetchCampbellEvents,
   fetchFarmersMarketEvents,
+  FARMERS_MARKETS,
   fetchHappyHollowEvents,
   fetchHeritageTheatreEvents,
   heritageTheatreEventUrls,
