@@ -2,6 +2,115 @@
 
 ---
 
+## 2026-09-04 — Cycle 216: The Biggest Market in the Coverage Area Wasn't on the Site
+
+### Context
+Friday September 4, 2026. Clean tree on pull, roadmap still closed (6/6). Tech
+was already current — `RECENTLY_FUNDED` runs through Lyte's Sep 2 Series C, and
+`audit-tech-urls` came back 161 ok / 0 moved / 0 dead across 168 card links, so
+there was nothing to add there. `astro check` clean, suite green.
+
+Two defects came out of the data instead: the three hard findings sitting in
+`audit-events`, and a time histogram over the event set.
+
+### What Was Built
+
+**Off-site events file under the city they actually happen in.** Every scraper
+hardcodes `city` to the publisher, which is right until the publisher books
+somewhere else. Three events were filed where no reader would find them: the
+Hammer Theatre's box office sells SJSU choir concerts staged at Campbell United
+Methodist and at Mission Santa Clara, both shipped `san-jose`; and Mountain View
+Public Library runs a storytime at Deer Hollow Farm in Cupertino, shipped
+`mountain-view`. Same class as the offsite library venues fixed in `15043d46`.
+
+`resolveInboundCity` had already solved this for the newsletter pipeline — the
+Campbell Chamber's golf tournament is played in south San Jose — so it moved to
+`scripts/lib/event-city.mjs` as `resolveEventCity` and both pipelines now share
+it. New `rehomeScrapedEvent()` runs over the scraped set after venue and address
+are decoded and before cross-source dedup, so two sources for one event can't
+disagree about the city afterwards. A dry run over all 1,883 events moved
+exactly the three the audit flagged and nothing else.
+
+One hardening the scraped set forced, and it is the interesting part: the first
+dry run also moved seven Sharks games and concerts to `santa-clara`. Ticketmaster
+publishes SAP Center's address as "525 W Santa Clara" with the "St" truncated
+off, so `STREET_NAMED_FOR_CITY` couldn't see it and the bare "Santa Clara" read
+as a city. A house number plus a directional prefix in front of a city name is a
+street, not a city — nobody writes "525 W Santa Clara, CA" — and is now stripped
+too. `200 E. Santa Clara St., San José` still resolves to San José, because the
+trailing city has neither a number nor a direction in front of it.
+
+**Two farmers markets had gone dark on stale evidence.** The projected-market
+source verifies that each organizer page still states the market's name,
+weekday, and hours before publishing occurrences — fail-closed by design, and
+correct. Both failures had nothing to do with the markets:
+
+Mountain View — the CAFMA page states the weekday in its own Time field
+("Sundays, 9:00am- 1:00 pm") and never as "Every Sunday", which is the phrasing
+the Los Gatos and Saratoga pages use and the pattern demanded. The largest
+market in the coverage area, running every Sunday at the Caltrain lot since
+1994, was absent from the site entirely.
+
+Santana Row — the page used to print the literal run ("July 22, 2026 – September
+30, 2026") and now writes the season as "through September". The fourth pattern
+pinned a string the venue stopped publishing, so the market went dark.
+
+Both replacements were checked against the live pages and neither is looser than
+what it replaces: Mountain View's pins the weekday and the hours together off the
+page's own schedule line. Occurrences went 64 → 81, all seven configured markets
+publishing.
+
+Two things fell out of that. The Mountain View page publishes six Sundays where
+the market is not at the Caltrain lot at all — it moves to the Hope St. lots — so
+those dates now carry the alternate venue and say so on the card. No street
+number is published for the alternate site, so none is invented. And a market
+failing verification was only ever a `console.log` in a cron log, while
+`sourceHealth` reports all seven markets as one "ok" row, so a partial outage
+inside the source was structurally invisible. That is why these sat dark.
+Suppression now raises a `catSignal` naming the market and the reason.
+
+**Verified:** 12 new tests across `scripts/lib/event-city.test.mjs` (moved from
+the inbound normalizer and extended) and `scripts/lib/farmers-market-config.test.mjs`,
+both wired into `npm test`; full suite green at 909 assertions / 0 failures;
+`astro check` 0 errors; `check-home-locked` OK. `audit-events` hard findings
+3 → 0. Live runs against all seven organizer pages confirmed the new evidence
+patterns and the relocation dates.
+
+### Why This Was the Strongest Move
+Both defects were the same shape: the site was confidently telling readers
+something false about *where*, and every existing guard read green. A Campbell
+resident filtering to Campbell did not see the choir concert in their own
+neighborhood; a Mountain View resident looking for the Sunday market found
+nothing at all. Neither showed up as an error anywhere — one was three rows in an
+audit report nobody had acted on, the other was a console line under a source
+that reported "ok". The suppression alert is the durable half: it converts the
+next stale pattern from a silent multi-week outage into a signal.
+
+No protected Home, Events, or Food surface was touched; no component was added.
+
+The restored market occurrences land on the Mini's next scheduled refresh rather
+than being regenerated here, per the standing "don't churn the JSON mid-cycle"
+rule — the three re-homed cities were patched in place because that is a
+three-field edit.
+
+### Next 3 Strongest Ideas
+1. **The other projected/hardcoded sources have the same rot.**
+   `fetchMiscHardcodedEvents` returns 0 and will forever — every date in it is
+   spring/summer 2026 and past. It is not wrong, just dead, and unlike the
+   markets there is no verification step that would ever say so. Either it gets
+   topped up or the source should be retired.
+2. **Audit the remaining `parseDate` calendar-date sites** (carried from Cycle
+   215, still open). `parseDate(item.startDate)` / `parseDate(item.pubDate)`
+   fallbacks survive in the CivicPlus city adapters, The Tech, and the Campbell
+   feed; any that can carry a date-only string has the same off-by-one waiting.
+3. **`sourceHealth` cannot see inside a source.** The farmers-market outage is
+   the general case: any fetcher that aggregates several independent upstreams
+   reports one row, so a partial failure is invisible until someone reads the
+   log. Per-upstream health rows would catch the next one without a bespoke
+   alert per source.
+
+---
+
 ## 2026-08-31 — Cycle 215: The Fireside Chat Was on Tuesday at Five. It Was on Wednesday at Noon.
 
 ### Context
