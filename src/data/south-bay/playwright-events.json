@@ -1,24 +1,23 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-04T02:20:33.830Z",
+    "generatedAt": "2026-09-04T15:08:20.263Z",
     "generator": "playwright-scrapers",
-    "scrapersRun": 35,
-    "eventCount": 621,
-    "sourceCount": 23,
+    "scrapersRun": 34,
+    "eventCount": 613,
+    "sourceCount": 22,
     "sources": [
-      "Mountain View Public Library (138)",
-      "Los Gatos Library (148)",
+      "Mountain View Public Library (137)",
+      "Los Gatos Library (149)",
       "San Jose Jazz (19)",
       "Linden Tree Books (12)",
-      "History San Jose (8)",
-      "Montalvo Arts Center (6)",
+      "History San Jose (9)",
+      "Montalvo Arts Center (5)",
       "City Lights Theater (6)",
       "ICA San José (3)",
-      "Mountain Winery (24)",
+      "Mountain Winery (23)",
       "San Jose Theaters (20)",
       "Children's Discovery Museum (1)",
-      "Midpen Open Space (5)",
-      "Guadalupe River Park Conservancy (9)",
+      "Guadalupe River Park Conservancy (7)",
       "Santana Row (8)",
       "City of Cupertino (72)",
       "Opera San José (5)",
@@ -67,7 +66,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 142,
+        "count": 141,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -77,7 +76,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 148,
+        "count": 149,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -127,7 +126,7 @@
         "id": "history-san-jose",
         "label": "History San Jose",
         "status": "ok",
-        "count": 16,
+        "count": 18,
         "error": null,
         "sources": [
           "History San Jose"
@@ -137,7 +136,7 @@
         "id": "montalvo-arts-center",
         "label": "Montalvo Arts Center",
         "status": "ok",
-        "count": 7,
+        "count": 6,
         "error": null,
         "sources": [
           "Montalvo Arts Center"
@@ -175,7 +174,7 @@
         "id": "mountain-winery",
         "label": "Mountain Winery",
         "status": "ok",
-        "count": 24,
+        "count": 23,
         "error": null,
         "sources": [
           "Mountain Winery"
@@ -221,7 +220,7 @@
         "id": "guadalupe-river-park",
         "label": "Guadalupe River Park",
         "status": "ok",
-        "count": 9,
+        "count": 7,
         "error": null,
         "sources": [
           "Guadalupe River Park Conservancy"
@@ -240,9 +239,9 @@
       {
         "id": "downtown-mountain-view",
         "label": "Downtown Mountain View",
-        "status": "empty",
+        "status": "error",
         "count": 0,
-        "error": null,
+        "error": "page.goto: net::ERR_SSL_PROTOCOL_ERROR at https://www.downtownmountainview.com/events\nCall log:\n  - navigating to \"https://www.downtownmountainview.com/events\", waiting until \"domcontentloaded\"\n",
         "sources": []
       },
       {
@@ -352,40 +351,6 @@
     ]
   },
   "events": [
-    {
-      "id": "20155fad9ed8",
-      "title": "Community Preservation Lab Scanning Service",
-      "date": "2026-09-03",
-      "displayDate": "Thu, Sep 3",
-      "time": "4:00 PM",
-      "endTime": "8:00 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17150006",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "e968e01d4bcc",
-      "title": "Black Holes and Quantum Mechanics",
-      "date": "2026-09-03",
-      "displayDate": "Thu, Sep 3",
-      "time": "6:30 PM",
-      "endTime": "7:30 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17233699",
-      "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
     {
       "id": "d5a12c00897a",
       "title": "Baby Storytime: Rerun",
@@ -2697,6 +2662,23 @@
       "url": "https://mountainview.libcal.com/event/17249788",
       "source": "Mountain View Public Library",
       "kidFriendly": false
+    },
+    {
+      "id": "1ba26f145ecd",
+      "title": "Magical Bridge Storytime",
+      "date": "2026-12-03",
+      "displayDate": "Thu, Dec 3",
+      "time": "10:00 AM",
+      "endTime": "10:30 AM",
+      "venue": "Magical Bridge Playground",
+      "address": "201 S Rengstorff Ave, Mountain View, CA 94040",
+      "city": "mountain-view",
+      "category": "family",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17290233",
+      "source": "Mountain View Public Library",
+      "kidFriendly": true
     },
     {
       "id": "cbdd438d7fbe",
@@ -5215,6 +5197,23 @@
       "kidFriendly": true
     },
     {
+      "id": "7c6a977eadb3",
+      "title": "Creative Break",
+      "date": "2026-12-03",
+      "displayDate": "Thu, Dec 3",
+      "time": "4:30 PM",
+      "endTime": "6:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/14510551",
+      "source": "Los Gatos Library",
+      "kidFriendly": false
+    },
+    {
       "id": "32e3d2884f2a",
       "title": "SJZ Break Room Jazz Jam",
       "date": "2026-09-04",
@@ -5938,20 +5937,20 @@
       "kidFriendly": true
     },
     {
-      "id": "4fe14eefb4f9",
-      "title": "We value your privacy",
-      "date": "2026-09-16",
-      "displayDate": "Wed, Sep 16",
-      "time": null,
-      "endTime": null,
-      "venue": "Montalvo Arts Center",
-      "address": "15400 Montalvo Rd, Saratoga, CA 95071",
-      "city": "saratoga",
-      "category": "arts",
-      "cost": "paid",
+      "id": "0b2b97a39872",
+      "title": "San José Roots",
+      "date": "2026-11-07",
+      "displayDate": "Sat, Nov 7",
+      "time": "12:00 pm",
+      "endTime": "4:00 pm",
+      "venue": "Gonzales/Peralta Adobe",
+      "address": "87 N San Pedro St., San José",
+      "city": "san-jose",
+      "category": "community",
+      "cost": "free",
       "description": "",
-      "url": "https://montalvoarts.org/",
-      "source": "Montalvo Arts Center",
+      "url": "https://historysanjose.org/event/san-jose-roots/",
+      "source": "History San Jose",
       "kidFriendly": false
     },
     {
@@ -6190,23 +6189,6 @@
       "description": "",
       "url": "https://www.icasanjose.org/upcoming-exhibitions/queeramericanmemorials/",
       "source": "ICA San José",
-      "kidFriendly": false
-    },
-    {
-      "id": "31671e306c66",
-      "title": "TajMo: The Taj Mahal & Keb' Mo' Band",
-      "date": "2026-09-03",
-      "displayDate": "Thu, Sep 3",
-      "time": "7:30 PM",
-      "endTime": null,
-      "venue": "The Mountain Winery",
-      "address": "14831 Pierce Rd, Saratoga, CA 95070",
-      "city": "saratoga",
-      "category": "music",
-      "cost": "paid",
-      "description": "",
-      "url": "https://www.mountainwinery.com/events/detail?event_id=1392050",
-      "source": "Mountain Winery",
       "kidFriendly": false
     },
     {
@@ -6956,50 +6938,6 @@
       "url": "https://www.cdm.org/calendar/",
       "source": "Children's Discovery Museum",
       "kidFriendly": true
-    },
-    {
-      "id": "d550683a4d6b",
-      "title": "Bootcamp in the River Park with GymParty",
-      "date": "2026-09-03",
-      "displayDate": "Thu, Sep 3",
-      "time": "6:00 pm",
-      "endTime": null,
-      "venue": "Guadalupe River Park",
-      "address": "438 Coleman Ave, San Jose, CA 95110",
-      "city": "san-jose",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.instagram.com/gymparty_/",
-      "source": "Guadalupe River Park Conservancy",
-      "kidFriendly": false,
-      "occurrenceEvidence": {
-        "kind": "first-party-occurrence-page",
-        "sourceUrl": "https://grpg.org/calendar/events/",
-        "date": "2026-09-03"
-      }
-    },
-    {
-      "id": "a895cfc7e68d",
-      "title": "Yoga in the River Park: Sunset Sessions with GymParty",
-      "date": "2026-09-03",
-      "displayDate": "Thu, Sep 3",
-      "time": "7:00 pm",
-      "endTime": null,
-      "venue": "Guadalupe River Park",
-      "address": "438 Coleman Ave, San Jose, CA 95110",
-      "city": "san-jose",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.instagram.com/gymparty_/",
-      "source": "Guadalupe River Park Conservancy",
-      "kidFriendly": false,
-      "occurrenceEvidence": {
-        "kind": "first-party-occurrence-page",
-        "sourceUrl": "https://grpg.org/calendar/events/",
-        "date": "2026-09-03"
-      }
     },
     {
       "id": "0173100d00aa",
