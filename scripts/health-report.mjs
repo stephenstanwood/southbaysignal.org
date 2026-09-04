@@ -26,16 +26,25 @@ const ARTIFACTS = [
   {
     name: "Events",
     file: "upcoming-events.json",
-    cadence: "hourly",
-    maxStaleHours: 6,
+    // Declared hourly with a 6-hour ceiling, but the refresh has never run
+    // hourly: events-refresh.plist fires at 19:15 PT with a 20:45 retry, so
+    // the longest legitimate gap is ~22.5 hours and this artifact reported
+    // "stale" for roughly 22 hours out of every 24. A warning that is true
+    // all day is one nobody reads, and it would have hidden a genuine refresh
+    // outage. 26 hours matches the ceiling the refresh watchdog already uses
+    // (see RETRY_SLOT_SUPPRESSION_HOURS in scripts/events/refresh-schedule.mjs),
+    // so this now fires only when a whole cycle was actually missed.
+    cadence: "daily",
+    maxStaleHours: 26,
     countFn: (d) => d.eventCount || d.events?.length,
     metaFn: (d) => d.generatedAt,
   },
   {
     name: "Upcoming Meetings",
     file: "upcoming-meetings.json",
-    cadence: "hourly",
-    maxStaleHours: 12,
+    // Same launch agent as Events above, so the same 26-hour ceiling applies.
+    cadence: "daily",
+    maxStaleHours: 26,
     countFn: (d) => {
       if (!d.meetings) return 0;
       // Each city has one meeting object (not an array)

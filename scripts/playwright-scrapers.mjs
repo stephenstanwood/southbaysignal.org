@@ -32,7 +32,6 @@ import {
   lindenTreeIsTicketed,
 } from "./lib/linden-tree-heading.mjs";
 import {
-  normalizeMidpenOccurrenceUrl,
   normalizeMountainWineryCard,
 } from "./lib/official-event-sources.mjs";
 import {
@@ -2055,68 +2054,6 @@ async function scrapePaloAltoArtCenter(page) {
   });
 }
 
-async function scrapeMidpen(page) {
-  await page.goto("https://www.openspace.org/get-involved/events-activities", { waitUntil: "domcontentloaded", timeout: 30_000 });
-  await page.waitForTimeout(2500);
-  const raw = await page.evaluate(() => [...document.querySelectorAll("tbody tr")].map((row) => {
-    const titleLink = row.querySelector(".views-field-title a[href]");
-    return {
-      activity: row.querySelector(".views-field-type")?.textContent?.trim() || "",
-      title: titleLink?.textContent?.trim() || "",
-      url: titleLink?.href || "",
-      date: row.querySelector(".activity-search-date")?.textContent?.trim() || "",
-      time: row.querySelector(".activity-search-time")?.textContent?.trim() || "",
-      preserve: row.querySelector(".views-field-field-preserve-term-1")?.textContent?.trim() || "",
-    };
-  }).filter((row) => /^(GUIDED ACTIVITY|VOLUNTEER PROJECT)$/i.test(row.activity) && row.title));
-  const locationRules = [
-    [/bear creek redwoods|sierra azul/i, "los-gatos"],
-    [/fremont older|monte bello/i, "cupertino"],
-    [/rancho san antonio/i, "los-altos"],
-    [/foothills|los trancos/i, "palo-alto"],
-  ];
-  const cityLabel = {
-    "los-gatos": "Los Gatos",
-    "cupertino": "Cupertino",
-    "los-altos": "Los Altos",
-    "palo-alto": "Palo Alto",
-  };
-  const outOfArea = /\b(la honda|pulgas ridge|purisima|long ridge|russian ridge|skyline ridge|windy hill|el corte de madera|pescadero|half moon bay|ravenswood)\b/i;
-  return raw.map((r) => {
-    const date = yearAwareDate(r.date);
-    const url = normalizeMidpenOccurrenceUrl(r.url);
-    if (!date || date < TODAY || !isUsefulTitle(r.title)) return null;
-    if (!url) return null;
-    if (/\b(meeting|budget|committee|board)\b/i.test(r.title)) return null;
-    const place = (r.preserve || "Midpen Open Space Preserve").replace(/\t.*$/, "").trim();
-    if (outOfArea.test(`${r.title} ${place}`)) return null;
-    let city = null;
-    for (const [re, slug] of locationRules) {
-      if (re.test(`${r.title} ${place}`)) { city = slug; break; }
-    }
-    // Unmapped preserve — "santa-clara-county" isn't in the City union
-    // (src/lib/south-bay/types.ts) and an unresolved preserve name gives
-    // Directions nothing real to point at. Drop rather than publish an
-    // unlocatable event; add the preserve to locationRules (in-area) or
-    // outOfArea (out-of-area) once known. D53.
-    if (!city) return null;
-    return {
-      title: r.title,
-      date,
-      time: clockFromText(r.time),
-      endTime: null,
-      venue: place,
-      address: place === "Midpen Open Space Preserve" ? "" : `${place}, ${cityLabel[city] || "Santa Clara County"}`,
-      city,
-      url,
-      source: "Midpen Open Space",
-      category: r.activity === "VOLUNTEER PROJECT" ? "community" : "outdoor",
-      cost: "free",
-      kidFriendly: KID_RE.test(r.title),
-    };
-  }).filter(Boolean);
-}
-
 async function scrapeGuadalupeRiverPark(page) {
   const events = await scrapeEventListPage(page, {
     url: "https://www.grpg.org/events",
@@ -2689,7 +2626,18 @@ async function main() {
   tasks.push({ name: "Hammer Theatre", fn: (b) => runScraper(b, "Hammer Theatre", scrapeHammerTheatre) });
   tasks.push({ name: "Children's Discovery Museum", fn: (b) => runScraper(b, "Children's Discovery Museum", scrapeChildrensDiscoveryMuseum) });
   tasks.push({ name: "Palo Alto Art Center", fn: (b) => runScraper(b, "Palo Alto Art Center", scrapePaloAltoArtCenter) });
-  tasks.push({ name: "Midpen Open Space", fn: (b) => runScraper(b, "Midpen Open Space", scrapeMidpen) });
+  // Midpen Open Space — retired 2026-09-04, superseded by fetchMidpenEvents()
+  // in generate-events.mjs. This scraper read page 1 of the pager only, so it
+  // carried 5 of the district's 91 published activities, with no description,
+  // no end time and no trailhead. It also mislabeled two cities: Monte Bello
+  // as Cupertino (its trailhead is on Page Mill Road) and Sierra Azul as Los
+  // Gatos (its public access is the Mt. Umunhum summit lot off Hwy 85 at
+  // Camden, which is San Jose). The replacement paginates, reads each event
+  // page, and derives every city from the district's own "Where to Meet"
+  // directions. openspace.org serves plain HTML to an ordinary HTTP client —
+  // it never needed a browser. Do not re-register this without first
+  // retiring the generate-events adapter; two live implementations of one
+  // source is how duplicate records get made.
   tasks.push({ name: "Guadalupe River Park", fn: (b) => runScraper(b, "Guadalupe River Park", scrapeGuadalupeRiverPark) });
   tasks.push({ name: "Santana Row", fn: (b) => runScraper(b, "Santana Row", scrapeSantanaRow) });
   tasks.push({ name: "Downtown Mountain View", fn: (b) => runScraper(b, "Downtown Mountain View", scrapeDowntownMountainView) });

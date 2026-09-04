@@ -35,6 +35,9 @@
  *   - Palo Alto Players (Venture Event Manager AJAX, per-performance)
  *   - Hammer Theatre (VBO Tickets HTML)
  *   - Gamble Garden (The Events Calendar API)
+ *   - Midpeninsula Regional Open Space District (Drupal Views table) —
+ *     docent-led hikes and volunteer projects; Santa Clara County
+ *     preserves only, see scripts/lib/midpen-events.mjs
  *   - Mexican Heritage Plaza (Squarespace events)
  *   - Museum of American Heritage (Squarespace events)
  *   - Silicon Valley Leadership Group (RSS)
@@ -70,6 +73,7 @@ import {
   OUT_OF_AREA_LOCATION,
   REGISTRATION_CLOSED,
   REGISTRATION_NONE,
+  REGISTRATION_REQUIRED,
   VIRTUAL_EVENT_PATTERNS,
   hasOutOfAreaDestination,
   registrationFromBiblioCommons,
@@ -81,6 +85,13 @@ import { fuzzyDedupEvents } from "../src/lib/south-bay/eventFuzzyDedup.mjs";
 import { SLUG_TO_CITY_TOKENS } from "./social/lib/content-rules.mjs";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { fetchJson, fetchText, UA } from "./lib/http.mjs";
+import {
+  midpenPreserveCity,
+  midpenTrailhead,
+  parseMidpenDetail,
+  parseMidpenListPage,
+} from "./lib/midpen-events.mjs";
+import { normalizeMidpenOccurrenceUrl } from "./lib/official-event-sources.mjs";
 import {
   parseDate,
   parseDatePT,
@@ -7695,6 +7706,129 @@ async function fetchGambleGardenEvents() {
   }
 }
 
+// ── Midpeninsula Regional Open Space District ──────────────────────────────
+// Docent-led hikes and volunteer projects across the district's Santa Clara
+// County preserves. Added 2026-09-04 to fix two measured corpus gaps: `outdoor`
+// was the smallest category in the entire feed (27 of 1853), and holiday
+// coverage collapsed because five library systems supplied 43% of all events
+// and libraries close on public holidays.
+//
+// Listing markup, the preserve→city map and the reasons the district's San
+// Mateo County preserves are excluded all live in scripts/lib/midpen-events.mjs.
+async function fetchMidpenEvents() {
+  console.log("  ⏳ Midpen Open Space...");
+  try {
+    const today = todayPT();
+    const origin = "https://www.openspace.org";
+    const rows = new Map();
+
+    // The pager runs ~7 pages at 15 rows each. Walk until a page yields no rows
+    // or repeats what we already hold — Drupal serves the last page's content
+    // for out-of-range `?page=` values rather than 404ing.
+    for (let page = 0; page < 12; page++) {
+      const html = await fetchText(
+        `${origin}/get-involved/events-activities?page=${page}`,
+        { timeout: 30_000 },
+      );
+      const parsed = parseMidpenListPage(html);
+      if (!parsed.length) break;
+      const before = rows.size;
+      for (const row of parsed) rows.set(row.path, row);
+      if (rows.size === before) break;
+      await new Promise((r) => setTimeout(r, 200));
+    }
+
+    const covered = [...rows.values()].filter(
+      (row) => row.date >= today && midpenPreserveCity(row.preserve),
+    );
+
+    const events = [];
+    for (const row of covered) {
+      const city = midpenPreserveCity(row.preserve);
+      // Shared with the retired Playwright scraper's tests: rejects the generic
+      // calendar landing page and strips tracking params, so a row whose link
+      // regressed to /where-to-go/events-activities is dropped rather than
+      // published as 30 events all pointing at the same page.
+      const url = normalizeMidpenOccurrenceUrl(`${origin}${row.path}`);
+      if (!url) continue;
+
+      // Detail pages carry the write-up, the end time and the trailhead the
+      // group actually meets at, which is the only address a reader can drive
+      // to — a preserve spans thousands of acres.
+      let detail = { description: null, meetingPlace: null, startTime: null, endTime: null };
+      try {
+        detail = parseMidpenDetail(await fetchText(url, { timeout: 25_000 }));
+      } catch {
+        // A single unreachable detail page shouldn't drop the event; the
+        // listing row already has title, date, time, preserve and miles.
+      }
+      await new Promise((r) => setTimeout(r, 150));
+
+      // `time` is already in the repo's display format ("9:30 AM"), so the
+      // date only needs a noon anchor for displayDate — same shape as the
+      // other date-plus-display-time adapters.
+      const time = row.time || detail.startTime;
+      const start = parseDatePT(`${row.date}T12:00:00`);
+      if (!start) continue;
+
+      const title = row.title;
+      if (isBlockedEvent(title)) continue;
+
+      const isVolunteer = row.type === "Volunteer Project";
+      const descriptionParts = [detail.description];
+      if (row.miles) descriptionParts.push(`Approximately ${row.miles} miles.`);
+      const description = truncate(
+        stripBareUrls(descriptionParts.filter(Boolean).join(" ")),
+      );
+
+      events.push({
+        id: h("midpen", row.path, row.date, time || ""),
+        title,
+        date: row.date,
+        displayDate: displayDate(start),
+        time: time || null,
+        endTime: detail.endTime || null,
+        venue: row.preserve,
+        // Volunteer projects withhold their staging area until you register,
+        // so the preserve name is the honest answer there.
+        address: midpenTrailhead(detail.meetingPlace) || row.preserve,
+        city,
+        // Not inferred. Every row this adapter emits is a docent-led outing or
+        // a habitat/trail work party inside an open space preserve — the
+        // district's Board meetings, its only indoor listings, are dropped in
+        // the parser. inferCategory got "Happy Hour Qigong Hike" and "Hiking &
+        // Mindfulness" wrong on the first live run, filing both as community
+        // (which also handed them a stock "community gathering" stock photo),
+        // because the wellness vocabulary outweighs the venue signal. The
+        // source semantics are certain here, so don't guess at them.
+        category: "outdoor",
+        cost: "free",
+        description,
+        url,
+        source: "Midpen Open Space",
+        // Volunteer projects hand off to the district's Better Impact portal
+        // ("Sign Up / Login") and only release their staging area after you
+        // register, so a reader cannot simply turn up. Docent-led activities
+        // vary — the page says so per event — and are left unflagged rather
+        // than guessed at.
+        ...(isVolunteer ? { registration: REGISTRATION_REQUIRED } : {}),
+        kidFriendly: /\b(kid|child|family|families|youth|teen|all ages|junior)\b/i.test(
+          `${title} ${description}`,
+        ),
+      });
+    }
+
+    console.log(
+      `  ✅ Midpen Open Space: ${events.length} events (${rows.size - events.length} outside coverage)`,
+    );
+    return events;
+  } catch (err) {
+    console.log(`  ⚠️  Midpen Open Space: ${err.message}`);
+    if (STRICT_EVENT_REFRESH) throw err;
+    return [];
+  }
+}
+
 // ── Playwright-scraped events (pre-scraped by playwright-scrapers.mjs on Mini) ──
 // Covers: CivicPlus cities, LibCal libraries, The Tech, bookstores,
 // and robust replacements for fragile HTML scrapers (SJ Jazz, SJMA, etc.)
@@ -8119,6 +8253,7 @@ async function main() {
     source(fetchPaloAltoPlayersEvents),
     source(fetchHammerTheatreEvents),
     source(fetchGambleGardenEvents),
+    source(fetchMidpenEvents, { label: "Midpen Open Space" }),
     source(fetchMexicanHeritagePlazaEvents),
     source(fetchMuseumOfAmericanHeritageEvents),
     source(fetchPlaywrightEvents, { label: "Playwright source snapshot", critical: true }),
