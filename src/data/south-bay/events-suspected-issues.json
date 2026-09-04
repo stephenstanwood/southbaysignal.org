@@ -1,50 +1,108 @@
 {
   "_meta": {
-    "auditedAt": "2026-09-03T03:17:58.328Z"
+    "auditedAt": "2026-09-04T02:23:58.182Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1846,
+    "total": 1853,
     "totals": {
-      "hard": 0,
-      "soft": 0,
+      "hard": 3,
+      "soft": 1,
       "info": 0
     },
-    "byReason": {},
-    "hard": [],
-    "soft": []
-  },
-  "inbound": {
-    "label": "inbound-events.json",
-    "total": 350,
-    "totals": {
-      "hard": 1,
-      "soft": 2,
-      "info": 2
-    },
     "byReason": {
-      "unknown-slug": 1,
-      "out-of-area": 1,
-      "local-departure-trip": 2,
-      "virtual-not-flagged": 1
+      "slug-mismatch": 3,
+      "unknown-slug": 1
     },
     "hard": [
       {
-        "id": "inbound_mrnq6jm3_72hw23",
-        "title": "East Bay Hills Hike & Ride",
-        "city": null,
-        "date": "2026-09-02T00:00:00-07:00",
-        "location": "Berkeley & Oakland",
+        "id": "hammertheatre-d816b5dd888f71b0",
+        "title": "SJSU Music presents SJSU Choirs: Fall Debut Choral Concert",
+        "city": "san-jose",
+        "date": "2026-10-10",
+        "location": "1675 Winchester Blvd, Campbell, California 95008",
         "findings": [
           {
             "severity": "hard",
-            "reason": "out-of-area",
-            "detail": "location mentions \"oakland\" with no in-area city token"
+            "reason": "slug-mismatch",
+            "detail": "city=\"san-jose\" but location references \"campbell\""
+          }
+        ]
+      },
+      {
+        "id": "hammertheatre-79a0073caea5e8b4",
+        "title": "SJSU Music presents SJSU Choirs: Home for the Holidays",
+        "city": "san-jose",
+        "date": "2026-12-12",
+        "location": "500 El Camino Real, Santa Clara, CA 95053",
+        "findings": [
+          {
+            "severity": "hard",
+            "reason": "slug-mismatch",
+            "detail": "city=\"san-jose\" but location references \"santa-clara\""
+          }
+        ]
+      },
+      {
+        "id": "c1a8d645d21d",
+        "title": "Deer Hollow Spooky Storytime",
+        "city": "mountain-view",
+        "date": "2026-10-16",
+        "location": "22500 Cristo Rey Dr, Cupertino, CA",
+        "findings": [
+          {
+            "severity": "hard",
+            "reason": "slug-mismatch",
+            "detail": "city=\"mountain-view\" but location references \"cupertino\""
           }
         ]
       }
     ],
     "soft": [
+      {
+        "id": "inbound-2992e99f9b696c5f",
+        "title": "California Coastal Cleanup Day",
+        "city": "monte-sereno",
+        "date": "2026-09-19",
+        "location": "",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "unknown-slug",
+            "detail": "city=\"monte-sereno\" is not in the 11-city coverage map"
+          }
+        ]
+      }
+    ]
+  },
+  "inbound": {
+    "label": "inbound-events.json",
+    "total": 359,
+    "totals": {
+      "hard": 0,
+      "soft": 2,
+      "info": 2
+    },
+    "byReason": {
+      "unknown-slug": 2,
+      "local-departure-trip": 2
+    },
+    "hard": [],
+    "soft": [
+      {
+        "id": "inbound_mtlvjx55_5d0c0l",
+        "title": "California Coastal Cleanup Day",
+        "city": "monte-sereno",
+        "date": "2026-09-19T09:00:00-07:00",
+        "location": "",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "unknown-slug",
+            "detail": "city=\"monte-sereno\" is not in the 11-city coverage map"
+          }
+        ]
+      },
       {
         "id": "inbound_mqpugxt4_wkbmmw",
         "title": "Community Police Academy",
@@ -70,20 +128,6 @@
             "severity": "info",
             "reason": "local-departure-trip",
             "detail": "destination \"san francisco\" is out of area, but the title reads as a trip departing from a covered city — kept by design"
-          }
-        ]
-      },
-      {
-        "id": "inbound_mt3h7y9x_gyr24n",
-        "title": "Youth Climate Project Workshop (Zoom)",
-        "city": "san-jose",
-        "date": "2026-09-02T13:00:00-07:00",
-        "location": "",
-        "findings": [
-          {
-            "severity": "soft",
-            "reason": "virtual-not-flagged",
-            "detail": "matched /description mention/ in description"
           }
         ]
       },

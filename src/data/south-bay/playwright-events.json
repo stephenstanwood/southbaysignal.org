@@ -1,33 +1,34 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-03T15:08:24.661Z",
+    "generatedAt": "2026-09-04T02:20:33.830Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 35,
-    "eventCount": 619,
-    "sourceCount": 22,
+    "eventCount": 621,
+    "sourceCount": 23,
     "sources": [
-      "Mountain View Public Library (140)",
-      "Los Gatos Library (150)",
+      "Mountain View Public Library (138)",
+      "Los Gatos Library (148)",
       "San Jose Jazz (19)",
-      "Linden Tree Books (11)",
-      "History San Jose (9)",
-      "Montalvo Arts Center (5)",
+      "Linden Tree Books (12)",
+      "History San Jose (8)",
+      "Montalvo Arts Center (6)",
       "City Lights Theater (6)",
       "ICA San José (3)",
       "Mountain Winery (24)",
       "San Jose Theaters (20)",
       "Children's Discovery Museum (1)",
-      "Midpen Open Space (4)",
+      "Midpen Open Space (5)",
       "Guadalupe River Park Conservancy (9)",
-      "Santana Row (7)",
+      "Santana Row (8)",
       "City of Cupertino (72)",
       "Opera San José (5)",
       "TheatreWorks Silicon Valley (90)",
+      "California's Great America (1)",
       "Levi's Stadium (10)",
       "SAP Center (15)",
       "The Tech Interactive (8)",
-      "San Jose Museum of Art (10)",
-      "Peninsula Open Space Trust (1)"
+      "Peninsula Open Space Trust (3)",
+      "San Jose Museum of Art (10)"
     ],
     "sourceHealth": [
       {
@@ -66,7 +67,7 @@
         "id": "mountain-view-public-library",
         "label": "Mountain View Public Library",
         "status": "ok",
-        "count": 144,
+        "count": 142,
         "error": null,
         "sources": [
           "Mountain View Public Library"
@@ -76,7 +77,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 150,
+        "count": 148,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -108,7 +109,7 @@
         "id": "linden-tree-books",
         "label": "Linden Tree Books",
         "status": "ok",
-        "count": 11,
+        "count": 12,
         "error": null,
         "sources": [
           "Linden Tree Books"
@@ -126,7 +127,7 @@
         "id": "history-san-jose",
         "label": "History San Jose",
         "status": "ok",
-        "count": 18,
+        "count": 16,
         "error": null,
         "sources": [
           "History San Jose"
@@ -136,7 +137,7 @@
         "id": "montalvo-arts-center",
         "label": "Montalvo Arts Center",
         "status": "ok",
-        "count": 6,
+        "count": 7,
         "error": null,
         "sources": [
           "Montalvo Arts Center"
@@ -220,7 +221,7 @@
         "id": "midpen-open-space",
         "label": "Midpen Open Space",
         "status": "ok",
-        "count": 4,
+        "count": 5,
         "error": null,
         "sources": [
           "Midpen Open Space"
@@ -240,7 +241,7 @@
         "id": "santana-row",
         "label": "Santana Row",
         "status": "ok",
-        "count": 7,
+        "count": 8,
         "error": null,
         "sources": [
           "Santana Row"
@@ -287,10 +288,12 @@
       {
         "id": "california-s-great-america",
         "label": "California's Great America",
-        "status": "empty",
-        "count": 0,
+        "status": "ok",
+        "count": 1,
         "error": null,
-        "sources": []
+        "sources": [
+          "California's Great America"
+        ]
       },
       {
         "id": "levi-s-stadium",
@@ -349,52 +352,16 @@
       {
         "id": "post-peninsula-open-space-trust",
         "label": "POST (Peninsula Open Space Trust)",
-        "status": "error",
-        "count": 1,
-        "error": "unexpected empty result after retry; previous snapshot still has 1 future event(s) from Peninsula Open Space Trust",
+        "status": "ok",
+        "count": 3,
+        "error": null,
         "sources": [
           "Peninsula Open Space Trust"
-        ],
-        "carriedForward": true,
-        "carryForwardReason": "scraper errored; retained previous run's events"
+        ]
       }
     ]
   },
   "events": [
-    {
-      "id": "88e503cb21f0",
-      "title": "Cuesta Park Storytime",
-      "date": "2026-09-03",
-      "displayDate": "Thu, Sep 3",
-      "time": "10:00 AM",
-      "endTime": "11:00 AM",
-      "venue": "Cuesta Park",
-      "address": "615 Cuesta Dr, Mountain View, CA 94040",
-      "city": "mountain-view",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17295774",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "d2cf8c5c6b1f",
-      "title": "From Her Mesa to Yours: Authentic Family-Style Cooking with Jenny Martinez",
-      "date": "2026-09-03",
-      "displayDate": "Thu, Sep 3",
-      "time": "11:00 AM",
-      "endTime": "12:00 PM",
-      "venue": "Online",
-      "address": "",
-      "city": "mountain-view",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17186161",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
     {
       "id": "20155fad9ed8",
       "title": "Community Preservation Lab Scanning Service",
@@ -2742,40 +2709,6 @@
       "kidFriendly": false
     },
     {
-      "id": "a26185212058",
-      "title": "Online Author Talk : Jenny Martinez",
-      "date": "2026-09-03",
-      "displayDate": "Thu, Sep 3",
-      "time": "11:00 AM",
-      "endTime": "12:00 PM",
-      "venue": "Online",
-      "address": "",
-      "city": "los-gatos",
-      "category": "arts",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/17371388",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "d3c35ee38f98",
-      "title": "Creative Break",
-      "date": "2026-09-03",
-      "displayDate": "Thu, Sep 3",
-      "time": "4:30 PM",
-      "endTime": "6:00 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://losgatosca.libcal.com/event/14510548",
-      "source": "Los Gatos Library",
-      "kidFriendly": false
-    },
-    {
       "id": "cbdd438d7fbe",
       "title": "Narcan Training at the Library",
       "date": "2026-09-06",
@@ -2878,8 +2811,8 @@
       "kidFriendly": false
     },
     {
-      "id": "884b48999e3e",
-      "title": "Storytime (Ages 0-5)",
+      "id": "966766aca36b",
+      "title": "CANCELED Storytime (Ages 0-5)",
       "date": "2026-09-09",
       "displayDate": "Wed, Sep 9",
       "time": "11:00 AM",
@@ -3507,8 +3440,8 @@
       "kidFriendly": false
     },
     {
-      "id": "ecc5ae8bcf06",
-      "title": "Author Talk IN PERSON - Interview with Past and Present Town Poet Laureates",
+      "id": "4443986f1402",
+      "title": "Author Talk IN PERSON - Interview with Past and Present Town Poets Laureate",
       "date": "2026-09-28",
       "displayDate": "Mon, Sep 28",
       "time": "5:00 PM",
@@ -5360,8 +5293,8 @@
       "kidFriendly": false
     },
     {
-      "id": "efde582201d6",
-      "title": "Mara Hruby",
+      "id": "47ba7601c86f",
+      "title": "Deep Grooves of Reflection with Mara Hruby",
       "date": "2026-10-10",
       "displayDate": "Sat, Oct 10",
       "time": "8pm",
@@ -5372,7 +5305,7 @@
       "category": "arts",
       "cost": null,
       "description": "",
-      "url": "https://sanjosejazz.org/events/mara-hruby/",
+      "url": "https://sanjosejazz.org/events/deep-grooves-of-reflection-with-mara-hruby/",
       "source": "San Jose Jazz",
       "kidFriendly": false
     },
@@ -5725,6 +5658,28 @@
       }
     },
     {
+      "id": "62216dac6117",
+      "title": "Books to Blooms",
+      "date": "2026-09-18",
+      "displayDate": "Fri, Sep 18",
+      "time": "6pm",
+      "endTime": null,
+      "venue": "Linden Tree Books",
+      "address": "265 State St, Los Altos, CA 94022",
+      "city": "los-altos",
+      "category": "arts",
+      "cost": "free",
+      "description": "",
+      "url": "https://www.lindentreebooks.com/events-calendar/",
+      "source": "Linden Tree Books",
+      "kidFriendly": false,
+      "occurrenceEvidence": {
+        "kind": "first-party-occurrence-page",
+        "sourceUrl": "https://www.lindentreebooks.com/events-calendar/",
+        "date": "2026-09-18"
+      }
+    },
+    {
       "id": "5faf85dbe8c7",
       "title": "Storytime with Melissa Koch",
       "date": "2026-09-20",
@@ -5993,20 +5948,20 @@
       "kidFriendly": true
     },
     {
-      "id": "0b2b97a39872",
-      "title": "San José Roots",
-      "date": "2026-11-07",
-      "displayDate": "Sat, Nov 7",
-      "time": "12:00 pm",
-      "endTime": "4:00 pm",
-      "venue": "Gonzales/Peralta Adobe",
-      "address": "87 N San Pedro St., San José",
-      "city": "san-jose",
-      "category": "community",
-      "cost": "free",
+      "id": "4fe14eefb4f9",
+      "title": "We value your privacy",
+      "date": "2026-09-16",
+      "displayDate": "Wed, Sep 16",
+      "time": null,
+      "endTime": null,
+      "venue": "Montalvo Arts Center",
+      "address": "15400 Montalvo Rd, Saratoga, CA 95071",
+      "city": "saratoga",
+      "category": "arts",
+      "cost": "paid",
       "description": "",
-      "url": "https://historysanjose.org/event/san-jose-roots/",
-      "source": "History San Jose",
+      "url": "https://montalvoarts.org/",
+      "source": "Montalvo Arts Center",
       "kidFriendly": false
     },
     {
@@ -6061,6 +6016,23 @@
       "kidFriendly": true
     },
     {
+      "id": "5f53ba65f823",
+      "title": "FALL Creekside Ceramics Series – Adult Arts Education",
+      "date": "2026-10-07",
+      "displayDate": "Wed, Oct 7",
+      "time": null,
+      "endTime": null,
+      "venue": "Montalvo Arts Center",
+      "address": "15400 Montalvo Rd, Saratoga, CA 95071",
+      "city": "saratoga",
+      "category": "arts",
+      "cost": "paid",
+      "description": "",
+      "url": "https://my.montalvoarts.org/3273/3274",
+      "source": "Montalvo Arts Center",
+      "kidFriendly": false
+    },
+    {
       "id": "b402a0e00c51",
       "title": "Around the Americas with 123 Andrés? (Grades pre K-3)",
       "date": "2026-10-15",
@@ -6074,23 +6046,6 @@
       "cost": "paid",
       "description": "",
       "url": "https://my.montalvoarts.org/overview/3064",
-      "source": "Montalvo Arts Center",
-      "kidFriendly": false
-    },
-    {
-      "id": "d5bb5d8971ad",
-      "title": "St. Paul & The Minneapolis Funk All Stars",
-      "date": "2026-10-16",
-      "displayDate": "Fri, Oct 16",
-      "time": null,
-      "endTime": null,
-      "venue": "Montalvo Arts Center",
-      "address": "15400 Montalvo Rd, Saratoga, CA 95071",
-      "city": "saratoga",
-      "category": "arts",
-      "cost": "paid",
-      "description": "",
-      "url": "https://montalvoarts.org/experience/carriage-house-concerts/st-paul/",
       "source": "Montalvo Arts Center",
       "kidFriendly": false
     },
@@ -7081,6 +7036,23 @@
       "kidFriendly": false
     },
     {
+      "id": "3bc53428741a",
+      "title": "Habitat Restoration: French Broom Removal",
+      "date": "2026-09-12",
+      "displayDate": "Sat, Sep 12",
+      "time": "9:30 am",
+      "endTime": null,
+      "venue": "Bear Creek Redwoods Preserve",
+      "address": "Bear Creek Redwoods Preserve, Los Gatos",
+      "city": "los-gatos",
+      "category": "outdoor",
+      "cost": "free",
+      "description": "",
+      "url": "https://www.openspace.org/events/volunteer-projects/habitat-restoration-french-broom-removal-152",
+      "source": "Midpen Open Space",
+      "kidFriendly": false
+    },
+    {
       "id": "d550683a4d6b",
       "title": "Bootcamp in the River Park with GymParty",
       "date": "2026-09-03",
@@ -7396,6 +7368,23 @@
       "url": "https://santanarow.com/event/trick-or-treat-the-row-halloween-family-festival/",
       "source": "Santana Row",
       "kidFriendly": true
+    },
+    {
+      "id": "012ce621a519",
+      "title": "Día de Los Muertos Celebration",
+      "date": "2026-11-01",
+      "displayDate": "Sun, Nov 1",
+      "time": "10:30 AM",
+      "endTime": null,
+      "venue": "Santana Row",
+      "address": "377 Santana Row, San Jose, CA 95128",
+      "city": "san-jose",
+      "category": "community",
+      "cost": null,
+      "description": "",
+      "url": "https://santanarow.com/event/dia-de-los-muertos-celebration/",
+      "source": "Santana Row",
+      "kidFriendly": false
     },
     {
       "id": "95543332ae65",
@@ -10237,6 +10226,23 @@
       "kidFriendly": false
     },
     {
+      "id": "fa7d1cbf1a4a",
+      "title": "Fireworks",
+      "date": "2026-09-06",
+      "displayDate": "Sun, Sep 6",
+      "time": null,
+      "endTime": null,
+      "venue": "California's Great America",
+      "address": "4701 Great America Pkwy, Santa Clara, CA 95054",
+      "city": "santa-clara",
+      "category": "family",
+      "cost": "paid",
+      "description": "",
+      "url": "https://www.sixflags.com/cagreatamerica/events",
+      "source": "California's Great America",
+      "kidFriendly": true
+    },
+    {
       "id": "b1a0d5fc8884",
       "title": "SAN JOSE EARTHQUAKES VS. LAFC",
       "date": "2026-09-19",
@@ -10798,6 +10804,57 @@
       "kidFriendly": true
     },
     {
+      "id": "22942963d2d2",
+      "title": "Representation Matters Film Festival (In-Person & Virtual Viewing)",
+      "date": "2026-09-26",
+      "displayDate": "Sat, Sep 26",
+      "time": "6 PM",
+      "endTime": "9 PM",
+      "venue": "Online (POST Webinar)",
+      "address": "",
+      "city": "santa-clara-county",
+      "category": "outdoor",
+      "cost": "free",
+      "description": "",
+      "url": "https://openspacetrust.org/event/representation-matters-film-festival/",
+      "source": "Peninsula Open Space Trust",
+      "kidFriendly": false
+    },
+    {
+      "id": "06f8aeb9e2c5",
+      "title": "Morning Hike at Bear Creek Redwoods",
+      "date": "2026-10-09",
+      "displayDate": "Fri, Oct 9",
+      "time": "9:30 AM",
+      "endTime": null,
+      "venue": "Bear Creek Redwoods OSP",
+      "address": "",
+      "city": "los-gatos",
+      "category": "outdoor",
+      "cost": "free",
+      "description": "",
+      "url": "https://openspacetrust.org/event/morning-hike-at-bear-creek-redwoods-11/",
+      "source": "Peninsula Open Space Trust",
+      "kidFriendly": false
+    },
+    {
+      "id": "199638a33dce",
+      "title": "Hike at Calero County Park",
+      "date": "2026-10-10",
+      "displayDate": "Sat, Oct 10",
+      "time": "3:30 PM",
+      "endTime": null,
+      "venue": "Calero County Park",
+      "address": "",
+      "city": "san-jose",
+      "category": "outdoor",
+      "cost": "free",
+      "description": "",
+      "url": "https://openspacetrust.org/event/hike-at-calero-county-park-8/",
+      "source": "Peninsula Open Space Trust",
+      "kidFriendly": false
+    },
+    {
       "id": "a11d9650f100",
       "title": "First Fridays: September 2026",
       "date": "2026-09-04",
@@ -10965,23 +11022,6 @@
       "description": "",
       "url": "https://sjmusart.org/event/first-fridays-december-2026",
       "source": "San Jose Museum of Art",
-      "kidFriendly": false
-    },
-    {
-      "id": "22942963d2d2",
-      "title": "Representation Matters Film Festival (In-Person & Virtual Viewing)",
-      "date": "2026-09-26",
-      "displayDate": "Sat, Sep 26",
-      "time": "6 PM",
-      "endTime": "9 PM",
-      "venue": "Online (POST Webinar)",
-      "address": "",
-      "city": "santa-clara-county",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://openspacetrust.org/event/representation-matters-film-festival/",
-      "source": "Peninsula Open Space Trust",
       "kidFriendly": false
     }
   ]
