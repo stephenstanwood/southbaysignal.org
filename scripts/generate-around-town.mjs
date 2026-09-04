@@ -460,7 +460,14 @@ async function gatherPermitItems() {
   const items = [];
   for (const { config, permits } of allNotable) {
     const permitText = permits.map((p) =>
-      `- ${p.categoryLabel || p.category}: ${p.description || "No description"} at ${p.address || "unknown address"} ($${(p.valuation || 0).toLocaleString()}, ${p.units || 0} units, issued ${p.issueDate})`
+      // `subtype` carries the permit's use type ("School/Daycare",
+      // "Medical/Dental Clinic", "Commercial/Industrial"). It used to be
+      // withheld, so on 2026-09-03 a $28.6M School/Daycare permit at 4333
+      // Rincon Av shipped as a generic "commercial project" whose summary
+      // guessed at the use from the unit count ("No unit count is listed,
+      // suggesting a non-residential build") — a guess the source could have
+      // answered outright. Pass it through.
+      `- ${p.categoryLabel || p.category}${p.subtype ? ` [use type: ${p.subtype}]` : ""}: ${p.description || "No description"} at ${p.address || "unknown address"} ($${(p.valuation || 0).toLocaleString()}, ${p.units || 0} units, issued ${p.issueDate})`
     ).join("\n");
 
     console.log(`  ⏳ ${config.cityName}: evaluating ${permits.length} notable permits...`);
@@ -472,6 +479,8 @@ Permits:
 ${permitText}
 
 IMPORTANT — a permit being issued means construction is *cleared to begin*, NOT that it has started. Do NOT write "breaks ground", "groundbreaking", "construction begins", "construction starts", or "launches" — those imply a milestone the data does not support. Use language like "permitted", "receives building permit", "cleared to build", "permit issued for". Do NOT label projects as "affordable", "workforce", or "luxury" unless that wording appears in the permit description.
+
+USE TYPE OVER INFERENCE: when a permit line carries "[use type: …]", say what the building is for using that use type. Never infer the use from the unit count — "0 units" is what the field says for every non-residential permit, so do not write "no unit count is listed" or reason that a missing unit count "suggests" anything. If there is no use type, describe only what the description states.
 
 NOT NAMES: San José permit descriptions carry a trade-scope code in parentheses — "(Bemp 100%)", "(Bepm100%)", "(Bep 100%)", "(B 100%)", "(B)", and "Srp" prefixes. These are Building/Electrical/Plumbing/Mechanical scope markers, NOT developers, businesses, or project names. Never name them as a party ("developer Bemp"). Ignore them entirely. Only name a developer, owner, or tenant when it appears in the description as an actual name.
 

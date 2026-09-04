@@ -808,6 +808,11 @@ const TITLE_FIXES = {
   "Macla ": "MACLA ",
   "Sjda ": "SJDA ",
   "Svlg ": "SVLG ",
+  // SVLG names its member working groups "CoE" (Center of Excellence); the RSS
+  // feed title-cases it to "Coe". Keyed narrowly on the series wording — a bare
+  // "Coe" must never be touched, or Henry W. Coe State Park events break.
+  " Coe Q": " CoE Q",
+  " Coe Meeting": " CoE Meeting",
   "Sjz ": "SJZ ",
   "Bayfc": "Bay FC",
   "Crossfit": "CrossFit",  // Ticketmaster's CrossFit Games event titles arrive title-cased
@@ -3467,7 +3472,11 @@ async function fetchSvlgEvents() {
         displayDate: displayDate(start),
         time: displayTime(start),
         endTime: null,
-        venue: item.location || "Silicon Valley",
+        // No venue fallback. The SVLG feed often omits <location>, and the old
+        // `|| "Silicon Valley"` default shipped a region name in the venue slot
+        // ("Tech & Innovation CoE Q3 Meeting · Silicon Valley"), which reads as
+        // a real address the reader can go to. Leave it empty instead.
+        venue: item.location || null,
         address: "",
         city: city || "san-jose",
         category: "community",
