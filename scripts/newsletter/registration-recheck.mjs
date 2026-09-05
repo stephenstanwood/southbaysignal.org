@@ -23,9 +23,11 @@
 // listing that ingested as "required" but has since filled or been cancelled
 // is re-labelled or dropped instead of printing a stale "Reserve ahead".
 //
-// Cost: one gateway request per library plus one windows request per gated
-// event actually selected into the issue — a handful of fetches, only on the
-// few events that would otherwise print a registration tag.
+// Midpen volunteer occurrence pages redirect to their public registration
+// portal; its actual remaining-spots section is checked as well.
+// Cost per pass: one gateway request per library, one windows request per gated
+// library event, and one request per Midpen project. The assembler checks
+// today's pool before selection, then only featured listings after editing.
 //
 // FAIL OPEN. This runs minutes before the send; a network blip must never
 // empty the events section or block the email (same philosophy as
@@ -39,6 +41,8 @@ import {
   REGISTRATION_CLOSED,
   REGISTRATION_NONE,
 } from "../../src/lib/south-bay/eventFilters.mjs";
+import { midpenVolunteerUrl, parseMidpenVolunteerAvailability } from "../lib/midpen-events.mjs";
+import { UA } from "../lib/http.mjs";
 
 /** Library-id prefixes generate-events.mjs mints BiblioCommons ids under. */
 export const BIBLIO_LIBRARY_IDS = new Set(["sjpl", "sccl", "paloalto", "sunnyvale"]);
@@ -120,7 +124,7 @@ export async function fetchRegistrationWindowStatus(ref, opts = {}) {
  * Re-verify every registration-gated listing against the live source.
  *
  * Returns { events, dropped }: `events` preserves the input order with gated
- * BiblioCommons listings re-labelled to their live state (a shallow copy —
+ * library and Midpen listings re-labelled to their live state (a shallow copy —
  * the shared feed objects are never mutated), and `dropped` lists what was
  * removed and why:
  *   - the record is now cancelled
@@ -135,12 +139,31 @@ export async function recheckRegistrationGatedEvents(events, opts = {}) {
   const { fetchImpl = fetch, timeoutMs = DEFAULT_TIMEOUT_MS, log = console.warn } = opts;
   const list = Array.isArray(events) ? events : [];
   const gated = list.filter((e) => requiresAdvanceRegistration(e) && biblioEventRef(e));
-  if (!gated.length) return { events: list, dropped: [] };
+  const midpen = list.filter((e) => requiresAdvanceRegistration(e) && midpenVolunteerUrl(e));
+  if (!gated.length && !midpen.length) return { events: list, dropped: [] };
 
   const records = await fetchFreshBiblioRecords(gated.map(biblioEventRef), { fetchImpl, timeoutMs, log });
 
   const dropped = [];
   const replacements = new Map();
+  // These public project URLs redirect to Midpen's Galaxy Digital portal.
+  // Check sequentially to keep load bounded. Unknown markup or HTTP failures
+  // retain the feed state, including a previously verified full project.
+  for (const event of midpen) {
+    try {
+      const res = await fetchImpl(midpenVolunteerUrl(event), {
+        headers: { accept: "text/html", "user-agent": UA },
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const registration = parseMidpenVolunteerAvailability(await res.text());
+      if (registration && registration !== event.registration) {
+        replacements.set(event, { ...event, registration });
+      }
+    } catch (err) {
+      log(`registration re-check: Midpen/${event.id} fetch failed (${err?.message || err}) — keeping feed state`);
+    }
+  }
   await Promise.all(
     gated.map(async (event) => {
       const ref = biblioEventRef(event);

@@ -25,6 +25,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import Anthropic from "@anthropic-ai/sdk";
 import { writeFileAtomic } from "../../../scripts/lib/io.mjs";
+import { applyVerifiedEventFacts, eventCopyFactConflict } from "./eventSourceFacts.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..", "..", "..");
@@ -666,6 +667,7 @@ Strict rules:
 - Lead with a concrete action verb (See, Hear, Tour, Walk, Make, Watch, Taste, Learn). Avoid the vague openers "explore" and "discover" — name what visitors actually do.
 - If a description is given, rewrite its substance in planner voice — don't copy marketing prose.
 - A description marked [NONE] means we have no description. Write only what the title, venue, and category state plainly, and stay general. Do not invent difficulty, distance, duration, terrain, skill level, age suitability, price, or what is provided.
+- Never invent a musical genre, lineup, or whether performers are cover/tribute acts or original members. Those identities must be stated in the source title or description; a decade-themed tour title proves none of them.
 - A description marked [TRUNCATED] is cut off mid-sentence. Write only from the text you can actually see. NEVER complete or guess the missing part, and never state what attendees should bring, what is provided or included, whether registration is needed, or what anything costs unless that fact appears in full in the visible text. Getting this backwards sends readers to an event unprepared.
 - NEVER say: "real event", "only today", "one-time", "unforgettable", "anchor event", "right now".
 - NEVER use AI-marketing tone words: "legendary", "iconic", "magical", "whimsical", "cozy", "laid-back", "charming", "delightful", "must-see", "world-class", "hidden gem", "nestled", "tucked away", "quaint", "powerhouse", "vibrant", "bustling", "immersive", "tapestry", "delve". State what the act/event is concretely instead (e.g. "Grammy-winning vocalist", "six-piece Hawaiian reggae band").
@@ -955,6 +957,10 @@ export async function resolveEventBlurbs(events, opts = {}) {
   const dryRun = !!opts.dryRun;
   const batchSize = opts.batchSize ?? BATCH_SIZE;
 
+  if (!dryRun) {
+    for (const event of events) Object.assign(event, applyVerifiedEventFacts(event));
+  }
+
   const stats = {
     total: events.length,
     preexisting: 0,
@@ -1023,6 +1029,11 @@ export async function resolveEventBlurbs(events, opts = {}) {
   // --- Pass 1: apply preexisting + cache hits ------------------------------
   const todo = [];
   for (const e of events) {
+    // Both carried and cached LLM copy need the same source-fact check as a
+    // newly generated sentence. Otherwise a prompt fix never heals old text.
+    if (eventCopyFactConflict(e.blurb, e) && !dryRun) delete e.blurb;
+    const cached = cache.byKey[cacheKey(e)];
+    if (cached && eventCopyFactConflict(cached.blurb, e)) delete cache.byKey[cacheKey(e)];
     if (e.blurb && String(e.blurb).trim()) {
       stats.preexisting++;
       continue;
@@ -1097,7 +1108,8 @@ export async function resolveEventBlurbs(events, opts = {}) {
           stats.failed++;
           continue;
         }
-        const invented = blurbInventsTruncatedDetail(blurb, batch[i].event);
+        const invented = eventCopyFactConflict(blurb, batch[i].event)
+          || blurbInventsTruncatedDetail(blurb, batch[i].event);
         if (invented) {
           console.warn(`[eventBlurbs] dropped (${invented} past truncated description): "${blurb}" for ${batch[i].event.title}`);
           stats.failed++;
@@ -1133,7 +1145,8 @@ export async function resolveEventBlurbs(events, opts = {}) {
               blurbTimeOfDayConflict(candidate, items[i].group) ||
               blurbDayOfWeekConflict(candidate, items[i].group) ||
               blurbSequencePositionConflict(candidate, items[i].group) ||
-              blurbInventsTruncatedDetail(candidate, batch[i].event)
+              blurbInventsTruncatedDetail(candidate, batch[i].event) ||
+              eventCopyFactConflict(candidate, batch[i].event)
             ) {
               if (candidate) conflictBlurbs.push(candidate);
               continue;
@@ -1261,7 +1274,8 @@ export async function regenerateDuplicateCacheEntries(events, opts = {}) {
           blurbTimeOfDayConflict(candidate, group) ||
           blurbDayOfWeekConflict(candidate, group) ||
           blurbSequencePositionConflict(candidate, group) ||
-          blurbInventsTruncatedDetail(candidate, event)
+          blurbInventsTruncatedDetail(candidate, event) ||
+          eventCopyFactConflict(candidate, event)
         ) {
           if (candidate) conflictBlurbs.push(candidate);
           continue;

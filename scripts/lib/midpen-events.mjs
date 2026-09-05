@@ -158,18 +158,39 @@ export function parseMidpenListPage(html) {
   return rows;
 }
 
-/**
- * Pull the description, meeting-place text and end time off one event page.
- * Everything is optional — volunteer projects omit "Where to Meet" because the
- * district emails the staging location after registration, so an absent field
- * is normal, not a parse failure.
- */
+/** The portal's current capacity, independent of its generic waitlist prose. */
+export function parseMidpenVolunteerAvailability(html) {
+  const text = midpenText(String(html || "").replace(/<(script|style)[\s\S]*?<\/\1>/gi, " "));
+  // The descriptive boilerplate says "If there are 0 spots available" on
+  // every project. Only the actual capacity section is an availability signal.
+  const spots = text.match(/Volunteer Spots Remaining\s+(\d+)\s+open spots\b/i);
+  if (!spots) return null;
+  return Number(spots[1]) === 0 ? "full" : "required";
+}
+
+export function midpenVolunteerRegistration(detail, previousEvent) {
+  return detail?.registration || (previousEvent?.registration === "full" ? "full" : "required");
+}
+
+export function midpenVolunteerUrl(event) {
+  try {
+    const url = new URL(event?.url || "");
+    if (url.protocol !== "https:") return null;
+    if (/^(?:www\.)?openspace\.org$/i.test(url.hostname)
+        && /^\/events\/volunteer-projects\/[a-z0-9-]+\/?$/i.test(url.pathname)) return url.href;
+    if (url.hostname === "volunteer.openspace.org" && url.pathname === "/need/detail/"
+        && /^\d+$/.test(url.searchParams.get("need_id") || "")) return url.href;
+  } catch { /* Not a Midpen occurrence URL. */ }
+  return null;
+}
+
+/** Pull optional activity copy, trailhead, times and live volunteer capacity. */
 export function parseMidpenDetail(html) {
   const text = String(html || "")
     .replace(/<(script|style)[\s\S]*?<\/\1>/gi, " ")
     .replace(/<\/(p|div|li|h\d|br)[^>]*>/gi, "\n")
     .replace(/<br[^>]*>/gi, "\n")
-    .replace(/<[^>]+>/g, "\n");
+    .replace(/<[^>]+>/g, " ");
   const lines = text
     .split("\n")
     .map((line) => midpenText(line))
@@ -195,7 +216,12 @@ export function parseMidpenDetail(html) {
   const BOILERPLATE = /^(To ensure|For more information|If your activity|After your participation|Meet at|Where to Meet|Approximate Total Miles|Link to Google Map)/;
   const DIRECTIONS = /\b(exit (?:the )?high?way|exit highway|take the [\w .]+ exit|turn (?:left|right)|stop sign|parking (?:area|lot)|miles? (?:west|east|north|south) of|travel time|follow [A-Z][\w.]* (?:Rd|Road|Ave|Blvd)|I-280|Hwy\.?\s*\d|Highway \d)\b/i;
   const meetingHaystack = (meetingPlace || "").toLowerCase();
-  const paragraph = lines
+  // Galaxy Digital volunteer pages have a named Description section. Use it
+  // before the general fallback, which otherwise chooses the longer waiver.
+  const volunteerDescription = body.match(/(?:^|\n)Description\n([\s\S]*?)(?:\nProject Details|\nP\s*roject Details|\nWhat You Will Need|$)/)?.[1];
+  const volunteerParagraph = volunteerDescription?.split(/\n/)
+    .filter((line) => line.length > 80 && !/^(All minors|First time|Returning volunteers|If there are)/i.test(line))[0];
+  const paragraph = volunteerParagraph || lines
     .filter((line) => line.length > 80)
     .filter((line) => !BOILERPLATE.test(line))
     .filter((line) => !DIRECTIONS.test(line))
@@ -203,10 +229,11 @@ export function parseMidpenDetail(html) {
     .sort((a, b) => b.length - a.length)[0] || null;
 
   return {
-    description: paragraph,
+    description: paragraph?.replace(/\s+([.,;!?])/g, "$1") || null,
     meetingPlace,
     startTime: rangeMatch ? midpenClockTime(rangeMatch[1]) : null,
     endTime: rangeMatch ? midpenClockTime(rangeMatch[2]) : null,
+    registration: parseMidpenVolunteerAvailability(html),
   };
 }
 

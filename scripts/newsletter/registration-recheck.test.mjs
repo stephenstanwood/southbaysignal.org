@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   biblioEventRef,
   recheckRegistrationGatedEvents,
@@ -81,6 +82,33 @@ function gatewayBody(records) {
 }
 
 const silent = () => {};
+
+test("Midpen capacity can fill and reopen without affecting walk-ups or other sources", async () => {
+  const spots = readFileSync(new URL("../lib/fixtures/midpen-volunteer-spots.html", import.meta.url), "utf8");
+  const project = {
+    id: "midpen-d0971601e9e7fcc3", registration: "required",
+    url: "https://www.openspace.org/events/volunteer-projects/habitat-restoration-thistle-removal-25",
+  };
+  const walkup = { id: "guided", url: project.url.replace("volunteer-projects", "guided-activities") };
+  let calls = 0;
+  const fetchImpl = async () => { calls++; return { ok: true, text: async () => spots.replace("3 open spots", "0 open spots") }; };
+  const full = await recheckRegistrationGatedEvents([project, walkup], { fetchImpl, log: silent });
+  assert.equal(full.events[0].registration, "full");
+  assert.equal(full.events[1], walkup);
+  assert.equal(project.registration, "required", "shared source objects stay untouched");
+  assert.equal(calls, 1);
+  const reopened = await recheckRegistrationGatedEvents(full.events, {
+    fetchImpl: async () => ({ ok: true, text: async () => spots }), log: silent,
+  });
+  assert.equal(reopened.events[0].registration, "required");
+  for (const response of [
+    { ok: true, text: async () => "If there are 0 spots available, click WAITLIST." },
+    { ok: false, status: 403 },
+  ]) {
+    const unknown = await recheckRegistrationGatedEvents(full.events, { fetchImpl: async () => response, log: silent });
+    assert.equal(unknown.events[0].registration, "full");
+  }
+});
 
 test("biblioEventRef parses library-prefixed ids and rejects everything else", () => {
   assert.deepEqual(biblioEventRef(ukuleleListing()), {
