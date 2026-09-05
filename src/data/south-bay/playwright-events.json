@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-04T15:08:20.263Z",
+    "generatedAt": "2026-09-05T02:17:13.567Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 34,
     "eventCount": 613,
     "sourceCount": 22,
     "sources": [
       "Mountain View Public Library (137)",
-      "Los Gatos Library (149)",
+      "Los Gatos Library (150)",
       "San Jose Jazz (19)",
       "Linden Tree Books (12)",
       "History San Jose (9)",
@@ -24,7 +24,7 @@
       "TheatreWorks Silicon Valley (90)",
       "California's Great America (1)",
       "Levi's Stadium (10)",
-      "SAP Center (15)",
+      "SAP Center (14)",
       "The Tech Interactive (8)",
       "Peninsula Open Space Trust (3)",
       "San Jose Museum of Art (10)"
@@ -76,7 +76,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 149,
+        "count": 150,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -239,9 +239,9 @@
       {
         "id": "downtown-mountain-view",
         "label": "Downtown Mountain View",
-        "status": "error",
+        "status": "empty",
         "count": 0,
-        "error": "page.goto: net::ERR_SSL_PROTOCOL_ERROR at https://www.downtownmountainview.com/events\nCall log:\n  - navigating to \"https://www.downtownmountainview.com/events\", waiting until \"domcontentloaded\"\n",
+        "error": null,
         "sources": []
       },
       {
@@ -298,7 +298,7 @@
         "id": "sap-center",
         "label": "SAP Center",
         "status": "ok",
-        "count": 15,
+        "count": 14,
         "error": null,
         "sources": [
           "SAP Center"
@@ -351,40 +351,6 @@
     ]
   },
   "events": [
-    {
-      "id": "d5a12c00897a",
-      "title": "Baby Storytime: Rerun",
-      "date": "2026-09-04",
-      "displayDate": "Fri, Sep 4",
-      "time": "10:30 AM",
-      "endTime": "11:15 AM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "family",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/17170825",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
-    {
-      "id": "472642726c64",
-      "title": "Pages and Paws",
-      "date": "2026-09-04",
-      "displayDate": "Fri, Sep 4",
-      "time": "3:30 PM",
-      "endTime": "4:30 PM",
-      "venue": "Mountain View Public Library",
-      "address": "585 Franklin St, Mountain View, CA 94041",
-      "city": "mountain-view",
-      "category": "community",
-      "cost": "free",
-      "description": "",
-      "url": "https://mountainview.libcal.com/event/16357819",
-      "source": "Mountain View Public Library",
-      "kidFriendly": true
-    },
     {
       "id": "6937e0fc038f",
       "title": "Sew Sew Saturday",
@@ -1576,6 +1542,23 @@
       "kidFriendly": false
     },
     {
+      "id": "a90fe7380cc4",
+      "title": "The Financial Side of Estate Planning: Beyond Wills and Trusts",
+      "date": "2026-10-06",
+      "displayDate": "Tue, Oct 6",
+      "time": "6:30 PM",
+      "endTime": "7:30 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17223777",
+      "source": "Mountain View Public Library",
+      "kidFriendly": false
+    },
+    {
       "id": "c2068c6d5919",
       "title": "Baby Storytime",
       "date": "2026-10-07",
@@ -1657,6 +1640,23 @@
       "cost": "free",
       "description": "",
       "url": "https://mountainview.libcal.com/event/17423673",
+      "source": "Mountain View Public Library",
+      "kidFriendly": false
+    },
+    {
+      "id": "757707a4fe49",
+      "title": "The Financial Side of Estate Planning: Beyond Wills and Trusts",
+      "date": "2026-10-08",
+      "displayDate": "Thu, Oct 8",
+      "time": "2:00 PM",
+      "endTime": "3:00 PM",
+      "venue": "Mountain View Public Library",
+      "address": "585 Franklin St, Mountain View, CA 94041",
+      "city": "mountain-view",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://mountainview.libcal.com/event/17594821",
       "source": "Mountain View Public Library",
       "kidFriendly": false
     },
@@ -4906,6 +4906,23 @@
       "url": "https://losgatosca.libcal.com/event/17088146",
       "source": "Los Gatos Library",
       "kidFriendly": true
+    },
+    {
+      "id": "cf552402b0e5",
+      "title": "Creative Break",
+      "date": "2026-11-19",
+      "displayDate": "Thu, Nov 19",
+      "time": "4:30 PM",
+      "endTime": "6:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "community",
+      "cost": "free",
+      "description": "",
+      "url": "https://losgatosca.libcal.com/event/17591744",
+      "source": "Los Gatos Library",
+      "kidFriendly": false
     },
     {
       "id": "8c2babd08f83",
@@ -10253,23 +10270,6 @@
       "description": "",
       "url": "https://levisstadium.com/events/",
       "source": "Levi's Stadium",
-      "kidFriendly": false
-    },
-    {
-      "id": "3326e95396be",
-      "title": "Monster Jam",
-      "date": "2026-09-04",
-      "displayDate": "Fri, Sep 4",
-      "time": "7:00 pm",
-      "endTime": null,
-      "venue": "SAP Center",
-      "address": "525 W Santa Clara St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "community",
-      "cost": "paid",
-      "description": "",
-      "url": "https://www.sapcenter.com/events/detail/monster-jam-4",
-      "source": "SAP Center",
       "kidFriendly": false
     },
     {
