@@ -22,6 +22,7 @@ import {
   seriesStartedBeforeEvent,
 } from "../../src/lib/south-bay/eventFilters.mjs";
 import { recheckRegistrationGatedEvents } from "./registration-recheck.mjs";
+import { applyVerifiedEventFacts, copyMentionsEvent, eventCopyFactConflict } from "../../src/lib/south-bay/eventSourceFacts.mjs";
 import { normalizeAbsoluteHttpUrl } from "../../src/lib/south-bay/httpUrl.mjs";
 import { dayKeyForIsoDate, mealServiceIssue } from "../../src/lib/south-bay/mealService.mjs";
 import { selectDatedDefaultPlan } from "../../src/lib/south-bay/defaultPlanSelection.mjs";
@@ -256,7 +257,7 @@ export async function assembleNewsletterData(date, opts = {}) {
     console.warn(`⚠️  newsletter: event feed is stale or undated — omitting current-day events rather than publishing unverified occurrences`);
   }
   const allEvents = eventFeedFresh
-    ? (eventFeed.events || []).filter((event) => isEventPublishable(event))
+    ? (eventFeed.events || []).filter((event) => isEventPublishable(event)).map(applyVerifiedEventFacts)
     : [];
   const validEventIds = new Set(
     allEvents
@@ -287,10 +288,16 @@ export async function assembleNewsletterData(date, opts = {}) {
     registrationGatedEventIds,
   });
 
-  const todayEvents = allEvents
+  let todayEvents = allEvents
     .filter((e) => e.date === date && !e.ongoing)
     .filter((e) => e.time && !/^12:00\s*am/i.test(e.time))
     .sort((a, b) => parseTimeMinutes(a.time) - parseTimeMinutes(b.time));
+
+  // The editor must see current availability before choosing and writing.
+  // This is bounded to today's gated events (not the full future corpus).
+  if (registrationRecheckEnabled(opts)) {
+    todayEvents = (await recheckRegistrationGatedEvents(todayEvents, opts.registrationRecheckOptions)).events;
+  }
 
   const openings = loadOpenings();
   const recentOpenings = (openings.opened || [])
@@ -376,22 +383,30 @@ function registrationRecheckEnabled(opts) {
 /**
  * Final gate every assembled issue passes through, whichever path built it
  * (deterministic, editorial, or editorial-failed fallback): re-verify each
- * registration-gated listing against the live BiblioCommons state minutes
+ * registration-gated listing against the live library/Midpen state minutes
  * before the send. The static filters above work from a feed generated the
  * previous evening; this is the layer that catches a window that closed, a
  * program that filled, or an event cancelled overnight — the gap that let the
  * Sept 1 2026 issue print "Reserve ahead" on a signup that had been dead
  * since Aug 17. Fails open: any error keeps the issue exactly as assembled.
  */
-async function finishNewsletterAssembly(data, opts = {}) {
+export async function finishNewsletterAssembly(data, opts = {}) {
   if (!registrationRecheckEnabled(opts) || !data.featuredEvents?.length) return data;
   try {
-    const { events, dropped } = await recheckRegistrationGatedEvents(data.featuredEvents);
+    const { events, dropped } = await recheckRegistrationGatedEvents(data.featuredEvents, opts.registrationRecheckOptions);
     if (!dropped.length && events === data.featuredEvents) return data;
+    const becameFull = events.some((event) => event.registration === "full"
+      && data.featuredEvents.find((old) => old.id === event.id)?.registration !== "full");
     for (const { event, reason } of dropped) {
       console.warn(`⚠️  newsletter: dropping "${event.title}" — ${reason}`);
     }
     data.featuredEvents = events;
+    // The editor can take several minutes. If an event fills or closes in
+    // that interval, its earlier recommendation must not survive in the lede.
+    if ((becameFull || dropped.length) && data.editorial) {
+      data.editorial.briefing = "";
+      data.editorial.eventsNote = "";
+    }
     if (dropped.length) {
       // The visual manifest was computed from the pre-check list; rebuild it
       // so a dropped event's photo can't linger in the issue.
@@ -749,6 +764,28 @@ export function repairNewsletterProperNames(data) {
   return data;
 }
 
+export function repairNewsletterEventFacts(data) {
+  if (!data) return data;
+  const events = [...(data.todayEvents || []), data.tonightPick, ...(data.featuredEvents || [])].filter(Boolean);
+  for (const event of events) {
+    Object.assign(event, applyVerifiedEventFacts(event));
+    if (eventCopyFactConflict(event.blurb, event)) event.blurb = "";
+  }
+  const unsupported = (text) => events.some((event) => copyMentionsEvent(text, event)
+    && (eventCopyFactConflict(text, event)
+      || (event.registration === "full" && !/\b(?:full|waitlist)\b/i.test(text))));
+  if (data.editorial) {
+    for (const [key, value] of Object.entries(data.editorial)) {
+      if (typeof value === "string" && unsupported(value)) data.editorial[key] = "";
+    }
+  }
+  if (unsupported(data.dayPlanBlurb)) data.dayPlanBlurb = buildDayPlanBlurb(data.dayPlan, data.weather);
+  if (data.tonightPick && eventCopyFactConflict(data.tonightPickBlurb, data.tonightPick)) {
+    data.tonightPickBlurb = buildTonightBlurb(data.tonightPick);
+  }
+  return data;
+}
+
 // The single pre-render pass over fully-assembled (post-editorial) data: repair
 // any proper name the editor respelled, verify reachability of all candidate
 // images, then recompute visuals so the hero / OG image also skip anything now
@@ -757,6 +794,7 @@ export function repairNewsletterProperNames(data) {
 // any prose path that reaches render without going through applyEditorialJson.
 export async function finalizeNewsletterImages(data) {
   if (!data) return data;
+  repairNewsletterEventFacts(data);
   repairNewsletterProperNames(data);
   await verifyNewsletterImages(data);
   data.visuals = newsletterVisuals({
@@ -1052,7 +1090,7 @@ function shouldRunEditorialPass() {
   return !["0", "false", "off", "no"].includes(v);
 }
 
-function pickEditorialEventCandidates(events, { dayPlan, limit, recent = null }) {
+export function pickEditorialEventCandidates(events, { dayPlan, limit, recent = null }) {
   const used = new Set();
   for (const c of orderedCards(dayPlan)) {
     used.add(normalizeComparable(c.name));
@@ -1061,6 +1099,7 @@ function pickEditorialEventCandidates(events, { dayPlan, limit, recent = null })
 
   const eligible = events
     .filter((e) => e.url)
+    .filter((e) => e.registration !== "full")
     .filter((e) => audienceBreadthPenalty(e) < UNPROMPTED_AUDIENCE_PENALTY_CUTOFF)
     .filter((e) => !used.has(normalizeComparable(e.title)) && !used.has(normalizeComparable(e.id)))
     .filter((e) => !isDeadSignupListing(e))
@@ -1300,6 +1339,9 @@ function compactEventForEditor(e, idx) {
     source: e.source || "",
     ...(isMarqueeEvent(e) ? { marquee: true } : {}),
     audience: e.audienceAge || (e.kidFriendly ? "kids/family" : ""),
+    registration: e.registration || "none",
+    attendanceNote: e.attendanceNote || "",
+    description: compactText(e.description, 500),
     blurb: compactText(e.blurb || e.description, 220),
   };
 }
@@ -1333,6 +1375,8 @@ Voice:
 
 Fact rules:
 - Use only facts in the packet. Do not infer addresses, prices, ages, quality, or popularity.
+- Musical genre, performer lineup and cover/tribute/original-member identity must come from the source description or title, never an assumption about a name or decade-themed tour. A missing description supplies no such facts.
+- Observe registration and attendanceNote. Required registration is not a walk-up; a full or closed event must never be promoted as a plan readers can join. Same-day in-person ticket pickup is different from advance online registration; preserve the pickup time and location when supplied.
 - Do not claim a paired meal works before, after, or on either side of an event unless the packet explicitly supplies business hours and an event end time that make the claim true.
 - Never say an event opens, closes, wraps up, or finishes a series, season, run, or homestand unless the packet says so in words. You are not shown a schedule. The 2026-08-26 issue wrote "the Giants close things out under the lights" on game 2 of a 6-game series.
 - For multi-day events, never infer today's ordinal day from the duration alone. A prior preview still counts as a day of the event; say "first public day" only when the packet explicitly supports it, and never turn that into "first day".
@@ -1636,6 +1680,7 @@ function applyEditorialJson(data, candidates, edit) {
     },
   };
 
+  repairNewsletterEventFacts(revised);
   repairNewsletterProperNames(revised);
 
   revised.visuals = newsletterVisuals({
@@ -1881,6 +1926,7 @@ function eventLocality(event) {
 }
 
 export function renderEmail(data) {
+  repairNewsletterEventFacts(data);
   const safeBriefing = sanitizeGeographicBriefing(data.editorial?.briefing, data.dayPlan);
   const safeDayPlanBlurb = sanitizeDayPlanBlurb(data.dayPlanBlurb, data.dayPlan);
   const safeTonightPickBlurb = data.tonightPick

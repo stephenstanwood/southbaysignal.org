@@ -73,7 +73,6 @@ import {
   OUT_OF_AREA_LOCATION,
   REGISTRATION_CLOSED,
   REGISTRATION_NONE,
-  REGISTRATION_REQUIRED,
   VIRTUAL_EVENT_PATTERNS,
   hasOutOfAreaDestination,
   registrationFromBiblioCommons,
@@ -92,6 +91,7 @@ import {
   midpenPreserveCity,
   midpenTrailhead,
   parseMidpenDetail,
+  midpenVolunteerRegistration,
   parseMidpenListPage,
 } from "./lib/midpen-events.mjs";
 import { normalizeMidpenOccurrenceUrl } from "./lib/official-event-sources.mjs";
@@ -7827,6 +7827,7 @@ async function fetchMidpenEvents() {
     const today = todayPT();
     const origin = "https://www.openspace.org";
     const rows = new Map();
+    const previous = new Map((readJsonFile(OUT_PATH)?.events || []).map((event) => [event.id, event]));
 
     // The pager runs ~7 pages at 15 rows each. Walk until a page yields no rows
     // or repeats what we already hold — Drupal serves the last page's content
@@ -7881,6 +7882,7 @@ async function fetchMidpenEvents() {
       if (isBlockedEvent(title)) continue;
 
       const isVolunteer = row.type === "Volunteer Project";
+      const id = h("midpen", row.path, row.date, time || "");
       const descriptionParts = [detail.description];
       if (row.miles) descriptionParts.push(`Approximately ${row.miles} miles.`);
       const description = truncate(
@@ -7888,7 +7890,7 @@ async function fetchMidpenEvents() {
       );
 
       events.push({
-        id: h("midpen", row.path, row.date, time || ""),
+        id,
         title,
         date: row.date,
         displayDate: displayDate(start),
@@ -7912,12 +7914,10 @@ async function fetchMidpenEvents() {
         description,
         url,
         source: "Midpen Open Space",
-        // Volunteer projects hand off to the district's Better Impact portal
-        // ("Sign Up / Login") and only release their staging area after you
-        // register, so a reader cannot simply turn up. Docent-led activities
-        // vary — the page says so per event — and are left unflagged rather
-        // than guessed at.
-        ...(isVolunteer ? { registration: REGISTRATION_REQUIRED } : {}),
+        // The district's volunteer portal reports remaining spots separately
+        // from its generic signup instructions. Missing capacity still keeps
+        // the required-registration gate; it never turns a project into a walk-up.
+        ...(isVolunteer ? { registration: midpenVolunteerRegistration(detail, previous.get(id)) } : {}),
         kidFriendly: /\b(kid|child|family|families|youth|teen|all ages|junior)\b/i.test(
           `${title} ${description}`,
         ),

@@ -13,6 +13,9 @@ import {
   midpenTrailhead,
   parseMidpenDetail,
   parseMidpenListPage,
+  parseMidpenVolunteerAvailability,
+  midpenVolunteerRegistration,
+  midpenVolunteerUrl,
 } from "./midpen-events.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -21,6 +24,32 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 // meeting row.
 const LIST = readFileSync(join(HERE, "fixtures", "midpen-activity-list.html"), "utf8");
 const DETAIL = readFileSync(join(HERE, "fixtures", "midpen-event-detail.html"), "utf8");
+const SPOTS = readFileSync(join(HERE, "fixtures", "midpen-volunteer-spots.html"), "utf8");
+
+test("volunteer capacity uses the live count, never the conditional waitlist instructions", () => {
+  const boilerplate = "<p>If there are 0 spots available, click the WAITLIST button.</p>";
+  assert.equal(parseMidpenVolunteerAvailability(boilerplate), null);
+  assert.equal(parseMidpenVolunteerAvailability(boilerplate + SPOTS), "required");
+  assert.equal(parseMidpenVolunteerAvailability(boilerplate + SPOTS.replace("3 open spots", "0 open spots")), "full");
+  assert.equal(parseMidpenDetail(SPOTS).registration, "required");
+  assert.equal(midpenVolunteerRegistration({}, {}), "required");
+  assert.equal(midpenVolunteerRegistration({}, { registration: "full" }), "full");
+  assert.equal(midpenVolunteerRegistration({ registration: "required" }, { registration: "full" }), "required");
+});
+
+test("Midpen recheck recognizes only first-party volunteer occurrence URLs", () => {
+  const url = "https://www.openspace.org/events/volunteer-projects/habitat-restoration-thistle-removal-25";
+  assert.equal(midpenVolunteerUrl({ url }), url);
+  assert.ok(midpenVolunteerUrl({ url: "https://volunteer.openspace.org/need/detail/?need_id=1294116" }));
+  assert.equal(midpenVolunteerUrl({ url: url.replace("volunteer-projects", "guided-activities") }), null);
+  assert.equal(midpenVolunteerUrl({ url: url.replace("www.openspace.org", "example.com") }), null);
+});
+
+test("volunteer description uses the activity introduction before a longer waiver", () => {
+  const intro = "Join Midpen staff to remove invasive <a href='/plants'>thistle</a> and help restore native habitat with other volunteers.";
+  const detail = parseMidpenDetail(`<h2>Description</h2><p>${intro}</p><h3>Project Details</h3><p>All minors ${"must obtain approval. ".repeat(25)}</p>${SPOTS}`);
+  assert.equal(detail.description, midpenText(intro));
+});
 // "History on Two Wheels" — the page whose turn-by-turn directions run longer
 // than its write-up, which shipped as the event description on the first live
 // run before the DIRECTIONS filter existed.

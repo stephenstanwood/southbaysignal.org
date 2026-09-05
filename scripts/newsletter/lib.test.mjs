@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import {
   buildEditorialPrompt,
   buildEditorialPacket,
+  finishNewsletterAssembly,
+  pickEditorialEventCandidates,
   civicMeetingsHeading,
   planCardPriceBand,
   renderEmail,
@@ -24,6 +26,61 @@ import {
 } from "./lib.mjs";
 
 const BLOCKED_UNSPLASH = "https://images.unsplash.com/photo-1585899873671-ade0aa28a821?crop=entropy&w=400";
+
+function septemberIssue(events = []) {
+  return {
+    date: "2026-09-05", longDate: "Saturday, September 5, 2026", weather: null,
+    dayPlan: null, dayPlanBlurb: "", tonightPick: null, tonightPickBlurb: "",
+    todayEvents: events, featuredEvents: events, recentOpenings: [],
+    civicMeetings: [], todayHistory: [], redditPosts: [], visuals: {}, editorial: {},
+  };
+}
+
+test("fresh capacity reaches the editor; full projects cannot become intro recommendations", async () => {
+  const project = {
+    id: "midpen-d0971601e9e7fcc3", title: "Habitat Restoration: Thistle Removal",
+    date: "2026-09-05", time: "9:30 AM", venue: "Rancho San Antonio Preserve",
+    url: "https://www.openspace.org/events/volunteer-projects/habitat-restoration-thistle-removal-25",
+    registration: "required",
+  };
+  const data = septemberIssue([project]);
+  const candidates = { eventCandidates: [project], openingCandidates: [], redditCandidates: [] };
+  assert.equal(buildEditorialPacket(data, candidates).eventCandidates[0].registration, "required");
+  data.editorial = { briefing: "Join the thistle removal crew this morning.", eventsNote: "Reserve ahead for the project." };
+  await finishNewsletterAssembly(data, { recheckRegistration: true, registrationRecheckOptions: {
+    fetchImpl: async () => ({ ok: true, text: async () => "<h2>Volunteer Spots Remaining</h2><span>0 open spots</span>" }), log: () => {},
+  } });
+  assert.equal(data.featuredEvents[0].registration, "full");
+  assert.equal(data.editorial.briefing, "");
+  assert.deepEqual(pickEditorialEventCandidates(data.featuredEvents, { dayPlan: null, limit: 36 }), []);
+  const { html } = renderEmail(data);
+  assert.match(html, /Registration full/);
+  assert.doesNotMatch(html, /Reserve ahead|Join the thistle removal crew/);
+});
+
+test("render boundary rejects invented concert identities in intros and Tonight's Pick", () => {
+  const duelo = { id: "sanjosetheaters-eb92ddeb3f824327", date: "2026-09-05", title: "Grupo Duelo – Gravedad Tour 2026", venue: "San Jose Civic", time: "8:00 PM" };
+  const lost = { id: "tm-Z7r9jZ1A7x78x", date: "2026-09-05", title: "Lost 80s Live", venue: "Mountain Winery", time: "6:00 PM", description: "" };
+  const data = septemberIssue([lost]);
+  data.tonightPick = duelo;
+  data.tonightPickBlurb = "Grupo Duelo brings banda to San Jose Civic.";
+  data.editorial.briefing = "Lost 80s Live is a lineup of cover bands.";
+  const { html } = renderEmail(data);
+  assert.match(html, /norteño/);
+  assert.match(html, /Oingo Boingo Former Members/);
+  assert.doesNotMatch(html, /banda|cover bands/);
+});
+
+test("Town Cats pickup detail reaches the editor without an advance-registration label", () => {
+  const event = { id: "sjpl-6a5280ebe564853d00fd6ea4", date: "2026-09-05", title: "Pawsitive Learning with Town Cats", venue: "Vineland Library", time: "2:00 PM" };
+  const data = septemberIssue([event]);
+  const { html } = renderEmail(data);
+  assert.match(html, /Information Desk starting at 1 PM/);
+  assert.doesNotMatch(html, /Reserve ahead|Registration full/);
+  const packet = buildEditorialPacket(data, { eventCandidates: data.featuredEvents, openingCandidates: [], redditCandidates: [] });
+  assert.equal(packet.eventCandidates[0].registration, "none");
+  assert.match(packet.eventCandidates[0].attendanceNote, /in-person ticket pickup.*1 PM/);
+});
 
 test("newsletter editor prompt forbids unsupported multi-day ordinal claims", () => {
   const prompt = buildEditorialPrompt({ todayEvents: [] });
