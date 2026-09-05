@@ -1,31 +1,19 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-09-04T03:08:37.222Z",
+      "generatedAt": "2026-09-05T03:08:50.014Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 27 – Sep 3",
+      "dateRange": "Aug 28 – Sep 4",
       "stats": {
-        "total": 303,
-        "notable": 22,
-        "newUnits": 7,
-        "totalValuation": 52968786
+        "total": 346,
+        "notable": 23,
+        "newUnits": 8,
+        "totalValuation": 65436604
       },
       "permits": [
-        {
-          "id": "2026-124884-RS",
-          "address": "1663 Mercado Wy",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Kb Home New Sfd (Plan 2272)(Lot 23)",
-          "valuation": 430819,
-          "units": 1,
-          "issueDate": "2026-08-28",
-          "subtype": "Single-Family"
-        },
         {
           "id": "2025-146021-RS",
           "address": "1438 Peaceful Glen Ct #2",
@@ -36,6 +24,18 @@
           "valuation": 211104,
           "units": 1,
           "issueDate": "2026-09-01",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
+          "id": "2025-116114-RS",
+          "address": "29 N 24th St #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "New Two Story Detached 1200 Sqft ADU",
+          "valuation": 211104,
+          "units": 1,
+          "issueDate": "2026-09-02",
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
@@ -63,15 +63,15 @@
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
-          "id": "2026-111487-RS",
-          "address": "15104 Bel Escou Dr #2",
+          "id": "2026-110092-RS",
+          "address": "1742 El Dorado Av #2",
           "category": "residential-new",
           "categoryLabel": "New Home",
           "workType": "New Construction",
-          "description": "Pdox Attached ADU",
-          "valuation": 120681,
+          "description": "Epr Ab 2533 Legalize Detach Garage Conversion to ADU - Code Case",
+          "valuation": 123672,
           "units": 1,
-          "issueDate": "2026-08-28",
+          "issueDate": "2026-09-02",
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
@@ -99,6 +99,18 @@
           "subtype": "ADU   Accessory Dwelling Unit"
         },
         {
+          "id": "2024-108900-RS",
+          "address": "1286 Old Manor Pl #2",
+          "category": "residential-new",
+          "categoryLabel": "New Home",
+          "workType": "New Construction",
+          "description": "Code Case Demo Patio & Legalize Garage Conversion to Jadu",
+          "valuation": 79164,
+          "units": 1,
+          "issueDate": "2026-09-02",
+          "subtype": "ADU   Accessory Dwelling Unit"
+        },
+        {
           "id": "2026-134988-CI",
           "address": "4333 Rincon Av",
           "category": "commercial-large",
@@ -111,55 +123,43 @@
           "subtype": "School/Daycare"
         },
         {
-          "id": "2026-135490-CI",
-          "address": "480 N 1st St",
+          "id": "2026-133949-CI",
+          "address": "2444 Gimelli Wy",
           "category": "commercial-large",
           "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "New Senior Day Care TI",
-          "valuation": 7500000,
+          "workType": "New Construction",
+          "description": "Sj Self Storage New Construction",
+          "valuation": 14565830,
           "units": 0,
-          "issueDate": "2026-09-01",
-          "subtype": "Medical/Dental Clinic"
-        },
-        {
-          "id": "2026-128769-CI",
-          "address": "988 Rock Av",
-          "category": "commercial-large",
-          "categoryLabel": "Commercial Project",
-          "workType": "Tenant Improvement",
-          "description": "Supermicro (Bem100%) Server Rooms TI",
-          "valuation": 5500000,
-          "units": 0,
-          "issueDate": "2026-09-01",
-          "subtype": "Commercial/Industrial"
+          "issueDate": "2026-09-02",
+          "subtype": "Warehouse/Storage"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-09-04T03:08:39.895Z",
+      "generatedAt": "2026-09-05T03:08:52.887Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 27 – Sep 3",
+      "dateRange": "Aug 28 – Sep 4",
       "stats": {
-        "total": 101,
-        "notable": 5,
+        "total": 107,
+        "notable": 4,
         "newUnits": 0,
         "totalValuation": 0
       },
       "permits": [
         {
-          "id": "26BLD-02486",
-          "address": "1585 Edgewood Dr",
+          "id": "26BLD-02460",
+          "address": "2031 Park Bl",
           "category": "residential-remodel",
           "categoryLabel": "Home Remodel",
           "workType": "Web - Kitchen or Bath Remodel",
           "description": "Instant permit for a residential single-family kitchen or bath remodel.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-09-02",
+          "issueDate": "2026-08-31",
           "subtype": "Permit Issued"
         },
         {
@@ -175,27 +175,15 @@
           "subtype": "Permit Issued"
         },
         {
-          "id": "26BLD-02460",
-          "address": "2031 Park Bl",
+          "id": "26BLD-02486",
+          "address": "1585 Edgewood Dr",
           "category": "residential-remodel",
           "categoryLabel": "Home Remodel",
           "workType": "Web - Kitchen or Bath Remodel",
           "description": "Instant permit for a residential single-family kitchen or bath remodel.",
           "valuation": 0,
           "units": 0,
-          "issueDate": "2026-08-31",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-02440",
-          "address": "514 Rhodes Dr",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-28",
+          "issueDate": "2026-09-02",
           "subtype": "Permit Issued"
         },
         {

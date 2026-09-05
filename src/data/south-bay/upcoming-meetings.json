@@ -1,6 +1,44 @@
 {
-  "generatedAt": "2026-09-04T03:08:59.604Z",
+  "generatedAt": "2026-09-05T03:09:05.129Z",
   "meetings": {
+    "san-jose": {
+      "date": "2026-09-15",
+      "displayDate": "Tue, Sep 15",
+      "startTime": "13:30",
+      "bodyName": "City Council",
+      "location": "Hybrid Meeting - Council Chambers",
+      "closedSession": false,
+      "url": "https://sanjose.legistar.com/MeetingDetail.aspx?LEGID=8104&GID=317&G=920296E4-80BE-4CA2-A78F-32C5EFCF78AF",
+      "legistarEventId": 8104,
+      "agendaItems": [
+        {
+          "title": "Temporary Moratorium Related to Detention and Custodial Facility on Private Property.",
+          "sequence": 59
+        },
+        {
+          "title": "Evening Session, Council Chambers, City Hall – Cancelled",
+          "sequence": 24
+        },
+        {
+          "title": "Fourth Quarter Financial Reports for Fiscal Year 2025-2026.",
+          "sequence": 54
+        },
+        {
+          "title": "Labor Negotiations Update.",
+          "sequence": 58
+        },
+        {
+          "title": "Land Use on Consent Calendar - TO BE HEARD IMMEDIATELY AFTER CONSENT",
+          "sequence": 72
+        }
+      ],
+      "confirmation": {
+        "status": "confirmed",
+        "provider": "legistar",
+        "observedDate": "2026-09-15",
+        "sourceUrl": "https://webapi.legistar.com/v1/sanjose/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-09-04T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+      }
+    },
     "mountain-view": {
       "date": "2026-09-08",
       "displayDate": "Tue, Sep 8",
@@ -36,7 +74,7 @@
         "status": "confirmed",
         "provider": "legistar",
         "observedDate": "2026-09-08",
-        "sourceUrl": "https://webapi.legistar.com/v1/mountainview/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-09-03T00:00:00%27&$orderby=EventDate%20asc&$top=10"
+        "sourceUrl": "https://webapi.legistar.com/v1/mountainview/Events?$filter=EventBodyName%20eq%20%27City%20Council%27%20and%20EventDate%20ge%20datetime%272026-09-04T00:00:00%27&$orderby=EventDate%20asc&$top=10"
       }
     },
     "palo-alto": {
@@ -69,7 +107,7 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-09-15",
-        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-09-03T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://milpitasca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-09-04T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     },
     "los-altos": {
@@ -86,14 +124,14 @@
         "status": "confirmed",
         "provider": "civicclerk",
         "observedDate": "2026-09-08",
-        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-09-03T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
+        "sourceUrl": "https://losaltosca.api.civicclerk.com/v1/Events?%24filter=categoryName+eq+%27City+Council%27+and+eventDate+ge+2026-09-04T00%3A00%3A00Z&%24orderby=eventDate+asc&%24top=100"
       }
     }
   },
   "sourceHealth": {
     "san-jose": {
       "provider": "Legistar",
-      "status": "no-meeting"
+      "status": "ok"
     },
     "mountain-view": {
       "provider": "Legistar",
