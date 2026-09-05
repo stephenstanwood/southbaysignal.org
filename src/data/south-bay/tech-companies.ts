@@ -159,7 +159,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     trendNote: "7K at Santa Clara HQ + SCC offices; growing with AI GPU demand",
     highlights: [
       "Blackwell GPUs now deployed across every major cloud; the next-generation Vera Rubin platform ramps through 2026, with Jensen Huang projecting $1 trillion in Blackwell and Rubin orders by 2027",
-      "First company to cross a $5 trillion market cap, in October 2025",
+      "Agreed September 3 to acquire Hugging Face for $12.93B; NVIDIA says the model-sharing platform will remain open and will not require NVIDIA compute",
     ],
     description:
       "GPUs and AI accelerators. The defining company of the current AI era. Santa Clara's crown jewel.",
@@ -175,7 +175,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     category: "software",
     sccEmployeesK: 5,
     trend: "flat",
-    trendNote: "5K at SJ HQ; steady headcount as Firefly carries the AI story",
+    trendNote: "5K at SJ HQ; steady headcount as Anil Chakravarthy prepares to become CEO on Dec. 1",
     highlights: [
       "Firefly generative AI now integrated throughout Creative Cloud product line",
       "The $20B Figma deal collapsed in 2023 under regulatory pressure and cost Adobe a $1B break fee; Figma has since gone public on the NYSE as FIG, trading well above what Adobe offered",

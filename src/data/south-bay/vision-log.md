@@ -2,6 +2,43 @@
 
 ---
 
+## 2026-09-05 — Cycle 217: Two September 3 Changes Reach the Tech Page
+
+### Context
+Saturday September 5, 2026. The roadmap remains closed (6/6), and the funding
+list was already current through Lyte's September 2 Series C. The strongest
+new primary-source changes were at two of the Tech tab's anchor employers.
+
+### What Was Built
+
+**NVIDIA's Hugging Face agreement now replaces an older market-cap fact.** The
+Santa Clara profile says NVIDIA agreed September 3 to acquire Hugging Face for
+$12.93B, and keeps NVIDIA's stated commitment precise: the platform remains
+open and will not require NVIDIA compute.
+
+**Adobe's hiring row now carries its incoming CEO.** The selective-hiring row
+for the San Jose headquarters notes that Anil Chakravarthy becomes CEO on
+December 1. Shantanu Narayen moves to executive chair; the shorter row keeps
+the part a scanning resident needs.
+
+Primary sources:
+- https://blogs.nvidia.com/blog/nvidia-to-acquire-hugging-face/
+- https://news.adobe.com/news/2026/09/adobe-announces-anil-chakravarthy-to-become-president-and-ceo
+
+### Verification
+
+`npm test` and `npm run build` passed, including the locked-Home and Tech-logo
+prebuild gates. Playwright checked `/tech` at 1440, 390, and 320 pixels: both
+new lines rendered, every response was 200, horizontal overflow was zero, and
+the clean retry had no console or page errors. The post-change URL audit found
+0 moved domains; Axiom Math's sole transport failure was confirmed as a false
+alert against its live official site, so no card was changed.
+
+No protected Home, Events, or Food surface was touched; no component or section
+was added.
+
+---
+
 ## 2026-09-04 — Cycle 216: The Biggest Market in the Coverage Area Wasn't on the Site
 
 ### Context
