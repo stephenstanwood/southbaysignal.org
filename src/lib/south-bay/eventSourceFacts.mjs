@@ -1,8 +1,37 @@
 // Occurrence-specific corrections verified against first-party sources.
 // Keep these upstream of blurb resolution so nightly refreshes cannot restore
 // a sparse aggregator record or its previously invented cached copy.
-// Evidence: docs/qa/2026-09-05-newsletter.md.
+// Evidence: docs/qa/2026-09-05-newsletter.md and 2026-09-06-newsletter.md.
+const DERBY_ATTENDANCE = "12 first-come, first-served tickets. The library’s pickup instructions conflict with its 2 PM start; confirm pickup timing with Berryessa Library before going.";
 const CORRECTIONS = [
+  {
+    id: "sjpl-6a7bc1324cb69d003e203e28",
+    date: "2026-09-06",
+    url: "https://sjpl.bibliocommons.com/events/6a7bc1324cb69d003e203e28",
+    facts: {
+      time: "2:00 PM",
+      endTime: "3:30 PM",
+      sourceAudiences: ["Kids, ages 5-10"],
+      audienceAge: "kids",
+      kidFriendly: true,
+      description: `Build and race two balloon-powered cars in Berryessa Library’s Community Room. Recommended for elementary students ages 5–10. ${DERBY_ATTENDANCE}`,
+      blurb: "Build and race balloon-powered cars, recommended for ages 5–10.",
+      attendanceNote: DERBY_ATTENDANCE,
+      attendanceStatus: "needs-confirmation",
+    },
+  },
+  {
+    id: "cbdd438d7fbe",
+    date: "2026-09-06",
+    url: "https://losgatosca.libcal.com/event/17096186",
+    facts: {
+      sourceAudiences: ["Adults"],
+      audienceAge: "adult",
+      kidFriendly: false,
+      description: "Training for adults in the Los Gatos Library Lobby, 4–5 PM, on recognizing an opioid overdose and using Narcan.",
+      blurb: "Adults can learn to recognize an opioid overdose and use Narcan in the library lobby.",
+    },
+  },
   {
     id: "sanjosetheaters-eb92ddeb3f824327",
     date: "2026-09-05",
@@ -40,7 +69,8 @@ const CORRECTIONS = [
 
 export function applyVerifiedEventFacts(event) {
   const correction = CORRECTIONS.find((c) => event?.date === c.date && (
-    event.id === c.id || (c.title.test(event.title || "") && c.venue.test(event.venue || ""))
+    event.id === c.id || (c.url && event.url === c.url)
+      || (c.title?.test(event.title || "") && c.venue?.test(event.venue || ""))
   ));
   return correction ? { ...event, ...correction.facts } : event;
 }
@@ -65,6 +95,12 @@ function comparable(value) {
 }
 
 export function copyMentionsEvent(text, event) {
-  const title = comparable(String(event?.rawTitle || event?.title || "").split(/\s[–—-]\s/)[0]);
-  return title.length >= 5 && comparable(text).includes(title);
+  const rawTitle = String(event?.rawTitle || event?.title || "").split(/\s[–—-]\s/)[0];
+  const title = comparable(rawTitle);
+  const copy = comparable(text);
+  if (title.length >= 5 && copy.includes(title)) return true;
+  // Intros often omit a category prefix: "the balloon car derby" still
+  // refers to "STEM: Balloon Car Derby" and needs the same attendance guard.
+  const withoutPrefix = comparable(rawTitle.match(/^[^:]{1,32}:\s+(.+)$/)?.[1]);
+  return withoutPrefix.length >= 10 && withoutPrefix.includes(" ") && copy.includes(withoutPrefix);
 }

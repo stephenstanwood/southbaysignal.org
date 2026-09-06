@@ -15,7 +15,7 @@ import {
 } from "../../../lib/south-bay/holidays";
 import { currentHeritageMonths, matchesHeritage, type HeritageMonth } from "../../../lib/south-bay/heritageMonths";
 import { buildGoogleCalendarUrl } from "../../../lib/south-bay/calendarLink";
-import { isVirtualEvent, registrationLabel } from "../../../lib/south-bay/eventFilters.mjs";
+import { isVirtualEvent, registrationLabel, requiresAttendanceConfirmation } from "../../../lib/south-bay/eventFilters.mjs";
 import { cleanDisplayCopy, cleanDisplayName } from "../../../lib/south-bay/displayText.mjs";
 import PageHero from "../PageHero";
 
@@ -83,6 +83,9 @@ interface UpcomingEvent {
   virtual?: boolean;
   registration?: "none" | "required" | "appointment-only" | "full" | "closed" | null;
   registrationClosesBy?: string | null;
+  sourceAudiences?: string[];
+  attendanceNote?: string;
+  attendanceStatus?: string;
   blurb?: string;
   image?: string | null;
   photoRef?: string | null;
@@ -554,9 +557,12 @@ function UpcomingEventCard({
             {body}
           </p>
         )}
+        {event.attendanceNote && (
+          <p style={{ fontSize: 13, lineHeight: 1.5, margin: "6px 0" }}>{event.attendanceNote}</p>
+        )}
 
         <div className="sb-event-card-actions">
-          {event.date && event.city && (
+          {event.date && event.city && !requiresAttendanceConfirmation(event) && (
             <MakeItADayButton eventId={event.id} city={event.city} date={event.date} />
           )}
           <DirectionsButton event={event} />

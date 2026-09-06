@@ -19,6 +19,7 @@ import {
   isVirtualEvent,
   registrationLabel,
   requiresAdvanceRegistration,
+  requiresAttendanceConfirmation,
   seriesStartedBeforeEvent,
 } from "../../src/lib/south-bay/eventFilters.mjs";
 import { recheckRegistrationGatedEvents } from "./registration-recheck.mjs";
@@ -282,10 +283,13 @@ export async function assembleNewsletterData(date, opts = {}) {
       .map((event) => `event:${event.id}`),
   );
   const selectedPlan = selectDefaultPlan(defaultPlans.plans, date);
+  const attendanceUnconfirmedEventIds = new Set(allEvents
+    .filter(requiresAttendanceConfirmation).map((event) => `event:${event.id}`));
   const dayPlan = makeNewsletterPlan(selectedPlan, date, {
     validEventIds,
     virtualEventIds,
     registrationGatedEventIds,
+    attendanceUnconfirmedEventIds,
   });
 
   let todayEvents = allEvents
@@ -426,7 +430,7 @@ export async function finishNewsletterAssembly(data, opts = {}) {
   return data;
 }
 
-export function makeNewsletterPlan(plan, date, { validEventIds = null, virtualEventIds = null, registrationGatedEventIds = null } = {}) {
+export function makeNewsletterPlan(plan, date, { validEventIds = null, virtualEventIds = null, registrationGatedEventIds = null, attendanceUnconfirmedEventIds = null } = {}) {
   if (!plan?.cards?.length) return null;
   const isPairPlan = plan.selectionModel === "pillar-pairs-v1" || plan.cards.some((card) => card.role);
   // Defense-in-depth against bad picks: generic chain branches are excluded,
@@ -475,6 +479,10 @@ export function makeNewsletterPlan(plan, date, { validEventIds = null, virtualEv
     // This is the check the Aug 12 2026 Vintage Media Lab card needed.
     if (isEventCard && registrationGatedEventIds && registrationGatedEventIds.has(c.id)) {
       rejectedCards.push({ card: c, reason: "requires advance registration" });
+      return false;
+    }
+    if (isEventCard && attendanceUnconfirmedEventIds?.has(c.id)) {
+      rejectedCards.push({ card: c, reason: "attendance needs confirmation" });
       return false;
     }
     return true;
@@ -773,7 +781,19 @@ export function repairNewsletterEventFacts(data) {
   }
   const unsupported = (text) => events.some((event) => copyMentionsEvent(text, event)
     && (eventCopyFactConflict(text, event)
+      || requiresAttendanceConfirmation(event)
       || (event.registration === "full" && !/\b(?:full|waitlist)\b/i.test(text))));
+  const unconfirmedIds = new Set(events.filter(requiresAttendanceConfirmation).map((event) => `event:${event.id}`));
+  if (orderedCards(data.dayPlan).some((card) => unconfirmedIds.has(card.id))) {
+    data.dayPlan = null;
+    data.dayPlanBlurb = "";
+    // A model may refer to the pillar without repeating its exact title.
+    if (data.editorial) data.editorial.briefing = "";
+  }
+  if (requiresAttendanceConfirmation(data.tonightPick)) {
+    data.tonightPick = null;
+    data.tonightPickBlurb = "";
+  }
   if (data.editorial) {
     for (const [key, value] of Object.entries(data.editorial)) {
       if (typeof value === "string" && unsupported(value)) data.editorial[key] = "";
@@ -948,6 +968,7 @@ function isTonightPickCandidate(e) {
   // than penalized. It remains eligible for the listing sections below, where
   // it prints a "Reserve ahead" / "Appointment required" tag.
   if (requiresAdvanceRegistration(e)) return false;
+  if (requiresAttendanceConfirmation(e)) return false;
   if (audienceBreadthPenalty(e) >= UNPROMPTED_AUDIENCE_PENALTY_CUTOFF) return false;
   const minutes = parseTimeMinutes(e.time);
   if (!Number.isFinite(minutes) || minutes < 16 * 60 || minutes >= 24 * 60) return false;
@@ -963,6 +984,7 @@ function pickFeaturedEvents(events, { dayPlan, tonightPick, limit, recent = null
   }
   if (tonightPick) used.add(normalizeComparable(tonightPick.title));
   const ranked = events
+    .filter((e) => !requiresAttendanceConfirmation(e))
     .filter((e) => !used.has(normalizeComparable(e.title)) && !used.has(normalizeComparable(e.id)))
     .filter((e) => audienceBreadthPenalty(e) < UNPROMPTED_AUDIENCE_PENALTY_CUTOFF)
     .filter((e) => !isDeadSignupListing(e))
@@ -1099,6 +1121,7 @@ export function pickEditorialEventCandidates(events, { dayPlan, limit, recent = 
 
   const eligible = events
     .filter((e) => e.url)
+    .filter((e) => !requiresAttendanceConfirmation(e))
     .filter((e) => e.registration !== "full")
     .filter((e) => audienceBreadthPenalty(e) < UNPROMPTED_AUDIENCE_PENALTY_CUTOFF)
     .filter((e) => !used.has(normalizeComparable(e.title)) && !used.has(normalizeComparable(e.id)))
@@ -1341,6 +1364,8 @@ function compactEventForEditor(e, idx) {
     audience: e.audienceAge || (e.kidFriendly ? "kids/family" : ""),
     registration: e.registration || "none",
     attendanceNote: e.attendanceNote || "",
+    sourceAudiences: e.sourceAudiences || [],
+    attendanceStatus: e.attendanceStatus || "",
     description: compactText(e.description, 500),
     blurb: compactText(e.blurb || e.description, 220),
   };
@@ -1376,7 +1401,7 @@ Voice:
 Fact rules:
 - Use only facts in the packet. Do not infer addresses, prices, ages, quality, or popularity.
 - Musical genre, performer lineup and cover/tribute/original-member identity must come from the source description or title, never an assumption about a name or decade-themed tour. A missing description supplies no such facts.
-- Observe registration and attendanceNote. Required registration is not a walk-up; a full or closed event must never be promoted as a plan readers can join. Same-day in-person ticket pickup is different from advance online registration; preserve the pickup time and location when supplied.
+- Observe registration, sourceAudiences and attendanceNote. Required registration is not a walk-up; a full or closed event must never be promoted as a plan readers can join. Same-day in-person ticket pickup is different from advance online registration; preserve the pickup time and location when supplied. Never infer a pickup time from conflicting instructions, or promote an event whose attendanceStatus is needs-confirmation.
 - Do not claim a paired meal works before, after, or on either side of an event unless the packet explicitly supplies business hours and an event end time that make the claim true.
 - Never say an event opens, closes, wraps up, or finishes a series, season, run, or homestand unless the packet says so in words. You are not shown a schedule. The 2026-08-26 issue wrote "the Giants close things out under the lights" on game 2 of a 6-game series.
 - For multi-day events, never infer today's ordinal day from the duration alone. A prior preview still counts as a day of the event; say "first public day" only when the packet explicitly supports it, and never turn that into "first day".
@@ -2169,9 +2194,11 @@ function eventMeta(e) {
     e.time,
     virtual ? "Virtual" : null,
     registrationLabel(e) || null,
+    e.sourceAudiences?.join(", ") || null,
     e.venue,
     virtual ? null : eventLocality(e),
     e.cost === "free" ? "Free" : null,
+    e.attendanceNote || null,
   ].filter(Boolean).join(" · ");
 }
 

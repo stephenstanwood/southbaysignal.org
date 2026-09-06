@@ -8,6 +8,24 @@ import { requiresAdvanceRegistration } from "./eventFilters.mjs";
 const lost = { id: "tm-Z7r9jZ1A7x78x", date: "2026-09-05", title: "Lost 80s Live", venue: "Mountain Winery", description: "", blurb: "Sing along to a lineup of 80s cover bands." };
 const duelo = { id: "sanjosetheaters-eb92ddeb3f824327", date: "2026-09-05", title: "Grupo Duelo – Gravedad Tour 2026", venue: "San Jose Civic" };
 
+test("September 6 library facts survive a sparse refresh and blurb resolution", async () => {
+  const events = [
+    { id: "sjpl-6a7bc1324cb69d003e203e28", title: "STEM: Balloon Car Derby", venue: "Berryessa Library", date: "2026-09-06", audienceAge: "all", kidFriendly: false },
+    { id: "cbdd438d7fbe", title: "Narcan Training at the Library", venue: "Los Gatos Library", date: "2026-09-06", audienceAge: "all" },
+  ];
+  await resolveEventBlurbs(events, { enabled: false });
+  assert.equal(events[0].audienceAge, "kids");
+  assert.equal(events[0].kidFriendly, true);
+  assert.equal(events[0].time, "2:00 PM");
+  assert.match(events[0].attendanceNote, /12 first-come.*confirm pickup timing/);
+  assert.equal(events[0].attendanceStatus, "needs-confirmation");
+  assert.equal(events[1].audienceAge, "adult");
+  for (const event of events) {
+    const next = { id: "different", title: event.title, venue: event.venue, date: "2026-09-13" };
+    assert.equal(applyVerifiedEventFacts(next), next, "the hold and exact attendance note cannot leak to later occurrences");
+  }
+});
+
 test("source corrections survive fresh sparse ingest without leaking into other occurrences", async () => {
   const events = [{ ...lost }, { ...duelo }];
   await resolveEventBlurbs(events, { enabled: false });
@@ -34,13 +52,13 @@ test("missing descriptions never support invented band identity; sourced tribute
 test("corrected feed/cache copies agree and Town Cats keeps in-person ticket pickup ungated", () => {
   const feed = JSON.parse(readFileSync(new URL("../../data/south-bay/upcoming-events.json", import.meta.url)));
   const cache = JSON.parse(readFileSync(new URL("../../data/south-bay/event-blurb-cache.json", import.meta.url)));
-  for (const id of [lost.id, duelo.id, "sjpl-6a5280ebe564853d00fd6ea4"]) {
+  for (const id of [lost.id, duelo.id, "sjpl-6a5280ebe564853d00fd6ea4", "sjpl-6a7bc1324cb69d003e203e28", "cbdd438d7fbe"]) {
     const event = feed.events.find((e) => e.id === id);
     if (!event) continue; // The occurrence legitimately ages out of the live feed.
     assert.equal(event.blurb, applyVerifiedEventFacts(event).blurb);
     assert.equal(cache.byKey[eventBlurbCacheKey(event)]?.blurb, event.blurb);
     assert.equal(eventCopyFactConflict(event.blurb, event), null);
-    if (id.startsWith("sjpl-")) {
+    if (id === "sjpl-6a5280ebe564853d00fd6ea4") {
       assert.equal(requiresAdvanceRegistration(event), false);
       assert.match(event.blurb, /Information Desk.*1 PM/);
     }

@@ -25,6 +25,7 @@ import { fileURLToPath } from "url";
 import { createHash } from "crypto";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { classifyLibCalLocation } from "./lib/libcal-location.mjs";
+import { libraryEventDetails } from "./lib/library-event-details.mjs";
 import { canonicalHistorySjUrl, historySjEndTime, inferHistorySjCost } from "./lib/history-sj.mjs";
 import {
   parseLindenTreeHeadingLines,
@@ -616,6 +617,7 @@ export async function scrapeLibCal(_page, config) {
       return {
         title,
         date,
+        ...libraryEventDetails(ev),
         time: ev.all_day ? null : libcalTime(ev.start),
         endTime: ev.all_day ? null : libcalTime(ev.end),
         venue: place.venue,
@@ -2700,32 +2702,7 @@ async function main() {
 
   // Flatten and normalize to standard event schema
   const allRaw = results.flatMap((result) => result.events);
-  const events = allRaw.map((e) => {
-    const d = new Date(`${e.date}T12:00:00-07:00`);
-    return {
-      // Include time: same source/date/title/venue can carry multiple
-      // showtimes on one day (e.g. SAP Center's Monster Jam 12pm + 6pm) —
-      // omitting it collided two distinct events onto one id and broke
-      // React keys downstream.
-      id: h("pw", e.source, e.date, e.title, e.venue, e.time || ""),
-      title: e.title,
-      date: e.date,
-      displayDate: displayDate(d),
-      time: e.time || null,
-      endTime: e.endTime || null,
-      venue: e.venue,
-      address: e.address || "",
-      city: e.city,
-      category: e.category || inferCategory(e.title),
-      cost: e.cost || null,
-      description: e.description || "",
-      url: e.url,
-      source: e.source,
-      kidFriendly: e.kidFriendly || false,
-      ...(e.eventStatus ? { eventStatus: e.eventStatus } : {}),
-      ...(e.occurrenceEvidence ? { occurrenceEvidence: e.occurrenceEvidence } : {}),
-    };
-  });
+  const events = allRaw.map(normalizePlaywrightEvent);
 
   const sourceHealth = tasks.map((task, index) => ({
     id: sourceTaskId(task.name),
@@ -2837,6 +2814,35 @@ async function main() {
   writeFileAtomic(OUT_PATH, JSON.stringify(output, null, 2));
   console.log(`\n✅ Wrote ${events.length} events from ${Object.keys(bySrc).length} sources to ${OUT_PATH}`);
   console.log("   Breakdown:", Object.entries(bySrc).map(([s, n]) => `${s}: ${n}`).join(", "));
+}
+
+export function normalizePlaywrightEvent(e) {
+  const d = new Date(`${e.date}T12:00:00-07:00`);
+  return {
+    // Include time: same source/date/title/venue can carry multiple
+    // showtimes on one day (e.g. SAP Center's Monster Jam 12pm + 6pm) —
+    // omitting it collided two distinct events onto one id and broke
+    // React keys downstream.
+    id: h("pw", e.source, e.date, e.title, e.venue, e.time || ""),
+    title: e.title,
+    date: e.date,
+    displayDate: displayDate(d),
+    time: e.time || null,
+    endTime: e.endTime || null,
+    venue: e.venue,
+    address: e.address || "",
+    city: e.city,
+    category: e.category || inferCategory(e.title),
+    cost: e.cost || null,
+    description: e.description || "",
+    ...(e.sourceAudiences ? { sourceAudiences: e.sourceAudiences } : {}),
+    ...(e.attendanceNote ? { attendanceNote: e.attendanceNote } : {}),
+    url: e.url,
+    source: e.source,
+    kidFriendly: e.kidFriendly || false,
+    ...(e.eventStatus ? { eventStatus: e.eventStatus } : {}),
+    ...(e.occurrenceEvidence ? { occurrenceEvidence: e.occurrenceEvidence } : {}),
+  };
 }
 
 // Run the full scrape only when this file is the process entry point, so a

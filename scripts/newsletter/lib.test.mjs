@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { applyVerifiedEventFacts } from "../../src/lib/south-bay/eventSourceFacts.mjs";
 import {
   buildEditorialPrompt,
   buildEditorialPacket,
@@ -35,6 +36,43 @@ function septemberIssue(events = []) {
     civicMeetings: [], todayHistory: [], redditPosts: [], visuals: {}, editorial: {},
   };
 }
+
+test("ambiguous library pickup stays out of recommendations and remains explicit in listings", () => {
+  const derby = applyVerifiedEventFacts({
+    id: "sjpl-6a7bc1324cb69d003e203e28", title: "STEM: Balloon Car Derby",
+    date: "2026-09-06", time: "2:00 PM", venue: "Berryessa Library",
+    url: "https://sjpl.bibliocommons.com/events/6a7bc1324cb69d003e203e28",
+  });
+  assert.deepEqual(pickEditorialEventCandidates([derby], { dayPlan: null, limit: 36 }), []);
+  // Changing the hour alone must not make an unresolved event Tonight's Pick.
+  assert.equal(isTonightPickCandidate({ ...derby, time: "6:00 PM" }), false);
+  const data = septemberIssue([derby]);
+  data.date = "2026-09-06";
+  data.editorial.briefing = "The balloon car derby has no registration; just show up.";
+  const { html } = renderEmail(data);
+  assert.match(html, /ages 5[–-]10/);
+  assert.match(html, /12 first-come, first-served tickets/);
+  assert.match(html, /confirm pickup timing/);
+  assert.doesNotMatch(html, /12:30|1:30|has no registration|just show up/);
+  const packet = buildEditorialPacket(data, { eventCandidates: [derby], openingCandidates: [], redditCandidates: [] });
+  assert.equal(packet.eventCandidates[0].audience, "kids");
+  assert.match(packet.eventCandidates[0].attendanceNote, /12 first-come/);
+  assert.equal(packet.eventCandidates[0].attendanceStatus, "needs-confirmation");
+
+  const cards = [
+    { id: `event:${derby.id}`, name: derby.title, source: "event", role: "pillar", bucket: "afternoon", pairedWithId: "place:lunch" },
+    { id: "place:lunch", name: "Bevri", role: "paired-meal", bucket: "lunch", pairedWithId: `event:${derby.id}` },
+  ];
+  assert.equal(makeNewsletterPlan({ selectionModel: "pillar-pairs-v1", cards }, data.date, {
+    attendanceUnconfirmedEventIds: new Set([cards[0].id]),
+  }), null);
+  data.dayPlan = { selectionModel: "pillar-pairs-v1", cards };
+  data.dayPlanBlurb = "Race balloon cars after lunch.";
+  data.tonightPick = derby;
+  renderEmail(data);
+  assert.equal(data.dayPlan, null, "cached plans must lose the entire pair plan");
+  assert.equal(data.tonightPick, null);
+});
 
 test("fresh capacity reaches the editor; full projects cannot become intro recommendations", async () => {
   const project = {

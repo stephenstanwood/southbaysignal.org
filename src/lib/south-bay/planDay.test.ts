@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { parseHour, fallbackBlurb, isMealVenueCandidate, scoreCandidates } from "../../pages/api/plan-day.ts";
+import { parseHour, fallbackBlurb, isMealVenueCandidate, scoreCandidates, buildCandidatePool } from "../../pages/api/plan-day.ts";
 import { cleanDisplayCopy, cleanDisplayName } from "./displayText.mjs";
 import { canonicalizeCard } from "./canonicalizeCard.mjs";
 import { mealOpenForService } from "./mealService.mjs";
@@ -33,6 +33,16 @@ import {
   mealBrandKey,
   rankNearbyMeals,
 } from "./dayPlanPairs.ts";
+
+test("September 6 library constraints hold in the real planner pool", () => {
+  for (const kids of [false, true]) {
+    const pool = buildCandidatePool("san-jose", kids, new Set(), "2026-09-06");
+    assert.equal(pool.some((c) => c.id === "event:sjpl-6a7bc1324cb69d003e203e28"), false,
+      "unresolved ticket timing cannot become an afternoon pillar");
+    if (kids) assert.equal(pool.some((c) => c.id === "event:cbdd438d7fbe"), false,
+      "Adults audience cannot enter a kids plan");
+  }
+});
 
 test("parseHour: AM/PM", () => {
   assert.equal(parseHour("9:00 AM"), 9);

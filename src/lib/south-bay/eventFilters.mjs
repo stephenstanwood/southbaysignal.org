@@ -308,6 +308,12 @@ export function requiresAdvanceRegistration(event) {
   );
 }
 
+// A conflicting attendance instruction is not a registration requirement.
+// Keep the listing and its confirmation note, but do not recommend going.
+export function requiresAttendanceConfirmation(event) {
+  return event?.attendanceStatus === "needs-confirmation";
+}
+
 /**
  * Short reader-facing label, or "" when nothing needs saying. Used by listing
  * surfaces that still show the event (the Events tab, "Also on the calendar")
