@@ -63,6 +63,9 @@ import { extractVenueFromTitle, stripRedundantVenueSuffix } from "./lib/venue-su
 import { dropUnmatchedClosers } from "./lib/bracket-balance.mjs";
 import { isClockTime, normalizeClockTime } from "./lib/clock-time.mjs";
 import { resolveBiblioLocation, formatBiblioAddress } from "./lib/biblio-location.mjs";
+import { libraryEventDetails } from "./lib/library-event-details.mjs";
+import { stripHtml } from "./lib/event-html.mjs";
+import { applyVerifiedEventFacts } from "../src/lib/south-bay/eventSourceFacts.mjs";
 import { canonicalHistorySjUrl, historySjEndTime, inferHistorySjCost } from "./lib/history-sj.mjs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -246,42 +249,6 @@ function isBlockedEvent(title) {
   return false;
 }
 
-function stripHtml(html) {
-  if (!html) return "";
-  return html
-    // Decode entities first so entity-encoded tags like &lt;strong&gt; become <strong> before stripping
-    .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
-    .replace(/&#x2019;/gi, "\u2019").replace(/&#x2018;/gi, "\u2018")
-    .replace(/&#x201C;/gi, "\u201C").replace(/&#x201D;/gi, "\u201D")
-    .replace(/&#x2013;/gi, "\u2013").replace(/&#x2014;/gi, "\u2014")
-    // Preserve `\u2026` \u2014 the catch-all stripper below would otherwise drop it,
-    // which loses the `[\u2026]` marker that CHM's stripChmRssBoilerplate uses to
-    // anchor the WordPress footer strip. Without this, the footer survives
-    // until truncate() chops it mid-sentence ("The post\u2026").
-    .replace(/&hellip;|&#8230;|&#x2026;/gi, "\u2026")
-    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(parseInt(code, 10)))
-    .replace(/&[a-z]+;/g, "")
-    // BiblioCommons (and other rich-text editors) occasionally save a word
-    // wrapped across two adjacent same-tag inline-formatting runs — e.g.
-    // `<strong>g</strong><strong>rades 4-5</strong>` from an SCCL Page
-    // Turners listing. The catch-all tag-stripper below replaces each tag
-    // with a single space, which turns the boundary into "g rades" (two
-    // adjacent spaces collapse to one, leaving a literal space mid-word).
-    // Drop the boundary when both tags are the same inline-formatting tag
-    // so the word reunites before the catch-all runs.
-    .replace(/<\/(strong|em|b|i|u|span)\b[^>]*><\1\b[^>]*>/gi, "")
-    // Superscript/subscript tags wrap a fragment that's joined to the
-    // preceding token with no whitespace — ordinal suffixes ("3<sup>rd</sup>"
-    // → "3rd"), footnote markers, chemical formulas ("H<sub>2</sub>O").
-    // The catch-all tag stripper replaces each tag with a space, which
-    // turns "3<sup>rd</sup>" into "3 rd". Drop sup/sub tags without
-    // inserting whitespace so the fragment stays joined.
-    .replace(/<\/?(sup|sub)\b[^>]*>/gi, "")
-    // Then strip all HTML tags
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ").trim();
-}
 
 // Skip internal university admin events that aren't open to the general public
 const INTERNAL_EVENT_PATTERNS = [
@@ -4156,6 +4123,7 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
 
           const title = ev.title || ev.definition?.title || "";
           const desc = ev.description || ev.definition?.description || "";
+          const details = libraryEventDetails(ev, entities);
           // BiblioCommons marks online-only library events with definition.isVirtual.
           // Title-pattern fallbacks ("Online …", "Virtual …") miss titles like
           // "Short Story Social" and "Learn English: Online Conversation Group"
@@ -4209,12 +4177,12 @@ async function fetchBiblioEvents(libraryId, libraryName, cityMapper) {
             // branch names like "Cambrian" (no "Library" suffix) used to slip past it.
             category: inferCategory(title, stripHtml(desc), ev.type || "", displayVenue),
             cost: "free",
-            description: truncate(stripHtml(desc)),
+            ...details,
             url: ev.registrationUrl || `https://${libraryId}.bibliocommons.com/events/${ev.id}`,
             source: libraryName,
             // Prefix-only boundary on the title+desc regex — match compounds like
             // "Storytime", "Babies", "Grades K-6". Mirrors playwright-scrapers.mjs.
-            kidFriendly: (ev.audiences || []).some((a) => {
+            kidFriendly: (details.sourceAudiences || []).some((a) => {
               const name = typeof a === "string" ? a : a?.name || "";
               return /child|teen|family|baby|toddler/i.test(name);
             }) || /\b(kid|child|family|story|youth|teen|toddler|baby|preschool|infant|lap[-\s]?sit|puppet show|ages?\s*\d|grades?\s+[K0-9])/i.test(title + " " + stripHtml(desc)),
@@ -4316,6 +4284,7 @@ async function fetchScclEvents() {
         const end = parseDatePT(endStr);
         const title = ev.title || ev.definition?.title || "";
         const desc = ev.description || ev.definition?.description || "";
+        const details = libraryEventDetails(ev, data.entities);
         const branchVenue = SCCL_LOCATION_BRANCH[locationCode] || libraryName;
         // See fetchBiblioEvents: BiblioCommons' definition.isVirtual is the
         // canonical online-only marker. SCCL doesn't typically use it (no
@@ -4339,7 +4308,7 @@ async function fetchScclEvents() {
           ...(registrationClosesBy ? { registrationClosesBy } : {}),
           category: inferCategory(title, stripHtml(desc), ev.type || "", branchVenue),
           cost: "free",
-          description: fixProperNouns(truncate(stripHtml(desc))),
+          ...details,
           url: ev.registrationUrl || `https://${libraryId}.bibliocommons.com/events/${ev.id}`,
           source: libraryName,
           kidFriendly: (() => {
@@ -4349,7 +4318,7 @@ async function fetchScclEvents() {
             // descriptions mention "families") but are programmed FOR adults.
             // Title-anchored — descriptions are too noisy.
             if (/\b(parents?|caregivers?|adults?\s+only|seniors?|memoir|estate planning|tax\s+(prep|help)|investing|retirement|widow|grief|alzheimer|dementia|book club for adults|esl)\b/i.test(title)) return false;
-            if ((ev.audiences || []).some((a) => {
+            if ((details.sourceAudiences || []).some((a) => {
               const name = typeof a === "string" ? a : a?.name || "";
               return /child|teen|family|baby|toddler/i.test(name);
             })) return true;
@@ -9090,8 +9059,10 @@ async function main() {
   const { classifyAudienceAge } = await import("../src/lib/south-bay/audienceAge.mjs");
   const audienceCounts = { kids: 0, adult: 0, all: 0 };
   for (const e of collapsedEvents) {
+    Object.assign(e, applyVerifiedEventFacts(e));
     const tag = classifyAudienceAge(e);
     e.audienceAge = tag;
+    if (e.sourceAudiences?.length && tag !== "all") e.kidFriendly = tag === "kids";
     audienceCounts[tag]++;
   }
   console.log(`   👥 audience: kids=${audienceCounts.kids} adult=${audienceCounts.adult} all=${audienceCounts.all}`);
@@ -9275,6 +9246,7 @@ export {
   mapTicketmasterEvent,
   resolveBiblioLocationFields,
   fetchCampbellEvents,
+  fetchBiblioEvents,
   fetchFarmersMarketEvents,
   FARMERS_MARKETS,
   fetchHappyHollowEvents,

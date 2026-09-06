@@ -24,7 +24,8 @@ import { CLAUDE_OPUS, extractText, stripFences } from "../../lib/models";
 import { CITY_MAP, getCityName } from "../../lib/south-bay/cities";
 import { normalizeName } from "../../lib/south-bay/normalizeName";
 import { logDecision } from "../../lib/south-bay/decisionLog.mjs";
-import { hasOutOfAreaDestination, isVirtualEvent, requiresAdvanceRegistration } from "../../lib/south-bay/eventFilters.mjs";
+import { hasOutOfAreaDestination, isVirtualEvent, requiresAdvanceRegistration, requiresAttendanceConfirmation } from "../../lib/south-bay/eventFilters.mjs";
+import { applyVerifiedEventFacts } from "../../lib/south-bay/eventSourceFacts.mjs";
 import { canonicalCategory } from "../../lib/south-bay/categories.mjs";
 import { holidayOn, matchesHolidayTheme } from "../../lib/south-bay/holidays";
 import { cleanDisplayCopy, cleanDisplayName } from "../../lib/south-bay/displayText.mjs";
@@ -778,7 +779,7 @@ export function scoreCandidates(
 // Build candidate pool
 // ---------------------------------------------------------------------------
 
-function buildCandidatePool(
+export function buildCandidatePool(
   city: City,
   kids: boolean,
   dismissedIds: Set<string>,
@@ -816,7 +817,7 @@ function buildCandidatePool(
     /\bstudy session\b/i,
     /\bstorytime\b/i,
   ];
-  const events = (eventsData as any).events ?? [];
+  const events = ((eventsData as any).events ?? []).map(applyVerifiedEventFacts);
   for (const evt of events) {
     if (dismissedIds.has(`event:${evt.id}`)) continue;
     if (isDismissedByName(evt.title) || isDismissedByName(evt.venue)) continue;
@@ -835,6 +836,7 @@ function buildCandidatePool(
     // The event itself stays in the corpus and on the Events tab, where it is
     // labelled (registrationLabel) instead of silently dropped.
     if (requiresAdvanceRegistration(evt)) continue;
+    if (requiresAttendanceConfirmation(evt)) continue;
     if (evt.title && PLAN_TITLE_BLOCKLIST.some((re) => re.test(evt.title))) continue;
     if (isBlocked(evt.title) || isBlocked(evt.venue)) continue;
 

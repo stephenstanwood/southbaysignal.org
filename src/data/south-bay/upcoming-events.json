@@ -6007,14 +6007,17 @@
       "city": "los-gatos",
       "category": "community",
       "cost": "free",
-      "description": "",
+      "description": "Training for adults in the Los Gatos Library Lobby, 4–5 PM, on recognizing an opioid overdose and using Narcan.",
       "url": "https://losgatosca.libcal.com/event/17096186",
       "source": "Los Gatos Library",
       "kidFriendly": false,
-      "audienceAge": "all",
+      "audienceAge": "adult",
       "photoRef": "places/ChIJx19Am-Q1joARnpTnb_ydkN8/photos/AWCwydgt-80aVNTJiuEzQFg8HQ1mDc3Q7UkRMaMVx9F6EOp2febOGx2qnOWNidq1f4TqLh1gO5Hi6aET0Lseeco621Xp-m6gzA6N74W1kEGmX5h60kmGJNfUiad8oDHEvXpCpSjywEqYFpN0vp3EhuEwOGHDM0GT-hZFHWiZE7NpBXlxabNyCpCqL_RmyQMHl2XVdp-6UW7nLl37QioiC5omGCFmp7N2afOtAD0uq8rsQ5SSI_95U4KQ1r0WsRArFxADJAJGgtYlhmNKXXMgTGNWiov3ugdzf3jDxJNNCg8bb3R0dlGPSlPloHrZtd4Z3g8B8wMLQFGJ96reRFxtgVj46jflA9UYOrlB-IFEVcxNLFN1YVajjO4-xznricTQ8ngjvSF0ehYs8Zc98yrIXR6Jf7PJ6bZ_AuI4vi5GZdWK8WrYZg",
-      "blurb": "Learn how to administer Narcan and respond to opioid overdose emergencies.",
-      "firstSeenAt": "2026-08-14T11:45:51.635Z"
+      "blurb": "Adults can learn to recognize an opioid overdose and use Narcan in the library lobby.",
+      "firstSeenAt": "2026-08-14T11:45:51.635Z",
+      "sourceAudiences": [
+        "Adults"
+      ]
     },
     {
       "id": "bc21ec342823",
@@ -18845,14 +18848,19 @@
       "city": "san-jose",
       "category": "education",
       "cost": "free",
-      "description": "Build two different types of balloon cars for our balloon car derby where lessons learned about engineering design, and kinetic and potential energy can be incorporated to create the fastest car. …",
+      "description": "Build and race two balloon-powered cars in Berryessa Library’s Community Room. Recommended for elementary students ages 5–10. 12 first-come, first-served tickets. The library’s pickup instructions conflict with its 2 PM start; confirm pickup timing with Berryessa Library before going.",
       "url": "https://sjpl.bibliocommons.com/events/6a7bc1324cb69d003e203e28",
       "source": "San Jose Public Library",
-      "kidFriendly": false,
-      "audienceAge": "all",
+      "kidFriendly": true,
+      "audienceAge": "kids",
       "image": "https://sjpl.bibliocommons.com/events/uploads/images/full/f41638a260c3660855d1dc24b0aceb0f/IMG_2413.jpg",
-      "blurb": "Build two balloon-powered cars and race them while learning about energy and design.",
-      "firstSeenAt": "2026-09-03T02:20:13.199Z"
+      "blurb": "Build and race balloon-powered cars, recommended for ages 5–10.",
+      "firstSeenAt": "2026-09-03T02:20:13.199Z",
+      "sourceAudiences": [
+        "Kids, ages 5-10"
+      ],
+      "attendanceNote": "12 first-come, first-served tickets. The library’s pickup instructions conflict with its 2 PM start; confirm pickup timing with Berryessa Library before going.",
+      "attendanceStatus": "needs-confirmation"
     },
     {
       "id": "sjpl-69e7a8c54dacf581ff8a2af9",

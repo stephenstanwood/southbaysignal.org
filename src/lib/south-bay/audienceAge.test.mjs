@@ -10,6 +10,15 @@ import { classifyAudienceAge } from "./audienceAge.mjs";
 
 const ev = (title, description = "") => ({ title, description });
 
+test("library audience labels survive sparse or misleading descriptions", () => {
+  assert.equal(classifyAudienceAge({ title: "STEM: Balloon Car Derby", sourceAudiences: ["Kids, ages 5-10"] }), "kids");
+  assert.equal(classifyAudienceAge({ title: "Narcan Training at the Library", description: "Families across the country…", sourceAudiences: ["Adults"] }), "adult");
+  assert.equal(classifyAudienceAge({ title: "A library program", sourceAudiences: ["Children", "Adults"] }), "all");
+  assert.equal(classifyAudienceAge({ title: "A library program", sourceAudiences: ["All Ages"] }), "all");
+  assert.equal(classifyAudienceAge({ title: "A library program", sourceAudiences: ["Ages 5–10"] }), "kids");
+  assert.equal(classifyAudienceAge({ title: "A library program", sourceAudiences: ["Unknown label"] }), "all");
+});
+
 test("21+ trailing-context variants all classify as adult", () => {
   // These all need to fire — they're what real Ticketmaster blurbs look like.
   // The pre-fix regex required a word char after "+", which made all of

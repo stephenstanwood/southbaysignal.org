@@ -26,6 +26,7 @@ interface RawEvent {
   photoRef?: string | null;
   blurb?: string | null;
   description?: string | null;
+  attendanceNote?: string | null;
   cost?: string | null;
   costNote?: string | null;
   kidFriendly?: boolean | null;
@@ -321,6 +322,9 @@ const showDesc = longDesc && longDesc !== blurb && !blurb.startsWith(longDesc.sl
 
   {blurb && <p class="cal-detail-copy">{blurb}</p>}
   {showDesc && <p class="cal-detail-copy cal-detail-copy--secondary">{longDesc}</p>}
+  {event.attendanceNote && !longDesc.includes(event.attendanceNote) && (
+    <p class="cal-detail-copy cal-detail-copy--secondary">{event.attendanceNote}</p>
+  )}
 
   <dl class="cal-detail-facts">
     <div><dt>When</dt><dd>{dayLabel}{timeLabel ? ` · ${timeLabel}` : ""}</dd></div>

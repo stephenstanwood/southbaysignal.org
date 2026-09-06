@@ -117,6 +117,14 @@ where they are labelled "Reserve ahead" / "Appointment required" /
 must book is worth knowing about; the newsletter just must not imply they can
 walk in.
 
+Conflicting same-day attendance instructions have their own gate:
+`attendanceStatus: "needs-confirmation"` is excluded by
+`requiresAttendanceConfirmation()` from planner and newsletter recommendations.
+It does not imply advance registration. Listings keep their `attendanceNote`,
+rendered independently of generated blurbs. BiblioCommons and LibCal retain
+their structured `sourceAudiences` labels for audience classification.
+See `docs/qa/2026-09-06-newsletter.md` for the Balloon Car Derby source conflict.
+
 Two properties of the source data are load-bearing, and both produced the bug
 when ignored:
 

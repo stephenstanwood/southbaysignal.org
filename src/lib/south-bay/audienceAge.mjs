@@ -112,6 +112,17 @@ const KIDS_TITLE_SIGNALS = [
 ];
 
 export function classifyAudienceAge(event) {
+  // Structured library audience labels are the program's intended audience.
+  // Prose may discuss families or childcare without inviting those audiences.
+  const labels = (event.sourceAudiences || []).map((label) => String(label));
+  const sourceKids = labels.some((label) => /\b(?:kids?|children|teens?|tweens?|babies|toddlers?|preschool|elementary)\b/i.test(label)
+    || KIDS_SIGNALS.some((pattern) => pattern.test(label)));
+  const sourceAdults = labels.some((label) => /\b(?:adults?|seniors?)\b/i.test(label));
+  const sourceAll = labels.some((label) => /\b(?:all ages|everyone|famil(?:y|ies))\b/i.test(label));
+  if (sourceAll || (sourceKids && sourceAdults)) return "all";
+  if (sourceKids) return "kids";
+  if (sourceAdults) return "adult";
+
   const title = String(event.title || "");
   const desc = String(event.description || "").slice(0, 400);
   let hay = `${title}\n${desc}`;
