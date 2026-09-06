@@ -1197,6 +1197,24 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   //     own release and Bloomberg both say $926M. The aggregator has a typo.)
   //   • PATH (undisclosed round, Aug 26 2026) is Fremont — Alameda County, the
   //     same out-of-coverage call as the San Mateo County exclusions above.
+  // Note on the Sep 1-6 2026 sweep: Visko and Guickly are the in-coverage
+  // rounds added below. The near-miss recorded so the next cycle doesn't
+  // re-verify it:
+  //   • Owner ($240M Series D at $2.3B, announced Aug 28 2026; AI-native
+  //     software for independent restaurants) is left out on an unresolved HQ.
+  //     AlleyWatch's weekly roundup, Wikipedia, and the usual aggregators
+  //     (CBInsights, PitchBook, ZoomInfo) all say Palo Alto, at 530 Lytton Ave.
+  //     But the only primary source is the company's own PR Newswire release,
+  //     and it datelines "SAN FRANCISCO, Aug. 28, 2026" with no HQ line in the
+  //     boilerplate; owner.com/careers advertises remote-friendly roles and
+  //     names no office city. Same rule that excluded Katalyze AI and Array
+  //     Labs — an aggregator city label alone is not enough. Add it if a
+  //     primary source (a release dateline, an SEC filing, a contact page)
+  //     puts the HQ in Palo Alto.
+  //   • Gimlet Labs ($300M Series B at $3B, Sep 4 2026) is San Francisco per
+  //     Bloomberg and the company's own release. Out of coverage.
+  //   • The Sep 3 and Sep 4 daily funding roundups carried no Santa Clara
+  //     County rounds at all.
   // Lyte's own Sep 2 release supersedes older Mountain View labels: its current
   // boilerplate says the company is headquartered in Sunnyvale. The January
   // $107M financing below remains a separate round; together the two entries
@@ -1214,6 +1232,32 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
       "Robots need cameras, depth, and motion sensors to agree about what is happening at the same instant. Lyte builds that perception stack from its own silicon up: LyteVision fuses coherent 4D vision, high-resolution imaging, and inertial sensing on one synchronized timeline, so robots can track position and motion without reconstructing it later in software. Since emerging from stealth in January, the Sunnyvale company says it has entered production and is shipping to inspection, logistics, and manufacturing customers. Maverick Silicon led the $165M Series C at a $1.6B post-money valuation, with Fidelity, Atreides, Key1, and Ora Global among the investors; total funding is now $272M. The money scales production and hiring across silicon, software, optics, manufacturing, operations, and go-to-market.",
     color: "#8B5CF6",
     url: "https://lyte.ai/news/series-c",
+  },
+  {
+    id: "visko",
+    name: "Visko",
+    city: "Sunnyvale",
+    category: "ai",
+    round: "Pre-Seed",
+    amount: "$10M",
+    date: "2026-09-01",
+    tagline:
+      "Every AI video generator you have heard of makes clips: send a prompt, wait, get a finished file back. Visko's argument is that the interesting version never stops running. Orbis, the Sunnyvale company's first model and now open to the public, streams a generated world at 4K and 24 frames per second and holds it together for hours \u2014 and you can change the prompt mid-stream and watch the world update while the video keeps playing. The hard part it claims to have solved is drift. Founder and CEO Qing (Will) Yin says the longer a generated world runs, the more it falls apart; Orbis answers that by modeling the world as continuous neural stochastic differential equations, with perception, memory, and physics sharing one latent space, instead of predicting one discrete frame after another. Yin holds a Stanford PhD in computational mathematics and mechanics and spent three years as an Apple researcher; the 16-person team comes out of Apple, Google DeepMind, Meta, Amazon, and Tesla, advised by Berkeley's Michael I. Jordan, Columbia's Steve WaiChing Sun, and NYU's Mengye Ren. Llama Ventures led the $10M pre-seed, and the company is pointing the model at robotics and physical simulation as much as at gaming, live commerce, education, and real-time creative work.",
+    color: "#7c3aed",
+    url: "https://www.visko.ai/",
+  },
+  {
+    id: "guickly",
+    name: "Guickly",
+    city: "San Jose",
+    category: "saas",
+    round: "Seed",
+    amount: "$4.2M",
+    date: "2026-09-01",
+    tagline:
+      "Companies now spend about as much on AI as they do on cloud infrastructure, but cloud arrived with a decade of tooling for tracking who spent what and why, and AI did not. Guickly launched out of San Jose to sell that missing layer: a measurement system that maps every AI tool, user, and department automatically rather than by survey, surfaces the shadow AI nobody expensed, sets per-employee and per-tool budgets, and flags the waste \u2014 unused licenses, overpriced models, three tools doing one job. The pitch leans on a McKinsey finding the company cites, that only 39% of organizations can connect AI spending to a measurable business outcome. For security-conscious buyers, the differentiator is that prompts and source code stay on premises instead of being shipped to a vendor for analysis. Founder Prashant Jalan spent more than eight years as an applied AI lead at Google, where he helped build the Maps speed-limit feature and wrote a profiler for squeezing performance out of TPUs \u2014 the same instinct, turned on a company's AI bill instead of a chip. Engineering Capital led the $4.2M seed, with Converge VC, Neon Fund, and angel investors joining.",
+    color: "#2563eb",
+    url: "https://guickly.com",
   },
   {
     id: "sifly-series-a",
