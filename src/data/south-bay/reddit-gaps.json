@@ -1,156 +1,62 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-05T03:16:51.850Z",
+    "generatedAt": "2026-09-06T03:16:12.352Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 10
+    "sourceCount": 5
   },
   "summary": {
-    "threadsMined": 10,
-    "placesExtracted": 8,
-    "placesMatched": 2,
-    "placeGaps": 6,
-    "eventsExtracted": 2,
+    "threadsMined": 5,
+    "placesExtracted": 2,
+    "placesMatched": 0,
+    "placeGaps": 2,
+    "eventsExtracted": 1,
     "eventsMatched": 0,
-    "eventGaps": 2,
+    "eventGaps": 1,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "Discover Charter School, Falcon campus",
-      "city": "San Jose",
-      "kind": "other",
-      "context": "asking about school for gifted kindergartener",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w79xul/looking_for_a_local_san_josebay_area_bakery_to/",
-        "https://www.reddit.com/r/SanJose/comments/1w7oj69/stuff_to_do_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1w7djmz/guadalupe_river_park/",
-        "https://www.reddit.com/r/SanJose/comments/1w7ntr4/annual_parking_pass_for_san_jose_parks/",
-        "https://www.reddit.com/r/SanJose/comments/1w7ghb1/how_is_discover_charter_school_falcon_campus_for/"
-      ]
-    },
-    {
-      "name": "Dollar Tree",
-      "city": "San Jose",
-      "kind": "retail",
-      "context": "coming to The Plant near Target",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w7fbf6/dollar_tree_coming_to_the_plant_near_target/",
-        "https://www.reddit.com/r/SanJose/comments/1w7dmgp/whats_the_best_places_to_get_an_eye_exam_without/",
-        "https://www.reddit.com/r/SanJose/comments/1w7b3dl/extra_ticket_to_mallorama_rave_eastridge/",
-        "https://www.reddit.com/r/SanJose/comments/1w6v9aq/oddities_in_the_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w6urf9/does_anyone_know_about_a_flea_market_on_tully/"
-      ]
-    },
-    {
-      "name": "The Plant",
-      "city": "San Jose",
-      "kind": "retail",
-      "context": "shopping center getting a Dollar Tree",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w7fbf6/dollar_tree_coming_to_the_plant_near_target/",
-        "https://www.reddit.com/r/SanJose/comments/1w7dmgp/whats_the_best_places_to_get_an_eye_exam_without/",
-        "https://www.reddit.com/r/SanJose/comments/1w7b3dl/extra_ticket_to_mallorama_rave_eastridge/",
-        "https://www.reddit.com/r/SanJose/comments/1w6v9aq/oddities_in_the_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w6urf9/does_anyone_know_about_a_flea_market_on_tully/"
-      ]
-    },
-    {
-      "name": "Costco",
-      "city": "",
-      "kind": "retail",
-      "context": "recommended for eye exams without insurance",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w7fbf6/dollar_tree_coming_to_the_plant_near_target/",
-        "https://www.reddit.com/r/SanJose/comments/1w7dmgp/whats_the_best_places_to_get_an_eye_exam_without/",
-        "https://www.reddit.com/r/SanJose/comments/1w7b3dl/extra_ticket_to_mallorama_rave_eastridge/",
-        "https://www.reddit.com/r/SanJose/comments/1w6v9aq/oddities_in_the_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w6urf9/does_anyone_know_about_a_flea_market_on_tully/"
-      ]
-    },
-    {
-      "name": "Eastridge",
+      "name": "Eastridge Mall",
       "city": "San Jose",
       "kind": "venue",
-      "context": "location of Mallorama Rave",
+      "context": "Eastside mall hosting Mallorama event",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w7fbf6/dollar_tree_coming_to_the_plant_near_target/",
-        "https://www.reddit.com/r/SanJose/comments/1w7dmgp/whats_the_best_places_to_get_an_eye_exam_without/",
-        "https://www.reddit.com/r/SanJose/comments/1w7b3dl/extra_ticket_to_mallorama_rave_eastridge/",
-        "https://www.reddit.com/r/SanJose/comments/1w6v9aq/oddities_in_the_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w6urf9/does_anyone_know_about_a_flea_market_on_tully/"
+        "https://www.reddit.com/r/SanJose/comments/1w8im83/who_wants_to_go_2_mallorama_event_at_the_eastside/",
+        "https://www.reddit.com/r/SanJose/comments/1w884dm/mural_artists/",
+        "https://www.reddit.com/r/SanJose/comments/1w87ayq/pet_sitting_swap/",
+        "https://www.reddit.com/r/SanJose/comments/1w85q8a/iso_a_auto_mechanic/",
+        "https://www.reddit.com/r/SanJose/comments/1w7pg4l/should_i_give_up_my_search_for_kurobutaberkshire/"
       ]
     },
     {
-      "name": "Tully Night Market",
-      "city": "San Jose",
-      "kind": "other",
-      "context": "market near library on Tully Road, inactive Instagram",
+      "name": "Midori Ranch",
+      "city": "",
+      "kind": "retail",
+      "context": "family farm selling Berkshire pork, meetup in Los Altos",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w7fbf6/dollar_tree_coming_to_the_plant_near_target/",
-        "https://www.reddit.com/r/SanJose/comments/1w7dmgp/whats_the_best_places_to_get_an_eye_exam_without/",
-        "https://www.reddit.com/r/SanJose/comments/1w7b3dl/extra_ticket_to_mallorama_rave_eastridge/",
-        "https://www.reddit.com/r/SanJose/comments/1w6v9aq/oddities_in_the_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w6urf9/does_anyone_know_about_a_flea_market_on_tully/"
+        "https://www.reddit.com/r/SanJose/comments/1w8im83/who_wants_to_go_2_mallorama_event_at_the_eastside/",
+        "https://www.reddit.com/r/SanJose/comments/1w884dm/mural_artists/",
+        "https://www.reddit.com/r/SanJose/comments/1w87ayq/pet_sitting_swap/",
+        "https://www.reddit.com/r/SanJose/comments/1w85q8a/iso_a_auto_mechanic/",
+        "https://www.reddit.com/r/SanJose/comments/1w7pg4l/should_i_give_up_my_search_for_kurobutaberkshire/"
       ]
     }
   ],
   "eventGaps": [
     {
-      "name": "Mallorama Rave",
-      "when": "this Saturday",
+      "name": "Mallorama",
+      "when": "",
       "city": "San Jose",
-      "context": "sold-out rave at Eastridge",
+      "context": "event at Eastside mall",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w7fbf6/dollar_tree_coming_to_the_plant_near_target/",
-        "https://www.reddit.com/r/SanJose/comments/1w7dmgp/whats_the_best_places_to_get_an_eye_exam_without/",
-        "https://www.reddit.com/r/SanJose/comments/1w7b3dl/extra_ticket_to_mallorama_rave_eastridge/",
-        "https://www.reddit.com/r/SanJose/comments/1w6v9aq/oddities_in_the_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w6urf9/does_anyone_know_about_a_flea_market_on_tully/"
-      ]
-    },
-    {
-      "name": "Flea market on Tully Road",
-      "when": "every Wednesday",
-      "city": "San Jose",
-      "context": "rumored market across from fairgrounds",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w7fbf6/dollar_tree_coming_to_the_plant_near_target/",
-        "https://www.reddit.com/r/SanJose/comments/1w7dmgp/whats_the_best_places_to_get_an_eye_exam_without/",
-        "https://www.reddit.com/r/SanJose/comments/1w7b3dl/extra_ticket_to_mallorama_rave_eastridge/",
-        "https://www.reddit.com/r/SanJose/comments/1w6v9aq/oddities_in_the_area/",
-        "https://www.reddit.com/r/SanJose/comments/1w6urf9/does_anyone_know_about_a_flea_market_on_tully/"
+        "https://www.reddit.com/r/SanJose/comments/1w8im83/who_wants_to_go_2_mallorama_event_at_the_eastside/",
+        "https://www.reddit.com/r/SanJose/comments/1w884dm/mural_artists/",
+        "https://www.reddit.com/r/SanJose/comments/1w87ayq/pet_sitting_swap/",
+        "https://www.reddit.com/r/SanJose/comments/1w85q8a/iso_a_auto_mechanic/",
+        "https://www.reddit.com/r/SanJose/comments/1w7pg4l/should_i_give_up_my_search_for_kurobutaberkshire/"
       ]
     }
   ],
-  "placeMatches": [
-    {
-      "name": "Guadalupe River Park",
-      "city": "San Jose",
-      "kind": "park",
-      "context": "jogging route from airport to Taylor, looking fantastic",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w79xul/looking_for_a_local_san_josebay_area_bakery_to/",
-        "https://www.reddit.com/r/SanJose/comments/1w7oj69/stuff_to_do_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1w7djmz/guadalupe_river_park/",
-        "https://www.reddit.com/r/SanJose/comments/1w7ntr4/annual_parking_pass_for_san_jose_parks/",
-        "https://www.reddit.com/r/SanJose/comments/1w7ghb1/how_is_discover_charter_school_falcon_campus_for/"
-      ],
-      "matchedName": "Guadalupe River Park"
-    },
-    {
-      "name": "Alum Rock Park",
-      "city": "San Jose",
-      "kind": "park",
-      "context": "gets super busy on weekends, considering annual parking pass",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w79xul/looking_for_a_local_san_josebay_area_bakery_to/",
-        "https://www.reddit.com/r/SanJose/comments/1w7oj69/stuff_to_do_this_weekend/",
-        "https://www.reddit.com/r/SanJose/comments/1w7djmz/guadalupe_river_park/",
-        "https://www.reddit.com/r/SanJose/comments/1w7ntr4/annual_parking_pass_for_san_jose_parks/",
-        "https://www.reddit.com/r/SanJose/comments/1w7ghb1/how_is_discover_charter_school_falcon_campus_for/"
-      ],
-      "matchedName": "Alum Rock Park"
-    }
-  ],
+  "placeMatches": [],
   "eventMatches": []
 }
