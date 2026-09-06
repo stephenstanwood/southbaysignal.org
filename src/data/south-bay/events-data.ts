@@ -273,7 +273,7 @@ export const SOUTH_BAY_EVENTS: SBEvent[] = [
 
   {
     id: "santana-row-farmers-market",
-    title: "Santana Row Farmers' Market",
+    title: "Santana Row Farmers Market",
     city: "san-jose",
     venue: "Santana Row",
     address: "377 Santana Row, San Jose",
@@ -359,7 +359,7 @@ export const SOUTH_BAY_EVENTS: SBEvent[] = [
     costNote: "Included with museum admission",
     kidFriendly: true,
     description:
-      "All ages storytime in the Theatre every Tuesday at 11:30am.",
+      "All-ages storytime in the Theatre every Tuesday at 11:30am.",
     url: "https://www.cdm.org/calendar/",
     emoji: "📚",
   },
