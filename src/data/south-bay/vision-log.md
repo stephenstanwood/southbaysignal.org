@@ -2,6 +2,81 @@
 
 ---
 
+## 2026-09-06 — Cycle 218: Two Verified September Rounds, and Two Founding Myths Retired
+
+### Context
+Sunday September 6, 2026. Roadmap still closed (6/6). The funding list ran
+through Lyte's September 2 Series C, so the open question was what the
+September 1–6 window actually contained.
+
+### What Was Built
+
+**Two in-coverage rounds added to Recently Funded.** Visko (Sunnyvale, $10M
+pre-seed, Sep 1) — Orbis streams a generated world at 4K/24fps for hours and
+takes prompt changes mid-stream, modeled as continuous neural SDEs rather than
+discrete frames; founder Qing (Will) Yin is a Stanford PhD and ex-Apple
+researcher, the team is 16 people, Llama Ventures led. Guickly (San Jose, $4.2M
+seed, Sep 1) — an AI measurement layer that maps tools, users, and spend,
+surfaces shadow AI, and keeps prompts and source on premises; founder Prashant
+Jalan spent 8+ years as an applied AI lead at Google. Engineering Capital led,
+with Converge VC and Neon Fund.
+
+**Owner's $240M Series D was NOT added, and the reasoning is recorded.**
+AlleyWatch, Wikipedia, CBInsights, PitchBook, and ZoomInfo all put Owner at 530
+Lytton Ave in Palo Alto. The only primary source is the company's own PR
+Newswire release, which datelines "SAN FRANCISCO, Aug. 28, 2026" and carries no
+HQ line; owner.com/careers advertises remote-friendly roles and names no office.
+Same rule that excluded Katalyze AI and Array Labs — an aggregator city label is
+not enough. Gimlet Labs ($300M, Sep 4) is San Francisco per Bloomberg and its
+own release. The Sep 3 and Sep 4 daily roundups carried no Santa Clara County
+rounds at all.
+
+**Two milestone taglines stopped asserting things their own notes contradict.**
+The Fairchild Semiconductor tagline said the integrated circuit came out of "a
+Palo Alto garage" while its anniversaryNote correctly described a rented
+building on East Charleston Road; the tagline now says that, and says planar
+integrated circuit. The Atari 2600 tagline asserted a precise ship date of
+October 14, 1977 while its own note says the date is unknown "somewhere between
+August and October"; the tagline now says the fall of 1977. TECH_MILESTONES is
+not rendered on the Tech tab, but it IS parsed by
+`scripts/social/generate-sv-history.mjs`, so both fixes ship through the
+Silicon Valley history social posts.
+
+**OCP Global Summit's description now carries the venue move.** 2026 is the last
+San Jose edition — OCP has said the summit moves to Moscone Center in San
+Francisco starting in 2027, and 10,835 people attended in 2025. Dreamforce
+(Sep 15–17) and OCP (Oct 12–15) were both checked against the organizers and
+the stored dates were already correct.
+
+Primary sources:
+- https://www.prnewswire.com/news-releases/ai-startup-visko-closes-10-million-pre-seed-round-and-launches-orbis-its-first-live-model-302865890.html
+- https://www.businesswire.com/news/home/20260901163193/en/ (SAN JOSE dateline)
+- https://www.opencompute.org/blog/ocp-global-summit-is-moving-to-a-new-location
+
+### Verification
+
+`npm test` (11/11) and `npm run build` passed, including the locked-Home
+prebuild gate; `npx astro check` reports 0 errors. Confirmed in the built
+output that the Visko and Guickly cards render in `/tech`'s server HTML. No dev
+server was available in this unattended run, so there is no browser pass this
+cycle.
+
+No protected Home, Events, or Food surface was touched; no component or section
+was added.
+
+### Note for the next cycle
+
+Three Tech tab sections are defined in `TechnologyView.tsx` but never called,
+and they tree-shake out of the build entirely: `AnnualConferencesSection`
+(TECH_CONFERENCES), `SvHistorySection` (TECH_MILESTONES), and
+`TechEventsSection`. Only `FundingHighlightsSection`, the company grid, and
+`SpotlightHighlightsSection` actually render. Per Rule #1 these are orphans, not
+bugs — do not wire them in. TECH_MILESTONES still earns its keep through the
+social generator; TECH_CONFERENCES currently has no consumer at all.
+`tech-briefing.json` remains an orphan too, last generated 2026-08-04.
+
+---
+
 ## 2026-09-05 — Cycle 217: Two September 3 Changes Reach the Tech Page
 
 ### Context
