@@ -229,6 +229,10 @@ const TITLE_BLOCKLIST = [
   /\bFlash Sale Fridays\b/i, // Stanford gear hub — requires SUID card
   /\bSierra Nevada Concert Experience\b/i, // Ticketmaster VIP lounge package, not the show itself
   /\bCrossFit Games Lounge Day\s+\d+\b/i, // Ticketmaster lounge add-on, not the event itself
+  // Calls for participation are recruitment forms, not events a reader can attend.
+  // (e.g. "…Family Literacy Festival author participation" linked only to a Google Form.)
+  /\b(?:author|artist|vendor|exhibitor|sponsor|performer|speaker)\s+(?:participation|applications?|sign[-\s]?ups?)\b/i,
+  /\bcall\s+for\s+(?:authors|artists|vendors|entries|submissions|proposals|speakers|performers)\b/i,
 ];
 
 function isBlockedEvent(title) {
@@ -2867,7 +2871,13 @@ function restoreSjsuAcronyms(text) {
 // city-briefing picker chose "Event Center Check in" as one of San José's two
 // event highlights over Chicano Soul Fest. Drop them at ingest.
 // "Check-in kiosk" / "check-in desk" in a title is never an attendable event.
-const ADMIN_KIOSK_TITLE = /\bcheck[\s-]?in\s+(kiosk|desk|station|table)\b|\bfront\s+desk\s+check[\s-]?in\b/i;
+const ADMIN_KIOSK_TITLE = /\bcheck[\s-]?in\s+(kiosk|desk|station|table)\b|\bfront\s+desk\s+check[\s-]?in\b|\bevent\s+center\s+check[\s-]?in\b/i;
+// "Event Center Check in" is named outright above because the blurb-gated bare
+// rule below cannot catch it: the SJSU row reaches this filter with an empty
+// description, so ADMIN_CHECKIN_BLURB has nothing to match on, and the visitor
+// wording ("during your visit") only appears after the later enrichment pass.
+// Four daily instances slipped into upcoming-events.json this way (2026-09-05..08)
+// even though the 2026-08-29 filter was already in place.
 // A title that is only "<place> Check in" is ambiguous — "5K Race Packet Check
 // In" is a real thing attendees do. Require kiosk/front-desk/visitor-sign-in
 // framing in the blurb before dropping these.
