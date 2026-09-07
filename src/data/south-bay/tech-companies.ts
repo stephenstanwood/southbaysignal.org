@@ -1215,6 +1215,42 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   //     Bloomberg and the company's own release. Out of coverage.
   //   • The Sep 3 and Sep 4 daily funding roundups carried no Santa Clara
   //     County rounds at all.
+  // Note on the Sep 3–7 2026 sweep: TabaPay is the one in-coverage round,
+  // and its city label needed resolving before it could be added. FinSMEs,
+  // PitchBook, and ZoomInfo all file TabaPay under Mountain View (ZoomInfo
+  // gives 605 Ellis St), but both primary sources say Palo Alto: the funding
+  // release issued through FTV Capital datelines "PALO ALTO, Calif. —
+  // September 2, 2026," and the company's California DFPI money-transmitter
+  // license (ID 2769, TabaPay Payment Services, LLC) lists 450 Cambridge Ave,
+  // Palo Alto. Same aggregator-label problem as Katalyze AI and Naïve, and it
+  // resolves in coverage either way — Mountain View and Palo Alto are both
+  // Santa Clara County — so the only thing at stake was which city the card
+  // names. Primary sources win: Palo Alto.
+  // Near-misses recorded so the next cycle doesn't re-verify them:
+  //   * WindBorne Systems ($37M Series B, Aug 5 2026; long-duration sensing
+  //     balloons feeding the WeatherMesh forecast models) is NOT here despite
+  //     FinSMEs calling it "Palo Alto, CA-based." The company's own
+  //     announcement datelines "Redwood City, CA" and says only that WindBorne
+  //     was founded in Palo Alto — past tense, a founding story, not an HQ.
+  //     Redwood City is San Mateo County, the same line that already excludes
+  //     Fireworks AI, Cognichip, and Array Labs. Out of coverage unless a
+  //     primary source moves the HQ back across the county line.
+  //   * Thinking Machines Lab (reported ~$1B round in talks at a $40B
+  //     valuation, Sep 3 2026) is San Francisco, and a round in talks is not a
+  //     closed round. Out on both counts.
+  {
+    id: "tabapay",
+    name: "TabaPay",
+    city: "Palo Alto",
+    category: "fintech",
+    round: "Growth",
+    amount: "$155M",
+    date: "2026-09-02",
+    tagline:
+      "Almost every fintech that moves money for you rents the pipes from someone else, and TabaPay is one of the companies renting them out. The Palo Alto firm runs instant payouts and pay-ins across card and bank rails through a single API, and at that unglamorous layer it has become the fifth-largest card-not-present processor in the country by transaction count, touching about a third of American households and on track to move more than $100 billion this year. The $155M from FTV Capital, a mix of primary capital and a secondary sale, funds an unusual next step: rather than keep leasing access, TabaPay intends to buy Transact Bank, an OCC-chartered, FDIC-insured bank in Denver, rename it TabaBank, and put both companies under a new holding company. A national charter would give it direct access to Federal Reserve rails including FedNow and ACH, and one federal regulator in place of the state-by-state money-transmitter licenses it operates under today — including California's, held at its Cambridge Avenue address. Co-founder and CEO Rodney Robinson says the point is to bring payments and banking under one roof; FTV partner Robert Anderson joins the bank's board. The deal needs Federal Reserve approval and is expected to close in the fourth quarter. It is also the company's second run at buying its way into new infrastructure — TabaPay walked away from a $9.7M deal for Synapse's assets in 2024 when closing conditions went unmet.",
+    color: "#0F766E",
+    url: "https://ftvcapital.com/2026/tabapay-closes-155-million-strategic-growth-financing-led-by-ftv-capital-and-announces-planned-acquisition-of-transact-bank/",
+  },
   // Lyte's own Sep 2 release supersedes older Mountain View labels: its current
   // boilerplate says the company is headquartered in Sunnyvale. The January
   // $107M financing below remains a separate round; together the two entries
