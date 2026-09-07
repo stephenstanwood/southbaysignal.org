@@ -290,12 +290,108 @@ export function registrationFromBiblioCommons(ev) {
   return fromInstructions || REGISTRATION_REQUIRED;
 }
 
+/** Normalize a GraphQL enum value to an upper-case string, or null. */
+function enumValue(value) {
+  return typeof value === "string" && value.trim() ? value.trim().toUpperCase() : null;
+}
+
+/**
+ * Normalize one raw Meetup GraphQL event node into a registration state.
+ *
+ * Reads the shape api.meetup.com/gql-ext actually returns (verified against
+ * the live eventSearch feed, 49 South Bay events, 2026-09-07):
+ *
+ *   node.rsvpState                 <- RsvpState enum, the reader-facing CTA
+ *   node.maxTickets                <- Int; 0 means "no limit"
+ *   node.rsvpSettings.rsvpsClosed  <- Boolean
+ *   node.rsvps.yesCount            <- seats actually taken
+ *   node.group.joinMode            <- GroupJoinMode: OPEN | APPROVAL | CLOSED
+ *   node.group.isPrivate           <- Boolean
+ *
+ * `rsvpState` is the load-bearing field, the way `provider` is for
+ * BiblioCommons. It is exactly what Meetup renders in the listing's sticky
+ * CTA bar, so it is the same string the reader will see:
+ *   JOIN_OPEN           "Attend"          -> anyone can RSVP, walk-up stands
+ *   JOIN_APPROVAL       "Request to join" -> an organizer must approve first
+ *   JOIN_DUES_APPROVAL  approval + dues
+ *   FULL / WAITLIST     out of seats
+ *   CLOSED              RSVPs shut
+ *
+ * Shipped 2026-09-07 after that morning's issue opened by calling a Hacker
+ * Dojo BBQ and PASCA's "Monday Pizza Social in the Garden" "both
+ * no-registration walk-ups", and said so again in Tonight's Pick. The pizza
+ * social is JOIN_APPROVAL with maxTickets 31 — its CTA reads "Request to
+ * join", so a reader who took the newsletter at its word could be turned
+ * away at an approval gate. Every Meetup event reached the planner with no
+ * `registration` field at all, indistinguishable from a park concert.
+ *
+ * THREE TRAPS, all observed in that same 49-event sample:
+ *
+ * 1. `rsvpState` is the CURRENT MEMBER's state, so it can describe our OAuth
+ *    identity rather than the reader's. A group we have already joined
+ *    reports RSVP/YES/NO instead of a JOIN_* value, which says nothing about
+ *    what a stranger faces. Those states therefore fall through to
+ *    `group.joinMode`, which is member-independent. (All 49 sampled events
+ *    returned JOIN_* — we belong to none of these groups — so this is a
+ *    guard against the day someone signs the service account into one.)
+ *
+ * 2. `isPrivate` does NOT gate admission. It hides a group's content from
+ *    non-members; the join mode is a separate setting. South Bay Adventure's
+ *    "Willow Glens Goombah's Car Show" is isPrivate:true with joinMode OPEN
+ *    and rsvpState JOIN_OPEN — a genuine open RSVP. Gating on isPrivate
+ *    would have suppressed 6 of 49 events, several of them walk-ups.
+ *
+ * 3. `maxTickets` alone does NOT imply registration — the same discipline the
+ *    BiblioCommons classifier documents as its trap 2. 16 of 49 events carry
+ *    a positive maxTickets, most of them open-RSVP. A cap only matters once
+ *    the seats are actually gone, and unlike BiblioCommons' advisory `cap`,
+ *    Meetup enforces this one, so an exhausted cap IS real seat accounting.
+ *
+ * The converse of trap 1 also bites: `joinMode` alone is not enough either.
+ * Desi Social & Network Group runs joinMode OPEN with rsvpState
+ * JOIN_DUES_APPROVAL — dues plus approval on an "open" group. Both signals
+ * are needed, with the CTA state first.
+ */
+export function registrationFromMeetup(node) {
+  if (!node) return REGISTRATION_NONE;
+
+  const state = enumValue(node.rsvpState);
+  const joinMode = enumValue(node.group?.joinMode);
+  const maxTickets = Number.isFinite(node.maxTickets) && node.maxTickets > 0 ? node.maxTickets : null;
+  const yesCount = Number.isFinite(node.rsvps?.yesCount) ? node.rsvps.yesCount : null;
+
+  // Nothing a reader can do anymore.
+  if (state === "CLOSED" || node.rsvpSettings?.rsvpsClosed === true) return REGISTRATION_CLOSED;
+
+  // Out of seats. The waitlist may still be open, so this is `full`, not
+  // `closed`. Seat arithmetic only runs against an enforced limit (trap 3).
+  if (state === "FULL" || state === "WAITLIST") return REGISTRATION_FULL;
+  if (maxTickets !== null && yesCount !== null && yesCount >= maxTickets) return REGISTRATION_FULL;
+
+  // An organizer or a payment stands between the reader and the door.
+  if (state === "JOIN_APPROVAL" || state === "JOIN_DUES_APPROVAL" || state === "DUES") {
+    return REGISTRATION_REQUIRED;
+  }
+  // REQUESTED means our own account is already waiting on an approval, which
+  // still proves the gate exists. NOT_OPEN_YET means RSVPs have not opened,
+  // so there is no walk-up to promise either.
+  if (state === "REQUESTED" || state === "NOT_OPEN_YET") return REGISTRATION_REQUIRED;
+
+  // Member-independent backstop for trap 1, and the only signal when the
+  // feed omits rsvpState entirely.
+  if (joinMode === "APPROVAL" || joinMode === "CLOSED") return REGISTRATION_REQUIRED;
+
+  // JOIN_OPEN / RSVP / YES / NO / NONE / absent: the RSVP is open to anyone.
+  return REGISTRATION_NONE;
+}
+
 /**
  * True when a reader cannot simply turn up at the listed time. The gate for
  * every walk-up recommendation slot: day-plan pillars and Tonight's Pick.
  *
- * Events with no `registration` field — every non-library source — read as
- * walk-up, preserving existing behaviour.
+ * Events with no `registration` field read as walk-up, preserving existing
+ * behaviour. Libraries (registrationFromBiblioCommons) and Meetup
+ * (registrationFromMeetup) both populate it at ingest.
  */
 export function requiresAdvanceRegistration(event) {
   if (!event) return false;
@@ -326,6 +422,62 @@ export function registrationLabel(event) {
   if (state === REGISTRATION_FULL) return "Registration full";
   if (state === REGISTRATION_CLOSED) return "Registration closed";
   return "";
+}
+
+/**
+ * Prose that promises a reader they can turn up without booking: "no
+ * registration required", "walk-up", "drop in", "just show up", "open to all
+ * comers".
+ *
+ * Written for the 2026-09-07 issue, whose lede called two 6 PM Meetup events
+ * "both no-registration walk-ups" and whose Tonight's Pick repeated "no
+ * registration required". One of them was approval-gated. The claim reached
+ * three separate strings in one email, so the guard belongs on the CLAIM, not
+ * on any single blurb.
+ *
+ * This is deliberately asymmetric with the classifier above. We can prove an
+ * event is GATED — a source publishes an approval gate or a closed window —
+ * but almost no source affirmatively publishes "you may walk up". A missing
+ * registration field is an absence of evidence, and `registration: "none"`
+ * only means the source disclosed no gate; on Meetup even an open event still
+ * renders an RSVP button. So a walk-up promise needs support from the event's
+ * own words (walkUpSupportedByEventText), never from silence.
+ */
+const WALK_UP_CLAIM_PATTERNS = [
+  /\bno\s+(?:advance\s+|prior\s+|pre[-\s]?)?(?:registration|reservations?|sign[-\s]?ups?|rsvps?|tickets?|booking)\b/i,
+  /\b(?:registration|reservations?|sign[-\s]?up|rsvp|booking|tickets?)\s+(?:is\s+|are\s+)?not\s+(?:required|needed|necessary)\b/i,
+  /\bwithout\s+(?:a\s+)?(?:registration|reservation|sign[-\s]?up|rsvp|booking|ticket)\b/i,
+  /\bwalk[-\s]?ups?\b/i,
+  /\bwalk\s+right\s+in\b/i,
+  /\bdrop[-\s]?in\b/i,
+  /\bjust\s+(?:show\s+up|turn\s+up|walk\s+in)\b/i,
+  /\bshow\s+up\s+and\b/i,
+  /\bopen\s+(?:to\s+)?(?:all\s+comers|the\s+public\s+with\s+no)\b/i,
+];
+
+/** True when copy promises walk-up access. */
+export function assertsWalkUp(text) {
+  const copy = String(text || "");
+  if (!copy) return false;
+  return WALK_UP_CLAIM_PATTERNS.some((re) => re.test(copy));
+}
+
+/**
+ * True when the event's OWN source text earns a walk-up promise — the
+ * Berryessa balloon-derby case, whose library copy really does say
+ * "first-come, first-served". Reuses DROP_IN_PATTERNS so the two directions
+ * of this decision cannot drift apart.
+ *
+ * A gated event can never support the claim, whatever its copy says.
+ */
+export function walkUpSupportedByEventText(event) {
+  if (!event) return false;
+  if (requiresAdvanceRegistration(event)) return false;
+  const source = [event.rawTitle, event.title, event.description, event.attendanceNote]
+    .filter(Boolean)
+    .join(" ");
+  if (!source) return false;
+  return DROP_IN_PATTERNS.some((re) => re.test(source));
 }
 
 // ---------------------------------------------------------------------------

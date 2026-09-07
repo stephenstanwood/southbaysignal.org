@@ -27,6 +27,7 @@ import { DATA_DIR, ARTIFACTS, generatorMeta } from "./lib/paths.mjs";
 import { generateAndUploadResized } from "./social/lib/recraft.mjs";
 import { writeFileAtomic } from "./lib/io.mjs";
 import { callClaude as callClaudeApi } from "./lib/claude.mjs";
+import { summaryEchoesTitle } from "./lib/reddit-summary-echo.mjs";
 
 loadEnvLocal();
 
@@ -719,6 +720,23 @@ No other text.`;
       console.warn(`  ⚠️  polish failed: ${err.message}`);
     }
   }
+
+  // Drop a summary that only re-says its own headline. The "Around town"
+  // section prints both lines, so a restatement costs the reader a re-read for
+  // nothing — the 2026-09-07 issue ran "VTA defends its plan to extend BART to
+  // downtown San Jose" over "VTA defends its plan to extend BART service to
+  // downtown San Jose." Compared against displayTitle because that is the line
+  // readers actually see. Every render site already guards an empty summary.
+  let echoes = 0;
+  for (const p of pulse) {
+    const shown = p.displayTitle || p.title;
+    if (p.summary && summaryEchoesTitle(shown, p.summary)) {
+      console.log(`  🔁 dropped echo summary: "${shown}" ← "${p.summary}"`);
+      p.summary = "";
+      echoes += 1;
+    }
+  }
+  if (echoes) console.log(`  ${echoes} echo summaries dropped`);
 
   const pulseOutput = {
     _meta: generatorMeta("generate-reddit-pulse", {
