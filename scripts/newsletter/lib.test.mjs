@@ -116,7 +116,9 @@ test("Town Cats pickup detail reaches the editor without an advance-registration
   assert.match(html, /Information Desk starting at 1 PM/);
   assert.doesNotMatch(html, /Reserve ahead|Registration full/);
   const packet = buildEditorialPacket(data, { eventCandidates: data.featuredEvents, openingCandidates: [], redditCandidates: [] });
-  assert.equal(packet.eventCandidates[0].registration, "none");
+  // SJPL published no registration info for this one, so the packet says
+  // nothing rather than asserting a walk-up.
+  assert.equal("registration" in packet.eventCandidates[0], false);
   assert.match(packet.eventCandidates[0].attendanceNote, /in-person ticket pickup.*1 PM/);
 });
 
@@ -1287,6 +1289,107 @@ test("a registration-gated event cannot be Tonight's Pick", () => {
     assert.equal(isTonightPickCandidate({ ...base, registration }), false, registration);
   }
   assert.equal(isTonightPickCandidate({ ...base, registration: "none" }), true);
+});
+
+// ---------------------------------------------------------------------------
+// The Sept 7 2026 regression: a Meetup approval gate read as a walk-up
+// ---------------------------------------------------------------------------
+// That morning's issue opened with "both no-registration walk-ups" about a
+// Hacker Dojo BBQ and PASCA's pizza social, said "no registration required"
+// again in Tonight's Pick, and called the pizza social "open" a third time in
+// Also on the calendar. Its CTA reads "Request to join". Both fixtures carry
+// the registration state the Meetup ingest now derives.
+
+const MEETUP_BBQ_EVENT = {
+  id: "meetup-hackerdojo-316453161",
+  title: "Community BBQ - Labor Day",
+  date: "2026-09-07", time: "6:00 PM", endTime: "10:30 PM",
+  venue: "Hacker Dojo", address: "855 Maude Ave, Mountain View", city: "mountain-view",
+  url: "https://www.meetup.com/hackerdojo/events/316453161/",
+  source: "Meetup", cost: "free",
+  description: "Meetup event by Hacker Dojo.",
+  registration: "none",
+};
+
+const MEETUP_PIZZA_EVENT = {
+  id: "meetup-pasca-316176113",
+  title: "Monday Pizza Social in the Garden",
+  date: "2026-09-07", time: "6:00 PM", endTime: "8:00 PM",
+  venue: "ELSEE Garden", address: "76 Race St, San Jose", city: "san-jose",
+  url: "https://www.meetup.com/pasca-volunteers/events/316176113/",
+  source: "Meetup", cost: "free",
+  description: "Meetup event by Plant & Soul California (PASCA) Volunteers.",
+  registration: "required",
+};
+
+test("an approval-gated Meetup event cannot be Tonight's Pick", () => {
+  assert.equal(isTonightPickCandidate(MEETUP_BBQ_EVENT), true);
+  assert.equal(isTonightPickCandidate(MEETUP_PIZZA_EVENT), false);
+});
+
+test("the lede cannot call a gated Meetup event a no-registration walk-up", () => {
+  const data = septemberIssue([MEETUP_BBQ_EVENT, MEETUP_PIZZA_EVENT]);
+  data.date = "2026-09-07";
+  // The sent copy, verbatim. It names venues rather than titles, which is why
+  // the guard cannot be routed through title matching.
+  data.editorial.briefing =
+    "It's Labor Day, and today's calendar is built around the evening: a community BBQ at "
+    + "Hacker Dojo in Mountain View and a pizza social at ELSEE Garden in San Jose, both at "
+    + "6:00 PM, both no-registration walk-ups.";
+  const { html } = renderEmail(data);
+  assert.doesNotMatch(html, /no-registration|walk-ups?/i);
+  // The gate is still shown to readers in the listing, not silently dropped.
+  assert.match(html, /Reserve ahead/);
+});
+
+test("Tonight's Pick cannot promise no registration for a Meetup event", () => {
+  const data = septemberIssue([MEETUP_BBQ_EVENT]);
+  data.date = "2026-09-07";
+  data.tonightPick = MEETUP_BBQ_EVENT;
+  // Even the open-RSVP BBQ cannot carry this claim: "none" means no gate was
+  // disclosed, and Meetup still renders an RSVP button.
+  data.tonightPickBlurb =
+    "A cookout is the right note for Labor Day, and Hacker Dojo is hosting one "
+    + "through Meetup with no registration required.";
+  const { html } = renderEmail(data);
+  assert.doesNotMatch(html, /no registration required/i);
+});
+
+test("a first-come event keeps its walk-up language", () => {
+  // The guard must not fire on copy the source actually supports. Berryessa's
+  // derby really does say first-come, first-served.
+  const derby = {
+    id: "sjpl-first-come", title: "Balloon Car Derby", date: "2026-09-05",
+    time: "6:00 PM", venue: "Berryessa Library", city: "san-jose", cost: "free",
+    url: "https://sjpl.bibliocommons.com/events/first-come",
+    description: "Seating is available on a first-come, first-served basis.",
+  };
+  const data = septemberIssue([derby]);
+  data.editorial.briefing = "The derby is a drop-in; seating is first-come, first-served.";
+  const { html } = renderEmail(data);
+  assert.match(html, /drop-in/);
+});
+
+test("the editor packet never invents a walk-up for a source that published nothing", () => {
+  const silent = {
+    id: "eventbrite-1", title: "Plaza Jazz", date: "2026-09-05", time: "6:00 PM",
+    venue: "Plaza de Cesar Chavez", city: "san-jose", url: "https://example.com/jazz",
+    source: "Eventbrite",
+  };
+  const data = septemberIssue([silent, MEETUP_PIZZA_EVENT]);
+  const packet = buildEditorialPacket(data, {
+    eventCandidates: [silent, MEETUP_PIZZA_EVENT], openingCandidates: [], redditCandidates: [],
+  });
+  // Absence of evidence is not evidence: no key at all, rather than "none".
+  assert.equal("registration" in packet.eventCandidates[0], false);
+  // A real gate is still reported.
+  assert.equal(packet.eventCandidates[1].registration, "required");
+});
+
+test("newsletter editor prompt forbids inventing walk-up access", () => {
+  const prompt = buildEditorialPrompt({ todayEvents: [] });
+  assert.match(prompt, /Never tell readers an event needs no registration/);
+  assert.match(prompt, /Meetup listings show an RSVP button/);
 });
 
 test("a registration-gated pillar rejects the whole pillar-pairs plan", () => {

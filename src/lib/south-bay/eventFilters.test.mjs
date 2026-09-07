@@ -4,17 +4,20 @@ import {
   COVERED_LOCATION,
   LOCAL_DEPARTURE_TRIP,
   OUT_OF_AREA_LOCATION,
+  assertsWalkUp,
   hasOutOfAreaDestination,
   isRegistrationClosedForDay,
   isVirtualEvent,
   registrationFromBiblioCommons,
   registrationFromInstructions,
+  registrationFromMeetup,
   registrationLabel,
   requiresAdvanceRegistration,
   resolveRegistrationClosesBy,
   resolveVirtualFlag,
   seriesStartedBeforeEvent,
   virtualFromSourceSignal,
+  walkUpSupportedByEventText,
 } from "./eventFilters.mjs";
 
 // The event that shipped as an in-person newsletter destination on
@@ -366,6 +369,159 @@ test("every gated state is excluded from walk-up slots and carries a label", () 
     assert.equal(requiresAdvanceRegistration({ registration: state }), true, state);
     assert.notEqual(registrationLabel({ registration: state }), "", state);
   }
+});
+
+// ---------------------------------------------------------------------------
+// Meetup registration
+// ---------------------------------------------------------------------------
+// The Sept 7 2026 defect: the issue opened by calling a Hacker Dojo BBQ and
+// PASCA's pizza social "both no-registration walk-ups", and repeated it in
+// Tonight's Pick. The pizza social's CTA reads "Request to join". Both
+// fixtures below are the live api.meetup.com/gql-ext nodes for those two
+// events, captured 2026-09-07.
+
+// https://www.meetup.com/hackerdojo/events/316453161/ — CTA "Free / Attend".
+const MEETUP_BBQ = {
+  id: "316453161",
+  title: "Community BBQ - Labor Day",
+  rsvpState: "JOIN_OPEN",
+  maxTickets: 0,
+  rsvpSettings: { rsvpsClosed: false, rsvpOpenTime: null, rsvpCloseTime: null },
+  rsvps: { totalCount: 11, yesCount: 11 },
+  group: { urlname: "hackerdojo", isPrivate: false, joinMode: "OPEN" },
+};
+
+// https://www.meetup.com/pasca-volunteers/events/316176113/ — CTA
+// "Free / 24 spots left / Request to join". 31 tickets, 7 taken.
+const MEETUP_PIZZA = {
+  id: "316176113",
+  title: "Monday Pizza Social in the Garden",
+  rsvpState: "JOIN_APPROVAL",
+  maxTickets: 31,
+  rsvpSettings: { rsvpsClosed: false, rsvpOpenTime: null, rsvpCloseTime: null },
+  rsvps: { totalCount: 7, yesCount: 7 },
+  group: { urlname: "pasca-volunteers", isPrivate: false, joinMode: "APPROVAL" },
+};
+
+test("an open-RSVP Meetup event stays a walk-up", () => {
+  assert.equal(registrationFromMeetup(MEETUP_BBQ), "none");
+  assert.equal(requiresAdvanceRegistration({ registration: registrationFromMeetup(MEETUP_BBQ) }), false);
+});
+
+test("an approval-gated Meetup event requires advance registration", () => {
+  // The whole point of the fix: this is what shipped as a "walk-up".
+  assert.equal(registrationFromMeetup(MEETUP_PIZZA), "required");
+  assert.equal(requiresAdvanceRegistration({ registration: "required" }), true);
+  assert.equal(registrationLabel({ registration: registrationFromMeetup(MEETUP_PIZZA) }), "Reserve ahead");
+});
+
+test("a Meetup ticket cap alone does NOT mean registration", () => {
+  // Same discipline as the BiblioCommons cap trap. 16 of 49 sampled South Bay
+  // events carry a positive maxTickets and most are open RSVPs; a cap only
+  // matters once the seats are actually gone.
+  const capped = { ...MEETUP_BBQ, maxTickets: 20, rsvps: { totalCount: 3, yesCount: 3 } };
+  assert.equal(registrationFromMeetup(capped), "none");
+});
+
+test("a private Meetup group does not gate an open RSVP", () => {
+  // South Bay Adventure's "Willow Glens Goombah's Car Show": isPrivate true,
+  // joinMode OPEN, rsvpState JOIN_OPEN. isPrivate hides content, it does not
+  // gate admission — gating on it would suppress 6 of 49 sampled events.
+  const privateOpen = {
+    ...MEETUP_BBQ,
+    maxTickets: 20,
+    group: { urlname: "southbayadventure", isPrivate: true, joinMode: "OPEN" },
+  };
+  assert.equal(registrationFromMeetup(privateOpen), "none");
+});
+
+test("a dues gate on an OPEN group is still a gate", () => {
+  // Desi Social & Network Group runs joinMode OPEN with rsvpState
+  // JOIN_DUES_APPROVAL, so joinMode alone would miss it.
+  const dues = {
+    ...MEETUP_BBQ,
+    rsvpState: "JOIN_DUES_APPROVAL",
+    group: { urlname: "desisocialandnetworkgroup", isPrivate: true, joinMode: "OPEN" },
+  };
+  assert.equal(registrationFromMeetup(dues), "required");
+});
+
+test("joinMode backstops an rsvpState that describes our own membership", () => {
+  // rsvpState is the CURRENT MEMBER's state. If the service account ever joins
+  // a group, the JOIN_* value disappears and says nothing about a stranger.
+  for (const rsvpState of ["RSVP", "YES", "NO", "NONE", null]) {
+    assert.equal(
+      registrationFromMeetup({ ...MEETUP_PIZZA, rsvpState }),
+      "required",
+      String(rsvpState),
+    );
+    assert.equal(registrationFromMeetup({ ...MEETUP_BBQ, rsvpState }), "none", String(rsvpState));
+  }
+});
+
+test("exhausted seats and shut RSVPs map to full and closed", () => {
+  assert.equal(registrationFromMeetup({ ...MEETUP_BBQ, rsvpState: "FULL" }), "full");
+  assert.equal(registrationFromMeetup({ ...MEETUP_BBQ, rsvpState: "WAITLIST" }), "full");
+  // An enforced cap with every seat taken is real accounting.
+  assert.equal(
+    registrationFromMeetup({ ...MEETUP_PIZZA, maxTickets: 31, rsvps: { totalCount: 31, yesCount: 31 } }),
+    "full",
+  );
+  assert.equal(registrationFromMeetup({ ...MEETUP_BBQ, rsvpState: "CLOSED" }), "closed");
+  assert.equal(
+    registrationFromMeetup({ ...MEETUP_BBQ, rsvpSettings: { rsvpsClosed: true } }),
+    "closed",
+  );
+});
+
+test("a missing or empty Meetup node is safe", () => {
+  assert.equal(registrationFromMeetup(null), "none");
+  assert.equal(registrationFromMeetup({}), "none");
+});
+
+// ---------------------------------------------------------------------------
+// Walk-up claims in copy
+// ---------------------------------------------------------------------------
+
+test("walk-up promises are recognized in every phrasing the issue used", () => {
+  for (const copy of [
+    "both no-registration walk-ups",
+    "Hacker Dojo is hosting one through Meetup with no registration required",
+    "One more open gathering tonight, no RSVP needed",
+    "registration is not required",
+    "you can just show up",
+    "a drop-in session",
+    "walk in without a reservation",
+  ]) {
+    assert.equal(assertsWalkUp(copy), true, copy);
+  }
+  for (const copy of [
+    "A cookout is the right note for Labor Day.",
+    "Reserve ahead for this one.",
+    "The garden opens at six.",
+    "",
+  ]) {
+    assert.equal(assertsWalkUp(copy), false, copy);
+  }
+});
+
+test("only the event's own words can support a walk-up promise", () => {
+  // The Berryessa balloon derby really does say first-come, first-served.
+  const derby = {
+    title: "STEM: Balloon Car Derby",
+    attendanceNote: "12 first-come, first-served tickets.",
+  };
+  assert.equal(walkUpSupportedByEventText(derby), true);
+
+  // A Meetup record says only who is hosting. Nothing supports the promise.
+  assert.equal(walkUpSupportedByEventText({
+    title: "Monday Pizza Social in the Garden",
+    description: "Meetup event by Plant & Soul California (PASCA) Volunteers.",
+  }), false);
+
+  // And a gated event can never support it, whatever its copy says.
+  assert.equal(walkUpSupportedByEventText({ ...derby, registration: "required" }), false);
+  assert.equal(walkUpSupportedByEventText(null), false);
 });
 
 // ---------------------------------------------------------------------------
