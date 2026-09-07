@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-07T02:17:21.505Z",
+    "generatedAt": "2026-09-07T15:08:41.175Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 34,
-    "eventCount": 607,
-    "sourceCount": 21,
+    "eventCount": 606,
+    "sourceCount": 20,
     "sources": [
       "Mountain View Public Library (138)",
-      "Los Gatos Library (150)",
+      "Los Gatos Library (151)",
       "San Jose Jazz (18)",
       "Linden Tree Books (12)",
       "History San Jose (9)",
@@ -16,7 +16,7 @@
       "ICA San José (3)",
       "Mountain Winery (23)",
       "San Jose Theaters (20)",
-      "Guadalupe River Park Conservancy (6)",
+      "Guadalupe River Park Conservancy (5)",
       "Santana Row (7)",
       "City of Cupertino (72)",
       "Opera San José (5)",
@@ -25,7 +25,6 @@
       "SAP Center (12)",
       "The Tech Interactive (8)",
       "San Jose Museum of Art (9)",
-      "California's Great America (1)",
       "Peninsula Open Space Trust (3)"
     ],
     "sourceHealth": [
@@ -75,7 +74,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 150,
+        "count": 151,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -217,7 +216,7 @@
         "id": "guadalupe-river-park",
         "label": "Guadalupe River Park",
         "status": "ok",
-        "count": 6,
+        "count": 5,
         "error": null,
         "sources": [
           "Guadalupe River Park Conservancy"
@@ -274,14 +273,10 @@
       {
         "id": "california-s-great-america",
         "label": "California's Great America",
-        "status": "error",
-        "count": 1,
-        "error": "unexpected empty result after retry; previous snapshot still has 1 future event(s) from California's Great America",
-        "sources": [
-          "California's Great America"
-        ],
-        "carriedForward": true,
-        "carryForwardReason": "scraper errored; retained previous run's events"
+        "status": "empty",
+        "count": 0,
+        "error": null,
+        "sources": []
       },
       {
         "id": "levi-s-stadium",
@@ -6265,6 +6260,26 @@
       "kidFriendly": true
     },
     {
+      "id": "d742f3456a0a",
+      "title": "Sound Bath Healing Meditation",
+      "date": "2026-12-06",
+      "displayDate": "Sun, Dec 6",
+      "time": "11:00 AM",
+      "endTime": "12:00 PM",
+      "venue": "Los Gatos Library",
+      "address": "110 E Main St, Los Gatos, CA 95030",
+      "city": "los-gatos",
+      "category": "community",
+      "cost": "free",
+      "description": "Gaby Castro-Moroder is BACK for another Sound Healing session! Come join us! Sound and music is used as a method of healing across various mediums. After being told for years that she has a healing presence, Gaby Castro started her sound healing journey and took certification courses in tuning forks, crystal sound bowls, and Tibetan sound bowls. Now she provides sound healing group and individual sessions under the name Song Pine and Stone, bringing her gentle presence to those in need. A group sound healing session runs about 60-90 minutes and includes the use of crystal sound healing bowls, Tibetan bowls, tuning forks, and various other sound healing instruments. Attendees will bring their own yoga mats, blankets, pillows, and whatever else they need to be comfortable during the session. Instruments will be played to create a sound bath and attendees will be encouraged to relax and enjoy the soft, soothing sounds. When the session ends, attendees will be asked to rehydrate and well discuss how the session felt for everyone. Age Range: Adults and Seniors NOTE: A consent form may be required and provided at the event. Attendees need to consult with their physician and get approval to attend healing sessions if they have metal in their bodies, suffered concussions, have a pacemaker, use an insulin pump, and the like. If in doubt, consult your physician before the session. The Los Gatos Library recognizes the diversity of our community and is committed to accessibility for all patrons. We strive to make every visitor feel comfortable by ensuring equal access to programs, services, and activities. If you require a reasonable accommodation in order to participate in a library program, please contact library@losgatosca.gov",
+      "sourceAudiences": [
+        "Adults"
+      ],
+      "url": "https://losgatosca.libcal.com/event/17237344",
+      "source": "Los Gatos Library",
+      "kidFriendly": false
+    },
+    {
       "id": "fc5dfddd2a53",
       "title": "Bokani Dyer Trio",
       "date": "2026-09-25",
@@ -7955,28 +7970,6 @@
       "url": "https://sanjosetheaters.org/calendar-condensed/",
       "source": "San Jose Theaters",
       "kidFriendly": false
-    },
-    {
-      "id": "5d121d394e1c",
-      "title": "GRPC’s Animal Encounters",
-      "date": "2026-09-06",
-      "displayDate": "Sun, Sep 6",
-      "time": "10:00 am",
-      "endTime": null,
-      "venue": "Guadalupe River Park",
-      "address": "438 Coleman Ave, San Jose, CA 95110",
-      "city": "san-jose",
-      "category": "outdoor",
-      "cost": "free",
-      "description": "",
-      "url": "https://www.google.com/calendar/event?eid=NzAxZWdwcW81ZHAyMTdkZm11cWszajVldjBfMjAyNjA5MDZUMTcwMDAwWiBjX252amt1cGptNGxuNW50OXF0bHRiYWlrMHE4QGc&ctz=America/Los_Angeles",
-      "source": "Guadalupe River Park Conservancy",
-      "kidFriendly": false,
-      "occurrenceEvidence": {
-        "kind": "first-party-occurrence-page",
-        "sourceUrl": "https://grpg.org/calendar/events/",
-        "date": "2026-09-06"
-      }
     },
     {
       "id": "ac20dad257e6",
@@ -11708,23 +11701,6 @@
       "url": "https://sjmusart.org/event/first-fridays-december-2026",
       "source": "San Jose Museum of Art",
       "kidFriendly": false
-    },
-    {
-      "id": "fa7d1cbf1a4a",
-      "title": "Fireworks",
-      "date": "2026-09-06",
-      "displayDate": "Sun, Sep 6",
-      "time": null,
-      "endTime": null,
-      "venue": "California's Great America",
-      "address": "4701 Great America Pkwy, Santa Clara, CA 95054",
-      "city": "santa-clara",
-      "category": "family",
-      "cost": "paid",
-      "description": "",
-      "url": "https://www.sixflags.com/cagreatamerica/events",
-      "source": "California's Great America",
-      "kidFriendly": true
     },
     {
       "id": "22942963d2d2",
