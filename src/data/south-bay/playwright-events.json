@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-06T15:08:59.642Z",
+    "generatedAt": "2026-09-07T02:17:21.505Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 34,
-    "eventCount": 608,
+    "eventCount": 607,
     "sourceCount": 21,
     "sources": [
       "Mountain View Public Library (138)",
-      "Los Gatos Library (151)",
+      "Los Gatos Library (150)",
       "San Jose Jazz (18)",
       "Linden Tree Books (12)",
       "History San Jose (9)",
@@ -75,7 +75,7 @@
         "id": "los-gatos-library",
         "label": "Los Gatos Library",
         "status": "ok",
-        "count": 151,
+        "count": 150,
         "error": null,
         "sources": [
           "Los Gatos Library"
@@ -3227,26 +3227,6 @@
       ],
       "url": "https://mountainview.libcal.com/event/15691282",
       "source": "Mountain View Public Library",
-      "kidFriendly": false
-    },
-    {
-      "id": "cbdd438d7fbe",
-      "title": "Narcan Training at the Library",
-      "date": "2026-09-06",
-      "displayDate": "Sun, Sep 6",
-      "time": "4:00 PM",
-      "endTime": "5:00 PM",
-      "venue": "Los Gatos Library",
-      "address": "110 E Main St, Los Gatos, CA 95030",
-      "city": "los-gatos",
-      "category": "community",
-      "cost": "free",
-      "description": "Families across the country are dealing with the health, emotional, and economic effects of the opioid epidemic. The best way to help combat this epidemic is through awareness and education. Together, we can reduce the dangers of opioids and their impact on our communities. Stop by the Los Gatos Library to learn how to use Narcan. This training will be a short training on how to recognize the signs of an opioid overdose and administer the opioid overdose reversal drug, naloxone. You will take home a box of Narcan to add to your first-aid kit and new resorces for your community",
-      "sourceAudiences": [
-        "Adults"
-      ],
-      "url": "https://losgatosca.libcal.com/event/17096186",
-      "source": "Los Gatos Library",
       "kidFriendly": false
     },
     {
@@ -8109,23 +8089,6 @@
       }
     },
     {
-      "id": "98d45e5273eb",
-      "title": "Yoga & Pilates on The Row",
-      "date": "2026-09-06",
-      "displayDate": "Sun, Sep 6",
-      "time": "8:30am",
-      "endTime": null,
-      "venue": "Santana Row",
-      "address": "377 Santana Row, San Jose, CA 95128",
-      "city": "san-jose",
-      "category": "community",
-      "cost": null,
-      "description": "",
-      "url": "https://santanarow.com/event/yoga-pilates-on-the-row/",
-      "source": "Santana Row",
-      "kidFriendly": false
-    },
-    {
       "id": "aefc3b212271",
       "title": "Farmers' Market",
       "date": "2026-09-09",
@@ -8158,6 +8121,23 @@
       "url": "https://santanarow.com/event/makers-market-in-the-park/",
       "source": "Santana Row",
       "kidFriendly": true
+    },
+    {
+      "id": "4246ac07472d",
+      "title": "Yoga & Pilates on The Row",
+      "date": "2026-09-13",
+      "displayDate": "Sun, Sep 13",
+      "time": "8:30am",
+      "endTime": null,
+      "venue": "Santana Row",
+      "address": "377 Santana Row, San Jose, CA 95128",
+      "city": "san-jose",
+      "category": "community",
+      "cost": null,
+      "description": "",
+      "url": "https://santanarow.com/event/yoga-pilates-on-the-row/",
+      "source": "Santana Row",
+      "kidFriendly": false
     },
     {
       "id": "431ec7465cdd",
@@ -11237,23 +11217,6 @@
       "kidFriendly": false
     },
     {
-      "id": "fc59b25560ae",
-      "title": "Monster Jam",
-      "date": "2026-09-06",
-      "displayDate": "Sun, Sep 6",
-      "time": "1:00 pm",
-      "endTime": null,
-      "venue": "SAP Center",
-      "address": "525 W Santa Clara St, San Jose, CA 95113",
-      "city": "san-jose",
-      "category": "community",
-      "cost": "paid",
-      "description": "",
-      "url": "https://www.sapcenter.com/events/detail/monster-jam-4",
-      "source": "SAP Center",
-      "kidFriendly": false
-    },
-    {
       "id": "61323f7ee084",
       "title": "Soda Stereo",
       "date": "2026-09-10",
@@ -11439,6 +11402,23 @@
       "url": "https://www.sapcenter.com/events/detail/sharks-vs-kings-12",
       "source": "SAP Center",
       "kidFriendly": false
+    },
+    {
+      "id": "0c3026fa9236",
+      "title": "SOMBR",
+      "date": "2026-10-07",
+      "displayDate": "Wed, Oct 7",
+      "time": "7:00 pm",
+      "endTime": null,
+      "venue": "SAP Center",
+      "address": "525 W Santa Clara St, San Jose, CA 95113",
+      "city": "san-jose",
+      "category": "community",
+      "cost": "paid",
+      "description": "Add the Sierra Nevada Concert Experience and enjoy the show as a VIP! With this perfect addition to your ticket purchase, you will enjoy unlimited premium hors d'oeuvres, wine, and non-alcoholic beverages, and private entry into The NetApp Celly Lounge. The Sierra Nevada Concert Experience begins 30 minutes prior to SAP Center doors opening to the general public and continues until 15 minutes prior to the main act taking the stage.** *Available to guests age 21 or older; photo ID required ** Subject to change Drink Responsibly | Responsibility.org Note: You MUST have a ticket to the event to purchase a ticket for the Sierra Nevada Concert Experience.",
+      "url": "https://www.sapcenter.com/events/detail/sombr",
+      "source": "SAP Center",
+      "kidFriendly": true
     },
     {
       "id": "adb2ce39905d",

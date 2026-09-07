@@ -1,20 +1,35 @@
 {
   "_meta": {
-    "auditedAt": "2026-09-06T03:16:35.758Z"
+    "auditedAt": "2026-09-07T02:25:17.729Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1881,
+    "total": 1856,
     "totals": {
       "hard": 0,
-      "soft": 1,
+      "soft": 2,
       "info": 0
     },
     "byReason": {
+      "virtual-not-flagged": 1,
       "unknown-slug": 1
     },
     "hard": [],
     "soft": [
+      {
+        "id": "sjpl-693866301e64afd01e4e227c",
+        "title": "Santa Teresa Book Club (Hybrid)",
+        "city": "san-jose",
+        "date": "2026-09-10",
+        "location": "290 International Circle San Jose",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "virtual-not-flagged",
+            "detail": "matched /description mention/ in description"
+          }
+        ]
+      },
       {
         "id": "inbound-2992e99f9b696c5f",
         "title": "California Coastal Cleanup Day",
@@ -33,7 +48,7 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 325,
+    "total": 313,
     "totals": {
       "hard": 0,
       "soft": 2,
