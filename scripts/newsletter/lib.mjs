@@ -15,12 +15,14 @@ import { chainBrandKey, isNationalChain } from "../../src/lib/south-bay/chains.m
 import { isPlaceTemporarilyUnavailable } from "../../src/lib/south-bay/placeAvailability.mjs";
 import { isEventPublishable } from "../../src/lib/south-bay/eventOccurrence.mjs";
 import {
+  assertsWalkUp,
   isRegistrationClosedForDay,
   isVirtualEvent,
   registrationLabel,
   requiresAdvanceRegistration,
   requiresAttendanceConfirmation,
   seriesStartedBeforeEvent,
+  walkUpSupportedByEventText,
 } from "../../src/lib/south-bay/eventFilters.mjs";
 import { recheckRegistrationGatedEvents } from "./registration-recheck.mjs";
 import { applyVerifiedEventFacts, copyMentionsEvent, eventCopyFactConflict } from "../../src/lib/south-bay/eventSourceFacts.mjs";
@@ -775,14 +777,25 @@ export function repairNewsletterProperNames(data) {
 export function repairNewsletterEventFacts(data) {
   if (!data) return data;
   const events = [...(data.todayEvents || []), data.tonightPick, ...(data.featuredEvents || [])].filter(Boolean);
+  // A walk-up promise needs an event whose own words support it. Deliberately
+  // NOT routed through copyMentionsEvent: the 2026-09-07 lede made the claim
+  // about "a community BBQ at Hacker Dojo" and "a pizza social at ELSEE
+  // Garden", naming venues rather than titles, so title matching would have
+  // let it through. The claim is unsupportable on its own terms whenever no
+  // selected event's description or attendanceNote says walk-up, which is why
+  // it is checked against the day's events as a set.
+  const walkUpUnsupported = (text, scope = events) =>
+    assertsWalkUp(text) && !scope.some((event) => walkUpSupportedByEventText(event));
   for (const event of events) {
     Object.assign(event, applyVerifiedEventFacts(event));
     if (eventCopyFactConflict(event.blurb, event)) event.blurb = "";
+    if (walkUpUnsupported(event.blurb, [event])) event.blurb = "";
   }
-  const unsupported = (text) => events.some((event) => copyMentionsEvent(text, event)
-    && (eventCopyFactConflict(text, event)
-      || requiresAttendanceConfirmation(event)
-      || (event.registration === "full" && !/\b(?:full|waitlist)\b/i.test(text))));
+  const unsupported = (text) => walkUpUnsupported(text)
+    || events.some((event) => copyMentionsEvent(text, event)
+      && (eventCopyFactConflict(text, event)
+        || requiresAttendanceConfirmation(event)
+        || (event.registration === "full" && !/\b(?:full|waitlist)\b/i.test(text))));
   const unconfirmedIds = new Set(events.filter(requiresAttendanceConfirmation).map((event) => `event:${event.id}`));
   if (orderedCards(data.dayPlan).some((card) => unconfirmedIds.has(card.id))) {
     data.dayPlan = null;
@@ -800,7 +813,10 @@ export function repairNewsletterEventFacts(data) {
     }
   }
   if (unsupported(data.dayPlanBlurb)) data.dayPlanBlurb = buildDayPlanBlurb(data.dayPlan, data.weather);
-  if (data.tonightPick && eventCopyFactConflict(data.tonightPickBlurb, data.tonightPick)) {
+  if (data.tonightPick && (
+    eventCopyFactConflict(data.tonightPickBlurb, data.tonightPick)
+    || walkUpUnsupported(data.tonightPickBlurb, [data.tonightPick])
+  )) {
     data.tonightPickBlurb = buildTonightBlurb(data.tonightPick);
   }
   return data;
@@ -1362,7 +1378,12 @@ function compactEventForEditor(e, idx) {
     source: e.source || "",
     ...(isMarqueeEvent(e) ? { marquee: true } : {}),
     audience: e.audienceAge || (e.kidFriendly ? "kids/family" : ""),
-    registration: e.registration || "none",
+    // Only sources that actually publish a registration state get this key.
+    // Coercing a missing field to "none" told the editor that every Meetup,
+    // Eventbrite and city-calendar listing was confirmed walk-up, which is
+    // how the 2026-09-07 lede came to call an approval-gated pizza social a
+    // "no-registration walk-up". Absence of evidence is not evidence.
+    ...(e.registration ? { registration: e.registration } : {}),
     attendanceNote: e.attendanceNote || "",
     sourceAudiences: e.sourceAudiences || [],
     attendanceStatus: e.attendanceStatus || "",
@@ -1402,6 +1423,7 @@ Fact rules:
 - Use only facts in the packet. Do not infer addresses, prices, ages, quality, or popularity.
 - Musical genre, performer lineup and cover/tribute/original-member identity must come from the source description or title, never an assumption about a name or decade-themed tour. A missing description supplies no such facts.
 - Observe registration, sourceAudiences and attendanceNote. Required registration is not a walk-up; a full or closed event must never be promoted as a plan readers can join. Same-day in-person ticket pickup is different from advance online registration; preserve the pickup time and location when supplied. Never infer a pickup time from conflicting instructions, or promote an event whose attendanceStatus is needs-confirmation.
+- Never tell readers an event needs no registration, is a walk-up or drop-in, or that they can just show up, unless the event's own description or attendanceNote says so in words. A missing registration field means the source published nothing, not that admission is open, and "registration": "none" only means no gate was disclosed. Meetup listings show an RSVP button even when the RSVP is open to anyone. This applies to the morning note and every blurb: the 2026-09-07 issue opened by calling two events "both no-registration walk-ups" when one of them required organizer approval.
 - Do not claim a paired meal works before, after, or on either side of an event unless the packet explicitly supplies business hours and an event end time that make the claim true.
 - Never say an event opens, closes, wraps up, or finishes a series, season, run, or homestand unless the packet says so in words. You are not shown a schedule. The 2026-08-26 issue wrote "the Giants close things out under the lights" on game 2 of a 6-game series.
 - For multi-day events, never infer today's ordinal day from the duration alone. A prior preview still counts as a day of the event; say "first public day" only when the packet explicitly supports it, and never turn that into "first day".

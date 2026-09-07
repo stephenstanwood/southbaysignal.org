@@ -79,6 +79,7 @@ import {
   VIRTUAL_EVENT_PATTERNS,
   hasOutOfAreaDestination,
   registrationFromBiblioCommons,
+  registrationFromMeetup,
   requiresAdvanceRegistration,
   resolveRegistrationClosesBy,
   virtualFromSourceSignal,
@@ -6098,6 +6099,32 @@ function meetupVenueFromTitle(title) {
   return match ? cleanVenue(match[1]) : "";
 }
 
+// Registration state for one raw Meetup node, plus its published RSVP
+// deadline. Same shape and same discipline as deriveBiblioRegistration above:
+// a deadline already behind us flips `required` to `closed` at ingest, so the
+// feed the 3:50 AM newsletter reads never advertises a dead signup.
+//
+// The classification itself lives in eventFilters.mjs (registrationFromMeetup)
+// so the ingest and the runtime plan-day safety net cannot drift apart.
+function deriveMeetupRegistration(node, now) {
+  let registration = registrationFromMeetup(node);
+  const closeTime = node?.rsvpSettings?.rsvpCloseTime;
+  const parsed = closeTime ? new Date(closeTime) : null;
+  const closesBy = parsed && !Number.isNaN(parsed.getTime()) ? parsed : null;
+  if (
+    requiresAdvanceRegistration(registration)
+    && registration !== REGISTRATION_CLOSED
+    && closesBy
+    && closesBy.getTime() < now.getTime()
+  ) {
+    registration = REGISTRATION_CLOSED;
+  }
+  return {
+    registration,
+    ...(closesBy ? { registrationClosesBy: closesBy.toISOString() } : {}),
+  };
+}
+
 async function fetchMeetupEvents() {
   const CLIENT_ID = process.env.MEETUP_CLIENT_ID?.trim();
   const MEMBER_ID = process.env.MEETUP_MEMBER_ID?.replace(/\\n/g, "").trim();
@@ -6188,8 +6215,10 @@ async function fetchMeetupEvents() {
             node {
               id title dateTime endTime eventUrl eventType status
               venue { name address city lat lon }
-              group { name urlname stats { memberCounts { all } } }
+              group { name urlname isPrivate joinMode stats { memberCounts { all } } }
               rsvps { totalCount yesCount }
+              rsvpState maxTickets
+              rsvpSettings { rsvpsClosed rsvpCloseTime }
             }
           }
         }
@@ -6294,6 +6323,7 @@ async function fetchMeetupEvents() {
       url: node.eventUrl,
       source: "Meetup",
       kidFriendly: false,
+      ...deriveMeetupRegistration(node, new Date()),
     });
   }
 
