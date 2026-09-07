@@ -1,59 +1,45 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-06T03:16:12.352Z",
+    "generatedAt": "2026-09-07T03:17:19.589Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 5
+    "sourceCount": 6
   },
   "summary": {
-    "threadsMined": 5,
-    "placesExtracted": 2,
+    "threadsMined": 6,
+    "placesExtracted": 0,
     "placesMatched": 0,
-    "placeGaps": 2,
-    "eventsExtracted": 1,
+    "placeGaps": 0,
+    "eventsExtracted": 2,
     "eventsMatched": 0,
-    "eventGaps": 1,
+    "eventGaps": 2,
     "autoAppendedOpenings": 0
   },
-  "placeGaps": [
+  "placeGaps": [],
+  "eventGaps": [
     {
-      "name": "Eastridge Mall",
+      "name": "San Jose Lowrider Day 2026",
+      "when": "annual",
       "city": "San Jose",
-      "kind": "venue",
-      "context": "Eastside mall hosting Mallorama event",
+      "context": "annual lowrider celebration in downtown San Jose",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w8im83/who_wants_to_go_2_mallorama_event_at_the_eastside/",
-        "https://www.reddit.com/r/SanJose/comments/1w884dm/mural_artists/",
-        "https://www.reddit.com/r/SanJose/comments/1w87ayq/pet_sitting_swap/",
-        "https://www.reddit.com/r/SanJose/comments/1w85q8a/iso_a_auto_mechanic/",
-        "https://www.reddit.com/r/SanJose/comments/1w7pg4l/should_i_give_up_my_search_for_kurobutaberkshire/"
+        "https://www.reddit.com/r/SanJose/comments/1w9ck10/favorite_bagel_places_in_south_bay/",
+        "https://www.reddit.com/r/SanJose/comments/1w9bi46/san_jose_lowrider_day_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1w901hw/vta_defends_its_plan_to_extend_bart_to_downtown/",
+        "https://www.reddit.com/r/SanJose/comments/1w8lcf7/niboshi_ramen/",
+        "https://www.reddit.com/r/SanJose/comments/1w8ylav/my_artwork_is_at_genart_silicon_valley_workssan/"
       ]
     },
     {
-      "name": "Midori Ranch",
-      "city": "",
-      "kind": "retail",
-      "context": "family farm selling Berkshire pork, meetup in Los Altos",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w8im83/who_wants_to_go_2_mallorama_event_at_the_eastside/",
-        "https://www.reddit.com/r/SanJose/comments/1w884dm/mural_artists/",
-        "https://www.reddit.com/r/SanJose/comments/1w87ayq/pet_sitting_swap/",
-        "https://www.reddit.com/r/SanJose/comments/1w85q8a/iso_a_auto_mechanic/",
-        "https://www.reddit.com/r/SanJose/comments/1w7pg4l/should_i_give_up_my_search_for_kurobutaberkshire/"
-      ]
-    }
-  ],
-  "eventGaps": [
-    {
-      "name": "Mallorama",
+      "name": "GenArt Silicon Valley + WorksSan Jose Art Exhibition",
       "when": "",
       "city": "San Jose",
-      "context": "event at Eastside mall",
+      "context": "art exhibition in downtown San Jose",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w8im83/who_wants_to_go_2_mallorama_event_at_the_eastside/",
-        "https://www.reddit.com/r/SanJose/comments/1w884dm/mural_artists/",
-        "https://www.reddit.com/r/SanJose/comments/1w87ayq/pet_sitting_swap/",
-        "https://www.reddit.com/r/SanJose/comments/1w85q8a/iso_a_auto_mechanic/",
-        "https://www.reddit.com/r/SanJose/comments/1w7pg4l/should_i_give_up_my_search_for_kurobutaberkshire/"
+        "https://www.reddit.com/r/SanJose/comments/1w9ck10/favorite_bagel_places_in_south_bay/",
+        "https://www.reddit.com/r/SanJose/comments/1w9bi46/san_jose_lowrider_day_2026/",
+        "https://www.reddit.com/r/SanJose/comments/1w901hw/vta_defends_its_plan_to_extend_bart_to_downtown/",
+        "https://www.reddit.com/r/SanJose/comments/1w8lcf7/niboshi_ramen/",
+        "https://www.reddit.com/r/SanJose/comments/1w8ylav/my_artwork_is_at_genart_silicon_valley_workssan/"
       ]
     }
   ],
