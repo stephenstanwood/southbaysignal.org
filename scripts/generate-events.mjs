@@ -1097,6 +1097,18 @@ function cleanTitle(title) {
     // acronyms have no distinguishing shape, so they need explicit coverage the
     // way the digit-glued guard below handles UB40 structurally.
     "CRSB",
+    // Palo Alto's Junior Museum & Zoo brands itself JMZ, and the city library
+    // uses that form in its own listings ("Meet a JMZ Animal Ambassador!").
+    // United Nations Association Film Festival likewise runs as UNAFF on the
+    // Rinconada Library screening titles it supplies. Both were shipping as
+    // "Jmz" / "Unaff" — a downcased acronym reads as a misspelled proper noun.
+    "JMZ", "UNAFF",
+    // Stanford Medicine listings: "MRI: Clinical Updates and Practical
+    // Physics" (a radiology CME course) and "PD Bootcamp" (professional
+    // development), plus the post-nominal in "…Cangello, MD". Two-letter runs
+    // only reach the 2+ pass on an already mixed-case title, which is exactly
+    // the shape these arrive in.
+    "MRI", "PD", "MD",
   ]);
   {
     const letters = t.replace(/[^A-Za-z]/g, "");
@@ -1695,6 +1707,12 @@ function polishDescription(text) {
     // Development Center, ACGA = Assoc. of Clay & Glass Artists of CA. The
     // shorter siblings (CMT/BMR/CRC/ASL/UX/UXR) are never matched by the 4+ rule.
     "NUMU", "SBDC", "ACGA",
+    // United Nations Association Film Festival — mirrored from cleanTitle's
+    // KEEP_UPPER. Palo Alto City Library screening copy repeats the acronym in
+    // the body ("UNAFF presents…"), so the 4+ body rule mangled it there too.
+    // The shorter siblings added alongside it (JMZ/MRI/PD/MD) are never
+    // matched by this 4+ rule and need no entry.
+    "UNAFF",
   ]);
   t = t.replace(/\b[A-Z]{4,}\b/g, (w) => KEEP_UPPER.has(w) ? w : w[0] + w.slice(1).toLowerCase());
   // Contraction recovery: mirror of the cleanTitle apostrophe-S fix. When the
@@ -2850,6 +2868,13 @@ const ADMIN_KIOSK_TITLE = /\bcheck[\s-]?in\s+(kiosk|desk|station|table)\b|\bfron
 // framing in the blurb before dropping these.
 const ADMIN_BARE_CHECKIN_TITLE = /^\s*[\w&'’.\s-]*\bcheck[\s-]?in\s*$/i;
 const ADMIN_CHECKIN_BLURB = /\bkiosk\b|\bfront\s+desk\b|\b(?:sign|check)[\s-]?in\s+system\b|\bfor\s+visitors?\b|\bduring\s+your\s+visit\b|\bwhen\s+you\s+(?:arrive|visit)\b/i;
+// An hours notice is not an event — nothing happens at the listed time, the row
+// just announces that a building's schedule changed. Stanford's Localist feed
+// publishes these ("Labor Day Facility Hours", 9 AM, venue "Stanford
+// University") and one was picked up as a Palo Alto weekly-briefing highlight.
+// The qualifier list is deliberately closed: bare "hours" is common in real
+// event names ("Open Lab Hours", "Volunteer Workday Hours") and must not match.
+const ADMIN_HOURS_NOTICE = /\b(?:facility|facilities|operating|holiday|modified|adjusted|reduced)\s+hours\b|\bhours\s+of\s+operation\b|\bhours\s+(?:change|update|adjustment)\b/i;
 
 function isAdminNonEvent(title, description = "") {
   // Localist sometimes prefixes the raw RSS title with a date. Normalize it
@@ -2857,6 +2882,7 @@ function isAdminNonEvent(title, description = "") {
   // prefix from visitor-facing output, which previously hid the escape.
   const t = cleanTitle(String(title || ""));
   if (ADMIN_KIOSK_TITLE.test(t)) return true;
+  if (ADMIN_HOURS_NOTICE.test(t)) return true;
   if (ADMIN_BARE_CHECKIN_TITLE.test(t)) return ADMIN_CHECKIN_BLURB.test(`${t} ${description}`);
   return false;
 }
@@ -8501,6 +8527,32 @@ async function main() {
   // Runs before the venue field is entity-decoded and cleanVenue()'d further
   // down, so the comparison in venue-suffix.mjs decodes both sides itself.
   allEvents.forEach((e) => { e.title = stripRedundantVenueSuffix(e.title, e.venue); });
+
+  // Re-clean after the suffix strip. cleanTitle's end-anchored rules only see
+  // what is last in the string, so a CMS marker sitting behind the venue tail
+  // survives the first pass and is only exposed once the tail is gone:
+  // "Levitt San Jose concert series (Copy) at <Venue>" cleaned to
+  // "… concert series (Copy)" and shipped that way. Same for the case-balancing
+  // rules, which read the trailing token ("LIL Kayla Live in San Jose").
+  // cleanTitle is idempotent on already-clean input, so a second pass costs
+  // nothing and closes the ordering gap for good.
+  allEvents.forEach((e) => { e.title = cleanTitle(e.title); });
+
+  // Drop administrative non-events (front-desk check-in kiosks, holiday
+  // facility-hours notices). Previously this guard ran only inside the SJSU
+  // adapter, so the same class of row entered from other Localist feeds
+  // unchecked — Stanford's "Labor Day Facility Hours" shipped as a Palo Alto
+  // event and was promoted into that city's weekly briefing highlights. Runs
+  // after the title cleanup above so the patterns see display-form titles.
+  const adminDropped = allEvents.filter((e) => isAdminNonEvent(e.title, e.description || ""));
+  if (adminDropped.length > 0) {
+    const dropIds = new Set(adminDropped.map((e) => e.id));
+    const kept = allEvents.filter((e) => !dropIds.has(e.id));
+    allEvents.length = 0;
+    allEvents.push(...kept);
+    console.log(`  🧹 Dropped ${adminDropped.length} administrative non-event row(s): `
+      + adminDropped.map((e) => `"${e.title}"`).join(", "));
+  }
 
   // Polish descriptions: drop boilerplate sentences, downcase ALL CAPS, capitalize sentence starts
   allEvents.forEach((e) => {

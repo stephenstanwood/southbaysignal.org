@@ -90,3 +90,20 @@ test("parades and guidance are not arts substring matches", () => {
     "community",
   );
 });
+
+// A facility-hours notice announces that a building's schedule changed; nothing
+// happens at the listed time. Stanford's Localist feed published "Labor Day
+// Facility Hours" (9 AM, venue "Stanford University") on 2026-09-07 and the
+// city-briefing generator promoted it into Palo Alto's weekly highlights.
+test("holiday facility-hours notices are not events", () => {
+  assert.equal(isAdminNonEvent("Labor Day Facility Hours", "Several Stanford Recreation & Wellness facilities will have modified hours."), true);
+  assert.equal(isAdminNonEvent("Holiday Hours", ""), true);
+  assert.equal(isAdminNonEvent("Hours of Operation Update", ""), true);
+});
+
+test("real events whose titles contain 'hours' survive", () => {
+  // The qualifier list is closed for exactly this reason — both of these ran as
+  // genuine listings alongside the Stanford notice.
+  assert.equal(isAdminNonEvent("Open Lab Hours at AI Center for Civic and Social Good", ""), false);
+  assert.equal(isAdminNonEvent("Forge Volunteer Workday Hours", ""), false);
+});
