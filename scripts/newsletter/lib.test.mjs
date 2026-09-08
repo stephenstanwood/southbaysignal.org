@@ -39,7 +39,7 @@ function septemberIssue(events = []) {
 }
 
 test("the September 9 community note survives edited and fallback builds only on its scheduled date", () => {
-  const expected = "Curious what’s being built nearby? South Bay Dashboard is a local high school student’s project bringing together development maps, local news, and public meetings.";
+  const expected = "Wondering what’s going up down the street? A local high school senior built South Bay Dashboard to help neighbors follow development projects, catch up on local news, and find public meetings. He learned mapping tools and sought feedback from South Bay city planners along the way. It’s a thoughtful project from a young neighbor who wants more people to understand—and get involved in—the changes shaping their community.";
   for (const editorial of [null, { briefing: "Good morning, South Bay.", communityNote: "" }]) {
     for (const date of ["2026-09-08", "2026-09-09", "2026-09-10"]) {
       const data = { ...septemberIssue(), date, longDate: formatLongDate(date), editorial };
