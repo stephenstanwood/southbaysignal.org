@@ -2,6 +2,136 @@
 
 ---
 
+## 2026-09-08 — Cycle 220: The Tech Tab's Events List Was Mostly the Library Help Desk, and Yesterday's Talks
+
+### Context
+Tuesday September 8, 2026. Roadmap still closed (6/6). Cycle 219's LaunchAgent
+repair held — `default-plans.json` regenerated on schedule at 3:21 AM PT with
+four populated plans for today and tomorrow, so the Today tab has real answers.
+The data pipelines are all fresh and the audit is clean (0 hard findings across
+1,865 upcoming and 311 inbound events), so this cycle went looking at rendered
+surfaces instead of at the data.
+
+### What Was Built
+
+**"Tech Events Near You" was showing events that had already happened, and the
+five slots it does have were mostly one-on-one library appointments.**
+
+Two independent defects in the same list, both visible to anyone opening the
+Tech tab in the afternoon.
+
+The first is the recurring bug class this project already has a helper for.
+`filterTechEvents` selected on `e.date >= today` and nothing else, while the
+Events tab and the city pages both drop today's entries once their start time
+passes, via `hasNotStarted()` in `timeHelpers.ts`. So this morning's 9 AM lab
+hours were still being advertised at 9 PM. Because the list is capped at five,
+the stale rows did more than mislead — they occupied slots, so tomorrow's talks
+could not move up behind them. By evening the entire list could be events that
+were over. The fix applies `hasNotStarted` the way the other two surfaces do,
+and adds a start-time tiebreaker to the sort, which was previously date-only:
+today's four entries were coming out 5 PM, 9 AM, 1 PM, 6 PM.
+
+The second is a filter gap. `TECH_EVENT_KEYWORDS` matches on "tech", which
+catches the library systems' one-on-one technology-help appointments; that is
+what `TECH_EVENT_EXCLUDES` is for, and it covered "1-on-1" and "one-on-one".
+The same programs also publish as **"1:1 Tech Mentor"**, **"1 on 1 Tech
+Assistance / Asistencia Tecnología"**, and a bare **"Tech Mentor"** — none of
+which the pattern matched. Eight such rows were live in the 30-day window,
+recurring often enough to crowd the list. Widening the exclude to the colon
+form, the spaced form, and the bare program names drops those eight and leaves
+27 genuine talks and workshops: motion capture with AI, the Bay Area AI Artists
+meetup, AI scams and misinformation, SCORE's business workshops, AI literacy in
+the classroom.
+
+The keyword/exclude pair and `isTechEvent` moved to
+`src/lib/south-bay/techEventFilter.ts` so they can be exercised directly —
+a false positive here does not merely add noise, it evicts a real talk — with
+`techEventFilter.test.ts` covering all five help-desk spellings, the Computer
+History Museum venue rule, and the keep cases.
+
+**Event titles no longer carry a mailing address.** SJSU's Localist feed
+concatenates the room and the building's full street address onto the event
+name. "Weeks of Welcome!" was publishing as *"Weeks of Welcome! at Events
+Center Aerobics Room (First floor), 1 Washington Square, Student Union, Suite
+1400, San Jose, CA 95192, United States"* — 145 characters, four times any
+other title on the page, repeating what `venue` and `city` already show — and
+it was on the calendar for today and tomorrow. `cleanTitle()` in
+`generate-events.mjs` now cuts the tail, anchored to a real state + ZIP so an
+ordinary comma'd title never matches, and taking the introducing " at " with it
+so the title cannot end on a dangling preposition. The cut is greedy to the
+last such " at ", which keeps the most text when a name legitimately contains
+one ("Meet at Dawn at the Gardens, 100 Main St, San Jose, CA 95112" → "Meet at
+Dawn"). Applied to the current `upcoming-events.json` as well, so the two live
+rows are fixed today rather than at the next regen.
+`scripts/lib/event-title-address.test.mjs` covers both directions.
+
+### Funding sweep — Sep 7–8
+
+No in-coverage round surfaced. Both daily roundups carried zero Santa Clara
+County companies. One near-miss recorded in `tech-companies.ts` so the next
+cycle does not re-verify it: **Clipto** ($15M at a $250M post-money valuation)
+is filed under "Palo Alto" by AlleyWatch's 9/8 weekly report and by Crunchbase
+(425 Page Mill Rd), but the primary source for this round is the company's own
+WebWire release and it datelines "San Francisco — Monday, August 31, 2026";
+TechCrunch's independent write-up the same day calls Clipto
+"San Francisco-headquartered." An older Clipto release does dateline Palo Alto
+(GlobeNewswire, Jan 5 2026) but announces no amount, so the newer primary
+source wins on a moved HQ — the same call the Array Labs note makes. Two
+further reasons not to add it later on a "Palo Alto" tag alone: Aug 31 sits
+inside the Aug 27 – Sep 2 window already swept, and the $250M valuation appears
+in both announcements, so a second entry would risk restating one raise the way
+the Upscale AI entry did.
+
+The Tech tab's 171 card links were audited: 163 OK, 0 moved, 0 dead, 8 blocked
+by bot walls (all informational — Intuit, Cadence, Rubrik, Marvell, NetApp,
+Trellix, OpenAI, Genspark).
+
+### Sunnyvale is blocked, not missed
+
+Sunnyvale is the county's second-largest city and has our thinnest calendar —
+24 events over the next two weeks, from Meetup, the City Newsletter intake, and
+our own listings, with no library source at all. Every door was retried today
+and all are still shut: `sunnyvale.libcal.com` licenses only /appointments and
+/spaces, `sunnyvale.bibliocommons.com/events` 404s, and
+`library.sunnyvale.ca.gov` 403s.
+
+New this cycle, and worth recording: the city's own calendar is blocked the
+same way, and it is deliberate. `www.sunnyvale.ca.gov` returns an edge "Access
+Denied" page for the iCalendar feed, for `/calendar/month`, and — the tell —
+for `/robots.txt` itself. A site that will not serve its own robots.txt is
+opting out of automated access, so it was left alone rather than worked around.
+Closing the Sunnyvale gap needs a published feed or a human-scale arrangement
+with the city, not a scraper. That note is now in `generate-events.mjs` beside
+the library one.
+
+### Verification
+
+`npm test` (974 passing, 0 failing across 84 files, including the two new
+suites), `npx astro check` (0 errors, 0 warnings), and `npm run build` all
+pass, including the locked-Home prebuild gate. No protected Home, Events, or
+Food surface was touched; no component or section was added.
+
+### Note for the next cycle
+
+`src/data/south-bay/school-calendar.json` covers the **2025–2026** school year
+and holds zero events dated on or after today — the whole file is in the past,
+in the first weeks of a new school year. It is imported by `EventsView.tsx`,
+but both consumers are `SchoolHeadsUpBanner` and `SchoolYearEndgamePanel`, two
+of the five Events-tab banners removed on 2026-05-13. Per Rule #1 this is
+forbidden territory, not a bug to fix: nothing renders it, and the fix is not
+to wire it back in. Refreshing the data for 2026–2027 is only worth doing if
+Stephen ever wants those banners back.
+
+The `monte-sereno` city slug is now on **two** inbound rows (California Coastal
+Cleanup Day, Sep 19), up from one last cycle. Still not in the 11-city coverage
+map, so those events are only reachable with all cities selected. Cycle 219
+declined to widen the `City` union for one row; two is still not obviously
+worth it, but it is trending the wrong way.
+
+The three unrendered Tech tab sections, `tech-briefing.json` (last generated
+2026-08-04), and `src/data/south-bay/elections-2026.ts` are all still orphans.
+
+---
 ## 2026-09-07 — Cycle 219: The Homepage Had Been Asking "What Should We Do Today?" and Answering With Nothing
 
 ### Context

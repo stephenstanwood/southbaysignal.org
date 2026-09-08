@@ -5174,12 +5174,21 @@ async function fetchSunnyvaleLibraryEvents() {
   // instance has the Events feature disabled (returns 403). Will return [].
   //
   // Sunnyvale is the county's second-largest city and our thinnest coverage, so
-  // the other doors get retried often. Checked again 2026-08-28, all still shut:
+  // the other doors get retried often. Checked again 2026-09-08, all still shut:
   // sunnyvale.libcal.com is a real Sunnyvale LibCal but licenses only
   // /appointments and /spaces — no events module, so /calendar 404s and the list
   // endpoint reports 0 results. sunnyvale.bibliocommons.com/events 404s, and
   // library.sunnyvale.ca.gov answers 403 to curl and to a real headless browser
   // alike. There is no automatable Sunnyvale library feed today.
+  //
+  // The city's own calendar is shut the same way, and it is a deliberate block,
+  // not a misconfiguration: www.sunnyvale.ca.gov returns an edge "Access Denied"
+  // page for the iCalendar feed, for /calendar/month, and — the tell — for
+  // /robots.txt itself. A site that will not serve its own robots.txt is opting
+  // out of automated access entirely, so this is left alone rather than worked
+  // around. Sunnyvale's 24 events over the next two weeks come from Meetup, the
+  // City Newsletter intake, and our own listings; closing the gap needs either a
+  // published feed or a human-scale arrangement with the city, not a scraper.
   return fetchBiblioEvents("sunnyvale", "Sunnyvale Public Library", () => "sunnyvale");
 }
 
