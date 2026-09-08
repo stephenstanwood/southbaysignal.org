@@ -7,6 +7,8 @@ import {
   isFreshRound,
   pacificDaysAgo,
 } from "../../../lib/south-bay/fundingAge";
+import { hasNotStarted, startMinutes } from "../../../lib/south-bay/timeHelpers";
+import { isTechEvent } from "../../../lib/south-bay/techEventFilter";
 import upcomingMeetingsJson from "../../../data/south-bay/upcoming-meetings.json";
 import {
   TECH_COMPANIES,
@@ -473,16 +475,6 @@ interface UpcomingEvent {
   ongoing?: boolean;
 }
 
-const TECH_EVENT_KEYWORDS = /\b(ai|robot|silicon|tech|chip|algorithm|startup|venture|humanoid|machine learning|neural|innovation|physical ai|autonomous)\b/i;
-const TECH_EVENT_EXCLUDES = /\bhelp\b|digital skills|computer help|tech help|1-on-1|one-on-one/i;
-
-function isTechEvent(e: UpcomingEvent): boolean {
-  const isChm = !!e.venue?.toLowerCase().includes("computer history");
-  const isTechTitle =
-    TECH_EVENT_KEYWORDS.test(e.title) && !TECH_EVENT_EXCLUDES.test(e.title);
-  return isChm || isTechTitle;
-}
-
 // Event `date` values are Pacific calendar dates, so the window bounds have to
 // be Pacific too. `toISOString()` is UTC: from 5 PM PT onward it already reads
 // tomorrow, which silently dropped tonight's talks off the list every evening.
@@ -507,9 +499,24 @@ function filterTechEvents(allEvents: UpcomingEvent[]): UpcomingEvent[] {
         )
     );
 
+  // Today's entries drop once their start time passes, the same rule the Events
+  // tab and the city pages apply via hasNotStarted. Comparing dates alone kept
+  // this morning's 9 AM lab hours on the list at 9 PM, and because the list is
+  // capped at five, the stale rows also blocked tomorrow's talks from moving up.
+  // Sort by start time within a date so the list actually reads chronologically.
   const upcoming = allEvents
-    .filter((e) => !e.ongoing && e.date >= today && e.date <= cutoff && isTechEvent(e))
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .filter(
+      (e) =>
+        !e.ongoing &&
+        e.date >= today &&
+        e.date <= cutoff &&
+        !(e.date === today && !hasNotStarted(e.time)) &&
+        isTechEvent(e),
+    )
+    .sort(
+      (a, b) =>
+        a.date.localeCompare(b.date) || startMinutes(a.time) - startMinutes(b.time),
+    );
 
   return [...chmExhibits.slice(0, 5), ...upcoming.slice(0, 5)];
 }

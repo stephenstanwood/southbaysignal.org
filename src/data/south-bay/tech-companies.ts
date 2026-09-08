@@ -1238,6 +1238,27 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   //   * Thinking Machines Lab (reported ~$1B round in talks at a $40B
   //     valuation, Sep 3 2026) is San Francisco, and a round in talks is not a
   //     closed round. Out on both counts.
+  // Note on the Sep 7-8 2026 sweep: no in-coverage round surfaced. The daily
+  // funding roundups for both days carried zero Santa Clara County companies
+  // (Sep 7: Pixxel, Jet Zero, Navana.ai, Cato, Jaipur Robotics; Sep 8: Mistral
+  // AI, Stoke Space, ARC Ride, Hope Care, Fundly.ai, Veridue, Outline, Gaia,
+  // sci2sci, Iztri — all international or out of state). One near-miss, recorded
+  // so the next cycle doesn't re-verify it:
+  //   * Clipto ($15M at a $250M post-money valuation, announced Aug 31 2026;
+  //     on-device search across a user's own video, audio, and image library) is
+  //     NOT here despite AlleyWatch's 9/8 weekly roundup filing it under "Palo
+  //     Alto" and Crunchbase giving 425 Page Mill Rd. The primary source for
+  //     THIS round is the company's own WebWire release, and it datelines "San
+  //     Francisco - Monday, August 31, 2026"; TechCrunch's independent write-up
+  //     the same day calls Clipto "San Francisco-headquartered." An older
+  //     Clipto release does dateline Palo Alto (GlobeNewswire, Jan 5 2026), but
+  //     it announces no amount, and the newer primary source wins on a moved HQ
+  //     — the same call the Array Labs note above makes in the same direction.
+  //     Out of coverage. Two further reasons not to add it on a later "Palo
+  //     Alto" tag alone: the Aug 31 date sits inside the Aug 27 - Sep 2 window
+  //     already swept above, and the $250M valuation appears in both the January
+  //     and the August announcements, so a second entry would risk restating one
+  //     raise the way the Upscale AI entry did.
   {
     id: "tabapay",
     name: "TabaPay",
