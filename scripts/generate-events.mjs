@@ -1268,6 +1268,28 @@ function cleanTitle(title) {
       }
     }
   }
+  // Strip a trailing mailing address. SJSU's Localist feed concatenates the
+  // room and the building's full street address onto the event name — "Weeks
+  // of Welcome! at Events Center Aerobics Room (First floor), 1 Washington
+  // Square, Student Union, Suite 1400, San Jose, CA 95192, United States" —
+  // which runs four times the length of any other title on the page and
+  // repeats what `venue` and `city` already carry. Anchored to a real state +
+  // ZIP so ordinary comma'd titles never match, and when an " at " introduced
+  // the location the cut takes that too, so the title can't end on a dangling
+  // preposition. Greedy up to the last such " at ", which keeps the most title
+  // text when a name legitimately contains one ("Meet at Dawn at the Gardens,
+  // 100 Main St, San Jose, CA 95112" → "Meet at Dawn").
+  {
+    const ADDRESS_TAIL =
+      /,\s*[^,]{2,40},\s*(?:CA|California)\s+\d{5}(?:-\d{4})?\s*(?:,\s*(?:USA|U\.S\.A\.|United States))?\s*$/i;
+    if (ADDRESS_TAIL.test(t)) {
+      const withoutTail = t.replace(ADDRESS_TAIL, "");
+      const atCut = withoutTail.match(/^(.*\S)\s+at\s+\S[^,]*,/i);
+      t = (atCut ? atCut[1] : withoutTail.replace(/,\s*\d+\s+[^,]+$/, ""))
+        .replace(/(?:\s*[|\/&,;:]|\s+[-–—])+\s*$/, "")
+        .trim();
+    }
+  }
   // Strip trailing time annotations: "Good Friday Liturgy 3 PM" → "Good Friday
   // Liturgy". Skip when preceded by a preposition that makes the time
   // semantically load-bearing in the title — Los Gatos Library publishes
