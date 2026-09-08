@@ -103,7 +103,10 @@ async function mapPool(items, worker, limit = CONCURRENCY) {
 
 function metaContent(html, key) {
   const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  for (const tag of html.match(/<meta\s+[^>]*>/gi) ?? []) {
+  // Attribute values may legitimately contain `>` (for example, an event
+  // title like "Tour <LiMiNaL>"). Stop only at a `>` outside quoted values;
+  // the old matcher truncated those tags and invented missing-meta findings.
+  for (const tag of html.match(/<meta\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi) ?? []) {
     const name = /(?:name|property)=(["'])(.*?)\1/i.exec(tag)?.[2];
     if (!name || name.toLowerCase() !== escaped.toLowerCase()) continue;
     return /content=(["'])([\s\S]*?)\1/i.exec(tag)?.[2]?.trim() ?? null;
@@ -112,7 +115,7 @@ function metaContent(html, key) {
 }
 
 function linkHref(html, rel) {
-  for (const tag of html.match(/<link\s+[^>]*>/gi) ?? []) {
+  for (const tag of html.match(/<link\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi) ?? []) {
     const relValue = /rel=(["'])(.*?)\1/i.exec(tag)?.[2];
     if (relValue?.toLowerCase() !== rel) continue;
     return /href=(["'])(.*?)\1/i.exec(tag)?.[2] ?? null;
@@ -129,7 +132,7 @@ function textOnly(html) {
     .trim();
 }
 
-function parsePage(html, url) {
+export function parsePage(html, url) {
   const jsonLdTypes = [];
   for (const block of html.match(
     /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi,
