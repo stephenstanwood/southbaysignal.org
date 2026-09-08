@@ -1,19 +1,43 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-09-07T03:09:24.885Z",
+      "generatedAt": "2026-09-08T04:40:54.326Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 30 – Sep 6",
+      "dateRange": "Aug 31 – Sep 7",
       "stats": {
-        "total": 463,
-        "notable": 48,
-        "newUnits": 21,
-        "totalValuation": 93230630
+        "total": 455,
+        "notable": 50,
+        "newUnits": 292,
+        "totalValuation": 175479772
       },
       "permits": [
+        {
+          "id": "2026-132634-MF",
+          "address": "860 W San Carlos St",
+          "category": "multi-family-new",
+          "categoryLabel": "New Multi-Family",
+          "workType": "New Construction",
+          "description": "Block a Family Affordable Apts (Bemp 100%)",
+          "valuation": 80819610,
+          "units": 272,
+          "issueDate": "2026-09-04",
+          "subtype": "Apartment"
+        },
+        {
+          "id": "2026-135915-MF",
+          "address": "1655 Berryessa Rd",
+          "category": "multi-family-new",
+          "categoryLabel": "New Multi-Family",
+          "workType": "New Construction",
+          "description": "Kb Home New Townhouse Building 3",
+          "valuation": 1992832,
+          "units": 1,
+          "issueDate": "2026-09-04",
+          "subtype": "Townhouse"
+        },
         {
           "id": "2026-135013-RS",
           "address": "584 N 2nd St #10",
@@ -109,43 +133,19 @@
           "units": 1,
           "issueDate": "2026-09-03",
           "subtype": "Single-Family"
-        },
-        {
-          "id": "2026-133301-RS",
-          "address": "2558 Beach Hill Farm St",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Comm Hill 3.2 New Sfd-Promenade",
-          "valuation": 416290,
-          "units": 1,
-          "issueDate": "2026-09-03",
-          "subtype": "Single-Family"
-        },
-        {
-          "id": "2026-133305-RS",
-          "address": "2556 Beach Hill Farm St",
-          "category": "residential-new",
-          "categoryLabel": "New Home",
-          "workType": "New Construction",
-          "description": "Comm Hill 3.2 New Sfd-Promenade",
-          "valuation": 412555,
-          "units": 1,
-          "issueDate": "2026-09-03",
-          "subtype": "Single-Family"
         }
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-09-07T03:09:27.613Z",
+      "generatedAt": "2026-09-08T04:40:56.780Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 30 – Sep 6",
+      "dateRange": "Aug 31 – Sep 7",
       "stats": {
-        "total": 116,
-        "notable": 4,
+        "total": 104,
+        "notable": 3,
         "newUnits": 0,
         "totalValuation": 0
       },
@@ -160,18 +160,6 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-09-02",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-02460",
-          "address": "2031 Park Bl",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-08-31",
           "subtype": "Permit Issued"
         },
         {

@@ -1,48 +1,48 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-07T03:17:19.589Z",
+    "generatedAt": "2026-09-08T04:51:30.228Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 6
+    "sourceCount": 8
   },
   "summary": {
-    "threadsMined": 6,
-    "placesExtracted": 0,
+    "threadsMined": 8,
+    "placesExtracted": 2,
     "placesMatched": 0,
-    "placeGaps": 0,
-    "eventsExtracted": 2,
+    "placeGaps": 2,
+    "eventsExtracted": 0,
     "eventsMatched": 0,
-    "eventGaps": 2,
+    "eventGaps": 0,
     "autoAppendedOpenings": 0
   },
-  "placeGaps": [],
-  "eventGaps": [
+  "placeGaps": [
     {
-      "name": "San Jose Lowrider Day 2026",
-      "when": "annual",
+      "name": "Calibunga",
       "city": "San Jose",
-      "context": "annual lowrider celebration in downtown San Jose",
+      "kind": "other",
+      "context": "water park, possibly permanently closed",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w9ck10/favorite_bagel_places_in_south_bay/",
-        "https://www.reddit.com/r/SanJose/comments/1w9bi46/san_jose_lowrider_day_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1w901hw/vta_defends_its_plan_to_extend_bart_to_downtown/",
-        "https://www.reddit.com/r/SanJose/comments/1w8lcf7/niboshi_ramen/",
-        "https://www.reddit.com/r/SanJose/comments/1w8ylav/my_artwork_is_at_genart_silicon_valley_workssan/"
+        "https://www.reddit.com/r/SanJose/comments/1waa03k/need_restaurant_recommendations_for_a_big_group/",
+        "https://www.reddit.com/r/SanJose/comments/1wa8x54/elk_in_the_south_san_jose_hills_slow_down_when/",
+        "https://www.reddit.com/r/SanJose/comments/1wa6m9e/good_laziji/",
+        "https://www.reddit.com/r/SanJose/comments/1w9ie81/vaquero_party_by_berryessa_library/",
+        "https://www.reddit.com/r/SanJose/comments/1wa8ryj/calibunga_water_park_forever_gone/"
       ]
     },
     {
-      "name": "GenArt Silicon Valley + WorksSan Jose Art Exhibition",
-      "when": "",
+      "name": "Berryessa Library",
       "city": "San Jose",
-      "context": "art exhibition in downtown San Jose",
+      "kind": "other",
+      "context": "vaquero party gathering spot",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1w9ck10/favorite_bagel_places_in_south_bay/",
-        "https://www.reddit.com/r/SanJose/comments/1w9bi46/san_jose_lowrider_day_2026/",
-        "https://www.reddit.com/r/SanJose/comments/1w901hw/vta_defends_its_plan_to_extend_bart_to_downtown/",
-        "https://www.reddit.com/r/SanJose/comments/1w8lcf7/niboshi_ramen/",
-        "https://www.reddit.com/r/SanJose/comments/1w8ylav/my_artwork_is_at_genart_silicon_valley_workssan/"
+        "https://www.reddit.com/r/SanJose/comments/1waa03k/need_restaurant_recommendations_for_a_big_group/",
+        "https://www.reddit.com/r/SanJose/comments/1wa8x54/elk_in_the_south_san_jose_hills_slow_down_when/",
+        "https://www.reddit.com/r/SanJose/comments/1wa6m9e/good_laziji/",
+        "https://www.reddit.com/r/SanJose/comments/1w9ie81/vaquero_party_by_berryessa_library/",
+        "https://www.reddit.com/r/SanJose/comments/1wa8ryj/calibunga_water_park_forever_gone/"
       ]
     }
   ],
+  "eventGaps": [],
   "placeMatches": [],
   "eventMatches": []
 }
