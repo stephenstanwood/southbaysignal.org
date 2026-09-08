@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { applyVerifiedEventFacts } from "../../src/lib/south-bay/eventSourceFacts.mjs";
+import { registrationFromLibCal, requiresAdvanceRegistration } from "../../src/lib/south-bay/eventFilters.mjs";
 import {
   buildEditorialPrompt,
   buildEditorialPacket,
@@ -1427,6 +1428,58 @@ test("the registration gate leaves ordinary drop-in plans alone", () => {
   // An absent gate set must behave exactly like an empty one — the parameter
   // is optional and callers that predate it must not change behaviour.
   assert.deepEqual(withEmptyGate, withoutGateArg);
+});
+
+// ---------------------------------------------------------------------------
+// The Sept 8 2026 regression: a LibCal appointment service read as a walk-up
+// ---------------------------------------------------------------------------
+// That morning's issue made Mountain View's "Community Preservation Lab
+// Scanning Service" its afternoon plan card and told readers to "bring the
+// shoebox of old family photos... and let library staff help you digitize
+// them". The service is appointment-only, two separately-booked 90-minute
+// slots. The guard below already existed and was already correct — nothing on
+// the LibCal ingest path ever set `registration`, so it had nothing to gate.
+// This test runs the live list-endpoint row through the classifier the ingest
+// now uses, so the two ends cannot drift apart again.
+
+test("a LibCal appointment service is gated end to end, from feed row to plan", () => {
+  const scanningRow = {
+    id: 17319757,
+    title: "Community Preservation Lab Scanning Service",
+    registration_enabled: false,
+    description: "<p>Registration is required to use this service. Please read this document to learn more about the scanning service before making an appointment. <strong>Appointments are limited to one per household per week.</strong></p><p>Register below for a 90-minute session for scanning services in the History Center.</p>",
+  };
+  const registration = registrationFromLibCal(scanningRow);
+  assert.equal(registration, "appointment-only");
+
+  const event = {
+    id: "d610aa488850",
+    title: scanningRow.title,
+    url: "https://mountainview.libcal.com/event/17319757",
+    venue: "Mountain View Public Library",
+    city: "mountain-view",
+    time: "6:00 PM",
+    cost: "free",
+    registration,
+  };
+  assert.equal(isTonightPickCandidate(event), false);
+  assert.equal(isTonightPickCandidate({ ...event, registration: undefined }), true,
+    "the missing field is exactly what made it eligible before the ingest fix");
+
+  // And the same state rejects the afternoon plan card it actually became.
+  const cards = [
+    { id: "event:d610aa488850", name: scanningRow.title, source: "event", role: "pillar", bucket: "afternoon", timeBlock: "afternoon", pairedWithId: "place:lunch" },
+    { id: "place:lunch", name: "Oren's Hummus", role: "paired-meal", bucket: "lunch", timeBlock: "afternoon", pairedWithId: "event:d610aa488850" },
+  ];
+  assert.equal(
+    makeNewsletterPlan({ selectionModel: "pillar-pairs-v1", cards }, "2026-09-08", {
+      validEventIds: new Set(["event:d610aa488850"]),
+      registrationGatedEventIds: new Set(
+        [event].filter(requiresAdvanceRegistration).map((e) => `event:${e.id}`),
+      ),
+    }),
+    null,
+  );
 });
 
 // ── Proper names in generated prose (the Aug 13 2026 "Mistah F. A. B." bug) ──

@@ -26,6 +26,10 @@ import { createHash } from "crypto";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { classifyLibCalLocation } from "./lib/libcal-location.mjs";
 import { libraryEventDetails } from "./lib/library-event-details.mjs";
+import {
+  REGISTRATION_NONE,
+  registrationFromLibCal,
+} from "../src/lib/south-bay/eventFilters.mjs";
 import { canonicalHistorySjUrl, historySjEndTime, inferHistorySjCost } from "./lib/history-sj.mjs";
 import {
   parseLindenTreeHeadingLines,
@@ -614,10 +618,20 @@ export async function scrapeLibCal(_page, config) {
         ? ev.audiences.map((a) => a?.name || "").join(" ")
         : "";
 
+      // Can a reader who saw this in the newsletter just show up? LibCal
+      // publishes registration_enabled/online_registration/in_person_registration
+      // on this endpoint and the library writes its own instructions into the
+      // description; registrationFromLibCal in eventFilters.mjs reads both, so
+      // the ingest and the runtime plan-day safety net cannot drift apart.
+      // Until 2026-09-08 this path set nothing, which is how an
+      // appointment-only scanning service became a newsletter plan card.
+      const registration = registrationFromLibCal(ev);
+
       return {
         title,
         date,
         ...libraryEventDetails(ev),
+        ...(registration !== REGISTRATION_NONE ? { registration } : {}),
         time: ev.all_day ? null : libcalTime(ev.start),
         endTime: ev.all_day ? null : libcalTime(ev.end),
         venue: place.venue,
@@ -2832,6 +2846,15 @@ export function normalizePlaywrightEvent(e) {
     venue: e.venue,
     address: e.address || "",
     city: e.city,
+    // Both of these are FIRST-PARTY source signals a scraper resolved, and
+    // this normalizer is an allow-list — a field it does not name is dropped
+    // before the event ever reaches playwright-events.json. scrapeLibCal has
+    // been setting `virtual` from LibCal's own online_event flag since it was
+    // written, and every one of those flags was discarded here; the events
+    // stayed out of plans only because their titles happen to say "Online".
+    // Same position as the BiblioCommons events in upcoming-events.json.
+    ...(e.virtual ? { virtual: true } : {}),
+    ...(e.registration ? { registration: e.registration } : {}),
     category: e.category || inferCategory(e.title),
     cost: e.cost || null,
     description: e.description || "",

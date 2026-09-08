@@ -66,3 +66,42 @@ test("corrected feed/cache copies agree and Town Cats keeps in-person ticket pic
   assert.doesNotMatch(cache.byKey["fp:lost 80s live|mountain winery|d:"]?.blurb || "", /cover bands/i);
   assert.doesNotMatch(cache.byKey["fp:grupo duelo – gravedad tour 2026|san jose civic|d:af517bd503d6"]?.blurb || "", /banda/i);
 });
+
+test("every LibCal appointment occurrence is gated, not just the corrected one", () => {
+  // The Sept 8 defect was systemic: only `d610aa488850` got a hand correction,
+  // while its seven sibling occurrences — same service, same appointment-only
+  // page — stayed walk-ups because nothing on the LibCal ingest path set
+  // `registration`. registrationFromLibCal now derives it for all of them, so
+  // the correction is a floor and the feed is the mechanism.
+  const feed = JSON.parse(readFileSync(new URL("../../data/south-bay/upcoming-events.json", import.meta.url)));
+  const byId = new Map(feed.events.map((e) => [e.id, e]));
+
+  const scanning = [
+    "d610aa488850", "beafbf0a38b7", "b7c1ea7f055a", "22a65f59e0b7",
+    "a0b6ae3454e6", "dbf05ae12f85", "c5f16f14946d", "f61d141f208b",
+  ];
+  let checked = 0;
+  for (const id of scanning) {
+    const event = byId.get(id);
+    if (!event) continue; // The occurrence legitimately ages out of the live feed.
+    checked++;
+    assert.equal(event.registration, "appointment-only", id);
+    assert.equal(requiresAdvanceRegistration(event), true, id);
+  }
+  assert.ok(checked > 0, "no Community Preservation Lab occurrence is in the feed at all");
+
+  // Mountain View's "Landscape Design for Beginners" opens "Registration is
+  // required. Seats and materials are limited." — a seat, not a slot.
+  const landscape = byId.get("ecadbadee33e");
+  if (landscape) assert.equal(landscape.registration, "required");
+
+  // And the guard did not swing the other way. Every LibCal event whose own
+  // copy promises walk-up access must stay ungated, or a false positive
+  // silently removes a good event from the plan.
+  const libcalWalkUps = feed.events.filter(
+    (e) => /libcal\.com/.test(e.url || "") && /\bno registration required\b|\bfirst come\b/i.test(e.description || ""),
+  );
+  for (const event of libcalWalkUps) {
+    assert.equal(requiresAdvanceRegistration(event), false, `${event.id} ${event.title}`);
+  }
+});

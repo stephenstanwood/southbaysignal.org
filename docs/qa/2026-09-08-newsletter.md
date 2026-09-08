@@ -81,3 +81,6 @@ All eight upcoming Community Preservation Lab occurrences and Mountain View's
 "Landscape Design for Beginners" (whose description opens "Registration is
 required") are affected today. Only the September 8 occurrence is corrected
 here; the ingest-level fix and its tests are handed to a separate task.
+
+Since fixed — see `docs/qa/2026-09-08-libcal-registration-sweep.md` for the
+classifier, the full 469-event sweep and its spot checks.

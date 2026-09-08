@@ -186,6 +186,11 @@ const DROP_IN_PATTERNS = [
 function stripInstructionMarkup(html) {
   if (typeof html !== "string") return "";
   return html
+    // Drop the CONTENT of style/script blocks, not just their tags. LibCal
+    // wraps each "Click Here to Register" button in an inline <style> block,
+    // and the catch-all tag stripper below would otherwise leave the raw CSS
+    // in the text these patterns are matched against.
+    .replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, " ")
     .replace(/<[^>]+>/g, " ")
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&")
@@ -382,6 +387,103 @@ export function registrationFromMeetup(node) {
   if (joinMode === "APPROVAL" || joinMode === "CLOSED") return REGISTRATION_REQUIRED;
 
   // JOIN_OPEN / RSVP / YES / NO / NONE / absent: the RSVP is open to anyone.
+  return REGISTRATION_NONE;
+}
+
+/**
+ * Text LibCal publishes about how to get in, with newsletter-subscription
+ * clauses removed.
+ *
+ * The other two classifiers read a dedicated instructions field
+ * (`registrationInfo.instructions`, `rsvpState`). LibCal has no such field on
+ * the list endpoint, so this one reads the whole event description — which
+ * means it also reads prose that has nothing to do with attending. Three Los
+ * Gatos book clubs invite readers to "sign up for our Cookbook Club
+ * newsletter" / "Sign up for our newsletter here", and Monday Morning Book
+ * Club adds "new members are welcome at any time". Matching REGISTER_PATTERNS
+ * on a mailing-list signup would have gated three genuine drop-in book clubs,
+ * which is the same class of error as the hours-notice rule in
+ * generate-events.mjs matching "Open Lab Hours" — a false positive here
+ * silently removes a good event from the plan.
+ *
+ * The clause is redacted rather than the whole event skipped: a description
+ * may carry both a real registration instruction and a newsletter plug, and
+ * only the plug should stop counting.
+ */
+const NEWSLETTER_SUBSCRIPTION = /\b(?:sign(?:ing)?[-\s]?up|signup|subscribe|register|join)\b[^.!?]{0,80}?\bnewsletters?\b[^.!?]*/gi;
+
+function libcalRegistrationText(ev) {
+  // `more_info` is LibCal's own "Additional Information" field — the natural
+  // home for an attendance instruction, empty on 464 of the 469 events in the
+  // live Mountain View + Los Gatos feeds but read anyway so a library that
+  // starts using it is heard.
+  const raw = [ev?.description, ev?.more_info].filter(Boolean).join(" ");
+  return stripInstructionMarkup(raw).replace(NEWSLETTER_SUBSCRIPTION, " ");
+}
+
+/**
+ * Normalize one raw LibCal (Springshare) list-endpoint row into a
+ * registration state.
+ *
+ * Reads the shape /ajax/calendar/list actually returns (verified against the
+ * live Mountain View and Los Gatos calendars, 469 events, 2026-09-08):
+ *
+ *   ev.registration_enabled       <- Boolean; a LibCal signup form is attached
+ *   ev.online_registration        <- Boolean
+ *   ev.in_person_registration     <- Boolean
+ *   ev.description / ev.more_info <- HTML the library writes itself
+ *
+ * Shipped 2026-09-08 after the September 8 issue made Mountain View's
+ * "Community Preservation Lab Scanning Service" its afternoon plan card and
+ * told readers to bring a shoebox of family photos and walk in. The service
+ * is appointment-only — "Registration is required to use this service...
+ * Appointments are limited to one per household per week. Register below for
+ * a 90-minute session" — but the LibCal ingest set no `registration` field at
+ * all, so requiresAdvanceRegistration() read every LibCal event, across both
+ * libraries, as a walk-up. That is the same defect the BiblioCommons
+ * classifier above was written for on 2026-08-12, left unfixed on this path.
+ *
+ * TWO TRAPS, both observed in that 469-event sample:
+ *
+ * 1. `registration_enabled` is a reliable POSITIVE and a worthless NEGATIVE.
+ *    It reports whether this listing row has a LibCal signup form bolted on,
+ *    not whether a reader can turn up. All eight upcoming Community
+ *    Preservation Lab occurrences report false while their own description
+ *    says registration is required and links two separately-booked 90-minute
+ *    slots — the booking lives in the body copy, not in LibCal's form. The
+ *    same program's own occurrences also disagree with each other: Pages and
+ *    Paws is true on its October date and false on November and December,
+ *    because the flag tracks whether registration has OPENED yet. So a false
+ *    never ends the inquiry; the text is always consulted.
+ *
+ * 2. Text must be allowed to override the flag DOWNWARD, which is the
+ *    opposite of the BiblioCommons rule above. There, `provider` names an
+ *    actual registrar and text may not downgrade it. Here, seven Mountain
+ *    View events carry the form AND say "Registration is recommended. Seating
+ *    is limited. Walk-ins are also welcome." — three Ukulele Jam sessions,
+ *    Dogbotic Sound Petting Zoo, two estate-planning talks and a
+ *    vegetable-gardening class. Letting the flag win would have gated four
+ *    real walk-up programs. LibCal's own form widget prints a stock
+ *    "Registration is required. There are 21 seats available." banner on
+ *    those pages; the library's sentence is the one that describes the door.
+ *
+ * So DROP_IN_PATTERNS run first and beat every other signal, including the
+ * flag. That also covers Los Gatos' "Drop-In Tech Help" — 17 occurrences
+ * whose copy reads "No appointment is needed, we help patrons on a first come
+ * first served basis", matching APPOINTMENT_PATTERNS on the very word that
+ * says it is not one.
+ */
+export function registrationFromLibCal(ev) {
+  if (!ev) return REGISTRATION_NONE;
+  const text = libcalRegistrationText(ev);
+  // Trap 2: an explicit walk-up promise outranks the flag and the prose.
+  if (text && DROP_IN_PATTERNS.some((re) => re.test(text))) return REGISTRATION_NONE;
+  // Appointment beats seat-registration, the same precedence
+  // registrationFromInstructions applies for BiblioCommons.
+  const fromText = registrationFromInstructions(text);
+  if (fromText) return fromText;
+  // Trap 1: the flag only speaks when the library's own words did not.
+  if (ev.registration_enabled === true) return REGISTRATION_REQUIRED;
   return REGISTRATION_NONE;
 }
 

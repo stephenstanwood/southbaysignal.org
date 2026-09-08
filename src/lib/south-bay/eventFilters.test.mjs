@@ -10,6 +10,7 @@ import {
   isVirtualEvent,
   registrationFromBiblioCommons,
   registrationFromInstructions,
+  registrationFromLibCal,
   registrationFromMeetup,
   registrationLabel,
   requiresAdvanceRegistration,
@@ -477,6 +478,159 @@ test("exhausted seats and shut RSVPs map to full and closed", () => {
 test("a missing or empty Meetup node is safe", () => {
   assert.equal(registrationFromMeetup(null), "none");
   assert.equal(registrationFromMeetup({}), "none");
+});
+
+// ---------------------------------------------------------------------------
+// LibCal registration
+// ---------------------------------------------------------------------------
+// The Sept 8 2026 defect: the issue made Mountain View's "Community
+// Preservation Lab Scanning Service" its afternoon plan card and told readers
+// to bring a shoebox of family photos and let staff digitize them. The service
+// is appointment-only. The LibCal ingest set no `registration` field at all,
+// so requiresAdvanceRegistration() read every LibCal event as a walk-up.
+//
+// Every fixture below is the live /ajax/calendar/list row for a real event,
+// captured 2026-09-08 from mountainview.libcal.com and losgatosca.libcal.com.
+
+// https://mountainview.libcal.com/event/17319757 — the September 8 occurrence.
+// registration_enabled is FALSE: the two 90-minute slots are booked through
+// links in the body copy, not through a LibCal form on this row.
+const LIBCAL_SCANNING = {
+  id: 17319757,
+  title: "Community Preservation Lab Scanning Service",
+  registration_enabled: false,
+  online_registration: false,
+  in_person_registration: false,
+  description: "<p>The Community Preservation Lab is a service provided at the Mountain View History Center. It allows library users to digitize their personal photos and documents with the assistance of library staff. Registration is required to use this service. Please read <a href=\"https://www.mountainview.gov/home/showdocument?id=13174\">this document</a> to learn more about the scanning service before making an appointment. <strong>Appointments are limited to one per household per week.</strong></p>\n<p>Register below for a 90-minute session for scanning services in the History Center.</p>\n<p style=\"text-align: center;\"><a href=\"https://mountainview.libcal.com/event/17319724\">Click Here to Register for 1:00pm to 2:30pm</a></p>\n<p style=\"text-align: center;\"><style type=\"text/css\">#s_lc_event_16714527 {\n  background: #228B22;\n  font: 16px Arial, Helvetica, Verdana;\n}</style></p>",
+  more_info: "",
+};
+
+// https://mountainview.libcal.com/event/14959849 — an ordinary capped class.
+const LIBCAL_LANDSCAPE = {
+  id: 14959849,
+  title: "Landscape Design for Beginners",
+  registration_enabled: true,
+  online_registration: false,
+  in_person_registration: true,
+  description: "<p>Registration is required. Seats and materials are limited. Please only register if you plan on attending.</p><p>Discover the fundamentals of landscape design in this beginner-friendly class.</p>",
+  more_info: "",
+};
+
+// https://mountainview.libcal.com/event/17028027 — trap 2. The library
+// attached a signup form AND told readers they can turn up anyway.
+const LIBCAL_UKULELE = {
+  id: 17028027,
+  title: "Ukulele Jam Sing and Play Along",
+  registration_enabled: true,
+  online_registration: false,
+  in_person_registration: true,
+  description: "<p>Registration is recommended. Seating is limited. Walk-ins&nbsp;are also welcome.&nbsp;</p><p>Would you like to learn some fun songs on the ukulele?</p>",
+  more_info: "",
+};
+
+// https://losgatosca.libcal.com/event/16035527 — says "appointment" in the
+// course of promising the opposite.
+const LIBCAL_TECH_HELP = {
+  id: 16035527,
+  title: "Drop-In Tech Help",
+  registration_enabled: false,
+  description: "<p>Do you have questions about your laptop, smartphone, or tablet? Join us for Drop-in Tech help. No appointment is needed, we help patrons on a first come first served basis. We meet in the 2nd floor Tech Lab and a clipboard for singing-up is at the 2nd floor reference desk starting at 2:30PM.</p>",
+  more_info: "",
+};
+
+// https://losgatosca.libcal.com/event/17376577 — a drop-in book club whose
+// only registration-shaped words are two mailing-list plugs.
+const LIBCAL_COOKBOOK_CLUB = {
+  id: 17376577,
+  title: "Cookbook Club",
+  registration_enabled: false,
+  description: "<p>September&#39;s theme is &quot;in a bun&quot;! Come to our meeting ready to talk all about what you made and the book you used. Don&#39;t forget to sign up for our Cookbook Club newsletter to get all the latest updates and cookbook suggestions! You can sign up for any of our newsletters&nbsp;here.</p>",
+  more_info: "",
+};
+
+test("an appointment-only LibCal service is gated even though its flag says false", () => {
+  // The September 8 plan-card defect. registration_enabled is false because the
+  // booking links live in the body copy, so the flag alone would have shipped
+  // the same walk-up promise a second time.
+  assert.equal(registrationFromLibCal(LIBCAL_SCANNING), "appointment-only");
+  assert.equal(requiresAdvanceRegistration({ registration: "appointment-only" }), true);
+  assert.equal(registrationLabel(registrationFromLibCal(LIBCAL_SCANNING)), "Appointment required");
+});
+
+test("a plain capped LibCal class is required, not appointment-only", () => {
+  assert.equal(registrationFromLibCal(LIBCAL_LANDSCAPE), "required");
+  assert.equal(registrationLabel(registrationFromLibCal(LIBCAL_LANDSCAPE)), "Reserve ahead");
+});
+
+test("a LibCal walk-up promise beats the registration flag", () => {
+  // Trap 2, and the direction that differs from BiblioCommons: LibCal's flag
+  // only says a form is attached, so five real Mountain View walk-up programs
+  // would have been suppressed if it won. LibCal's own form widget prints a
+  // stock "Registration is required" banner on this page; the library's
+  // sentence is the one that describes the door.
+  assert.equal(registrationFromLibCal(LIBCAL_UKULELE), "none");
+  assert.equal(requiresAdvanceRegistration({ registration: registrationFromLibCal(LIBCAL_UKULELE) }), false);
+  assert.equal(walkUpSupportedByEventText({ description: "Registration is recommended. Walk-ins are also welcome." }), true);
+});
+
+test("drop-in copy outranks the word 'appointment' inside it", () => {
+  // "No appointment is needed" matches APPOINTMENT_PATTERNS on the very word
+  // that says it is not one — 17 Los Gatos occurrences. Same discipline as the
+  // "Open Lab Hours" qualifier on the admin-hours rule in generate-events.mjs:
+  // a false positive here silently removes a good event from the plan.
+  assert.equal(registrationFromLibCal(LIBCAL_TECH_HELP), "none");
+});
+
+test("a mailing-list plug is not event registration", () => {
+  // Three Los Gatos book clubs invite readers to sign up for a newsletter and
+  // nothing else. Monday Morning Book Club adds "new members are welcome at
+  // any time" — gating them would have been the opposite failure.
+  assert.equal(registrationFromLibCal(LIBCAL_COOKBOOK_CLUB), "none");
+  assert.equal(
+    registrationFromLibCal({
+      registration_enabled: false,
+      description: "New members are welcome at any time. Sign up for our newsletter here.",
+    }),
+    "none",
+  );
+
+  // Surgical, not a bail-out: a description carrying BOTH a plug and a real
+  // instruction still gates on the instruction.
+  assert.equal(
+    registrationFromLibCal({
+      registration_enabled: false,
+      description: "Email signup@gwc-losgatos.org to register. Sign up for our newsletter here.",
+    }),
+    "required",
+  );
+});
+
+test("the LibCal flag speaks only when the library's own words did not", () => {
+  // Trap 1 in both directions. A bare true is a gate; a bare false is silence,
+  // not a walk-up guarantee — Pages and Paws reports true on its October date
+  // and false on November and December because the flag tracks whether
+  // registration has OPENED, not whether it is needed.
+  const bare = { title: "Board Game Night", description: "<p>Bring a friend and play.</p>" };
+  assert.equal(registrationFromLibCal({ ...bare, registration_enabled: true }), "required");
+  assert.equal(registrationFromLibCal({ ...bare, registration_enabled: false }), "none");
+  assert.equal(registrationFromLibCal({ ...bare }), "none");
+});
+
+test("a missing or empty LibCal row is safe", () => {
+  assert.equal(registrationFromLibCal(null), "none");
+  assert.equal(registrationFromLibCal({}), "none");
+});
+
+test("inline style blocks never reach the registration text", () => {
+  // LibCal wraps each "Click Here to Register" button in an inline <style>.
+  // The stripper drops the block's CONTENT, so CSS cannot be matched as prose.
+  assert.equal(
+    registrationFromLibCal({
+      registration_enabled: false,
+      description: "<p>Come and play.</p><style type=\"text/css\">#s_lc_event_1 { background: #228B22; }</style>",
+    }),
+    "none",
+  );
 });
 
 // ---------------------------------------------------------------------------

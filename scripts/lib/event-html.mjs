@@ -31,6 +31,13 @@ export function stripHtml(html) {
     // turns "3<sup>rd</sup>" into "3 rd". Drop sup/sub tags without
     // inserting whitespace so the fragment stays joined.
     .replace(/<\/?(sup|sub)\b[^>]*>/gi, "")
+    // Drop the CONTENT of style/script blocks before the catch-all below,
+    // which only removes the tags and leaves the CSS/JS text in the prose.
+    // LibCal wraps each "Click Here to Register" button in an inline <style>,
+    // so all eight Community Preservation Lab descriptions shipped a rule set
+    // ("#s_lc_event_16714527 { background: #228B22; ... }") into
+    // playwright-events.json, saved from readers only by a later truncation.
+    .replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, " ")
     // Then strip all HTML tags
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ").trim();

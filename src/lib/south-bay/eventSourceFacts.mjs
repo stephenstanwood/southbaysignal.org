@@ -96,10 +96,16 @@ const CORRECTIONS = [
   // Mountain View's Community Preservation Lab is an appointment service, not a
   // walk-in: the library's own page requires registration for a 90-minute
   // scanning slot and caps it at one per household per week. The libcal ingest
-  // path sets no registration state, so the record read as a walk-up and was
+  // path set no registration state, so the record read as a walk-up and was
   // promoted to the Sept 8 afternoon plan card telling readers to just bring
   // their photos. "appointment-only" restores the existing advance-registration
   // gate, which keeps it in the listings with an "Appointment required" tag.
+  //
+  // registrationFromLibCal (eventFilters.mjs) now derives that state at ingest
+  // for every LibCal event, so this `registration` is a floor rather than the
+  // mechanism. The other two facts are NOT redundant: libraryEventDetails
+  // builds attendanceNote only from ticket/first-come/limited-space phrasing,
+  // which this description does not use, and the blurb is not derivable at all.
   {
     id: "d610aa488850",
     date: "2026-09-08",
