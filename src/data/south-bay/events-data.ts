@@ -823,12 +823,13 @@ export const SOUTH_BAY_EVENTS: SBEvent[] = [
     address: "1260 Davis St, San Jose",
     category: "community",
     recurrence: "seasonal",
-    months: [10],
+    // Official 2026 schedule: May 29–31; this is a late-May festival, not October.
+    months: [5],
     cost: "free",
     costNote: "Food and entertainment purchased separately",
     kidFriendly: true,
     description:
-      "Three-day autumn festival celebrating Greek culture with authentic food, traditional dancing, and live music.",
+      "Three-day late-May festival celebrating Greek culture with authentic food, traditional dancing, and live music.",
     url: "https://www.sanjosegreekfestival.com/",
     emoji: "🫒",
   },
@@ -848,22 +849,6 @@ export const SOUTH_BAY_EVENTS: SBEvent[] = [
     url: "https://www.sanjose.org/lunarnewyear",
     emoji: "🏮",
     featured: true,
-  },
-  {
-    id: "sj-jazz-winter-fest",
-    title: "San Jose Jazz Winter Fest",
-    city: "san-jose",
-    venue: "San Jose Convention Center",
-    category: "music",
-    recurrence: "seasonal",
-    months: [1],
-    cost: "paid",
-    costNote: "Individual sessions ~$25; day passes available",
-    kidFriendly: false,
-    description:
-      "Indoor winter jazz festival at the Convention Center in January. World-class performers over two days.",
-    url: "https://sanjosejazz.org/winter-fest",
-    emoji: "🎷",
   },
   {
     id: "campbell-oktoberfest",

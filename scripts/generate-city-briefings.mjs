@@ -18,6 +18,10 @@ import { fileURLToPath } from "url";
 import { loadEnvLocal } from "./lib/env.mjs";
 import { callClaude as callClaudeApi } from "./lib/claude.mjs";
 import {
+  hasProspectiveCityHallUpgrade,
+  meetingWithinBriefingWindow,
+} from "./lib/city-briefing-integrity.mjs";
+import {
   hasDownbeatDayLanguage,
   hasRelativeDayReference,
 } from "./social/lib/content-rules.mjs";
@@ -171,6 +175,7 @@ Important rules:
 - No audience labels — don't write "for the intellectually curious," "for foodies," "for nature lovers," or similar. Describe what's happening, not who would like it.
 - Use neutral verbs for legal or council items ("discussed," "approved," "weighs," "considers"). Avoid sensational framing like "faces legal heat," "battles," "fights," or "tackles" when the source describes a routine agenda item.
 - Match the verb to the source summary. If a city hall summary says the council "held a public hearing," your verb is "heard" or "reviewed" — not "approved." If the summary says "approved," "adopted," or "filed," use that exact verb. Never upgrade a hearing to an approval.
+- A past agenda date does not prove a meeting occurred or an item was heard. If the source says "scheduled to," "set to," "expected to," or "council to hear/consider," preserve that uncertainty even after the date; never convert it to "heard," "considered," or another completed action.
 - Match tense to the date. City hall items show their date in parentheses; today is ${new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}. Items dated in the past must use past tense. Reserve present or future tense for items whose date is today or later.
 - The text after "at" in an event line is a VENUE, never an organizer, host, sponsor, or performer. Meetup venue names routinely carry a landmark or trailhead label ("PG&E @ Rancho San Antonio Park", "Our Hub - A Bay Area Art & Wellness Community"). Never write that a venue "leads," "hosts," "sponsors," "presents," or "runs" the event unless the data says so in words — describe the event itself ("a 4.3-mile group hike at Rancho San Antonio") and leave the organizer out when you don't have one.
 - Never write "today", "tonight", "tomorrow", or "this evening". This briefing is cached and read for days after it is written, so a relative day silently points at the wrong date. Name the day ("Friday", "Saturday") using the day labels in the data.
@@ -197,6 +202,9 @@ Reply with ONLY the sentence, no quotes or preamble.`;
     }
     if (hasRelativeDayReference(text)) {
       found.push('it used a relative day word ("today"/"tonight"/"tomorrow") instead of naming the day');
+    }
+    if (hasProspectiveCityHallUpgrade(text, aroundItems)) {
+      found.push("it upgraded an agenda-only city-hall item into a completed action");
     }
     return found;
   };
@@ -267,7 +275,10 @@ async function main() {
     ].slice(0, 5);
 
     const cityAroundItems = aroundItems.filter((a) => a.cityId === city.id);
-    const cityMeeting = meetingsData.meetings?.[city.id] ?? null;
+    const nextCityMeeting = meetingsData.meetings?.[city.id] ?? null;
+    const cityMeeting = meetingWithinBriefingWindow(nextCityMeeting, start, end)
+      ? nextCityMeeting
+      : null;
 
     if (!interestingEvents.length && !cityAroundItems.length && !cityMeeting?.agendaItems?.length) {
       console.log(`  ${city.name}: no data — skipping`);

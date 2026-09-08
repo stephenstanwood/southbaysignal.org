@@ -11,8 +11,32 @@ import {
   sourceRegressionProblems,
   strictRefreshInputHealth,
 } from "./event-source-health.mjs";
+import { applyVerifiedSjsuEventOverride } from "./sjsu-event-overrides.mjs";
+import {
+  hasProspectiveCityHallUpgrade,
+  meetingWithinBriefingWindow,
+} from "./city-briefing-integrity.mjs";
 
 const NOW = new Date("2026-07-20T03:00:00.000Z");
+
+test("corrects SJSU's false multi-day September 10 reading occurrence", () => {
+  const url = "https://events.sjsu.edu/event/september-10-campus-reading-discussion-and-film";
+  assert.equal(applyVerifiedSjsuEventOverride({ url, date: "2026-09-09" }), null);
+
+  const event = applyVerifiedSjsuEventOverride({ url, date: "2026-09-10", time: "8:00 AM" });
+  assert.equal(event.time, "4:00 PM");
+  assert.equal(event.venue, "Sweeney Hall 413 and Uchida Hall 124");
+  assert.match(event.description, /5:30 PM screening of M3GAN/);
+});
+
+test("keeps meetings inside the briefing week and rejects agenda-only tense upgrades", () => {
+  assert.equal(meetingWithinBriefingWindow({ date: "2026-09-14" }, "2026-09-07", "2026-09-14"), true);
+  assert.equal(meetingWithinBriefingWindow({ date: "2026-09-15" }, "2026-09-07", "2026-09-14"), false);
+
+  const items = [{ headline: "Council to hear an appeal", summary: "The council was scheduled to hear it." }];
+  assert.equal(hasProspectiveCityHallUpgrade("The council heard an appeal.", items), true);
+  assert.equal(hasProspectiveCityHallUpgrade("The council was scheduled to hear an appeal.", items), false);
+});
 
 test("rejects stale and timestamp-less snapshots", () => {
   assert.equal(inspectSnapshot({

@@ -121,6 +121,7 @@ import { mergeLosGatosSummerConcerts } from "./lib/los-gatos-summer-concerts-202
 import { mergePaloAltoStateOfTheCity } from "./lib/palo-alto-state-of-the-city-2026.mjs";
 import { normalizeInboundEventPresentation } from "./lib/inbound-event-normalize.mjs";
 import { rehomeScrapedEvent, resolveEventCity } from "./lib/event-city.mjs";
+import { applyVerifiedSjsuEventOverride } from "./lib/sjsu-event-overrides.mjs";
 import { BOARDWALK_2026_EVENTS } from "./lib/santa-cruz-picks-2026.mjs";
 import {
   extractAddressLocality,
@@ -2959,7 +2960,7 @@ async function fetchSjsuEvents() {
       const isVirtual =
         virtualFromSourceSignal(experienceByUrl.get(String(item.link || "").replace(/\/+$/, ""))) === true;
       if (isVirtual) virtualFromSource++;
-      return {
+      return applyVerifiedSjsuEventOverride({
         id: h("sjsu", item.link || item.title, item.pubDate),
         title: item.title,
         date: isoDate(start),
@@ -2978,7 +2979,7 @@ async function fetchSjsuEvents() {
         image,
         kidFriendly: false,
         _startMs: start.getTime(),
-      };
+      });
     }).filter(Boolean);
 
     // SJSU's Localist RSS emits each occurrence of a recurring event as a
