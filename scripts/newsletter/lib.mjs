@@ -1995,6 +1995,7 @@ export function renderEmail(data) {
     weatherStrip(safeData.weather),
     leadImageBlock(safeData),
     briefingBlock(safeData.editorial?.briefing),
+    communityNoteBlock(safeData.date),
     dayPlanBlock(safeData.dayPlan, safeData.dayPlanBlurb, safeData.editorial),
     tonightPickBlock(safeData.tonightPick, safeData.tonightPickBlurb, safeData.visuals),
     eventsBlock(safeData.featuredEvents, safeData.todayEvents.length, safeData.editorial),
@@ -2092,6 +2093,19 @@ function briefingBlock(briefing) {
   if (!briefing) return "";
   return `<div style="padding:22px 28px;border-bottom:1px solid ${PALETTE.border};">
   <div style="font-size:16px;line-height:1.6;color:${PALETTE.ink};">${esc(briefing)}</div>
+</div>`;
+}
+
+// Date-specific publisher copy is inserted at render time so editorial choices
+// and deterministic fallbacks cannot rewrite or drop a scheduled note.
+function communityNoteBlock(date) {
+  const notes = loadOptional(join(DATA_DIR, "newsletter-notes.json"), {}, "community notes");
+  const note = notes[date];
+  if (!note) return "";
+  const url = normalizeAbsoluteHttpUrl(note.url);
+  if (!url) return "";
+  return `<div data-newsletter-note="${esc(date)}" style="padding:22px 28px;border-bottom:1px solid ${PALETTE.border};">
+  <div style="font-size:15px;line-height:1.6;color:${PALETTE.ink};">${esc(note.intro)} <a href="${esc(url)}" style="color:${PALETTE.blue};text-decoration:underline;">${esc(note.linkText)}</a> ${esc(note.text)}</div>
 </div>`;
 }
 

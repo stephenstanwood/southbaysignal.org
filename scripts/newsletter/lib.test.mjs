@@ -38,6 +38,25 @@ function septemberIssue(events = []) {
   };
 }
 
+test("the September 9 community note survives edited and fallback builds only on its scheduled date", () => {
+  const expected = "Curious what’s being built nearby? South Bay Dashboard is a local high school student’s project bringing together development maps, local news, and public meetings.";
+  for (const editorial of [null, { briefing: "Good morning, South Bay.", communityNote: "" }]) {
+    for (const date of ["2026-09-08", "2026-09-09", "2026-09-10"]) {
+      const data = { ...septemberIssue(), date, longDate: formatLongDate(date), editorial };
+      const { html } = renderEmail(data);
+      if (date !== "2026-09-09") {
+        assert.doesNotMatch(html, /southbaydashboard\.com|data-newsletter-note/);
+        continue;
+      }
+      const note = html.match(/<div data-newsletter-note="2026-09-09"[^>]*>\s*<div[^>]*>(.*?)<\/div>/s)?.[1];
+      assert.ok(note, "the dated note must appear even without editorial content");
+      assert.equal(note.replace(/<[^>]+>/g, ""), expected);
+      assert.match(note, /href="https:\/\/southbaydashboard\.com\/"/);
+      assert.equal((html.match(/data-newsletter-note=/g) || []).length, 1);
+    }
+  }
+});
+
 test("ambiguous library pickup stays out of recommendations and remains explicit in listings", () => {
   const derby = applyVerifiedEventFacts({
     id: "sjpl-6a7bc1324cb69d003e203e28", title: "STEM: Balloon Car Derby",
