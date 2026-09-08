@@ -1,15 +1,15 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-07T15:08:41.175Z",
+    "generatedAt": "2026-09-08T02:17:18.294Z",
     "generator": "playwright-scrapers",
     "scrapersRun": 34,
-    "eventCount": 606,
+    "eventCount": 607,
     "sourceCount": 20,
     "sources": [
       "Mountain View Public Library (138)",
       "Los Gatos Library (151)",
       "San Jose Jazz (18)",
-      "Linden Tree Books (12)",
+      "Linden Tree Books (13)",
       "History San Jose (9)",
       "Montalvo Arts Center (5)",
       "City Lights Theater (6)",
@@ -106,7 +106,7 @@
         "id": "linden-tree-books",
         "label": "Linden Tree Books",
         "status": "ok",
-        "count": 12,
+        "count": 13,
         "error": null,
         "sources": [
           "Linden Tree Books"
@@ -6598,7 +6598,7 @@
       "category": "arts",
       "cost": "free",
       "description": "",
-      "url": "https://www.lindentreebooks.com/ponti",
+      "url": "https://www.lindentreebooks.com/events-calendar/",
       "source": "Linden Tree Books",
       "kidFriendly": false,
       "occurrenceEvidence": {
@@ -6684,9 +6684,9 @@
       "address": "780 Arastradero Rd, Palo Alto, CA 94306",
       "city": "palo-alto",
       "category": "arts",
-      "cost": "paid",
+      "cost": "free",
       "description": "",
-      "url": "https://www.lindentreebooks.com/bsc",
+      "url": "https://www.lindentreebooks.com/events-calendar/",
       "source": "Linden Tree Books",
       "kidFriendly": false,
       "occurrenceEvidence": {
@@ -6784,8 +6784,8 @@
       }
     },
     {
-      "id": "446cbe203dfd",
-      "title": "Book Launch with Lisa Moore Ramée",
+      "id": "e1fa747f6a1c",
+      "title": "Book Launch with Lisa Moore Ramée — In conversation with Misa Sugiura",
       "date": "2026-09-26",
       "displayDate": "Sat, Sep 26",
       "time": "1pm",
@@ -6847,6 +6847,28 @@
         "kind": "first-party-occurrence-page",
         "sourceUrl": "https://www.lindentreebooks.com/events-calendar/",
         "date": "2026-09-27"
+      }
+    },
+    {
+      "id": "fa2c870d8061",
+      "title": "Book Launch with Marley Rose-Teter — In conversation with Samantha Chong",
+      "date": "2026-10-03",
+      "displayDate": "Sat, Oct 3",
+      "time": "6pm",
+      "endTime": null,
+      "venue": "Linden Tree Books",
+      "address": "265 State St, Los Altos, CA 94022",
+      "city": "los-altos",
+      "category": "arts",
+      "cost": "free",
+      "description": "",
+      "url": "https://www.lindentreebooks.com/events-calendar/",
+      "source": "Linden Tree Books",
+      "kidFriendly": false,
+      "occurrenceEvidence": {
+        "kind": "first-party-occurrence-page",
+        "sourceUrl": "https://www.lindentreebooks.com/events-calendar/",
+        "date": "2026-10-03"
       }
     },
     {

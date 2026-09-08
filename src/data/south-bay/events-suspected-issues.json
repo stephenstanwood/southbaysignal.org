@@ -1,18 +1,17 @@
 {
   "_meta": {
-    "auditedAt": "2026-09-07T04:15:36.473Z"
+    "auditedAt": "2026-09-08T02:20:00.432Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1856,
+    "total": 1868,
     "totals": {
       "hard": 0,
-      "soft": 2,
+      "soft": 1,
       "info": 0
     },
     "byReason": {
-      "virtual-not-flagged": 1,
-      "unknown-slug": 1
+      "virtual-not-flagged": 1
     },
     "hard": [],
     "soft": [
@@ -29,26 +28,12 @@
             "detail": "matched /description mention/ in description"
           }
         ]
-      },
-      {
-        "id": "inbound-2992e99f9b696c5f",
-        "title": "California Coastal Cleanup Day",
-        "city": "monte-sereno",
-        "date": "2026-09-19",
-        "location": "",
-        "findings": [
-          {
-            "severity": "soft",
-            "reason": "unknown-slug",
-            "detail": "city=\"monte-sereno\" is not in the 11-city coverage map"
-          }
-        ]
       }
     ]
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 313,
+    "total": 311,
     "totals": {
       "hard": 0,
       "soft": 2,
