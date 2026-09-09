@@ -5745,6 +5745,21 @@ const FARMERS_MARKETS = [
     excludedDates: ["2026-06-06", "2026-07-04"],
     evidencePatterns: [/Sunnyvale Farmers[’']? Market/i, /Saturdays/i, /9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i],
   },
+  // Santa Clara is the eighth UVFM market and the only one in the coverage
+  // area that had never been configured, so the city's one weekly market was
+  // missing from the calendar entirely. Its page states the weekday and hours
+  // on one line ("Santa Clara Farmers Market Saturday 9am-1pm"), so the
+  // weekday is pinned together with the hours rather than as a bare /Saturday/
+  // — every UVFM page's nav lists "Santa Clara - SAT" and would match that.
+  // No closure dates are published for this market; leaving excludedDates off
+  // is deliberate rather than unresearched.
+  {
+    title: "Santa Clara Farmers Market", day: 6, time: "9:00 AM", endTime: "1:00 PM",
+    venue: "Jackson Street & Homestead Road", address: "Jackson St & Homestead Rd, Santa Clara",
+    city: "santa-clara",
+    url: "https://uvfm.org/santa-clara-saturdays", season: [1, 12],
+    evidencePatterns: [/Santa Clara Farmers[’']? Market/i, /Saturday\s*9(?::00)?\s*(?:am|a\.m\.)\s*(?:to|[-–])\s*1(?::00)?\s*(?:pm|p\.m\.)/i, /Jackson Street and Homestead Road/i],
+  },
   {
     title: "California Ave Farmers Market", day: 0, time: "9:00 AM", endTime: "1:00 PM",
     venue: "California Avenue", address: "California Ave, Palo Alto", city: "palo-alto",

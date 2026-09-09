@@ -2,6 +2,82 @@
 
 ---
 
+## 2026-09-09 — Cycle 221: The Campbell Farmers' Market Card Was Linking to a Domain Squatter
+
+### Context
+Wednesday September 9, 2026. Roadmap still closed (6/6). Typecheck clean, event
+audit clean (0 hard findings across 1,858 upcoming and 321 inbound). The daily
+funding sweep came up empty — September 9's roundup carried Cognition AI and
+VideoGen out of San Francisco and eight international companies, no Santa Clara
+County round — so this cycle went after outbound link health instead, which
+nothing on the site was checking for two of its hand-curated data files.
+
+### What Was Built
+
+**Eight dead outbound links, on cards a resident clicks to actually go
+somewhere.** `audit-tech-urls` covers the Tech tab and `verify-camp-urls`
+covers camp registration, but `events-data.ts` (the farmers' markets, concert
+series and storytimes behind the Food tab and the Events list) and
+`poi-data.ts` (the Plan My Day permanent-venue pool) had no coverage at all.
+Checking all 88 of their links found:
+
+The worst was **Campbell Farmers Market**, whose card pointed at
+`campbellfarmersmarket.com` — a domain that now redirects to HugeDomains and
+serves "CampbellFarmersMarket.com is for sale." It returned HTTP 200 the whole
+time. Every other Urban Village market in the file already linked to the
+operator's own page; Campbell and Sunnyvale were the two that had drifted, and
+Sunnyvale's city page 404s. Both now point at `uvfm.org`, matching not only
+their siblings but the pipeline's own projected-market config in
+`generate-events.mjs`, which had been fixed there and never here.
+
+**Los Gatos Coffee Roasting** was the other bad one: `lgcr.com` is a dead
+Pantheon host serving a certificate issued for `pantheonsite.io`, so a reader
+gets a browser interstitial rather than a page — and behind it, a 404. The real
+roastery is at `lgcrc.com`. Its entry also placed the outdoor seating "on N.
+Santa Cruz Ave"; the shop is 101 W. Main St, and the parklet and sidewalk
+tables are on Main.
+
+The remaining five were ordinary link rot on pages that got rebuilt out from
+under us: Mountain View's Shoreline page (an `.asp` path from the old CMS), San
+Jose's Alum Rock Park and Municipal Rose Garden (the city retired its
+`/your-government/.../parks/` paths; the facility-directory entries are live),
+History San Jose's Peralta Adobe (now under the Peralta-Fallon historic site
+page, which covers both buildings the entry describes), and Supermicro's
+careers link on the Tech tab, where `/en/about/careers` 404s and the company's
+own nav points at `/en/jobs`.
+
+**Santa Clara had no farmers' market on the site.** Urban Village runs eight
+markets; seven were configured and the Santa Clara Saturday market at Jackson
+and Homestead — year-round, 9am–1pm — was in neither the Food tab list nor the
+calendar projection. It is now in both. Its evidence patterns pin the weekday
+together with the hours off the page's own schedule line rather than as a bare
+`/Saturday/`, because every UVFM page's nav lists "Santa Clara - SAT" and a
+loose pattern would confirm against the menu. All eight markets verify live
+against their source pages.
+
+**A repeatable check, because a status code is not enough.** Both of the worst
+findings would pass a plain 200/404 sweep: the squatted domain answers 200, and
+the certificate failure is indistinguishable from a timeout unless you read
+`err.cause.code`. `scripts/lib/link-health.mjs` classifies a checked link as
+ok / suspicious / broken / parked / tls, with the parking-host list and the
+certificate codes as data, and `scripts/verify-place-urls.mjs` runs it over
+both files (`npm run verify-place-urls`, `--strict` to fail).
+
+One distinction is deliberate. An incomplete certificate *chain* — a server
+that omits its intermediate — is not a broken link: browsers repair it by
+fetching the issuer named in the AIA extension, and Node does not.
+`cinequest.org` does exactly this and serves the real festival site. It reports
+as suspicious, not as a finding, so that a hard finding always means a reader
+is actually blocked. `link-health.test.mjs` keeps all three of this cycle's
+real cases as fixtures.
+
+### Result
+0 broken, 0 parked, 0 certificate-blocked across the 88 links. The eight
+remaining flags are Cloudflare bot-blocks on venue sites (CDM, Cantor, SJ
+Museum of Art, Vasona) plus Cinequest's chain — all fine in a browser.
+
+---
+
 ## 2026-09-08 — Cycle 220: The Tech Tab's Events List Was Mostly the Library Help Desk, and Yesterday's Talks
 
 ### Context

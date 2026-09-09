@@ -390,7 +390,7 @@ export const TECH_COMPANIES: TechCompany[] = [
     description:
       "AI servers and GPU systems. The San Jose company quietly inside more AI data centers than almost anyone else.",
     color: "#e07b39",
-    careersUrl: "https://www.supermicro.com/en/about/careers",
+    careersUrl: "https://www.supermicro.com/en/jobs",
   },
 ];
 
@@ -1259,6 +1259,11 @@ export const RECENTLY_FUNDED: RecentlyFunded[] = [
   //     already swept above, and the $250M valuation appears in both the January
   //     and the August announcements, so a second entry would risk restating one
   //     raise the way the Upscale AI entry did.
+  // Note on the Sep 9 2026 sweep: no in-coverage round surfaced. The day's
+  // funding roundup carried zero Santa Clara County companies (Cognition AI and
+  // VideoGen are San Francisco; Algomatic Dynamics, QNu Labs, CloudNC, Limetax,
+  // Carrum Mobility, ZeroRisk, Tanda, and Allogenetics are all international).
+  // Nothing new against the Clipto near-miss recorded just above either.
   {
     id: "tabapay",
     name: "TabaPay",
