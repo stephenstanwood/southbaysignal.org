@@ -1,48 +1,104 @@
 {
   "_meta": {
-    "generatedAt": "2026-09-08T04:51:30.228Z",
+    "generatedAt": "2026-09-09T03:17:00.337Z",
     "generator": "generate-reddit-pulse",
-    "sourceCount": 8
+    "sourceCount": 10
   },
   "summary": {
-    "threadsMined": 8,
-    "placesExtracted": 2,
-    "placesMatched": 0,
-    "placeGaps": 2,
-    "eventsExtracted": 0,
+    "threadsMined": 10,
+    "placesExtracted": 3,
+    "placesMatched": 2,
+    "placeGaps": 1,
+    "eventsExtracted": 3,
     "eventsMatched": 0,
-    "eventGaps": 0,
+    "eventGaps": 3,
     "autoAppendedOpenings": 0
   },
   "placeGaps": [
     {
-      "name": "Calibunga",
+      "name": "Orchard Supply Hardware",
       "city": "San Jose",
-      "kind": "other",
-      "context": "water park, possibly permanently closed",
+      "kind": "retail",
+      "context": "closed store site being redeveloped into Sprouts",
       "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1waa03k/need_restaurant_recommendations_for_a_big_group/",
-        "https://www.reddit.com/r/SanJose/comments/1wa8x54/elk_in_the_south_san_jose_hills_slow_down_when/",
-        "https://www.reddit.com/r/SanJose/comments/1wa6m9e/good_laziji/",
-        "https://www.reddit.com/r/SanJose/comments/1w9ie81/vaquero_party_by_berryessa_library/",
-        "https://www.reddit.com/r/SanJose/comments/1wa8ryj/calibunga_water_park_forever_gone/"
-      ]
-    },
-    {
-      "name": "Berryessa Library",
-      "city": "San Jose",
-      "kind": "other",
-      "context": "vaquero party gathering spot",
-      "sourceUrls": [
-        "https://www.reddit.com/r/SanJose/comments/1waa03k/need_restaurant_recommendations_for_a_big_group/",
-        "https://www.reddit.com/r/SanJose/comments/1wa8x54/elk_in_the_south_san_jose_hills_slow_down_when/",
-        "https://www.reddit.com/r/SanJose/comments/1wa6m9e/good_laziji/",
-        "https://www.reddit.com/r/SanJose/comments/1w9ie81/vaquero_party_by_berryessa_library/",
-        "https://www.reddit.com/r/SanJose/comments/1wa8ryj/calibunga_water_park_forever_gone/"
+        "https://www.reddit.com/r/SanJose/comments/1wb45uz/chile_mole_pozole_fest_on_saturday_912/",
+        "https://www.reddit.com/r/SanJose/comments/1wb2hdi/a_new_san_josé_popup_makes_the_most_unique_bagels/",
+        "https://www.reddit.com/r/Cupertino/comments/1wavv14/sat_912_10am_silicon_valley_fall_fest_svff2026_at/",
+        "https://www.reddit.com/r/SanJose/comments/1wawv0a/sprouts_farmers_market_proposed_for_shuttered_san/",
+        "https://www.reddit.com/r/SanJose/comments/1wavfod/vegan_restaurant_recommendations/"
       ]
     }
   ],
-  "eventGaps": [],
-  "placeMatches": [],
+  "eventGaps": [
+    {
+      "name": "Chile, Mole, Pozole Fest",
+      "when": "Saturday September 12",
+      "city": "San Jose",
+      "context": "Mexican Independence Day celebration at La Plaza",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1wb45uz/chile_mole_pozole_fest_on_saturday_912/",
+        "https://www.reddit.com/r/SanJose/comments/1wb2hdi/a_new_san_josé_popup_makes_the_most_unique_bagels/",
+        "https://www.reddit.com/r/Cupertino/comments/1wavv14/sat_912_10am_silicon_valley_fall_fest_svff2026_at/",
+        "https://www.reddit.com/r/SanJose/comments/1wawv0a/sprouts_farmers_market_proposed_for_shuttered_san/",
+        "https://www.reddit.com/r/SanJose/comments/1wavfod/vegan_restaurant_recommendations/"
+      ]
+    },
+    {
+      "name": "Silicon Valley Fall Fest (SVFF2026)",
+      "when": "Saturday 9/12, 10am",
+      "city": "Cupertino",
+      "context": "community festival at Cupertino Memorial Park",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1wb45uz/chile_mole_pozole_fest_on_saturday_912/",
+        "https://www.reddit.com/r/SanJose/comments/1wb2hdi/a_new_san_josé_popup_makes_the_most_unique_bagels/",
+        "https://www.reddit.com/r/Cupertino/comments/1wavv14/sat_912_10am_silicon_valley_fall_fest_svff2026_at/",
+        "https://www.reddit.com/r/SanJose/comments/1wawv0a/sprouts_farmers_market_proposed_for_shuttered_san/",
+        "https://www.reddit.com/r/SanJose/comments/1wavfod/vegan_restaurant_recommendations/"
+      ]
+    },
+    {
+      "name": "2026 Peninsula and South Bay Green@Home Tours",
+      "when": "Saturday October 10th, 11 AM – 3 PM",
+      "city": "San Jose",
+      "context": "free self-guided tour of electrified homes",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1wav7b1/best_mexican_restaurant_that_is_open_right_now/",
+        "https://www.reddit.com/r/SanJose/comments/1wat8un/best_indoor_toddler_play_areas_in_west_san_jose/",
+        "https://www.reddit.com/r/SanJose/comments/1waxe90/free_event_tour_real_electrified_homes_across_san/",
+        "https://www.reddit.com/r/SanJose/comments/1wauybg/hummus/",
+        "https://www.reddit.com/r/SanJose/comments/1waseur/downtown_peaking_over_the_trees/"
+      ]
+    }
+  ],
+  "placeMatches": [
+    {
+      "name": "Mexican Heritage Plaza (La Plaza)",
+      "city": "San Jose",
+      "kind": "venue",
+      "context": "hosting Chile, Mole, Pozole Fest",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1wb45uz/chile_mole_pozole_fest_on_saturday_912/",
+        "https://www.reddit.com/r/SanJose/comments/1wb2hdi/a_new_san_josé_popup_makes_the_most_unique_bagels/",
+        "https://www.reddit.com/r/Cupertino/comments/1wavv14/sat_912_10am_silicon_valley_fall_fest_svff2026_at/",
+        "https://www.reddit.com/r/SanJose/comments/1wawv0a/sprouts_farmers_market_proposed_for_shuttered_san/",
+        "https://www.reddit.com/r/SanJose/comments/1wavfod/vegan_restaurant_recommendations/"
+      ],
+      "matchedName": "Mexican Heritage Plaza"
+    },
+    {
+      "name": "Sprouts Farmers Market",
+      "city": "San Jose",
+      "kind": "retail",
+      "context": "proposed for shuttered Orchard Supply Hardware site",
+      "sourceUrls": [
+        "https://www.reddit.com/r/SanJose/comments/1wb45uz/chile_mole_pozole_fest_on_saturday_912/",
+        "https://www.reddit.com/r/SanJose/comments/1wb2hdi/a_new_san_josé_popup_makes_the_most_unique_bagels/",
+        "https://www.reddit.com/r/Cupertino/comments/1wavv14/sat_912_10am_silicon_valley_fall_fest_svff2026_at/",
+        "https://www.reddit.com/r/SanJose/comments/1wawv0a/sprouts_farmers_market_proposed_for_shuttered_san/",
+        "https://www.reddit.com/r/SanJose/comments/1wavfod/vegan_restaurant_recommendations/"
+      ],
+      "matchedName": "Sprouts Farmers Market"
+    }
+  ],
   "eventMatches": []
 }

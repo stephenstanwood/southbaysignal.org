@@ -1,17 +1,17 @@
 {
   "cities": {
     "san-jose": {
-      "generatedAt": "2026-09-08T04:40:54.326Z",
+      "generatedAt": "2026-09-09T03:09:02.662Z",
       "city": "San Jose",
       "source": "data.sanjoseca.gov",
       "sourceUrl": "https://data.sanjoseca.gov/dataset/last-30-days-building-permits",
       "windowDays": 7,
-      "dateRange": "Aug 31 – Sep 7",
+      "dateRange": "Sep 1 – Sep 8",
       "stats": {
-        "total": 455,
-        "notable": 50,
-        "newUnits": 292,
-        "totalValuation": 175479772
+        "total": 348,
+        "notable": 40,
+        "newUnits": 289,
+        "totalValuation": 129116926
       },
       "permits": [
         {
@@ -137,15 +137,15 @@
       ]
     },
     "palo-alto": {
-      "generatedAt": "2026-09-08T04:40:56.780Z",
+      "generatedAt": "2026-09-09T03:09:04.963Z",
       "city": "Palo Alto",
       "source": "gis.cityofpaloalto.org",
       "sourceUrl": "https://gis.cityofpaloalto.org/PermitView/",
       "windowDays": 7,
-      "dateRange": "Aug 31 – Sep 7",
+      "dateRange": "Sep 1 – Sep 8",
       "stats": {
-        "total": 104,
-        "notable": 3,
+        "total": 76,
+        "notable": 2,
         "newUnits": 0,
         "totalValuation": 0
       },
@@ -160,18 +160,6 @@
           "valuation": 0,
           "units": 0,
           "issueDate": "2026-09-02",
-          "subtype": "Permit Issued"
-        },
-        {
-          "id": "26BLD-02464",
-          "address": "1140 Parkinson Av",
-          "category": "residential-remodel",
-          "categoryLabel": "Home Remodel",
-          "workType": "Web - Kitchen or Bath Remodel",
-          "description": "Instant permit for a residential single-family kitchen or bath remodel.",
-          "valuation": 0,
-          "units": 0,
-          "issueDate": "2026-09-01",
           "subtype": "Permit Issued"
         },
         {
