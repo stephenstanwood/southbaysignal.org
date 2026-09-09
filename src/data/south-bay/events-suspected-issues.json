@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "auditedAt": "2026-09-08T05:56:10.547Z"
+    "auditedAt": "2026-09-09T02:20:25.195Z"
   },
   "upcoming": {
     "label": "upcoming-events.json",
-    "total": 1865,
+    "total": 1859,
     "totals": {
       "hard": 0,
       "soft": 1,
@@ -33,14 +33,15 @@
   },
   "inbound": {
     "label": "inbound-events.json",
-    "total": 311,
+    "total": 321,
     "totals": {
       "hard": 0,
-      "soft": 2,
+      "soft": 3,
       "info": 2
     },
     "byReason": {
       "unknown-slug": 2,
+      "virtual-not-flagged": 1,
       "local-departure-trip": 2
     },
     "hard": [],
@@ -70,6 +71,20 @@
             "severity": "soft",
             "reason": "unknown-slug",
             "detail": "city=\"monte-sereno\" is not in the 11-city coverage map"
+          }
+        ]
+      },
+      {
+        "id": "inbound_mttcxhyr_7n0jqs",
+        "title": "Author Talk: The Chismosas Only Book Club",
+        "city": "sunnyvale",
+        "date": "2026-09-23T16:00:00-07:00",
+        "location": "Program Room, Sunnyvale Main Library",
+        "findings": [
+          {
+            "severity": "soft",
+            "reason": "virtual-not-flagged",
+            "detail": "matched /description mention/ in description"
           }
         ]
       },
