@@ -10,7 +10,10 @@
  *  2. Walk upcoming-events.json events[*].url — same treatment. Inbound
  *     events show up here as `event.url = e.sourceUrl`, so this catches
  *     anything generate-events already merged.
- *  3. Write both files back. Cache lives in url-unwrap-cache.json — re-runs
+ *  3. Walk events-archive.json events[*].url — past events keep rendering on
+ *     archive views, and a tracker URL that slipped through before this
+ *     script ran would otherwise stay wrapped there forever.
+ *  4. Write the files back. Cache lives in url-unwrap-cache.json — re-runs
  *     only fetch new tracker URLs.
  *
  * Usage:  node scripts/unwrap-tracker-urls.mjs
@@ -25,6 +28,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..");
 const INBOUND = join(REPO_ROOT, "src", "data", "south-bay", "inbound-events.json");
 const UPCOMING = join(REPO_ROOT, "src", "data", "south-bay", "upcoming-events.json");
+const ARCHIVE = join(REPO_ROOT, "src", "data", "south-bay", "events-archive.json");
 
 function loadJson(path) {
   if (!existsSync(path)) return null;
@@ -93,6 +97,36 @@ async function processUpcoming() {
   }
 }
 
+async function processArchive() {
+  const data = loadJson(ARCHIVE);
+  if (!data?.events?.length) {
+    console.log("archive: no events file");
+    return;
+  }
+  const tracker = data.events
+    .map((e) => e.url)
+    .filter((u) => u && isTrackerUrl(u));
+  console.log(`archive: ${data.events.length} events, ${tracker.length} tracker URLs`);
+  if (!tracker.length) return;
+
+  const resolved = await unwrapMany(tracker, { verbose: true });
+  let changed = 0;
+  for (const e of data.events) {
+    if (!e.url || !resolved.has(e.url)) continue;
+    const final = resolved.get(e.url);
+    if (final && final !== e.url) {
+      e.urlOriginal = e.url;
+      e.url = final;
+      changed++;
+    }
+  }
+  if (changed) {
+    writeJson(ARCHIVE, data);
+    console.log(`archive: rewrote ${changed} event URLs`);
+  }
+}
+
 await processInbound();
 await processUpcoming();
+await processArchive();
 console.log("done.");

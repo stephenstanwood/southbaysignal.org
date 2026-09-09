@@ -60,6 +60,14 @@ const TRACKER_PATTERNS = [
   // base64-decodes to the recipient's own `email` field and a 64-hex
   // `contactHash` — a per-subscriber identifier that must never be published.
   /\bpatronpoint\.com\/r\//i,                   // PatronPoint library newsletters
+  // Amazon SES click tracking (awstrack.me). Used by NoveList's LibraryAware
+  // sends for the county library newsletters. The destination is URL-encoded
+  // directly in the path after /L0/, so we decode rather than fetch.
+  /\bawstrack\.me\/L0\//i,                      // Amazon SES click tracking
+  // LibraryAware short links carry `SID=<subscriber uuid>` — the recipient's
+  // own identifier, which must never be published. Follow the redirect to the
+  // library's real event page instead.
+  /\blibraryaware\.com\b/i,                      // NoveList LibraryAware
 ];
 
 // GovDelivery (Granicus) wraps the destination URL-encoded directly in the
@@ -72,6 +80,21 @@ function decodeGovDelivery(url) {
   try {
     const dest = decodeURIComponent(m[1]);
     if (/^https?:\/\//i.test(dest)) return stripTrackingParams(dest);
+  } catch {
+    // fall through
+  }
+  return null;
+}
+
+// Amazon SES click tracking uses the same shape as GovDelivery:
+// <id>.r.<region>.awstrack.me/L0/<encoded-destination>/1/<tracking>...
+// Decode the path segment instead of following the (per-send, expiring) link.
+function decodeAwsTrack(url) {
+  const m = /\/L0\/([^/]+)/i.exec(url);
+  if (!m) return null;
+  try {
+    const dest = decodeURIComponent(m[1]);
+    if (/^https?:\/\//i.test(dest)) return dest;
   } catch {
     // fall through
   }
@@ -142,11 +165,23 @@ function saveCache(cache) {
 // Resolver
 // ---------------------------------------------------------------------------
 
-async function resolveOne(url) {
+async function resolveOne(url, depth = 0) {
   // GovDelivery embeds the destination in the path — decode it directly,
   // no fetch needed (and the tracker URL expires after the email blast).
   const govDest = decodeGovDelivery(url);
   if (govDest) return govDest;
+
+  // Amazon SES (awstrack.me) does the same. Its payload is often a second
+  // tracker (LibraryAware), so re-resolve once when that happens rather than
+  // publishing a URL that still carries a subscriber id.
+  const awsDest = decodeAwsTrack(url);
+  if (awsDest) {
+    if (depth < 2 && isTrackerUrl(awsDest)) {
+      const deeper = await resolveOne(awsDest, depth + 1);
+      if (deeper) return deeper;
+    }
+    return stripTrackingParams(awsDest);
+  }
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
@@ -166,6 +201,12 @@ async function resolveOne(url) {
     // Even 4xx/5xx final pages still expose the resolved URL — tracker
     // worked, the destination just blocks bots. Keep the resolved URL.
     if (res.url && res.url !== url) {
+      // A wrapper can redirect straight into another wrapper — chase once more
+      // so the published URL is never itself a tracker.
+      if (depth < 2 && isTrackerUrl(res.url)) {
+        const deeper = await resolveOne(res.url, depth + 1);
+        if (deeper) return deeper;
+      }
       return stripTrackingParams(res.url);
     }
     return null;
