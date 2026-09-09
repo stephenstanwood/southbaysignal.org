@@ -5,7 +5,7 @@
 // "paid"), and location carries exactly the venue / address / city we
 // actually have.
 import { parseClockTime } from "./calendarLink";
-import { normalizeAbsoluteHttpUrl } from "./httpUrl.mjs";
+import { normalizeAbsoluteHttpUrl, normalizeImageUrl } from "./httpUrl.mjs";
 
 const SITE = "https://southbaytoday.org";
 
@@ -67,7 +67,7 @@ function isoDateTime(date: string, clock: { h: number; m: number }, offset: stri
 }
 
 function absoluteImage(e: SchemaEventRecord): string | null {
-  const image = normalizeAbsoluteHttpUrl(e.image);
+  const image = normalizeImageUrl(e.image);
   if (image) return image;
   // photoRef is a Google Places photo of the venue. Attaching one to an
   // online-only event puts a picture of an unreachable building in the

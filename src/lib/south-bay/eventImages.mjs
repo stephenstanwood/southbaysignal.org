@@ -39,7 +39,7 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { normalizeAbsoluteHttpUrl } from "./httpUrl.mjs";
+import { normalizeAbsoluteHttpUrl, normalizeImageUrl } from "./httpUrl.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..", "..", "..");
@@ -447,6 +447,7 @@ export async function resolveEventImages(events, opts = {}) {
     tier4_recraft_cached: 0,
     tier4_recraft_generated: 0,
     tier4_recraft_skipped: 0, // would've recraft-gen'd but over budget / disabled
+    https_upgraded: 0, // http:// artwork rewritten to https:// (mixed content)
     preexisting: 0, // event already had a healthy photoRef or image
     final_missing: 0, // event still has nothing after all tiers (alarm signal)
   };
@@ -636,6 +637,20 @@ export async function resolveEventImages(events, opts = {}) {
     } catch (err) {
       console.warn(`[eventImages] recraft failed for "${e.title}": ${err.message}`);
       stats.tier4_recraft_skipped++;
+    }
+  }
+
+  // --- Final normalization — no `http://` artwork on an HTTPS page --------
+  // Runs after every tier so a feed value, an OG cache hit, and a freshly
+  // fetched image all get the same treatment. Mixed content is blocked
+  // silently by the browser, so an un-upgraded URL looks like a missing
+  // image rather than an error.
+  for (const e of events) {
+    if (!e.image || typeof e.image !== "string") continue;
+    const https = normalizeImageUrl(e.image);
+    if (https && https !== e.image) {
+      if (!dryRun) e.image = https;
+      stats.https_upgraded++;
     }
   }
 
